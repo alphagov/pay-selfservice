@@ -1,6 +1,6 @@
 var response = require(__dirname + '/utils/response.js').response;
 
-//var controllers = require('./controllers');
+var controllers = require('./controllers');
 
 module.exports.bind = function (app) {
     app.get('/greeting', function (req, res) {
@@ -8,5 +8,5 @@ module.exports.bind = function (app) {
       response(req.headers.accept, res, 'greeting', data);
     });
 
-//    controllers.bindRoutesTo(app);
+    controllers.bindRoutesTo(app);
 };
