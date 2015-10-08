@@ -3,15 +3,9 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var routes = require(__dirname + '/app/routes.js');
 var bodyParser = require('body-parser');
-var clientSessions = require("client-sessions");
 
 var port = (process.env.PORT || 3000);
 var app = express();
-
-app.use(clientSessions({
-  cookieName: 'session_state',
-  secret: process.env.SESSION_ENCRYPTION_KEY
-}));
 
 app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 app.set('view engine', 'html');
