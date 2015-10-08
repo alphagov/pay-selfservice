@@ -37,7 +37,7 @@ portfinder.getPort(function (err, connectorPort) {
   describe('The /transactions endpoint', function () {
     it('should return a list of transactions for the gateway account', function (done) {
 
-      var expectedData = {
+      var connectorData = {
         'results': [
           {
             'charge_id': '100',
@@ -53,7 +53,24 @@ portfinder.getPort(function (err, connectorPort) {
           }
         ]
       };
-      connectorMock_responds(expectedData);
+      connectorMock_responds(connectorData);
+
+      var expectedData = {
+        'results': [
+          {
+            'charge_id': '100',
+            'gateway_transaction_id': 'tnx-id-1',
+            'amount': '50.00',
+            'status': 'TEST STATUS'
+          },
+          {
+            'charge_id': '101',
+            'gateway_transaction_id': 'tnx-id-2',
+            'amount': '20.00',
+            'status': 'TEST STATUS 2'
+          }
+        ]
+      };
 
       get_transaction_list()
         .expect(200, expectedData)
