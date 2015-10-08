@@ -25,7 +25,15 @@ module.exports.bindRoutesTo = function (app) {
 
       if (connectorResponse.statusCode === 200) {
         response(req.headers.accept, res.status(200), 'transactions', formatForView(connectorData));
+        return;
       }
+      if (connectorResponse.statusCode === 400) {
+        response(req.headers.accept, res.status(200), 'errors', connectorData);
+        return;
+      }
+
+      response(req.headers.accept, res.status(200), 'errors', {'message': 'Unable to retrieve list of transactions.'});
+
     });
   });
 };

@@ -76,6 +76,38 @@ portfinder.getPort(function (err, connectorPort) {
         .expect(200, expectedData)
         .end(done);
     });
+
+    it('should show error message on a bad request', function (done) {
+
+      var errorMessage = 'some error from connector';
+      connectorMock.get(connectorChargesPath + "?gatewayAccountId=" + gatewayAccountId)
+        .reply(400, {'message': errorMessage});
+
+      get_transaction_list()
+        .expect(200, {'message': errorMessage})
+        .end(done);
+
+    });
+
+    it('should show a generic error message on a connector service error.', function (done) {
+
+      connectorMock.get(connectorChargesPath + "?gatewayAccountId=" + gatewayAccountId)
+        .reply(500, {'message': 'some error from connector'});
+
+      get_transaction_list()
+        .expect(200, {'message': 'Unable to retrieve list of transactions.'})
+        .end(done);
+
+    });
+
+
+    it('should return 404 when no gateway account id', function (done) {
+      request(app)
+        .get('/transactions/')
+        .set('Accept', 'application/json')
+        .expect(404)
+        .end(done);
+    });
   });
 });
 
