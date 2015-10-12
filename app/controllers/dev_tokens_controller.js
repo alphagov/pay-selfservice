@@ -27,13 +27,19 @@ module.exports.bindRoutesTo = function (app) {
         return;
       }
 
-      responsePayload = {'account_id': accountId};
-      var tokenInSessions = req.session_state.token;
-      if (tokenInSessions) {
-        responsePayload.token = tokenInSessions;
-        delete req.session_state.token;
-      }
-      response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
+      var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+      client.get(publicAuthUrl + "/" + accountId, function (publicAuthData, publicAuthResponse) {
+
+        responsePayload = {
+          'account_id': accountId,
+          'tokens': publicAuthData.tokens
+        };
+        response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
+
+      }).on('error', function (err) {
+        logger.error('Exception raised calling connector');
+        renderErrorView(req, res, ERROR_MESSAGE);
+      });
 
     }).on('error', function (err) {
       logger.error('Exception raised calling connector');

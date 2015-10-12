@@ -11,6 +11,49 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
   });
 
+  it('should render the number of active developer keys for the account (for no keys)', function () {
+    var templateData = {
+      'account_id' : 12345,
+      'tokens' : []
+    };
+    var body = renderTemplate('token', templateData);
+    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h2').withText("There are no active developer keys");
+    body.should.containNoSelector('table#tokensTable');
+  });
+
+  it('should render the number of active developer keys for the account (for 1 key)', function () {
+    var templateData = {
+      'account_id' : 12345,
+      'tokens' : [{"token_id":1, "description":"token 1"}]
+    };
+    var body = renderTemplate('token', templateData);
+
+    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h2').withText("There are 1 active developer key(s)");
+    body.should.containSelector('h3').withText("Active keys");
+    body.should.containSelector('table#tokensTable');
+    body.should.containSelector('tr#1-id');
+    body.should.containSelector('td#1-description');
+  });
+
+  it('should render the number of active developer keys for the account (for 2 key)', function () {
+    var templateData = {
+      'account_id' : 12345,
+      'tokens' : [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
+    };
+    var body = renderTemplate('token', templateData);
+
+    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h2').withText("There are 2 active developer key(s)");
+    body.should.containSelector('h3').withText("Active keys");
+    body.should.containSelector('table#tokensTable');
+    body.should.containSelector('tr#1-id');
+    body.should.containSelector('td#1-description').withText("token 1");
+    body.should.containSelector('tr#2-id');
+    body.should.containSelector('td#2-description').withText("token 2");
+  });
+
   it('should render a button to generate new developer keys', function () {
     var templateData = {
       'account_id' : 12345

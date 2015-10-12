@@ -52,15 +52,48 @@ portfinder.getPort(function(err, freePort) {
         .end(done);
     });
 
-    it('should only return the account_id', function (done){
+    it('should only return the account_id if no tokens have been issued yet', function (done){
 
       serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+      serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
+        .reply(200, {
+            "account_id": ACCOUNT_ID,
+            "tokens": []
+        });
 
       request(app)
         .get(TOKEN_PATH + '/' + ACCOUNT_ID)
         .set('Accept', 'application/json')
         .expect(200, {
-          'account_id': ACCOUNT_ID
+          'account_id': ACCOUNT_ID,
+          'tokens': []
+        })
+        .expect(function(res) {
+            should.not.exist(res.headers['set-cookie']);
+            var session = cookie.decrypt(res);
+            should.not.exist(session.token);
+            should.not.exist(session.description);
+        })
+        .end(done);
+    });
+
+    it('should return the account_id and the list of already-issued tokens', function (done){
+
+      serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+      serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
+        .reply(200, {
+            "account_id": ACCOUNT_ID,
+            "tokens": [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
+        });
+
+      request(app)
+        .get(TOKEN_PATH + '/' + ACCOUNT_ID)
+        .set('Accept', 'application/json')
+        .expect(200, {
+          'account_id': ACCOUNT_ID,
+          'tokens': [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
         })
         .expect(function(res) {
             should.not.exist(res.headers['set-cookie']);
