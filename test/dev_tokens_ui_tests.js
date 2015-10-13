@@ -8,7 +8,7 @@ describe('The token view', function() {
       'account_id' : 12345
     };
     var body = renderTemplate('token', templateData);
-    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h1').withText("Developer keys");
   });
 
   it('should render the number of active developer keys for the account (for no keys)', function () {
@@ -18,7 +18,7 @@ describe('The token view', function() {
       'header2': "There are no active developer keys"
     };
     var body = renderTemplate('token', templateData);
-    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h1').withText("Developer keys");
     body.should.containSelector('h2').withText("There are no active developer keys");
   });
 
@@ -30,7 +30,7 @@ describe('The token view', function() {
     };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h1').withText("Developer keys");
     body.should.containSelector('h2').withText("There is 1 active developer key");
     body.should.containSelector('h3').withText("Active keys");
     body.should.containSelector('b#1-description');
@@ -44,7 +44,7 @@ describe('The token view', function() {
     };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+    body.should.containSelector('h1').withText("Developer keys");
     body.should.containSelector('h2').withText("There are 2 active developer keys");
     body.should.containSelector('h3').withText("Active keys");
     body.should.containSelector('b#1-description');
@@ -82,7 +82,7 @@ describe('The generate token view', function() {
         'account_id' : 12345
       };
       var body = renderTemplate('token_generate', templateData);
-      body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
+      body.should.containSelector('h1').withText("Developer keys");
     });
 
     it('should render a form to request a new token via a post request', function () {
