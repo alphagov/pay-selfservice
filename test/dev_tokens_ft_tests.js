@@ -67,7 +67,8 @@ portfinder.getPort(function(err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           'account_id': ACCOUNT_ID,
-          'tokens': []
+          'tokens': [],
+          'header2': "There are no active developer keys"
         })
         .expect(function(res) {
             should.not.exist(res.headers['set-cookie']);
@@ -78,7 +79,34 @@ portfinder.getPort(function(err, freePort) {
         .end(done);
     });
 
-    it('should return the account_id and the list of already-issued tokens', function (done){
+    it('should return the account_id and the token/header for the only already-issued token', function (done){
+
+      serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+      serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
+        .reply(200, {
+            "account_id": ACCOUNT_ID,
+            "tokens": [{"token_id":1, "description":"token 1"}]
+        });
+
+      request(app)
+        .get(TOKEN_PATH + '/' + ACCOUNT_ID)
+        .set('Accept', 'application/json')
+        .expect(200, {
+          'account_id': ACCOUNT_ID,
+          'tokens': [{"token_id":1, "description":"token 1"}],
+          'header2': "There is 1 active developer key"
+        })
+        .expect(function(res) {
+            should.not.exist(res.headers['set-cookie']);
+            var session = cookie.decrypt(res);
+            should.not.exist(session.token);
+            should.not.exist(session.description);
+        })
+        .end(done);
+    });
+
+    it('should return the account_id and the token/header for already-issued tokens', function (done){
 
       serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
@@ -93,7 +121,8 @@ portfinder.getPort(function(err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           'account_id': ACCOUNT_ID,
-          'tokens': [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
+          'tokens': [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}],
+          'header2': "There are 2 active developer keys"
         })
         .expect(function(res) {
             should.not.exist(res.headers['set-cookie']);

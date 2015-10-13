@@ -11,27 +11,31 @@ Generate developer tokens
     <h1>Generate developer tokens for account '{{account_id}}'</h1>
 
     {{^tokens.length}}
-        <h2>There are no active developer keys</h2>
+        <h2>{{header2}}</h2>
+        <a id="generateLink" href="/tokens/generate/{{account_id}}">
+            <input id="generateButton" type="button" value="Generate a new key" />
+        </a>
     {{/tokens.length}}
 
     {{#tokens.length}}
-        <h2>There are {{tokens.length}} active developer key(s)</h2>
+
+        <h2>{{header2}}</h2>
+
+        <a id="generateLink" href="/tokens/generate/{{account_id}}">
+            <input id="generateButton" type="button" value="Generate a new key" />
+        </a>
+
         <h3>Active keys</h3>
         <hr />
 
-        <table id="tokensTable" style="width:100%">
-            {{#tokens}}
-            <tr id="{{token_id}}-id">
-                <td id="{{token_id}}-description">{{description}}</td>
-                <td>REVOKE</td>
-            </tr>
-            {{/tokens}}
-        </table>
+        {{#tokens}}
+            <b id="{{token_id}}-description">{{description}}</b>
+            <hr />
+        {{/tokens}}
+
     {{/tokens.length}}
 
-    <a id="generateLink" href="/tokens/generate/{{account_id}}">
-        <input id="generateButton" type="button" value="Generate a new key" />
-    </a>
+    <hr />
 
 </main>
 

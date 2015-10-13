@@ -14,49 +14,57 @@ describe('The token view', function() {
   it('should render the number of active developer keys for the account (for no keys)', function () {
     var templateData = {
       'account_id' : 12345,
-      'tokens' : []
+      'tokens' : [],
+      'header2': "There are no active developer keys"
     };
     var body = renderTemplate('token', templateData);
     body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
     body.should.containSelector('h2').withText("There are no active developer keys");
-    body.should.containNoSelector('table#tokensTable');
   });
 
   it('should render the number of active developer keys for the account (for 1 key)', function () {
     var templateData = {
       'account_id' : 12345,
-      'tokens' : [{"token_id":1, "description":"token 1"}]
+      'tokens' : [{"token_id":1, "description":"token 1"}],
+      'header2': "There is 1 active developer key"
     };
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
-    body.should.containSelector('h2').withText("There are 1 active developer key(s)");
+    body.should.containSelector('h2').withText("There is 1 active developer key");
     body.should.containSelector('h3').withText("Active keys");
-    body.should.containSelector('table#tokensTable');
-    body.should.containSelector('tr#1-id');
-    body.should.containSelector('td#1-description');
+    body.should.containSelector('b#1-description');
   });
 
   it('should render the number of active developer keys for the account (for 2 key)', function () {
     var templateData = {
       'account_id' : 12345,
-      'tokens' : [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
+      'tokens' : [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}],
+      'header2': "There are 2 active developer keys"
     };
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Generate developer tokens for account '12345'");
-    body.should.containSelector('h2').withText("There are 2 active developer key(s)");
+    body.should.containSelector('h2').withText("There are 2 active developer keys");
     body.should.containSelector('h3').withText("Active keys");
-    body.should.containSelector('table#tokensTable');
-    body.should.containSelector('tr#1-id');
-    body.should.containSelector('td#1-description').withText("token 1");
-    body.should.containSelector('tr#2-id');
-    body.should.containSelector('td#2-description').withText("token 2");
+    body.should.containSelector('b#1-description');
+    body.should.containSelector('b#2-description');
   });
 
-  it('should render a button to generate new developer keys', function () {
+  it('should render a button to generate new developer keys when there are no issued tokens', function () {
     var templateData = {
-      'account_id' : 12345
+      'account_id' : 12345,
+       'tokens' : []
+    };
+    var body = renderTemplate('token', templateData);
+    body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
+    body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
+  });
+
+  it('should render a button to generate new developer keys when there are issued tokens', function () {
+    var templateData = {
+      'account_id' : 12345,
+      'tokens' : [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
     };
     var body = renderTemplate('token', templateData);
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");

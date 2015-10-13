@@ -30,9 +30,11 @@ module.exports.bindRoutesTo = function (app) {
       var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
       client.get(publicAuthUrl + "/" + accountId, function (publicAuthData, publicAuthResponse) {
 
+        var issuedTokens = publicAuthData.tokens;
         responsePayload = {
           'account_id': accountId,
-          'tokens': publicAuthData.tokens
+          'tokens': issuedTokens,
+          'header2': createSentenceBasedOn(issuedTokens.length)
         };
         response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
 
@@ -129,5 +131,11 @@ module.exports.bindRoutesTo = function (app) {
     });
 
   });
+
+  function createSentenceBasedOn(numerOfTokens) {
+    if (numerOfTokens==0) return "There are no active developer keys"
+    else if (numerOfTokens==1) return "There is 1 active developer key"
+    return "There are " + numerOfTokens + " active developer keys"
+  }
 
 }
