@@ -24,16 +24,18 @@ module.exports.bindRoutesTo = function (app) {
     client.get(connectorUrl, function (connectorData, connectorResponse) {
 
       if (connectorResponse.statusCode === 200) {
-        response(req.headers.accept, res.status(200), 'transactions', formatForView(connectorData));
+        response(req.headers.accept, res, 'transactions', formatForView(connectorData));
         return;
       }
+
+      logger.error('Error getting transaction list from connector ' + connectorData);
       if (connectorResponse.statusCode === 400) {
-        response(req.headers.accept, res.status(200), 'errors', connectorData);
+
+        response(req.headers.accept, res.status(500), 'error', connectorData);
         return;
       }
 
-      response(req.headers.accept, res.status(200), 'errors', {'message': 'Unable to retrieve list of transactions.'});
-
+      response(req.headers.accept, res.status(500), 'error', {'message': 'Unable to retrieve list of transactions.'});
     });
   });
 };

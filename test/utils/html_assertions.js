@@ -67,15 +67,6 @@ chai.use(function (_chai, utils) {
     subAssertion.containSelector('label#' + labelId).withAttribute('for', inputFieldId).withText(labelText);
   });
 
-  chai.Assertion.addMethod('containTableWithId', function (tableId) {
-    utils.flag(this, "rawHtml", this._obj);
-    var $ = cheerio.load(this._obj);
-
-    var result = $('table#' + tableId);
-    this.assert(result.length > 0, "Expected #{this} \nto contain a table with id '" + tableId + "'");
-    this._obj = result;
-  });
-
   chai.Assertion.addMethod('havingRowAt', function (rowIndex) {
     var actualRow = this._obj.find('tr:nth-child(' + rowIndex + ')');
 

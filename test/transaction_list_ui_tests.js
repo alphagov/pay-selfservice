@@ -26,7 +26,7 @@ describe('The transaction list view', function () {
     var body = renderTemplate('transactions', templateData);
 
     templateData.results.forEach(function (transactionData, ix) {
-      body.should.containTableWithId('transaction-list')
+      body.should.containSelector('table#transaction-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].charge_id)
         .withTableDataAt(2, templateData.results[ix].gateway_transaction_id)

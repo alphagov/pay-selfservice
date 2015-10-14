@@ -77,6 +77,17 @@ portfinder.getPort(function (err, connectorPort) {
         .end(done);
     });
 
+    it('should display page with empty list of transactions if no records returned by connector', function (done) {
+      var connectorData = {
+        'results': []
+      };
+      connectorMock_responds(connectorData);
+
+      get_transaction_list()
+        .expect(200, {'results': []})
+        .end(done);
+    });
+
     it('should show error message on a bad request', function (done) {
 
       var errorMessage = 'some error from connector';
@@ -84,7 +95,7 @@ portfinder.getPort(function (err, connectorPort) {
         .reply(400, {'message': errorMessage});
 
       get_transaction_list()
-        .expect(200, {'message': errorMessage})
+        .expect(500, {'message': errorMessage})
         .end(done);
 
     });
@@ -95,7 +106,7 @@ portfinder.getPort(function (err, connectorPort) {
         .reply(500, {'message': 'some error from connector'});
 
       get_transaction_list()
-        .expect(200, {'message': 'Unable to retrieve list of transactions.'})
+        .expect(500, {'message': 'Unable to retrieve list of transactions.'})
         .end(done);
 
     });
