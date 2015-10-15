@@ -31,7 +31,7 @@
     "minimist": "0.0.8",
     "moment": "^2.10.3",
     "node-rest-client": "^1.5.1",
-    "node-sass": "3.2.0",
+    "node-sass": "3.3.3",
     "readdir": "0.0.6",
     "serve-favicon": "~2.3.0",
     "winston": "^1.0.1"
