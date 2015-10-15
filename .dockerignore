@@ -1,0 +1,7 @@
+node_modules
+govuk_modules
+public
+.settings
+.project
+*.log
+*.txt
