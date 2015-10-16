@@ -64,9 +64,9 @@ module.exports.bindRoutesTo = function (app) {
       }
 
       responsePayload = {'account_id': accountId};
-      var tokenInSessions = req.session_state.token;
-      if (tokenInSessions) {
-        responsePayload.token = tokenInSessions;
+      var tokenInSession = req.session_state.token;
+      if (tokenInSession) {
+        responsePayload.token = tokenInSession;
         responsePayload.description = req.session_state.description;
         delete req.session_state.token;
         delete req.session_state.description;

@@ -86,7 +86,7 @@ portfinder.getPort(function(err, freePort) {
       serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
         .reply(200, {
             "account_id": ACCOUNT_ID,
-            "tokens": [{"token_id":1, "description":"token 1"}]
+            "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}]
         });
 
       request(app)
@@ -94,7 +94,7 @@ portfinder.getPort(function(err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           'account_id': ACCOUNT_ID,
-          'tokens': [{"token_id":1, "description":"token 1"}],
+          'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
           'header2': "There is 1 active developer key"
         })
         .expect(function(res) {
@@ -113,7 +113,8 @@ portfinder.getPort(function(err, freePort) {
       serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
         .reply(200, {
             "account_id": ACCOUNT_ID,
-            "tokens": [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}]
+            "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
+                       {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
         });
 
       request(app)
@@ -121,7 +122,8 @@ portfinder.getPort(function(err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           'account_id': ACCOUNT_ID,
-          'tokens': [{"token_id":1, "description":"token 1"},{"token_id":2, "description":"token 2"}],
+          'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
+                     {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
           'header2': "There are 2 active developer keys"
         })
         .expect(function(res) {
@@ -239,7 +241,8 @@ portfinder.getPort(function(err, freePort) {
         serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
         serverMock.post(PUBLIC_AUTH_PATH, {
-          "account_id": ACCOUNT_ID
+          "account_id": ACCOUNT_ID,
+          "description": "description"
         }).reply(200, {"token": TOKEN });
 
         request(app)
@@ -263,7 +266,7 @@ portfinder.getPort(function(err, freePort) {
            .end(done);
       });
 
-      it('should return the account_id and the new token if the token is in the session, and clear the session', function (done){
+      it('should return the account_id and the new token if the token is in the session, and then clear the session', function (done){
 
         serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
