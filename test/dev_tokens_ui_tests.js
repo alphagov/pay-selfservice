@@ -18,6 +18,9 @@ describe('The token view', function() {
     body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-edit');
     body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-cancel');
     body.should.containNoSelector('input#550e8400-e29b-41d4-a716-446655440000-save');
+    body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-revoke');
+    body.should.containNoSelector('div#550e8400-e29b-41d4-a716-446655440000-revoke-message');
+    body.should.containNoSelector('div#550e8400-e29b-41d4-a716-446655440000-revoked');
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
     body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
@@ -39,6 +42,9 @@ describe('The token view', function() {
     body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-edit').withText("Edit description");
     body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-cancel').withAttribute("style", "display: none").withText("cancel");
     body.should.containSelector('input#550e8400-e29b-41d4-a716-446655440000-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-revoke').withText("Revoke key");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-revoke-message').withAttribute("style", "display: none");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-revoked').withAttribute("style", "display: none");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
     body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
@@ -65,9 +71,57 @@ describe('The token view', function() {
     body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-cancel').withAttribute("style", "display: none").withText("cancel");
     body.should.containSelector('input#550e8400-e29b-41d4-a716-446655440000-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
     body.should.containSelector('input#550e8400-e29b-41d4-a716-446655441234-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-revoke').withText("Revoke key");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-revoke').withText("Revoke key");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-revoke-message').withAttribute("style", "display: none");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655441234-revoke-message').withAttribute("style", "display: none");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-revoked').withAttribute("style", "display: none");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655441234-revoked').withAttribute("style", "display: none");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
     body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
+  });
+
+  it('should render revoked tokens', function () {
+    var templateData = {
+      'account_id' : 12345,
+      'tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"revoked token", "revoked": "18 Oct 2015"},
+                  {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"non-revoked token"}],
+      'header2': "There is 1 active developer key"
+    };
+    var body = renderTemplate('token', templateData);
+
+    body.should.containSelector('h1').withText("Developer keys");
+    body.should.containSelector('h2').withText("There is 1 active developer key");
+    body.should.containSelector('h3').withText("Active keys");
+
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-description');
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655441234-description');
+
+    body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-edit');
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-edit').withText("Edit description");
+
+    body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-cancel');
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-cancel').withAttribute("style", "display: none").withText("cancel");
+
+    body.should.containNoSelector('input#550e8400-e29b-41d4-a716-446655440000-save');
+    body.should.containSelector('input#550e8400-e29b-41d4-a716-446655441234-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
+
+    body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-revoke');
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-revoke').withText("Revoke key");
+
+    body.should.containNoSelector('div#550e8400-e29b-41d4-a716-446655440000-revoke-message');
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655441234-revoke-message').withAttribute("style", "display: none");
+
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-revoked').withText("This key was successfully revoked on 18 Oct 2015. It will no longer enable integration with the platform.");
+    body.should.containSelector('div#550e8400-e29b-41d4-a716-446655441234-revoked').withAttribute("style", "display: none");
+
+    body.should.containNoSelector('span#550e8400-e29b-41d4-a716-446655440000-revoked-date');
+    body.should.containSelector('span#550e8400-e29b-41d4-a716-446655441234-revoked-date');
+
+    body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
+    body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
+
   });
 
 });

@@ -11,6 +11,8 @@ module.exports.bindRoutesTo = function (app) {
 
   var TOKEN_PATH = '/tokens';
   var TOKEN_GENERATION_PATH = '/tokens/generate';
+  var TOKEN_REVOCATION_PATH = '/tokens/revoke';
+
   var TOKEN_VIEW = 'token';
   var TOKEN_GENERATE_VIEW = 'token_generate';
 
@@ -34,7 +36,7 @@ module.exports.bindRoutesTo = function (app) {
         responsePayload = {
           'account_id': accountId,
           'tokens': issuedTokens,
-          'header2': createSentenceBasedOn(issuedTokens.length)
+          'header2': createSentenceBasedOn(issuedTokens)
         };
         response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
 
@@ -132,7 +134,7 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  app.put(TOKEN_GENERATION_PATH, function (req, res) {
+  app.put(TOKEN_PATH, function (req, res) {
     logger.info('PUT ' + TOKEN_GENERATION_PATH);
 
     var requestPayload = {
@@ -162,7 +164,41 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  function createSentenceBasedOn(numerOfTokens) {
+  app.delete(TOKEN_REVOCATION_PATH + '/:accountId', function (req, res) {
+    logger.info('DELETE ' + TOKEN_REVOCATION_PATH  + '/:accountId');
+
+    var accountId = req.params.accountId;
+
+    var requestPayload = {
+      headers:{"Content-Type": "application/json"},
+      data: {
+        token_link: req.body.token_link
+      }
+    };
+
+    var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+    client.delete(publicAuthUrl + "/" + accountId, requestPayload, function (publicAuthData, publicAuthResponse) {
+      var responseStatusCode = publicAuthResponse.statusCode;
+      if(responseStatusCode!=200) {
+        res.sendStatus(responseStatusCode);
+        return;
+      }
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        'revoked': publicAuthData.revoked
+      });
+    }).on('error', function (err) {
+      logger.error('Exception raised calling publicauth');
+      res.sendStatus(500);
+    });
+
+  });
+
+  function createSentenceBasedOn(issuedTokens) {
+    var filteredTokens = issuedTokens.filter(function (el) {
+      return !('revoked' in el);
+    });
+    var numerOfTokens = filteredTokens.length;
     if (numerOfTokens==0) return "There are no active developer keys"
     else if (numerOfTokens==1) return "There is 1 active developer key"
     return "There are " + numerOfTokens + " active developer keys"

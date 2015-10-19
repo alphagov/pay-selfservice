@@ -1,7 +1,7 @@
 {{< layout}}
 
 {{$pageTitle}}
-Generate developer tokens
+List of developer tokens
 {{/pageTitle}}
 
 {{$content}}
@@ -17,10 +17,14 @@ Generate developer tokens
             var descriptionDivSelector = 'div#' + tokenLink + '-description';
             var cancelLinkSelector = 'a#' + tokenLink + '-cancel';
             var saveButtonSelector = 'input#' + tokenLink + '-save';
+            var revokeLinkSelector = 'a#' + tokenLink + '-revoke';
+            var revokeMessageDivSelector = 'div#' + tokenLink + '-revoke-message';
 
             descriptionBeforeEditing[tokenLink] = $(descriptionDivSelector).text();
             $(descriptionDivSelector).replaceWith("<input id='" + tokenLink + "-input' type='text' value='" + descriptionBeforeEditing[tokenLink] + "' style='display: block' />");
 
+            $(revokeLinkSelector).hide();
+            $(revokeMessageDivSelector).hide();
             $(editLinkSelector).hide();
             $(cancelLinkSelector).show();
             $(saveButtonSelector).show();
@@ -32,12 +36,14 @@ Generate developer tokens
             var inputSelector = 'input#' + tokenLink + '-input';
             var editLinkSelector = 'a#' + tokenLink + '-edit';
             var saveButtonSelector = 'input#' + tokenLink + '-save';
+            var revokeLinkSelector = 'a#' + tokenLink + '-revoke';
 
             $(inputSelector).replaceWith("<div id='" + tokenLink + "-description'><b>" + descriptionBeforeEditing[tokenLink] + "</b></div>");
 
             $(cancelLinkSelector).hide();
             $(saveButtonSelector).hide();
             $(editLinkSelector).show();
+            $(revokeLinkSelector).show();
         });
 
         $("input[id$='-save']").click(function(event){
@@ -47,9 +53,11 @@ Generate developer tokens
             var editLinkSelector = 'a#' + tokenLink + '-edit';
             var cancelLinkSelector = 'a#' + tokenLink + '-cancel';
             var newDescription = $(inputSelector).val();
+            var revokeLinkSelector = 'a#' + tokenLink + '-revoke';
+
             $.ajax({
                 type: 'PUT',
-                url: '/tokens/generate',
+                url: '/tokens',
                 data: {
                     'token_link': tokenLink,
                     'description': newDescription
@@ -65,9 +73,49 @@ Generate developer tokens
                     $(saveButtonSelector).hide();
                     $(cancelLinkSelector).hide();
                     $(editLinkSelector).show();
+                    $(revokeLinkSelector).show();
                 }
             });
         });
+
+        $("a[id$='-revoke']").click(function(event){
+            var tokenLink = event.target.id.slice(0,36);
+            var revokeMessageDivSelector = 'div#' + tokenLink + '-revoke-message';
+            $(revokeMessageDivSelector).show();
+        });
+
+        $("input[id$='-revoke-no']").click(function(event){
+            var tokenLink = event.target.id.slice(0,36);
+            var revokeMessageDivSelector = 'div#' + tokenLink + '-revoke-message';
+            $(revokeMessageDivSelector).hide();
+        });
+
+        $("input[id$='-revoke-yes']").click(function(event){
+            var tokenLink = event.target.id.slice(0,36);
+            var revokeMessageDivSelector = 'div#' + tokenLink + '-revoke-message';
+            var editLinkSelector = 'a#' + tokenLink + '-edit';
+            var revokeLinkSelector = 'a#' + tokenLink + '-revoke';
+            var revokedDivSelector = 'div#' + tokenLink + '-revoked';
+            var revokedDateSpanSelector = 'span#' + tokenLink + '-revoked-date';
+            $.ajax({
+                type: 'DELETE',
+                url: '/tokens/revoke/{{account_id}}',
+                data: {
+                    'token_link': tokenLink,
+                },
+                success: function(responseData){
+                    $(revokedDateSpanSelector).text(responseData.revoked);
+                    $(revokeMessageDivSelector).hide();
+                    $(editLinkSelector).hide();
+                    $(revokeLinkSelector).hide();
+                    $(revokedDivSelector).show();
+                },
+                error: function(xhr, status) {
+                    $(revokeMessageDivSelector).hide();
+                }
+            });
+        });
+
     });
 </script>
 
@@ -96,10 +144,28 @@ Generate developer tokens
         <hr />
 
         {{#tokens}}
-            <div id="{{token_link}}-description"><b>{{description}}</b></div>
-            <a id="{{token_link}}-edit">Edit description</a>
-            <input id="{{token_link}}-save" type="button" style="display: none" value="Save changes" />
-            <a id="{{token_link}}-cancel" style="display: none">cancel</a>
+            {{#revoked}}
+                <div id="{{token_link}}-description"><b>{{description}}</b></div>
+                <div id="{{token_link}}-revoked">This key was successfully revoked on {{revoked}}. It will no longer enable integration with the platform.</div>
+            {{/revoked}}
+
+            {{^revoked}}
+                <div id="{{token_link}}-description"><b>{{description}}</b></div>
+                <a id="{{token_link}}-edit">Edit description</a>
+                <input id="{{token_link}}-save" type="button" style="display: none" value="Save changes" />
+                <a id="{{token_link}}-cancel" style="display: none">cancel</a>
+                <a id="{{token_link}}-revoke">Revoke key</a>
+                <div id="{{token_link}}-revoke-message" style="display: none">
+                    Are you sure you want to revoke this developer key?
+                    If revoked it will no longer enable integration with the platform.
+                    <input id="{{token_link}}-revoke-yes" type="button" value="Yes" />
+                    <input id="{{token_link}}-revoke-no" type="button" value="No" />
+                </div>
+                <div id="{{token_link}}-revoked" style="display: none">
+                    This key was successfully revoked on <span id="{{token_link}}-revoked-date"></span>.
+                    It will no longer enable integration with the platform.
+                </div>
+            {{/revoked}}
             <hr />
         {{/tokens}}
 

@@ -13,6 +13,7 @@ var TOKEN = '00112233';
 var TOKEN_PATH = '/tokens';
 var TOKEN_GENERATION_PATH = '/tokens/generate';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
+var TOKEN_REVOCATION_PATH = '/tokens/revoke';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
 portfinder.getPort(function(err, freePort) {
@@ -133,6 +134,124 @@ portfinder.getPort(function(err, freePort) {
             should.not.exist(session.description);
         })
         .end(done);
+    });
+
+    it('should include revoked date in case the token has been already revoked', function (done){
+
+      serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+      serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
+        .reply(200, {
+            "account_id": ACCOUNT_ID,
+            "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", "revoked": "18 Oct 2015"},
+                       {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}]
+        });
+
+      request(app)
+        .get(TOKEN_PATH + '/' + ACCOUNT_ID)
+        .set('Accept', 'application/json')
+        .expect(200, {
+          'account_id': ACCOUNT_ID,
+          'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"},
+                     {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
+          'header2': "There is 1 active developer key"
+        })
+        .expect(function(res) {
+            should.not.exist(res.headers['set-cookie']);
+            var session = cookie.decrypt(res);
+            should.not.exist(session.token);
+            should.not.exist(session.description);
+        })
+        .end(done);
+    });
+
+    it('should include all tokens even if all have been revoked', function (done){
+
+      serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+      serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
+        .reply(200, {
+            "account_id": ACCOUNT_ID,
+            "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", "revoked": "18 Oct 2015"},
+                       {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}]
+        });
+
+      request(app)
+        .get(TOKEN_PATH + '/' + ACCOUNT_ID)
+        .set('Accept', 'application/json')
+        .expect(200, {
+          'account_id': ACCOUNT_ID,
+          'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"},
+                     {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}],
+          'header2': "There are no active developer keys"
+        })
+        .expect(function(res) {
+            should.not.exist(res.headers['set-cookie']);
+            var session = cookie.decrypt(res);
+            should.not.exist(session.token);
+            should.not.exist(session.description);
+        })
+        .end(done);
+    });
+
+    it('should update the description', function (done){
+
+      serverMock.put(PUBLIC_AUTH_PATH, {
+        "token_link": '550e8400-e29b-41d4-a716-446655440000',
+        "description": "token description"
+      }).reply(200, {
+        "token_link": '550e8400-e29b-41d4-a716-446655440000',
+        "description": "token description"
+      });
+
+      request(app)
+        .put(TOKEN_PATH)
+        .set('Accept', 'application/json')
+        .send({
+          'token_link': '550e8400-e29b-41d4-a716-446655440000',
+          'description': "token description"
+        })
+        .expect(200, {
+          'token_link': '550e8400-e29b-41d4-a716-446655440000',
+          'description': "token description"
+        })
+        .end(done);
+
+    });
+
+    it('should forward the error status code when updating the description', function (done){
+
+      serverMock.put(PUBLIC_AUTH_PATH, {
+        "token_link": '550e8400-e29b-41d4-a716-446655440000',
+        "description": "token description"
+      }).reply(400, {});
+
+      request(app)
+        .put(TOKEN_PATH)
+        .set('Accept', 'application/json')
+        .send({
+          'token_link': '550e8400-e29b-41d4-a716-446655440000',
+          'description': "token description"
+        })
+        .expect(400, {})
+        .end(done);
+
+    });
+
+    it('should send 500 if any error happens while updating the resource', function (done){
+
+      // No serverMock defined on purpose to mock a network failure
+
+      request(app)
+        .put(TOKEN_PATH)
+        .set('Accept', 'application/json')
+        .send({
+          'token_link': '550e8400-e29b-41d4-a716-446655440000',
+          'description': "token description"
+        })
+        .expect(500, {})
+        .end(done);
+
     });
 
   });
@@ -288,66 +407,56 @@ portfinder.getPort(function(err, freePort) {
           .end(done);
       });
 
-      it('should update the description', function (done){
+  });
 
-        serverMock.put(PUBLIC_AUTH_PATH, {
-          "token_link": '550e8400-e29b-41d4-a716-446655440000',
-          "description": "token description"
-        }).reply(200, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-        });
+  describe('The /tokens/revoke endpoint', function() {
 
-        request(app)
-          .put(TOKEN_GENERATION_PATH)
-          .set('Accept', 'application/json')
-          .send({
-            'token_link': '550e8400-e29b-41d4-a716-446655440000',
-            'description': "token description"
-          })
-          .expect(200, {
-            'token_link': '550e8400-e29b-41d4-a716-446655440000',
-            'description': "token description"
-          })
-          .end(done);
+    it('should revoke and existing token', function (done){
 
-      });
+      serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+        "token_link": '550e8400-e29b-41d4-a716-446655440000'
+      }).reply(200, {"revoked": "15 Oct 2015"});
 
-      it('should forward the error status code when updating the description', function (done){
+      request(app)
+        .delete(TOKEN_REVOCATION_PATH + "/1")
+        .send({
+          'token_link': '550e8400-e29b-41d4-a716-446655440000'
+        })
+        .expect(200, {"revoked": "15 Oct 2015"})
+        .end(done);
 
-        serverMock.put(PUBLIC_AUTH_PATH, {
-          "token_link": '550e8400-e29b-41d4-a716-446655440000',
-          "description": "token description"
-        }).reply(400, {});
+    });
 
-        request(app)
-          .put(TOKEN_GENERATION_PATH)
-          .set('Accept', 'application/json')
-          .send({
-            'token_link': '550e8400-e29b-41d4-a716-446655440000',
-            'description': "token description"
-          })
-          .expect(400, {})
-          .end(done);
+    it('should forward the error status code when revoking the token', function (done){
 
-      });
+      serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+        "token_link": '550e8400-e29b-41d4-a716-446655440000'
+      }).reply(400, {});
 
-      it('should send 500 if any error happens while updating the resource', function (done){
+      request(app)
+        .delete(TOKEN_REVOCATION_PATH + "/1")
+        .send({
+          'token_link': '550e8400-e29b-41d4-a716-446655440000'
+        })
+        .expect(400, {})
+        .end(done);
 
-        // No serverMock defined on purpose to mock a network failure
+    });
 
-        request(app)
-          .put(TOKEN_GENERATION_PATH)
-          .set('Accept', 'application/json')
-          .send({
-            'token_link': '550e8400-e29b-41d4-a716-446655440000',
-            'description': "token description"
-          })
-          .expect(500, {})
-          .end(done);
+    it('should send 500 if any error happens while updating the resource', function (done){
 
-      });
+      // No serverMock defined on purpose to mock a network failure
+
+      request(app)
+        .delete(TOKEN_REVOCATION_PATH + "/1")
+        .send({
+          'token_link': '550e8400-e29b-41d4-a716-446655440000'
+        })
+        .expect(500, {})
+        .end(done);
+
+    });
 
   });
 
-});
+ });
