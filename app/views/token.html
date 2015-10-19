@@ -6,6 +6,71 @@ Generate developer tokens
 
 {{$content}}
 
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        var descriptionBeforeEditing = {};
+
+        $("a[id$='-edit']").click(function(event){
+            var tokenLink = event.target.id.slice(0,36);
+            var editLinkSelector = 'a#' + tokenLink + '-edit';
+            var descriptionDivSelector = 'div#' + tokenLink + '-description';
+            var cancelLinkSelector = 'a#' + tokenLink + '-cancel';
+            var saveButtonSelector = 'input#' + tokenLink + '-save';
+
+            descriptionBeforeEditing[tokenLink] = $(descriptionDivSelector).text();
+            $(descriptionDivSelector).replaceWith("<input id='" + tokenLink + "-input' type='text' value='" + descriptionBeforeEditing[tokenLink] + "' style='display: block' />");
+
+            $(editLinkSelector).hide();
+            $(cancelLinkSelector).show();
+            $(saveButtonSelector).show();
+        });
+
+        $("a[id$='-cancel']").click(function(event){
+            var tokenLink = event.target.id.slice(0,36);
+            var cancelLinkSelector = 'a#' + tokenLink + '-cancel';
+            var inputSelector = 'input#' + tokenLink + '-input';
+            var editLinkSelector = 'a#' + tokenLink + '-edit';
+            var saveButtonSelector = 'input#' + tokenLink + '-save';
+
+            $(inputSelector).replaceWith("<div id='" + tokenLink + "-description'><b>" + descriptionBeforeEditing[tokenLink] + "</b></div>");
+
+            $(cancelLinkSelector).hide();
+            $(saveButtonSelector).hide();
+            $(editLinkSelector).show();
+        });
+
+        $("input[id$='-save']").click(function(event){
+            var tokenLink = event.target.id.slice(0,36);
+            var saveButtonSelector = 'input#' + tokenLink + '-save';
+            var inputSelector = 'input#' + tokenLink + '-input';
+            var editLinkSelector = 'a#' + tokenLink + '-edit';
+            var cancelLinkSelector = 'a#' + tokenLink + '-cancel';
+            var newDescription = $(inputSelector).val();
+            $.ajax({
+                type: 'PUT',
+                url: '/tokens/generate',
+                data: {
+                    'token_link': tokenLink,
+                    'description': newDescription
+                },
+                dataType : 'json',
+                success: function(responseData){
+                    $(inputSelector).replaceWith("<div id='" + tokenLink + "-description'><b>" + newDescription + "</b></div>");
+                },
+                error: function(xhr, status) {
+                    $(inputSelector).replaceWith("<div id='" + tokenLink + "-description'><b>" + descriptionBeforeEditing[tokenLink] + "</b></div>");
+                },
+                complete : function(xhr, status) {
+                    $(saveButtonSelector).hide();
+                    $(cancelLinkSelector).hide();
+                    $(editLinkSelector).show();
+                }
+            });
+        });
+    });
+</script>
+
 <main id="content" role="main">
 
     <h1>Developer keys</h1>
@@ -16,6 +81,7 @@ Generate developer tokens
         <a id="generateLink" href="/tokens/generate/{{account_id}}">
             <input id="generateButton" type="button" value="Generate a new key" />
         </a>
+        <hr />
     {{/tokens.length}}
 
     {{#tokens.length}}
@@ -30,13 +96,14 @@ Generate developer tokens
         <hr />
 
         {{#tokens}}
-            <div id="{{token_link}}-description">{{description}}</b>
+            <div id="{{token_link}}-description"><b>{{description}}</b></div>
+            <a id="{{token_link}}-edit">Edit description</a>
+            <input id="{{token_link}}-save" type="button" style="display: none" value="Save changes" />
+            <a id="{{token_link}}-cancel" style="display: none">cancel</a>
             <hr />
         {{/tokens}}
 
     {{/tokens.length}}
-
-    <hr />
 
 </main>
 

@@ -288,6 +288,65 @@ portfinder.getPort(function(err, freePort) {
           .end(done);
       });
 
+      it('should update the description', function (done){
+
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(200, {
+            "token_link": '550e8400-e29b-41d4-a716-446655440000',
+            "description": "token description"
+        });
+
+        request(app)
+          .put(TOKEN_GENERATION_PATH)
+          .set('Accept', 'application/json')
+          .send({
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': "token description"
+          })
+          .expect(200, {
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': "token description"
+          })
+          .end(done);
+
+      });
+
+      it('should forward the error status code when updating the description', function (done){
+
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(400, {});
+
+        request(app)
+          .put(TOKEN_GENERATION_PATH)
+          .set('Accept', 'application/json')
+          .send({
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': "token description"
+          })
+          .expect(400, {})
+          .end(done);
+
+      });
+
+      it('should send 500 if any error happens while updating the resource', function (done){
+
+        // No serverMock defined on purpose to mock a network failure
+
+        request(app)
+          .put(TOKEN_GENERATION_PATH)
+          .set('Accept', 'application/json')
+          .send({
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': "token description"
+          })
+          .expect(500, {})
+          .end(done);
+
+      });
 
   });
 

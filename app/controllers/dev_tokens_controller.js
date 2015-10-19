@@ -105,7 +105,7 @@ module.exports.bindRoutesTo = function (app) {
         headers: {"Content-Type": "application/json"},
         data: {
           'account_id': accountId,
-          'description': 'description'
+          'description': description
         }
       };
 
@@ -128,6 +128,36 @@ module.exports.bindRoutesTo = function (app) {
     }).on('error', function (err) {
       logger.error('Exception raised calling publicauth');
       renderErrorView(req, res, ERROR_MESSAGE);
+    });
+
+  });
+
+  app.put(TOKEN_GENERATION_PATH, function (req, res) {
+    logger.info('PUT ' + TOKEN_GENERATION_PATH);
+
+    var requestPayload = {
+      headers:{"Content-Type": "application/json"},
+      data: {
+        token_link: req.body.token_link,
+        description: req.body.description
+      }
+    };
+
+    var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+    client.put(publicAuthUrl, requestPayload, function (publicAuthData, publicAuthResponse) {
+      var responseStatusCode = publicAuthResponse.statusCode;
+      if(responseStatusCode!=200) {
+        res.sendStatus(responseStatusCode);
+        return;
+      }
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        'token_link': publicAuthData.token_link,
+        'description': publicAuthData.description
+      });
+    }).on('error', function (err) {
+      logger.error('Exception raised calling publicauth');
+      res.sendStatus(500);
     });
 
   });

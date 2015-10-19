@@ -13,7 +13,11 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
     body.should.containSelector('h2').withText("There are no active developer keys");
     body.should.containNoSelector('h3');
+
     body.should.containNoSelector('div#550e8400-e29b-41d4-a716-446655440000-description');
+    body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-edit');
+    body.should.containNoSelector('a#550e8400-e29b-41d4-a716-446655440000-cancel');
+    body.should.containNoSelector('input#550e8400-e29b-41d4-a716-446655440000-save');
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
     body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
@@ -30,7 +34,11 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
     body.should.containSelector('h2').withText("There is 1 active developer key");
     body.should.containSelector('h3').withText("Active keys");
+
     body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-description');
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-edit').withText("Edit description");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-cancel').withAttribute("style", "display: none").withText("cancel");
+    body.should.containSelector('input#550e8400-e29b-41d4-a716-446655440000-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
     body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
@@ -48,8 +56,15 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
     body.should.containSelector('h2').withText("There are 2 active developer keys");
     body.should.containSelector('h3').withText("Active keys");
+
     body.should.containSelector('div#550e8400-e29b-41d4-a716-446655440000-description');
     body.should.containSelector('div#550e8400-e29b-41d4-a716-446655441234-description');
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-edit').withText("Edit description");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-edit').withText("Edit description");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655440000-cancel').withAttribute("style", "display: none").withText("cancel");
+    body.should.containSelector('a#550e8400-e29b-41d4-a716-446655441234-cancel').withAttribute("style", "display: none").withText("cancel");
+    body.should.containSelector('input#550e8400-e29b-41d4-a716-446655440000-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
+    body.should.containSelector('input#550e8400-e29b-41d4-a716-446655441234-save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
     body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/generate/12345");
