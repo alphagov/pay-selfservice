@@ -88,5 +88,19 @@ chai.use(function (_chai, utils) {
     var subAssertion = new chai.Assertion(utils.flag(this, "rawHtml"));
     subAssertion.containSelector('label#' + labelId).withAttribute('for', selectorId).withText(labelText);
   });
-  
+
+  chai.Assertion.addMethod('havingRowAt', function (rowIndex) {
+    var actualRow = this._obj.find('tr:nth-child(' + rowIndex + ')');
+     this.assert(actualRow.length > 0, "Expected a row at index '" + rowIndex + "'");
+    this._obj = actualRow;
+  });
+
+  chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {
+    var actualValue = this._obj.find('td:nth-child(' + colIndex + ')').text();
+    this.assert(actualValue === expectedValue.toString(),
+      "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
+      expectedValue, actualValue
+    );
+  });
+
 });
