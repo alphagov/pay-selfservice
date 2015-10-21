@@ -11,9 +11,9 @@ var should = require('chai').should();
 var ACCOUNT_ID = '23144323';
 var TOKEN = '00112233';
 var TOKEN_PATH = '/tokens';
-var TOKEN_GENERATION_PATH = '/tokens/generate';
+var TOKEN_GENERATION_GET_PATH = '/tokens/{accountId}/generate';
+var TOKEN_GENERATION_POST_PATH = '/tokens/generate';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
-var TOKEN_REVOCATION_PATH = '/tokens/revoke';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
 portfinder.getPort(function(err, freePort) {
@@ -25,7 +25,7 @@ portfinder.getPort(function(err, freePort) {
 
       beforeEach(function() {
         process.env.PUBLIC_AUTH_URL = localServer + PUBLIC_AUTH_PATH;
-        process.env.CONNECTOR_URL = localServer + CONNECTOR_PATH;
+        process.env.CONNECTOR_URL = localServer;
         nock.cleanAll();
       });
 
@@ -55,7 +55,7 @@ portfinder.getPort(function(err, freePort) {
             .end(done);
         });
 
-        it('should only return the account_id if no tokens have been issued yet', function (done){
+        it('should return the account_id and an empty list of tokens if no tokens have been issued yet', function (done){
 
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
@@ -70,8 +70,7 @@ portfinder.getPort(function(err, freePort) {
             .set('Accept', 'application/json')
             .expect(200, {
               'account_id': ACCOUNT_ID,
-              'tokens': [],
-              'header2': "There are no active developer keys"
+              'tokens': []
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -82,7 +81,7 @@ portfinder.getPort(function(err, freePort) {
             .end(done);
         });
 
-        it('should return the account_id and the token/header for the only already-issued token', function (done){
+        it('should return the account_id and the token list for the only already-issued token', function (done){
 
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
@@ -97,8 +96,7 @@ portfinder.getPort(function(err, freePort) {
             .set('Accept', 'application/json')
             .expect(200, {
               'account_id': ACCOUNT_ID,
-              'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
-              'header2': "There is 1 active developer key"
+              'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}]
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -109,7 +107,7 @@ portfinder.getPort(function(err, freePort) {
             .end(done);
         });
 
-        it('should return the account_id and the token/header for already-issued tokens', function (done){
+        it('should return the account_id and the token list for already-issued tokens', function (done){
 
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
@@ -126,8 +124,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               'account_id': ACCOUNT_ID,
               'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
-                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
-              'header2': "There are 2 active developer keys"
+                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -155,8 +152,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               'account_id': ACCOUNT_ID,
               'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"},
-                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
-              'header2': "There is 1 active developer key"
+                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}]
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -184,8 +180,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               'account_id': ACCOUNT_ID,
               'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"},
-                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}],
-              'header2': "There are no active developer keys"
+                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}]
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -256,6 +251,52 @@ portfinder.getPort(function(err, freePort) {
 
         });
 
+        it('should revoke and existing token', function (done){
+
+          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+            "token_link": '550e8400-e29b-41d4-a716-446655440000'
+          }).reply(200, {"revoked": "15 Oct 2015"});
+
+          request(app)
+            .delete(TOKEN_PATH + "/1")
+            .send({
+              'token_link': '550e8400-e29b-41d4-a716-446655440000'
+            })
+            .expect(200, {"revoked": "15 Oct 2015"})
+            .end(done);
+
+        });
+
+        it('should forward the error status code when revoking the token', function (done){
+
+          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+            "token_link": '550e8400-e29b-41d4-a716-446655440000'
+          }).reply(400, {});
+
+          request(app)
+            .delete(TOKEN_PATH + "/1")
+            .send({
+              'token_link': '550e8400-e29b-41d4-a716-446655440000'
+            })
+            .expect(400, {})
+            .end(done);
+
+        });
+
+        it('should send 500 if any error happens while updating the resource', function (done){
+
+          // No serverMock defined on purpose to mock a network failure
+
+          request(app)
+            .delete(TOKEN_PATH + "/1")
+            .send({
+              'token_link': '550e8400-e29b-41d4-a716-446655440000'
+            })
+            .expect(500, {})
+            .end(done);
+
+        });
+
       });
 
       describe('The /tokens/generate endpoint', function() {
@@ -265,7 +306,7 @@ portfinder.getPort(function(err, freePort) {
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
 
             request(app)
-              .get(TOKEN_GENERATION_PATH + '/' + ACCOUNT_ID)
+              .get(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID))
               .set('Accept', 'application/json')
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
@@ -285,7 +326,7 @@ portfinder.getPort(function(err, freePort) {
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
             request(app)
-              .get(TOKEN_GENERATION_PATH + '/' + ACCOUNT_ID)
+              .get(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID))
               .set('Accept', 'application/json')
               .expect(200, {
                 'account_id': ACCOUNT_ID
@@ -309,7 +350,7 @@ portfinder.getPort(function(err, freePort) {
             }).reply(200, {"token": TOKEN });
 
             request(app)
-              .post(TOKEN_GENERATION_PATH)
+              .post(TOKEN_GENERATION_POST_PATH)
               .set('Content-Type', 'application/x-www-form-urlencoded')
               .set('Accept', 'application/json')
               .send({
@@ -339,7 +380,7 @@ portfinder.getPort(function(err, freePort) {
             }).reply(200, {"token": TOKEN });
 
             request(app)
-              .post(TOKEN_GENERATION_PATH)
+              .post(TOKEN_GENERATION_POST_PATH)
               .set('Content-Type', 'application/x-www-form-urlencoded')
               .set('Accept', 'application/json')
               .send({
@@ -353,7 +394,7 @@ portfinder.getPort(function(err, freePort) {
                   should.equal(session.token, TOKEN);
                   should.equal(session.description, "description");
                 })
-               .expect('Location', TOKEN_GENERATION_PATH + "/" + ACCOUNT_ID)
+               .expect('Location', TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID))
                .end(done);
           });
 
@@ -367,7 +408,7 @@ portfinder.getPort(function(err, freePort) {
             }).reply(200, {"token": TOKEN });
 
             request(app)
-              .post(TOKEN_GENERATION_PATH)
+              .post(TOKEN_GENERATION_POST_PATH)
               .set('Content-Type', 'application/x-www-form-urlencoded')
               .set('Accept', 'application/json')
               .set('Cookie', ['session_state=' + cookie.create(TOKEN)])
@@ -392,7 +433,7 @@ portfinder.getPort(function(err, freePort) {
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
             request(app)
-              .get(TOKEN_GENERATION_PATH + '/' + ACCOUNT_ID)
+              .get(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID))
               .set('Accept', 'application/json')
               .set('Cookie', ['session_state=' + cookie.create(TOKEN)])
               .expect(200, {
@@ -408,56 +449,6 @@ portfinder.getPort(function(err, freePort) {
               })
               .end(done);
           });
-
-      });
-
-      describe('The /tokens/revoke endpoint', function() {
-
-        it('should revoke and existing token', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(200, {"revoked": "15 Oct 2015"});
-
-          request(app)
-            .delete(TOKEN_REVOCATION_PATH + "/1")
-            .send({
-              'token_link': '550e8400-e29b-41d4-a716-446655440000'
-            })
-            .expect(200, {"revoked": "15 Oct 2015"})
-            .end(done);
-
-        });
-
-        it('should forward the error status code when revoking the token', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(400, {});
-
-          request(app)
-            .delete(TOKEN_REVOCATION_PATH + "/1")
-            .send({
-              'token_link': '550e8400-e29b-41d4-a716-446655440000'
-            })
-            .expect(400, {})
-            .end(done);
-
-        });
-
-        it('should send 500 if any error happens while updating the resource', function (done){
-
-          // No serverMock defined on purpose to mock a network failure
-
-          request(app)
-            .delete(TOKEN_REVOCATION_PATH + "/1")
-            .send({
-              'token_link': '550e8400-e29b-41d4-a716-446655440000'
-            })
-            .expect(500, {})
-            .end(done);
-
-        });
 
       });
 

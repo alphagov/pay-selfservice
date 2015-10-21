@@ -10,8 +10,8 @@ var client = new Client();
 module.exports.bindRoutesTo = function (app) {
 
   var TOKEN_PATH = '/tokens';
-  var TOKEN_GENERATION_PATH = '/tokens/generate';
-  var TOKEN_REVOCATION_PATH = '/tokens/revoke';
+  var TOKEN_GENERATION_GET_PATH = '/tokens/:accountId/generate';
+  var TOKEN_GENERATION_POST_PATH = '/tokens/generate';
 
   var TOKEN_VIEW = 'token';
   var TOKEN_GENERATE_VIEW = 'token_generate';
@@ -20,50 +20,31 @@ module.exports.bindRoutesTo = function (app) {
 
     logger.info('GET ' + TOKEN_PATH + '/:accountId');
 
-    var connectorUrl = process.env.CONNECTOR_URL;
-    var accountId = req.params.accountId;
-    client.get(connectorUrl.replace("{accountId}",accountId), function (connectorData, connectorResponse) {
-
-      if (connectorResponse.statusCode != 200) {
-        renderErrorView(req, res, ERROR_MESSAGE);
-        return;
-      }
+    withValidAccountId(req, res, req.params.accountId, function(accountId, req, res) {
 
       var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
       client.get(publicAuthUrl + "/" + accountId, function (publicAuthData, publicAuthResponse) {
-
         var issuedTokens = publicAuthData.tokens;
         responsePayload = {
           'account_id': accountId,
-          'tokens': issuedTokens,
-          'header2': createSentenceBasedOn(issuedTokens)
+          'tokens': issuedTokens
         };
         response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
 
       }).on('error', function (err) {
-        logger.error('Exception raised calling connector');
+        logger.error('Exception raised calling publicauth:' + err);
         renderErrorView(req, res, ERROR_MESSAGE);
       });
 
-    }).on('error', function (err) {
-      logger.error('Exception raised calling connector');
-      renderErrorView(req, res, ERROR_MESSAGE);
     });
 
   });
 
-  app.get(TOKEN_GENERATION_PATH + '/:accountId', function (req, res) {
+  app.get(TOKEN_GENERATION_GET_PATH, function (req, res) {
 
-    logger.info('GET ' + TOKEN_GENERATION_PATH + '/:accountId');
+    logger.info('GET ' + TOKEN_GENERATION_GET_PATH);
 
-    var connectorUrl = process.env.CONNECTOR_URL;
-    var accountId = req.params.accountId;
-    client.get(connectorUrl.replace("{accountId}",accountId), function (connectorData, connectorResponse) {
-
-      if (connectorResponse.statusCode != 200) {
-        renderErrorView(req, res, ERROR_MESSAGE);
-        return;
-      }
+    withValidAccountId(req, res, req.params.accountId, function(accountId, req, res) {
 
       responsePayload = {'account_id': accountId};
       var tokenInSession = req.session_state.token;
@@ -75,16 +56,13 @@ module.exports.bindRoutesTo = function (app) {
       }
       response(req.headers.accept, res, TOKEN_GENERATE_VIEW, responsePayload);
 
-    }).on('error', function (err) {
-      logger.error('Exception raised calling connector');
-      renderErrorView(req, res, ERROR_MESSAGE);
     });
 
   });
 
-  app.post(TOKEN_GENERATION_PATH, function (req, res) {
+  app.post(TOKEN_GENERATION_POST_PATH, function (req, res) {
 
-    logger.info('POST ' + TOKEN_PATH);
+    logger.info('POST ' + TOKEN_GENERATION_POST_PATH);
 
     if (req.session_state.token) {
       delete req.session_state.token;
@@ -93,15 +71,7 @@ module.exports.bindRoutesTo = function (app) {
       return;
     }
 
-    var connectorUrl = process.env.CONNECTOR_URL;
-    var accountId = req.body.accountId;
-    client.get(connectorUrl.replace("{accountId}",accountId), function (connectorData, connectorResponse) {
-
-      if (connectorResponse.statusCode != 200) {
-        renderErrorView(req, res, ERROR_MESSAGE);
-        return;
-      }
-
+    withValidAccountId(req, res, req.body.accountId, function(accountId, req, res) {
       var description = req.body.description;
       var payload = {
         headers: {"Content-Type": "application/json"},
@@ -117,25 +87,22 @@ module.exports.bindRoutesTo = function (app) {
         if (publicAuthResponse.statusCode === 200) {
           req.session_state.token = publicAuthData.token;
           req.session_state.description = description;
-          res.redirect(303, TOKEN_GENERATION_PATH + "/" + accountId);
+          res.redirect(303, TOKEN_GENERATION_GET_PATH.replace(":accountId",accountId));
           return;
         }
-        renderErrorView(req, res, 'Payment could not be processed, please contact your issuing bank');
+        renderErrorView(req, res, 'Error creating dev token for account ' + accountId);
 
       }).on('error', function (err) {
-        logger.error('Exception raised calling publicauth');
+        logger.error('Exception raised calling publicauth:' + err);
         renderErrorView(req, res, ERROR_MESSAGE);
       });
 
-    }).on('error', function (err) {
-      logger.error('Exception raised calling publicauth');
-      renderErrorView(req, res, ERROR_MESSAGE);
     });
 
   });
 
   app.put(TOKEN_PATH, function (req, res) {
-    logger.info('PUT ' + TOKEN_GENERATION_PATH);
+    logger.info('PUT ' + TOKEN_PATH);
 
     var requestPayload = {
       headers:{"Content-Type": "application/json"},
@@ -158,14 +125,14 @@ module.exports.bindRoutesTo = function (app) {
         'description': publicAuthData.description
       });
     }).on('error', function (err) {
-      logger.error('Exception raised calling publicauth');
+      logger.error('Exception raised calling publicauth:' + err);
       res.sendStatus(500);
     });
 
   });
 
-  app.delete(TOKEN_REVOCATION_PATH + '/:accountId', function (req, res) {
-    logger.info('DELETE ' + TOKEN_REVOCATION_PATH  + '/:accountId');
+  app.delete(TOKEN_PATH + '/:accountId', function (req, res) {
+    logger.info('DELETE ' + TOKEN_PATH  + '/:accountId');
 
     var accountId = req.params.accountId;
 
@@ -188,20 +155,24 @@ module.exports.bindRoutesTo = function (app) {
         'revoked': publicAuthData.revoked
       });
     }).on('error', function (err) {
-      logger.error('Exception raised calling publicauth');
+      logger.error('Exception raised calling publicauth:' + err);
       res.sendStatus(500);
     });
 
   });
 
-  function createSentenceBasedOn(issuedTokens) {
-    var filteredTokens = issuedTokens.filter(function (el) {
-      return !('revoked' in el);
+  function withValidAccountId(req, res, accountId, callback) {
+    var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}';
+    client.get(connectorUrl.replace("{accountId}",accountId), function (connectorData, connectorResponse) {
+      if (connectorResponse.statusCode != 200) {
+        renderErrorView(req, res, ERROR_MESSAGE);
+        return;
+      }
+      callback(accountId, req, res);
+    }).on('error', function (err) {
+      logger.error('Exception raised calling connector:' + err);
+      renderErrorView(req, res, ERROR_MESSAGE);
     });
-    var numerOfTokens = filteredTokens.length;
-    if (numerOfTokens==0) return "There are no active developer keys"
-    else if (numerOfTokens==1) return "There is 1 active developer key"
-    return "There are " + numerOfTokens + " active developer keys"
   }
 
 }
