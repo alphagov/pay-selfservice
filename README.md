@@ -1,7 +1,9 @@
 # pay-selfservice
 Payments Selfservice application in NodeJS
 
-## View transaction list
+## Transaction list
+
+View the transaction list for a given account id.
 
 ```
     /transactions/{gatewayAccountId}
@@ -12,8 +14,14 @@ Payments Selfservice application in NodeJS
 | `gatewayAccountId`       | X | The account Id for which the transaction should be retrieved  |
 
 
-#### example 
+#### Developer tokens
+
+Generate, edit and revoke tokens for a given account id.
 
 ```
-/transactions/111222333 
+    /tokens/{gatewayAccountId}
 ```
+
+| Path param               | always present | Description                               |
+| ------------------------ |:--------:| -----------------------------------------       |
+| `gatewayAccountId`       | X | The account Id for which the developer tokens are generated  |

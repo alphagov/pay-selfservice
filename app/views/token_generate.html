@@ -1,0 +1,61 @@
+{{< layout}}
+
+{{$pageTitle}}
+Generate developer token
+{{/pageTitle}}
+
+{{$content}}
+
+<main id="content" role="main">
+
+    <h1>Developer keys</h1>
+    <hr />
+
+    {{^token}}
+
+        <h1>Generate a new developer key</h1>
+
+        <form id="generateForm" method="POST" action="/tokens/generate">
+
+            <label id="description-lbl" for="description">
+                Add a description for the key
+                <input id="description" name="description" type="text" maxlength="100" size="150">
+            </label>
+
+            <input type="hidden" id="accountId" name="accountId" value="{{account_id}}">
+
+            <div>
+                <label id="generateButton-lbl" for="generateButton">
+                    When generated the key will only be shown once.
+                    <input id="generateButton" type="submit" class="button" value="Generate key">
+                </label>
+            </div>
+
+        </form>
+
+        <a id="cancelLink" href="/tokens/{{account_id}}">Cancel</a>
+
+    {{/token}}
+
+
+    {{#token}}
+
+        <h1>New key generated for account '{{account_id}}'</h1>
+        <h2>Please copy this key now as it won't be shown again</h2>
+
+        <label id="token-lbl" for="token">
+            {{description}}
+            <p id="token" name="token">{{token}}</p>
+        </label>
+
+        <a id="finishLink" href="/tokens/{{account_id}}">
+            <input id="finishButton" type="button" value="Finish" />
+        </a>
+
+    {{/token}}
+
+</main>
+
+{{/content}}
+
+{{/layout}}

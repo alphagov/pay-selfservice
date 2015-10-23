@@ -14,6 +14,7 @@
   "dependencies": {
     "array.prototype.find": "1.0.0",
     "body-parser": "1.13.3",
+    "client-sessions": ">= 0.3.1",
     "express": "4.13.1",
     "govuk_frontend_toolkit": "~4.0.1",
     "govuk_template_mustache": "~0.13.0",
