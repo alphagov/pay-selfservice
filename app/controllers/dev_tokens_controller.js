@@ -139,7 +139,7 @@ module.exports.bindRoutesTo = function (app) {
     var requestPayload = {
       headers:{"Content-Type": "application/json"},
       data: {
-        token_link: req.body.token_link
+        token_link: req.query.token_link
       }
     };
 

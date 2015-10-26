@@ -83,12 +83,12 @@ $(document).ready(function(){
         var revokedDiv = descendant(tokenDiv,"div#revoked");
         var revokedDateSpan = descendant(tokenDiv,"span#revoked-date");
 
+        var deleteUrl = '/tokens/' + accountId+"?token_link="+tokenLink;
+
         $.ajax({
             type: 'DELETE',
-            url: '/tokens/' + accountId,
-            data: {
-                'token_link': tokenLink,
-            },
+            url: deleteUrl,
+            dataType : 'json',
             success: function(responseData){
                 revokedDateSpan.text(responseData.revoked);
                 editLink.hide();
