@@ -258,10 +258,7 @@ portfinder.getPort(function(err, freePort) {
           }).reply(200, {"revoked": "15 Oct 2015"});
 
           request(app)
-            .delete(TOKEN_PATH + "/1")
-            .send({
-              'token_link': '550e8400-e29b-41d4-a716-446655440000'
-            })
+            .delete(TOKEN_PATH + "/1?token_link=550e8400-e29b-41d4-a716-446655440000")
             .expect(200, {"revoked": "15 Oct 2015"})
             .end(done);
 
@@ -274,10 +271,7 @@ portfinder.getPort(function(err, freePort) {
           }).reply(400, {});
 
           request(app)
-            .delete(TOKEN_PATH + "/1")
-            .send({
-              'token_link': '550e8400-e29b-41d4-a716-446655440000'
-            })
+            .delete(TOKEN_PATH + "/1?token_link=550e8400-e29b-41d4-a716-446655440000")
             .expect(400, {})
             .end(done);
 
