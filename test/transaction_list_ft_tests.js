@@ -7,20 +7,20 @@ var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 452345;
-  var connectorChargesPath = '/v1/frontend/charges';
-  var txListPath = '/transactions/' + gatewayAccountId;
+  var CONNECTOR_CHARGES_PATH = '/v1/frontend/charges';
+  var TRANSACTION_LIST_PATH = '/selfservice/transactions/' + gatewayAccountId;
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
 
   function connectorMock_responds(data) {
-    return connectorMock.get(connectorChargesPath + "?gatewayAccountId=" + gatewayAccountId)
+    return connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
       .reply(200, data);
   }
 
   function get_transaction_list() {
     return request(app)
-      .get(txListPath)
+      .get(TRANSACTION_LIST_PATH)
       .set('Accept', 'application/json');
   }
 
@@ -93,7 +93,7 @@ portfinder.getPort(function (err, connectorPort) {
       it('should show error message on a bad request', function (done) {
 
         var errorMessage = 'some error from connector';
-        connectorMock.get(connectorChargesPath + "?gatewayAccountId=" + gatewayAccountId)
+        connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
           .reply(400, {'message': errorMessage});
 
         get_transaction_list()
@@ -104,7 +104,7 @@ portfinder.getPort(function (err, connectorPort) {
 
       it('should show a generic error message on a connector service error.', function (done) {
 
-        connectorMock.get(connectorChargesPath + "?gatewayAccountId=" + gatewayAccountId)
+        connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
           .reply(500, {'message': 'some error from connector'});
 
         get_transaction_list()
@@ -116,7 +116,7 @@ portfinder.getPort(function (err, connectorPort) {
 
       it('should return 404 when no gateway account id', function (done) {
         request(app)
-          .get('/transactions/')
+          .get('/selfservice/transactions/')
           .set('Accept', 'application/json')
           .expect(404)
           .end(done);

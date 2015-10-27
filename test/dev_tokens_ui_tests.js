@@ -31,7 +31,7 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/12345/generate");
+    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
 
     body.should.containNoSelector('h3');
 
@@ -48,7 +48,7 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/12345/generate");
+    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
 
     body.should.containSelector('h3').withText("Active keys");
 
@@ -75,7 +75,7 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/12345/generate");
+    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
 
     body.should.containSelector('h3').withText("Active keys");
 
@@ -113,7 +113,7 @@ describe('The token view', function() {
     body.should.containSelector('h1').withText("Developer keys");
 
     body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/tokens/12345/generate");
+    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
 
     body.should.containSelector('h3').withText("Active keys");
 
@@ -155,12 +155,12 @@ describe('The generate token view', function() {
       var body = renderTemplate('token_generate', templateData);
 
       body.should.containSelector('h1').withText("Developer keys");
-      body.should.containSelector('form').withAttribute('id', 'generateForm').withAttribute('action', '/tokens/generate').withAttribute('method', 'POST');
+      body.should.containSelector('form').withAttribute('id', 'generateForm').withAttribute('action', '/selfservice/tokens/generate').withAttribute('method', 'POST');
       body.should.containInputField('description', 'text').withAttribute('maxlength', '100').withAttribute('size', '150').withLabel('description-lbl', 'Add a description for the key');
       body.should.containSelector('input#accountId').withAttribute('id', 'accountId').withAttribute('name', 'accountId').withAttribute('type', 'hidden').withAttribute('value', '12345');
       body.should.containSelector('input#generateButton').withAttribute("value", "Generate key").withAttribute("type", "submit").withAttribute("class", "button").withLabel('generateButton-lbl', 'When generated the key will only be shown once.');
       body.should.containNoSelector('p#token');
-      body.should.containSelector('a#cancelLink').withAttribute("href", "/tokens/12345").withText("Cancel");
+      body.should.containSelector('a#cancelLink').withAttribute("href", "/selfservice/tokens/12345").withText("Cancel");
 
     });
 
@@ -198,7 +198,7 @@ describe('The generate token view', function() {
       };
       var body = renderTemplate('token_generate', templateData);
       body.should.containSelector('input#finishButton').withAttribute("value", "Finish").withAttribute("type", "button");
-      body.should.containSelector('a#finishLink').withAttribute("href", "/tokens/12345");
+      body.should.containSelector('a#finishLink').withAttribute("href", "/selfservice/tokens/12345");
     });
 
   });

@@ -15,7 +15,7 @@ Generate developer token
 
         <h1>Generate a new developer key</h1>
 
-        <form id="generateForm" method="POST" action="/tokens/generate">
+        <form id="generateForm" method="POST" action="/selfservice/tokens/generate">
 
             <label id="description-lbl" for="description">
                 Add a description for the key
@@ -33,7 +33,7 @@ Generate developer token
 
         </form>
 
-        <a id="cancelLink" href="/tokens/{{account_id}}">Cancel</a>
+        <a id="cancelLink" href="/selfservice/tokens/{{account_id}}">Cancel</a>
 
     {{/token}}
 
@@ -48,7 +48,7 @@ Generate developer token
             <p id="token" name="token">{{token}}</p>
         </label>
 
-        <a id="finishLink" href="/tokens/{{account_id}}">
+        <a id="finishLink" href="/selfservice/tokens/{{account_id}}">
             <input id="finishButton" type="button" value="Finish" />
         </a>
 

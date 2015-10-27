@@ -9,9 +9,9 @@ var client = new Client();
 
 module.exports.bindRoutesTo = function (app) {
 
-  var TOKEN_PATH = '/tokens';
-  var TOKEN_GENERATION_GET_PATH = '/tokens/:accountId/generate';
-  var TOKEN_GENERATION_POST_PATH = '/tokens/generate';
+  var TOKEN_PATH = '/selfservice/tokens';
+  var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/:accountId/generate';
+  var TOKEN_GENERATION_POST_PATH = '/selfservice/tokens/generate';
 
   var TOKEN_VIEW = 'token';
   var TOKEN_GENERATE_VIEW = 'token_generate';

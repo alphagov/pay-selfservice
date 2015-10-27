@@ -41,7 +41,7 @@ $(document).ready(function(){
 
         $.ajax({
             type: 'PUT',
-            url: '/tokens',
+            url: '/selfservice/tokens',
             data: {
                 'token_link': tokenLink,
                 'description': newDescription
@@ -83,7 +83,7 @@ $(document).ready(function(){
         var revokedDiv = descendant(tokenDiv,"div#revoked");
         var revokedDateSpan = descendant(tokenDiv,"span#revoked-date");
 
-        var deleteUrl = '/tokens/' + accountId+"?token_link="+tokenLink;
+        var deleteUrl = '/selfservice/tokens/' + accountId+"?token_link="+tokenLink;
 
         $.ajax({
             type: 'DELETE',
