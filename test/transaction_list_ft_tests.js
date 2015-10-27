@@ -97,7 +97,7 @@ portfinder.getPort(function (err, connectorPort) {
           .reply(400, {'message': errorMessage});
 
         get_transaction_list()
-          .expect(500, {'message': errorMessage})
+          .expect(200, {'message': errorMessage})
           .end(done);
 
       });
@@ -108,7 +108,7 @@ portfinder.getPort(function (err, connectorPort) {
           .reply(500, {'message': 'some error from connector'});
 
         get_transaction_list()
-          .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+          .expect(200, {'message': 'Unable to retrieve list of transactions.'})
           .end(done);
 
       });
@@ -121,6 +121,17 @@ portfinder.getPort(function (err, connectorPort) {
           .expect(404)
           .end(done);
       });
+
+      it('should show internal error message if any error happens while retrieving the list from connector', function (done){
+
+        // No connectorMock defined on purpose to mock a network failure
+
+        get_transaction_list()
+          .expect(200, {'message': 'Internal server error'})
+          .end(done);
+
+      });
+
     });
 
   });

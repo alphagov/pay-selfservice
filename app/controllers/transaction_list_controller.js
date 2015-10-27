@@ -1,5 +1,6 @@
 var logger = require('winston');
 var response = require('../utils/response.js').response;
+var renderErrorView = require('../utils/response.js').renderErrorView;
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
@@ -16,6 +17,7 @@ function formatForView(connectorData) {
 module.exports.bindRoutesTo = function (app) {
 
   app.get(TRANSACTIONS_LIST_PATH + ':gatewayAccountId', function (req, res) {
+
     var gatewayAccountId = req.params.gatewayAccountId;
     logger.info('GET ' + TRANSACTIONS_LIST_PATH + gatewayAccountId);
 
@@ -28,14 +30,18 @@ module.exports.bindRoutesTo = function (app) {
         return;
       }
 
-      logger.error('Error getting transaction list from connector ' + connectorData);
+      logger.error('Error getting transaction list from connector. Connector response data: ' + connectorData);
       if (connectorResponse.statusCode === 400) {
-
-        response(req.headers.accept, res.status(500), 'error', connectorData);
+        renderErrorView(req, res, connectorData.message);
         return;
       }
 
-      response(req.headers.accept, res.status(500), 'error', {'message': 'Unable to retrieve list of transactions.'});
+      renderErrorView(req, res, 'Unable to retrieve list of transactions.');
+
+    }).on('error', function (err) {
+      logger.error('Exception raised calling connector:' + err);
+      renderErrorView(req, res, 'Internal server error');
     });
+
   });
 };
