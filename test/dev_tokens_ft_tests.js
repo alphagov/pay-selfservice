@@ -10,9 +10,9 @@ var should = require('chai').should();
 
 var ACCOUNT_ID = '23144323';
 var TOKEN = '00112233';
-var TOKEN_PATH = '/tokens';
-var TOKEN_GENERATION_GET_PATH = '/tokens/{accountId}/generate';
-var TOKEN_GENERATION_POST_PATH = '/tokens/generate';
+var TOKEN_PATH = '/selfservice/tokens';
+var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/{accountId}/generate';
+var TOKEN_GENERATION_POST_PATH = '/selfservice/tokens/generate';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 

@@ -3,7 +3,7 @@ var response = require('../utils/response.js').response;
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
-var TRANSACTIONS_LIST_PATH = '/transactions/';
+var TRANSACTIONS_LIST_PATH = '/selfservice/transactions/';
 var CONNECTOR_CHARGE_PATH = '/v1/frontend/charges';
 
 function formatForView(connectorData) {
