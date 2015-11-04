@@ -1,0 +1,290 @@
+// Forms
+// ==========================================================================
+// GOV.UK front end toolkit dependencies
+@import "../helpers/helpers";
+@import "colours";
+
+// Fieldset is used to group more than one .form-group
+fieldset {
+  width: 100%;
+  @extend %contain-floats;
+}
+
+.info-container {
+  @include media(tablet) {
+    width: $half;
+  }
+}
+
+.barcode {
+  min-height: 400px;
+
+  @include media(tablet) {
+    min-height: 380px;
+    width: $half;
+  }
+}
+
+.form h2 {
+  clear: both; // this fixes possible float issues spotted by someone else that I was unable to replicate
+}
+
+// Form group is used to wrap label and input pairs
+.form-group {
+  float: left;
+  width: 100%;
+  @extend %contain-floats;
+  margin-bottom: $gutter-half;
+  @include media(tablet) {
+    margin-bottom: $gutter;
+  }
+  input[type="text"] {
+    display: block;
+  }
+
+  &.address {
+    input[type="text"] {
+      margin-bottom: $gutter-one-third;
+    }
+  }
+}
+
+.selectable {
+  margin-bottom: 0;
+  @include media(tablet) {
+    margin-bottom: $gutter-one-third/2;
+  }
+}
+
+.form-group-related {
+  margin-bottom: 10px;
+  @include media(tablet) {
+    margin-bottom: 20px;
+  }
+}
+
+.form-group-compound {
+  margin-bottom: 10px;
+}
+
+
+// Form title
+.form-title {
+  @include bold-36;
+  padding: $gutter-half 0 $gutter;
+  @include media(tablet) {
+    padding: $gutter 0 $gutter;
+    width: $half;
+  }
+  @include media($min-width: 900px) {
+    width: $two-thirds;
+  }
+}
+
+
+// Labels
+
+// Form labels, or for legends styled to look like labels
+.form-label,
+.form-label-bold {
+  display: block;
+  color: $text-colour;
+}
+
+.form-label {
+  @include core-19;
+  margin-bottom: 5px;
+}
+
+.form-label-bold {
+  @include bold-19;
+  margin-bottom: 0;
+  .form-hint {
+    @include core-19;
+  }
+}
+
+// Used for paragraphs in-between form elements
+.form-block {
+  float: left;
+  width: 100%;
+  @extend %contain-floats;
+}
+
+
+// Hints
+
+// Form hints & examples are light grey and sit above a form control
+.form-hint {
+  display: block;
+  color: $secondary-text-colour;
+  margin-bottom: 5px;
+  @include media (tablet) {
+    margin-top: 8px;
+  }
+}
+
+.hint {
+  @include core-19;
+  color: $secondary-text-colour;
+}
+
+
+// Form controls
+
+// By default, form controls are 50% width for desktop,
+// and 100% width for mobile
+.form-control {
+  @include core-19;
+
+  width: 100%;
+  @include box-sizing(border-box);
+  padding: 4px;
+  background-color: $white;
+  border: 1px solid $border-colour;
+
+  // Disable webkit appearance and remove rounded corners
+  -webkit-appearance: none;
+  border-radius: 0;
+
+  @include media(tablet) {
+    width: 50%;
+  }
+}
+
+
+// Form control widths
+.form-control-3-4 {
+  width: 100%;
+  @include media(tablet) {
+    width: 75%;
+  }
+}
+
+.form-control-1-2 {
+  width: 100%;
+  @include media(tablet) {
+    width: 50%;
+  }
+}
+
+.form-control-1-4 {
+  width: 25%;
+}
+
+.form-control-1-8 {
+  width: 12.5%;
+}
+
+
+// Radio buttons
+.form-radio {
+  display: block;
+  margin: 10px 0;
+}
+.form-radio input {
+  vertical-align: middle;
+  margin: -4px 5px 0 0;
+}
+
+
+// Checkboxes
+.form-checkbox {
+  display: block;
+  margin: $gutter-half 0;
+}
+.form-checkbox input {
+  vertical-align: middle;
+  margin: -2px 5px 0 0;
+}
+
+// Buttons
+.form .button {
+  @include media(mobile) {
+    width: 100%;
+  }
+}
+
+
+// Form validation
+@import "form-validation";
+
+
+// Form patterns
+@import "form-date";
+@import "form-block-labels";
+
+//Forms
+.form-control {
+  @include core-19;
+
+  width: 100%;
+  @include box-sizing(border-box);
+  padding: 4px;
+  background-color: $white;
+  border: 1px solid $border-colour;
+
+  // Disable webkit appearance and remove rounded corners
+  -webkit-appearance: none;
+  border-radius: 0;
+
+  @include media(tablet) {
+    width: 50%;
+  }
+}
+
+.form-control-3-4 {
+  @extend .form-control;
+  width: 100%;
+  @include media(tablet) {
+    width: 75%;
+  }
+}
+
+.form-control-1-2 {
+  @extend .form-control;
+  width: 100%;
+  @include media(tablet) {
+    width: 50%;
+  }
+}
+
+.form-control-1-4 {
+  @extend .form-control;
+  width: $two-thirds;
+  @include media(tablet) {
+    width: $one-quarter;
+  }
+}
+
+.form-control-1-8 {
+  @extend .form-control;
+  width: $one-third;
+  @include media(tablet) {
+    width: 12.5%;
+  }  
+}
+
+.cvc {
+  float: left;
+  margin-right: $gutter-half;
+}
+
+.cvc + img {
+  float: left;
+  max-height: 38px;
+  position: relative;
+  top: -1px;
+}
+
+.confirm-details {
+  td {
+    &:first-child {
+      width: $one-third;
+    }
+  }
+
+  @include media(tablet) {
+    width: $two-thirds;
+  }
+}
