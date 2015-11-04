@@ -1,0 +1,21 @@
+header {
+  background-color: $black;
+
+  a {
+    color: $white;
+    text-decoration: none;
+    position: relative;
+    padding-left: 45px;
+
+    img {
+      position: absolute;
+      left: 0;
+      top: -6px;
+    }
+  }
+
+  .header-logo {
+    @include bold-24;
+    padding: $gutter-half 0 $gutter-half $gutter;
+  }
+}
