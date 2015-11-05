@@ -23,6 +23,7 @@
 }
 
 // Hide, only when JavaScript is enabled
-.js-enabled .js-hidden {
+.js-enabled .js-hidden,
+.hidden {
   display: none;
 }
