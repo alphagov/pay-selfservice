@@ -28,10 +28,6 @@
   min-height: $gutter*10;
 }
 
-.inner {
-  padding: 0 $gutter-half;
-}
-
 // Grid layout
 // ==========================================================================
 
@@ -95,12 +91,11 @@
 
 .navigation,
 .main-content {
-  float: left;
-  width: 20%;
-}
+  width: $full-width;
 
-.main-content {
-  width: 80%;
+  .inner {
+    padding: 0 $gutter-half $gutter;
+  }
 }
 
 // Navigation styles
@@ -127,8 +122,13 @@
     }
   }
 
-  .inner {
-    padding: 0 $gutter-half 0 $gutter;
+  @include media(tablet) {
+    float: left;
+    width: 20%;
+
+    .inner {
+      padding: 0 $gutter-half 0 $gutter;
+    }
   }
 }
 
@@ -151,7 +151,12 @@
     @include bold-16;
   }
 
-  .inner {
-    padding: 0 $gutter 0 $gutter-half;
+  @include media(tablet) {
+    float: left;
+    width: 80%;
+
+    .inner {
+      padding: 0 $gutter 0 $gutter-half;
+    }
   }
 }
