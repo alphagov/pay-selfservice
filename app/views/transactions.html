@@ -6,29 +6,26 @@ View transactions
 
 {{$content}}
 
-<main id="content" role="main">
-
-    <table id="transaction-list">
-        <thead>
-        <tr>
-            <th>Charge ID</th>
-            <th>Gateway transaction ID</th>
-            <th>Amount (£)</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#results}}
-        <tr>
-            <td>{{charge_id}}</td>
-            <td>{{gateway_transaction_id}}</td>
-            <td>{{amount}}</td>
-            <td>{{status}}</td>
-        </tr>
-        {{/results}}
-        </tbody>
-    </table>
-</main>
+<table id="transaction-list">
+    <thead>
+    <tr>
+        <th>Charge ID</th>
+        <th>Gateway transaction ID</th>
+        <th>Amount (£)</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#results}}
+    <tr>
+        <td>{{charge_id}}</td>
+        <td>{{gateway_transaction_id}}</td>
+        <td>{{amount}}</td>
+        <td>{{status}}</td>
+    </tr>
+    {{/results}}
+    </tbody>
+</table>
 
 {{/content}}
 

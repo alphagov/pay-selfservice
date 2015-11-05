@@ -3,8 +3,7 @@ var cheerio = require('cheerio');
 var chai = require('chai');
 
 function render(templateName, templateData) {
-  var templates = TemplateEngine._getTemplates([__dirname + '/../../app/views',
-    __dirname + '/../../govuk_modules/govuk_template/views/layouts']);
+  var templates = TemplateEngine._getTemplates([__dirname + '/../../app/views']);
   return templates[templateName].render(templateData, templates);
 }
 

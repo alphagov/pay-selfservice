@@ -9,7 +9,7 @@ describe('The token view', function() {
       'tokens' : []
     };
     var body = renderTemplate('token', templateData);
-    body.should.containSelector('div#accountId').withAttribute("style", "display: none;").withText(12345);
+    body.should.containSelector('div#accountId').withAttribute("class", "hidden").withText(12345);
   });
 
   it('should contain an empty header 2 element to be populated by javascript', function () {

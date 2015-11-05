@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="lte-ie8" lang=""><![endif]-->
+<!--[if gt IE 8]><!--><html lang=""><!--<![endif]-->
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>{{$pageTitle}}Payments management{{/pageTitle}}</title>
+
+    <script type="text/javascript">
+      (function(){if(navigator.userAgent.match(/IEMobile\/10\.0/)){var d=document,c="appendChild",a=d.createElement("style");a[c](d.createTextNode("@-ms-viewport{width:auto!important}"));d.getElementsByTagName("head")[0][c](a);}})();
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{$head}}{{/head}}
+  </head>
+
+  <body class="{{$bodyClasses}}{{/bodyClasses}}">
+    <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+
+    
+
+    <div id="skiplink-container">
+      <div>
+        <a href="#content" class="skiplink">Skip to main content</a>
+      </div>
+    </div>
+
+    <div id="global-cookie-message">
+      
+        {{$cookieMessage}}{{/cookieMessage}}
+      
+    </div>
+    <!--end global-cookie-message-->
+
+    
+    <header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
+      <div class="header-wrapper">
+        <div class="header-logo">
+          <a href="{{$homepageUrl}}/selfservice/tokens/{{account_id}}{{/homepageUrl}}" title="Go to the Payments management homepage" id="logo" class="content">
+            <img src="/selfservice/public/images/crest_white.png" width="35" height="35" alt=""> {{$globalHeaderText}}Payments management{{/globalHeaderText}}
+          </a>
+        </div>
+      </div>
+    </header>
+    <!--end header-->
+    
+
+    {{$afterHeader}}{{/afterHeader}}
+
+    <main id="content" role="main">
+      <div class="navigation">
+        <div class="inner">
+          <nav role="navigation">
+            <ul>
+              <li><a href="/selfservice/tokens/{{account_id}}">Developer tokens</a></li>
+              <li><a href="/selfservice/transactions/{{account_id}}">Transactions</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div class="main-content">
+        <div class="inner">
+          {{$content}}{{/content}}
+        </div>
+      </div>
+    </main>
+    <!-- <script src="{{assetPath}}javascripts/govuk-template.js?0.13.0" type="text/javascript"></script> -->
+
+    {{$bodyEnd}}{{/bodyEnd}}
+  </body>
+</html>

@@ -1,0 +1,12 @@
+table {
+  margin-bottom: $gutter*2;
+  width: $full-width;
+  td {
+    @include core-19;
+    padding: 0.75em 1.25em 0.5625em 0;
+
+    &.details {
+      font-weight: bold;
+    }
+  }
+}
