@@ -16,6 +16,10 @@ header {
 
   .header-logo {
     @include bold-24;
-    padding: $gutter-half 0 $gutter-half $gutter;
+    padding: $gutter-half 0 $gutter-half $gutter-half;
+
+    @include media(tablet) {
+     padding: $gutter-half 0 $gutter-half $gutter;
+    }
   }
 }
