@@ -42,6 +42,14 @@ module.exports = function(grunt){
           dest: 'govuk_modules/govuk_frontend_toolkit/'
         }]
       },
+      html5shiv: {
+        files: [{
+          expand: true,
+          cwd: 'node_modules/html5shiv/dist',
+          src: 'html5shiv.min.js',
+          dest: 'public/vendor/'
+        }]
+      },
     },
 
     // workaround for libsass
