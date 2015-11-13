@@ -27,6 +27,7 @@
     "grunt-sass": "1.0.0",
     "grunt-text-replace": "0.3.12",
     "hogan.js": "3.0.2",
+    "html5shiv": "^3.7.3",
     "luhn": "^2.1.0",
     "minimist": "0.0.8",
     "moment": "^2.10.3",

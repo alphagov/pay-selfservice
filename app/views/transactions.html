@@ -7,24 +7,24 @@ View transactions
 {{$content}}
 
 <table id="transaction-list">
-    <thead>
+  <thead>
     <tr>
-        <th>Charge ID</th>
-        <th>Gateway transaction ID</th>
-        <th>Amount (£)</th>
-        <th>Status</th>
+      <th>Charge ID</th>
+      <th>Gateway transaction ID</th>
+      <th>Amount (£)</th>
+      <th>Status</th>
     </tr>
-    </thead>
-    <tbody>
-    {{#results}}
+  </thead>
+  <tbody>
+  {{#results}}
     <tr>
-        <td>{{charge_id}}</td>
-        <td>{{gateway_transaction_id}}</td>
-        <td>{{amount}}</td>
-        <td>{{status}}</td>
+      <td>{{charge_id}}</td>
+      <td>{{gateway_transaction_id}}</td>
+      <td>{{amount}}</td>
+      <td>{{status}}</td>
     </tr>
-    {{/results}}
-    </tbody>
+  {{/results}}
+  </tbody>
 </table>
 
 {{/content}}
