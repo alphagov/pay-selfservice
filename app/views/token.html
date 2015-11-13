@@ -13,44 +13,36 @@ List of developer tokens
 <h2 id="available-tokens" class="tokens"></h2>
 
 <a id="generateLink" href="/selfservice/tokens/{{account_id}}/generate">
-    <input id="generateButton" type="button" value="Generate a new key" class="button" />
+  <input id="generateButton" type="button" value="Generate a new key" class="button" />
 </a>
 
 {{#tokens.length}}
-
-<h3>Active keys</h3>
-
-{{#tokens}}
-
-<div id="{{token_link}}" name="token-description">
-    <div id="description"><b>{{description}}</b></div>
-
-    {{#revoked}}
-    <div id="revoked">This key was successfully revoked on {{revoked}}. It will no longer enable integration with the platform.</div>
-    {{/revoked}}
-
-    {{^revoked}}
-    <a id="edit">Edit description</a>
-    <input id="save" type="button" style="display: none" value="Save changes" />
-    <a id="cancel" style="display: none">cancel</a>
-    <a id="revoke">Revoke key</a>
-    <div id="revoke-message" style="display: none">
-        Are you sure you want to revoke this developer key?
-        If revoked it will no longer enable integration with the platform.
-        <input id="revoke-yes" type="button" value="Yes" />
-        <input id="revoke-no" type="button" value="No" />
+  <h3>Active keys</h3>
+  {{#tokens}}
+    <div id="{{token_link}}" name="token-description">
+      <div id="description"><b>{{description}}</b></div>
+      {{#revoked}}
+        <div id="revoked">This key was successfully revoked on {{revoked}}. It will no longer enable integration with the platform.</div>
+      {{/revoked}}
+      {{^revoked}}
+        <a id="edit">Edit description</a>
+        <input id="save" type="button" style="display: none" value="Save changes" />
+        <a id="cancel" style="display: none">cancel</a>
+        <a id="revoke">Revoke key</a>
+        <div id="revoke-message" style="display: none">
+          Are you sure you want to revoke this developer key?
+          If revoked it will no longer enable integration with the platform.
+          <input id="revoke-yes" type="button" value="Yes" />
+          <input id="revoke-no" type="button" value="No" />
+        </div>
+        <div id="revoked" style="display: none">
+          This key was successfully revoked on <span id="revoked-date"></span>.
+          It will no longer enable integration with the platform.
+        </div>
+      {{/revoked}}
     </div>
-    <div id="revoked" style="display: none">
-        This key was successfully revoked on <span id="revoked-date"></span>.
-        It will no longer enable integration with the platform.
-    </div>
-    {{/revoked}}
-</div>
-
-{{/tokens}}
-
+  {{/tokens}}
 {{/tokens.length}}
-
 
 {{/content}}
 
