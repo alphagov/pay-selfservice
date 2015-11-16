@@ -1,14 +1,4 @@
-// Layout
-// ==========================================================================
-
-// GOV.UK front end toolkit dependencies
-@import "measurements";
-@import "conditionals";
-@import "grid_layout";
-@import "../helpers/helpers";
-@import "../helpers/tables";
 @import "header";
-
 
 // Content
 // ==========================================================================
@@ -26,6 +16,10 @@
 .content-wrapper {
   position: relative;
   min-height: $gutter*10;
+}
+
+.button {
+  @include button;
 }
 
 // Grid layout

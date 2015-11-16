@@ -1,8 +1,5 @@
 // Forms
 // ==========================================================================
-// GOV.UK front end toolkit dependencies
-@import "../helpers/helpers";
-@import "colours";
 
 // Fieldset is used to group more than one .form-group
 fieldset {
@@ -262,7 +259,7 @@ fieldset {
   width: $one-third;
   @include media(tablet) {
     width: 12.5%;
-  }  
+  }
 }
 
 .cvc {
