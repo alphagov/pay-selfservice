@@ -115,7 +115,7 @@ module.exports.bindRoutesTo = function (app) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
     client.put(publicAuthUrl, requestPayload, function (publicAuthData, publicAuthResponse) {
       var responseStatusCode = publicAuthResponse.statusCode;
-      if(responseStatusCode!=200) {
+      if (responseStatusCode != 200) {
         res.sendStatus(responseStatusCode);
         return;
       }
@@ -146,7 +146,7 @@ module.exports.bindRoutesTo = function (app) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
     client.delete(publicAuthUrl + "/" + accountId, requestPayload, function (publicAuthData, publicAuthResponse) {
       var responseStatusCode = publicAuthResponse.statusCode;
-      if(responseStatusCode!=200) {
+      if (responseStatusCode != 200) {
         res.sendStatus(responseStatusCode);
         return;
       }
