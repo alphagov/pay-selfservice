@@ -128,13 +128,6 @@
 
 // Main content styles
 .main-content {
-  .title {
-    @include bold-36;
-    border-bottom: 3px solid $black;
-    line-height: 0.8;
-    padding-bottom: $gutter-one-third;
-    margin-bottom: $gutter-two-thirds;
-  }
 
   .tokens {
     @include bold-27;
