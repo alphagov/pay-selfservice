@@ -9,33 +9,36 @@ Generate developer token
 <h1 class="page-title">Developer keys</h1>
 
 {{^token}}
-  <h2 class="tokens">Generate a new developer key</h2>
-  <form id="generateForm" method="POST" action="/selfservice/tokens/generate">
-    <label id="description-lbl" for="description">
-      Add a description for the key
-      <input id="description" name="description" type="text" maxlength="100" size="150">
-    </label>
-    <input type="hidden" id="accountId" name="accountId" value="{{account_id}}">
-    <div>
-      <label id="generateButton-lbl" for="generateButton">
-        When generated the key will only be shown once.
-        <input id="generateButton" type="submit" class="button" value="Generate key">
+  <h2 class="heading-medium remove-top-margin">Generate a new developer key</h2>
+  <form class="form" method="post" action="/selfservice/tokens/generate">
+    <div class="form-group">
+      <label class="form-label-bold" for="description">
+        Add a description for the key
+        <span class="form-hint">For example, ‘John Smith’s developer key’</span>
       </label>
+      <textarea id="description" name="description" type="text" maxlength="100" size="150" class="form-control"></textarea>
     </div>
+    <input type="hidden" id="accountId" name="accountId" value="{{account_id}}">
+    <p>When generated the key will only be shown once.</p>
+    <input type="submit" class="button" value="Generate key">
   </form>
-  <a id="cancelLink" href="/selfservice/tokens/{{account_id}}">Cancel</a>
+  <p class="add-top-margin">
+    <a href="/selfservice/tokens/{{account_id}}">Cancel</a>
+  </p>
 {{/token}}
 {{#token}}
-  <h1>New key generated for account '{{account_id}}'</h1>
-  <h2>Please copy this key now as it won't be shown again</h2>
+  <h2 class="heading-medium remove-top-margin">New key generated</h2>
+  <p>Please copy this key now as it won’t be shown again</p>
 
-  <label id="token-lbl" for="token">
-    {{description}}
-    <p id="token" name="token">{{token}}</p>
-  </label>
+  <div class="form-group">
+    <label class="form-label-bold" for="token">
+      {{description}}
+    </label>
+    <textarea id="token" name="token" class="form-control">{{token}}</textarea>
+  </div>
 
-  <a id="finishLink" href="/selfservice/tokens/{{account_id}}">
-    <input id="finishButton" type="button" value="Finish" />
+  <a class="button" href="/selfservice/tokens/{{account_id}}">
+    Finish
   </a>
 {{/token}}
 

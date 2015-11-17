@@ -158,17 +158,16 @@ describe('The generate token view', function() {
 
       var body = renderTemplate('token_generate', templateData);
 
-      body.should.containSelector('h1').withText("Developer keys");
+      body.should.containSelector('.page-title').withText("Developer keys");
 
       body.should.containSelector('form')
-        .withAttribute('id', 'generateForm')
         .withAttribute('action', '/selfservice/tokens/generate')
-        .withAttribute('method', 'POST');
+        .withAttribute('method', 'post');
 
-      body.should.containInputField('description', 'text')
+      body.should.containTextarea('description')
         .withAttribute('maxlength', '100')
         .withAttribute('size', '150')
-        .withLabel('description-lbl', 'Add a description for the key');
+        .withLabel('Add a description for the key');
 
       body.should.containSelector('input#accountId')
         .withAttribute('id', 'accountId')
@@ -176,15 +175,14 @@ describe('The generate token view', function() {
         .withAttribute('type', 'hidden')
         .withAttribute('value', '12345');
 
-      body.should.containSelector('input#generateButton')
+      body.should.containSelector('.button')
         .withAttribute("value", "Generate key")
         .withAttribute("type", "submit")
-        .withAttribute("class", "button")
-        .withLabel('generateButton-lbl', 'When generated the key will only be shown once.');
+        .withAttribute("class", "button");
 
-      body.should.containNoSelector('p#token');
-      body.should.containSelector('a#cancelLink')
-        .withAttribute("href", "/selfservice/tokens/12345")
+      body.should.containNoSelector('textarea#token');
+
+      body.should.containSelector('a[href="/selfservice/tokens/12345"]')
         .withText("Cancel");
     });
 
@@ -199,9 +197,9 @@ describe('The generate token view', function() {
         'description' : 'Test token'
       };
       var body = renderTemplate('token_generate', templateData);
-      body.should.containSelector('h1').withText("Developer keys");
-      body.should.containSelector('h1').withText("New key generated for account '12345'");
-      body.should.containSelector('h2').withText("Please copy this key now as it won't be shown again");
+      body.should.containSelector('.page-title').withText("Developer keys");
+      body.should.containSelector('.heading-medium').withText("New key generated");
+      body.should.containSelector('p').withText("Please copy this key now as it won’t be shown again");
     });
 
     it('should render the new generated token', function () {
@@ -211,9 +209,9 @@ describe('The generate token view', function() {
         'description' : 'Test token'
       };
       var body = renderTemplate('token_generate', templateData);
-      body.should.containSelector('p#token')
+      body.should.containTextarea('token')
         .withText("550e8400-e29b-41d4-a716-446655440000")
-        .withLabel('token-lbl', "Test token");
+        .withLabel("Test token");
     });
 
     it('should render a Finish button', function () {
@@ -223,12 +221,10 @@ describe('The generate token view', function() {
         'description' : 'Test token'
       };
       var body = renderTemplate('token_generate', templateData);
-      body.should.containSelector('input#finishButton')
-        .withAttribute("value", "Finish")
-        .withAttribute("type", "button");
 
-      body.should.containSelector('a#finishLink')
-        .withAttribute("href", "/selfservice/tokens/12345");
+      body.should.containSelector('.button')
+        .withAttribute("href", "/selfservice/tokens/12345")
+        .withText("Finish");
     });
 
   });
