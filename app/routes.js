@@ -8,5 +8,9 @@ module.exports.bind = function (app) {
     response(req.headers.accept, res, 'greeting', data);
   });
 
+  app.get('/style-guide', function (req, res) {
+    response(req.headers.accept, res, 'style_guide');
+  });
+
   controllers.bindRoutesTo(app);
 };

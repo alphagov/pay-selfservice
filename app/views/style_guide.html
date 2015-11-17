@@ -1,0 +1,120 @@
+{{<layout}}
+
+{{$pageTitle}}
+  Self Service Style Guide
+{{/pageTitle}}
+
+{{$content}}
+
+<h1 class="heading-large heading-with-border remove-top-margin">Style guide</h1>
+<p>The self-service UI is largely based on <a href="http://govuk-elements.herokuapp.com/">govuk_elements</a>, the <a href="https://github.com/alphagov/govuk_template">govuk_template</a> and mixins provided by <a href="https://github.com/alphagov/govuk_frontend_toolkit">govuk_frontend_toolkit</a>. This guide documents the design patterns used by this app.</p>
+
+<h2 class="heading-medium">Grid</h2>
+<style>
+.grid-example {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+</style>
+
+<div class="grid-row">
+  <div class="column-quarter grid-example">1 quarter</div>
+  <div class="column-quarter grid-example">1 quarter</div>
+  <div class="column-half grid-example">1 half</div>
+</div>
+
+<div class="grid-row">
+  <div class="column-third grid-example">1 third</div>
+  <div class="column-two-thirds grid-example">2 thirds</div>
+</div>
+
+<h2 class="heading-medium">Headings</h2>
+
+<section>
+  <h1 class="heading-xlarge">A 48px Bold heading</h1>
+  <h2 class="heading-medium">A 36px Bold heading</h2>
+  <h3 class="heading-medium">A 24px Bold heading</h3>
+  <h4 class="heading-small">A 19px Bold heading</h4>
+</section>
+
+<h2 class="heading-medium">Forms</h2>
+<p>Form styles based on <a href="http://govuk-elements.herokuapp.com/form-elements/">GOVUK Elements</a></p>
+
+<form action="/" method="post" class="form">
+
+  <!-- Input type="text" -->
+  <div class="form-group">
+    <label class="form-label" for="input-text">Single line text fields</label>
+    <input class="form-control" id="input-text" type="text">
+  </div>
+
+  <!-- Textarea -->
+  <div class="form-group">
+    <label class="form-label" for="textarea">Multi-line text fields</label>
+    <textarea class="form-control" id="textarea" cols="30" rows="10"></textarea>
+  </div>
+
+  <!-- Select box -->
+  <div class="form-group">
+    <label class="form-label" for="select-box">Drop down content</label>
+    <select class="form-control" id="select-box">
+      <option>Banana</option>
+      <option>Cherry</option>
+      <option>Lemon</option>
+    </select>
+  </div>
+
+  <!-- Check box -->
+  <div class="form-group">
+    <label class="form-checkbox" for="checkbox-telephone-number" >
+      <input id="checkbox-telephone-number" type="checkbox" value="checkbox-telephone-number">
+      Native check box
+    </label>
+  </div>
+
+  <!-- Chunky check box -->
+  <div class="form-group">
+    <label class="block-label" for="checkbox-1">
+      <input id="checkbox-1" type="checkbox" value="waste-animal">
+      Checkbox
+    </label>
+    <label class="block-label" for="checkbox-2">
+      <input id="checkbox-2" type="checkbox" value="waste-mines">
+      Checkbox
+    </label>
+    <label class="block-label" for="checkbox-3">
+      <input id="checkbox-3" type="checkbox" value="farm-agricultural">
+      Checkbox
+    </label>
+  </div>
+
+  <!-- Radio button -->
+  <div class="form-group">
+    <label class="block-label" for="radio-1">
+      <input id="radio-1" type="radio" name="radio-group" value="Northern Ireland">
+      Radio
+    </label>
+    <label class="block-label" for="radio-2">
+      <input id="radio-2" type="radio" name="radio-group" value="Isle of Man or the Channel Islands">
+      Radio
+    </label>
+    <label class="block-label" for="radio-3">
+      <input id="radio-3" type="radio" name="radio-group" value="I am a British citizen living abroad">
+      Radio
+    </label>
+  </div>
+</form>
+
+<h2 class="heading-medium">Buttons</h2>
+<a href="#" class="button">Link button</a>
+<input type="button" value="Submit button" class="button">
+<button class="button">Button element</button>
+
+{{/content}}
+
+{{/layout}}
