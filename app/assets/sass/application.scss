@@ -15,8 +15,10 @@
 // Override NTA font-stack from front-end toolkit
 $NTA-Light: Helvetica, Arial, sans-serif;
 
+// Copied from govuk_elements
+@import "govuk_elements/forms/_forms";
+
 // Application mixins and helpers
-@import "forms/_forms";
 @import "helpers/_helpers";
 @import "helpers/_tables";
 
