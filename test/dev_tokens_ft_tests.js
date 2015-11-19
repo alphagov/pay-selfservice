@@ -61,16 +61,17 @@ portfinder.getPort(function(err, freePort) {
 
           serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
             .reply(200, {
-                "account_id": ACCOUNT_ID,
-                "tokens": []
+                "account_id": ACCOUNT_ID
             });
 
           request(app)
             .get(TOKEN_PATH + '/' + ACCOUNT_ID)
             .set('Accept', 'application/json')
             .expect(200, {
-              'account_id': ACCOUNT_ID,
-              'tokens': []
+              "account_id": ACCOUNT_ID,
+              "active_tokens": [],
+              "active_tokens_singular": false,
+              "revoked_tokens": [],
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -95,8 +96,10 @@ portfinder.getPort(function(err, freePort) {
             .get(TOKEN_PATH + '/' + ACCOUNT_ID)
             .set('Accept', 'application/json')
             .expect(200, {
-              'account_id': ACCOUNT_ID,
-              'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}]
+              "account_id": ACCOUNT_ID,
+              "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
+              "active_tokens_singular": true,
+              "revoked_tokens": [],
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -122,9 +125,11 @@ portfinder.getPort(function(err, freePort) {
             .get(TOKEN_PATH + '/' + ACCOUNT_ID)
             .set('Accept', 'application/json')
             .expect(200, {
-              'account_id': ACCOUNT_ID,
-              'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
-                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
+              "account_id": ACCOUNT_ID,
+              "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
+                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
+              "active_tokens_singular": false,
+              "revoked_tokens": [],
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -150,9 +155,10 @@ portfinder.getPort(function(err, freePort) {
             .get(TOKEN_PATH + '/' + ACCOUNT_ID)
             .set('Accept', 'application/json')
             .expect(200, {
-              'account_id': ACCOUNT_ID,
-              'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"},
-                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}]
+              "account_id": ACCOUNT_ID,
+              "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
+              "active_tokens_singular": true,
+              "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);
@@ -178,9 +184,10 @@ portfinder.getPort(function(err, freePort) {
             .get(TOKEN_PATH + '/' + ACCOUNT_ID)
             .set('Accept', 'application/json')
             .expect(200, {
-              'account_id': ACCOUNT_ID,
-              'tokens': [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"},
-                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}]
+              "account_id": ACCOUNT_ID,
+              "active_tokens": [],
+              "active_tokens_singular": false,
+              "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}, {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}],
             })
             .expect(function(res) {
                 should.not.exist(res.headers['set-cookie']);

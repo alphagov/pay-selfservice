@@ -12,15 +12,6 @@ describe('The token view', function() {
     body.should.containSelector('div#accountId').withAttribute("class", "hidden").withText(12345);
   });
 
-  it('should contain an empty header 2 element to be populated by javascript', function () {
-    var templateData = {
-      'account_id' : 12345,
-      'tokens' : []
-    };
-    var body = renderTemplate('token', templateData);
-    body.should.containSelector('h2#available-tokens').withText("");
-  });
-
   it('should render the number of active developer keys for the account (for no keys)', function () {
     var templateData = {
       'account_id' : 12345,
@@ -30,30 +21,28 @@ describe('The token view', function() {
 
     body.should.containSelector('h1').withText("Developer keys");
 
-    body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
+    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
 
     body.should.containNoSelector('h3');
 
-    body.should.containNoSelector('div[name=token-description]');
+    body.should.containNoSelector('[name=token-description]');
   });
 
   it('should render the number of active developer keys for the account (for 1 key)', function () {
     var templateData = {
       'account_id' : 12345,
-      'tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"}]
+      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"}]
     };
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
 
-    body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
+    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
 
     body.should.containSelector('h3').withText("Active keys");
 
-    var parentDivSelector = 'div#550e8400-e29b-41d4-a716-446655440000';
-    body.should.containSelector('div[name=token-description]');
+    var parentDivSelector = '#550e8400-e29b-41d4-a716-446655440000';
+    body.should.containSelector('[name=token-description]');
     body.should.containSelector(parentDivSelector);
     body.should.containSelector(parentDivSelector + ' > div#description').withText('description token 1');
     body.should.containSelector(parentDivSelector + ' > a#edit').withText("Edit description");
@@ -67,20 +56,19 @@ describe('The token view', function() {
   it('should render the number of active developer keys for the account (for 2 keys)', function () {
     var templateData = {
       'account_id' : 12345,
-      'tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
+      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                   {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
     };
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
 
-    body.should.containSelector('input#generateButton').withAttribute("value", "Generate a new key").withAttribute("type", "button");
-    body.should.containSelector('a#generateLink').withAttribute("href", "/selfservice/tokens/12345/generate");
+    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
 
     body.should.containSelector('h3').withText("Active keys");
 
-    var parentDivSelect1 = 'div#550e8400-e29b-41d4-a716-446655440000';
-    body.should.containSelector('div[name=token-description]');
+    var parentDivSelect1 = '#550e8400-e29b-41d4-a716-446655440000';
+    body.should.containSelector('[name=token-description]');
     body.should.containSelector(parentDivSelect1);
     body.should.containSelector(parentDivSelect1 + ' > div#description').withText('description token 1');
     body.should.containSelector(parentDivSelect1 + ' > a#edit').withText("Edit description");
@@ -90,8 +78,8 @@ describe('The token view', function() {
     body.should.containSelector(parentDivSelect1 + ' > div#revoke-message').withAttribute("style", "display: none");
     body.should.containSelector(parentDivSelect1 + ' > div#revoked').withAttribute("style", "display: none");
 
-    var parentDivSelect2 = 'div#550e8400-e29b-41d4-a716-446655441234';
-    body.should.containSelector('div[name=token-description]');
+    var parentDivSelect2 = '#550e8400-e29b-41d4-a716-446655441234';
+    body.should.containSelector('[name=token-description]');
     body.should.containSelector(parentDivSelect2);
     body.should.containSelector(parentDivSelect2 + ' > div#description').withText('description token 2');
     body.should.containSelector(parentDivSelect2 + ' > a#edit').withText("Edit description");
@@ -105,24 +93,17 @@ describe('The token view', function() {
   it('should render revoked tokens', function () {
     var templateData = {
       'account_id' : 12345,
-      'tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"revoked token", "revoked": "18 Oct 2015"},
-                  {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"non-revoked token"}]
+      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"non-revoked token"}],
+      'revoked_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"revoked token", "revoked": "18 Oct 2015"}]
     };
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
-
-    body.should.containSelector('input#generateButton')
-      .withAttribute("value", "Generate a new key")
-      .withAttribute("type", "button");
-
-    body.should.containSelector('a#generateLink')
-      .withAttribute("href", "/selfservice/tokens/12345/generate");
-
+    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
     body.should.containSelector('h3').withText("Active keys");
 
-    var parentDivSelect1 = 'div#550e8400-e29b-41d4-a716-446655440000';
-    body.should.containSelector('div[name=token-description]');
+    var parentDivSelect1 = '#550e8400-e29b-41d4-a716-446655440000';
+    body.should.containSelector('[name=token-description]');
     body.should.containSelector(parentDivSelect1);
     body.should.containSelector(parentDivSelect1 + ' > div#description').withText('revoked token');
     body.should.containNoSelector(parentDivSelect1 + ' > a#edit');
@@ -130,10 +111,10 @@ describe('The token view', function() {
     body.should.containNoSelector(parentDivSelect1 + ' > input#save');
     body.should.containNoSelector(parentDivSelect1 + ' > a#revoke');
     body.should.containNoSelector(parentDivSelect1 + ' > div#revoke-message');
-    body.should.containSelector(parentDivSelect1 + ' > div#revoked').withText("This key was successfully revoked on 18 Oct 2015. It will no longer enable integration with the platform.");
+    body.should.containSelector(parentDivSelect1 + ' > div#revoked').withText("Key was revoked on 18 Oct 2015");
 
-    var parentDivSelect2 = 'div#550e8400-e29b-41d4-a716-446655441234';
-    body.should.containSelector('div[name=token-description]');
+    var parentDivSelect2 = '#550e8400-e29b-41d4-a716-446655441234';
+    body.should.containSelector('[name=token-description]');
     body.should.containSelector(parentDivSelect2);
     body.should.containSelector(parentDivSelect2 + ' > div#description').withText('non-revoked token');
     body.should.containSelector(parentDivSelect2 + ' > a#edit').withText("Edit description");

@@ -24,10 +24,19 @@ module.exports.bindRoutesTo = function (app) {
 
       var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
       client.get(publicAuthUrl + "/" + accountId, function (publicAuthData, publicAuthResponse) {
-        var issuedTokens = publicAuthData.tokens;
+        var tokens = publicAuthData.tokens || [],
+            activeTokens = [],
+            revokedTokens = [];
+
+        tokens.forEach(function(token) {
+          token.revoked ? revokedTokens.push(token) : activeTokens.push(token);
+        });
+
         responsePayload = {
           'account_id': accountId,
-          'tokens': issuedTokens
+          'active_tokens': activeTokens,
+          'active_tokens_singular': activeTokens.length == 1,
+          'revoked_tokens': revokedTokens,
         };
         response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
 

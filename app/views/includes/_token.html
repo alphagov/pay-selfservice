@@ -1,0 +1,22 @@
+<li id="{{token_link}}" class="key-list-item" name="token-description">
+  <div class="heading-small" id="description">{{description}}</div>
+  {{#revoked}}
+    <div id="revoked">Key was revoked on {{revoked}}.</div>
+  {{/revoked}}
+  {{^revoked}}
+    <a id="edit">Edit description</a><br />
+    <input id="save" type="button" style="display: none" value="Save changes" />
+    <a id="cancel" style="display: none">cancel</a>
+    <a id="revoke">Revoke key</a>
+    <div id="revoke-message" style="display: none">
+      Are you sure you want to revoke this developer key?
+      If revoked it will no longer enable integration with the platform.
+      <input id="revoke-yes" type="button" value="Yes" />
+      <input id="revoke-no" type="button" value="No" />
+    </div>
+    <div id="revoked" style="display: none">
+      This key was successfully revoked on <span id="revoked-date"></span>.
+      It will no longer enable integration with the platform.
+    </div>
+  {{/revoked}}
+</li>
