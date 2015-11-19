@@ -20,6 +20,7 @@ describe('The token view', function() {
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
+    body.should.containSelector('h2').withText("There are no active developer keys");
 
     body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
 
@@ -31,14 +32,15 @@ describe('The token view', function() {
   it('should render the number of active developer keys for the account (for 1 key)', function () {
     var templateData = {
       'account_id' : 12345,
-      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"}]
+      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"}],
+      'active_tokens_singular': true
     };
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
+    body.should.containSelector('h2').withText("There is 1 active developer key");
 
     body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
-
     body.should.containSelector('h3').withText("Active keys");
 
     var parentDivSelector = '#550e8400-e29b-41d4-a716-446655440000';
@@ -62,6 +64,7 @@ describe('The token view', function() {
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
+    body.should.containSelector('h2').withText("There are 2 active developer keys");
 
     body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
 
