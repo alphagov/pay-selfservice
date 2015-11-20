@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    "use strict";
 
     var descriptionBeforeEditing = {};
 
@@ -92,6 +93,8 @@ $(document).ready(function(){
                 editLink.hide();
                 revokeLink.hide();
                 revokedDiv.show();
+                tokenDiv.removeClass('js-active');
+                updateActiveDevTokensHeader();
             },
             complete: function(xhr, status) {
                 revokeMessageDiv.hide();
@@ -101,6 +104,19 @@ $(document).ready(function(){
 
     function descendant(parent, child) {
         return parent.find(child).first();
+    }
+
+    function updateActiveDevTokensHeader() {
+        var activeTokens = $(".key-list-item.js-active").length,
+            $heading = $("#available-tokens");
+
+        if (activeTokens == 0) {
+            $heading.text("There are no active developer keys");
+        } else if (activeTokens == 1) {
+            $heading.text("There is 1 active developer key");
+        } else {
+            $heading.text("There are " + activeTokens + " active developer keys");
+        }
     }
 
 });

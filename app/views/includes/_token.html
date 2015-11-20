@@ -1,4 +1,7 @@
-<li id="{{token_link}}" class="key-list-item" name="token-description">
+<li
+  id="{{token_link}}"
+  class="key-list-item js-{{^revoked}}active{{/revoked}}"
+  name="token-description">
   <div class="heading-small" id="description">{{description}}</div>
   {{#revoked}}
     <div id="revoked">Key was revoked on {{revoked}}.</div>
