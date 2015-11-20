@@ -20,7 +20,7 @@ Generate developer token
     </div>
     <input type="hidden" id="accountId" name="accountId" value="{{account_id}}">
     <p>When generated the key will only be shown once.</p>
-    <input type="submit" class="button" value="Generate key">
+    <input id="generate-button" type="submit" class="button" value="Generate key">
   </form>
   <p class="add-top-margin">
     <a href="/selfservice/tokens/{{account_id}}">Cancel</a>
@@ -37,7 +37,7 @@ Generate developer token
     <textarea id="token" name="token" class="form-control">{{token}}</textarea>
   </div>
 
-  <a class="button" href="/selfservice/tokens/{{account_id}}">
+  <a id="finish-link" class="button" href="/selfservice/tokens/{{account_id}}">
     Finish
   </a>
 {{/token}}
