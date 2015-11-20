@@ -45,12 +45,14 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
+              'reference': 'ref1',
               'status': 'TEST STATUS'
             },
             {
               'charge_id': '101',
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
+              'reference': 'ref2',
               'status': 'TEST STATUS 2'
             }
           ]
@@ -63,12 +65,59 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
+              'reference': 'ref1',
               'status': 'TEST STATUS'
             },
             {
               'charge_id': '101',
               'gateway_transaction_id': 'tnx-id-2',
               'amount': '20.00',
+              'reference': 'ref2',
+              'status': 'TEST STATUS 2'
+            }
+          ]
+        };
+
+        get_transaction_list()
+          .expect(200, expectedData)
+          .end(done);
+      });
+
+      it('should return a list of transactions for the gateway account with reference missing', function (done) {
+
+        var connectorData = {
+          'results': [
+            {
+              'charge_id': '100',
+              'gateway_transaction_id': 'tnx-id-1',
+              'amount': 5000,
+              'status': 'TEST STATUS'
+            },
+            {
+              'charge_id': '101',
+              'gateway_transaction_id': 'tnx-id-2',
+              'amount': 2000,
+              'reference': 'ref2',
+              'status': 'TEST STATUS 2'
+            }
+          ]
+        };
+        connectorMock_responds(connectorData);
+
+        var expectedData = {
+          'results': [
+            {
+              'charge_id': '100',
+              'gateway_transaction_id': 'tnx-id-1',
+              'amount': '50.00',
+              'reference': '',
+              'status': 'TEST STATUS'
+            },
+            {
+              'charge_id': '101',
+              'gateway_transaction_id': 'tnx-id-2',
+              'amount': '20.00',
+              'reference': 'ref2',
               'status': 'TEST STATUS 2'
             }
           ]
