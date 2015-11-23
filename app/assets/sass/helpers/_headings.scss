@@ -1,0 +1,11 @@
+.heading-with-border {
+  border-bottom: 5px solid $black;
+  padding-bottom: $gutter-two-thirds;
+  margin-bottom: $gutter;
+}
+
+.page-title {
+  @extend .heading-large;
+  @extend .heading-with-border;
+  margin-top: 0;
+}

@@ -78,14 +78,19 @@ chai.use(function (_chai, utils) {
   });
 
   chai.Assertion.addMethod('containInputField', function(idAndName, type) {
-    this.containSelector('input#' + idAndName).withAttributes({name: idAndName, type: type})
-    utils.flag(this, 'selectorId', idAndName);
+    this.containSelector('input#' + idAndName).withAttributes({name: idAndName, type: type});
+    utils.flag(this, 'inputId', idAndName);
   });
 
-  chai.Assertion.addMethod('withLabel', function(labelId, labelText) {
-    var selectorId = utils.flag(this, 'selectorId');
+  chai.Assertion.addMethod('containTextarea', function(idAndName) {
+    this.containSelector('textarea#' + idAndName).withAttributes({name: idAndName});
+    utils.flag(this, 'inputId', idAndName);
+  });
+
+  chai.Assertion.addMethod('withLabel', function(labelText) {
+    var inputId = utils.flag(this, 'inputId');
     var subAssertion = new chai.Assertion(utils.flag(this, "rawHtml"));
-    subAssertion.containSelector('label#' + labelId).withAttribute('for', selectorId).withText(labelText);
+    subAssertion.containSelector('label[for=' + inputId + ']').withText(labelText);
   });
 
   chai.Assertion.addMethod('havingRowAt', function (rowIndex) {

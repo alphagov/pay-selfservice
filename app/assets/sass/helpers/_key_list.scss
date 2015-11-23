@@ -1,0 +1,10 @@
+.key-list {
+  list-style: none;
+  border-top: 2px solid $grey-2;
+  max-width: 700px;
+}
+
+.key-list-item {
+  border-bottom: 2px solid $grey-2;
+  padding-bottom: $gutter;
+}

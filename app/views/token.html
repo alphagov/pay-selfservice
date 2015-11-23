@@ -8,41 +8,43 @@ List of developer tokens
 
 <div id="accountId" class="hidden">{{account_id}}</div>
 
-<h1 class="title">Developer keys</h1>
+<h1 class="page-title">Developer keys</h1>
 
-<h2 id="available-tokens" class="tokens"></h2>
+<h2 id="available-tokens" class="heading-medium remove-top-margin">
+  {{#active_tokens.length}}
+  {{#active_tokens_singular}}
+    There is 1 active developer key
+  {{/active_tokens_singular}}
+  {{^active_tokens_singular}}
+    There are {{active_tokens.length}} active developer keys
+  {{/active_tokens_singular}}
+  {{/active_tokens.length}}
+  {{^active_tokens.length}}
+    There are no active developer keys
+  {{/active_tokens.length}}
+</h2>
 
-<a id="generateLink" href="/selfservice/tokens/{{account_id}}/generate">
-  <input id="generateButton" type="button" value="Generate a new key" class="button" />
+<a class="button" href="/selfservice/tokens/{{account_id}}/generate">
+  Generate a new key
 </a>
 
-{{#tokens.length}}
-  <h3>Active keys</h3>
-  {{#tokens}}
-    <div id="{{token_link}}" name="token-description">
-      <div id="description"><b>{{description}}</b></div>
-      {{#revoked}}
-        <div id="revoked">This key was successfully revoked on {{revoked}}. It will no longer enable integration with the platform.</div>
-      {{/revoked}}
-      {{^revoked}}
-        <a id="edit">Edit description</a>
-        <input id="save" type="button" style="display: none" value="Save changes" />
-        <a id="cancel" style="display: none">cancel</a>
-        <a id="revoke">Revoke key</a>
-        <div id="revoke-message" style="display: none">
-          Are you sure you want to revoke this developer key?
-          If revoked it will no longer enable integration with the platform.
-          <input id="revoke-yes" type="button" value="Yes" />
-          <input id="revoke-no" type="button" value="No" />
-        </div>
-        <div id="revoked" style="display: none">
-          This key was successfully revoked on <span id="revoked-date"></span>.
-          It will no longer enable integration with the platform.
-        </div>
-      {{/revoked}}
-    </div>
-  {{/tokens}}
-{{/tokens.length}}
+{{#active_tokens.length}}
+  <h3 class="heading-medium">Active keys</h3>
+  <ul class="key-list">
+  {{#active_tokens}}
+    {{>includes/_token}}
+  {{/active_tokens}}
+  </ul>
+{{/active_tokens.length}}
+
+{{#revoked_tokens.length}}
+  <h3 class="heading-medium">Revoked keys</h3>
+  <ul class="key-list">
+  {{#revoked_tokens}}
+    {{>includes/_token}}
+  {{/revoked_tokens}}
+  </ul>
+{{/revoked_tokens.length}}
 
 {{/content}}
 

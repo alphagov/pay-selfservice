@@ -1,4 +1,29 @@
-@import "reset/reset";
-@import "styleguide/buttons";
-@import "forms/forms";
+// Application reset
+@import "reset/_reset";
+
+// govuk_frontend_toolkit dependencies
+// https://github.com/alphagov/govuk_frontend_toolkit#usage
+@import "_shims";
+@import "_css3";
+@import "_conditionals";
+@import "_colours";
+@import "_measurements";
+@import "_typography";
+@import "_grid_layout";
+@import "design-patterns/_buttons";
+
+// Override New Transport font-stack from front-end toolkit
+$NTA-Light: Helvetica, Arial, sans-serif;
+
+// Copied from govuk_elements (edited)
+@import "govuk_elements/_helpers";
+@import "govuk_elements/forms/_forms";
+@import "govuk_elements/_typography";
+
+// Application mixins and helpers
+@import "helpers/_margins";
+@import "helpers/_headings";
+@import "helpers/_tables";
+@import "helpers/_key_list";
+
 @import "template/template";
