@@ -22,6 +22,17 @@
   @include button;
 }
 
+.grey-button {
+  @include button;
+  background-color: $grey-1;
+
+  &:active,
+  &:focus,
+  &:hover {
+    background-color: $black;
+  }
+}
+
 // Grid layout
 // ==========================================================================
 
@@ -132,10 +143,6 @@
   .tokens {
     @include bold-27;
     margin-bottom: $gutter;
-  }
-
-  .button {
-    @include bold-16;
   }
 
   @include media(tablet) {
