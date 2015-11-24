@@ -7,6 +7,10 @@ header {
     position: relative;
     padding-left: 45px;
 
+    &:focus {
+      background: none;
+    }
+
     img {
       position: absolute;
       left: 0;
