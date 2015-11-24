@@ -20,10 +20,16 @@ describe('The credentials view', function () {
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h2#view-title').withExactText('Your Worldpay Credentials');
 
-    body.should.containSelector('div#credentials');
-    body.should.containSelector('div#merchant-id').withExactText('a-merchant-id');
-    body.should.containSelector('div#username').withExactText('a-username');
-    body.should.containSelector('div#password').withExactText('****');
+    body.should.containSelector('dl#credentials');
+
+    body.should.containSelector('dt#merchant-id-key').withExactText('Merchant ID');
+    body.should.containSelector('dd#merchant-id-value').withExactText('a-merchant-id');
+
+    body.should.containSelector('dt#username-key').withExactText('Username');
+    body.should.containSelector('dd#username-value').withExactText('a-username');
+
+    body.should.containSelector('dt#password-key').withExactText('Password');
+    body.should.containSelector('dd#password-value').withExactText('****');
   });
 
   it('should display credentials view for a smartpay account', function () {
@@ -42,10 +48,16 @@ describe('The credentials view', function () {
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h2#view-title').withExactText('Your Smartpay Credentials');
 
-    body.should.containSelector('div#credentials');
-    body.should.not.containSelector('div#merchant-id');
-    body.should.containSelector('div#username').withExactText('a-username');
-    body.should.containSelector('div#password').withExactText('****');
+    body.should.containSelector('dl#credentials');
+
+    body.should.not.containSelector('dt#merchant-id-key');
+    body.should.not.containSelector('dd#merchant-id-value');
+
+    body.should.containSelector('dt#username-key').withExactText('Username');
+    body.should.containSelector('dd#username-value').withExactText('a-username');
+
+    body.should.containSelector('dt#password-key').withExactText('Password');
+    body.should.containSelector('dd#password-value').withExactText('****');
   });
 
   it('should display credentials view for a sandbox account', function () {
@@ -62,9 +74,15 @@ describe('The credentials view', function () {
     body.should.containSelector('h2#view-title').withExactText('Your Sandbox Credentials');
     body.should.containSelector('div#message').withExactText('This is a sandbox account');
 
-    body.should.not.containSelector('div#credentials');
-    body.should.not.containSelector('div#merchant-id');
-    body.should.not.containSelector('div#username');
-    body.should.not.containSelector('div#password');
+    body.should.not.containSelector('dl#credentials');
+
+    body.should.not.containSelector('dt#merchant-id-key');
+    body.should.not.containSelector('dd#merchant-id-value');
+
+    body.should.not.containSelector('dt#username-key');
+    body.should.not.containSelector('dd#username-value');
+
+    body.should.not.containSelector('dt#password-key');
+    body.should.not.containSelector('dd#password-value');
   });
 });
