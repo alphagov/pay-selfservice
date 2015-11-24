@@ -18,16 +18,15 @@ module.exports.bindRoutesTo = function (app) {
     logger.info('Showing credentials for: ' + paymentProvider);
 
     var responsePayload = {
-      'payment_provider': changeCase.titleCase(paymentProvider)
+      'payment_provider': changeCase.titleCase(paymentProvider),
+      'account_id': connectorData.gateway_account_id,
+      'credentials': connectorData.credentials
     };
 
-    var storedCredentials = connectorData.credentials;
-    responsePayload.credentials = storedCredentials;
-    if (Object.keys(storedCredentials).length != 0) {
+    if (Object.keys(responsePayload.credentials).length != 0) {
       responsePayload.credentials.password = '****';
     }
 
-    logger.info(JSON.stringify(responsePayload));
     response(req.headers.accept, res, 'provider_credentials_views/'+paymentProvider, responsePayload);
   }
 

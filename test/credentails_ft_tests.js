@@ -34,6 +34,7 @@ portfinder.getPort(function (err, freePort) {
       connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
         .reply(200, {
           "payment_provider": "sandbox",
+          "gateway_account_id": "1",
           "credentials": {}
         });
 
@@ -42,6 +43,7 @@ portfinder.getPort(function (err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           "payment_provider": "Sandbox",
+          "account_id": "1",
           "credentials": {}
         })
         .end(done);
@@ -61,6 +63,7 @@ portfinder.getPort(function (err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           "payment_provider": "Sandbox",
+          "account_id": "1",
           "credentials": {}
         })
         .end(done);
@@ -80,6 +83,7 @@ portfinder.getPort(function (err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           "payment_provider": "Sandbox",
+          "account_id": "1",
           "credentials": {
             'username': 'a-username',
             'password': '****'
@@ -102,6 +106,31 @@ portfinder.getPort(function (err, freePort) {
         .set('Accept', 'application/json')
         .expect(200, {
           "payment_provider": "Sandbox",
+          "account_id": "1",
+          "credentials": {
+            'username': 'a-username',
+            'password': '****',
+            'merchant_id': 'a-merchant-id'
+          }
+        })
+        .end(done);
+    });
+
+    it('should return the account id', function (done) {
+
+      connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
+        .reply(200, {
+          "payment_provider": "sandbox",
+          "gateway_account_id": "1",
+          "credentials": {username: "a-username", merchant_id: 'a-merchant-id'}
+        });
+
+      request(app)
+        .get(SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
+        .set('Accept', 'application/json')
+        .expect(200, {
+          "payment_provider": "Sandbox",
+          "account_id": "1",
           "credentials": {
             'username': 'a-username',
             'password': '****',
