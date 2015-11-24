@@ -18,21 +18,6 @@
   min-height: $gutter*10;
 }
 
-.button {
-  @include button;
-}
-
-.grey-button {
-  @include button;
-  background-color: $grey-1;
-
-  &:active,
-  &:focus,
-  &:hover {
-    background-color: $black;
-  }
-}
-
 // Grid layout
 // ==========================================================================
 

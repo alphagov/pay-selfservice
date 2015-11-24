@@ -1,0 +1,18 @@
+@mixin self-service-button {
+  padding: 0.3em 1em 0.4em;
+  min-width: 5em;
+
+  .button-group & {
+    margin-right: 1em;
+  }
+}
+
+.button {
+  @include button;
+  @include self-service-button;
+}
+
+.button-secondary {
+  @include button($grey-1);
+  @include self-service-button;
+}
