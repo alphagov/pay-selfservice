@@ -1,0 +1,26 @@
+// 3s yellow fade animation
+// Based on http://jsfiddle.net/csswizardry/TVqVC/
+
+@-webkit-keyframes yellow-fade {
+  5% {
+    background-color:#ff9;
+  }
+}
+
+@-moz-keyframes yellow-fade {
+  5% {
+    background-color:#ff9;
+  }
+}
+
+@keyframes yellow-fade {
+  5% {
+    background-color:#ff9;
+  }
+}
+
+.yellow-fade {
+  -webkit-animation:yellow-fade 3s;
+     -moz-animation:yellow-fade 3s;
+          animation:yellow-fade 3s;
+}

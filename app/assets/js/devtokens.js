@@ -1,122 +1,98 @@
 $(document).ready(function(){
-    "use strict";
+  "use strict";
 
-    var descriptionBeforeEditing = {};
+  $('.js-toggle-description').on('click', toggleDescription);
+  $('.js-toggle-revoke').on('click', toggleRevoke);
+  $('.js-save-description').on('click', saveDescription);
+  $('.js-revoke-token').on('click', revokeToken);
 
-    $("a#edit").click(function(event){
-        var tokenDiv = $(this).closest("[name=token-description]");
-        var tokenLink = tokenDiv.attr("id");
-        var descriptionDiv = descendant(tokenDiv,"#description");
-        var descriptionDivText = descriptionDiv.text();
-        descriptionBeforeEditing[tokenLink] = descriptionDivText;
-        descriptionDiv.replaceWith("<input id='description-input' type='text' value='" + descriptionDivText + "' style='display: block' />");
-        descendant(tokenDiv,"#revoke").hide();
-        descendant(tokenDiv,"#revoke-message").hide();
-        descendant(tokenDiv,"#cancel").show();
-        descendant(tokenDiv,"#save").show();
-        $(this).hide();
-    });
+  function toggleDescription(evt) {
+    toggle.call(this, '.js-edit-description');
+    toggle.call(this, '.js-edit-controls');
+    evt.preventDefault();
+  }
 
-    $("a#cancel").click(function(event){
-        var tokenDiv = $(this).closest("[name=token-description]");
-        var tokenLink = tokenDiv.attr("id");
-        descendant(tokenDiv,"input#description-input").replaceWith("<div class='heading-small' id='description'>" + descriptionBeforeEditing[tokenLink] + "</div>");
-        descendant(tokenDiv,"input#save").hide();
-        descendant(tokenDiv,"a#edit").show();
-        descendant(tokenDiv,"a#revoke").show();
-        $(this).hide();
-    });
+  function toggleRevoke(evt) {
+    toggle.call(this, '.js-revoke-confirmation');
+    toggle.call(this, '.js-edit-controls');
+    evt.preventDefault();
+  }
 
-    $("input#save").click(function(event){
-        var tokenDiv = $(this).closest("[name=token-description]");
-        var tokenLink = tokenDiv.attr("id");
+  function toggle(selector) {
+    getListItem(this).find(selector).toggle();
+  }
 
-        var descriptionInput = descendant(tokenDiv,"input#description-input");
-        var newDescription = descriptionInput.val();
-        var thisSaveInput = $(this);
-        var cancelLink = descendant(tokenDiv,"a#cancel");
-        var editLink = descendant(tokenDiv,"a#edit");
-        var revokeLink = descendant(tokenDiv,"a#revoke");
+  function getListItem(element) {
+    return $(element).parents('.key-list-item');
+  }
 
-        $.ajax({
-            type: 'PUT',
-            url: '/selfservice/tokens',
-            data: {
-                'token_link': tokenLink,
-                'description': newDescription
-            },
-            dataType : 'json',
-            success: function(responseData){
-                descriptionInput.replaceWith("<div id='description'><b>" + newDescription + "</b></div>");
-            },
-            error: function(xhr, status) { // Error on connection or non-2xx response
-                descriptionInput.replaceWith("<div id='description'><b>" + descriptionBeforeEditing[tokenLink] + "</b></div>");
-            },
-            complete : function(xhr, status) {
-                cancelLink.hide();
-                editLink.show();
-                revokeLink.show();
-                thisSaveInput.hide();
-            }
-        });
-    });
+  function saveDescription(evt) {
 
-    $("a#revoke").click(function(event){
-        var tokenDiv = $(this).closest("[name=token-description]");
-        descendant(tokenDiv,"div#revoke-message").show();
-    });
+    var self = this,
+        $container = getListItem(self),
+        tokenLink = $container.attr('id'),
+        newDescription = $container.find('.js-new-description').val();
 
-    $("input#revoke-no").click(function(event){
-        var tokenDiv = $(this).closest("[name=token-description]");
-        descendant(tokenDiv,"div#revoke-message").hide();
-    });
+    evt.preventDefault();
+    $container.removeClass('yellow-fade');
+    $container.find('.error').removeClass('error');
 
-    $("input#revoke-yes").click(function(event){
-        var tokenDiv = $(this).closest("[name=token-description]");
-        var tokenLink = tokenDiv.attr("id");
-        var accountId = $('div#accountId').text();
-
-        var revokeMessageDiv = descendant(tokenDiv,"div#revoke-message");
-        var editLink = descendant(tokenDiv,"a#edit");
-        var revokeLink = descendant(tokenDiv,"a#revoke");
-        var revokedDiv = descendant(tokenDiv,"div#revoked");
-        var revokedDateSpan = descendant(tokenDiv,"span#revoked-date");
-
-        var deleteUrl = '/selfservice/tokens/' + accountId+"?token_link="+tokenLink;
-
-        $.ajax({
-            type: 'DELETE',
-            url: deleteUrl,
-            dataType : 'json',
-            success: function(responseData){
-                revokedDateSpan.text(responseData.revoked);
-                editLink.hide();
-                revokeLink.hide();
-                revokedDiv.show();
-                tokenDiv.removeClass('js-active');
-                updateActiveDevTokensHeader();
-            },
-            complete: function(xhr, status) {
-                revokeMessageDiv.hide();
-            }
-        });
-    });
-
-    function descendant(parent, child) {
-        return parent.find(child).first();
-    }
-
-    function updateActiveDevTokensHeader() {
-        var activeTokens = $(".key-list-item.js-active").length,
-            $heading = $("#available-tokens");
-
-        if (activeTokens == 0) {
-            $heading.text("There are no active developer keys");
-        } else if (activeTokens == 1) {
-            $heading.text("There is 1 active developer key");
-        } else {
-            $heading.text("There are " + activeTokens + " active developer keys");
+    $.ajax({
+        type: 'PUT',
+        url: '/selfservice/tokens',
+        data: {
+            'token_link': tokenLink,
+            'description': newDescription
+        },
+        dataType : 'json',
+        success: function(responseData) {
+          $container.find('.js-old-description').text(newDescription);
+          toggleDescription.call(self, evt);
+          $container.addClass('yellow-fade');
+        },
+        error: function(xhr, status) {
+          $container.find('.form').addClass('error');
         }
+    });
+  }
+
+  function revokeToken(evt) {
+    var self = this,
+        $container = getListItem(self),
+        accountId = $('#accountId').text(),
+        tokenLink = $container.attr('id'),
+        deleteUrl = '/selfservice/tokens/' + accountId + '?token_link=' + tokenLink;
+
+    evt.preventDefault();
+    $container.find('.error').removeClass('error');
+
+    $.ajax({
+      type: 'DELETE',
+      url: deleteUrl,
+      dataType : 'json',
+      success: function(responseData) {
+        $container.find('.js-revoke-confirmation, .js-edit-description, .js-edit-controls').remove();
+        $container.find('.js-revoke-confirmed').show();
+        $container.addClass('yellow-fade').removeClass('js-active');
+        updateActiveDevTokensHeader();
+      },
+      error: function() {
+        $container.find('.js-revoke-confirmation').addClass('error');
+      }
+    });
+  }
+
+  function updateActiveDevTokensHeader() {
+    var activeTokens = $(".key-list-item.js-active").length,
+        $heading = $("#available-tokens");
+
+    if (activeTokens == 0) {
+      $heading.text("There are no active developer keys");
+    } else if (activeTokens == 1) {
+      $heading.text("There is 1 active developer key");
+    } else {
+      $heading.text("There are " + activeTokens + " active developer keys");
     }
+  }
 
 });
