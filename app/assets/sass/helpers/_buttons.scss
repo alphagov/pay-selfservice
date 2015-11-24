@@ -1,6 +1,7 @@
 @mixin self-service-button {
   padding: 0.3em 1em 0.4em;
   min-width: 5em;
+  text-align: center;
 
   .button-group & {
     margin-right: 1em;
@@ -15,4 +16,34 @@
 .button-secondary {
   @include button($grey-1);
   @include self-service-button;
+}
+
+.button-link {
+  @include button;
+  @include self-service-button;
+
+  min-width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: $link-colour;
+
+  &:link,
+  &:hover,
+  &:focus,
+  &:visited {
+    color: $link-colour;
+  }
+
+  &:link,
+  &:hover,
+  &:visited {
+    background: transparent;
+  }
+
+  &:focus {
+    background: $focus-colour;
+  }
 }
