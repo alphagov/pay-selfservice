@@ -14,6 +14,18 @@ header {
     }
   }
 
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    color: $white;
+  }
+
+  a:focus,
+  a:hover {
+    text-decoration: underline;
+  }
+
   .header-logo {
     @include bold-24;
     padding: $gutter-half 0 $gutter-half $gutter-half;
