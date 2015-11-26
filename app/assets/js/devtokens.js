@@ -71,7 +71,7 @@ $(document).ready(function(){
       url: deleteUrl,
       dataType : 'json',
       success: function(responseData) {
-        $container.find('.js-revoke-confirmation, .js-edit-description, .js-edit-controls').remove();
+        $container.find('.js-revoke-confirmation, .js-edit-controls').remove();
         $container.find('.js-revoke-confirmed').show();
         $container.addClass('yellow-fade').removeClass('js-active');
         updateActiveDevTokensHeader();
