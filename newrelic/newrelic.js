@@ -9,13 +9,13 @@ exports.config = {
      *
      * @env NEW_RELIC_APP_NAME
      */
-    app_name: ['pay-selfservice'],
+    app_name: [],
     /**
      * The user's license key. Must be set by per-app configuration file.
      *
      * @env NEW_RELIC_LICENSE_KEY
      */
-    license_key: 'b7b28104622602d27e2119ea754a9b8e10a81fb8',
+    license_key: '',
     /**
      * Hostname for the New Relic collector proxy.
      *
