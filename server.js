@@ -10,7 +10,7 @@ var port = (process.env.PORT || 3000);
 var app = express();
 
 app.use(clientSessions({
-  cookieName: 'session_state',
+  cookieName: 'selfservice_cookie',
   secret: process.env.SESSION_ENCRYPTION_KEY
 }));
 
