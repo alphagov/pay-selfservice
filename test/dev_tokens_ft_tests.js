@@ -412,7 +412,7 @@ portfinder.getPort(function(err, freePort) {
               .post(TOKEN_GENERATION_POST_PATH)
               .set('Content-Type', 'application/x-www-form-urlencoded')
               .set('Accept', 'application/json')
-              .set('Cookie', ['session_state=' + cookie.create(TOKEN)])
+              .set('Cookie', ['selfservice_state=' + cookie.create(TOKEN)])
               .send({
                   'accountId': ACCOUNT_ID,
                   'description': "description"
@@ -436,7 +436,7 @@ portfinder.getPort(function(err, freePort) {
             request(app)
               .get(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID))
               .set('Accept', 'application/json')
-              .set('Cookie', ['session_state=' + cookie.create(TOKEN)])
+              .set('Cookie', ['selfservice_state=' + cookie.create(TOKEN)])
               .expect(200, {
                 'account_id': ACCOUNT_ID,
                 'token': TOKEN,
