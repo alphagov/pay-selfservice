@@ -1,14 +1,10 @@
-FROM          node:0.12.7
+FROM node:0.12.7
 
-ADD           . /app
-WORKDIR       /app
-
-ENV NEW_RELIC_HOME  /app/newrelic
+ENV PORT 8080
 ENV ENABLE_NEWRELIC no
-ENV PORT      9000
-EXPOSE        9000
+ENV NEW_RELIC_HOME /app/newrelic
 
-RUN           npm install --production
-
-CMD           NODE_ENV=production npm start
-
+ADD . /app
+WORKDIR /app
+RUN npm install --production
+CMD NODE_ENV=production npm start
