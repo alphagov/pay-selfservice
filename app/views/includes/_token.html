@@ -1,7 +1,7 @@
 <li
   id="{{token_link}}"
   class="key-list-item js-{{^revoked}}active{{/revoked}}">
-  <div class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
+  <div id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
   {{#revoked}}
     <div>Key was revoked on {{revoked}}.</div>
   {{/revoked}}
@@ -16,8 +16,8 @@
         <textarea id="description-input-{{token_link}}" class="js-new-description form-control">{{description}}</textarea>
       </div>
       <div class="button-group">
-        <a href="#{{token_link}}" class="button js-save-description">Save changes</a>
-        <a href="#{{token_link}}" class="button-link js-toggle-description">Cancel</a>
+        <a id="save-description-{{token_link}}" href="#{{token_link}}" class="button js-save-description">Save changes</a>
+        <a id="cancel-{{token_link}}" href="#{{token_link}}" class="button-link js-toggle-description">Cancel</a>
       </div>
     </div>
     <div class="js-revoke-confirmation" hidden>
@@ -26,8 +26,8 @@
         If revoked it will no longer enable integration with the platform.
       </p>
       <div class="button-group">
-        <input type="button" class="button js-revoke-token" value="Yes" />
-        <input type="button" value="No" class="button-secondary js-toggle-revoke" />
+        <input id="revoke-token-{{token_link}}" type="button" class="button js-revoke-token" value="Yes" />
+        <input id="cancel-revoke-{{token_link}}" type="button" value="No" class="button-secondary js-toggle-revoke" />
       </div>
     </div>
     <div class="js-revoke-confirmed" hidden>
