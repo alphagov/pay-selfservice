@@ -56,12 +56,12 @@ module.exports.bindRoutesTo = function (app) {
     withValidAccountId(req, res, req.params.accountId, function(accountId, req, res) {
 
       responsePayload = {'account_id': accountId};
-      var tokenInSession = req.session_state.token;
+      var tokenInSession = req.selfservice_state.token;
       if (tokenInSession) {
         responsePayload.token = tokenInSession;
-        responsePayload.description = req.session_state.description;
-        delete req.session_state.token;
-        delete req.session_state.description;
+        responsePayload.description = req.selfservice_state.description;
+        delete req.selfservice_state.token;
+        delete req.selfservice_state.description;
       }
       response(req.headers.accept, res, TOKEN_GENERATE_VIEW, responsePayload);
 
@@ -73,9 +73,9 @@ module.exports.bindRoutesTo = function (app) {
 
     logger.info('POST ' + TOKEN_GENERATION_POST_PATH);
 
-    if (req.session_state.token) {
-      delete req.session_state.token;
-      delete req.session_state.description;
+    if (req.selfservice_state.token) {
+      delete req.selfservice_state.token;
+      delete req.selfservice_state.description;
       renderErrorView(req, res, ERROR_MESSAGE);
       return;
     }
@@ -94,8 +94,8 @@ module.exports.bindRoutesTo = function (app) {
       client.post(publicAuthUrl, payload, function (publicAuthData, publicAuthResponse) {
 
         if (publicAuthResponse.statusCode === 200) {
-          req.session_state.token = publicAuthData.token;
-          req.session_state.description = description;
+          req.selfservice_state.token = publicAuthData.token;
+          req.selfservice_state.description = description;
           res.redirect(303, TOKEN_GENERATION_GET_PATH.replace(":accountId",accountId));
           return;
         }
