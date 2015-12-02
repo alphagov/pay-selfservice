@@ -12,12 +12,14 @@ describe('The transaction list view', function () {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
           'amount': '50.00',
+          'reference': 'ref1',
           'status': 'TEST STATUS'
         },
         {
           'charge_id': '101',
           'gateway_transaction_id': 'tnx-id-2',
           'amount': '20.00',
+          'reference': 'ref1',
           'status': 'TEST STATUS 2'
         }
       ]
@@ -31,7 +33,8 @@ describe('The transaction list view', function () {
         .withTableDataAt(1, templateData.results[ix].charge_id)
         .withTableDataAt(2, templateData.results[ix].gateway_transaction_id)
         .withTableDataAt(3, templateData.results[ix].amount)
-        .withTableDataAt(4, templateData.results[ix].status);
+        .withTableDataAt(4, templateData.results[ix].reference)
+        .withTableDataAt(5, templateData.results[ix].status);
     });
   });
 });

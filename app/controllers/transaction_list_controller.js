@@ -10,6 +10,7 @@ var CONNECTOR_CHARGE_PATH = '/v1/frontend/charges';
 function formatForView(connectorData) {
   connectorData.results.forEach(function (element) {
     element.amount = (element.amount / 100).toFixed(2);
+    element.reference = element.reference || ""; // tolerate missing reference
   });
   return connectorData;
 }
