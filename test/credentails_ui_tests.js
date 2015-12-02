@@ -17,7 +17,7 @@ describe('The credentials view in normal mode', function () {
     var body = renderTemplate('provider_credentials/worldpay', templateData);
 
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
-    body.should.containSelector('h2#view-title').withExactText('Your Worldpay Credentials');
+    body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials');
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
@@ -49,7 +49,7 @@ describe('The credentials view in normal mode', function () {
     var body = renderTemplate('provider_credentials/smartpay', templateData);
 
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
-    body.should.containSelector('h2#view-title').withExactText('Your Smartpay Credentials');
+    body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials');
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
@@ -79,7 +79,7 @@ describe('The credentials view in normal mode', function () {
     var body = renderTemplate('provider_credentials/sandbox', templateData);
 
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
-    body.should.containSelector('h2#view-title').withExactText('Your Sandbox Credentials');
+    body.should.containSelector('h4#view-title').withExactText('Your Sandbox Credentials');
     body.should.containSelector('div#message').withExactText('This is a sandbox account');
 
     body.should.not.containSelector('a#edit-credentials-link');
@@ -115,7 +115,7 @@ describe('The credentials view in edit mode', function () {
     var body = renderTemplate('provider_credentials/worldpay', templateData);
 
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
-    body.should.containSelector('h2#view-title').withExactText('Your Worldpay Credentials');
+    body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials');
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -154,7 +154,7 @@ describe('The credentials view in edit mode', function () {
     var body = renderTemplate('provider_credentials/smartpay', templateData);
 
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
-    body.should.containSelector('h2#view-title').withExactText('Your Smartpay Credentials');
+    body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials');
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -187,7 +187,7 @@ describe('The credentials view in edit mode', function () {
     var body = renderTemplate('provider_credentials/sandbox', templateData);
 
     body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
-    body.should.containSelector('h2#view-title').withExactText('Your Sandbox Credentials');
+    body.should.containSelector('h4#view-title').withExactText('Your Sandbox Credentials');
     body.should.containSelector('div#message').withExactText('This is a sandbox account');
 
     body.should.not.containSelector('form#credentials-form');

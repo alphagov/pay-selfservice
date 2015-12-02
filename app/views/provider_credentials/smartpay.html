@@ -4,10 +4,10 @@
 
 {{^editMode}}
 <dl id="credentials">
-    <dt id="username-key">Username</dt>
+    <dt id="username-key" class="font-xsmall"><p>Username</p></dt>
     <dd id="username-value"><b>{{credentials.username}}</b></dd>
 
-    <dt id="password-key">Password</dt>
+    <dt id="password-key" class="font-xsmall"><p>Password</p></dt>
     <dd id="password-value"><b>{{#credentials.username}}****{{/credentials.username}}</b></dd>
 </dl>
 <a id="edit-credentials-link" class="button" href="/selfservice/credentials/{{account_id}}?edit">
