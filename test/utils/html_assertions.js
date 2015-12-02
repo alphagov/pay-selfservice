@@ -51,6 +51,16 @@ chai.use(function (_chai, utils) {
     );
   });
 
+  chai.Assertion.addMethod('withExactText', function (msg) {
+    var actual = this._obj.text();
+    this.assert(actual == msg,
+      "Expected #{act} to contain '" + msg + "'.",
+      "Did not expect #{act} to contain '" + msg + "'.",
+      msg,
+      actual
+    );
+  });
+
   chai.Assertion.addMethod('withAttribute', function (expectedAttr, expectedValue) {
     this.assert(this._obj.attr(expectedAttr) !== undefined,
         "Expected #{act} to contain '" + expectedAttr + "'",

@@ -1,0 +1,38 @@
+{{< credentials}}
+
+{{$providerContent}}
+
+{{^editMode}}
+<dl id="credentials">
+    <dt id="username-key" class="font-xsmall"><p>Username</p></dt>
+    <dd id="username-value"><b>{{credentials.username}}</b></dd>
+
+    <dt id="password-key" class="font-xsmall"><p>Password</p></dt>
+    <dd id="password-value"><b>{{#credentials.username}}****{{/credentials.username}}</b></dd>
+</dl>
+<a id="edit-credentials-link" class="button" href="/selfservice/credentials/{{account_id}}?edit">
+    Edit credentials
+</a>
+{{/editMode}}
+
+{{#editMode}}
+<form id="credentials-form" method="post" action="/selfservice/credentials/{{account_id}}">
+
+    <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-control" id="username" name="username" type="text" value="{{credentials.username}}">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-control" id="password" name="password" type="password" value="">
+    </div>
+
+    <input id="submitCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
+
+</form>
+{{/editMode}}
+
+{{/providerContent}}
+
+{{/credentials}}
