@@ -5,6 +5,14 @@
 @import "form-date";
 @import "form-block-labels";
 
+// From govuk_template
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 3px solid $focus-colour;
+}
+
 // Forms
 // ==========================================================================
 

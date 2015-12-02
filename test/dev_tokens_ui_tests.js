@@ -20,39 +20,26 @@ describe('The token view', function() {
     var body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("Developer keys");
-    body.should.containSelector('h2').withText("There are no active developer keys");
-
+    body.should.containSelector('#available-tokens').withText("There are no active developer keys");
     body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
-
-    body.should.containNoSelector('h3');
-
-    body.should.containNoSelector('[name=token-description]');
+    body.should.containNoSelector('.key-list-item');
   });
 
-  it('should render the number of active developer keys for the account (for 1 key)', function () {
-    var templateData = {
-      'account_id' : 12345,
-      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"}],
-      'active_tokens_singular': true
-    };
+  it('should render the active developer keys for the account (for 1 key)', function () {
+    var tokenLink = '550e8400-e29b-41d4-a716-446655440000',
+        templateData = {
+          'account_id' : 12345,
+          'active_tokens' : [{"token_link": tokenLink, "description":"description token 1"}],
+          'active_tokens_singular': true
+        };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('h1').withText("Developer keys");
-    body.should.containSelector('h2').withText("There is 1 active developer key");
-
-    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
+    body.should.containSelector('#available-tokens').withText("There is 1 active developer key");
     body.should.containSelector('h3').withText("Active keys");
 
-    var parentDivSelector = '#550e8400-e29b-41d4-a716-446655440000';
-    body.should.containSelector('[name=token-description]');
-    body.should.containSelector(parentDivSelector);
-    body.should.containSelector(parentDivSelector + ' > div#description').withText('description token 1');
-    body.should.containSelector(parentDivSelector + ' > a#edit').withText("Edit description");
-    body.should.containSelector(parentDivSelector + ' > a#cancel').withAttribute("style", "display: none").withText("cancel");
-    body.should.containSelector(parentDivSelector + ' > input#save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
-    body.should.containSelector(parentDivSelector + ' > a#revoke').withText("Revoke key");
-    body.should.containSelector(parentDivSelector + ' > div#revoke-message').withAttribute("style", "display: none");
-    body.should.containSelector(parentDivSelector + ' > div#revoked').withAttribute("style", "display: none");
+    var tokenContainerSelector = '#' + tokenLink;
+    body.should.containSelector(tokenContainerSelector);
+    body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
   });
 
   it('should render the number of active developer keys for the account (for 2 keys)', function () {
@@ -63,34 +50,16 @@ describe('The token view', function() {
     };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('h1').withText("Developer keys");
-    body.should.containSelector('h2').withText("There are 2 active developer keys");
-
-    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
-
+    body.should.containSelector('#available-tokens').withText("There are 2 active developer keys");
     body.should.containSelector('h3').withText("Active keys");
 
-    var parentDivSelect1 = '#550e8400-e29b-41d4-a716-446655440000';
-    body.should.containSelector('[name=token-description]');
-    body.should.containSelector(parentDivSelect1);
-    body.should.containSelector(parentDivSelect1 + ' > div#description').withText('description token 1');
-    body.should.containSelector(parentDivSelect1 + ' > a#edit').withText("Edit description");
-    body.should.containSelector(parentDivSelect1 + ' > a#cancel').withAttribute("style", "display: none").withText("cancel");
-    body.should.containSelector(parentDivSelect1 + ' > input#save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
-    body.should.containSelector(parentDivSelect1 + ' > a#revoke').withText("Revoke key");
-    body.should.containSelector(parentDivSelect1 + ' > div#revoke-message').withAttribute("style", "display: none");
-    body.should.containSelector(parentDivSelect1 + ' > div#revoked').withAttribute("style", "display: none");
+    var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
+    body.should.containSelector(tokenContainerSelector);
+    body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
 
-    var parentDivSelect2 = '#550e8400-e29b-41d4-a716-446655441234';
-    body.should.containSelector('[name=token-description]');
-    body.should.containSelector(parentDivSelect2);
-    body.should.containSelector(parentDivSelect2 + ' > div#description').withText('description token 2');
-    body.should.containSelector(parentDivSelect2 + ' > a#edit').withText("Edit description");
-    body.should.containSelector(parentDivSelect2 + ' > a#cancel').withAttribute("style", "display: none").withText("cancel");
-    body.should.containSelector(parentDivSelect2 + ' > input#save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
-    body.should.containSelector(parentDivSelect2 + ' > a#revoke').withText("Revoke key");
-    body.should.containSelector(parentDivSelect2 + ' > div#revoke-message').withAttribute("style", "display: none");
-    body.should.containSelector(parentDivSelect2 + ' > div#revoked').withAttribute("style", "display: none");
+    tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655441234';
+    body.should.containSelector(tokenContainerSelector);
+    body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 2');
   });
 
   it('should render revoked tokens', function () {
@@ -101,32 +70,12 @@ describe('The token view', function() {
     };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('h1').withText("Developer keys");
-    body.should.containSelector('a[href="/selfservice/tokens/12345/generate"]').withText('Generate a new key');
     body.should.containSelector('h3').withText("Active keys");
+    body.should.containSelector('h3').withText("Revoked keys");
 
-    var parentDivSelect1 = '#550e8400-e29b-41d4-a716-446655440000';
-    body.should.containSelector('[name=token-description]');
-    body.should.containSelector(parentDivSelect1);
-    body.should.containSelector(parentDivSelect1 + ' > div#description').withText('revoked token');
-    body.should.containNoSelector(parentDivSelect1 + ' > a#edit');
-    body.should.containNoSelector(parentDivSelect1 + ' > a#cancel');
-    body.should.containNoSelector(parentDivSelect1 + ' > input#save');
-    body.should.containNoSelector(parentDivSelect1 + ' > a#revoke');
-    body.should.containNoSelector(parentDivSelect1 + ' > div#revoke-message');
-    body.should.containSelector(parentDivSelect1 + ' > div#revoked').withText("Key was revoked on 18 Oct 2015");
-
-    var parentDivSelect2 = '#550e8400-e29b-41d4-a716-446655441234';
-    body.should.containSelector('[name=token-description]');
-    body.should.containSelector(parentDivSelect2);
-    body.should.containSelector(parentDivSelect2 + ' > div#description').withText('non-revoked token');
-    body.should.containSelector(parentDivSelect2 + ' > a#edit').withText("Edit description");
-    body.should.containSelector(parentDivSelect2 + ' > a#cancel').withAttribute("style", "display: none").withText("cancel");
-    body.should.containSelector(parentDivSelect2 + ' > input#save').withAttribute("style", "display: none").withAttribute("type", "button").withAttribute("value", "Save changes");
-    body.should.containSelector(parentDivSelect2 + ' > a#revoke').withText("Revoke key");
-    body.should.containSelector(parentDivSelect2 + ' > div#revoke-message').withAttribute("style", "display: none");
-    body.should.containSelector(parentDivSelect2 + ' > div#revoked').withAttribute("style", "display: none");
-
+    var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
+    body.should.containSelector(tokenContainerSelector);
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Key was revoked on 18 Oct 2015");
   });
 
 });

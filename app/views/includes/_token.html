@@ -1,24 +1,37 @@
 <li
   id="{{token_link}}"
-  class="key-list-item js-{{^revoked}}active{{/revoked}}"
-  name="token-description">
-  <div class="heading-small" id="description">{{description}}</div>
+  class="key-list-item js-{{^revoked}}active{{/revoked}}">
+  <div id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
   {{#revoked}}
-    <div id="revoked">Key was revoked on {{revoked}}.</div>
+    <div>Key was revoked on {{revoked}}.</div>
   {{/revoked}}
   {{^revoked}}
-    <a id="edit">Edit description</a><br />
-    <input id="save" type="button" style="display: none" value="Save changes" />
-    <a id="cancel" style="display: none">cancel</a>
-    <a id="revoke">Revoke key</a>
-    <div id="revoke-message" style="display: none">
-      Are you sure you want to revoke this developer key?
-      If revoked it will no longer enable integration with the platform.
-      <input id="revoke-yes" type="button" value="Yes" />
-      <input id="revoke-no" type="button" value="No" />
+    <div class="js-edit-controls">
+      <a href="#{{token_link}}" class="js-toggle-description">Edit description</a><br />
+      <a href="#{{token_link}}" class="js-toggle-revoke">Revoke key</a>
     </div>
-    <div id="revoked" style="display: none">
-      This key was successfully revoked on <span id="revoked-date"></span>.
+    <div class="js-edit-description form" hidden>
+      <div class="form-group">
+        <label class="visually-hidden" for="description-input-{{token_link}}">Description</label>
+        <textarea id="description-input-{{token_link}}" class="js-new-description form-control">{{description}}</textarea>
+      </div>
+      <div class="button-group">
+        <a id="save-description-{{token_link}}" href="#{{token_link}}" class="button js-save-description">Save changes</a>
+        <a id="cancel-{{token_link}}" href="#{{token_link}}" class="button-link js-toggle-description">Cancel</a>
+      </div>
+    </div>
+    <div class="js-revoke-confirmation" hidden>
+      <p>
+        Are you sure you want to revoke this developer key?<br />
+        If revoked it will no longer enable integration with the platform.
+      </p>
+      <div class="button-group">
+        <input id="revoke-token-{{token_link}}" type="button" class="button js-revoke-token" value="Yes" />
+        <input id="cancel-revoke-{{token_link}}" type="button" value="No" class="button-secondary js-toggle-revoke" />
+      </div>
+    </div>
+    <div class="js-revoke-confirmed" hidden>
+      Key successfully revoked<br />
       It will no longer enable integration with the platform.
     </div>
   {{/revoked}}

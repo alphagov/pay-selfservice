@@ -8,6 +8,7 @@
 }
 
 // Hide, but not for screenreaders
+.visually-hidden,
 .visuallyhidden {
   position: absolute;
   overflow: hidden;
@@ -18,6 +19,7 @@
 
 // Hide, only when JavaScript is enabled
 .js-enabled .js-hidden,
+[hidden],
 .hidden {
   display: none;
 }

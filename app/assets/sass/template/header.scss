@@ -7,11 +7,27 @@ header {
     position: relative;
     padding-left: 45px;
 
+    &:focus {
+      background: none;
+    }
+
     img {
       position: absolute;
       left: 0;
       top: -6px;
     }
+  }
+
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    color: $white;
+  }
+
+  a:focus,
+  a:hover {
+    text-decoration: underline;
   }
 
   .header-logo {

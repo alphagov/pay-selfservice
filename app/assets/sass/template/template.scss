@@ -18,10 +18,6 @@
   min-height: $gutter*10;
 }
 
-.button {
-  @include button;
-}
-
 // Grid layout
 // ==========================================================================
 
@@ -132,10 +128,6 @@
   .tokens {
     @include bold-27;
     margin-bottom: $gutter;
-  }
-
-  .button {
-    @include bold-16;
   }
 
   @include media(tablet) {
