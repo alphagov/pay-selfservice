@@ -1,11 +1,9 @@
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-
 var request = require('supertest');
 var app = require(__dirname + '/../server.js').getApp;
 var winston = require('winston');
 var portfinder = require('portfinder');
 var nock = require('nock');
-var cookie = require(__dirname + '/utils/session.js');
+var auth_cookie = require(__dirname + '/utils/login-session.js');
 var should = require('chai').should();
 
 portfinder.getPort(function (err, freePort) {
@@ -14,10 +12,25 @@ portfinder.getPort(function (err, freePort) {
   var ACCOUNT_ID = "12345";
   var SELF_SERVICE_CREDENTIALS_PATH = "/selfservice/credentials/{accountId}";
   var SELF_SERVICE_EDIT_CREDENTIALS_PATH = "/selfservice/credentials/{accountId}?edit";
-
+  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
   var localServer = 'http://localhost:' + freePort;
-
   var connectorMock = nock(localServer);
+
+  function build_get_request(path, cookieValue) {
+    return request(app)
+      .get(path)
+      .set('Accept', 'application/json')
+      .set('Cookie', cookieValue);
+  }
+
+  function build_form_post_request(path, sendData, cookieValue) {
+    return request(app)
+      .post(path)
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Cookie', cookieValue)
+      .send(sendData);
+  }
 
   [
     {'path':SELF_SERVICE_CREDENTIALS_PATH,
@@ -57,11 +70,9 @@ portfinder.getPort(function (err, freePort) {
         };
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, expectedData)
-          .end(done);
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, expectedData)
+            .end(done);
       });
 
       it('should display empty credential values when no gateway credentials are set', function (done) {
@@ -80,11 +91,9 @@ portfinder.getPort(function (err, freePort) {
         };
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, expectedData)
-          .end(done);
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, expectedData)
+            .end(done);
       });
 
       it('should display received credentials from connector', function (done) {
@@ -105,11 +114,9 @@ portfinder.getPort(function (err, freePort) {
         };
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, expectedData)
-          .end(done);
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, expectedData)
+            .end(done);
       });
 
       it('should return the account id', function (done) {
@@ -132,11 +139,10 @@ portfinder.getPort(function (err, freePort) {
         if(testSetup.edit) expectedData.editMode = 'true';
 
         if(testSetup.edit) expectedData.editMode = 'true';
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, expectedData)
-          .end(done);
+
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, expectedData)
+            .end(done);
       });
 
       it('should display an error if the account does not exist', function (done) {
@@ -146,13 +152,9 @@ portfinder.getPort(function (err, freePort) {
             "message": "The gateway account id '"+ACCOUNT_ID+"' does not exist"
           });
 
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, {
-            "message": "There is a problem with the payments platform",
-          })
-          .end(done);
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, {"message": "There is a problem with the payments platform"})
+            .end(done);
       });
 
       it('should display an error if connector returns any other error', function (done) {
@@ -162,27 +164,18 @@ portfinder.getPort(function (err, freePort) {
             "message": "Some error in Connector"
           });
 
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, {
-            "message": "There is a problem with the payments platform",
-          })
-          .end(done);
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, {"message": "There is a problem with the payments platform"})
+            .end(done);
       });
 
       it('should display an error if the connection to connector fails', function (done){
 
         // No connectorMock defined on purpose to mock a network failure
 
-        request(app)
-          .get(testSetup.path.replace("{accountId}", ACCOUNT_ID))
-          .set('Accept', 'application/json')
-          .expect(200, {
-            "message": "There is a problem with the payments platform",
-          })
-          .end(done);
-
+        build_get_request(testSetup.path.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            .expect(200, {"message": "There is a problem with the payments platform"})
+            .end(done);
       });
 
     });
@@ -209,16 +202,14 @@ portfinder.getPort(function (err, freePort) {
       })
       .reply(200, {});
 
-      request(app)
-        .post(SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-            'username': 'a-username',
-            'password': 'a-password'
-         })
+
+//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
+    var sendData = {'username': 'a-username', 'password': 'a-password'};
+    var expectedLocation = SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID);
+    var path = SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID);
+    build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
         .expect(303, {})
-        .expect('Location', SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
+        .expect('Location', expectedLocation)
         .end(done);
     });
 
@@ -231,17 +222,12 @@ portfinder.getPort(function (err, freePort) {
       })
       .reply(200, {});
 
-      request(app)
-        .post(SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-            'username': 'a-username',
-            'password': 'a-password',
-            'merchantId': 'a-merchant-id',
-         })
+    var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'};
+    var expectedLocation = SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID);
+    var path = SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID);
+    build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
         .expect(303, {})
-        .expect('Location', SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
+        .expect('Location', expectedLocation)
         .end(done);
     });
 
@@ -255,17 +241,11 @@ portfinder.getPort(function (err, freePort) {
         "message": "Error message"
       });
 
-      request(app)
-        .post(SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-            'username': 'a-username',
-            'password': 'a-password'
-         })
-        .expect(200, {
-            "message": "There is a problem with the payments platform",
-        })
+      var sendData = {'username': 'a-username', 'password': 'a-password'};
+      var expectedData = {"message": "There is a problem with the payments platform"};
+      var path = SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID);
+      build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
+        .expect(200, expectedData)
         .end(done);
     });
 
@@ -273,19 +253,12 @@ portfinder.getPort(function (err, freePort) {
 
       // No connectorMock defined on purpose to mock a network failure
 
-      request(app)
-        .post(SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID))
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'username': 'a-username',
-          'password': 'a-password'
-        })
-        .expect(200, {
-          "message": "There is a problem with the payments platform",
-        })
+      var sendData = {'username': 'a-username', 'password': 'a-password'};
+      var expectedData = {"message": "There is a problem with the payments platform"};
+      var path = SELF_SERVICE_CREDENTIALS_PATH.replace("{accountId}", ACCOUNT_ID);
+      build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
+        .expect(200, expectedData)
         .end(done);
-
     });
 
   });

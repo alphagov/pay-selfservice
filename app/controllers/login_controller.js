@@ -7,21 +7,16 @@ var auth = require('../services/auth_service.js');
 
 module.exports.bindRoutesTo = function (app) {
 
-  app.get('/', function(req, res) {
-    res.render('index');
-  });
-
-  app.get('/login', auth.login, function (req, res) {
+  app.get('/selfservice/login', auth.login, function (req, res) {
     res.redirect("/");
   });
 
-  app.get('/callback', auth.callback, function(req, res) {
-    res.redirect('/protected');
+  app.get('/selfservice/callback', auth.callback, function(req, res) {
+    res.redirect('/selfservice/welcome');
   });
 
-  app.get('/protected', auth.enforce, function (req, res) {
-    res.render('greeting', {
-      greeting: 'Hello',
+  app.get('/selfservice/welcome', function(req, res) {
+    res.render('logged_in', {
       name: req.session.passport.user.displayName
     });
   });

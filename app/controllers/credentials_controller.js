@@ -7,6 +7,7 @@ var renderErrorView = require('../utils/response.js').renderErrorView;
 
 var Client = require('node-rest-client').Client;
 var client = new Client();
+var auth = require('../services/auth_service.js');
 
 module.exports.bindRoutesTo = function (app) {
 
@@ -27,7 +28,7 @@ module.exports.bindRoutesTo = function (app) {
     response(req.headers.accept, res, 'provider_credentials/'+paymentProvider, responsePayload);
   }
 
-  app.get(CREDENTIALS_PATH, function (req, res) {
+  app.get(CREDENTIALS_PATH, auth.enforce, function (req, res) {
 
     var viewMode = req.query.edit === undefined;
     logger.info('GET ' + CREDENTIALS_PATH);
@@ -52,7 +53,7 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  app.post(CREDENTIALS_PATH, function (req, res) {
+  app.post(CREDENTIALS_PATH, auth.enforce, function (req, res) {
 
     logger.info('POST ' + CREDENTIALS_PATH);
 

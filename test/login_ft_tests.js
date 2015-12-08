@@ -1,5 +1,3 @@
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-
 var request = require('supertest');
 var app = require(__dirname + '/../server.js').getApp;
 var winston = require('winston');

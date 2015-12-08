@@ -1,7 +1,7 @@
 var response = require(__dirname + '/utils/response.js').response;
 
 var controllers = require('./controllers');
-var auth = require('./services/auth_service.js')
+var auth = require('./services/auth_service.js');
 
 module.exports.bind = function (app) {
 
