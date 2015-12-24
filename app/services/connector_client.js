@@ -13,14 +13,6 @@ var ConnectorClient = function (connectorUrl) {
 ConnectorClient.prototype.connectorUrl = null;
 ConnectorClient.prototype.client = null;
 
-ConnectorClient.prototype._chargeUrlFor = function (gatewayAccountId, chargeId) {
-    return this.connectorUrl + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
-};
-
-ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
-    return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
-};
-
 ConnectorClient.prototype.getCharge = function (gatewayAccountId, chargeId, successCallback, errCallback) {
 
     var chargeUrl = this._chargeUrlFor(gatewayAccountId, chargeId);
@@ -75,5 +67,12 @@ ConnectorClient.prototype.getChargeEvents = function (gatewayAccountId, chargeId
     });
 };
 
+ConnectorClient.prototype._chargeUrlFor = function (gatewayAccountId, chargeId) {
+    return this.connectorUrl + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
+};
+
+ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
+    return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
+};
 
 exports.ConnectorClient = ConnectorClient;
