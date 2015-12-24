@@ -1,13 +1,11 @@
-var logger = require('winston');
 var response = require('../utils/response.js').response;
 var renderErrorView = require('../utils/response.js').renderErrorView;
+var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
 var TRANSACTIONS_LIST_PATH = '/selfservice/transactions/' + ':gatewayAccountId';
 var TRANSACTIONS_VIEW_PATH = TRANSACTIONS_LIST_PATH + '/:chargeId';
-var CONNECTOR_CHARGE_PATH = '/v1/frontend/charges';
-var CONNECTOR_CHARGE_API_PATH = '/v1/api/accounts/{accountId}/charges/{chargeId}';
 
 function formatForView(connectorData) {
     connectorData.results.forEach(function (element) {
@@ -26,7 +24,7 @@ function buildTransactionView(chargeData, eventsData) {
         "gateway_account_id": "10",
         "status": "SUCCEEDED",
         "gateway_transaction_id": "dsfh-34578fb-4und-8dhry",
-        "events" : [
+        "events": [
             {
                 'status': 'Payment of £50.00 was created',
                 'updated': '23-12-2015 13:21:05'
@@ -43,69 +41,69 @@ function buildTransactionView(chargeData, eventsData) {
     }
 }
 
+function connectorClient() {
+    return new ConnectorClient(process.env.CONNECTOR_URL);
+}
+
 module.exports.bindRoutesTo = function (app) {
 
     /**
      * Display all the transactions for a given accountId
      */
     app.get(TRANSACTIONS_LIST_PATH, function (req, res) {
-
         var gatewayAccountId = req.params.gatewayAccountId;
-        logger.info('GET ' + TRANSACTIONS_LIST_PATH + gatewayAccountId);
-
-        var connectorUrl = process.env.CONNECTOR_URL + CONNECTOR_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
-
-        client.get(connectorUrl, function (connectorData, connectorResponse) {
-
-            if (connectorResponse.statusCode === 200) {
-                response(req.headers.accept, res, 'transactions', formatForView(connectorData));
-                return;
+        var onError = function (err, response) {
+            if (response) {
+                if (response.statusCode === 400) {
+                    renderErrorView(req, res, err);
+                } else {
+                    renderErrorView(req, res, 'Unable to retrieve list of transactions.');
+                }
+            } else {
+                renderErrorView(req, res, 'Internal server error');
             }
+            return;
+        };
 
-            logger.error('Error getting transaction list from connector. Connector response data: ' + connectorData);
-            if (connectorResponse.statusCode === 400) {
-                renderErrorView(req, res, connectorData.message);
-                return;
-            }
+        var onSuccess = function (charges) {
+            response(req.headers.accept, res, 'transactions', formatForView(charges));
+            return;
+        };
 
-            renderErrorView(req, res, 'Unable to retrieve list of transactions.');
-
-        }).on('error', function (err) {
-            logger.error('Exception raised calling connector:' + err);
-            renderErrorView(req, res, 'Internal server error');
-        });
-
+        connectorClient().getTransactionList(gatewayAccountId, onSuccess, onError);
     });
 
     /**
      *  Display transaction details for a given chargeId of an account.
      */
-    app.get(TRANSACTIONS_VIEW_PATH, function(req, res){
+    app.get(TRANSACTIONS_VIEW_PATH, function (req, res) {
         var gatewayAccountId = req.params.gatewayAccountId;
         var chargeId = req.params.chargeId;
 
-        logger.info('GET ' + TRANSACTIONS_VIEW_PATH
-                .replace("gatewayAccountId",gatewayAccountId)
-                .replace("chargeId", chargeId));
+        var onError = function (err, response) {
+            if (response) {
+                console.log("errorStatus = " + response.statusCode);
+                if (response.statusCode === 404) {
+                    renderErrorView(req, res, 'charge not found');
+                } else {
+                    renderErrorView(req, res, 'Error processing transaction view');
+                }
+            } else {
+                renderErrorView(req, res, 'Error processing transaction view');
+            }
+            return;
+        };
 
-        var getChargeUrl = process.env.CONNECTOR_URL + CONNECTOR_CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
-        var getEventsUrl = getChargeUrl + "/events";
-        logger.info('CONNECTOR GET ' + getChargeUrl);
+        var onSuccess = function (charge, events) {
+            response(req.headers.accept, res, 'transaction_details', buildTransactionView(charge, events));
+        };
 
-        client.get(getChargeUrl, function (chargeData, chargeResponse) {
-
-            client.get(getEventsUrl, function (eventsData, eventsResponse) {
-                response(req.headers.accept, res, 'transaction_details', buildTransactionView(chargeData, eventsData));
-                return;
-
-            }).on('error', function (err) {
-                logger.error('Exception raised calling connector:' + err);
-                renderErrorView(req, res, 'Internal server error');
-            });
-
-        }).on('error', function (err) {
-            logger.error('Exception raised calling connector:' + err);
-            renderErrorView(req, res, 'Internal server error');
-        });
+        connectorClient().getCharge(gatewayAccountId, chargeId,
+            function (charge) {
+                connectorClient().getChargeEvents(gatewayAccountId, chargeId,
+                    function (events) {
+                        onSuccess(charge, events);
+                    }, onError)
+            }, onError);
     });
 };

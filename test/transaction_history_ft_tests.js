@@ -10,10 +10,11 @@ portfinder.getPort(function (err, connectorPort) {
     var gatewayAccountId = 6352;
     var chargeId = 452345;
     var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
-    var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId;
-    var TRANSACTION_DETAILS_PATH = '/selfservice/transactions/' + gatewayAccountId + '/' + chargeId;
+    var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
+    var TRANSACTION_DETAILS_PATH = '/selfservice/transactions/' + gatewayAccountId + '/{chargeId}';
 
     var localServer = 'http://localhost:' + connectorPort;
+
     var connectorMock = nock(localServer);
 
     function connectorMock_responds(path, data) {
@@ -21,10 +22,14 @@ portfinder.getPort(function (err, connectorPort) {
             .reply(200, data);
     }
 
-    function when_getTransactionHistory() {
+    function when_getTransactionHistory(chargeId) {
         return request(app)
-            .get(TRANSACTION_DETAILS_PATH)
+            .get(TRANSACTION_DETAILS_PATH.replace('{chargeId}', chargeId))
             .set('Accept', 'application/json');
+    }
+
+    function connectorChargePathFor(chargeId) {
+        return CONNECTOR_CHARGE_PATH.replace("{chargeId}", chargeId);
     }
 
     describe('The transaction view scenarios', function () {
@@ -39,6 +44,7 @@ portfinder.getPort(function (err, connectorPort) {
         });
 
         describe('The transaction history endpoint', function () {
+
             it('should return a list of transaction history for a given charge id', function (done) {
                 var mockEventsResponse = {
                     'charge_id': chargeId,
@@ -105,13 +111,43 @@ portfinder.getPort(function (err, connectorPort) {
                     ]
                 };
 
-                connectorMock_responds(CONNECTOR_CHARGE_PATH, mockChargeResponse);
+                connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
                 connectorMock_responds(CONNECTOR_EVENTS_PATH, mockEventsResponse);
 
-                when_getTransactionHistory()
+                when_getTransactionHistory(chargeId)
                     .expect(200, expectedEventsView)
                     .end(done);
 
+            });
+
+            it('should return charge not found if a non existing charge id requested', function (done) {
+                var nonExistentChargeId = 888;
+                var connectorError = {"message": "charge not found"};
+                connectorMock.get(connectorChargePathFor(nonExistentChargeId))
+                    .reply(404, connectorError);
+
+                when_getTransactionHistory(nonExistentChargeId)
+                    .expect(200, connectorError)
+                    .end(done);
+            });
+
+
+            it('should return a generic if connector responds with an error', function (done) {
+                var nonExistentChargeId = 888;
+                var connectorError = {"message": "Internal server error"};
+                connectorMock.get(connectorChargePathFor(nonExistentChargeId))
+                    .reply(500, connectorError);
+
+                when_getTransactionHistory(nonExistentChargeId)
+                    .expect(200, {"message": "Error processing transaction view"})
+                    .end(done);
+            });
+
+            it('should return a generic if unable to communicate with connector', function (done) {
+
+                when_getTransactionHistory(chargeId)
+                    .expect(200, {"message": "Error processing transaction view"})
+                    .end(done);
             });
         });
     });
