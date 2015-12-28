@@ -18,7 +18,7 @@ module.exports.bindRoutesTo = function (app) {
      */
     app.get(TRANSACTIONS_LIST_PATH, function (req, res) {
         var gatewayAccountId = req.params.gatewayAccountId;
-        var onError = function (err, response) {
+        var showError = function (err, response) {
             if (response) {
                 if (response.statusCode === 400) {
                     renderErrorView(req, res, err);
@@ -30,11 +30,12 @@ module.exports.bindRoutesTo = function (app) {
             }
         };
 
-        var onSuccess = function (charges) {
+        var showTransactions = function (charges) {
             response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges));
         };
 
-        connectorClient().getTransactionList(gatewayAccountId, onSuccess, onError);
+        connectorClient().withTransactionList(gatewayAccountId, showTransactions)
+            .on('connectorError', showError);
     });
 
     /**
@@ -44,7 +45,7 @@ module.exports.bindRoutesTo = function (app) {
         var gatewayAccountId = req.params.gatewayAccountId;
         var chargeId = req.params.chargeId;
 
-        var onError = function (err, response) {
+        var showError = function (err, response) {
             if (response) {
                 if (response.statusCode === 404) {
                     renderErrorView(req, res, 'charge not found');
@@ -56,19 +57,20 @@ module.exports.bindRoutesTo = function (app) {
             }
         };
 
-        var onSuccess = function (charge, events) {
+        var showTransactionDetails = function (charge, events) {
             //TODO: 'transaction_details.html' is not done yet. Please follow the image attached in PP-334
             //TODO: And then the ui tests
             //FIXME:  transactionView.buildPaymentView() is not complete. have look at TODO's in transaction_views.js
             response(req.headers.accept, res, 'transaction_details', transactionView.buildPaymentView(charge, events));
         };
 
-        connectorClient().getCharge(gatewayAccountId, chargeId,
+        connectorClient().withGetCharge(gatewayAccountId, chargeId,
             function (charge) { //on success of finding a charge
-                connectorClient().getChargeEvents(gatewayAccountId, chargeId,
+                connectorClient().withChargeEvents(gatewayAccountId, chargeId,
                     function (events) { //on success of finding events for charge
-                        onSuccess(charge, events);
-                    }, onError)
-            }, onError);
+                        showTransactionDetails(charge, events);
+                    })
+                    .on('connectorError', showError)
+            }).on('connectorError', showError);
     });
 };
