@@ -58,9 +58,6 @@ module.exports.bindRoutesTo = function (app) {
         };
 
         var showTransactionDetails = function (charge, events) {
-            //TODO: 'transaction_details.html' is not done yet. Please follow the image attached in PP-334
-            //TODO: And then the ui tests
-            //FIXME:  transactionView.buildPaymentView() is not complete. have look at TODO's in transaction_views.js
             response(req.headers.accept, res, 'transaction_details', transactionView.buildPaymentView(charge, events));
         };
 

@@ -29,7 +29,7 @@ portfinder.getPort(function (err, connectorPort) {
     }
 
     function connectorChargePathFor(chargeId) {
-        return CONNECTOR_CHARGE_PATH.replace("{chargeId}", chargeId);
+        return CONNECTOR_CHARGE_PATH.replace('{chargeId}', chargeId);
     }
 
     describe('The transaction view scenarios', function () {
@@ -65,48 +65,48 @@ portfinder.getPort(function (err, connectorPort) {
                 };
 
                 var mockChargeResponse = {
-                    "charge_id": chargeId,
-                    "description": "Breathing licence",
-                    "reference": "Ref-1234",
-                    "amount": 5000,
-                    "gateway_account_id": "10",
-                    "gateway_transaction_id": "dsfh-34578fb-4und-8dhry",
-                    "status": "SUCCEEDED",
-                    "return_url": "http://example.service/return_from_payments",
-                    "links": [
+                    'charge_id': chargeId,
+                    'description': 'Breathing licence',
+                    'reference': 'Ref-1234',
+                    'amount': 5000,
+                    'gateway_account_id': '10',
+                    'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
+                    'status': 'SUCCEEDED',
+                    'return_url': 'http://example.service/return_from_payments',
+                    'links': [
                         {
-                            "rel": "self",
-                            "method": "GET",
-                            "href": "http://connector.service/v1/api/charges/1"
+                            'rel': 'self',
+                            'method': 'GET',
+                            'href': 'http://connector.service/v1/api/charges/1'
                         },
                         {
-                            "rel": "next_url",
-                            "method": "GET",
-                            "href": "http://frontend/charges/1?chargeTokenId=82347"
+                            'rel': 'next_url',
+                            'method': 'GET',
+                            'href': 'http://frontend/charges/1?chargeTokenId=82347'
                         }
                     ],
                 };
 
                 var expectedEventsView = {
                     'charge_id': chargeId,
-                    "description": "Breathing licence",
-                    "reference": "Ref-1234",
-                    "amount": 5000,
-                    "gateway_account_id": "10",
-                    "status": "SUCCEEDED",
-                    "gateway_transaction_id": "dsfh-34578fb-4und-8dhry",
-                    "events": [
+                    'description': 'Breathing licence',
+                    'reference': 'Ref-1234',
+                    'amount': '£50.00',
+                    'gateway_account_id': '10',
+                    'status': 'SUCCEEDED',
+                    'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
+                    'events': [
                         {
-                            'status': 'Payment of £50.00 was created',
-                            'updated': '23-12-2015 13:21:05'
+                            'status': 'Payment of £50.00 succeeded',
+                            'updated': '24-12-2015 12:05:43'
                         },
                         {
                             'status': 'Payment of £50.00 is in progress',
                             'updated': '23-12-2015 13:23:12'
                         },
                         {
-                            'status': 'Payment of £50.00 successfully captured',
-                            'updated': '24-12-2015 12:05:43'
+                            'status': 'Payment of £50.00 was created',
+                            'updated': '23-12-2015 13:21:05'
                         }
                     ]
                 };
@@ -122,7 +122,7 @@ portfinder.getPort(function (err, connectorPort) {
 
             it('should return charge not found if a non existing charge id requested', function (done) {
                 var nonExistentChargeId = 888;
-                var connectorError = {"message": "charge not found"};
+                var connectorError = {'message': 'charge not found'};
                 connectorMock.get(connectorChargePathFor(nonExistentChargeId))
                     .reply(404, connectorError);
 
@@ -134,19 +134,19 @@ portfinder.getPort(function (err, connectorPort) {
 
             it('should return a generic if connector responds with an error', function (done) {
                 var nonExistentChargeId = 888;
-                var connectorError = {"message": "Internal server error"};
+                var connectorError = {'message': 'Internal server error'};
                 connectorMock.get(connectorChargePathFor(nonExistentChargeId))
                     .reply(500, connectorError);
 
                 when_getTransactionHistory(nonExistentChargeId)
-                    .expect(200, {"message": "Error processing transaction view"})
+                    .expect(200, {'message': 'Error processing transaction view'})
                     .end(done);
             });
 
             it('should return a generic if unable to communicate with connector', function (done) {
 
                 when_getTransactionHistory(chargeId)
-                    .expect(200, {"message": "Error processing transaction view"})
+                    .expect(200, {'message': 'Error processing transaction view'})
                     .end(done);
             });
         });
