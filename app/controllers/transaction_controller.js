@@ -31,7 +31,7 @@ module.exports.bindRoutesTo = function (app) {
         };
 
         var showTransactions = function (charges) {
-            response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges));
+            response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges, gatewayAccountId));
         };
 
         connectorClient().withTransactionList(gatewayAccountId, showTransactions)

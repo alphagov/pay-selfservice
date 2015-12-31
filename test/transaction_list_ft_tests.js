@@ -66,14 +66,16 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
               'reference': 'ref1',
-              'status': 'TEST STATUS'
+              'status': 'TEST STATUS',
+              'gateway_account_id': '452345'
             },
             {
               'charge_id': '101',
               'gateway_transaction_id': 'tnx-id-2',
               'amount': '20.00',
               'reference': 'ref2',
-              'status': 'TEST STATUS 2'
+              'status': 'TEST STATUS 2',
+              'gateway_account_id': '452345'
             }
           ]
         };
@@ -111,14 +113,16 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
               'reference': '',
-              'status': 'TEST STATUS'
+              'status': 'TEST STATUS',
+              'gateway_account_id': '452345'
             },
             {
               'charge_id': '101',
               'gateway_transaction_id': 'tnx-id-2',
               'amount': '20.00',
               'reference': 'ref2',
-              'status': 'TEST STATUS 2'
+              'status': 'TEST STATUS 2',
+              'gateway_account_id': '452345'
             }
           ]
         };

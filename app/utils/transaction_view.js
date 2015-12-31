@@ -24,9 +24,10 @@ var TransactionView = function () {
 TransactionView.prototype.eventStatuses = {};
 
 /** prepares the transaction list view */
-TransactionView.prototype.buildPaymentList = function (connectorData) {
+TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId) {
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);
+        element.gateway_account_id = gatewayAccountId;
         element.reference = element.reference || ""; // tolerate missing reference
     });
     return connectorData;
