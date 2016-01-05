@@ -1,0 +1,75 @@
+{{< layout}}
+
+{{$pageTitle}}
+Transaction Details
+{{/pageTitle}}
+
+{{$content}}
+<h2 class="heading-large">Transactions</h2>
+<hr style="height:3px;color:#333;background-color:#333;" />
+<h3 class="heading-medium">Transaction details</h3>
+<div class="inner group">
+<table id="transaction-info" style="max-width:600px;">
+  <tbody>
+    <tr>
+      <td>Reference Number:</td>
+      <td><strong id="reference">{{reference}}</strong></td>
+    </tr>
+    <tr>
+      <td>Amount (£):</td>
+      <td><strong id="amount">{{amount}}</strong></td>
+    </tr>
+    <tr>
+      <td>Status:</td>
+      <td> <strong id="status">{{status}}</strong></td>
+    </tr>
+    <tr>
+      <td>Method:</td>
+      <td><strong id="method"></strong></td>
+    </tr>
+    <tr>
+      <td>Provider:</td>
+      <td><strong id="provider"></strong></td>
+    </tr>
+    <tr>
+      <td>Time:</td>
+          <td><strong id="time">
+            {{events.0.updated.dayOfMonth}}/{{events.0.updated.monthValue}}/{{events.0.updated.year}}
+            -
+            {{events.0.updated.hour}}:{{events.0.updated.minute}}:{{events.0.updated.second}}
+          </strong></td>
+    </tr>
+    <tr>
+      <td>Transaction ID:</td>
+      <td><strong id="transaction-id">{{gateway_transaction_id}}</strong></td>
+    </tr>
+    <tr>
+      <td>Payment ID:</td>
+      <td><strong id="payment-id">{{charge_id}}</strong></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<hr style="height:3px;color:#333;background-color:#333;" />
+<h3 class="heading-medium">Events</h3>
+<div class="inner group">
+  <table  id="transaction-events">
+    <tbody>
+    {{#events}}
+    <tr>
+      <td>{{status}}</td>
+      <td align="right">{{updated.dayOfMonth}} {{updated.month}} {{updated.year}} {{updated.hour}}:{{updated.minute}}:{{updated.second}}</td>
+    </tr>
+    {{/events}}
+    </tbody>
+  </table>
+</div>
+
+<hr style="height:3px;color:#333;background-color:#333;" />
+<h3 class="heading-medium">Logs</h3>
+
+
+{{/content}}
+
+{{/layout}}
