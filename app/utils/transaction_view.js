@@ -4,6 +4,9 @@ String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 };
 
+var monthNames = ["January","February", "March",    "April",    "May",      "June",
+                  "July",   "August",   "September","October",  "November", "December" ];
+
 //TODO: Ask Rory for the friendly text for the below order statuses
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
@@ -37,20 +40,7 @@ TransactionView.prototype.buildPaymentView = function (chargeData, eventsData) {
     eventsData.events.forEach(function (event) {
         event.status = this.eventStatuses[event.status];
         event.status = event.status.replace('AMOUNT', CURRENCY + (chargeData.amount / 100).toFixed(2));
-        if (event.updated.month) {
-            event.updated.month = event.updated.month.toLowerCase().capitalize();
-        }
-
-        //This is a workaround to add a left zero to any time value lower than 10.
-        if (event.updated.second < 10) {
-            event.updated.second = '0'+event.updated.second;
-        }
-        if (event.updated.minute < 10) {
-            event.updated.minute = '0'+event.updated.minute;
-        }
-        if (event.updated.hour < 10 ) {
-            event.updated.hour = '0'+event.updated.hour;
-        }
+        event.updated2 = convertDate(event.updated);
     }.bind(this));
 
     chargeData.amount = CURRENCY + (chargeData.amount / 100).toFixed(2);
@@ -59,5 +49,16 @@ TransactionView.prototype.buildPaymentView = function (chargeData, eventsData) {
     delete chargeData['return_url'];
     return chargeData;
 };
+
+function convertDate(updated) {
+  function pad(s) { return (s < 10) ? '0' + s : s; };
+  var date = new Date(updated);
+  return    pad(date.getDate()) +            " " +
+            monthNames[date.getMonth()] +   " " +
+            date.getFullYear() +            " " +
+            pad(date.getHours()) +          ":" +
+            pad(date.getMinutes()) +        ":" +
+            pad(date.getSeconds());
+}
 
 exports.TransactionView = TransactionView;
