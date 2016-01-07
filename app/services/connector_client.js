@@ -73,7 +73,7 @@ ConnectorClient.prototype.withGetCharge = function (gatewayAccountId, chargeId, 
 };
 
 /**
- * Retrives transaction history for a given charge Id that belongs to a gateway account Id.
+ * Retrieves transaction history for a given charge Id that belongs to a gateway account Id.
  * @param gatewayAccountId
  * @param chargeId
  * @param successCallback the callback to perform upon `200 OK` from connector along with history resultset.
