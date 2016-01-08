@@ -1,38 +1,86 @@
-{{<layout}}
+{{< layout}}
 
 {{$pageTitle}}
 GOV.UK Pay - View transactions
 {{/pageTitle}}
 
 {{$content}}
+<h2 class="heading-large">Transactions</h2>
+<hr style="height:3px;color:#333;background-color:#333;" />
+<h3 class="heading-medium">Filter transactions list</h3>
 
-<h1 class="page-title">Transactions</h1>
+<div class="grid-row">
+  <form class="form" method="post" action="{{search_path}}">
+    <fieldset>
+      <div class="column-one-quarter">
+        <label class="form-label" for="reference">
+          <strong>Reference Number</strong>
+          <span class="form-hint">Enter full or part</span>
+        </label>
+        <input class="form-control" id="reference" name="reference" type="text" />
+      </div>
 
-<table id="transaction-list">
-  <thead>
-    <tr>
-      <th id="charge-id-header">Charge ID</th>
-      <th id="transaction-id-header">Gateway transaction ID</th>
-      <th id="amount-header">Amount (£)</th>
-      <th id="reference-header">Reference</th>
-      <th id="status-header">Status</th>
-      <th>&nbsp;</th>
-    </tr>
-  </thead>
-  <tbody>
-  {{#results}}
-    <tr>
-      <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
-      <td>{{gateway_transaction_id}}</td>
-      <td>{{amount}}</td>
-      <td>{{reference}}</td>
-      <td>{{status}}</td>
-      <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">
-        <img src="/selfservice/public/images/link.png" class="transaction-detail-icon" /></a></td>
-    </tr>
-  {{/results}}
-  </tbody>
-</table>
+      <div class="column-one-quarter">
+        <label class="form-label" for="status">
+          <strong>Status</strong>
+          <span class="form-hint">Select an option</span>
+        </label>
+        <select class="form-control" id="status" name="status">
+          <option value=""></option>
+          {{#eventStatuses}}
+            <option value="{{value}}">{{text}}</option>
+          {{/eventStatuses}}
+        </select>
+      </div>
+
+      <div class="column-one-quarter">
+        <label class="form-label" for="fromDate">
+          <strong>Date created</strong>
+          <span class="form-hint">From</span>
+        </label>
+        <input class="form-control" id="fromDate" name="fromDate" type="text">
+        <label class="form-label" for="toDate">
+          <span class="form-hint">To</span>
+        </label>
+        <input class="form-control" id="toDate" name="toDate" type="text">
+      </div>
+
+      <div class="column-one-quarter">
+        <div class="form-group">
+          <input class="button" type="submit" id="filter" value="Filter">
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+<div class="inner group">
+  <table id="transaction-list">
+    <thead>
+      <tr>
+        <th id="charge-id-header">Charge ID</th>
+        <th id="transaction-id-header">Gateway transaction ID</th>
+        <th id="amount-header">Amount (£)</th>
+        <th id="reference-header">Reference</th>
+        <th id="status-header">Status</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#results}}
+      <tr>
+        <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
+        <td>{{gateway_transaction_id}}</td>
+        <td>{{amount}}</td>
+        <td>{{reference}}</td>
+        <td>{{status}}</td>
+        <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">
+          <img src="/selfservice/public/images/link.png" class="transaction-detail-icon" /></a></td>
+      </tr>
+    {{/results}}
+    </tbody>
+  </table>
+</div>
 
 {{/content}}
 

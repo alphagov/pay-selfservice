@@ -23,6 +23,9 @@ TransactionView.prototype.eventStatuses = {};
 
 /** prepares the transaction list view */
 TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId) {
+    connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
+        return { "value": str, "text": str.toLowerCase().capitalize()};
+    });
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);
         element.gateway_account_id = gatewayAccountId;
