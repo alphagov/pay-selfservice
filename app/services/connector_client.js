@@ -22,13 +22,14 @@ ConnectorClient.prototype.connectorUrl = null;
 ConnectorClient.prototype.client = null;
 
 /**
- * Retrieves transaction list for a given gateway account id.
+ * Retrieves transaction list for a given gateway account id and search parameters
  * @param gatewayAccountId
+ * @param searchParameters
  * @param successCallback the callback to perform upon `200 OK` along with the connector results.
  * @returns {ConnectorClient}
  */
-ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, successCallback) {
-    var transactionsUrl = this._transactionUrlFor(gatewayAccountId);
+ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, searchParameters, successCallback) {
+    var transactionsUrl = this._transactionUrlFor(gatewayAccountId, searchParameters);
 
     var self = this;
     logger.info('CONNECTOR GET ' + transactionsUrl);
@@ -102,8 +103,16 @@ ConnectorClient.prototype._chargeUrlFor = function (gatewayAccountId, chargeId) 
     return this.connectorUrl + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
 };
 
-ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
-    return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
+ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId, searchParameters) {
+    var reference = searchParameters.reference ? searchParameters.reference : '';
+    var status = searchParameters.status ? searchParameters.status : '';
+    var fromDate = searchParameters.fromDate ? searchParameters.fromDate: '';
+    var toDate = searchParameters.toDate ? searchParameters.toDate: '';
+    return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId  +
+                                                      '&reference=' + reference +
+                                                      '&status=' + status +
+                                                      '&fromDate=' + fromDate +
+                                                      '&toDate=' + toDate;
 };
 
 exports.ConnectorClient = ConnectorClient;

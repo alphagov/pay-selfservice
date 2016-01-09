@@ -12,6 +12,26 @@ function connectorClient() {
 }
 
 var auth = require('../services/auth_service.js');
+var filterTransactions = function (req, res) {
+    var gatewayAccountId = req.params.gatewayAccountId;
+    var showError = function (err, response) {
+        if (response) {
+            if (response.statusCode === 400) {
+                renderErrorView(req, res, err);
+            } else {
+                renderErrorView(req, res, 'Unable to retrieve list of transactions.');
+            }
+        } else {
+            renderErrorView(req, res, 'Internal server error');
+        }
+    };
+
+    var showTransactions = function (charges) {
+        charges.search_path = req.path;
+        response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges, gatewayAccountId));
+    };
+    connectorClient().withTransactionList(gatewayAccountId, req.body, showTransactions).on('connectorError', showError);
+}
 
 module.exports.bindRoutesTo = function (app) {
     /**
