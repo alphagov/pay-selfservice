@@ -2,21 +2,14 @@ var moment = require('moment');
 var changeCase = require('change-case');
 var CURRENCY = '£';
 
-//TODO: Ask Rory for the friendly text for the below order statuses
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
     this.eventStatuses['IN PROGRESS'] = 'Payment of AMOUNT is in progress';
-    this.eventStatuses['ENTERING CARD DETAILS'] = 'Entered card details';
-    this.eventStatuses['AUTHORISATION REJECTED'] = 'AUTHORISATION REJECTED';
-    this.eventStatuses['AUTHORISATION SUBMITTED'] = 'AUTHORISATION SUBMITTED';
-    this.eventStatuses['AUTHORISATION SUCCESS'] = 'Payment of AMOUNT was authorised';
-    this.eventStatuses['READY_FOR_CAPTURE'] = 'READY_FOR_CAPTURE';
-    this.eventStatuses['CAPTURE SUBMITTED'] = 'Payment of AMOUNT submitted';
-    this.eventStatuses['CAPTURED'] = 'Payment of AMOUNT successfully captured';
     this.eventStatuses['SUCCEEDED'] = 'Payment of AMOUNT succeeded';
-    this.eventStatuses['SYSTEM UNKNOWN'] = 'SYSTEM UNKNOWN';
-    this.eventStatuses['SYSTEM CANCELLED'] = 'SYSTEM CANCELLED';
-    this.eventStatuses['SYSTEM ERROR'] = 'SYSTEM ERROR';
 };
 
 TransactionView.prototype.eventStatuses = {};

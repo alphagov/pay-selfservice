@@ -12,7 +12,7 @@ GOV.UK Pay - View transactions
 <div class="grid-row">
   <form class="form" method="post" action="{{search_path}}">
     <fieldset>
-      <div class="column-one-quarter">
+      <div class="column-quarter">
         <label class="form-label" for="reference">
           <strong>Reference Number</strong>
           <span class="form-hint">Enter full or part</span>
@@ -20,7 +20,7 @@ GOV.UK Pay - View transactions
         <input class="form-control" id="reference" name="reference" type="text" />
       </div>
 
-      <div class="column-one-quarter">
+      <div class="column-quarter">
         <label class="form-label" for="status">
           <strong>Status</strong>
           <span class="form-hint">Select an option</span>
@@ -33,7 +33,7 @@ GOV.UK Pay - View transactions
         </select>
       </div>
 
-      <div class="column-one-quarter">
+      <div class="column-quarter">
         <label class="form-label" for="fromDate">
           <strong>Date created</strong>
           <span class="form-hint">From</span>
@@ -45,7 +45,7 @@ GOV.UK Pay - View transactions
         <input class="form-control" id="toDate" name="toDate" type="text">
       </div>
 
-      <div class="column-one-quarter">
+      <div class="column-quarter">
         <div class="form-group">
           <input class="button" type="submit" id="filter" value="Filter">
         </div>
@@ -54,15 +54,19 @@ GOV.UK Pay - View transactions
   </form>
 </div>
 
+
+<h3 class="heading-medium" id="total-results">{{results.length}} transactions</h3>
+
 <div class="inner group">
   <table id="transaction-list">
     <thead>
       <tr>
-        <th id="charge-id-header">Charge ID</th>
-        <th id="transaction-id-header">Gateway transaction ID</th>
-        <th id="amount-header">Amount (£)</th>
-        <th id="reference-header">Reference</th>
-        <th id="status-header">Status</th>
+        <th id="charge-id-header"><strong>Charge ID</strong></th>
+        <th id="amount-header"><strong>Amount (£)</strong></th>
+        <th id="reference-header"><strong>Reference</strong></th>
+        <th id="status-header"><strong>Status</strong></th>
+        <th id="transaction-id-header"><strong>Gateway transaction ID</strong></th>
+        <th id="time-header"><strong>Time</strong></th>
         <th>&nbsp;</th>
       </tr>
     </thead>
@@ -74,6 +78,7 @@ GOV.UK Pay - View transactions
         <td>{{amount}}</td>
         <td>{{reference}}</td>
         <td>{{status}}</td>
+        <td>{{updated}}</td>
         <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">
           <img src="/selfservice/public/images/link.png" class="transaction-detail-icon" /></a></td>
       </tr>

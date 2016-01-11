@@ -28,6 +28,7 @@ describe('The transaction list view', function () {
     var body = renderTemplate('transactions', templateData);
 
     templateData.results.forEach(function (transactionData, ix) {
+    body.should.containSelector('h3#total-results').withExactText('2 transactions');
       body.should.containSelector('table#transaction-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].charge_id)

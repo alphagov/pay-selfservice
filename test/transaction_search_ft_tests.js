@@ -55,14 +55,16 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'status': 'TEST STATUS'
+                    'status': 'TEST STATUS',
+                    'updated': '2016-01-11 01:01:01'
                   },
                   {
                     'charge_id': '101',
                     'gateway_transaction_id': 'tnx-id-2',
                     'amount': 2000,
                     'reference': 'ref2',
-                    'status': 'TEST STATUS 2'
+                    'status': 'TEST STATUS 2',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -77,7 +79,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '50.00',
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'gateway_account_id': '452345'
+                    'gateway_account_id': '452345',
+                    'updated': '2016-01-11 01:01:01'
                   },
                   {
                     'charge_id': '101',
@@ -85,7 +88,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '20.00',
                     'reference': 'ref2',
                     'status': 'TEST STATUS 2',
-                    'gateway_account_id': '452345'
+                    'gateway_account_id': '452345',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -108,7 +112,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'status': 'TEST STATUS'
+                    'status': 'TEST STATUS',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -123,7 +128,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '50.00',
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'gateway_account_id': '452345'
+                    'gateway_account_id': '452345',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -145,7 +151,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'status': 'TEST_STATUS'
+                    'status': 'TEST_STATUS',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -160,7 +167,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '50.00',
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
-                    'gateway_account_id': '452345'
+                    'gateway_account_id': '452345',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -182,7 +190,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'status': 'TEST_STATUS'
+                    'status': 'TEST_STATUS',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -203,7 +212,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '50.00',
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
-                    'gateway_account_id': '452345'
+                    'gateway_account_id': '452345',
+                    'updated': '2016-01-11 01:01:01'
                   }
                 ]
               };
