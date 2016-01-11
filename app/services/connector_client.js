@@ -104,15 +104,12 @@ ConnectorClient.prototype._chargeUrlFor = function (gatewayAccountId, chargeId) 
 };
 
 ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId, searchParameters) {
-    var reference = searchParameters.reference ? searchParameters.reference : '';
-    var status = searchParameters.status ? searchParameters.status : '';
-    var fromDate = searchParameters.fromDate ? searchParameters.fromDate: '';
-    var toDate = searchParameters.toDate ? searchParameters.toDate: '';
-    return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId  +
-                                                      '&reference=' + reference +
-                                                      '&status=' + status +
-                                                      '&fromDate=' + fromDate +
-                                                      '&toDate=' + toDate;
+    var queryStr = '?gatewayAccountId=' + gatewayAccountId;
+    queryStr = searchParameters.reference ? queryStr+= '&reference=' + searchParameters.reference : queryStr;
+    queryStr = searchParameters.status ? queryStr+= '&status=' + searchParameters.status  : queryStr;
+    queryStr = searchParameters.fromDate ? queryStr+= '&fromDate=' + searchParameters.fromDate : queryStr;
+    queryStr = searchParameters.toDate ? queryStr+= '&toDate=' + searchParameters.toDate : queryStr;
+    return this.connectorUrl + FRONTEND_CHARGE_PATH + queryStr;
 };
 
 exports.ConnectorClient = ConnectorClient;
