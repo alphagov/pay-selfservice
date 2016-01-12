@@ -34,7 +34,9 @@ describe('The transaction list view', function () {
         .withTableDataAt(2, templateData.results[ix].amount)
         .withTableDataAt(3, templateData.results[ix].reference)
         .withTableDataAt(4, templateData.results[ix].status)
-        .withTableDataAt(5, templateData.results[ix].updated);
+        //TODO: Change the index from 6 to 5 once PP-279 pay-endtoend has been merged to master
+        //      This is for backwards compatibility
+        .withTableDataAt(6, templateData.results[ix].updated);
     });
   });
 });
