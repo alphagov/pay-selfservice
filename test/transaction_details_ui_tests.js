@@ -19,27 +19,23 @@ describe('The transaction details view', function () {
         'events':[
             {'chargeId':1,
              'status':'Payment of £10.00 succeeded',
-             'updated':{'hour':13,'minute':48,'second':20,'nano':0,
-                        'monthValue':12,'year':2015,'month':'December','dayOfMonth':30,'dayOfWeek':'WEDNESDAY','dayOfYear':364,
-                        'chronology':{'calendarType':'iso8601','id':'ISO'}}},
+             'updated': "2015-12-24 13:21:05",
+             'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
              'status':'Payment of £10.00 is in progress',
-             'updated':{'hour':13,'minute':48,'second':19,'nano':0,
-                        'monthValue':12,'year':2015,'month':'December','dayOfMonth':30,'dayOfWeek':'WEDNESDAY','dayOfYear':364,
-                        'chronology':{'calendarType':'iso8601','id':'ISO'}}},
+             'updated': "2015-12-24 13:21:05",
+             'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
              'status':'Payment of £10.00 is in progress',
-             'updated':{'hour':13,'minute':48,'second':'03','nano':0,
-                        'monthValue':12,'year':2015,'month':'December','dayOfMonth':30,'dayOfWeek':'WEDNESDAY','dayOfYear':364,
-                        'chronology':{'calendarType':'iso8601','id':'ISO'}}},
+             'updated': "2015-12-24 13:21:05",
+             'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
              'status':'Payment of £10.00 was created',
-             'updated':{'hour':13,'minute':48,'second':'03','nano':0,
-                        'monthValue':12,'year':2015,'month':'December','dayOfMonth':30,'dayOfWeek':'WEDNESDAY','dayOfYear':364,
-                        'chronology':{'calendarType':'iso8601','id':'ISO'}}}
+             'updated': "2015-12-24 13:21:05",
+             'updated_friendly': "24 January 2015 13:21:05"},
         ]
     };
 
@@ -52,16 +48,10 @@ describe('The transaction details view', function () {
     $('#status').text().should.equal(templateData.status);
 
     templateData.events.forEach(function (transactionData, ix) {
-    var formattedDate = templateData.events[ix].updated.dayOfMonth + ' ' +
-                        templateData.events[ix].updated.month + ' ' +
-                        templateData.events[ix].updated.year + ' ' +
-                        templateData.events[ix].updated.hour + ':' +
-                        templateData.events[ix].updated.minute + ':' +
-                        templateData.events[ix].updated.second;
       body.should.containSelector('table#transaction-events')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.events[ix].status)
-        .withTableDataAt(2, formattedDate);
+        .withTableDataAt(2, templateData.events[ix].updated_friendly);
     });
   });
 });
