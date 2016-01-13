@@ -1,12 +1,7 @@
-var logger = require('winston');
 var response = require('../utils/response.js').response;
-var ERROR_MESSAGE = require('../utils/response.js').ERROR_MESSAGE;
-var renderErrorView = require('../utils/response.js').renderErrorView;
-
 var auth = require('../services/auth_service.js');
 
 module.exports.bindRoutesTo = function (app) {
-
   app.get('/selfservice/login', auth.login, function (req, res) {
     res.redirect("/");
   });
@@ -20,5 +15,4 @@ module.exports.bindRoutesTo = function (app) {
       name: req.session.passport.user.displayName
     });
   });
-
 };

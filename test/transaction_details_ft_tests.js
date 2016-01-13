@@ -2,7 +2,7 @@ var request = require('supertest');
 var portfinder = require('portfinder');
 var nock = require('nock');
 var app = require(__dirname + '/../server.js').getApp;
-
+var auth_cookie = require(__dirname + '/utils/login-session.js');
 var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
@@ -16,6 +16,7 @@ portfinder.getPort(function (err, connectorPort) {
     var localServer = 'http://localhost:' + connectorPort;
 
     var connectorMock = nock(localServer);
+    var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
 
     function connectorMock_responds(path, data) {
         return connectorMock.get(path)
@@ -25,7 +26,8 @@ portfinder.getPort(function (err, connectorPort) {
     function when_getTransactionHistory(chargeId) {
         return request(app)
             .get(TRANSACTION_DETAILS_PATH.replace('{chargeId}', chargeId))
-            .set('Accept', 'application/json');
+            .set('Accept', 'application/json')
+            .set('Cookie', ['session=' + AUTH_COOKIE_VALUE]);
     }
 
     function connectorChargePathFor(chargeId) {
