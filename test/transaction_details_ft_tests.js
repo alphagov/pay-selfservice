@@ -99,17 +99,17 @@ portfinder.getPort(function (err, connectorPort) {
                         {
                             'status': 'Payment of £50.00 succeeded',
                             'updated': '2015-12-24 12:05:43',
-                            'updated2': '24 December 2015 12:05:43'
+                            'updated_friendly': '24 December 2015 12:05:43'
                         },
                         {
                             'status': 'Payment of £50.00 is in progress',
                             'updated': '2015-12-24 13:23:12',
-                            'updated2': '24 December 2015 13:23:12'
+                            'updated_friendly': '24 December 2015 13:23:12'
                         },
                         {
                             'status': 'Payment of £50.00 was created',
                             'updated': '2015-12-24 13:21:05',
-                            'updated2': '24 December 2015 13:21:05'
+                            'updated_friendly': '24 December 2015 13:21:05'
                         }
                     ]
                 };

@@ -20,22 +20,22 @@ describe('The transaction details view', function () {
             {'chargeId':1,
              'status':'Payment of £10.00 succeeded',
              'updated': "2015-12-24 13:21:05",
-             'updated2': "24 January 2015 13:21:05"},
+             'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
              'status':'Payment of £10.00 is in progress',
              'updated': "2015-12-24 13:21:05",
-             'updated2': "24 January 2015 13:21:05"},
+             'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
              'status':'Payment of £10.00 is in progress',
              'updated': "2015-12-24 13:21:05",
-             'updated2': "24 January 2015 13:21:05"},
+             'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
              'status':'Payment of £10.00 was created',
              'updated': "2015-12-24 13:21:05",
-             'updated2': "24 January 2015 13:21:05"},
+             'updated_friendly': "24 January 2015 13:21:05"},
         ]
     };
 
@@ -51,7 +51,7 @@ describe('The transaction details view', function () {
       body.should.containSelector('table#transaction-events')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.events[ix].status)
-        .withTableDataAt(2, templateData.events[ix].updated2);
+        .withTableDataAt(2, templateData.events[ix].updated_friendly);
     });
   });
 });

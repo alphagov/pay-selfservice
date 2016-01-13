@@ -1,11 +1,5 @@
+var moment = require('moment');
 var CURRENCY = '£';
-
-String.prototype.capitalize = function() {
-    return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
-};
-
-var monthNames = ["January","February", "March",    "April",    "May",      "June",
-                  "July",   "August",   "September","October",  "November", "December" ];
 
 //TODO: Ask Rory for the friendly text for the below order statuses
 var TransactionView = function () {
@@ -40,7 +34,7 @@ TransactionView.prototype.buildPaymentView = function (chargeData, eventsData) {
     eventsData.events.forEach(function (event) {
         event.status = this.eventStatuses[event.status];
         event.status = event.status.replace('AMOUNT', CURRENCY + (chargeData.amount / 100).toFixed(2));
-        event.updated2 = convertDate(event.updated);
+        event.updated_friendly = convertDate(event.updated);
     }.bind(this));
 
     chargeData.amount = CURRENCY + (chargeData.amount / 100).toFixed(2);
@@ -51,14 +45,8 @@ TransactionView.prototype.buildPaymentView = function (chargeData, eventsData) {
 };
 
 function convertDate(updated) {
-  function pad(s) { return (s < 10) ? '0' + s : s; };
   var date = new Date(updated);
-  return    pad(date.getDate()) +            " " +
-            monthNames[date.getMonth()] +   " " +
-            date.getFullYear() +            " " +
-            pad(date.getHours()) +          ":" +
-            pad(date.getMinutes()) +        ":" +
-            pad(date.getSeconds());
+  return moment(date).format('DD MMMM YYYY HH:mm:ss');
 }
 
 exports.TransactionView = TransactionView;
