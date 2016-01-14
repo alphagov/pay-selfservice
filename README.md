@@ -29,12 +29,37 @@ $ ./redirect.sh stop
 View the transaction list for a given account id.
 
 ```
-    /transactions/{gatewayAccountId}
+    GET /transactions/{gatewayAccountId}
 ```
 
 | Path param               | always present | Description                               |
 | ------------------------ |:--------:| -----------------------------------------       |
 | `gatewayAccountId`       | X | The account Id for which the transaction should be retrieved  |
+
+## Transaction Search
+
+Search transactions by reference, status and from and to date
+
+```
+    POST /transactions/{gatewayAccountId}
+```
+
+| Path param               | always present | Description                               |
+| ------------------------ |:--------:| -----------------------------------------       |
+| `gatewayAccountId`       | X | The account Id for which the transaction should be retrieved  |
+
+## Transaction Events list
+
+View the transaction events list for a given account id.
+
+```
+    GET /transactions/{gatewayAccountId}/{chargeId}
+```
+
+| Path param               | always present | Description                               |
+| ------------------------ |:--------:| -----------------------------------------       |
+| `gatewayAccountId`       | X | The account Id for which the transaction should be retrieved  |
+| `chargeId`               | X | The charge Id for which the transaction events should be retrieved  |
 
 
 #### Developer tokens
