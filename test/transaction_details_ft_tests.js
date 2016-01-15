@@ -70,6 +70,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'Ref-1234',
                     'amount': 5000,
                     'gateway_account_id': '10',
+                    'payment_provider': 'sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'status': 'SUCCEEDED',
                     'return_url': 'http://example.service/return_from_payments',
@@ -94,6 +95,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '£50.00',
                     'gateway_account_id': '10',
                     'status': 'SUCCEEDED',
+                    'payment_provider': 'Sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'events': [
                         {
