@@ -1,4 +1,5 @@
 var moment = require('moment');
+var changeCase = require('change-case');
 var CURRENCY = '£';
 
 //TODO: Ask Rory for the friendly text for the below order statuses
@@ -38,6 +39,7 @@ TransactionView.prototype.buildPaymentView = function (chargeData, eventsData) {
     }.bind(this));
 
     chargeData.amount = CURRENCY + (chargeData.amount / 100).toFixed(2);
+    chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider);
     chargeData['events'] = eventsData.events.reverse();
     delete chargeData['links'];
     delete chargeData['return_url'];
