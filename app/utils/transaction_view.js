@@ -40,6 +40,7 @@ TransactionView.prototype.buildPaymentView = function (chargeData, eventsData) {
 
     chargeData.amount = CURRENCY + (chargeData.amount / 100).toFixed(2);
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider);
+    chargeData.updated = eventsData.events[0].updated;
     chargeData['events'] = eventsData.events.reverse();
     delete chargeData['links'];
     delete chargeData['return_url'];

@@ -94,6 +94,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'Ref-1234',
                     'amount': '£50.00',
                     'gateway_account_id': '10',
+                    'updated': '2015-12-24 13:21:05',
                     'status': 'SUCCEEDED',
                     'payment_provider': 'Sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
