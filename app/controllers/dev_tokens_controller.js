@@ -6,6 +6,7 @@ var renderErrorView = require('../utils/response.js').renderErrorView;
 
 var Client = require('node-rest-client').Client;
 var client = new Client();
+var auth = require('../services/auth_service.js');
 
 module.exports.bindRoutesTo = function (app) {
 
@@ -16,7 +17,7 @@ module.exports.bindRoutesTo = function (app) {
   var TOKEN_VIEW = 'token';
   var TOKEN_GENERATE_VIEW = 'token_generate';
 
-  app.get(TOKEN_PATH + '/:accountId', function (req, res) {
+  app.get(TOKEN_PATH + '/:accountId', auth.enforce, function (req, res) {
 
     logger.info('GET ' + TOKEN_PATH + '/:accountId');
 
@@ -49,7 +50,7 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  app.get(TOKEN_GENERATION_GET_PATH, function (req, res) {
+  app.get(TOKEN_GENERATION_GET_PATH, auth.enforce, function (req, res) {
 
     logger.info('GET ' + TOKEN_GENERATION_GET_PATH);
 
@@ -69,7 +70,7 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  app.post(TOKEN_GENERATION_POST_PATH, function (req, res) {
+  app.post(TOKEN_GENERATION_POST_PATH, auth.enforce, function (req, res) {
 
     logger.info('POST ' + TOKEN_GENERATION_POST_PATH);
 
@@ -110,7 +111,7 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  app.put(TOKEN_PATH, function (req, res) {
+  app.put(TOKEN_PATH, auth.enforce, function (req, res) {
     logger.info('PUT ' + TOKEN_PATH);
 
     var requestPayload = {
@@ -140,7 +141,7 @@ module.exports.bindRoutesTo = function (app) {
 
   });
 
-  app.delete(TOKEN_PATH + '/:accountId', function (req, res) {
+  app.delete(TOKEN_PATH + '/:accountId', auth.enforce, function (req, res) {
     logger.info('DELETE ' + TOKEN_PATH  + '/:accountId');
 
     var accountId = req.params.accountId;

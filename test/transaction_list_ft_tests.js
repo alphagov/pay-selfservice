@@ -1,7 +1,10 @@
+process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
+
 var request = require('supertest');
 var portfinder = require('portfinder');
 var nock = require('nock');
 var app = require(__dirname + '/../server.js').getApp;
+var auth_cookie = require(__dirname + '/utils/login-session.js');
 
 var winston = require('winston');
 
@@ -12,6 +15,7 @@ portfinder.getPort(function (err, connectorPort) {
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
+  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
 
   function connectorMock_responds(data) {
     return connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
@@ -21,7 +25,8 @@ portfinder.getPort(function (err, connectorPort) {
   function get_transaction_list() {
     return request(app)
       .get(TRANSACTION_LIST_PATH)
-      .set('Accept', 'application/json');
+      .set('Accept', 'application/json')
+      .set('Cookie', ['session=' + AUTH_COOKIE_VALUE]);
   }
 
   describe('Transactions endpoints', function() {

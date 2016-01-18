@@ -11,12 +11,13 @@ function connectorClient() {
     return new ConnectorClient(process.env.CONNECTOR_URL);
 }
 
-module.exports.bindRoutesTo = function (app) {
+var auth = require('../services/auth_service.js');
 
+module.exports.bindRoutesTo = function (app) {
     /**
      * Display all the transactions for a given accountId
      */
-    app.get(TRANSACTIONS_LIST_PATH, function (req, res) {
+    app.get(TRANSACTIONS_LIST_PATH, auth.enforce, function (req, res) {
         var gatewayAccountId = req.params.gatewayAccountId;
         var showError = function (err, response) {
             if (response) {
@@ -41,7 +42,7 @@ module.exports.bindRoutesTo = function (app) {
     /**
      *  Display transaction details for a given chargeId of an account.
      */
-    app.get(TRANSACTIONS_VIEW_PATH, function (req, res) {
+    app.get(TRANSACTIONS_VIEW_PATH, auth.enforce, function (req, res) {
         var gatewayAccountId = req.params.gatewayAccountId;
         var chargeId = req.params.chargeId;
 
