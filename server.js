@@ -18,6 +18,7 @@ app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 app.set('view engine', 'html');
 app.set('vendorViews', __dirname + '/app/views');
 app.set('views', __dirname + '/app/views');
+app.enable('trust proxy');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
