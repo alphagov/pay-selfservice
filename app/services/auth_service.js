@@ -29,7 +29,7 @@ var auth = module.exports = {
             next();
           }
           else {
-            res.redirect('/noaccess');
+            res.redirect('/selfservice/noaccess');
           }
         } else {
             req.session.last_url = req.originalUrl;
