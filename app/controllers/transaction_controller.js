@@ -18,7 +18,7 @@ module.exports.bindRoutesTo = function (app) {
      * Display all the transactions for a given accountId
      */
     app.get(TRANSACTIONS_LIST_PATH, auth.enforce, function (req, res) {
-        var accountId = 1; // XXX
+        var accountId = auth.get_account_id(req);
         var showError = function (err, response) {
             if (response) {
                 if (response.statusCode === 400) {
@@ -43,7 +43,7 @@ module.exports.bindRoutesTo = function (app) {
      *  Display transaction details for a given chargeId of an account.
      */
     app.get(TRANSACTIONS_VIEW_PATH, auth.enforce, function (req, res) {
-        var accountId = 1; // XXX
+        var accountId = auth.get_account_id(req);
         var chargeId = req.params.chargeId;
 
         var showError = function (err, response) {

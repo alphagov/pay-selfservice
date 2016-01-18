@@ -11,7 +11,12 @@ var auth_cookie = require('./utils/login-session.js');
 
 var valid_session = ['session=' + auth_cookie.create({
   passport: { user: {
-    name: 'Michael'
+    name: 'Michael',
+    _json:{
+      app_metadata: {
+        account_id: 123
+      }
+    }
   }}
 })];
 

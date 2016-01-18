@@ -6,7 +6,7 @@ var auth_cookie = require(__dirname + '/utils/login-session.js');
 var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
-    var gatewayAccountId = 1; // XXX
+    var gatewayAccountId = 15486734;
     var chargeId = 452345;
     var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
     var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
@@ -15,7 +15,7 @@ portfinder.getPort(function (err, connectorPort) {
     var localServer = 'http://localhost:' + connectorPort;
 
     var connectorMock = nock(localServer);
-    var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
+    var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
 
     function connectorMock_responds(path, data) {
         return connectorMock.get(path)

@@ -26,7 +26,7 @@ module.exports.bindRoutesTo = function (app) {
   }
 
   app.get(CREDENTIALS_PATH, auth.enforce, function (req, res) {
-    var accountId = 1; // XXX
+    var accountId = auth.get_account_id(req);
 
     var viewMode = req.query.edit === undefined;
     logger.info('GET ' + CREDENTIALS_PATH);
@@ -51,7 +51,7 @@ module.exports.bindRoutesTo = function (app) {
   });
 
   app.post(CREDENTIALS_PATH, auth.enforce, function (req, res) {
-    var accountId = 1; // XXX
+    var accountId = auth.get_account_id(req);
     
     logger.info('POST ' + CREDENTIALS_PATH);
 

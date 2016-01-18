@@ -7,14 +7,14 @@ var cookie = require(__dirname + '/utils/session.js');
 var should = require('chai').should();
 var auth_cookie = require(__dirname + '/utils/login-session.js');
 
-var ACCOUNT_ID = 1; // XXX
+var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
 var TOKEN_PATH = '/selfservice/tokens';
 var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/generate';
 var TOKEN_GENERATION_POST_PATH = '/selfservice/tokens/generate';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
-var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
+var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});
 
 portfinder.getPort(function(err, freePort) {
   var localServer = 'http://localhost:' + freePort;
@@ -220,7 +220,7 @@ portfinder.getPort(function(err, freePort) {
 
         it('should revoke and existing token', function (done){
 
-          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000'
           }).reply(200, {"revoked": "15 Oct 2015"});
 
@@ -233,7 +233,7 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should forward the error status code when revoking the token', function (done){
-          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000'
           }).reply(400, {});
 

@@ -18,7 +18,7 @@ module.exports.bindRoutesTo = function (app) {
 
   app.get(TOKEN_PATH, auth.enforce, function (req, res) {
     logger.info('GET ' + TOKEN_PATH);
-    var accountId = 1; // XXX
+    var accountId = auth.get_account_id(req);
 
     withValidAccountId(req, res, accountId, function(accountId, req, res) {
       var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
@@ -49,7 +49,7 @@ module.exports.bindRoutesTo = function (app) {
 
   app.get(TOKEN_GENERATION_GET_PATH, auth.enforce, function (req, res) {
     logger.info('GET ' + TOKEN_GENERATION_GET_PATH);
-    var accountId = 1; // XXX
+    var accountId = auth.get_account_id(req);
 
     withValidAccountId(req, res, accountId, function(accountId, req, res) {
       responsePayload = {'account_id': accountId};
@@ -67,7 +67,7 @@ module.exports.bindRoutesTo = function (app) {
 
   app.post(TOKEN_GENERATION_POST_PATH, auth.enforce, function (req, res) {
     logger.info('POST ' + TOKEN_GENERATION_POST_PATH);
-    var accountId = 1; // XXX
+    var accountId = auth.get_account_id(req);
 
     if (req.selfservice_state.token) {
       delete req.selfservice_state.token;
@@ -142,7 +142,7 @@ module.exports.bindRoutesTo = function (app) {
   app.delete(TOKEN_PATH, auth.enforce, function (req, res) {
     logger.info('DELETE ' + TOKEN_PATH);
     
-    var accountId = 1; // XXX
+    var accountId = auth.get_account_id(req);auth.get_account_id(req);
     
     var requestPayload = {
       headers:{"Content-Type": "application/json"},

@@ -9,13 +9,13 @@ var auth_cookie = require(__dirname + '/utils/login-session.js');
 var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
-  var gatewayAccountId = 1; // XXX
+  var gatewayAccountId = 651342;
   var CONNECTOR_CHARGES_PATH = '/v1/frontend/charges';
   var TRANSACTION_LIST_PATH = '/selfservice/transactions';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
-  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
+  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
 
   function connectorMock_responds(data) {
     return connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
