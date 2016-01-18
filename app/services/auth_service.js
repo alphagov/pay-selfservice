@@ -16,8 +16,6 @@ var AUTH_STRATEGY = new Auth0Strategy({
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
     logger.info('Logged in: ' + user.displayName);
-    logger.info(user);
-    
     return done(null, user);
   }
 );
@@ -29,7 +27,12 @@ var auth = module.exports = {
             next();
           }
           else {
-            res.redirect('/selfservice/noaccess');
+            if (req.url != '/selfservice/noaccess') {
+              res.redirect('/selfservice/noaccess');
+            }
+            else {
+              next(); // don't redirect if we're already there...
+            }
           }
         } else {
             req.session.last_url = req.originalUrl;
