@@ -6,12 +6,11 @@ var auth_cookie = require(__dirname + '/utils/login-session.js');
 var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
-
-    var gatewayAccountId = 6352;
+    var gatewayAccountId = 1; // XXX
     var chargeId = 452345;
     var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
     var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
-    var TRANSACTION_DETAILS_PATH = '/selfservice/transactions/' + gatewayAccountId + '/{chargeId}';
+    var TRANSACTION_DETAILS_PATH = '/selfservice/transactions/{chargeId}';
 
     var localServer = 'http://localhost:' + connectorPort;
 
@@ -46,7 +45,6 @@ portfinder.getPort(function (err, connectorPort) {
         });
 
         describe('The transaction history endpoint', function () {
-
             it('should return a list of transaction history for a given charge id', function (done) {
                 var mockEventsResponse = {
                     'charge_id': chargeId,
@@ -71,7 +69,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'description': 'Breathing licence',
                     'reference': 'Ref-1234',
                     'amount': 5000,
-                    'gateway_account_id': '10',
+                    'gateway_account_id': gatewayAccountId,
                     'payment_provider': 'sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'status': 'SUCCEEDED',
@@ -95,7 +93,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'description': 'Breathing licence',
                     'reference': 'Ref-1234',
                     'amount': '£50.00',
-                    'gateway_account_id': '10',
+                    'gateway_account_id': gatewayAccountId,
                     'updated': '2015-12-24 13:21:05',
                     'status': 'SUCCEEDED',
                     'payment_provider': 'Sandbox',
@@ -125,7 +123,6 @@ portfinder.getPort(function (err, connectorPort) {
                 when_getTransactionHistory(chargeId)
                     .expect(200, expectedEventsView)
                     .end(done);
-
             });
 
             it('should return charge not found if a non existing charge id requested', function (done) {
@@ -152,7 +149,6 @@ portfinder.getPort(function (err, connectorPort) {
             });
 
             it('should return a generic if unable to communicate with connector', function (done) {
-
                 when_getTransactionHistory(chargeId)
                     .expect(200, {'message': 'Error processing transaction view'})
                     .end(done);

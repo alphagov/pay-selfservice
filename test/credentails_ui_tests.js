@@ -2,12 +2,9 @@ var should = require('chai').should();
 var renderTemplate = require(__dirname + '/utils/html_assertions.js').render;
 
 describe('The credentials view in normal mode', function () {
-
   it('should display credentials view for a worldpay account', function () {
-
     var templateData = {
       "payment_provider": "Worldpay",
-      "account_id": "1",
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
@@ -16,12 +13,11 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/worldpay', templateData);
 
-    body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials');
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
-      .withAttribute("href", "/selfservice/credentials/1?edit")
+      .withAttribute("href", "/selfservice/credentials?edit")
       .withText("Edit credentials");
 
     body.should.containSelector('dl#credentials');
@@ -37,10 +33,8 @@ describe('The credentials view in normal mode', function () {
   });
 
   it('should display credentials view for a smartpay account', function () {
-
     var templateData = {
       "payment_provider": "Smartpay",
-      "account_id": "1",
       "credentials": {
         'username': 'a-username'
       }
@@ -48,12 +42,11 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/smartpay', templateData);
 
-    body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials');
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
-      .withAttribute("href", "/selfservice/credentials/1?edit")
+      .withAttribute("href", "/selfservice/credentials?edit")
       .withText("Edit credentials");
 
     body.should.containSelector('dl#credentials');
@@ -69,16 +62,13 @@ describe('The credentials view in normal mode', function () {
   });
 
   it('should display credentials view for a sandbox account', function () {
-
     var templateData = {
       "payment_provider": "Sandbox",
-      "account_id": "1",
       "credentials": {}
     };
 
     var body = renderTemplate('provider_credentials/sandbox', templateData);
 
-    body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h4#view-title').withExactText('Your Sandbox Credentials');
     body.should.containSelector('div#message').withExactText('This is a sandbox account');
 
@@ -99,12 +89,9 @@ describe('The credentials view in normal mode', function () {
 
 
 describe('The credentials view in edit mode', function () {
-
   it('should display credentials view for a worldpay account', function () {
-
     var templateData = {
       "payment_provider": "Worldpay",
-      "account_id": "1",
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
@@ -113,13 +100,12 @@ describe('The credentials view in edit mode', function () {
     };
 
     var body = renderTemplate('provider_credentials/worldpay', templateData);
-
-    body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
+    
     body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials');
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/selfservice/credentials/1');
+      .withAttribute('action', '/selfservice/credentials');
 
     body.should.not.containSelector('a#edit-credentials-link');
 
@@ -136,14 +122,11 @@ describe('The credentials view in edit mode', function () {
       .withLabel('Password');
 
     body.should.containInputField('submitCredentials', 'submit');
-
   });
 
   it('should display credentials view for a smartpay account', function () {
-
     var templateData = {
       "payment_provider": "Smartpay",
-      "account_id": "1",
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
@@ -153,12 +136,11 @@ describe('The credentials view in edit mode', function () {
 
     var body = renderTemplate('provider_credentials/smartpay', templateData);
 
-    body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials');
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/selfservice/credentials/1');
+      .withAttribute('action', '/selfservice/credentials');
 
     body.should.not.containSelector('a#edit-credentials-link');
 
@@ -176,17 +158,14 @@ describe('The credentials view in edit mode', function () {
   });
 
   it('should display credentials view for a sandbox account', function () {
-
     var templateData = {
       "payment_provider": "Sandbox",
-      "account_id": "1",
       "credentials": {},
       'editMode': 'true'
     };
 
     var body = renderTemplate('provider_credentials/sandbox', templateData);
 
-    body.should.containSelector('div#account-id').withAttribute("class", "hidden").withText(1);
     body.should.containSelector('h4#view-title').withExactText('Your Sandbox Credentials');
     body.should.containSelector('div#message').withExactText('This is a sandbox account');
 
@@ -194,5 +173,4 @@ describe('The credentials view in edit mode', function () {
     body.should.not.containSelector('a#edit-credentials-link');
     body.should.not.containSelector('input#submitCredentials');
   });
-
 });

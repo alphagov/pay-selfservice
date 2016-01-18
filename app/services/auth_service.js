@@ -21,7 +21,6 @@ var AUTH_STRATEGY = new Auth0Strategy({
 );
 
 var auth = module.exports = {
-
     enforce: function (req, res, next) {
         if (req.session.passport && req.session.passport.user) {
             next();
