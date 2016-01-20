@@ -78,6 +78,6 @@ var auth = module.exports = {
     
     get_account_id: function(req) {
       var user = req.session.passport.user;
-      return user._json && user._json.app_metadata ? parseInt(user._json.app_metadata.account_id) : null;
+      return user._json && user._json.app_metadata && user._json.app_metadata.account_id ? parseInt(user._json.app_metadata.account_id) : null;
     }
 };
