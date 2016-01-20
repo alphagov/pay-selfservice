@@ -30,12 +30,7 @@ var auth = module.exports = {
             next();
           }
           else {
-            if (req.url != NO_ACCESS_URL) {
-              res.redirect(NO_ACCESS_URL);
-            }
-            else {
-              next(); // don't redirect if we're already there...
-            }
+            auth.no_access(req, res, next);
           }
         } else {
             req.session.last_url = req.originalUrl;
@@ -77,6 +72,15 @@ var auth = module.exports = {
             cookieName: 'session',
             secret: process.env.SESSION_ENCRYPTION_KEY
         }));
+    },
+    
+    no_access: function(req, res, next) {
+      if (req.url != NO_ACCESS_URL) {
+        res.redirect(NO_ACCESS_URL);
+      }
+      else {
+        next(); // don't redirect again if we're already there
+      }
     },
     
     get_account_id: function(req) {
