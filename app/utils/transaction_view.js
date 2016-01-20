@@ -1,10 +1,7 @@
 var moment = require('moment');
 var changeCase = require('change-case');
+var changeCase = require('change-case');
 var CURRENCY = '£';
-
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}
 
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
@@ -17,7 +14,7 @@ TransactionView.prototype.eventStatuses = {};
 /** prepares the transaction list view */
 TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId) {
     connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
-        return { "value": str, "text": str.toLowerCase().capitalize()};
+        return { "value": str, "text": changeCase.upperCaseFirst(str.toLowerCase())};
     });
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);

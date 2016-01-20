@@ -21,8 +21,8 @@ portfinder.getPort(function (err, connectorPort) {
     var queryStr = '?';
         queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
                     '&status=' + (searchParameters.status ? searchParameters.status : '') +
-                    '&fromDate=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-                    '&toDate=' + (searchParameters.toDate ? searchParameters.toDate : '');
+                    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
+                    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
     return connectorMock.get(CHARGES_SEARCH_API_PATH + encodeURI(queryStr))
       .reply(200, data);
   }
@@ -228,6 +228,28 @@ portfinder.getPort(function (err, connectorPort) {
                    })
                   .end(done);
             });
+
+          it('should return no transactions', function (done) {
+
+              var connectorData = {
+                'results': []
+              };
+
+              var data= {'reference': 'test'};
+              connectorMock_responds(connectorData, data);
+
+              var expectedData = {
+                'results': []
+              };
+
+              search_transactions(data)
+                  .expect(200)
+                  .expect(function(res) {
+                           res.body.results.should.eql(expectedData.results);
+                   })
+                  .end(done);
+            });
+
         });
     });
 

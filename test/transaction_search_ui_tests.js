@@ -40,4 +40,17 @@ describe('The transaction list view', function () {
         .withTableDataAt(6, templateData.results[ix].updated);
     });
   });
+
+    it('should render no transactions', function () {
+
+      var templateData = {
+        'results': []
+      };
+
+      var body = renderTemplate('transactions', templateData);
+
+      templateData.results.forEach(function (transactionData, ix) {
+      body.should.containSelector('p#no-results').withExactText('No results match the search criteria.');
+      });
+    });
 });

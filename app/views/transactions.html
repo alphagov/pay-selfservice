@@ -74,7 +74,6 @@ GOV.UK Pay - View transactions
     {{#results}}
       <tr>
         <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
-        <td>{{gateway_transaction_id}}</td>
         <td>{{amount}}</td>
         <td>{{reference}}</td>
         <td>{{status}}</td>
@@ -87,7 +86,7 @@ GOV.UK Pay - View transactions
     </tbody>
   </table>
   {{^results}}
-    <p>No results match the search criteria.</p>
+    <p id="no-results">No results match the search criteria.</p>
   {{/results}}
 </div>
 
