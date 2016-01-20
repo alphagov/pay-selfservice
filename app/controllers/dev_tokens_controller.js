@@ -142,7 +142,7 @@ module.exports.bindRoutesTo = function (app) {
   app.delete(TOKEN_PATH, auth.enforce, function (req, res) {
     logger.info('DELETE ' + TOKEN_PATH);
     
-    var accountId = auth.get_account_id(req);auth.get_account_id(req);
+    var accountId = auth.get_account_id(req);
     
     var requestPayload = {
       headers:{"Content-Type": "application/json"},
