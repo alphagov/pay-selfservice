@@ -20,6 +20,9 @@ var AUTH_STRATEGY = new Auth0Strategy({
   }
 );
 
+var LOGIN_URL = '/selfservice/login';
+var NO_ACCESS_URL = '/selfservice/noaccess';
+
 var auth = module.exports = {  
     enforce: function (req, res, next) {
         if (req.session.passport && req.session.passport.user) {
@@ -27,8 +30,8 @@ var auth = module.exports = {
             next();
           }
           else {
-            if (req.url != '/selfservice/noaccess') {
-              res.redirect('/selfservice/noaccess');
+            if (req.url != NO_ACCESS_URL) {
+              res.redirect(NO_ACCESS_URL);
             }
             else {
               next(); // don't redirect if we're already there...
@@ -36,7 +39,7 @@ var auth = module.exports = {
           }
         } else {
             req.session.last_url = req.originalUrl;
-            res.redirect('/selfservice/login');
+            res.redirect(LOGIN_URL);
         }
     },
 
@@ -46,7 +49,7 @@ var auth = module.exports = {
       var authen_func = passport.authenticate(
           'auth0',
           {
-            failureRedirect: '/selfservice/login',
+            failureRedirect: LOGIN_URL,
             successRedirect: req.session.last_url
           }
       );
