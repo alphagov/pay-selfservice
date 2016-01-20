@@ -6,7 +6,6 @@ var renderTemplate = require(__dirname + '/utils/test_renderer.js').render;
 
 describe('The transaction details view', function () {
   it('should render all transaction details', function () {
-
     var templateData = {
         'reference':'123412341234',
         'amount':'£10.00',

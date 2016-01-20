@@ -4,7 +4,7 @@ var TransactionView = require('../utils/transaction_view.js').TransactionView;
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var transactionView = new TransactionView();
 
-var TRANSACTIONS_LIST_PATH = '/selfservice/transactions/' + ':gatewayAccountId';
+var TRANSACTIONS_LIST_PATH = '/selfservice/transactions';
 var TRANSACTIONS_VIEW_PATH = TRANSACTIONS_LIST_PATH + '/:chargeId';
 
 function connectorClient() {
@@ -18,7 +18,7 @@ module.exports.bindRoutesTo = function (app) {
      * Display all the transactions for a given accountId
      */
     app.get(TRANSACTIONS_LIST_PATH, auth.enforce, function (req, res) {
-        var gatewayAccountId = req.params.gatewayAccountId;
+        var accountId = auth.get_account_id(req);
         var showError = function (err, response) {
             if (response) {
                 if (response.statusCode === 400) {
@@ -32,10 +32,10 @@ module.exports.bindRoutesTo = function (app) {
         };
 
         var showTransactions = function (charges) {
-            response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges, gatewayAccountId));
+            response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges, accountId));
         };
 
-        connectorClient().withTransactionList(gatewayAccountId, showTransactions)
+        connectorClient().withTransactionList(accountId, showTransactions)
             .on('connectorError', showError);
     });
 
@@ -43,7 +43,7 @@ module.exports.bindRoutesTo = function (app) {
      *  Display transaction details for a given chargeId of an account.
      */
     app.get(TRANSACTIONS_VIEW_PATH, auth.enforce, function (req, res) {
-        var gatewayAccountId = req.params.gatewayAccountId;
+        var accountId = auth.get_account_id(req);
         var chargeId = req.params.chargeId;
 
         var showError = function (err, response) {
@@ -62,9 +62,9 @@ module.exports.bindRoutesTo = function (app) {
             response(req.headers.accept, res, 'transaction_details', transactionView.buildPaymentView(charge, events));
         };
 
-        connectorClient().withGetCharge(gatewayAccountId, chargeId,
+        connectorClient().withGetCharge(accountId, chargeId,
             function (charge) { //on success of finding a charge
-                connectorClient().withChargeEvents(gatewayAccountId, chargeId,
+                connectorClient().withChargeEvents(accountId, chargeId,
                     function (events) { //on success of finding events for charge
                         showTransactionDetails(charge, events);
                     })

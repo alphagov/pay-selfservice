@@ -9,13 +9,13 @@ var auth_cookie = require(__dirname + '/utils/login-session.js');
 var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
-  var gatewayAccountId = 452345;
+  var gatewayAccountId = 651342;
   var CONNECTOR_CHARGES_PATH = '/v1/frontend/charges';
-  var TRANSACTION_LIST_PATH = '/selfservice/transactions/' + gatewayAccountId;
+  var TRANSACTION_LIST_PATH = '/selfservice/transactions';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
-  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
+  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
 
   function connectorMock_responds(data) {
     return connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
@@ -43,7 +43,6 @@ portfinder.getPort(function (err, connectorPort) {
 
     describe('The /transactions endpoint', function () {
       it('should return a list of transactions for the gateway account', function (done) {
-
         var connectorData = {
           'results': [
             {
@@ -62,6 +61,7 @@ portfinder.getPort(function (err, connectorPort) {
             }
           ]
         };
+        
         connectorMock_responds(connectorData);
 
         var expectedData = {
@@ -72,7 +72,7 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '50.00',
               'reference': 'ref1',
               'status': 'TEST STATUS',
-              'gateway_account_id': '452345'
+              'gateway_account_id': gatewayAccountId
             },
             {
               'charge_id': '101',
@@ -80,7 +80,7 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '20.00',
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
-              'gateway_account_id': '452345'
+              'gateway_account_id': gatewayAccountId
             }
           ]
         };
@@ -91,7 +91,6 @@ portfinder.getPort(function (err, connectorPort) {
       });
 
       it('should return a list of transactions for the gateway account with reference missing', function (done) {
-
         var connectorData = {
           'results': [
             {
@@ -109,6 +108,7 @@ portfinder.getPort(function (err, connectorPort) {
             }
           ]
         };
+        
         connectorMock_responds(connectorData);
 
         var expectedData = {
@@ -119,7 +119,7 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '50.00',
               'reference': '',
               'status': 'TEST STATUS',
-              'gateway_account_id': '452345'
+              'gateway_account_id': gatewayAccountId
             },
             {
               'charge_id': '101',
@@ -127,7 +127,7 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '20.00',
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
-              'gateway_account_id': '452345'
+              'gateway_account_id': gatewayAccountId
             }
           ]
         };
@@ -149,8 +149,8 @@ portfinder.getPort(function (err, connectorPort) {
       });
 
       it('should show error message on a bad request', function (done) {
-
         var errorMessage = 'some error from connector';
+        
         connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
           .reply(400, {'message': errorMessage});
 
@@ -161,38 +161,21 @@ portfinder.getPort(function (err, connectorPort) {
       });
 
       it('should show a generic error message on a connector service error.', function (done) {
-
         connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
           .reply(500, {'message': 'some error from connector'});
 
         get_transaction_list()
           .expect(200, {'message': 'Unable to retrieve list of transactions.'})
           .end(done);
-
-      });
-
-
-      it('should return 404 when no gateway account id', function (done) {
-        request(app)
-          .get('/selfservice/transactions/')
-          .set('Accept', 'application/json')
-          .expect(404)
-          .end(done);
       });
 
       it('should show internal error message if any error happens while retrieving the list from connector', function (done){
-
         // No connectorMock defined on purpose to mock a network failure
 
         get_transaction_list()
           .expect(200, {'message': 'Internal server error'})
           .end(done);
-
       });
-
     });
-
   });
-
 });
-

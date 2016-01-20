@@ -7,17 +7,16 @@ var cookie = require(__dirname + '/utils/session.js');
 var should = require('chai').should();
 var auth_cookie = require(__dirname + '/utils/login-session.js');
 
-var ACCOUNT_ID = '23144323';
+var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
 var TOKEN_PATH = '/selfservice/tokens';
-var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/{accountId}/generate';
+var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/generate';
 var TOKEN_GENERATION_POST_PATH = '/selfservice/tokens/generate';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
-var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{}}});
+var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});
 
 portfinder.getPort(function(err, freePort) {
-
   var localServer = 'http://localhost:' + freePort;
   var serverMock = nock(localServer);
 
@@ -59,36 +58,16 @@ portfinder.getPort(function(err, freePort) {
       });
 
       describe('The /tokens endpoint', function() {
-
-        it('should fail if the account does not exist', function (done){
-
-          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
-
-          build_get_request(TOKEN_PATH + '/' + ACCOUNT_ID, ['session=' + AUTH_COOKIE_VALUE])
-            .expect(200, {
-               'message' : 'There is a problem with the payments platform'
-            })
-            .expect(function(res) {
-                should.not.exist(res.headers['set-cookie']);
-                var session = cookie.decrypt(res);
-                should.not.exist(session.token);
-                should.not.exist(session.description);
-            })
-            .end(done);
-        });
-
-        it('should return the account_id and an empty list of tokens if no tokens have been issued yet', function (done){
-
-          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+        it('should return an empty list of tokens if no tokens have been issued yet', function (done){
+          serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
 
           serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
             .reply(200, {
                 "account_id": ACCOUNT_ID
             });
 
-          build_get_request(TOKEN_PATH + '/' + ACCOUNT_ID, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(TOKEN_PATH, ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {
-              "account_id": ACCOUNT_ID,
               "active_tokens": [],
               "active_tokens_singular": false,
               "revoked_tokens": [],
@@ -112,9 +91,8 @@ portfinder.getPort(function(err, freePort) {
                 "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}]
             });
 
-          build_get_request(TOKEN_PATH + '/' + ACCOUNT_ID, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(TOKEN_PATH, ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {
-              "account_id": ACCOUNT_ID,
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
               "active_tokens_singular": true,
               "revoked_tokens": [],
@@ -129,7 +107,6 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should return the account_id and the token list for already-issued tokens', function (done){
-
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
           serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
@@ -139,9 +116,8 @@ portfinder.getPort(function(err, freePort) {
                            {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
             });
 
-          build_get_request(TOKEN_PATH + '/' + ACCOUNT_ID, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(TOKEN_PATH, ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {
-              "account_id": ACCOUNT_ID,
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                          {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
               "active_tokens_singular": false,
@@ -157,7 +133,6 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should include revoked date in case the token has been already revoked', function (done){
-
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
           serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
@@ -167,9 +142,8 @@ portfinder.getPort(function(err, freePort) {
                            {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}]
             });
 
-          build_get_request(TOKEN_PATH + '/' + ACCOUNT_ID, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(TOKEN_PATH, ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {
-              "account_id": ACCOUNT_ID,
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
               "active_tokens_singular": true,
               "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
@@ -184,7 +158,6 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should include all tokens even if all have been revoked', function (done){
-
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
           serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
@@ -194,9 +167,8 @@ portfinder.getPort(function(err, freePort) {
                            {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}]
             });
 
-          build_get_request(TOKEN_PATH + '/' + ACCOUNT_ID, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(TOKEN_PATH, ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {
-              "account_id": ACCOUNT_ID,
               "active_tokens": [],
               "active_tokens_singular": false,
               "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}, {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}],
@@ -211,7 +183,6 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should update the description', function (done){
-
           serverMock.put(PUBLIC_AUTH_PATH, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000',
             "description": "token description"
@@ -229,7 +200,6 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should forward the error status code when updating the description', function (done){
-
           serverMock.put(PUBLIC_AUTH_PATH, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000',
             "description": "token description"
@@ -250,12 +220,12 @@ portfinder.getPort(function(err, freePort) {
 
         it('should revoke and existing token', function (done){
 
-          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000'
           }).reply(200, {"revoked": "15 Oct 2015"});
 
           request(app)
-            .delete(TOKEN_PATH + "/1?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .delete(TOKEN_PATH + "?token_link=550e8400-e29b-41d4-a716-446655440000")
             .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {"revoked": "15 Oct 2015"})
             .end(done);
@@ -263,17 +233,15 @@ portfinder.getPort(function(err, freePort) {
         });
 
         it('should forward the error status code when revoking the token', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/1", {
+          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000'
           }).reply(400, {});
 
           request(app)
-            .delete(TOKEN_PATH + "/1?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .delete(TOKEN_PATH + "?token_link=550e8400-e29b-41d4-a716-446655440000")
             .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
             .expect(400, {})
             .end(done);
-
         });
 
         it('should send 500 if any error happens while updating the resource', function (done){
@@ -281,7 +249,7 @@ portfinder.getPort(function(err, freePort) {
           // No serverMock defined on purpose to mock a network failure
 
           request(app)
-            .delete(TOKEN_PATH + "/1")
+            .delete(TOKEN_PATH)
             .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
             .send({
               'token_link': '550e8400-e29b-41d4-a716-446655440000'
@@ -294,11 +262,10 @@ portfinder.getPort(function(err, freePort) {
       });
 
       describe('The /tokens/generate endpoint', function() {
-
          it('should fail if the account does not exist for a GET', function (done){
-
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
-            build_get_request(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            
+            build_get_request(TOKEN_GENERATION_GET_PATH, ['session=' + AUTH_COOKIE_VALUE])
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
               })
@@ -313,10 +280,9 @@ portfinder.getPort(function(err, freePort) {
           });
 
           it('should only return the account_id', function (done){
-
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
-            build_get_request(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE])
+            build_get_request(TOKEN_GENERATION_GET_PATH, ['session=' + AUTH_COOKIE_VALUE])
               .expect(200, {
                 'account_id': ACCOUNT_ID
               })
@@ -330,7 +296,6 @@ portfinder.getPort(function(err, freePort) {
           });
 
           it('should fail if the account does not exist for a POST', function (done){
-
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
 
             serverMock.post(PUBLIC_AUTH_PATH, {
@@ -338,7 +303,7 @@ portfinder.getPort(function(err, freePort) {
               "description": "description"
             }).reply(200, {"token": TOKEN });
 
-            build_form_post_request(TOKEN_GENERATION_POST_PATH, {'accountId': ACCOUNT_ID, 'description': "description"}, ['session=' + AUTH_COOKIE_VALUE])
+            build_form_post_request(TOKEN_GENERATION_POST_PATH, {'description': "description"}, ['session=' + AUTH_COOKIE_VALUE])
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
               })
@@ -361,7 +326,7 @@ portfinder.getPort(function(err, freePort) {
               "description": "description"
             }).reply(200, {"token": TOKEN });
 
-            build_form_post_request(TOKEN_GENERATION_POST_PATH, {'accountId': ACCOUNT_ID, 'description': "description"}, ['session=' + AUTH_COOKIE_VALUE])
+            build_form_post_request(TOKEN_GENERATION_POST_PATH, {'description': "description"}, ['session=' + AUTH_COOKIE_VALUE])
                .expect(303, {})
                .expect(function(res) {
                   should.exist(res.headers['set-cookie']);
@@ -369,7 +334,7 @@ portfinder.getPort(function(err, freePort) {
                   should.equal(session.token, TOKEN);
                   should.equal(session.description, "description");
                 })
-               .expect('Location', TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID))
+               .expect('Location', TOKEN_GENERATION_GET_PATH)
                .end(done);
           });
 
@@ -382,7 +347,7 @@ portfinder.getPort(function(err, freePort) {
               "description": "description"
             }).reply(200, {"token": TOKEN });
 
-            build_form_post_request(TOKEN_GENERATION_POST_PATH, {'accountId': ACCOUNT_ID, 'description': "description"}, ['session=' + AUTH_COOKIE_VALUE+'; selfservice_state=' + cookie.create(TOKEN)])
+            build_form_post_request(TOKEN_GENERATION_POST_PATH, {'description': "description"}, ['session=' + AUTH_COOKIE_VALUE+'; selfservice_state=' + cookie.create(TOKEN)])
               .send({
                   'accountId': ACCOUNT_ID,
                   'description': "description"
@@ -403,7 +368,7 @@ portfinder.getPort(function(err, freePort) {
 
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
-            build_get_request(TOKEN_GENERATION_GET_PATH.replace("{accountId}", ACCOUNT_ID), ['session=' + AUTH_COOKIE_VALUE+'; selfservice_state=' + cookie.create(TOKEN)])
+            build_get_request(TOKEN_GENERATION_GET_PATH, ['session=' + AUTH_COOKIE_VALUE+'; selfservice_state=' + cookie.create(TOKEN)])
               .expect(200, {
                 'account_id': ACCOUNT_ID,
                 'token': TOKEN,

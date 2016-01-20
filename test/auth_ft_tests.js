@@ -11,7 +11,18 @@ var auth_cookie = require('./utils/login-session.js');
 
 var valid_session = ['session=' + auth_cookie.create({
   passport: { user: {
-    name: 'Michael'
+    name: 'Michael',
+    _json:{
+      app_metadata: {
+        account_id: 123
+      }
+    }
+  }}
+})];
+
+var session_no_account_id = ['session=' + auth_cookie.create({
+  passport: { user: {
+    name: 'Claire'
   }}
 })];
 
@@ -29,6 +40,7 @@ describe('An endpoint not protected', function() {
       .expect('Hello, World!')
       .end(done);
   });
+  
   it('allows access if authenticated', function(done) {
     request(app)
       .get('/unprotected')
@@ -53,6 +65,7 @@ describe('An endpoint protected by auth.enforce', function() {
       .expect('Location', '/selfservice/login')
       .end(done);
   });
+  
   it('allows access if authenticated', function(done) {
     request(app)
       .get('/protected')
@@ -61,6 +74,16 @@ describe('An endpoint protected by auth.enforce', function() {
       .expect('Hello, World!')
       .end(done);
   });
+  
+  it('redirects to noaccess if no account_id', function(done) {
+    request(app)
+      .get('/protected')
+      .set('Cookie', session_no_account_id)
+      .expect(302)
+      .expect('Location', '/selfservice/noaccess')
+      .end(done);
+  });
+  
   it('stores the current url in session if not authed', function(done) {
     request(app)
       .get('/protected')
@@ -71,6 +94,7 @@ describe('An endpoint protected by auth.enforce', function() {
       })
       .end(done);
   });
+  
   it('maintains url params of current url if not authed', function(done) {
     request(app)
       .get('/protected?foo=bar')

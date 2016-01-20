@@ -61,7 +61,7 @@ $(document).ready(function(){
         $container = getListItem(self),
         accountId = $('#accountId').text(),
         tokenLink = $container.attr('id'),
-        deleteUrl = '/selfservice/tokens/' + accountId + '?token_link=' + tokenLink;
+        deleteUrl = '/selfservice/tokens/?token_link=' + tokenLink;
 
     evt.preventDefault();
     $container.find('.error').removeClass('error');

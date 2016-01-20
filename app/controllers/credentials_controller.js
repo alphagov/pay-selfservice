@@ -10,17 +10,14 @@ var client = new Client();
 var auth = require('../services/auth_service.js');
 
 module.exports.bindRoutesTo = function (app) {
-
-  var CREDENTIALS_PATH = '/selfservice/credentials/:accountId';
+  var CREDENTIALS_PATH = '/selfservice/credentials';
 
   function showSuccessView(connectorData, viewMode, req, res) {
-
     var paymentProvider = connectorData.payment_provider;
     logger.info('Showing credentials for: ' + paymentProvider);
 
     var responsePayload = {
       'payment_provider': changeCase.titleCase(paymentProvider),
-      'account_id': connectorData.gateway_account_id,
       'credentials': connectorData.credentials // this will never contain a password field
     };
     if (!viewMode) responsePayload.editMode = 'true';
@@ -29,12 +26,12 @@ module.exports.bindRoutesTo = function (app) {
   }
 
   app.get(CREDENTIALS_PATH, auth.enforce, function (req, res) {
+    var accountId = auth.get_account_id(req);
 
     var viewMode = req.query.edit === undefined;
     logger.info('GET ' + CREDENTIALS_PATH);
     logger.info('View mode: ' + viewMode);
 
-    var accountId = req.params.accountId;
     var connectorUrl = process.env.CONNECTOR_URL;
     client.get(connectorUrl + "/v1/frontend/accounts/" + accountId, function (connectorData, connectorResponse) {
 
@@ -54,10 +51,10 @@ module.exports.bindRoutesTo = function (app) {
   });
 
   app.post(CREDENTIALS_PATH, auth.enforce, function (req, res) {
-
+    var accountId = auth.get_account_id(req);
+    
     logger.info('POST ' + CREDENTIALS_PATH);
 
-    var accountId = req.params.accountId;
     var requestPayload = {
       headers:{"Content-Type": "application/json"},
       data: {
@@ -75,8 +72,9 @@ module.exports.bindRoutesTo = function (app) {
 
       switch (connectorResponse.statusCode) {
         case 200:
-          res.redirect(303, CREDENTIALS_PATH.replace(":accountId", accountId));
+          res.redirect(303, CREDENTIALS_PATH);
           break;
+          
         default:
           renderErrorView(req, res, ERROR_MESSAGE);
       }
@@ -85,8 +83,5 @@ module.exports.bindRoutesTo = function (app) {
         logger.error('Exception raised calling connector:' + err);
         renderErrorView(req, res, ERROR_MESSAGE);
     });
-
   });
-
-
 }

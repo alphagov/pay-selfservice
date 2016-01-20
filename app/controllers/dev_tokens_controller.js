@@ -9,20 +9,18 @@ var client = new Client();
 var auth = require('../services/auth_service.js');
 
 module.exports.bindRoutesTo = function (app) {
-
   var TOKEN_PATH = '/selfservice/tokens';
-  var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/:accountId/generate';
+  var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/generate';
   var TOKEN_GENERATION_POST_PATH = '/selfservice/tokens/generate';
 
   var TOKEN_VIEW = 'token';
   var TOKEN_GENERATE_VIEW = 'token_generate';
 
-  app.get(TOKEN_PATH + '/:accountId', auth.enforce, function (req, res) {
+  app.get(TOKEN_PATH, auth.enforce, function (req, res) {
+    logger.info('GET ' + TOKEN_PATH);
+    var accountId = auth.get_account_id(req);
 
-    logger.info('GET ' + TOKEN_PATH + '/:accountId');
-
-    withValidAccountId(req, res, req.params.accountId, function(accountId, req, res) {
-
+    withValidAccountId(req, res, accountId, function(accountId, req, res) {
       var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
       client.get(publicAuthUrl + "/" + accountId, function (publicAuthData, publicAuthResponse) {
         var tokens = publicAuthData.tokens || [],
@@ -34,13 +32,12 @@ module.exports.bindRoutesTo = function (app) {
         });
 
         responsePayload = {
-          'account_id': accountId,
           'active_tokens': activeTokens,
           'active_tokens_singular': activeTokens.length == 1,
           'revoked_tokens': revokedTokens,
         };
+        
         response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
-
       }).on('error', function (err) {
         logger.error('Exception raised calling publicauth:' + err);
         renderErrorView(req, res, ERROR_MESSAGE);
@@ -51,11 +48,10 @@ module.exports.bindRoutesTo = function (app) {
   });
 
   app.get(TOKEN_GENERATION_GET_PATH, auth.enforce, function (req, res) {
-
     logger.info('GET ' + TOKEN_GENERATION_GET_PATH);
+    var accountId = auth.get_account_id(req);
 
-    withValidAccountId(req, res, req.params.accountId, function(accountId, req, res) {
-
+    withValidAccountId(req, res, accountId, function(accountId, req, res) {
       responsePayload = {'account_id': accountId};
       var tokenInSession = req.selfservice_state.token;
       if (tokenInSession) {
@@ -64,15 +60,14 @@ module.exports.bindRoutesTo = function (app) {
         delete req.selfservice_state.token;
         delete req.selfservice_state.description;
       }
+      
       response(req.headers.accept, res, TOKEN_GENERATE_VIEW, responsePayload);
-
     });
-
   });
 
   app.post(TOKEN_GENERATION_POST_PATH, auth.enforce, function (req, res) {
-
     logger.info('POST ' + TOKEN_GENERATION_POST_PATH);
+    var accountId = auth.get_account_id(req);
 
     if (req.selfservice_state.token) {
       delete req.selfservice_state.token;
@@ -81,7 +76,7 @@ module.exports.bindRoutesTo = function (app) {
       return;
     }
 
-    withValidAccountId(req, res, req.body.accountId, function(accountId, req, res) {
+    withValidAccountId(req, res, accountId, function(accountId, req, res) {
       var description = req.body.description;
       var payload = {
         headers: {"Content-Type": "application/json"},
@@ -113,6 +108,10 @@ module.exports.bindRoutesTo = function (app) {
 
   app.put(TOKEN_PATH, auth.enforce, function (req, res) {
     logger.info('PUT ' + TOKEN_PATH);
+    
+    // this does not need to be explicitly tied down to account_id
+    // right now because the UUID space is big enough that no-one
+    // will be able to discover other peoples' tokens to change them
 
     var requestPayload = {
       headers:{"Content-Type": "application/json"},
@@ -138,14 +137,13 @@ module.exports.bindRoutesTo = function (app) {
       logger.error('Exception raised calling publicauth:' + err);
       res.sendStatus(500);
     });
-
   });
 
-  app.delete(TOKEN_PATH + '/:accountId', auth.enforce, function (req, res) {
-    logger.info('DELETE ' + TOKEN_PATH  + '/:accountId');
-
-    var accountId = req.params.accountId;
-
+  app.delete(TOKEN_PATH, auth.enforce, function (req, res) {
+    logger.info('DELETE ' + TOKEN_PATH);
+    
+    var accountId = auth.get_account_id(req);
+    
     var requestPayload = {
       headers:{"Content-Type": "application/json"},
       data: {

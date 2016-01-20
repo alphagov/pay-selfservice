@@ -11,23 +11,30 @@ var AUTH_STRATEGY = new Auth0Strategy({
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     callbackURL:  '/selfservice/callback'
   },
-  function(accessToken, refreshToken, extraParams, profile, done) {
+  function(accessToken, refreshToken, extraParams, user, done) {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
-    logger.info('Logged in: ' + profile.displayName);
-    return done(null, profile);
+    logger.info('Logged in: ' + user.displayName);
+    return done(null, user);
   }
 );
 
-var auth = module.exports = {
+var LOGIN_URL = '/selfservice/login';
+var NO_ACCESS_URL = '/selfservice/noaccess';
 
+var auth = module.exports = {  
     enforce: function (req, res, next) {
         if (req.session.passport && req.session.passport.user) {
+          if (auth.get_account_id(req)) {
             next();
+          }
+          else {
+            auth.no_access(req, res, next);
+          }
         } else {
             req.session.last_url = req.originalUrl;
-            res.redirect('/selfservice/login');
+            res.redirect(LOGIN_URL);
         }
     },
 
@@ -37,7 +44,7 @@ var auth = module.exports = {
       var authen_func = passport.authenticate(
           'auth0',
           {
-            failureRedirect: '/selfservice/login',
+            failureRedirect: LOGIN_URL,
             successRedirect: req.session.last_url
           }
       );
@@ -47,18 +54,37 @@ var auth = module.exports = {
 
     bind: function (app, override_strategy) {
         var strategy = override_strategy || AUTH_STRATEGY;
+        
         passport.use(strategy);
+        
         passport.serializeUser(function(user, done) {
           done(null, user);
         });
+        
         passport.deserializeUser(function(user, done) {
           done(null, user);
         });
+        
         app.use(passport.initialize());
         app.use(passport.session());
+        
         app.use(clientSessions({
             cookieName: 'session',
             secret: process.env.SESSION_ENCRYPTION_KEY
         }));
+    },
+    
+    no_access: function(req, res, next) {
+      if (req.url != NO_ACCESS_URL) {
+        res.redirect(NO_ACCESS_URL);
+      }
+      else {
+        next(); // don't redirect again if we're already there
+      }
+    },
+    
+    get_account_id: function(req) {
+      var user = req.session.passport.user;
+      return user._json && user._json.app_metadata && user._json.app_metadata.account_id ? parseInt(user._json.app_metadata.account_id) : null;
     }
 };
