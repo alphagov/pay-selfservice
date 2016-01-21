@@ -29,3 +29,32 @@ $NTA-Light: Helvetica, Arial, sans-serif;
 @import "helpers/_alerts";
 
 @import "template/template";
+
+
+#transaction-list {
+  border-collapse: collapse;
+}
+
+
+#transaction-list th {
+  border: solid 1px black;
+  margin: 0;
+  padding: 0.2em;
+  font-size: 80%;
+  font-weight: bold;
+  background-color: #ddd;
+  text-align: center;
+}
+
+#transaction-list td {
+  border: solid 1px black;
+  margin: 0;
+  padding: 0.2em;
+  font-size: 80%;
+  text-align: center;
+}
+
+.transaction-detail-icon {
+  width: 1.5em;
+  height: 1.5em;
+}

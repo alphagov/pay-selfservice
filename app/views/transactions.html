@@ -16,6 +16,7 @@ GOV.UK Pay - View transactions
       <th id="amount-header">Amount (£)</th>
       <th id="reference-header">Reference</th>
       <th id="status-header">Status</th>
+      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -26,6 +27,8 @@ GOV.UK Pay - View transactions
       <td>{{amount}}</td>
       <td>{{reference}}</td>
       <td>{{status}}</td>
+      <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">
+        <img src="/selfservice/public/images/link.png" class="transaction-detail-icon" /></a></td>
     </tr>
   {{/results}}
   </tbody>
