@@ -1,7 +1,7 @@
 {{< layout}}
 
 {{$pageTitle}}
-Generate developer token
+GOV.UK Pay - Generate API token
 {{/pageTitle}}
 
 {{$pageSpecificJS}}
@@ -10,15 +10,15 @@ Generate developer token
 
 {{$content}}
 
-<h1 class="page-title">Developer keys</h1>
+<h1 class="page-title">API keys</h1>
 
 {{^token}}
-  <h2 class="heading-medium remove-top-margin">Generate a new developer key</h2>
+  <h2 class="heading-medium remove-top-margin">Generate a new API key</h2>
   <form class="form" method="post" action="/selfservice/tokens/generate">
     <div class="form-group">
       <label class="form-label-bold" for="description">
         Add a description for the key
-        <span class="form-hint">For example, ‘John Smith’s developer key’</span>
+        <span class="form-hint">For example, ‘John Smith’s API key’</span>
       </label>
       <textarea id="description" name="description" type="text" maxlength="100" size="150" class="form-control"></textarea>
     </div>

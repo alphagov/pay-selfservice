@@ -87,11 +87,11 @@ $(document).ready(function(){
         $heading = $("#available-tokens");
 
     if (activeTokens == 0) {
-      $heading.text("There are no active developer keys");
+      $heading.text("There are no active API keys");
     } else if (activeTokens == 1) {
-      $heading.text("There is 1 active developer key");
+      $heading.text("There is 1 active API key");
     } else {
-      $heading.text("There are " + activeTokens + " active developer keys");
+      $heading.text("There are " + activeTokens + " active API keys");
     }
   }
 
