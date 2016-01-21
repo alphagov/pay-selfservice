@@ -10,7 +10,8 @@ module.exports = function(grunt){
           style: "expanded",
           sourcemap: true,
           includePaths: [
-            'govuk_modules/govuk_frontend_toolkit/stylesheets'
+            'govuk_modules/govuk_frontend_toolkit/stylesheets',
+            'node_modules/govuk-elements-sass/public/sass/'
           ],
           outputStyle: 'expanded'
         },
