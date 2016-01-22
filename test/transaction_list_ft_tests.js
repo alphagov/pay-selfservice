@@ -1,3 +1,4 @@
+// TODO: Backwards compatible purposes only. This commit needs to be reverted
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 
 var request = require('supertest');
@@ -10,23 +11,17 @@ var winston = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 651342;
-  var searchParameters= {};
-  var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
+  var CONNECTOR_CHARGES_PATH = '/v1/frontend/charges';
   var TRANSACTION_LIST_PATH = '/selfservice/transactions';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
   var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
 
-  function connectorMock_responds(code, data, searchParameters) {
-      var queryStr = '?';
-          queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-                      '&status=' + (searchParameters.status ? searchParameters.status : '') +
-                      '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-                      '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
-      return connectorMock.get(CHARGES_API_PATH + encodeURI(queryStr))
-        .reply(code, data);
-    }
+  function connectorMock_responds(data) {
+    return connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
+      .reply(200, data);
+  }
 
   function get_transaction_list() {
     return request(app)
@@ -68,7 +63,7 @@ portfinder.getPort(function (err, connectorPort) {
           ]
         };
         
-        connectorMock_responds(200, connectorData, searchParameters);
+        connectorMock_responds(connectorData);
 
         var expectedData = {
           'results': [
@@ -118,7 +113,7 @@ portfinder.getPort(function (err, connectorPort) {
           ]
         };
         
-        connectorMock_responds(200, connectorData, searchParameters);
+        connectorMock_responds(connectorData);
 
         var expectedData = {
           'results': [
@@ -153,7 +148,7 @@ portfinder.getPort(function (err, connectorPort) {
         var connectorData = {
           'results': []
         };
-        connectorMock_responds(200, connectorData, searchParameters);
+        connectorMock_responds(connectorData);
 
         get_transaction_list()
           .expect(200)
@@ -165,8 +160,10 @@ portfinder.getPort(function (err, connectorPort) {
 
       it('should show error message on a bad request', function (done) {
         var errorMessage = 'some error from connector';
-        connectorMock_responds(400, {'message': errorMessage}, searchParameters);
         
+        connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
+          .reply(400, {'message': errorMessage});
+
         get_transaction_list()
           .expect(200, {'message': errorMessage})
           .end(done);
@@ -174,7 +171,8 @@ portfinder.getPort(function (err, connectorPort) {
       });
 
       it('should show a generic error message on a connector service error.', function (done) {
-        connectorMock_responds(500, {'message': 'some error from connector'}, searchParameters);
+        connectorMock.get(CONNECTOR_CHARGES_PATH + "?gatewayAccountId=" + gatewayAccountId)
+          .reply(500, {'message': 'some error from connector'});
 
         get_transaction_list()
           .expect(200, {'message': 'Unable to retrieve list of transactions.'})
