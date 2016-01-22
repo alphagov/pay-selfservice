@@ -1,3 +1,4 @@
+// TODO: Backwards compatible purposes only. This commit needs to be reverted
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 
 var request = require('supertest');
@@ -86,8 +87,11 @@ portfinder.getPort(function (err, connectorPort) {
         };
 
         get_transaction_list()
-          .expect(200, expectedData)
-          .end(done);
+            .expect(200)
+            .expect(function(res) {
+                     res.body.results.should.eql(expectedData.results);
+             })
+            .end(done);
       });
 
       it('should return a list of transactions for the gateway account with reference missing', function (done) {
@@ -133,7 +137,10 @@ portfinder.getPort(function (err, connectorPort) {
         };
 
         get_transaction_list()
-          .expect(200, expectedData)
+          .expect(200)
+          .expect(function(res) {
+                     res.body.results.should.eql(expectedData.results);
+          })
           .end(done);
       });
 
@@ -144,7 +151,10 @@ portfinder.getPort(function (err, connectorPort) {
         connectorMock_responds(connectorData);
 
         get_transaction_list()
-          .expect(200, {'results': []})
+          .expect(200)
+          .expect(function(res) {
+                     res.body.results.should.eql([]);
+          })
           .end(done);
       });
 

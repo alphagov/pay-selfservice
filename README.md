@@ -29,12 +29,35 @@ $ ./redirect.sh stop
 View the transaction list for a given account id.
 
 ```
-    /transactions/{gatewayAccountId}
+    GET /transactions
+```
+
+## Transaction Search
+
+Search transactions by reference, status and from and to date
+
+```
+    POST /transactions
+```
+
+| Form param               | always present | Description                               |
+| ------------------------ |:--------:| -----------------------------------------       |
+| `reference`              | X | The service reference for a given payment |
+| `status   `              | X | The payment status |
+| `fromDate   `            | X | A starting date to search for payments|
+| `toDate   `              | X | An ending date to search for payments|
+
+## Transaction Events list
+
+View the transaction events list for a given account id.
+
+```
+    GET /transactions/{chargeId}
 ```
 
 | Path param               | always present | Description                               |
 | ------------------------ |:--------:| -----------------------------------------       |
-| `gatewayAccountId`       | X | The account Id for which the transaction should be retrieved  |
+| `chargeId`               | X | The charge Id for which the transaction events should be retrieved  |
 
 
 #### Developer tokens
@@ -42,9 +65,5 @@ View the transaction list for a given account id.
 Generate, edit and revoke tokens for a given account id.
 
 ```
-    /tokens/{gatewayAccountId}
+    /tokens
 ```
-
-| Path param               | always present | Description                               |
-| ------------------------ |:--------:| -----------------------------------------       |
-| `gatewayAccountId`       | X | The account Id for which the developer tokens are generated  |

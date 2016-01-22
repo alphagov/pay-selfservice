@@ -1,28 +1,21 @@
 var moment = require('moment');
 var changeCase = require('change-case');
+var changeCase = require('change-case');
 var CURRENCY = '£';
 
-//TODO: Ask Rory for the friendly text for the below order statuses
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
     this.eventStatuses['IN PROGRESS'] = 'Payment of AMOUNT is in progress';
-    this.eventStatuses['ENTERING CARD DETAILS'] = 'Entered card details';
-    this.eventStatuses['AUTHORISATION REJECTED'] = 'AUTHORISATION REJECTED';
-    this.eventStatuses['AUTHORISATION SUBMITTED'] = 'AUTHORISATION SUBMITTED';
-    this.eventStatuses['AUTHORISATION SUCCESS'] = 'Payment of AMOUNT was authorised';
-    this.eventStatuses['READY_FOR_CAPTURE'] = 'READY_FOR_CAPTURE';
-    this.eventStatuses['CAPTURE SUBMITTED'] = 'Payment of AMOUNT submitted';
-    this.eventStatuses['CAPTURED'] = 'Payment of AMOUNT successfully captured';
     this.eventStatuses['SUCCEEDED'] = 'Payment of AMOUNT succeeded';
-    this.eventStatuses['SYSTEM UNKNOWN'] = 'SYSTEM UNKNOWN';
-    this.eventStatuses['SYSTEM CANCELLED'] = 'SYSTEM CANCELLED';
-    this.eventStatuses['SYSTEM ERROR'] = 'SYSTEM ERROR';
 };
 
 TransactionView.prototype.eventStatuses = {};
 
 /** prepares the transaction list view */
 TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId) {
+    connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
+        return { "value": str, "text": changeCase.upperCaseFirst(str.toLowerCase())};
+    });
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);
         element.gateway_account_id = gatewayAccountId;

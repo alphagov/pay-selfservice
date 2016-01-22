@@ -1,3 +1,4 @@
+// TODO: Backwards compatible purposes only. This commit needs to be reverted
 'use strict';
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
@@ -5,7 +6,8 @@ var EventEmitter = require('events').EventEmitter;
 var logger = require('winston');
 var Client = require('node-rest-client').Client;
 
-var CHARGE_API_PATH = '/v1/api/accounts/{accountId}/charges/{chargeId}';
+var CHARGES_API_PATH = '/v1/api/accounts/{accountId}/charges';
+var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
 var FRONTEND_CHARGE_PATH = '/v1/frontend/charges';
 
 
@@ -98,12 +100,47 @@ ConnectorClient.prototype.withChargeEvents = function (gatewayAccountId, chargeI
     return this;
 };
 
+/**
+ * Search transactions by reference, status, fromDate and toDate.
+ * @param gatewayAccountId
+ * @param searchParameters
+ * @param successCallback the callback to perform upon `200 OK` along with the connector results.
+ * @returns {ConnectorClient}
+ */
+ConnectorClient.prototype.withSearchTransactions = function (gatewayAccountId, searchParameters, successCallback) {
+    var transactionsUrl = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
+
+    var self = this;
+    logger.info('CONNECTOR GET ' + transactionsUrl);
+    this.client.get(transactionsUrl, function (connectorData, connectorResponse) {
+        if (connectorResponse.statusCode === 200) {
+            successCallback(connectorData);
+        } else {
+            logger.error('Error from connector:' + connectorData.message);
+            self.emit('connectorError', connectorData.message, connectorResponse);
+        }
+    }).on('error', function (err) {
+        logger.error('Error raised calling connector:' + err);
+        self.emit('connectorError', err);
+    });
+    return this;
+};
+
 ConnectorClient.prototype._chargeUrlFor = function (gatewayAccountId, chargeId) {
     return this.connectorUrl + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
 };
 
 ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
     return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
+};
+
+ConnectorClient.prototype._searchTransactionsUrlFor = function (gatewayAccountId, searchParameters) {
+    var queryStr = '?';
+    queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
+                '&status=' + (searchParameters.status ? searchParameters.status : '') +
+                '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
+                '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
+    return this.connectorUrl + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) + queryStr;
 };
 
 exports.ConnectorClient = ConnectorClient;
