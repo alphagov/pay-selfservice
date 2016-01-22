@@ -1,7 +1,7 @@
 {{< layout}}
 
 {{$pageTitle}}
-List of developer tokens
+GOV.UK Pay - API keys
 {{/pageTitle}}
 
 {{$pageSpecificJS}}
@@ -10,19 +10,19 @@ List of developer tokens
 
 {{$content}}
 
-<h1 class="page-title">Developer keys</h1>
+<h1 class="page-title">API Keys</h1>
 
 <h2 id="available-tokens" class="heading-medium remove-top-margin">
   {{#active_tokens.length}}
   {{#active_tokens_singular}}
-    There is 1 active developer key
+    There is 1 active API key
   {{/active_tokens_singular}}
   {{^active_tokens_singular}}
-    There are {{active_tokens.length}} active developer keys
+    There are {{active_tokens.length}} active API keys
   {{/active_tokens_singular}}
   {{/active_tokens.length}}
   {{^active_tokens.length}}
-    There are no active developer keys
+    There are no active API keys
   {{/active_tokens.length}}
 </h2>
 

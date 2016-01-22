@@ -2,19 +2,19 @@ var renderTemplate = require(__dirname + '/utils/html_assertions.js').render;
 var should = require('chai').should();
 
 describe('The token view', function() {
-  it('should render the number of active developer keys for the account (for no keys)', function () {
+  it('should render the number of active API keys for the account (for no keys)', function () {
     var templateData = {
       'tokens' : []
     };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('h1').withText("Developer keys");
-    body.should.containSelector('#available-tokens').withText("There are no active developer keys");
+    body.should.containSelector('h1').withText("API Keys");
+    body.should.containSelector('#available-tokens').withText("There are no active API keys");
     body.should.containSelector('a[href="/selfservice/tokens/generate"]').withText('Generate a new key');
     body.should.containNoSelector('.key-list-item');
   });
 
-  it('should render the active developer keys for the account (for 1 key)', function () {
+  it('should render the active API keys for the account (for 1 key)', function () {
     var tokenLink = '550e8400-e29b-41d4-a716-446655440000',
         templateData = {
           'active_tokens' : [{"token_link": tokenLink, "description":"description token 1"}],
@@ -22,7 +22,7 @@ describe('The token view', function() {
         };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('#available-tokens').withText("There is 1 active developer key");
+    body.should.containSelector('#available-tokens').withText("There is 1 active API key");
     body.should.containSelector('h3').withText("Active keys");
 
     var tokenContainerSelector = '#' + tokenLink;
@@ -30,14 +30,14 @@ describe('The token view', function() {
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
   });
 
-  it('should render the number of active developer keys for the account (for 2 keys)', function () {
+  it('should render the number of active API keys for the account (for 2 keys)', function () {
     var templateData = {
       'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                   {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
     };
     var body = renderTemplate('token', templateData);
 
-    body.should.containSelector('#available-tokens').withText("There are 2 active developer keys");
+    body.should.containSelector('#available-tokens').withText("There are 2 active API keys");
     body.should.containSelector('h3').withText("Active keys");
 
     var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
@@ -72,7 +72,7 @@ describe('The generate token view', function() {
       var templateData = {};
       var body = renderTemplate('token_generate', templateData);
 
-      body.should.containSelector('.page-title').withText("Developer keys");
+      body.should.containSelector('.page-title').withText("API keys");
 
       body.should.containSelector('form')
         .withAttribute('action', '/selfservice/tokens/generate')
@@ -104,7 +104,7 @@ describe('The generate token view', function() {
       };
       
       var body = renderTemplate('token_generate', templateData);
-      body.should.containSelector('.page-title').withText("Developer keys");
+      body.should.containSelector('.page-title').withText("API keys");
       body.should.containSelector('.heading-medium').withText("New key generated");
       body.should.containSelector('p').withText("Please copy this key now as it won’t be shown again");
     });
