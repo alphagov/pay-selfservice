@@ -33,7 +33,7 @@ ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, sear
     logger.info('CONNECTOR GET ' + transactionsUrl);
     this.client.get(transactionsUrl, function (connectorData, connectorResponse) {
         if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData);
+            successCallback(connectorData, searchParameters);
         } else {
             logger.error('Error from connector:' + connectorData.message);
             self.emit('connectorError', connectorData.message, connectorResponse);

@@ -17,7 +17,7 @@ GOV.UK Pay - View transactions
           <strong>Reference Number</strong>
           <span class="form-hint">Enter full or part</span>
         </label>
-        <input class="form-control" id="reference" name="reference" type="text" />
+        <input class="form-control" id="reference" name="reference" type="text" value="{{filters.reference}}" />
       </div>
 
       <div class="column-quarter">
@@ -28,7 +28,7 @@ GOV.UK Pay - View transactions
         <select class="form-control" id="status" name="status">
           <option value=""></option>
           {{#eventStatuses}}
-            <option value="{{value}}">{{text}}</option>
+            <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
           {{/eventStatuses}}
         </select>
       </div>
@@ -38,11 +38,11 @@ GOV.UK Pay - View transactions
           <strong>Date created</strong>
           <span class="form-hint">From</span>
         </label>
-        <input class="form-control" id="fromDate" name="fromDate" type="text">
+        <input class="form-control" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" >
         <label class="form-label" for="toDate">
           <span class="form-hint">To</span>
         </label>
-        <input class="form-control" id="toDate" name="toDate" type="text">
+        <input class="form-control" id="toDate" name="toDate" type="text" value="{{filters.toDate}}"  >
       </div>
 
       <div class="column-quarter">

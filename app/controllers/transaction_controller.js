@@ -26,9 +26,9 @@ function withTransactionsList(req, res) {
         }
     };
 
-    var showTransactions = function (charges) {
+    var showTransactions = function (charges, filters) {
         charges.search_path = TRANSACTIONS_LIST_PATH;
-        response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges, accountId));
+        response(req.headers.accept, res, 'transactions', transactionView.buildPaymentList(charges, accountId, filters));
     };
 
     connectorClient()

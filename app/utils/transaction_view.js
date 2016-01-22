@@ -12,9 +12,15 @@ var TransactionView = function () {
 TransactionView.prototype.eventStatuses = {};
 
 /** prepares the transaction list view */
-TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId) {
+TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId, filters) {
+    connectorData.filters = filters;
     connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
-        return { "value": str, "text": changeCase.upperCaseFirst(str.toLowerCase())};
+        var value = {};
+        value.text = changeCase.upperCaseFirst(str.toLowerCase());
+        if(str === filters.status) {
+            value.selected = true;
+        }
+        return { "key": str, "value": value};
     });
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);
