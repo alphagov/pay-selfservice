@@ -22,13 +22,16 @@ describe('The transaction list view', function () {
           'status': 'TEST STATUS 2',
           'updated': '2016-01-11 01:01:01'
         }
-      ]
+      ],
+      'filters': {'reference': 'ref1', 'fromDate': '2015-01-11 01:01:01'}
     };
 
     var body = renderTemplate('transactions', templateData);
 
     templateData.results.forEach(function (transactionData, ix) {
     body.should.containSelector('h3#total-results').withExactText('2 transactions');
+    body.should.containInputField('reference', 'text').withAttribute('value', 'ref1');
+    body.should.containInputField('fromDate', 'text').withAttribute('value', '2015-01-11 01:01:01');
       body.should.containSelector('table#transaction-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].charge_id)
