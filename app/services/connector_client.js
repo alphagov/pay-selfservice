@@ -1,4 +1,3 @@
-// TODO: Backwards compatible purposes only. This commit needs to be reverted
 'use strict';
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
@@ -8,8 +7,6 @@ var Client = require('node-rest-client').Client;
 
 var CHARGES_API_PATH = '/v1/api/accounts/{accountId}/charges';
 var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
-var FRONTEND_CHARGE_PATH = '/v1/frontend/charges';
-
 
 var ConnectorClient = function (connectorUrl) {
     this.connectorUrl = connectorUrl;
@@ -29,8 +26,8 @@ ConnectorClient.prototype.client = null;
  * @param successCallback the callback to perform upon `200 OK` along with the connector results.
  * @returns {ConnectorClient}
  */
-ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, successCallback) {
-    var transactionsUrl = this._transactionUrlFor(gatewayAccountId);
+ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, searchParameters, successCallback) {
+    var transactionsUrl = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
 
     var self = this;
     logger.info('CONNECTOR GET ' + transactionsUrl);
@@ -95,32 +92,6 @@ ConnectorClient.prototype.withChargeEvents = function (gatewayAccountId, chargeI
         }
     }).on('error', function (err) {
         logger.error('Exception raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
-    return this;
-};
-
-/**
- * Search transactions by reference, status, fromDate and toDate.
- * @param gatewayAccountId
- * @param searchParameters
- * @param successCallback the callback to perform upon `200 OK` along with the connector results.
- * @returns {ConnectorClient}
- */
-ConnectorClient.prototype.withSearchTransactions = function (gatewayAccountId, searchParameters, successCallback) {
-    var transactionsUrl = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
-
-    var self = this;
-    logger.info('CONNECTOR GET ' + transactionsUrl);
-    this.client.get(transactionsUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
-        }
-    }).on('error', function (err) {
-        logger.error('Error raised calling connector:' + err);
         self.emit('connectorError', err);
     });
     return this;
