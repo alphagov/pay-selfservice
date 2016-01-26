@@ -26,8 +26,7 @@ describe('The transaction list view', function () {
       'filters': {'reference': 'ref1', 'fromDate': '2015-01-11 01:01:01'}
     };
 
-    var body = renderTemplate('transactions', templateData);
-
+    var body = renderTemplate('transactions/index', templateData);
     templateData.results.forEach(function (transactionData, ix) {
     body.should.containSelector('h3#total-results').withExactText('2 transactions');
     body.should.containInputField('reference', 'text').withAttribute('value', 'ref1');
@@ -50,7 +49,7 @@ describe('The transaction list view', function () {
         'results': []
       };
 
-      var body = renderTemplate('transactions', templateData);
+      var body = renderTemplate('transactions/index', templateData);
 
       templateData.results.forEach(function (transactionData, ix) {
       body.should.containSelector('p#no-results').withExactText('No results match the search criteria.');

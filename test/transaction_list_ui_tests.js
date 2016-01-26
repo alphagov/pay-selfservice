@@ -25,7 +25,7 @@ describe('The transaction list view', function () {
       ]
     };
 
-    var body = renderTemplate('transactions', templateData);
+    var body = renderTemplate('transactions/index', templateData);
 
     templateData.results.forEach(function (transactionData, ix) {
       body.should.containSelector('table#transaction-list')

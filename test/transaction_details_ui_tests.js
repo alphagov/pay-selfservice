@@ -38,7 +38,7 @@ describe('The transaction details view', function () {
         ]
     };
 
-    var body = renderTemplate('transaction_details', templateData);
+    var body = renderTemplate('transactions/show', templateData);
     var $ = cheerio.load(body);
     $('#reference').text().should.equal(templateData.reference);
     $('#amount').text().should.equal(templateData.amount);
