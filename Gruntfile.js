@@ -10,7 +10,8 @@ module.exports = function(grunt){
           style: "expanded",
           sourcemap: true,
           includePaths: [
-            'govuk_modules/govuk_frontend_toolkit/stylesheets'
+            'govuk_modules/govuk_frontend_toolkit/stylesheets',
+            'node_modules/govuk-elements-sass/public/sass/'
           ],
           outputStyle: 'expanded'
         },
@@ -40,7 +41,14 @@ module.exports = function(grunt){
           cwd: 'node_modules/govuk_frontend_toolkit',
           src: '**',
           dest: 'govuk_modules/govuk_frontend_toolkit/'
-        }]
+        },
+        {
+          expand: true,
+          cwd: 'node_modules/govuk-elements-sass',
+          src: '**',
+          dest: 'govuk_modules/govuk-elements-sass/'
+        }
+        ]
       },
       html5shiv: {
         files: [{
