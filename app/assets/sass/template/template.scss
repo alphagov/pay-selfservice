@@ -7,7 +7,7 @@
 #content {
   @extend %contain-floats;
   padding: $gutter 0;
-  width: 1200px;
+  width: 100%;
   max-width:1200px;
   @include media(desktop) {
     padding: $gutter 0 $gutter*3;
@@ -116,10 +116,6 @@
   @include media(tablet) {
     float: left;
     width: 20%;
-
-    .inner {
-      padding: 0 $gutter-half 0 $gutter;
-    }
   }
 }
 
