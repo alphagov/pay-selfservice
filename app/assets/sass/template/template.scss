@@ -107,14 +107,10 @@
           color: $black;
         }
       }
-
-      &:first-child {
-        border-top: 1px solid $border-colour;
-      }
     }
   }
 
-  @include media(tablet) {
+  @include respond-to(tablet) {
     float: left;
     width: 20%;
   }
