@@ -9,6 +9,7 @@
   padding: $gutter 0;
   width: 100%;
   max-width:1200px;
+  margin: 0 auto;
   @include media(desktop) {
     padding: $gutter 0 $gutter*3;
   }
