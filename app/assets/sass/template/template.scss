@@ -7,9 +7,10 @@
 #content {
   @extend %contain-floats;
   padding: $gutter 0;
-  width: $full-width;
+  width: 1200px;
+  max-width:1200px;
   @include media(desktop) {
-    padding-bottom: $gutter 0 $gutter*3;
+    padding: $gutter 0 $gutter*3;
   }
 }
 

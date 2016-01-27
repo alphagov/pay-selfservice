@@ -50,7 +50,7 @@ transactionsShow = function(req, res) {
     var charge = charge;
     connectorClient().withChargeEvents(accountId, chargeId, function(events){
       foundEventCharges(events, charge)
-    }).on('connectorError', showError)
+    }).on('connectorError', showError);
   };
 
   var foundEventCharges = function (events,charge) { //on success of finding events for charge
