@@ -202,8 +202,8 @@ portfinder.getPort(function (err, connectorPort) {
               var data= {
                 'reference': 'ref1',
                 'status': 'TEST_STATUS',
-                'fromDate': '2016-01-01 01:00:00',
-                'toDate': '2020-01-01 01:00:00'
+                'from_date': '01/01/2016',
+                'to_date': '01/01/2020'
                 };
               connectorMock_responds(connectorData, data);
 
@@ -224,7 +224,7 @@ portfinder.getPort(function (err, connectorPort) {
               search_transactions(data)
                   .expect(200)
                   .expect(function(res) {
-                           res.body.results.should.eql(expectedData.results);
+                    res.body.results.should.eql(expectedData.results);
                    })
                   .end(done);
             });
