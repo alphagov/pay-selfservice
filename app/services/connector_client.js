@@ -4,6 +4,9 @@ var EventEmitter = require('events').EventEmitter;
 
 var logger = require('winston');
 var Client = require('node-rest-client').Client;
+var dates = require('../utils/dates.js');
+var querystring = require('querystring');
+
 
 var CHARGES_API_PATH = '/v1/api/accounts/{accountId}/charges';
 var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
@@ -105,13 +108,17 @@ ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
     return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
 };
 
+
 ConnectorClient.prototype._searchTransactionsUrlFor = function (gatewayAccountId, searchParameters) {
-    var queryStr = '?';
-    queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-                '&status=' + (searchParameters.status ? searchParameters.status : '') +
-                '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-                '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
-    return this.connectorUrl + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) + queryStr;
+
+    var query = querystring.stringify({
+        reference: searchParameters.reference,
+        status: searchParameters.status,
+        from_date: dates.userInputToApiFormat(searchParameters.fromDate),
+        to_date: dates.userInputToApiFormat(searchParameters.toDate)
+    });
+
+    return this.connectorUrl + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) +"?" + query;
 };
 
 exports.ConnectorClient = ConnectorClient;

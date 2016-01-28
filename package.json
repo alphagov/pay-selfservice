@@ -40,7 +40,8 @@
     "passport-auth0": "^0.5.0",
     "readdir": "0.0.6",
     "serve-favicon": "~2.3.0",
-    "winston": "^1.0.1"
+    "winston": "^1.0.1",
+    "moment": "2.11.1"
   },
   "devDependencies": {
     "chai": "^3.2.0",

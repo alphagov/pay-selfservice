@@ -2,6 +2,7 @@ var moment = require('moment');
 var changeCase = require('change-case');
 var changeCase = require('change-case');
 var CURRENCY = '£';
+var dateFormat = require('dateformat');
 
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
@@ -27,6 +28,7 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         element.amount = (element.amount / 100).toFixed(2);
         element.gateway_account_id = gatewayAccountId;
         element.reference = element.reference || ""; // tolerate missing reference
+        element.updated  =  dateFormat(element.updated, "dd/m/yy - HH:mm");
     });
     return connectorData;
 };
