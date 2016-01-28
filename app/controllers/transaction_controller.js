@@ -15,9 +15,16 @@ var transactionsIndex = function (req, res) {
 
   var init = function(){
     connectorClient()
-      .withTransactionList(accountId, req.body, showTransactions)
+      .withTransactionList(accountId, filledBodyKeys(req), showTransactions)
       .on('connectorError', showError);
   };
+
+  var filledBodyKeys = function(req){
+    for (var i in req.body){
+      if (req.body[i] == "") delete req.body[i]
+    };
+    return req.body
+  }
 
   var showTransactions = function (charges, filters) {
     charges.search_path = TRANSACTIONS_INDEX_PATH;

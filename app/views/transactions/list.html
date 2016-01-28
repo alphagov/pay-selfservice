@@ -10,7 +10,7 @@
   </thead>
   <tbody>
   {{#results}}
-    <tr>
+    <tr data-follow-link data-link="/selfservice/transactions/{{charge_id}}">
       <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
       <td>{{reference}}</td>
       <td>{{amount}}</td>

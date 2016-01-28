@@ -31,7 +31,6 @@ ConnectorClient.prototype.client = null;
  */
 ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, searchParameters, successCallback) {
     var transactionsUrl = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
-
     var self = this;
     logger.info('CONNECTOR GET ' + transactionsUrl);
     this.client.get(transactionsUrl, function (connectorData, connectorResponse) {
