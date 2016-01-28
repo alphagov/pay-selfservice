@@ -42,6 +42,7 @@
 
 // Use .grid-column to create a grid column with 15px gutter
 // By default grid columns break to become full width at tablet size
+
 .column-quarter {
   @include grid-column( 1/4 );
 }
@@ -53,6 +54,21 @@
 }
 .column-two-thirds {
   @include grid-column( 2/3 );
+}
+
+.column-quarter,
+.column-half,
+.column-third,
+.column-two-thirds {
+  &.tiny-guttering {
+    padding: 0 $gutter-half/2;
+  }
+  &.pull-left {
+    padding-left: 0;
+  }
+  &.pull-right {
+    padding-right: 0;
+  }
 }
 
 // Make skiplinks visible when they are tabbed to

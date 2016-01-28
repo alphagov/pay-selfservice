@@ -1,0 +1,20 @@
+.form-control {
+	@include core-16;
+	&.large {
+		@include respond-to(tablet) {
+			width:100%;
+		}
+	}
+	&.float {
+		float: left
+	}
+}
+
+select.form-control {
+	-webkit-appearance: none;
+	border-radius: 0;
+}
+
+.form-hint {
+	@include core-14;
+}

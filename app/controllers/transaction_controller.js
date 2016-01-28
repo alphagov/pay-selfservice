@@ -24,7 +24,6 @@ var transactionsIndex = function (req, res) {
     var data = transactionView.buildPaymentList(charges, accountId, filters);
     response(req.headers.accept, res, 'transactions/index', data);
   };
-
   var showError = function (err, response) {
     if (!response) return renderErrorView(req, res, 'Internal server error');
 

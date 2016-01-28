@@ -4,90 +4,18 @@
 GOV.UK Pay - View transactions
 {{/pageTitle}}
 
+{{$bodyClasses}}transactions index{{/bodyClasses}}
+
 {{$content}}
 <h2 class="heading-large page-title tuck-bottom">Transactions</h2>
 <h3 class="heading-medium pull-top">Filter transactions list</h3>
 
-<div class="grid-row">
-  <form class="form" method="post" action="{{search_path}}">
-    <fieldset>
-      <div class="column-quarter">
-        <label class="form-label" for="reference">
-          <strong>Reference Number</strong>
-          <span class="form-hint">Enter full or part</span>
-        </label>
-        <input class="form-control" id="reference" name="reference" type="text" value="{{filters.reference}}" />
-      </div>
-
-      <div class="column-quarter">
-        <label class="form-label" for="status">
-          <strong>Status</strong>
-          <span class="form-hint">Select an option</span>
-        </label>
-        <select class="form-control" id="status" name="status">
-          <option value=""></option>
-          {{#eventStatuses}}
-            <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
-          {{/eventStatuses}}
-        </select>
-      </div>
-
-      <div class="column-quarter">
-        <label class="form-label" for="fromDate">
-          <strong>Date created</strong>
-          <span class="form-hint">From</span>
-        </label>
-        <input class="form-control" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" >
-        <label class="form-label" for="toDate">
-          <span class="form-hint">To</span>
-        </label>
-        <input class="form-control" id="toDate" name="toDate" type="text" value="{{filters.toDate}}"  >
-      </div>
-
-      <div class="column-quarter">
-        <div class="form-group">
-          <input class="button" type="submit" id="filter" value="Filter">
-        </div>
-      </div>
-    </fieldset>
-  </form>
-</div>
+{{>transactions/filter}}
 
 
-<h3 class="heading-medium" id="total-results">{{results.length}} transactions</h3>
+<h3 class="heading-small" id="total-results">{{results.length}} transactions</h3>
 
-<div class="inner group">
-  <table id="transaction-list">
-    <thead>
-      <tr>
-        <th id="charge-id-header"><strong>Charge ID</strong></th>
-        <th id="amount-header"><strong>Amount (£)</strong></th>
-        <th id="reference-header"><strong>Reference</strong></th>
-        <th id="status-header"><strong>Status</strong></th>
-        <th id="transaction-id-header"><strong>Gateway transaction ID</strong></th>
-        <th id="time-header"><strong>Time</strong></th>
-        <th>&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-    {{#results}}
-      <tr>
-        <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
-        <td>{{amount}}</td>
-        <td>{{reference}}</td>
-        <td>{{status}}</td>
-        <td>{{gateway_transaction_id}}</td>
-        <td>{{updated}}</td>
-        <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">
-          <img src="/selfservice/public/images/link.png" class="transaction-detail-icon" /></a></td>
-      </tr>
-    {{/results}}
-    </tbody>
-  </table>
-  {{^results}}
-    <p id="no-results">No results match the search criteria.</p>
-  {{/results}}
-</div>
+{{>transactions/list}}
 
 {{/content}}
 

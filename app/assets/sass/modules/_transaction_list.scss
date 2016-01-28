@@ -1,0 +1,16 @@
+
+#transaction-list {
+  border-collapse: collapse;
+  tr:hover {
+     background: $grey-4;
+  }
+
+  td {
+    @include core-14;
+  }
+
+
+}
+
+
+

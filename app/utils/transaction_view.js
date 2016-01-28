@@ -14,6 +14,7 @@ TransactionView.prototype.eventStatuses = {};
 /** prepares the transaction list view */
 TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId, filters) {
     connectorData.filters = filters;
+    connectorData.hasFilters = Object.keys(filters).length != 0;
     connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
         var value = {};
         value.text = changeCase.upperCaseFirst(str.toLowerCase());
