@@ -3,7 +3,7 @@ var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
 var logger = require('winston');
-var Client = require('node-rest-client').Client;
+var request = require('request');
 var dates = require('../utils/dates.js');
 var querystring = require('querystring');
 
@@ -13,11 +13,28 @@ var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
 
 var ConnectorClient = function (connectorUrl) {
     this.connectorUrl = connectorUrl;
-    this.client = new Client();
+    this.client = request.defaults({json:true});
     EventEmitter.call(this);
 };
 
 util.inherits(ConnectorClient, EventEmitter);
+
+var getResponseHandler = function(callback) {
+    return function (error, response, body) {
+        if (error) {
+            logger.error('Error from connector: ' + error);
+            this.emit('connectorError', error, response, body);
+            return;
+        }
+
+        if (response.statusCode === 200) {
+            callback(body);
+        } else {
+            logger.error('Error from connector with status code: ' + response.statusCode);
+            this.emit('connectorError', error, response, body);
+        }
+    }
+};
 
 ConnectorClient.prototype.connectorUrl = null;
 
@@ -30,20 +47,9 @@ ConnectorClient.prototype.client = null;
  * @returns {ConnectorClient}
  */
 ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, searchParameters, successCallback) {
-    var transactionsUrl = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
-    var self = this;
-    logger.info('CONNECTOR GET ' + transactionsUrl);
-    this.client.get(transactionsUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData, searchParameters);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
-        }
-    }).on('error', function (err) {
-        logger.error('Error raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
+    var url = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, getResponseHandler(successCallback).bind(this));
     return this;
 };
 
@@ -55,21 +61,9 @@ ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, sear
  * @returns {ConnectorClient}
  */
 ConnectorClient.prototype.withGetCharge = function (gatewayAccountId, chargeId, successCallback) {
-    var chargeUrl = this._chargeUrlFor(gatewayAccountId, chargeId);
-
-    var self = this;
-    logger.info('CONNECTOR GET ' + chargeUrl);
-    this.client.get(chargeUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
-        }
-    }).on('error', function (err) {
-        logger.error('Exception raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
+    var url = this._chargeUrlFor(gatewayAccountId, chargeId);
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, getResponseHandler(successCallback).bind(this));
     return this;
 };
 
@@ -81,21 +75,9 @@ ConnectorClient.prototype.withGetCharge = function (gatewayAccountId, chargeId, 
  * @returns {ConnectorClient}
  */
 ConnectorClient.prototype.withChargeEvents = function (gatewayAccountId, chargeId, successCallback) {
-    var eventUrl = this._chargeUrlFor(gatewayAccountId, chargeId) + "/events";
-
-    var self = this;
-    logger.info('CONNECTOR GET ' + eventUrl);
-    this.client.get(eventUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
-        }
-    }).on('error', function (err) {
-        logger.error('Exception raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
+    var url = this._chargeUrlFor(gatewayAccountId, chargeId) + "/events";
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, getResponseHandler(successCallback).bind(this));
     return this;
 };
 

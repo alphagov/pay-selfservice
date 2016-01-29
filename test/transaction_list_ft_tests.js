@@ -164,7 +164,7 @@ portfinder.getPort(function (err, connectorPort) {
       });
 
       it('should show error message on a bad request', function (done) {
-        var errorMessage = 'some error from connector';
+        var errorMessage = 'Unable to retrieve list of transactions.';
         connectorMock_responds(400, {'message': errorMessage}, searchParameters);
         
         get_transaction_list()

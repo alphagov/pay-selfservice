@@ -11,36 +11,37 @@ var _ = require('lodash');
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
 }
+
+var filledBodyKeys = function(req){
+return _.omitBy(req.body, _.isEmpty);
+}
+
 var transactionsIndex = function (req, res) {
   var accountId = auth.get_account_id(req);
+  var filters = filledBodyKeys(req);
 
   var init = function(){
     connectorClient()
-      .withTransactionList(accountId, filledBodyKeys(req), showTransactions)
+      .withTransactionList(accountId, filters, showTransactions)
       .on('connectorError', showError);
   };
 
-  var filledBodyKeys = function(req){
-    return _.omitBy(req.body, _.isEmpty);
-  }
-
-  var showTransactions = function (charges, filters) {
+  var showTransactions = function (charges) {
     charges.search_path = TRANSACTIONS_INDEX_PATH;
     var data = transactionView.buildPaymentList(charges, accountId, filters);
     response(req.headers.accept, res, 'transactions/index', data);
   };
+  var showError = function (connectorError) {
+    if (connectorError) {
+      renderErrorView(req, res, 'Internal server error');
+      return;
+    };
 
-  var showError = function (err, response) {
-    if (!response) return renderErrorView(req, res, 'Internal server error');
-
-    var bad_req = response.statusCode === 400;
-    var error = (bad_req) ? err : 'Unable to retrieve list of transactions.';
-
-    renderErrorView(req, res, error);
+    renderErrorView(req, res, 'Unable to retrieve list of transactions.');
   };
 
   init();
-}
+};
 
 transactionsShow = function(req, res) {
   var accountId = auth.get_account_id(req);
@@ -63,13 +64,14 @@ transactionsShow = function(req, res) {
     response(req.headers.accept, res, 'transactions/show', data);
   };
 
-  var showError = function (err, response) {
-    if (!response) return renderErrorView(req, res, 'Error processing transaction view');
+  var showError = function (connectorError, connectorResponse) {
+    if (connectorError) {
+      renderErrorView(req, res, 'Internal server error');
+      return;
+    };
 
-    var four_oh_four = response.statusCode === 404;
-    var error = (four_oh_four) ? 'charge not found' : 'Error processing transaction view';
-
-    renderErrorView(req, res, error);
+    var errorMessage = (connectorResponse.statusCode === 404) ? 'Charge not found' : 'Error processing transaction view';
+    renderErrorView(req, res, errorMessage);
   };
 
   init();

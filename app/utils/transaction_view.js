@@ -1,6 +1,5 @@
 var moment = require('moment');
 var changeCase = require('change-case');
-var changeCase = require('change-case');
 var CURRENCY = '£';
 
 var TransactionView = function () {
@@ -23,6 +22,7 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         }
         return { "key": str, "value": value};
     });
+
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);
         element.gateway_account_id = gatewayAccountId;
