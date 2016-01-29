@@ -2,11 +2,15 @@ table {
   margin-bottom: $gutter*2;
   width: $full-width;
   td {
-    @include core-19;
+    @include core-14;
     padding: 0.75em 1.25em 0.5625em 0;
-
+    line-height: 1;
     &.details {
       font-weight: bold;
     }
+  }
+
+  tr:first-of-type {
+    border-top: 1px solid $grey-2;
   }
 }
