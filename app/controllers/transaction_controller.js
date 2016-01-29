@@ -5,8 +5,14 @@ var ConnectorClient = require('../services/connector_client.js').ConnectorClient
 var transactionView = new TransactionView();
 var auth = require('../services/auth_service.js');
 var TRANSACTIONS_INDEX_PATH = '/selfservice/transactions';
+var TRANSACTIONS_DOWNLOAD_PATH = TRANSACTIONS_INDEX_PATH + '/download';
 var TRANSACTIONS_SHOW_PATH = TRANSACTIONS_INDEX_PATH + '/:chargeId';
 var _ = require('lodash');
+var date = require('../utils/dates.js');
+
+// TODO: Externalise into properties
+var TRANSACTION_CSV_FILENAME = 'GOVUK Pay <%= timestamp %>.csv';
+var CONTENT_TYPE_CSV = 'text/csv'
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
@@ -43,7 +49,37 @@ var transactionsIndex = function (req, res) {
   init();
 };
 
-transactionsShow = function(req, res) {
+var transactionsDownload = function (req, res) {
+  var accountId = auth.get_account_id(req);
+  var filters = filledBodyKeys(req);
+
+  var buildFileName = function() {
+    var compiled = _.template(TRANSACTION_CSV_FILENAME)
+      return compiled({ 'timestamp' : date.dateToDefaultFormat(Date())})
+  }
+
+  var init = function () {
+    res.setHeader('Content-Type', CONTENT_TYPE_CSV);
+    res.setHeader('Content-disposition', 'attachment; filename=' + buildFileName());
+
+    connectorClient()
+        .withTransactionDownload(accountId, filters, res)
+        .on('connectorError', showError);
+  };
+
+  var showError = function (connectorError) {
+    if (connectorError) {
+      renderErrorView(req, res, 'Internal server error');
+      return;
+    };
+
+    renderErrorView(req, res, 'Unable to download list of transactions.');
+  };
+
+  init();
+}
+
+var transactionsShow = function(req, res) {
   var accountId = auth.get_account_id(req);
   var chargeId = req.params.chargeId;
 
@@ -84,6 +120,8 @@ module.exports.bindRoutesTo = function (app) {
    */
   app.get(TRANSACTIONS_INDEX_PATH, auth.enforce, transactionsIndex);
   app.post(TRANSACTIONS_INDEX_PATH, auth.enforce, transactionsIndex);
+
+  app.get(TRANSACTIONS_DOWNLOAD_PATH, auth.enforce, transactionsDownload);
 
   /**
    *  Display transaction details for a given chargeId of an account.

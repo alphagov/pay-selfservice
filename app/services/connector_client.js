@@ -54,6 +54,18 @@ ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, sear
 };
 
 /**
+ * Download transaction list for a given gateway account id.
+ * @param gatewayAccountId
+ * @returns {ConnectorClient}
+ */
+ConnectorClient.prototype.withTransactionDownload = function (gatewayAccountId, searchParameters, response) {
+    var url = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url).pipe(response);
+    return this;
+};
+
+/**
  * Retrieves a Charge from connector for a given charge Id that belongs to a gateway account Id
  * @param gatewayAccountId
  * @param chargeId
