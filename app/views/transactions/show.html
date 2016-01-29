@@ -5,66 +5,15 @@ GOV.UK Pay - Transaction Details
 {{/pageTitle}}
 
 {{$content}}
-<h1 class="page-title">Transactions</h1>
+<h1 class="page-title pull-bottom">Transactions</h1>
+<a href="/selfservice/transactions/" class="arrowed"> &#9664; Back to transactions list </a>
 
-<h3 class="heading-medium">Transaction details</h3>
-<div class="inner group">
-<table id="transaction-info" style="max-width:600px;">
-  <tbody>
-    <tr>
-      <td>Reference Number:</td>
-      <td><strong id="reference">{{reference}}</strong></td>
-    </tr>
-    <tr>
-      <td>Amount (£):</td>
-      <td><strong id="amount">{{amount}}</strong></td>
-    </tr>
-    <tr>
-      <td>Status:</td>
-      <td> <strong id="status">{{status}}</strong></td>
-    </tr>
-    <tr>
-      <td>Method:</td>
-      <td><strong id="method"></strong></td>
-    </tr>
-    <tr>
-      <td>Provider:</td>
-      <td><strong id="provider">{{payment_provider}}</strong></td>
-    </tr>
-    <tr>
-      <td>Date created:</td>
-          <td><strong id="time">{{updated}}</strong></td>
-    </tr>
-    <tr>
-      <td>Gateway Transaction ID:</td>
-      <td><strong id="transaction-id">{{gateway_transaction_id}}</strong></td>
-    </tr>
-    <tr>
-      <td>GOV.UK Pay ID:</td>
-      <td><strong id="payment-id">{{charge_id}}</strong></td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<h2 class="heading-small pull-top push-bottom-sml">Transaction details</h2>
+{{>transactions/details}}
 
-<hr style="height:3px;color:#333;background-color:#333;" />
-<h3 class="heading-medium">Events</h3>
-<div class="inner group">
-  <table  id="transaction-events">
-    <tbody>
-    {{#events}}
-    <tr>
-      <td>{{status}}</td>
-      <td align="right">{{updated_friendly}}</td>
-    </tr>
-    {{/events}}
-    </tbody>
-  </table>
-</div>
 
-<hr style="height:3px;color:#333;background-color:#333;" />
-<h3 class="heading-medium">Logs</h3>
-
+<h3 class="heading-small pull-top push-bottom-sml">Events</h3>
+{{>transactions/events}}
 
 {{/content}}
 
