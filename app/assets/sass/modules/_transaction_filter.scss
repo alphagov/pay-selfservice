@@ -26,14 +26,12 @@
     }
   }
 
-  .column-half.date-from {
+  .column-half.date-from,
+  .column-half.date-to  {
     width:50%;
     float: left;
+    @include respond-to-max(mobile) {
+      margin-bottom: $gutter-half;
+    }
   }
-  .column-half.date-to {
-    width:50%;
-    float: left;
-
-  }
-
 }
