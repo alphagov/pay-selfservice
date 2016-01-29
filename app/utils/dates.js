@@ -14,9 +14,14 @@ module.exports = function()
     return (date) ? moment(date,'DD/M/YYYY').format(API_FORMAT) : "";
   };
 
+  var utcToDisplay = function(date){
+    return moment(date).format('DD MMM YYYY — HH:mm')
+  }
+
   return {
     dateToDefaultFormat: dateToDefaultFormat,
-    userInputToApiFormat: userInputToApiFormat
+    userInputToApiFormat: userInputToApiFormat,
+    utcToDisplay: utcToDisplay
   }
 
 }();
