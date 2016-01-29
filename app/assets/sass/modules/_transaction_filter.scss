@@ -1,30 +1,30 @@
 .transaction-filter {
-	.filter-submit {
+  .filter-submit {
     @include respond-to(tablet) {
       margin-top: 50px;
       margin-bottom: 0;
     }
-	}
+  }
 
-	.button {
-		padding-top: 3px;
-		padding-bottom:4px;
-	}
+  .button {
+    padding-top: 3px;
+    padding-bottom:4px;
+  }
 
-	.clear-filter {
-		@include core-14;
-	}
+  .clear-filter {
+    @include core-14;
+  }
 
-	.column-quarter {
-		@include respond-to-max(1040px) {
-			width: 50%;
+  .column-quarter {
+    @include respond-to-max(1040px) {
+      width: 50%;
       margin-bottom: $gutter;
-		}
+    }
     @include respond-to-max(mobile) {
       width: 100%;
       margin-bottom: $gutter-half;
     }
-	}
+  }
 
   .column-half.date-from {
     width:50%;

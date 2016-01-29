@@ -107,7 +107,6 @@ ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
     return this.connectorUrl + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
 };
 
-
 ConnectorClient.prototype._searchTransactionsUrlFor = function (gatewayAccountId, searchParameters) {
 
     var query = querystring.stringify({
