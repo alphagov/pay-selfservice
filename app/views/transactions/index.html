@@ -30,7 +30,9 @@ GOV.UK Pay - View transactions
   {{/filters.status}}
 </h3>
 
-<a href="/selfservice/transactions/download" class="clear-filter"> Download a spreadsheet of these transactions </a>
+{{#hasResults}}
+<a href="/selfservice/transactions/download" id="download-transactions-link"> Download a spreadsheet of these transactions </a>
+{{/hasResults}}
 
 {{>transactions/list}}
 
