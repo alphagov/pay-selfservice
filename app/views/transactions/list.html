@@ -12,7 +12,7 @@
   {{#results}}
     <tr data-follow-link data-link="/selfservice/transactions/{{charge_id}}">
       <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
-      <td>{{reference}}</td>
+      <td class="reference" data-gateway-transaction-id="{{gateway_transaction_id}}">{{reference}}</td>
       <td>{{amount}}</td>
       <td>{{status}}</td>
       <td>{{updated}}</td>
