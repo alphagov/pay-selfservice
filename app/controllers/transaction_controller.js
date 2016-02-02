@@ -6,6 +6,7 @@ var transactionView = new TransactionView();
 var auth = require('../services/auth_service.js');
 var TRANSACTIONS_INDEX_PATH = '/selfservice/transactions';
 var TRANSACTIONS_SHOW_PATH = TRANSACTIONS_INDEX_PATH + '/:chargeId';
+var _ = require('lodash');
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
@@ -20,10 +21,7 @@ var transactionsIndex = function (req, res) {
   };
 
   var filledBodyKeys = function(req){
-    for (var i in req.body){
-      if (req.body[i] == "") delete req.body[i]
-    };
-    return req.body
+    return _.omitBy(req.body, _.isEmpty);
   }
 
   var showTransactions = function (charges, filters) {
@@ -31,6 +29,7 @@ var transactionsIndex = function (req, res) {
     var data = transactionView.buildPaymentList(charges, accountId, filters);
     response(req.headers.accept, res, 'transactions/index', data);
   };
+
   var showError = function (err, response) {
     if (!response) return renderErrorView(req, res, 'Internal server error');
 

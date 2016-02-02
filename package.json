@@ -41,7 +41,9 @@
     "readdir": "0.0.6",
     "serve-favicon": "~2.3.0",
     "winston": "^1.0.1",
-    "moment": "2.11.1"
+    "moment": "2.11.1",
+    "lodash": "~4.2.0"
+
   },
   "devDependencies": {
     "chai": "^3.2.0",
