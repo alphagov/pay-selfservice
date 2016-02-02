@@ -62,7 +62,7 @@ var transactionsDownload = function (req, res) {
   var setHeaders = function() {
     var buildFileName = function() {
       var compiled = _.template(TRANSACTION_CSV_FILENAME)
-      return compiled({ 'timestamp' : date.dateToDefaultFormat(Date())})
+      return compiled({ 'timestamp' : date.dateToDefaultFormat(new Date())})
     }
 
     res.setHeader('Content-Type', CONTENT_TYPE_CSV);
