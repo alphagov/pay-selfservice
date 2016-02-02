@@ -12,7 +12,7 @@ var date = require('../utils/dates.js');
 
 // TODO: Externalise into properties
 var TRANSACTION_CSV_FILENAME = 'GOVUK Pay <%= timestamp %>.csv';
-var CONTENT_TYPE_CSV = 'text/csv'
+var CONTENT_TYPE_CSV = 'text/csv';
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
@@ -53,21 +53,27 @@ var transactionsDownload = function (req, res) {
   var accountId = auth.get_account_id(req);
   var filters = filledBodyKeys(req);
 
-  var buildFileName = function() {
-    var compiled = _.template(TRANSACTION_CSV_FILENAME)
-      return compiled({ 'timestamp' : date.dateToDefaultFormat(Date())})
-  }
-
   var init = function () {
-    res.setHeader('Content-Type', CONTENT_TYPE_CSV);
-    res.setHeader('Content-disposition', 'attachment; filename=' + buildFileName());
-
     connectorClient()
-        .withTransactionDownload(accountId, filters, res)
+        .withTransactionDownload(accountId, filters, setHeaders)
         .on('connectorError', showError);
   };
 
+  var setHeaders = function() {
+    var buildFileName = function() {
+      var compiled = _.template(TRANSACTION_CSV_FILENAME)
+      return compiled({ 'timestamp' : date.dateToDefaultFormat(Date())})
+    }
+
+    res.setHeader('Content-Type', CONTENT_TYPE_CSV);
+    res.setHeader('Content-disposition', 'attachment; filename=' + buildFileName());
+    return res;
+  }
+
   var showError = function (connectorError) {
+    res.removeHeader("Content-Type");
+    res.removeHeader("Content-disposition");
+
     if (connectorError) {
       renderErrorView(req, res, 'Internal server error');
       return;
