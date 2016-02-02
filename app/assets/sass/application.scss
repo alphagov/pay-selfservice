@@ -14,8 +14,13 @@
 
 // Override New Transport font-stack from front-end toolkit
 $NTA-Light: Helvetica, Arial, sans-serif;
+$grey-8: #fff;
 
+@mixin media-down($mobile) {
+};
 @import 'govuk-elements';
+@import "elements/base";
+
 
 // Application mixins and helpers
 @import "helpers/_margins";
@@ -24,34 +29,14 @@ $NTA-Light: Helvetica, Arial, sans-serif;
 @import "helpers/_key_list";
 @import "helpers/_buttons";
 @import "helpers/_alerts";
+@import "helpers/_mixins";
+@import "helpers/_movement";
+
+@import "modules/_transaction_filter";
+@import "modules/_transaction_list";
+
+
+@import 'gov-uk-overrides/_forms';
+
 
 @import "template/template";
-
-
-#transaction-list {
-  border-collapse: collapse;
-}
-
-
-#transaction-list th {
-  border: solid 1px black;
-  margin: 0;
-  padding: 0.2em;
-  font-size: 80%;
-  font-weight: bold;
-  background-color: #ddd;
-  text-align: center;
-}
-
-#transaction-list td {
-  border: solid 1px black;
-  margin: 0;
-  padding: 0.2em;
-  font-size: 80%;
-  text-align: center;
-}
-
-.transaction-detail-icon {
-  width: 1.5em;
-  height: 1.5em;
-}

@@ -1,0 +1,47 @@
+<div class="grid-row">
+  <form class="form transaction-filter" method="post" action="{{search_path}}">
+    <fieldset>
+      <div class="column-quarter">
+        <label class="form-label" for="reference">
+          <strong>Reference Number</strong>
+          <span class="form-hint">Enter full or part</span>
+        </label>
+        <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
+      </div>
+
+      <div class="column-quarter">
+        <label class="form-label" for="status">
+          <strong>Status</strong>
+          <span class="form-hint">Select an option</span>
+        </label>
+        <select class="form-control large" id="status" name="status">
+          <option value=""></option>
+          {{#eventStatuses}}
+            <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
+          {{/eventStatuses}}
+        </select>
+      </div>
+      <div class="column-quarter">
+        <label class="form-label" for="fromDate">
+          <strong>Date range</strong>
+          <span class="form-hint">E.g. 7/11/2015 - 10/11/2015</span>
+        </label>
+        <div class="column-half tiny-guttering pull-left date-from">
+          <input class="form-control large" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" placeholder="from" >
+        </div>
+        <div class="column-half tiny-guttering pull-right date-to">
+          <input class="form-control large" id="toDate" name="toDate" type="text" value="{{filters.toDate}}" placeholder="to" >
+        </div>
+      </div>
+
+      <div class="column-quarter">
+        <div class="form-group filter-submit">
+          <input class="button" type="submit" id="filter" value="Filter">
+          {{#hasFilters}}
+            <a href="/selfservice/transactions" class="clear-filter"> Clear Filter </a>
+          {{/hasFilters}}
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>

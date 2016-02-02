@@ -1,0 +1,37 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - View transactions
+{{/pageTitle}}
+
+{{$bodyClasses}}transactions index{{/bodyClasses}}
+
+{{$pageSpecificJS}}
+<script src="/selfservice/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
+{{$content}}
+<h2 class="heading-large page-title tuck-bottom">Transactions</h2>
+<h3 class="heading-medium pull-top">Filter transactions list</h3>
+
+{{>transactions/filter}}
+
+
+<h3 class="heading-small" id="total-results">
+  {{results.length}} transactions
+  {{#filters.fromDate}}
+    from {{filters.fromDate}}
+  {{/filters.fromDate}}
+  {{#filters.toDate}}
+    to {{filters.toDate}}
+  {{/filters.toDate}}
+  {{#filters.status}}
+    with '{{filters.status }}' status
+  {{/filters.status}}
+</h3>
+
+{{>transactions/list}}
+
+{{/content}}
+
+{{/layout}}

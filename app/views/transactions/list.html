@@ -1,0 +1,25 @@
+<table id="transaction-list">
+  <thead>
+    <tr>
+      <th id="charge-id-header">Charge ID</th>
+      <th id="reference-header">Reference</th>
+      <th id="amount-header">Amount (£)</th>
+      <th id="status-header">Status</th>
+      <th id="time-header">Time</th>
+    </tr>
+  </thead>
+  <tbody>
+  {{#results}}
+    <tr data-follow-link data-link="/selfservice/transactions/{{charge_id}}">
+      <td><a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">{{charge_id}}</a></td>
+      <td class="reference" data-gateway-transaction-id="{{gateway_transaction_id}}">{{reference}}</td>
+      <td>{{amount}}</td>
+      <td>{{status}}</td>
+      <td>{{updated}}</td>
+    </tr>
+  {{/results}}
+  </tbody>
+</table>
+{{^results}}
+  <p id="no-results">No results match the search criteria.</p>
+{{/results}}
