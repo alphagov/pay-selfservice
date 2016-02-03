@@ -47,7 +47,7 @@ describe('The transaction details view', function () {
     $('#status').text().should.equal(templateData.status);
 
     templateData.events.forEach(function (transactionData, ix) {
-      body.should.containSelector('table#transaction-events')
+      body.should.containSelector('table.transaction-events')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.events[ix].status)
         .withTableDataAt(2, templateData.events[ix].updated_friendly);

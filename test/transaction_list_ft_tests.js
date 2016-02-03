@@ -4,9 +4,13 @@ var request = require('supertest');
 var portfinder = require('portfinder');
 var nock = require('nock');
 var app = require(__dirname + '/../server.js').getApp;
+var dates = require('../app/utils/dates.js');
 var auth_cookie = require(__dirname + '/utils/login-session.js');
 
 var winston = require('winston');
+
+var CONNECTOR_DATE = new Date();
+var DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE);
 
 portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 651342;
@@ -56,18 +60,21 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
               'reference': 'ref1',
-              'status': 'TEST STATUS'
+              'status': 'TEST STATUS',
+              'updated': CONNECTOR_DATE
+
             },
             {
               'charge_id': '101',
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
               'reference': 'ref2',
-              'status': 'TEST STATUS 2'
+              'status': 'TEST STATUS 2',
+              'updated': CONNECTOR_DATE
             }
           ]
         };
-        
+
         connectorMock_responds(200, connectorData, searchParameters);
 
         var expectedData = {
@@ -78,7 +85,8 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '50.00',
               'reference': 'ref1',
               'status': 'TEST STATUS',
-              'gateway_account_id': gatewayAccountId
+              'gateway_account_id': gatewayAccountId,
+              'updated': DISPLAY_DATE
             },
             {
               'charge_id': '101',
@@ -86,7 +94,8 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '20.00',
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
-              'gateway_account_id': gatewayAccountId
+              'gateway_account_id': gatewayAccountId,
+              'updated': DISPLAY_DATE
             }
           ]
         };
@@ -94,7 +103,7 @@ portfinder.getPort(function (err, connectorPort) {
         get_transaction_list()
             .expect(200)
             .expect(function(res) {
-                     res.body.results.should.eql(expectedData.results);
+               res.body.results.should.eql(expectedData.results);
              })
             .end(done);
       });
@@ -106,18 +115,20 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
-              'status': 'TEST STATUS'
+              'status': 'TEST STATUS',
+              'updated': CONNECTOR_DATE
             },
             {
               'charge_id': '101',
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
               'reference': 'ref2',
-              'status': 'TEST STATUS 2'
+              'status': 'TEST STATUS 2',
+              'updated': CONNECTOR_DATE
             }
           ]
         };
-        
+
         connectorMock_responds(200, connectorData, searchParameters);
 
         var expectedData = {
@@ -128,7 +139,9 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '50.00',
               'reference': '',
               'status': 'TEST STATUS',
-              'gateway_account_id': gatewayAccountId
+              'gateway_account_id': gatewayAccountId,
+              'updated': DISPLAY_DATE
+
             },
             {
               'charge_id': '101',
@@ -136,7 +149,8 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': '20.00',
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
-              'gateway_account_id': gatewayAccountId
+              'gateway_account_id': gatewayAccountId,
+              'updated': DISPLAY_DATE
             }
           ]
         };
@@ -144,7 +158,7 @@ portfinder.getPort(function (err, connectorPort) {
         get_transaction_list()
           .expect(200)
           .expect(function(res) {
-                     res.body.results.should.eql(expectedData.results);
+            res.body.results.should.eql(expectedData.results);
           })
           .end(done);
       });
@@ -158,7 +172,7 @@ portfinder.getPort(function (err, connectorPort) {
         get_transaction_list()
           .expect(200)
           .expect(function(res) {
-                     res.body.results.should.eql([]);
+            res.body.results.should.eql([]);
           })
           .end(done);
       });
@@ -166,7 +180,7 @@ portfinder.getPort(function (err, connectorPort) {
       it('should show error message on a bad request', function (done) {
         var errorMessage = 'some error from connector';
         connectorMock_responds(400, {'message': errorMessage}, searchParameters);
-        
+
         get_transaction_list()
           .expect(200, {'message': errorMessage})
           .end(done);
