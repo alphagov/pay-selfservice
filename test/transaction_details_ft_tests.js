@@ -127,7 +127,7 @@ portfinder.getPort(function (err, connectorPort) {
 
             it('should return charge not found if a non existing charge id requested', function (done) {
                 var nonExistentChargeId = 888;
-                var connectorError = {'message': 'charge not found'};
+                var connectorError = {'message': 'Charge not found'};
                 connectorMock.get(connectorChargePathFor(nonExistentChargeId))
                     .reply(404, connectorError);
 
@@ -150,7 +150,7 @@ portfinder.getPort(function (err, connectorPort) {
 
             it('should return a generic if unable to communicate with connector', function (done) {
                 when_getTransactionHistory(chargeId)
-                    .expect(200, {'message': 'Error processing transaction view'})
+                    .expect(200, {'message': 'Internal server error'})
                     .end(done);
             });
         });

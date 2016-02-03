@@ -5,44 +5,87 @@ var ConnectorClient = require('../services/connector_client.js').ConnectorClient
 var transactionView = new TransactionView();
 var auth = require('../services/auth_service.js');
 var TRANSACTIONS_INDEX_PATH = '/selfservice/transactions';
+var TRANSACTIONS_DOWNLOAD_PATH = TRANSACTIONS_INDEX_PATH + '/download';
 var TRANSACTIONS_SHOW_PATH = TRANSACTIONS_INDEX_PATH + '/:chargeId';
 var _ = require('lodash');
+var date = require('../utils/dates.js');
+
+// TODO: Externalise into properties
+var TRANSACTION_CSV_FILENAME = 'GOVUK Pay <%= timestamp %>.csv';
+var CONTENT_TYPE_CSV = 'text/csv';
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
 }
+
+var filledBodyKeys = function(req){
+return _.omitBy(req.body, _.isEmpty);
+}
+
 var transactionsIndex = function (req, res) {
   var accountId = auth.get_account_id(req);
+  var filters = filledBodyKeys(req);
 
   var init = function(){
     connectorClient()
-      .withTransactionList(accountId, filledBodyKeys(req), showTransactions)
+      .withTransactionList(accountId, filters, showTransactions)
       .on('connectorError', showError);
   };
 
-  var filledBodyKeys = function(req){
-    return _.omitBy(req.body, _.isEmpty);
-  }
-
-  var showTransactions = function (charges, filters) {
+  var showTransactions = function (charges) {
     charges.search_path = TRANSACTIONS_INDEX_PATH;
     var data = transactionView.buildPaymentList(charges, accountId, filters);
     response(req.headers.accept, res, 'transactions/index', data);
   };
+  var showError = function (connectorError) {
+    if (connectorError) {
+      renderErrorView(req, res, 'Internal server error');
+      return;
+    };
 
-  var showError = function (err, response) {
-    if (!response) return renderErrorView(req, res, 'Internal server error');
+    renderErrorView(req, res, 'Unable to retrieve list of transactions.');
+  };
 
-    var bad_req = response.statusCode === 400;
-    var error = (bad_req) ? err : 'Unable to retrieve list of transactions.';
+  init();
+};
 
-    renderErrorView(req, res, error);
+var transactionsDownload = function (req, res) {
+  var accountId = auth.get_account_id(req);
+  var filters = filledBodyKeys(req);
+
+  var init = function () {
+    connectorClient()
+        .withTransactionDownload(accountId, filters, setHeaders)
+        .on('connectorError', showError);
+  };
+
+  var setHeaders = function() {
+    var buildFileName = function() {
+      var compiled = _.template(TRANSACTION_CSV_FILENAME)
+      return compiled({ 'timestamp' : date.dateToDefaultFormat(new Date())})
+    }
+
+    res.setHeader('Content-Type', CONTENT_TYPE_CSV);
+    res.setHeader('Content-disposition', 'attachment; filename=' + buildFileName());
+    return res;
+  }
+
+  var showError = function (connectorError) {
+    res.removeHeader("Content-Type");
+    res.removeHeader("Content-disposition");
+
+    if (connectorError) {
+      renderErrorView(req, res, 'Internal server error');
+      return;
+    };
+
+    renderErrorView(req, res, 'Unable to download list of transactions.');
   };
 
   init();
 }
 
-transactionsShow = function(req, res) {
+var transactionsShow = function(req, res) {
   var accountId = auth.get_account_id(req);
   var chargeId = req.params.chargeId;
 
@@ -63,13 +106,14 @@ transactionsShow = function(req, res) {
     response(req.headers.accept, res, 'transactions/show', data);
   };
 
-  var showError = function (err, response) {
-    if (!response) return renderErrorView(req, res, 'Error processing transaction view');
+  var showError = function (connectorError, connectorResponse) {
+    if (connectorError) {
+      renderErrorView(req, res, 'Internal server error');
+      return;
+    };
 
-    var four_oh_four = response.statusCode === 404;
-    var error = (four_oh_four) ? 'charge not found' : 'Error processing transaction view';
-
-    renderErrorView(req, res, error);
+    var errorMessage = (connectorResponse.statusCode === 404) ? 'Charge not found' : 'Error processing transaction view';
+    renderErrorView(req, res, errorMessage);
   };
 
   init();
@@ -82,6 +126,8 @@ module.exports.bindRoutesTo = function (app) {
    */
   app.get(TRANSACTIONS_INDEX_PATH, auth.enforce, transactionsIndex);
   app.post(TRANSACTIONS_INDEX_PATH, auth.enforce, transactionsIndex);
+
+  app.get(TRANSACTIONS_DOWNLOAD_PATH, auth.enforce, transactionsDownload);
 
   /**
    *  Display transaction details for a given chargeId of an account.

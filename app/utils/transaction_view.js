@@ -1,6 +1,5 @@
 var moment = require('moment');
 var changeCase = require('change-case');
-var changeCase = require('change-case');
 var CURRENCY = '£';
 
 var TransactionView = function () {
@@ -15,6 +14,7 @@ TransactionView.prototype.eventStatuses = {};
 TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId, filters) {
     connectorData.filters = filters;
     connectorData.hasFilters = Object.keys(filters).length != 0;
+    connectorData.hasResults = connectorData.results.length !== 0;
     connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
         var value = {};
         value.text = changeCase.upperCaseFirst(str.toLowerCase());
@@ -23,6 +23,7 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         }
         return { "key": str, "value": value};
     });
+
     connectorData.results.forEach(function (element) {
         element.amount = (element.amount / 100).toFixed(2);
         element.gateway_account_id = gatewayAccountId;

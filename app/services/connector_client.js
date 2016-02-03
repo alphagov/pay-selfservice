@@ -3,17 +3,68 @@ var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
 var logger = require('winston');
-var Client = require('node-rest-client').Client;
+var request = require('request');
 var dates = require('../utils/dates.js');
 var querystring = require('querystring');
-
 
 var CHARGES_API_PATH = '/v1/api/accounts/{accountId}/charges';
 var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
 
+var CONTENT_TYPE_CSV = 'text/csv';
+
+var createResponseHandler = function(self) {
+    return function(callback) {
+        return function (error, response, body) {
+
+            if (error || (response.statusCode !== 200)) {
+                var errorMessage = '';
+                if (error) {
+                    errorMessage = 'Error while accessing connector, error: ' + JSON.stringify(error);
+                } else {
+                    errorMessage = 'Error from connector, status code: ' + response.statusCode;
+                }
+                logger.error(errorMessage);
+                self.emit('connectorError', error, response, body);
+                return;
+            }
+
+            callback(body);
+        }
+    }
+};
+
+var createOnResponseEventHandler = function (self) {
+    return function (response) {
+
+        if (response.statusCode === 200) {
+            return;
+        }
+        logger.error('Error from connector, status code: ' + response.statusCode);
+
+        //
+        // Necessary when streaming a response
+        // @See https://github.com/request/request/issues/1268
+        //
+        this.abort();
+
+        self.emit('connectorError', null, response);
+    }
+};
+
+var createOnErrorEventHandler = function (self) {
+    return function (error) {
+        logger.error('Error while accessing connector, ' + JSON.stringify(error));
+        self.emit('connectorError', error, null);
+    }
+};
+
 var ConnectorClient = function (connectorUrl) {
     this.connectorUrl = connectorUrl;
-    this.client = new Client();
+    this.client = request.defaults({json:true});
+    this.responseHandler = createResponseHandler(this);
+    this.onResponseEventHandler = createOnResponseEventHandler(this);
+    this.onErrorEventHandler = createOnErrorEventHandler(this);
+
     EventEmitter.call(this);
 };
 
@@ -30,20 +81,32 @@ ConnectorClient.prototype.client = null;
  * @returns {ConnectorClient}
  */
 ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, searchParameters, successCallback) {
-    var transactionsUrl = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
-    var self = this;
-    logger.info('CONNECTOR GET ' + transactionsUrl);
-    this.client.get(transactionsUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData, searchParameters);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
+    var url = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, this.responseHandler(successCallback));
+    return this;
+};
+
+/**
+ * Download transaction list for a given gateway account id.
+ * @param gatewayAccountId
+ * @returns {ConnectorClient}
+ */
+ConnectorClient.prototype.withTransactionDownload = function (gatewayAccountId, searchParameters, successCallback) {
+    var url = this._searchTransactionsUrlFor(gatewayAccountId, searchParameters);
+    logger.info('CONNECTOR GET ' + url);
+
+    var options = {
+        url: url,
+        headers: {
+            'Accept': CONTENT_TYPE_CSV
         }
-    }).on('error', function (err) {
-        logger.error('Error raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
+    };
+
+    this.client(options)
+        .on('error', this.onErrorEventHandler)
+        .on('response', this.onResponseEventHandler)
+        .pipe(successCallback());
     return this;
 };
 
@@ -55,21 +118,9 @@ ConnectorClient.prototype.withTransactionList = function (gatewayAccountId, sear
  * @returns {ConnectorClient}
  */
 ConnectorClient.prototype.withGetCharge = function (gatewayAccountId, chargeId, successCallback) {
-    var chargeUrl = this._chargeUrlFor(gatewayAccountId, chargeId);
-
-    var self = this;
-    logger.info('CONNECTOR GET ' + chargeUrl);
-    this.client.get(chargeUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
-        }
-    }).on('error', function (err) {
-        logger.error('Exception raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
+    var url = this._chargeUrlFor(gatewayAccountId, chargeId);
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, this.responseHandler(successCallback));
     return this;
 };
 
@@ -77,25 +128,13 @@ ConnectorClient.prototype.withGetCharge = function (gatewayAccountId, chargeId, 
  * Retrives transaction history for a given charge Id that belongs to a gateway account Id.
  * @param gatewayAccountId
  * @param chargeId
- * @param successCallback the callback to perform upon `200 OK` from connector along with history resultset.
+ * @param successCallback the callback to perform upon `200 OK` from connector along with history result set.
  * @returns {ConnectorClient}
  */
 ConnectorClient.prototype.withChargeEvents = function (gatewayAccountId, chargeId, successCallback) {
-    var eventUrl = this._chargeUrlFor(gatewayAccountId, chargeId) + "/events";
-
-    var self = this;
-    logger.info('CONNECTOR GET ' + eventUrl);
-    this.client.get(eventUrl, function (connectorData, connectorResponse) {
-        if (connectorResponse.statusCode === 200) {
-            successCallback(connectorData);
-        } else {
-            logger.error('Error from connector:' + connectorData.message);
-            self.emit('connectorError', connectorData.message, connectorResponse);
-        }
-    }).on('error', function (err) {
-        logger.error('Exception raised calling connector:' + err);
-        self.emit('connectorError', err);
-    });
+    var url = this._chargeUrlFor(gatewayAccountId, chargeId) + "/events";
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, this.responseHandler(successCallback));
     return this;
 };
 
