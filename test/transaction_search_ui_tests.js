@@ -35,7 +35,7 @@ describe('The transaction list view', function () {
             body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n');
             body.should.containInputField('reference', 'text').withAttribute('value', 'ref1');
             body.should.containInputField('fromDate', 'text').withAttribute('value', '2015-01-11 01:01:01');
-            body.should.containSelector('table#transaction-list')
+            body.should.containSelector('table#transactions-list')
                 .havingRowAt(ix + 1)
                 .withTableDataAt(1, templateData.results[ix].charge_id)
                 .withTableDataAt(2, templateData.results[ix].reference)
