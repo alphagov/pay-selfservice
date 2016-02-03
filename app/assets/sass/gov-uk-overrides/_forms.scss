@@ -11,10 +11,17 @@
 }
 
 select.form-control {
-  -webkit-appearance: none;
-  border-radius: 0;
+  @include webkit-only() {
+    -webkit-appearance: none;
+    border-radius: 0;
+    background-image: url("/selfservice/public/images/dropdown-arrow.svg");
+    background-position: right top;
+    background-position: right 4px top 2px;
+    background-repeat: no-repeat;
+  }
 }
 
 .form-hint {
   @include core-14;
 }
+

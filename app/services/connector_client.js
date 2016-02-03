@@ -147,7 +147,6 @@ ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
 };
 
 ConnectorClient.prototype._searchTransactionsUrlFor = function (gatewayAccountId, searchParameters) {
-
     var query = querystring.stringify({
         reference: searchParameters.reference,
         status: searchParameters.status,

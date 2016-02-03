@@ -31,9 +31,12 @@ $grey-8: #fff;
 @import "helpers/_alerts";
 @import "helpers/_mixins";
 @import "helpers/_movement";
+@import "helpers/_links";
 
-@import "modules/_transaction_filter";
-@import "modules/_transaction_list";
+
+@import "modules/_transactions_filter";
+@import "modules/_transactions_list";
+@import "modules/_transaction_details";
 
 
 @import 'gov-uk-overrides/_forms';

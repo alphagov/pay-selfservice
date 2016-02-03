@@ -1,0 +1,9 @@
+.transaction-details {
+  * {
+    @include core-14;
+  }
+
+  tr td:last-child {
+    font-weight: bold;
+  }
+}

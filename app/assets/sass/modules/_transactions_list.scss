@@ -1,0 +1,18 @@
+#transactions-list {
+  border-collapse: collapse;
+  tr:hover {
+     background: $grey-4;
+     cursor:pointer;
+  }
+
+  td {
+    @include core-14;
+  }
+
+  @at-root body.js-enabled #transactions-list {
+    .charge-column,
+    #charge-id-header {
+      // display: none;
+    }
+  }
+}
