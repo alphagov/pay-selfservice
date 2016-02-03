@@ -9,14 +9,14 @@ describe('The transaction list view', function () {
     var templateData = {
       'results': [
         {
-          'charge_id': '100',
+          'charge_id': 100,
           'amount': '50.00',
           'reference': 'ref1',
           'status': 'TEST STATUS',
           'created_date': '2016-01-11 01:01:01'
         },
         {
-          'charge_id': '101',
+          'charge_id': 101,
           'amount': '20.00',
           'reference': 'ref1',
           'status': 'TEST STATUS 2',
@@ -28,9 +28,9 @@ describe('The transaction list view', function () {
     var body = renderTemplate('transactions/index', templateData);
 
     templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('table#transaction-list')
+      body.should.containSelector('table#transactions-list')
         .havingRowAt(ix + 1)
-        .withTableDataAt(1, templateData.results[ix].charge_id)
+        .withTableDataAt(1, parseInt(templateData.results[ix].charge_id))
         .withTableDataAt(2, templateData.results[ix].reference)
         .withTableDataAt(3, templateData.results[ix].amount)
         .withTableDataAt(4, templateData.results[ix].status)

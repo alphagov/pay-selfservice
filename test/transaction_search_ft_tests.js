@@ -5,6 +5,8 @@ var portfinder = require('portfinder');
 var nock = require('nock');
 var app = require(__dirname + '/../server.js').getApp;
 var auth_cookie = require(__dirname + '/utils/login-session.js');
+var dates = require('../app/utils/dates.js');
+
 
 var winston = require('winston');
 
@@ -16,6 +18,8 @@ portfinder.getPort(function (err, connectorPort) {
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
   var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
+  var CONNECTOR_DATE = new Date();
+  var DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE);
 
   function connectorMock_responds(data, searchParameters) {
     var queryStr = '?';
@@ -59,7 +63,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': CONNECTOR_DATE
                   },
                   {
                     'charge_id': '101',
@@ -67,7 +71,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 2000,
                     'reference': 'ref2',
                     'status': 'TEST STATUS 2',
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': CONNECTOR_DATE
                   }
                 ]
               };
@@ -83,7 +87,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
                     'gateway_account_id': 452345,
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': DISPLAY_DATE
                   },
                   {
                     'charge_id': '101',
@@ -92,7 +96,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref2',
                     'status': 'TEST STATUS 2',
                     'gateway_account_id': 452345,
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': DISPLAY_DATE
                   }
                 ]
               };
@@ -100,7 +104,7 @@ portfinder.getPort(function (err, connectorPort) {
               search_transactions(data)
                   .expect(200)
                   .expect(function(res) {
-                           res.body.results.should.eql(expectedData.results);
+                    res.body.results.should.eql(expectedData.results);
                    })
                   .end(done);
             });
@@ -116,7 +120,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': CONNECTOR_DATE
                   }
                 ]
               };
@@ -132,7 +136,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
                     'gateway_account_id': 452345,
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': DISPLAY_DATE
                   }
                 ]
               };
@@ -155,7 +159,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': CONNECTOR_DATE
                   }
                 ]
               };
@@ -171,7 +175,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': DISPLAY_DATE
                   }
                 ]
               };
@@ -216,7 +220,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': '11 Jan 2016 — 01:01'
                   }
                 ]
               };
