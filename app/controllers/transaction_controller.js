@@ -133,4 +133,5 @@ module.exports.bindRoutesTo = function (app) {
    *  Display transaction details for a given chargeId of an account.
    */
   app.get(TRANSACTIONS_SHOW_PATH, auth.enforce, transactionsShow);
+
 }
