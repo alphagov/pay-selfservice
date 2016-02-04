@@ -108,10 +108,6 @@ portfinder.getPort(function (err, connectorPort) {
         get_transaction_list()
             .expect(200)
             .expect(function(res) {
-              console.log(res.body.results);
-               console.log("expected");
-               console.log(expectedData.results);
-
                res.body.results.should.eql(expectedData.results);
              })
             .end(done);
