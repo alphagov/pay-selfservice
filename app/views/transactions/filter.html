@@ -1,10 +1,10 @@
 <div class="grid-row">
-  <form class="form transaction-filter" method="post" action="{{search_path}}">
+  <form class="form transactions-filter" method="post" action="{{search_path}}">
     <fieldset>
       <div class="column-quarter">
         <label class="form-label" for="reference">
           <strong>Reference Number</strong>
-          <span class="form-hint">Enter full or part</span>
+          <span class="form-hint">Enter full or partial number</span>
         </label>
         <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
       </div>
@@ -15,7 +15,7 @@
           <span class="form-hint">Select an option</span>
         </label>
         <select class="form-control large" id="status" name="status">
-          <option value=""></option>
+          <option value="">All</option>
           {{#eventStatuses}}
             <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
           {{/eventStatuses}}
@@ -24,7 +24,7 @@
       <div class="column-quarter">
         <label class="form-label" for="fromDate">
           <strong>Date range</strong>
-          <span class="form-hint">E.g. 7/11/2015 - 10/11/2015</span>
+          <span class="form-hint">eg 25/11/2015 to 27/11/2015</span>
         </label>
         <div class="column-half tiny-guttering pull-left date-from">
           <input class="form-control large" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" placeholder="from" >
