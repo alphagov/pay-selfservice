@@ -23,5 +23,6 @@ select.form-control {
 
 .form-hint {
   @include core-14;
+  color: $black;
 }
 

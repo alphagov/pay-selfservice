@@ -7,6 +7,8 @@ var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
     this.eventStatuses['IN PROGRESS'] = 'Payment of AMOUNT is in progress';
     this.eventStatuses['SUCCEEDED'] = 'Payment of AMOUNT succeeded';
+    this.eventStatuses['FAILED'] = 'Payment of AMOUNT succeeded';
+
 };
 
 TransactionView.prototype.eventStatuses = {};
@@ -30,6 +32,7 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         element.gateway_account_id = gatewayAccountId;
         element.reference = element.reference || ""; // tolerate missing reference
         element.updated = dates.utcToDisplay(element.updated);
+        element.created = dates.utcToDisplay(element.created_date)
     });
     return connectorData;
 };
