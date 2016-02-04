@@ -33,6 +33,7 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         element.reference = element.reference || ""; // tolerate missing reference
         element.updated = dates.utcToDisplay(element.updated);
         element.created = dates.utcToDisplay(element.created_date)
+        delete element.created_date
     });
     return connectorData;
 };

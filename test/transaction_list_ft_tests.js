@@ -61,7 +61,8 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': 5000,
               'reference': 'ref1',
               'status': 'TEST STATUS',
-              'updated': CONNECTOR_DATE
+              'updated': CONNECTOR_DATE,
+              'created_date': CONNECTOR_DATE
 
             },
             {
@@ -70,7 +71,9 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': 2000,
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
-              'updated': CONNECTOR_DATE
+              'updated': CONNECTOR_DATE,
+              'created_date': CONNECTOR_DATE
+
             }
           ]
         };
@@ -86,7 +89,8 @@ portfinder.getPort(function (err, connectorPort) {
               'reference': 'ref1',
               'status': 'TEST STATUS',
               'gateway_account_id': gatewayAccountId,
-              'updated': DISPLAY_DATE
+              'updated': DISPLAY_DATE,
+              'created': DISPLAY_DATE
             },
             {
               'charge_id': '101',
@@ -95,7 +99,8 @@ portfinder.getPort(function (err, connectorPort) {
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
               'gateway_account_id': gatewayAccountId,
-              'updated': DISPLAY_DATE
+              'updated': DISPLAY_DATE,
+              'created': DISPLAY_DATE
             }
           ]
         };
@@ -103,6 +108,10 @@ portfinder.getPort(function (err, connectorPort) {
         get_transaction_list()
             .expect(200)
             .expect(function(res) {
+              console.log(res.body.results);
+               console.log("expected");
+               console.log(expectedData.results);
+
                res.body.results.should.eql(expectedData.results);
              })
             .end(done);
@@ -140,7 +149,8 @@ portfinder.getPort(function (err, connectorPort) {
               'reference': '',
               'status': 'TEST STATUS',
               'gateway_account_id': gatewayAccountId,
-              'updated': DISPLAY_DATE
+              'updated': DISPLAY_DATE,
+              'created': DISPLAY_DATE
 
             },
             {
@@ -150,7 +160,8 @@ portfinder.getPort(function (err, connectorPort) {
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
               'gateway_account_id': gatewayAccountId,
-              'updated': DISPLAY_DATE
+              'updated': DISPLAY_DATE,
+              'created': DISPLAY_DATE
             }
           ]
         };

@@ -13,14 +13,14 @@ describe('The transaction list view', function () {
                     'amount': '50.00',
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'created_date': '2016-01-11 01:01:01'
+                    'created': '2016-01-11 01:01:01'
                 },
                 {
                     'charge_id': '101',
                     'amount': '20.00',
                     'reference': 'ref1',
                     'status': 'TEST STATUS 2',
-                    'created_date': '2016-01-11 01:01:01'
+                    'created': '2016-01-11 01:01:01'
                 }
             ],
             'filters': {'reference': 'ref1', 'fromDate': '2015-01-11 01:01:01'},
@@ -43,7 +43,7 @@ describe('The transaction list view', function () {
                 .withTableDataAt(4, templateData.results[ix].status)
                 //TODO: Change the index from 6 to 5 once PP-279 pay-endtoend has been merged to master
                 //      This is for backwards compatibility
-                .withTableDataAt(5, templateData.results[ix].created_date);
+                .withTableDataAt(5, templateData.results[ix].created);
         });
     });
 

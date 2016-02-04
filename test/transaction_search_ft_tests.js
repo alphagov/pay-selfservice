@@ -63,7 +63,9 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'updated': CONNECTOR_DATE
+                    'updated': CONNECTOR_DATE,
+                    'created_date': CONNECTOR_DATE
+
                   },
                   {
                     'charge_id': '101',
@@ -71,7 +73,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 2000,
                     'reference': 'ref2',
                     'status': 'TEST STATUS 2',
-                    'updated': CONNECTOR_DATE
+                    'updated': CONNECTOR_DATE,
+                    'created_date': CONNECTOR_DATE
                   }
                 ]
               };
@@ -87,7 +90,9 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
                     'gateway_account_id': 452345,
-                    'updated': DISPLAY_DATE
+                    'updated': DISPLAY_DATE,
+                    'created': DISPLAY_DATE
+
                   },
                   {
                     'charge_id': '101',
@@ -96,7 +101,9 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref2',
                     'status': 'TEST STATUS 2',
                     'gateway_account_id': 452345,
-                    'updated': DISPLAY_DATE
+                    'updated': DISPLAY_DATE,
+                    'created': DISPLAY_DATE
+
                   }
                 ]
               };
@@ -120,7 +127,9 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
-                    'updated': CONNECTOR_DATE
+                    'updated': CONNECTOR_DATE,
+                    'created_date': CONNECTOR_DATE
+
                   }
                 ]
               };
@@ -136,7 +145,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST STATUS',
                     'gateway_account_id': 452345,
-                    'updated': DISPLAY_DATE
+                    'updated': DISPLAY_DATE,
+                    'created': DISPLAY_DATE
                   }
                 ]
               };
@@ -159,7 +169,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
-                    'updated': CONNECTOR_DATE
+                    'updated': CONNECTOR_DATE,
+                    'created_date': CONNECTOR_DATE
                   }
                 ]
               };
@@ -175,7 +186,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
-                    'updated': DISPLAY_DATE
+                    'updated': DISPLAY_DATE,
+                    'created': DISPLAY_DATE
                   }
                 ]
               };
@@ -198,7 +210,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': 5000,
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
-                    'updated': '2016-01-11 01:01:01'
+                    'updated': '2016-01-11 01:01:01',
+                    'created_date': '2016-01-11 01:01:01'
                   }
                 ]
               };
@@ -220,7 +233,9 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
-                    'updated': '11 Jan 2016 — 01:01'
+                    'updated': '11 Jan 2016 — 01:01',
+                    'created': '11 Jan 2016 — 01:01'
+
                   }
                 ]
               };
