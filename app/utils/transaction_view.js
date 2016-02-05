@@ -1,6 +1,9 @@
 var moment = require('moment');
 var changeCase = require('change-case');
 var CURRENCY = '£';
+var querystring = require('querystring');
+
+var DOWNLOAD_TRANSACTION_BASE_LINK = "/selfservice/transactions/download";
 
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
@@ -29,6 +32,16 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         element.gateway_account_id = gatewayAccountId;
         element.reference = element.reference || ""; // tolerate missing reference
     });
+
+    var filterQuery = querystring.stringify({
+        reference: filters.reference,
+        status: filters.status,
+        from_date: filters.fromDate,
+        to_date: filters.toDate
+    });
+
+    connectorData.downloadTransactionLink = DOWNLOAD_TRANSACTION_BASE_LINK + "?" + filterQuery;
+
     return connectorData;
 };
 

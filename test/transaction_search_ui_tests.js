@@ -23,16 +23,18 @@ describe('The transaction list view', function () {
                     'created_date': '2016-01-11 01:01:01'
                 }
             ],
-            'filters': {'reference': 'ref1', 'fromDate': '2015-01-11 01:01:01'},
-            'hasResults': true
+            'filters': {'reference': 'ref1', 'status': 'TEST STATUS', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
+            'hasResults': true,
+            'downloadTransactionLink':
+                '/selfservice/transactions/download?reference=ref1&status=TEST5%20STATUS&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
         };
 
         var body = renderTemplate('transactions/index', templateData);
 
-        body.should.containSelector('#download-transactions-link');
+        body.should.containSelector('#download-transactions-link').withAttribute('href', templateData.downloadTransactionLink);
 
         templateData.results.forEach(function (transactionData, ix) {
-            body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n');
+            body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'TEST STATUS\' status\n');
             body.should.containInputField('reference', 'text').withAttribute('value', 'ref1');
             body.should.containInputField('fromDate', 'text').withAttribute('value', '2015-01-11 01:01:01');
             body.should.containSelector('table#transaction-list')
