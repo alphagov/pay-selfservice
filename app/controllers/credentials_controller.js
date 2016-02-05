@@ -1,87 +1,89 @@
-var logger = require('winston');
-var changeCase = require('change-case')
+var logger          = require('winston');
+var changeCase      = require('change-case')
+var response        = require('../utils/response.js').response;
+var ERROR_MESSAGE   = require('../utils/response.js').ERROR_MESSAGE;
+var errorView       = require('../utils/response.js').renderErrorView;
+var Client          = require('node-rest-client').Client;
+var client          = new Client();
+var auth            = require('../services/auth_service.js');
+var router          = require('../routes.js');
 
-var response = require('../utils/response.js').response;
-var ERROR_MESSAGE = require('../utils/response.js').ERROR_MESSAGE;
-var renderErrorView = require('../utils/response.js').renderErrorView;
+function showSuccessView(connectorData, viewMode, req, res) {
+  var paymentProvider = connectorData.payment_provider;
+  logger.info('Showing credentials for: ' + paymentProvider);
 
-var Client = require('node-rest-client').Client;
-var client = new Client();
-var auth = require('../services/auth_service.js');
+  var responsePayload = {
+    'payment_provider': changeCase.titleCase(paymentProvider),
+    'credentials': connectorData.credentials // this will never contain a password field
+  };
+  if (!viewMode) responsePayload.editMode = 'true';
 
-module.exports.bindRoutesTo = function (app) {
-  var CREDENTIALS_PATH = '/selfservice/credentials';
+  response(req.headers.accept, res, 'provider_credentials/'+paymentProvider, responsePayload);
+}
 
-  function showSuccessView(connectorData, viewMode, req, res) {
-    var paymentProvider = connectorData.payment_provider;
-    logger.info('Showing credentials for: ' + paymentProvider);
 
-    var responsePayload = {
-      'payment_provider': changeCase.titleCase(paymentProvider),
-      'credentials': connectorData.credentials // this will never contain a password field
-    };
-    if (!viewMode) responsePayload.editMode = 'true';
+module.exports.index = function (req, res) {
+  var accountId = auth.get_account_id(req);
 
-    response(req.headers.accept, res, 'provider_credentials/'+paymentProvider, responsePayload);
-  }
+  var viewMode = req.query.edit === undefined;
+  logger.info('GET ' + router.paths.credentials.index);
+  logger.info('View mode: ' + viewMode);
 
-  app.get(CREDENTIALS_PATH, auth.enforce, function (req, res) {
-    var accountId = auth.get_account_id(req);
+  var connectorUrl = process.env.CONNECTOR_URL;
+  client.get(connectorUrl + "/v1/frontend/accounts/" + accountId, function (connectorData, connectorResponse) {
 
-    var viewMode = req.query.edit === undefined;
-    logger.info('GET ' + CREDENTIALS_PATH);
-    logger.info('View mode: ' + viewMode);
-
-    var connectorUrl = process.env.CONNECTOR_URL;
-    client.get(connectorUrl + "/v1/frontend/accounts/" + accountId, function (connectorData, connectorResponse) {
-
-      switch (connectorResponse.statusCode) {
-        case 200:
-          showSuccessView(connectorData, viewMode, req, res);
-          break;
-        default:
-          renderErrorView(req, res, ERROR_MESSAGE);
-      }
-
-    }).on('error', function (err) {
-        logger.error('Exception raised calling connector:' + err);
-        renderErrorView(req, res, ERROR_MESSAGE);
-    });
-
-  });
-
-  app.post(CREDENTIALS_PATH, auth.enforce, function (req, res) {
-    var accountId = auth.get_account_id(req);
-    
-    logger.info('POST ' + CREDENTIALS_PATH);
-
-    var requestPayload = {
-      headers:{"Content-Type": "application/json"},
-      data: {
-        username: req.body.username,
-        password: req.body.password
-      }
-    };
-
-    if('merchantId' in req.body) {
-      requestPayload.data.merchant_id = req.body.merchantId;
+    switch (connectorResponse.statusCode) {
+      case 200:
+        showSuccessView(connectorData, viewMode, req, res);
+        break;
+      default:
+        errorView(req, res, ERROR_MESSAGE);
     }
 
-    var connectorUrl = process.env.CONNECTOR_URL;
-    client.put(connectorUrl + "/v1/frontend/accounts/" + accountId, requestPayload, function (connectorData, connectorResponse) {
-
-      switch (connectorResponse.statusCode) {
-        case 200:
-          res.redirect(303, CREDENTIALS_PATH);
-          break;
-          
-        default:
-          renderErrorView(req, res, ERROR_MESSAGE);
-      }
-
-    }).on('error', function (err) {
-        logger.error('Exception raised calling connector:' + err);
-        renderErrorView(req, res, ERROR_MESSAGE);
-    });
+  }).on('error', function (err) {
+      logger.error('Exception raised calling connector:' + err);
+      errorView(req, res, ERROR_MESSAGE);
   });
+
+};
+
+
+
+module.exports.update = function (req, res) {
+  var accountId = auth.get_account_id(req);
+
+  logger.info('POST ' + router.paths.credentials.index);
+
+  var requestPayload = {
+    headers:{"Content-Type": "application/json"},
+    data: {
+      username: req.body.username,
+      password: req.body.password
+    }
+  };
+
+  if('merchantId' in req.body) {
+    requestPayload.data.merchant_id = req.body.merchantId;
+  }
+
+  var connectorUrl = process.env.CONNECTOR_URL;
+  client.put(connectorUrl + "/v1/frontend/accounts/" + accountId, requestPayload, function (connectorData, connectorResponse) {
+
+    switch (connectorResponse.statusCode) {
+      case 200:
+        res.redirect(303, router.paths.credentials.index);
+        break;
+
+      default:
+        errorView(req, res, ERROR_MESSAGE);
+    }
+
+  }).on('error', function (err) {
+      logger.error('Exception raised calling connector:' + err);
+      errorView(req, res, ERROR_MESSAGE);
+  });
+};
+
+
+module.exports.bindRoutesTo = function (app) {
 }

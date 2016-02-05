@@ -1,18 +1,17 @@
-var response = require('../utils/response.js').response;
+var response        = require('../utils/response.js').response;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 var TransactionView = require('../utils/transaction_view.js').TransactionView;
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var transactionView = new TransactionView();
-var auth = require('../services/auth_service.js');
-var _ = require('lodash');
-var date = require('../utils/dates.js');
-var router = require('../routes.js');
+var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
+var auth            = require('../services/auth_service.js');
+var _               = require('lodash');
+var date            = require('../utils/dates.js');
+var router          = require('../routes.js');
 
 
 // TODO: Externalise into properties
 var TRANSACTION_CSV_FILENAME = 'GOVUK Pay <%= timestamp %>.csv';
 var CONTENT_TYPE_CSV = 'text/csv';
-var TRANSACTIONS_INDEX_PATH = '/selfservice/transactions';
 
 
 function connectorClient() {
