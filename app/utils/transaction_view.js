@@ -2,6 +2,9 @@ var changeCase = require('change-case');
 var CURRENCY = '£';
 var dates = require('../utils/dates.js');
 
+var querystring = require('querystring');
+
+var DOWNLOAD_TRANSACTION_BASE_LINK = "/selfservice/transactions/download";
 
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
@@ -35,6 +38,16 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         element.created = dates.utcToDisplay(element.created_date)
         delete element.created_date
     });
+
+    var filterQuery = querystring.stringify({
+        reference: filters.reference,
+        status: filters.status,
+        from_date: filters.fromDate,
+        to_date: filters.toDate
+    });
+
+    connectorData.downloadTransactionLink = DOWNLOAD_TRANSACTION_BASE_LINK + "?" + filterQuery;
+
     return connectorData;
 };
 
