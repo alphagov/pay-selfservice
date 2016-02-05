@@ -51,7 +51,7 @@ var transactionsIndex = function (req, res) {
 
 var transactionsDownload = function (req, res) {
   var accountId = auth.get_account_id(req);
-  var filters = filledBodyKeys(req);
+  var filters = req.query;
 
   var init = function () {
     connectorClient()
