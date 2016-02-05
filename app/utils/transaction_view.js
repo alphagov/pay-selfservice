@@ -45,6 +45,13 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         to_date: filters.toDate
     });
 
+    var filterQuery = querystring.stringify({
+        reference: filters.reference,
+        status: filters.status,
+        from_date: filters.fromDate,
+        to_date: filters.toDate
+    });
+
     connectorData.downloadTransactionLink = DOWNLOAD_TRANSACTION_BASE_LINK + "?" + filterQuery;
 
     return connectorData;
