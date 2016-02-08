@@ -28,7 +28,6 @@ app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
 app.use(function (req, res, next) {
   res.locals.assetPath  = '/public/';
   res.locals.routes     = router.paths;
-  res.locals.UrlFor     = router.generateRoute;
   next();
 });
 
