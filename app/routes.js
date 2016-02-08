@@ -40,7 +40,6 @@ var paths = {
 
 module.exports.paths = paths;
 
-
 module.exports.bind = function (app) {
 
   auth.bind(app);
@@ -85,5 +84,3 @@ module.exports.bind = function (app) {
   app.put(dt.update, auth.enforce, devTokens.update);
   app.delete(dt.delete, auth.enforce, devTokens.destroy);
 };
-
-
