@@ -16,7 +16,9 @@ var paths = {
       show: '/selfservice/transactions/:chargeId'
     },
     credentials: {
-      index: '/selfservice/credentials'
+      index: '/selfservice/credentials',
+      edit: '/selfservice/credentials?edit', // TODO LOLWUT?
+      create: '/selfservice/credentials'
     },
     logIn: {
       logIn: '/selfservice/login',

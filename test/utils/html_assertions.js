@@ -1,9 +1,11 @@
 var TemplateEngine = require(__dirname + '/../../lib/template-engine.js');
 var cheerio = require('cheerio');
 var chai = require('chai');
+var router = require('../../app/routes.js');
 
 function render(templateName, templateData) {
   var templates = TemplateEngine._getTemplates([__dirname + '/../../app/views']);
+  templateData.routes = router.paths;
   return templates[templateName].render(templateData, templates);
 }
 

@@ -14,7 +14,7 @@ GOV.UK Pay - Generate API token
 
 {{^token}}
   <h2 class="heading-medium remove-top-margin">Generate a new API key</h2>
-  <form class="form" method="post" action="/selfservice/tokens/generate">
+  <form class="form" method="post" action="{{routes.devTokens.create}}">
     <div class="form-group">
       <label class="form-label-bold" for="description">
         Add a description for the key
@@ -26,7 +26,7 @@ GOV.UK Pay - Generate API token
     <input id="generate-button" type="submit" class="button" value="Generate key">
   </form>
   <p class="add-top-margin">
-    <a href="/selfservice/tokens">Cancel</a>
+    <a href="{{routes.devTokens.index}}">Cancel</a>
   </p>
 {{/token}}
 {{#token}}
@@ -40,7 +40,7 @@ GOV.UK Pay - Generate API token
     <textarea id="token" name="token" class="form-control">{{token}}</textarea>
   </div>
 
-  <a id="finish-link" class="button" href="/selfservice/tokens">
+  <a id="finish-link" class="button" href="{{routes.devTokens.index}}">
     Finish
   </a>
 {{/token}}

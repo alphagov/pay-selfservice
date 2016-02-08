@@ -10,13 +10,13 @@
     <dt id="password-key" class="font-xsmall"><p>Password</p></dt>
     <dd id="password-value"><b>{{#credentials.username}}****{{/credentials.username}}</b></dd>
 </dl>
-<a id="edit-credentials-link" class="button" href="/selfservice/credentials?edit">
+<a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">
     Edit credentials
 </a>
 {{/editMode}}
 
 {{#editMode}}
-<form id="credentials-form" method="post" action="/selfservice/credentials">
+<form id="credentials-form" method="post" action="{{routes.credentials.create}}">
 
     <div class="form-group">
         <label class="form-label" for="username">Username</label>
