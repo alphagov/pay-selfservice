@@ -90,7 +90,8 @@ portfinder.getPort(function (err, connectorPort) {
               'status': 'TEST STATUS',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/100"
             },
             {
               'charge_id': '101',
@@ -100,7 +101,8 @@ portfinder.getPort(function (err, connectorPort) {
               'status': 'TEST STATUS 2',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/101"
             }
           ]
         };
@@ -142,11 +144,11 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
-              'reference': '',
               'status': 'TEST STATUS',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/100"
 
             },
             {
@@ -157,7 +159,8 @@ portfinder.getPort(function (err, connectorPort) {
               'status': 'TEST STATUS 2',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/101"
             }
           ]
         };

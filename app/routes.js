@@ -1,9 +1,13 @@
 var response      = require(__dirname + '/utils/response.js').response;
+var generateRoute = require(__dirname + '/utils/generate_route.js');
 var transactions  = require('./controllers/transaction_controller.js');
 var credentials   = require('./controllers/credentials_controller.js');
 var login         = require('./controllers/login_controller.js');
 var devTokens     = require('./controllers/dev_tokens_controller.js');
 var auth          = require('./services/auth_service.js');
+var querystring   = require('querystring');
+var _             = require('lodash');
+module.exports.generateRoute = generateRoute;
 
 var paths = {
     transactions: {
@@ -30,8 +34,10 @@ var paths = {
       update: '/selfservice/tokens',
       delete: '/selfservice/tokens'
     }
-
 };
+
+module.exports.paths = paths;
+
 
 module.exports.bind = function (app) {
 
@@ -78,4 +84,4 @@ module.exports.bind = function (app) {
   app.delete(dt.delete, auth.enforce, devTokens.destroy);
 };
 
-module.exports.paths = paths;
+

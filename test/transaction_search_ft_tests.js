@@ -74,7 +74,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref2',
                     'status': 'TEST STATUS 2',
                     'updated': CONNECTOR_DATE,
-                    'created_date': CONNECTOR_DATE
+                    'created_date': CONNECTOR_DATE,
+                    "link": "/selfservice/transactions/100"
                   }
                 ]
               };
@@ -91,7 +92,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST STATUS',
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
-                    'created': DISPLAY_DATE
+                    'created': DISPLAY_DATE,
+                    "link": "/selfservice/transactions/100"
 
                   },
                   {
@@ -102,7 +104,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST STATUS 2',
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
-                    'created': DISPLAY_DATE
+                    'created': DISPLAY_DATE,
+                    "link": "/selfservice/transactions/101"
 
                   }
                 ]
@@ -146,7 +149,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST STATUS',
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
-                    'created': DISPLAY_DATE
+                    'created': DISPLAY_DATE,
+                    "link": "/selfservice/transactions/100"
                   }
                 ]
               };
@@ -154,7 +158,7 @@ portfinder.getPort(function (err, connectorPort) {
               search_transactions(data)
                   .expect(200)
                   .expect(function(res) {
-                           res.body.results.should.eql(expectedData.results);
+                      res.body.results.should.eql(expectedData.results);
                    })
                   .end(done);
             });
@@ -187,7 +191,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
-                    'created': DISPLAY_DATE
+                    'created': DISPLAY_DATE,
+                    "link": "/selfservice/transactions/100"
                   }
                 ]
               };
@@ -234,8 +239,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
                     'updated': '11 Jan 2016 — 01:01',
-                    'created': '11 Jan 2016 — 01:01'
-
+                    'created': '11 Jan 2016 — 01:01',
+                    "link": "/selfservice/transactions/100"
                   }
                 ]
               };

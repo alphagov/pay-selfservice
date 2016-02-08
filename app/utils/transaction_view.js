@@ -1,11 +1,9 @@
 var changeCase = require('change-case');
 var CURRENCY = '£';
 var dates = require('../utils/dates.js');
+var router = require('../routes.js');
 
 var querystring = require('querystring');
-
-var DOWNLOAD_TRANSACTION_BASE_LINK = "/selfservice/transactions/download";
-
 var TransactionView = function () {
     this.eventStatuses['CREATED'] = 'Payment of AMOUNT was created';
     this.eventStatuses['IN PROGRESS'] = 'Payment of AMOUNT is in progress';
@@ -31,22 +29,24 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
     });
 
     connectorData.results.forEach(function (element) {
-        element.amount = (element.amount / 100).toFixed(2);
-        element.gateway_account_id = gatewayAccountId;
-        element.reference = element.reference || ""; // tolerate missing reference
+        element.amount  = (element.amount / 100).toFixed(2);
         element.updated = dates.utcToDisplay(element.updated);
-        element.created = dates.utcToDisplay(element.created_date)
+        element.created = dates.utcToDisplay(element.created_date);
+        element.gateway_account_id = gatewayAccountId;
+        element.link    = router.generateRoute(router.paths.transactions.show,{
+            chargeId: element.charge_id
+        });
         delete element.created_date
     });
 
-    var filterQuery = querystring.stringify({
+    // TODO normalise fromDate and ToDate so you can just pass them through no problem
+    connectorData.downloadTransactionLink = router.generateRoute(
+        router.paths.transactions.download,{
         reference: filters.reference,
         status: filters.status,
         from_date: filters.fromDate,
         to_date: filters.toDate
     });
-
-    connectorData.downloadTransactionLink = DOWNLOAD_TRANSACTION_BASE_LINK + "?" + filterQuery;
 
     return connectorData;
 };

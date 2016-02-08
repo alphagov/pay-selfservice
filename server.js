@@ -1,22 +1,24 @@
 if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var routes = require(__dirname + '/app/routes.js');
-var bodyParser = require('body-parser');
-var clientSessions = require("client-sessions");
-var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfServiceCookie;
+var express     = require('express');
+var path        = require('path');
+var favicon     = require('serve-favicon');
+var router      = require(__dirname + '/app/routes.js');
+var bodyParser  = require('body-parser');
+var session     = require("client-sessions");
+var port        = (process.env.PORT || 3000);
+var app         = express();
 
-var port = (process.env.PORT || 3000);
-var app = express();
 
-app.enable('trust proxy');
-app.use(clientSessions(selfServiceCookie()));
+app.use(session({
+  cookieName: 'selfservice_state',
+  secret: process.env.SESSION_ENCRYPTION_KEY
+}));
 
 app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 app.set('view engine', 'html');
 app.set('vendorViews', __dirname + '/app/views');
 app.set('views', __dirname + '/app/views');
+app.enable('trust proxy');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -24,7 +26,9 @@ app.use('/selfservice/public', express.static(__dirname + '/public'));
 app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
 app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
 app.use(function (req, res, next) {
-  res.locals.assetPath = '/public/';
+  res.locals.assetPath  = '/public/';
+  res.locals.routes     = router.paths;
+  res.locals.UrlFor     = router.generateRoute;
   next();
 });
 
@@ -34,7 +38,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(errorhandler())
 }
 
-routes.bind(app);
+router.bind(app);
 
 app.listen(port);
 
