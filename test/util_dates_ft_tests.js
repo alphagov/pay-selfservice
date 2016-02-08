@@ -12,7 +12,7 @@ describe('date format', function () {
   });
 
   it('should return the valid default format', function () {
-    assert.equal("2016-01-29 17:24:48", dates.dateToDefaultFormat(1454088288009));
+    assert.equal("2016-01-29 17:24:48", dates.dateToDefaultFormat("2016-01-29T17:24:48Z"));
   });
 
   it("should return an error message for an invalid date format",function() {
