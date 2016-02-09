@@ -1,19 +1,15 @@
 var clientSessions = require("client-sessions");
-
-var sessionConfig = {
-    'cookieName': 'session',
-    'secret':     process.env.SESSION_ENCRYPTION_KEY
-};
+var sessionCookie = require(__dirname + '/../../app/utils/cookies.js').sessionCookie;
 
 module.exports = {
     create : function(value) {
-      return clientSessions.util.encode(sessionConfig, value);
+      return clientSessions.util.encode(sessionCookie(), value);
     },
 
     decrypt: function decryptCookie(res) {
       var setCookieHeader = res.headers['set-cookie'];
       if (!setCookieHeader) return {};
-      else return clientSessions.util.decode(sessionConfig, setCookieHeader[0].split(";")[0].split("=")[1]).content;
+      else return clientSessions.util.decode(sessionCookie(), setCookieHeader[0].split(";")[0].split("=")[1]).content;
     }
 
 };
