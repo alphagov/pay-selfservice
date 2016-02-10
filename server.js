@@ -5,20 +5,18 @@ var favicon = require('serve-favicon');
 var routes = require(__dirname + '/app/routes.js');
 var bodyParser = require('body-parser');
 var clientSessions = require("client-sessions");
+var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfServiceCookie;
 
 var port = (process.env.PORT || 3000);
 var app = express();
 
-app.use(clientSessions({
-  cookieName: 'selfservice_state',
-  secret: process.env.SESSION_ENCRYPTION_KEY
-}));
+app.enable('trust proxy');
+app.use(clientSessions(selfServiceCookie()));
 
 app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 app.set('view engine', 'html');
 app.set('vendorViews', __dirname + '/app/views');
 app.set('views', __dirname + '/app/views');
-app.enable('trust proxy');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

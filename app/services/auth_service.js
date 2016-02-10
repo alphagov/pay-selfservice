@@ -3,6 +3,7 @@ var clientSessions = require("client-sessions");
 var Auth0Strategy = require('passport-auth0');
 var passport = require('passport');
 var util = require('util');
+var sessionCookie = require(__dirname + '/../utils/cookies.js').sessionCookie;
 
 var AUTH_STRATEGY_NAME = 'auth0';
 var AUTH_STRATEGY = new Auth0Strategy({
@@ -68,10 +69,7 @@ var auth = module.exports = {
         app.use(passport.initialize());
         app.use(passport.session());
         
-        app.use(clientSessions({
-            cookieName: 'session',
-            secret: process.env.SESSION_ENCRYPTION_KEY
-        }));
+        app.use(clientSessions(sessionCookie()));
     },
     
     no_access: function(req, res, next) {
