@@ -14,7 +14,7 @@ module.exports = function () {
     };
 
     var utcToDisplay = function (date) {
-        return moment(date).format('DD MMM YYYY — HH:mm')
+        return moment(date).format('DD MMM YYYY — HH:mm:ss')
     }
 
     return {

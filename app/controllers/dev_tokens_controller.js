@@ -86,7 +86,7 @@ module.exports.create = function(req, res) {
       if (publicAuthResponse.statusCode === 200) {
         req.selfservice_state.token = publicAuthData.token;
         req.selfservice_state.description = description;
-        res.redirect(303, router.paths.devTokens.show.replace(":accountId",accountId));
+        res.redirect(303, router.paths.devTokens.show);
         return;
       }
       renderErrorView(req, res, 'Error creating dev token for account ' + accountId);

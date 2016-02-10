@@ -10,9 +10,9 @@
   </thead>
   <tbody>
   {{#results}}
-    <tr data-follow-link data-link="/selfservice/transactions/{{charge_id}}">
+    <tr data-follow-link data-link="{{link}}">
       <td class="charge-column">
-        <a id="charge-id-{{charge_id}}" href="/selfservice/transactions/{{charge_id}}">
+        <a id="charge-id-{{charge_id}}" href="{{link}}">
           {{charge_id}}
         </a>
       </td>

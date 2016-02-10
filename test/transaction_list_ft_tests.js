@@ -9,8 +9,8 @@ var auth_cookie = require(__dirname + '/utils/login-session.js');
 
 var winston = require('winston');
 
-var CONNECTOR_DATE = new Date();
-var DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE);
+var CONNECTOR_DATE = "Wed Feb 10 2016 12:44:01 GMT+0000 (GMT)";
+var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
 
 portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 651342;
@@ -90,7 +90,8 @@ portfinder.getPort(function (err, connectorPort) {
               'status': 'TEST STATUS',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/100"
             },
             {
               'charge_id': '101',
@@ -100,7 +101,8 @@ portfinder.getPort(function (err, connectorPort) {
               'status': 'TEST STATUS 2',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/101"
             }
           ]
         };
@@ -121,7 +123,9 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
               'status': 'TEST STATUS',
-              'updated': CONNECTOR_DATE
+              'updated': CONNECTOR_DATE,
+              'created_date': CONNECTOR_DATE
+
             },
             {
               'charge_id': '101',
@@ -129,7 +133,8 @@ portfinder.getPort(function (err, connectorPort) {
               'amount': 2000,
               'reference': 'ref2',
               'status': 'TEST STATUS 2',
-              'updated': CONNECTOR_DATE
+              'updated': CONNECTOR_DATE,
+              'created_date': CONNECTOR_DATE
             }
           ]
         };
@@ -142,11 +147,11 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
-              'reference': '',
               'status': 'TEST STATUS',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/100"
 
             },
             {
@@ -157,7 +162,8 @@ portfinder.getPort(function (err, connectorPort) {
               'status': 'TEST STATUS 2',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
-              'created': DISPLAY_DATE
+              'created': DISPLAY_DATE,
+              "link": "/selfservice/transactions/101"
             }
           ]
         };

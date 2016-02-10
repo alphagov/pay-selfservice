@@ -38,10 +38,10 @@
         <div class="inner">
           <nav role="navigation">
             <ul>
-              <li><a href="/selfservice/">Homepage</a></li>
-              <li><a href="/selfservice/tokens">API keys</a></li>
-              <li><a href="/selfservice/transactions">Transactions</a></li>
-              <li><a href="/selfservice/credentials">Account credentials</a></li>
+              <li><a href="{{ routes.login.loggedIn }}">Homepage</a></li>
+              <li><a href="{{ routes.devTokens.index }}">API keys</a></li>
+              <li><a href="{{ routes.transactions.index }}">Transactions</a></li>
+              <li><a href="{{ routes.credentials.index }}">Account credentials</a></li>
             </ul>
           </nav>
         </div>
