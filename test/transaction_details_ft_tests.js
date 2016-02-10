@@ -94,7 +94,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'Ref-1234',
                     'amount': '£50.00',
                     'gateway_account_id': gatewayAccountId,
-                    'updated': '24 Dec 2015 — 13:21',
+                    'updated': '24 Dec 2015 — 13:21:05',
                     'status': 'SUCCEEDED',
                     'payment_provider': 'Sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
@@ -102,17 +102,17 @@ portfinder.getPort(function (err, connectorPort) {
                         {
                             'status': 'Payment of £50.00 succeeded',
                             'updated': '2015-12-24 12:05:43',
-                            'updated_friendly': '24 Dec 2015 — 12:05'
+                            'updated_friendly': '24 Dec 2015 — 12:05:43'
                         },
                         {
                             'status': 'Payment of £50.00 is in progress',
                             'updated': '2015-12-24 13:23:12',
-                            'updated_friendly': '24 Dec 2015 — 13:23'
+                            'updated_friendly': '24 Dec 2015 — 13:23:12'
                         },
                         {
                             'status': 'Payment of £50.00 was created',
                             'updated': '2015-12-24 13:21:05',
-                            'updated_friendly': '24 Dec 2015 — 13:21'
+                            'updated_friendly': '24 Dec 2015 — 13:21:05'
                         }
                     ]
                 };

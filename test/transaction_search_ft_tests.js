@@ -238,8 +238,8 @@ portfinder.getPort(function (err, connectorPort) {
                     'reference': 'ref1',
                     'status': 'TEST_STATUS',
                     'gateway_account_id': 452345,
-                    'updated': '11 Jan 2016 — 01:01',
-                    'created': '11 Jan 2016 — 01:01',
+                    'updated': '11 Jan 2016 — 01:01:01',
+                    'created': '11 Jan 2016 — 01:01:01',
                     "link": "/selfservice/transactions/100"
                   }
                 ]
