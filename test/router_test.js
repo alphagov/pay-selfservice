@@ -20,7 +20,7 @@ describe('date format', function () {
 
   it('should remove empty params', function () {
     dynamicRoute = router.paths.transactions.show;
-    route = router.generateRoute(dynamicRoute,{chargeId: 'foo', foo: 'bar', empty: ""});
-    assert.equal("/selfservice/transactions/foo?foo=bar",route);
+    route = router.generateRoute(dynamicRoute,{chargeId: 'foo', foo: 'bar', choc: "bar", empty: ""});
+    assert.equal("/selfservice/transactions/foo?foo=bar&choc=bar",route);
   });
 });
