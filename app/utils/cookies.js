@@ -2,9 +2,12 @@
 
 module.exports = function () {
   function cookieOpts() {
-    var cookieOpts = {httpOnly: true};
-    if (process.env.SECURED_ENV == "true") {
-      cookieOpts.secure = true;
+    var cookieOpts = {
+      httpOnly: true,
+      secure: true
+    };
+    if (process.env.SECURE_COOKIE_OFF === "true") {
+      cookieOpts.secure = false;
     }
     return cookieOpts;
   }
