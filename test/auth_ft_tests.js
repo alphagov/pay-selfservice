@@ -2,6 +2,7 @@ process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwe
 process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
+process.env.SECURE_COOKIE_OFF = "true"; // to make sure this affects all tests so that local tests won't fail due to secured cookie
 
 var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');
