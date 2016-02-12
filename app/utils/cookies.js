@@ -13,7 +13,7 @@ module.exports = function () {
       secret: process.env.SESSION_ENCRYPTION_KEY,
       cookie: {
         httpOnly: true,
-        secureProxy: true
+        secureProxy: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
       }
     };
   }
