@@ -1,4 +1,6 @@
-if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
+if (process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
+if (process.env.HTTP_PROXY) require('global-tunnel').initialize();
+
 var express     = require('express');
 var path        = require('path');
 var favicon     = require('serve-favicon');
