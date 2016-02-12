@@ -1,23 +1,20 @@
 'use strict';
 
+/**
+ * Constructs the cookie structure required by client-sessions.js
+ * The property 'secureProxy:true' makes the cookie to be secured if 'X-Forwarded-Proto: https' header is present in request
+ */
 module.exports = function () {
-  function cookieOpts() {
-    var cookieOpts = {
-      httpOnly: true,
-      secure: true
-    };
-    if (process.env.SECURE_COOKIE_OFF === "true") {
-      cookieOpts.secure = false;
-    }
-    return cookieOpts;
-  }
 
   function namedCookie(name) {
     return {
       cookieName: name,
       proxy: true,
       secret: process.env.SESSION_ENCRYPTION_KEY,
-      cookie: cookieOpts()
+      cookie: {
+        httpOnly: true,
+        secureProxy: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
+      }
     };
   }
 

@@ -4,32 +4,36 @@ var cookies  = require(__dirname + '/../app/utils/cookies.js');
 
 describe('session cookie', function () {
 
-  it('should have empty opts when unsecured', function () {
+  it('should have secure proxy off in unsecured environment', function () {
     process.env.SECURE_COOKIE_OFF = "true";
-    assert.deepEqual({httpOnly: true, secure: false}, cookies.sessionCookie().cookie);
-    assert.equal('session', cookies.sessionCookie().cookieName);
+    assert.equal('session',cookies.sessionCookie().cookieName);
+    assert.equal(true, cookies.sessionCookie().proxy);
+    assert.deepEqual({httpOnly: true, secureProxy: false}, cookies.sessionCookie().cookie);
   });
 
-  it('should have secure opts when secured', function () {
-    process.env.SECURE_COOKIE_OFF = "false";
-    assert.deepEqual({httpOnly: true, secure: true}, cookies.sessionCookie().cookie);
+  it('should have secure proxy on in a secured https environment', function () {
+    process.env.SECURE_COOKIE_OFF="false";
     assert.equal('session',cookies.sessionCookie().cookieName);
+    assert.equal(true, cookies.sessionCookie().proxy);
+    assert.deepEqual({httpOnly: true, secureProxy: true}, cookies.sessionCookie().cookie);
   });
 
 });
 
 describe('selfservice cookie', function () {
 
-  it('should have empty opts when unsecured', function () {
+  it('should have secure proxy off in unsecured environment', function () {
     process.env.SECURE_COOKIE_OFF = "true";
-    assert.deepEqual({httpOnly: true, secure: false}, cookies.selfServiceCookie().cookie);
     assert.equal('selfservice_state', cookies.selfServiceCookie().cookieName);
+    assert.equal(true, cookies.selfServiceCookie().proxy);
+    assert.deepEqual({httpOnly: true, secureProxy: false}, cookies.selfServiceCookie().cookie);
   });
 
-  it('should have secure opts when secured', function () {
-    process.env.SECURE_COOKIE_OFF = "false";
-    assert.deepEqual({httpOnly: true, secure: true}, cookies.selfServiceCookie().cookie);
+  it('should have secure proxy on in a secured https environment', function () {
+    process.env.SECURE_COOKIE_OFF="false";
     assert.equal('selfservice_state', cookies.selfServiceCookie().cookieName);
+    assert.equal(true, cookies.selfServiceCookie().proxy);
+    assert.deepEqual({httpOnly: true, secureProxy: true}, cookies.selfServiceCookie().cookie);
   });
 
 });
