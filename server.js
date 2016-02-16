@@ -7,7 +7,7 @@ var bodyParser  = require('body-parser');
 var session     = require("client-sessions");
 var port        = (process.env.PORT || 3000);
 var app         = express();
-
+var noCache     = require(__dirname + '/app/utils/no_cache.js');
 
 app.use(session({
   cookieName: 'selfservice_state',
@@ -28,6 +28,7 @@ app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
 app.use(function (req, res, next) {
   res.locals.assetPath  = '/public/';
   res.locals.routes     = router.paths;
+  noCache(res);
   next();
 });
 

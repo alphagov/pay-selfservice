@@ -1,3 +1,4 @@
+var logger = require('winston');
 var response  = require('../utils/response.js').response;
 var auth      = require('../services/auth_service.js');
 
@@ -13,6 +14,13 @@ module.exports.loggedIn = function(req, res) {
 
 module.exports.logIn = function(req, res) {
   res.redirect("/");
+}
+
+module.exports.logOut = function(req, res) {
+  req.logout();
+  req.session.destroy();
+  logger.info('Logged out user');
+  res.redirect('/selfservice/login/');
 }
 
 module.exports.noAccess = function(req, res){
