@@ -1,17 +1,20 @@
 var request = require('supertest');
 var app = require(__dirname + '/../server.js').getApp;
-var winston = require('winston');
-var portfinder = require('portfinder');
-var nock = require('nock');
-var cookie = require(__dirname + '/utils/session.js');
+var logger = require('winston');
 var should = require('chai').should();
+var logout_url = '/selfservice/logout';
+var login_url = '/selfservice/login/';
 
-portfinder.getPort(function (err, freePort) {
-  var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = "/v1/frontend/accounts";
-  var SELF_SERVICE_CREDENTIALS_PATH = "/selfservice/credentials";
-  var SELF_SERVICE_EDIT_CREDENTIALS_PATH = "/selfservice/credentials?edit";
+function build_get_request(path) {
+  return request(app)
+    .get(path);
+}
 
-  var localServer = 'http://localhost:' + freePort;
-
-  var connectorMock = nock(localServer);
+describe('User clicks on Logout', function() {
+  it('should get redirected to login page', function(done) {
+    build_get_request(logout_url)
+      .expect(302, {})
+      .expect('Location', login_url)
+      .end(done);
+  });
 });

@@ -7,6 +7,7 @@ var devTokens     = require('./controllers/dev_tokens_controller.js');
 var auth          = require('./services/auth_service.js');
 var querystring   = require('querystring');
 var _             = require('lodash');
+
 module.exports.generateRoute = generateRoute;
 
 var paths = {
@@ -20,13 +21,13 @@ var paths = {
       edit: '/selfservice/credentials?edit', // TODO LOLWUT?
       create: '/selfservice/credentials'
     },
-    logIn: {
+    user: {
       logIn: '/selfservice/login',
+      logOut: '/selfservice/logout',
       callback: '/selfservice/callback',
       loggedIn: '/selfservice/',
       noAccess: '/selfservice/noaccess'
     },
-
     devTokens: {
       index: '/selfservice/tokens',
       // we only show the token once, hence strange url
@@ -69,8 +70,9 @@ module.exports.bind = function (app) {
 
   // LOGIN
 
-  var user = paths.logIn;
+  var user = paths.user;
   app.get(user.logIn, auth.login, login.logIn);
+  app.get(user.logOut, login.logOut);
   app.get(user.callback, auth.callback, login.callback);
   app.get(user.loggedIn,  auth.enforce, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
