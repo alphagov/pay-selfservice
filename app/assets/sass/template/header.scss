@@ -1,6 +1,9 @@
 header {
   background-color: $black;
-
+  .header-wrapper {
+    max-width:1200px;
+    margin: 0 auto;
+  }
   a {
     color: $white;
     text-decoration: none;
@@ -32,10 +35,14 @@ header {
 
   .header-logo {
     @include bold-24;
-    padding: $gutter-half 0 $gutter-half $gutter-half;
+    padding: $gutter-half 0 $gutter-half 0;
 
     @include media(tablet) {
-     padding: $gutter-half 0 $gutter-half $gutter;
+     padding: $gutter-half 0 $gutter-half 0;
     }
+  }
+  .logout {
+    float: right;
+    @include copy-16();
   }
 }
