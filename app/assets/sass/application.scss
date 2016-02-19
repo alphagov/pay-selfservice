@@ -17,7 +17,9 @@ $NTA-Light: Helvetica, Arial, sans-serif;
 $grey-8: #fff;
 
 @mixin media-down($mobile) {
+  @content;
 };
+
 @import 'govuk-elements';
 @import "elements/base";
 
