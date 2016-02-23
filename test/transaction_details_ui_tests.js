@@ -7,7 +7,7 @@ var renderTemplate = require(__dirname + '/utils/test_renderer.js').render;
 describe('The transaction details view', function () {
   it('should render all transaction details', function () {
     var templateData = {
-        'reference':'123412341234',
+        'reference':'<123412341234> &',
         'amount':'£10.00',
         'gateway_account_id':'1',
         'charge_id':'1',
@@ -40,7 +40,7 @@ describe('The transaction details view', function () {
 
     var body = renderTemplate('transactions/show', templateData);
     var $ = cheerio.load(body);
-    $('#reference').text().should.equal(templateData.reference);
+    $('#reference').html().should.equal('&lt;123412341234&gt; &amp;');
     $('#amount').text().should.equal(templateData.amount);
     $('#payment-id').text().should.equal(templateData.charge_id);
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id);
