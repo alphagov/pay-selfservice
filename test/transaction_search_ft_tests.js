@@ -13,7 +13,7 @@ var winston = require('winston');
 portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 452345;
   var CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-  var TRANSACTIONS_SEARCH_PATH = '/selfservice/transactions';
+  var TRANSACTIONS_SEARCH_PATH = '/transactions';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
@@ -75,7 +75,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST STATUS 2',
                     'updated': CONNECTOR_DATE,
                     'created_date': CONNECTOR_DATE,
-                    "link": "/selfservice/transactions/100"
+                    "link": "/transactions/100"
                   }
                 ]
               };
@@ -93,7 +93,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/selfservice/transactions/100"
+                    "link": "/transactions/100"
 
                   },
                   {
@@ -105,7 +105,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/selfservice/transactions/101"
+                    "link": "/transactions/101"
 
                   }
                 ]
@@ -150,7 +150,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/selfservice/transactions/100"
+                    "link": "/transactions/100"
                   }
                 ]
               };
@@ -192,7 +192,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/selfservice/transactions/100"
+                    "link": "/transactions/100"
                   }
                 ]
               };
@@ -240,7 +240,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': '11 Jan 2016 — 01:01:01',
                     'created': '11 Jan 2016 — 01:01:01',
-                    "link": "/selfservice/transactions/100"
+                    "link": "/transactions/100"
                   }
                 ]
               };

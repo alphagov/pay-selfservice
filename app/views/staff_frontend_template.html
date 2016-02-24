@@ -8,7 +8,7 @@
       (function(){if(navigator.userAgent.match(/IEMobile\/10\.0/)){var d=document,c="appendChild",a=d.createElement("style");a[c](d.createTextNode("@-ms-viewport{width:auto!important}"));d.getElementsByTagName("head")[0][c](a);}})();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--[if lt IE 9]><script src="/selfservice/public/vendor/html5shiv.min.js"></script><![endif]-->
+    <!--[if lt IE 9]><script src="/public/vendor/html5shiv.min.js"></script><![endif]-->
 
     {{$head}}{{/head}}
   </head>
@@ -24,10 +24,10 @@
     <header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
       <div class="header-wrapper">
         <div class="header-logo">
-          <a href="{{$homepageUrl}}/selfservice/tokens{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
-            <img src="/selfservice/public/images/crest_white.png" width="35" height="35" alt=""> {{$globalHeaderText}}GOV.UK Pay Self Service{{/globalHeaderText}}
+          <a href="{{$homepageUrl}}/tokens{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
+            <img src="/public/images/crest_white.png" width="35" height="35" alt=""> {{$globalHeaderText}}GOV.UK Pay Self Service{{/globalHeaderText}}
           </a>
-          <a href="/selfservice/logout" title="Log me out" id="logout" class="content logout">Log Out</a>
+          <a href="/logout" title="Log me out" id="logout" class="content logout">Log Out</a>
         </div>
       </div>
     </header>

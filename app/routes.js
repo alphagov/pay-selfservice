@@ -12,30 +12,30 @@ module.exports.generateRoute = generateRoute;
 
 var paths = {
     transactions: {
-      index: '/selfservice/transactions',
-      download: '/selfservice/transactions/download',
-      show: '/selfservice/transactions/:chargeId'
+      index: '/transactions',
+      download: '/transactions/download',
+      show: '/transactions/:chargeId'
     },
     credentials: {
-      index: '/selfservice/credentials',
-      edit: '/selfservice/credentials?edit', // TODO LOLWUT?
-      create: '/selfservice/credentials'
+      index: '/credentials',
+      edit: '/credentials?edit', // TODO LOLWUT?
+      create: '/credentials'
     },
     user: {
-      logIn: '/selfservice/login',
-      logOut: '/selfservice/logout',
-      callback: '/selfservice/callback',
-      loggedIn: '/selfservice/',
-      noAccess: '/selfservice/noaccess'
+      logIn: '/login',
+      logOut: '/logout',
+      callback: '/callback',
+      loggedIn: '/',
+      noAccess: '/noaccess'
     },
     devTokens: {
-      index: '/selfservice/tokens',
+      index: '/tokens',
       // we only show the token once, hence strange url
-      show: '/selfservice/tokens/generate',
-      create: '/selfservice/tokens/generate',
+      show: '/tokens/generate',
+      create: '/tokens/generate',
       // should these two not rely take an id in the url?
-      update: '/selfservice/tokens',
-      delete: '/selfservice/tokens'
+      update: '/tokens',
+      delete: '/tokens'
     }
 };
 

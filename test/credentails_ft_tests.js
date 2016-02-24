@@ -9,8 +9,8 @@ var should = require('chai').should();
 portfinder.getPort(function (err, freePort) {
   var ACCOUNT_ID = 182364;
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
-  var SELF_SERVICE_CREDENTIALS_PATH = "/selfservice/credentials";
-  var SELF_SERVICE_EDIT_CREDENTIALS_PATH = "/selfservice/credentials?edit";
+  var SELF_SERVICE_CREDENTIALS_PATH = "/credentials";
+  var SELF_SERVICE_EDIT_CREDENTIALS_PATH = "/credentials?edit";
   var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});
   var localServer = 'http://localhost:' + freePort;
   var connectorMock = nock(localServer);

@@ -26,7 +26,7 @@ describe('The transaction list view', function () {
             'filters': {'reference': 'ref1', 'status': 'TEST STATUS', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
             'hasResults': true,
             'downloadTransactionLink':
-                '/selfservice/transactions/download?reference=ref1&status=TEST5%20STATUS&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
+                '/transactions/download?reference=ref1&status=TEST5%20STATUS&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
         };
 
         var body = renderTemplate('transactions/index', templateData);

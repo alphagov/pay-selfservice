@@ -2,8 +2,8 @@ var request = require('supertest');
 var app = require(__dirname + '/../server.js').getApp;
 var logger = require('winston');
 var should = require('chai').should();
-var logout_url = '/selfservice/logout';
-var login_url = '/selfservice/login/';
+var logout_url = '/logout';
+var login_url = '/login';
 
 function build_get_request(path) {
   return request(app)

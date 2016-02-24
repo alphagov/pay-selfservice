@@ -10,7 +10,7 @@ portfinder.getPort(function (err, connectorPort) {
     var chargeId = 452345;
     var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
     var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
-    var TRANSACTION_DETAILS_PATH = '/selfservice/transactions/{chargeId}';
+    var TRANSACTION_DETAILS_PATH = '/transactions/{chargeId}';
 
     var localServer = 'http://localhost:' + connectorPort;
 

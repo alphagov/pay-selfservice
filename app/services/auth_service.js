@@ -10,7 +10,7 @@ var AUTH_STRATEGY = new Auth0Strategy({
     domain:       process.env.AUTH0_URL,
     clientID:     process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL:  '/selfservice/callback'
+    callbackURL:  '/callback'
   },
   function(accessToken, refreshToken, extraParams, user, done) {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
@@ -21,8 +21,8 @@ var AUTH_STRATEGY = new Auth0Strategy({
   }
 );
 
-var LOGIN_URL = '/selfservice/login';
-var NO_ACCESS_URL = '/selfservice/noaccess';
+var LOGIN_URL = '/login';
+var NO_ACCESS_URL = '/noaccess';
 
 var auth = module.exports = {  
     enforce: function (req, res, next) {

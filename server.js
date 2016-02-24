@@ -27,9 +27,26 @@ app.enable('trust proxy');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/selfservice/public', express.static(__dirname + '/public'));
+app.use('/public', express.static(__dirname + '/public'));
 app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
 app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
+app.use(function (req, res, next) {
+  res.locals.assetPath  = '/public/';
+  res.locals.routes     = router.paths;
+  noCache(res);
+  next();
+});
+
+app.use(function (req, res, next) {
+  if (req.url.indexOf('/selfservice/') === 0) {
+    var oldUrl = req.url;
+    req.url = oldUrl.substring('/selfservice'.length);
+    console.log('REDIRECTED ' + oldUrl + ' to ' + req.url);
+  }
+  
+  next();
+});
+
 app.use(function (req, res, next) {
   res.locals.assetPath  = '/public/';
   res.locals.routes     = router.paths;

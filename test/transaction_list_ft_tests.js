@@ -16,7 +16,7 @@ portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 651342;
   var searchParameters= {};
   var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-  var TRANSACTION_LIST_PATH = '/selfservice/transactions';
+  var TRANSACTION_LIST_PATH = '/transactions';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
@@ -91,7 +91,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
-              "link": "/selfservice/transactions/100"
+              "link": "/transactions/100"
             },
             {
               'charge_id': '101',
@@ -102,7 +102,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
-              "link": "/selfservice/transactions/101"
+              "link": "/transactions/101"
             }
           ]
         };
@@ -151,7 +151,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
-              "link": "/selfservice/transactions/100"
+              "link": "/transactions/100"
 
             },
             {
@@ -163,7 +163,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
-              "link": "/selfservice/transactions/101"
+              "link": "/transactions/101"
             }
           ]
         };

@@ -10,7 +10,7 @@ describe('The token view', function() {
 
     body.should.containSelector('h1').withText("API Keys");
     body.should.containSelector('#available-tokens').withText("There are no active API keys");
-    body.should.containSelector('a[href="/selfservice/tokens/generate"]').withText('Generate a new key');
+    body.should.containSelector('a[href="/tokens/generate"]').withText('Generate a new key');
     body.should.containNoSelector('.key-list-item');
   });
 
@@ -75,7 +75,7 @@ describe('The generate token view', function() {
       body.should.containSelector('.page-title').withText("API keys");
 
       body.should.containSelector('form')
-        .withAttribute('action', '/selfservice/tokens/generate')
+        .withAttribute('action', '/tokens/generate')
         .withAttribute('method', 'post');
 
       body.should.containTextarea('description')
@@ -90,7 +90,7 @@ describe('The generate token view', function() {
 
       body.should.containNoSelector('textarea#token');
 
-      body.should.containSelector('a[href="/selfservice/tokens"]')
+      body.should.containSelector('a[href="/tokens"]')
         .withText("Cancel");
     });
 
@@ -129,7 +129,7 @@ describe('The generate token view', function() {
       
       var body = renderTemplate('token_generate', templateData);
       body.should.containSelector('.button')
-        .withAttribute("href", "/selfservice/tokens")
+        .withAttribute("href", "/tokens")
         .withText("Finish");
     });
   });

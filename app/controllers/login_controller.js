@@ -3,7 +3,7 @@ var response  = require('../utils/response.js').response;
 var auth      = require('../services/auth_service.js');
 
 module.exports.callback = function(req, res) {
-  res.redirect('/selfservice/');
+  res.redirect('/');
 };
 
 module.exports.loggedIn = function(req, res) {
@@ -20,7 +20,7 @@ module.exports.logOut = function(req, res) {
   req.logout();
   req.session.destroy();
   logger.info('Logged out user');
-  res.redirect('/selfservice/login/');
+  res.redirect('/login');
 }
 
 module.exports.noAccess = function(req, res){

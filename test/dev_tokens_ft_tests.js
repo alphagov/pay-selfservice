@@ -9,9 +9,9 @@ var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
 
 var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
-var TOKEN_PATH = '/selfservice/tokens';
-var TOKEN_GENERATION_GET_PATH = '/selfservice/tokens/generate';
-var TOKEN_GENERATION_POST_PATH = '/selfservice/tokens/generate';
+var TOKEN_PATH = '/tokens';
+var TOKEN_GENERATION_GET_PATH = '/tokens/generate';
+var TOKEN_GENERATION_POST_PATH = '/tokens/generate';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});

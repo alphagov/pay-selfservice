@@ -12,7 +12,7 @@ var winston = require('winston');
 portfinder.getPort(function (err, connectorPort) {
     var gatewayAccountId = 651342;
     var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-    var DOWNLOAD_TRANSACTION_LIST_PATH = '/selfservice/transactions/download';
+    var DOWNLOAD_TRANSACTION_LIST_PATH = '/transactions/download';
 
     var localServer = 'http://localhost:' + connectorPort;
     var connectorMock = nock(localServer, {

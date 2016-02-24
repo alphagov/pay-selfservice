@@ -17,7 +17,7 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
-      .withAttribute("href", "/selfservice/credentials?edit")
+      .withAttribute("href", "/credentials?edit")
       .withText("Edit credentials");
 
     body.should.containSelector('dl#credentials');
@@ -46,7 +46,7 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
-      .withAttribute("href", "/selfservice/credentials?edit")
+      .withAttribute("href", "/credentials?edit")
       .withText("Edit credentials");
 
     body.should.containSelector('dl#credentials');
@@ -105,7 +105,7 @@ describe('The credentials view in edit mode', function () {
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/selfservice/credentials');
+      .withAttribute('action', '/credentials');
 
     body.should.not.containSelector('a#edit-credentials-link');
 
@@ -140,7 +140,7 @@ describe('The credentials view in edit mode', function () {
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/selfservice/credentials');
+      .withAttribute('action', '/credentials');
 
     body.should.not.containSelector('a#edit-credentials-link');
 

@@ -66,7 +66,7 @@ describe('An endpoint protected by auth.enforce', function() {
     request(app)
       .get('/protected')
       .expect(302)
-      .expect('Location', '/selfservice/login')
+      .expect('Location', '/login')
       .end(done);
   });
 
@@ -84,7 +84,7 @@ describe('An endpoint protected by auth.enforce', function() {
       .get('/protected')
       .set('Cookie', session_no_account_id)
       .expect(302)
-      .expect('Location', '/selfservice/noaccess')
+      .expect('Location', '/noaccess')
       .end(done);
   });
 
@@ -114,18 +114,18 @@ describe('An endpoint protected by auth.enforce', function() {
 describe('An endpoint that enforces login', function(done) {
   var app = express();
   auth.bind(app);
-  app.get('/selfservice/login', auth.login);
+  app.get('/login', auth.login);
 
   it('redirects to auth0', function(done) {
     request(app)
-      .get('/selfservice/login')
+      .get('/login')
       .expect(302)
       .expect('Location', /my.test.auth0/)
       .end(done);
   });
   it('redirects to auth0 if authenticated', function(done) {
     request(app)
-      .get('/selfservice/login')
+      .get('/login')
       .set('Cookie', valid_session)
       .expect(302)
       .expect('Location', /my.test.auth0/)
@@ -133,7 +133,7 @@ describe('An endpoint that enforces login', function(done) {
   });
   it('includes the callback url in the request', function(done) {
     request(app)
-      .get('/selfservice/login')
+      .get('/login')
       .expect(302)
       .expect('Location', /redirect_uri=.*callback/)
       .end(done);
