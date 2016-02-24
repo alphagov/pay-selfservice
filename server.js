@@ -1,18 +1,18 @@
 if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
-var express     = require('express');
-var path        = require('path');
-var favicon     = require('serve-favicon');
-var router      = require(__dirname + '/app/routes.js');
-var bodyParser  = require('body-parser');
-var session     = require("client-sessions");
+var express           = require('express');
+var path              = require('path');
+var favicon           = require('serve-favicon');
+var router            = require(__dirname + '/app/routes.js');
+var bodyParser        = require('body-parser');
+var clientSessions    = require("client-sessions");
+var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfServiceCookie;
+
 var port        = (process.env.PORT || 3000);
 var app         = express();
 var noCache     = require(__dirname + '/app/utils/no_cache.js');
 
-app.use(session({
-  cookieName: 'selfservice_state',
-  secret: process.env.SESSION_ENCRYPTION_KEY
-}));
+app.enable('trust proxy');
+app.use(clientSessions(selfServiceCookie()));
 
 app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 app.set('view engine', 'html');
