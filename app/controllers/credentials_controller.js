@@ -3,8 +3,8 @@ var changeCase      = require('change-case')
 var response        = require('../utils/response.js').response;
 var ERROR_MESSAGE   = require('../utils/response.js').ERROR_MESSAGE;
 var errorView       = require('../utils/response.js').renderErrorView;
-var Client          = require('node-rest-client').Client;
-var client          = new Client();
+var nodeClientInstance = require('../services/client_factory.js').nodeClientInstance;
+var client             = nodeClientInstance();
 var auth            = require('../services/auth_service.js');
 var router          = require('../routes.js');
 

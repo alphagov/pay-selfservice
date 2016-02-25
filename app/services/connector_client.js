@@ -3,7 +3,7 @@ var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
 var logger = require('winston');
-var request = require('request');
+var requestClientInstance = require('../services/client_factory.js').requestClientInstance;
 var dates = require('../utils/dates.js');
 var querystring = require('querystring');
 
@@ -60,7 +60,7 @@ var createOnErrorEventHandler = function (self) {
 
 var ConnectorClient = function (connectorUrl) {
     this.connectorUrl = connectorUrl;
-    this.client = request.defaults({json:true});
+    this.client = requestClientInstance();
     this.responseHandler = createResponseHandler(this);
     this.onResponseEventHandler = createOnResponseEventHandler(this);
     this.onErrorEventHandler = createOnErrorEventHandler(this);

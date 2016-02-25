@@ -2,10 +2,10 @@ var logger          = require('winston');
 var response        = require('../utils/response.js').response;
 var ERROR_MESSAGE   = require('../utils/response.js').ERROR_MESSAGE;
 var renderErrorView = require('../utils/response.js').renderErrorView;
-var Client          = require('node-rest-client').Client;
-var client          = new Client();
 var auth            = require('../services/auth_service.js');
 var router          = require('../routes.js');
+var nodeClientInstance = require('../services/client_factory.js').nodeClientInstance;
+var client             = nodeClientInstance();
 // TODO remove these and make them proper i.e. show update destroy etc
 var TOKEN_VIEW      = 'token';
 var TOKEN_GENERATE_VIEW = 'token_generate';
