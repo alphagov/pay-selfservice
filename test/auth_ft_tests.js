@@ -2,6 +2,7 @@ process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwe
 process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
+process.env.DISABLE_INTERNAL_HTTPS = "true";
 
 var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');
