@@ -6,7 +6,7 @@ var opts = require('https').globalAgent.options;
 describe('custom certificate', function () {
 
   beforeEach(function(){
-    process.env.CA_FILEPATH = __dirname + '/../utils/test_ca.pem';
+    process.env.CA_FILEPATH = __dirname + '/../test_helpers/test_ca.pem';
   });
 
   afterEach(function(){

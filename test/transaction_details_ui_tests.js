@@ -1,8 +1,8 @@
-require(__dirname + '/utils/html_assertions.js');
+require(__dirname + '/test_helpers/html_assertions.js');
 var cheerio = require('cheerio');
 var should = require('chai').should();
 
-var renderTemplate = require(__dirname + '/utils/test_renderer.js').render;
+var renderTemplate = require(__dirname + '/test_helpers/test_renderer.js').render;
 
 describe('The transaction details view', function () {
   it('should render all transaction details', function () {

@@ -1,5 +1,5 @@
 var should = require('chai').should();
-var renderTemplate = require(__dirname + '/utils/html_assertions.js').render;
+var renderTemplate = require(__dirname + '/test_helpers/html_assertions.js').render;
 
 describe('The credentials view in normal mode', function () {
   it('should display credentials view for a worldpay account', function () {

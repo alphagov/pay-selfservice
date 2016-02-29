@@ -1,7 +1,7 @@
-require(__dirname + '/utils/html_assertions.js');
+require(__dirname + '/../test_helpers/html_assertions.js');
 var should = require('chai').should();
 var assert = require('assert');
-var dates  = require(__dirname + '/../app/utils/dates.js');
+var dates  = require(__dirname + '/../../app/utils/dates.js');
 
 
 

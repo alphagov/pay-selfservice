@@ -11,7 +11,7 @@ var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');
 var should = require('chai').should();
 var express = require('express');
-var auth_cookie = require('./utils/login-session.js');
+var auth_cookie = require('./test_helpers/login_session.js');
 
 var valid_session = ['session=' + auth_cookie.create({
   passport: { user: {
