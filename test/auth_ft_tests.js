@@ -4,7 +4,7 @@ process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
 process.env.SECURE_COOKIE_OFF="false";
-process.env.COOKIE_MAX_AGE = 10800000;
+process.env.COOKIE_MAX_AGE = "10800000";
 
 var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');

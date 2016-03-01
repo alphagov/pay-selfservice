@@ -12,7 +12,7 @@ module.exports = function () {
       proxy: true,
       secret: process.env.SESSION_ENCRYPTION_KEY,
       cookie: {
-        maxAge: process.env.COOKIE_MAX_AGE, // it will expire after 3 hours
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE), // it will expire after 3 hours
         httpOnly: true,
         secureProxy: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
       }
