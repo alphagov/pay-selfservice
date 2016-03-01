@@ -1,7 +1,10 @@
+// THESE ARE HERE TO SET GLOBAL ENV VARIABLES
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
+process.env.SECURE_COOKIE_OFF="false";
+process.env.COOKIE_MAX_AGE = "10800000";
 
 var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');
@@ -40,7 +43,7 @@ describe('An endpoint not protected', function() {
       .expect('Hello, World!')
       .end(done);
   });
-  
+
   it('allows access if authenticated', function(done) {
     request(app)
       .get('/unprotected')
@@ -65,7 +68,7 @@ describe('An endpoint protected by auth.enforce', function() {
       .expect('Location', '/selfservice/login')
       .end(done);
   });
-  
+
   it('allows access if authenticated', function(done) {
     request(app)
       .get('/protected')
@@ -74,7 +77,7 @@ describe('An endpoint protected by auth.enforce', function() {
       .expect('Hello, World!')
       .end(done);
   });
-  
+
   it('redirects to noaccess if no account_id', function(done) {
     request(app)
       .get('/protected')
@@ -83,7 +86,7 @@ describe('An endpoint protected by auth.enforce', function() {
       .expect('Location', '/selfservice/noaccess')
       .end(done);
   });
-  
+
   it('stores the current url in session if not authed', function(done) {
     request(app)
       .get('/protected')
@@ -94,7 +97,7 @@ describe('An endpoint protected by auth.enforce', function() {
       })
       .end(done);
   });
-  
+
   it('maintains url params of current url if not authed', function(done) {
     request(app)
       .get('/protected?foo=bar')
