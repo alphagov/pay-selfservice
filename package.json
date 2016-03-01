@@ -7,6 +7,18 @@
   "engines" : {
     "node" : ">5.6.0"
   },
+  "jshintConfig" : {
+    "node": true,
+    "esversion": 6,
+    "globals": {
+      "describe": false,
+      "it": false,
+      "before": false,
+      "beforeEach": false,
+      "after": false,
+      "afterEach": false
+    }
+  },
   "scripts": {
     "start": "node start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
