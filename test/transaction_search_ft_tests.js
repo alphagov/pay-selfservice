@@ -1,19 +1,17 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 
-var request = require('supertest');
-var portfinder = require('portfinder');
-var nock = require('nock');
-var app = require(__dirname + '/../server.js').getApp;
+var request     = require('supertest');
+var portfinder  = require('portfinder');
+var nock        = require('nock');
+var app         = require(__dirname + '/../server.js').getApp;
 var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
-var dates = require('../app/utils/dates.js');
-
-
-var winston = require('winston');
+var dates       = require('../app/utils/dates.js');
+var paths       = require(__dirname + '/../app/paths.js');
+var winston     = require('winston');
 
 portfinder.getPort(function (err, connectorPort) {
   var gatewayAccountId = 452345;
   var CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-  var TRANSACTIONS_SEARCH_PATH = '/transactions';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
@@ -32,7 +30,7 @@ portfinder.getPort(function (err, connectorPort) {
   }
 
   function search_transactions(data) {
-    return request(app).post(TRANSACTIONS_SEARCH_PATH)
+    return request(app).post(paths.transactions.index)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
@@ -75,7 +73,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'status': 'TEST STATUS 2',
                     'updated': CONNECTOR_DATE,
                     'created_date': CONNECTOR_DATE,
-                    "link": "/transactions/100"
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 101})
                   }
                 ]
               };
@@ -93,7 +91,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/transactions/100"
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 100})
 
                   },
                   {
@@ -105,7 +103,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/transactions/101"
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 101})
 
                   }
                 ]
@@ -150,7 +148,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/transactions/100"
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 100})
                   }
                 ]
               };
@@ -192,7 +190,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': DISPLAY_DATE,
                     'created': DISPLAY_DATE,
-                    "link": "/transactions/100"
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 100})
                   }
                 ]
               };
@@ -240,7 +238,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': 452345,
                     'updated': '11 Jan 2016 — 01:01:01',
                     'created': '11 Jan 2016 — 01:01:01',
-                    "link": "/transactions/100"
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 100})
                   }
                 ]
               };

@@ -1,5 +1,7 @@
 var renderTemplate = require(__dirname + '/test_helpers/html_assertions.js').render;
 var should = require('chai').should();
+var paths = require(__dirname + '/../app/paths.js');
+
 
 describe('The token view', function() {
   it('should render the number of active API keys for the account (for no keys)', function () {
@@ -10,7 +12,7 @@ describe('The token view', function() {
 
     body.should.containSelector('h1').withText("API Keys");
     body.should.containSelector('#available-tokens').withText("There are no active API keys");
-    body.should.containSelector('a[href="/tokens/generate"]').withText('Generate a new key');
+    body.should.containSelector('a[href="'+ paths.devTokens.create +'"]').withText('Generate a new key');
     body.should.containNoSelector('.key-list-item');
   });
 
@@ -75,7 +77,7 @@ describe('The generate token view', function() {
       body.should.containSelector('.page-title').withText("API keys");
 
       body.should.containSelector('form')
-        .withAttribute('action', '/tokens/generate')
+        .withAttribute('action', paths.devTokens.create)
         .withAttribute('method', 'post');
 
       body.should.containTextarea('description')
@@ -90,7 +92,7 @@ describe('The generate token view', function() {
 
       body.should.containNoSelector('textarea#token');
 
-      body.should.containSelector('a[href="/tokens"]')
+      body.should.containSelector('a[href="' + paths.devTokens.index +'"]')
         .withText("Cancel");
     });
 
@@ -102,7 +104,7 @@ describe('The generate token view', function() {
         'token' : "550e8400-e29b-41d4-a716-446655440000",
         'description' : 'Test token'
       };
-      
+
       var body = renderTemplate('token_generate', templateData);
       body.should.containSelector('.page-title').withText("API keys");
       body.should.containSelector('.heading-medium').withText("New key generated");
@@ -114,7 +116,7 @@ describe('The generate token view', function() {
         'token' : "550e8400-e29b-41d4-a716-446655440000",
         'description' : 'Test token'
       };
-      
+
       var body = renderTemplate('token_generate', templateData);
       body.should.containTextarea('token')
         .withText("550e8400-e29b-41d4-a716-446655440000")
@@ -126,10 +128,10 @@ describe('The generate token view', function() {
         'token' : "550e8400-e29b-41d4-a716-446655440000",
         'description' : 'Test token'
       };
-      
+
       var body = renderTemplate('token_generate', templateData);
       body.should.containSelector('.button')
-        .withAttribute("href", "/tokens")
+        .withAttribute("href", paths.devTokens.index)
         .withText("Finish");
     });
   });

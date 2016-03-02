@@ -1,17 +1,20 @@
 // THESE ARE HERE TO SET GLOBAL ENV VARIABLES
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
 process.env.DISABLE_INTERNAL_HTTPS = "true"; // to support other unit tests
 process.env.SECURE_COOKIE_OFF="false";
 process.env.COOKIE_MAX_AGE = "10800000";
+process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
+
 
 var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');
 var should = require('chai').should();
 var express = require('express');
+
 var auth_cookie = require('./test_helpers/login_session.js');
+var paths = require(__dirname + '/../app/paths.js');
 
 var valid_session = ['session=' + auth_cookie.create({
   passport: { user: {
@@ -66,7 +69,7 @@ describe('An endpoint protected by auth.enforce', function() {
     request(app)
       .get('/protected')
       .expect(302)
-      .expect('Location', '/login')
+      .expect('Location', paths.user.logIn)
       .end(done);
   });
 
@@ -84,7 +87,7 @@ describe('An endpoint protected by auth.enforce', function() {
       .get('/protected')
       .set('Cookie', session_no_account_id)
       .expect(302)
-      .expect('Location', '/noaccess')
+      .expect('Location', paths.user.noAccess)
       .end(done);
   });
 
@@ -114,18 +117,18 @@ describe('An endpoint protected by auth.enforce', function() {
 describe('An endpoint that enforces login', function(done) {
   var app = express();
   auth.bind(app);
-  app.get('/login', auth.login);
+  app.get(paths.user.logIn, auth.login);
 
   it('redirects to auth0', function(done) {
     request(app)
-      .get('/login')
+      .get(paths.user.logIn)
       .expect(302)
       .expect('Location', /my.test.auth0/)
       .end(done);
   });
   it('redirects to auth0 if authenticated', function(done) {
     request(app)
-      .get('/login')
+      .get(paths.user.logIn)
       .set('Cookie', valid_session)
       .expect(302)
       .expect('Location', /my.test.auth0/)

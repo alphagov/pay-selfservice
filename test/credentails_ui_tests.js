@@ -1,5 +1,6 @@
 var should = require('chai').should();
 var renderTemplate = require(__dirname + '/test_helpers/html_assertions.js').render;
+var paths = require(__dirname + '/../app/paths.js');
 
 describe('The credentials view in normal mode', function () {
   it('should display credentials view for a worldpay account', function () {
@@ -17,7 +18,7 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
-      .withAttribute("href", "/credentials?edit")
+      .withAttribute("href", paths.credentials.edit)
       .withText("Edit credentials");
 
     body.should.containSelector('dl#credentials');
@@ -46,7 +47,7 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('a#edit-credentials-link')
       .withAttribute("class", "button")
-      .withAttribute("href", "/credentials?edit")
+      .withAttribute("href", paths.credentials.edit)
       .withText("Edit credentials");
 
     body.should.containSelector('dl#credentials');
@@ -100,12 +101,12 @@ describe('The credentials view in edit mode', function () {
     };
 
     var body = renderTemplate('provider_credentials/worldpay', templateData);
-    
+
     body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials');
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/credentials');
+      .withAttribute('action', paths.credentials.create);
 
     body.should.not.containSelector('a#edit-credentials-link');
 
@@ -140,7 +141,7 @@ describe('The credentials view in edit mode', function () {
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/credentials');
+      .withAttribute('action', paths.credentials.create);
 
     body.should.not.containSelector('a#edit-credentials-link');
 
