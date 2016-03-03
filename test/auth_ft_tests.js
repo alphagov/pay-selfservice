@@ -3,6 +3,7 @@ process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwe
 process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
+process.env.DISABLE_INTERNAL_HTTPS = "true"; // to support other unit tests
 process.env.SECURE_COOKIE_OFF="false";
 process.env.COOKIE_MAX_AGE = "10800000";
 
@@ -10,7 +11,7 @@ var request = require('supertest');
 var auth = require(__dirname + '/../app/services/auth_service.js');
 var should = require('chai').should();
 var express = require('express');
-var auth_cookie = require('./utils/login-session.js');
+var auth_cookie = require('./test_helpers/login_session.js');
 
 var valid_session = ['session=' + auth_cookie.create({
   passport: { user: {

@@ -3,9 +3,9 @@ var app = require(__dirname + '/../server.js').getApp;
 var winston = require('winston');
 var portfinder = require('portfinder');
 var nock = require('nock');
-var cookie = require(__dirname + '/utils/session.js');
+var cookie = require(__dirname + '/test_helpers/session.js');
 var should = require('chai').should();
-var auth_cookie = require(__dirname + '/utils/login-session.js');
+var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
 
 var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';

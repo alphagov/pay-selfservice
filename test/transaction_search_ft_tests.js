@@ -4,7 +4,7 @@ var request = require('supertest');
 var portfinder = require('portfinder');
 var nock = require('nock');
 var app = require(__dirname + '/../server.js').getApp;
-var auth_cookie = require(__dirname + '/utils/login-session.js');
+var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
 var dates = require('../app/utils/dates.js');
 
 

@@ -3,7 +3,7 @@ var app = require(__dirname + '/../server.js').getApp;
 var winston = require('winston');
 var portfinder = require('portfinder');
 var nock = require('nock');
-var auth_cookie = require(__dirname + '/utils/login-session.js');
+var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
 var should = require('chai').should();
 
 portfinder.getPort(function (err, freePort) {

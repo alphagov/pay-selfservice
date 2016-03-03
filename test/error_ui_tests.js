@@ -1,6 +1,6 @@
-require(__dirname + '/utils/html_assertions.js');
+require(__dirname + '/test_helpers/html_assertions.js');
 
-var renderTemplate = require(__dirname + '/utils/test_renderer.js').render;
+var renderTemplate = require(__dirname + '/test_helpers/test_renderer.js').render;
 
 describe('The error view', function () {
   it('should render an error message', function () {

@@ -1,6 +1,6 @@
 var should = require('chai').should();
 var assert = require('assert');
-var cookies  = require(__dirname + '/../app/utils/cookies.js');
+var cookies  = require(__dirname + '/../../app/utils/cookies.js');
 
 describe('session cookie', function () {
 

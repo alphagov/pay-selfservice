@@ -1,4 +1,4 @@
-var renderTemplate = require(__dirname + '/utils/html_assertions.js').render;
+var renderTemplate = require(__dirname + '/test_helpers/html_assertions.js').render;
 var should = require('chai').should();
 
 describe('The token view', function() {
