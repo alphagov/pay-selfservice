@@ -7,38 +7,9 @@ var devTokens     = require('./controllers/dev_tokens_controller.js');
 var auth          = require('./services/auth_service.js');
 var querystring   = require('querystring');
 var _             = require('lodash');
+var paths         = require(__dirname + '/paths.js');
 
 module.exports.generateRoute = generateRoute;
-
-var paths = {
-    transactions: {
-      index: '/selfservice/transactions',
-      download: '/selfservice/transactions/download',
-      show: '/selfservice/transactions/:chargeId'
-    },
-    credentials: {
-      index: '/selfservice/credentials',
-      edit: '/selfservice/credentials?edit', // TODO LOLWUT?
-      create: '/selfservice/credentials'
-    },
-    user: {
-      logIn: '/selfservice/login',
-      logOut: '/selfservice/logout',
-      callback: '/selfservice/callback',
-      loggedIn: '/selfservice/',
-      noAccess: '/selfservice/noaccess'
-    },
-    devTokens: {
-      index: '/selfservice/tokens',
-      // we only show the token once, hence strange url
-      show: '/selfservice/tokens/generate',
-      create: '/selfservice/tokens/generate',
-      // should these two not rely take an id in the url?
-      update: '/selfservice/tokens',
-      delete: '/selfservice/tokens'
-    }
-};
-
 module.exports.paths = paths;
 
 module.exports.bind = function (app) {

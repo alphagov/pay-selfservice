@@ -39,7 +39,7 @@ $(document).ready(function(){
 
     $.ajax({
         type: 'PUT',
-        url: '/selfservice/tokens',
+        url: '/tokens',
         data: {
             'token_link': tokenLink,
             'description': newDescription
@@ -61,7 +61,7 @@ $(document).ready(function(){
         $container = getListItem(self),
         accountId = $('#accountId').text(),
         tokenLink = $container.attr('id'),
-        deleteUrl = '/selfservice/tokens/?token_link=' + tokenLink;
+        deleteUrl = '/tokens/?token_link=' + tokenLink;
 
     evt.preventDefault();
     $container.find('.error').removeClass('error');

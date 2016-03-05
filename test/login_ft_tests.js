@@ -1,9 +1,8 @@
-var request = require('supertest');
-var app = require(__dirname + '/../server.js').getApp;
-var logger = require('winston');
-var should = require('chai').should();
-var logout_url = '/selfservice/logout';
-var login_url = '/selfservice/login/';
+var request     = require('supertest');
+var app         = require(__dirname + '/../server.js').getApp;
+var logger      = require('winston');
+var should      = require('chai').should();
+var paths       = require(__dirname + '/../app/paths.js');
 
 function build_get_request(path) {
   return request(app)
@@ -12,9 +11,9 @@ function build_get_request(path) {
 
 describe('User clicks on Logout', function() {
   it('should get redirected to login page', function(done) {
-    build_get_request(logout_url)
+    build_get_request(paths.user.logOut)
       .expect(302, {})
-      .expect('Location', login_url)
+      .expect('Location', paths.user.logIn)
       .end(done);
   });
 });

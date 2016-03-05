@@ -1,20 +1,19 @@
-var request = require('supertest');
-var app = require(__dirname + '/../server.js').getApp;
-var winston = require('winston');
-var portfinder = require('portfinder');
-var nock = require('nock');
+var request     = require('supertest');
+var app         = require(__dirname + '/../server.js').getApp;
+var winston     = require('winston');
+var portfinder  = require('portfinder');
+var nock        = require('nock');
 var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
-var should = require('chai').should();
+var should      = require('chai').should();
+var paths       = require(__dirname + '/../app/paths.js');
 
 portfinder.getPort(function (err, freePort) {
   var ACCOUNT_ID = 182364;
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
-  var SELF_SERVICE_CREDENTIALS_PATH = "/selfservice/credentials";
-  var SELF_SERVICE_EDIT_CREDENTIALS_PATH = "/selfservice/credentials?edit";
   var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});
   var localServer = 'http://localhost:' + freePort;
   var connectorMock = nock(localServer);
-  
+
   function build_get_request(path, cookieValue) {
     return request(app)
       .get(path)
@@ -32,10 +31,10 @@ portfinder.getPort(function (err, freePort) {
   }
 
   [
-    {'path':SELF_SERVICE_CREDENTIALS_PATH,
+    {'path':paths.credentials.index,
      'edit':false
     },
-    {'path':SELF_SERVICE_EDIT_CREDENTIALS_PATH,
+    {'path':paths.credentials.edit,
     'edit':true
     }
    ].forEach(function(testSetup) {
@@ -63,7 +62,7 @@ portfinder.getPort(function (err, freePort) {
            "payment_provider": "Sandbox",
            "credentials": {}
         };
-        
+
         if(testSetup.edit) expectedData.editMode = 'true';
 
         build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
@@ -83,7 +82,7 @@ portfinder.getPort(function (err, freePort) {
            "payment_provider": "Sandbox",
            "credentials": {}
         };
-        
+
         if(testSetup.edit) expectedData.editMode = 'true';
 
         build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
@@ -105,7 +104,7 @@ portfinder.getPort(function (err, freePort) {
              'username': 'a-username'
            }
         };
-        
+
         if(testSetup.edit) expectedData.editMode = 'true';
 
         build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
@@ -128,7 +127,7 @@ portfinder.getPort(function (err, freePort) {
               'merchant_id': 'a-merchant-id'
             }
         };
-        
+
         if(testSetup.edit) expectedData.editMode = 'true';
 
         build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
@@ -190,8 +189,8 @@ portfinder.getPort(function (err, freePort) {
 
 //    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
-    var expectedLocation = SELF_SERVICE_CREDENTIALS_PATH;
-    var path = SELF_SERVICE_CREDENTIALS_PATH;
+    var expectedLocation = paths.credentials.index;
+    var path = paths.credentials.index;
     build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
         .expect(303, {})
         .expect('Location', expectedLocation)
@@ -207,8 +206,8 @@ portfinder.getPort(function (err, freePort) {
       .reply(200, {});
 
     var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'};
-    var expectedLocation = SELF_SERVICE_CREDENTIALS_PATH;
-    var path = SELF_SERVICE_CREDENTIALS_PATH;
+    var expectedLocation = paths.credentials.index;
+    var path = paths.credentials.index;
     build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
         .expect(303, {})
         .expect('Location', expectedLocation)
@@ -226,7 +225,7 @@ portfinder.getPort(function (err, freePort) {
 
       var sendData = {'username': 'a-username', 'password': 'a-password'};
       var expectedData = {"message": "There is a problem with the payments platform"};
-      var path = SELF_SERVICE_CREDENTIALS_PATH;
+      var path = paths.credentials.index;
       build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
         .expect(200, expectedData)
         .end(done);
@@ -237,7 +236,7 @@ portfinder.getPort(function (err, freePort) {
 
       var sendData = {'username': 'a-username', 'password': 'a-password'};
       var expectedData = {"message": "There is a problem with the payments platform"};
-      var path = SELF_SERVICE_CREDENTIALS_PATH;
+      var path = paths.credentials.index;
       build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
         .expect(200, expectedData)
         .end(done);

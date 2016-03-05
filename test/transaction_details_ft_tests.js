@@ -1,16 +1,16 @@
-var request = require('supertest');
-var portfinder = require('portfinder');
-var nock = require('nock');
-var app = require(__dirname + '/../server.js').getApp;
+var request     = require('supertest');
+var portfinder  = require('portfinder');
+var nock        = require('nock');
+var app         = require(__dirname + '/../server.js').getApp;
 var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
-var winston = require('winston');
+var winston     = require('winston');
+var paths       = require(__dirname + '/../app/paths.js');
 
 portfinder.getPort(function (err, connectorPort) {
     var gatewayAccountId = 15486734;
     var chargeId = 452345;
     var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
     var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
-    var TRANSACTION_DETAILS_PATH = '/selfservice/transactions/{chargeId}';
 
     var localServer = 'http://localhost:' + connectorPort;
 
@@ -24,7 +24,7 @@ portfinder.getPort(function (err, connectorPort) {
 
     function when_getTransactionHistory(chargeId) {
         return request(app)
-            .get(TRANSACTION_DETAILS_PATH.replace('{chargeId}', chargeId))
+            .get(paths.generateRoute(paths.transactions.show,{chargeId: chargeId}))
             .set('Accept', 'application/json')
             .set('Cookie', ['session=' + AUTH_COOKIE_VALUE]);
     }
