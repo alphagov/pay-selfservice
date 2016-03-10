@@ -8,6 +8,7 @@ var clientSessions    = require("client-sessions");
 var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfServiceCookie;
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
+var proxy             = require(__dirname + '/app/utils/proxy.js');
 
 var port        = (process.env.PORT || 3000);
 var app         = express();
@@ -15,6 +16,7 @@ var app         = express();
 app.enable('trust proxy');
 app.use(clientSessions(selfServiceCookie()));
 
+proxy.use();
 if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
   customCertificate.use();
 }
