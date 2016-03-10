@@ -8,7 +8,7 @@ var clientSessions    = require("client-sessions");
 var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfServiceCookie;
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
-var proxy = require(__dirname + '/app/utils/proxy.js');
+var proxy             = require(__dirname + '/app/utils/proxy.js');
 
 var port        = (process.env.PORT || 3000);
 var app         = express();
