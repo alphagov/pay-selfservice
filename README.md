@@ -36,6 +36,10 @@ $ ./redirect.sh stop
 | AUTH0_CLIENT_SECRET         | X |      | auth0 password to use during single sign-on verifications |
 | NODE_TLS_REJECT_UNAUTHORIZED| X |   1  | indicating whether a server should automatically reject clients with invalid certificates. Only applies to servers with requestCert enabled |
 | SECURE_COOKIE_OFF           |   | false/undefined | To switch off generating secure cookies. Set this to `true` only if you are running self service in a `non HTTPS` environment. |
+| HTTP_PROXY_ENABLED          |   | false/undefined | To enable proxying outbound traffic of HTTP(S) requests. If set to `true` make sure to set the following 3 variables |
+| HTTP_PROXY                  |   |      | HTTP proxy url |
+| HTTPS_PROXY                 |   |      | HTTPS proxy url |
+| NO_PROXY                    |   |      | host:port(s) that need to be by passed by the proxy. Supports comma separated list |
 
 # authstub does not have a valid certificate
 NODE_TLS_REJECT_UNAUTHORIZED=0
