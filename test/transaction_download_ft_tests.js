@@ -1,18 +1,26 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 
+var express         = require('express');
 var request         = require('supertest');
 var portfinder      = require('portfinder');
 var nock            = require('nock');
-var app             = require(__dirname + '/../server.js').getApp;
-var auth_cookie     = require(__dirname + '/test_helpers/login_session.js');
+var _app             = require(__dirname + '/../server.js').getApp;
 var querystring     = require('querystring');
 var paths           = require(__dirname + '/../app/paths.js');
 var winston         = require('winston');
 
-portfinder.getPort(function (err, connectorPort) {
-    var gatewayAccountId = 651342;
-    var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
+var gatewayAccountId = 651342;
 
+var app = express();
+app.all("*", function (req, res, next) {
+  req.session = {passport: {user: {_json: {app_metadata: {account_id: gatewayAccountId}}}}};
+  next();
+});
+app.use(_app);
+
+portfinder.getPort(function (err, connectorPort) {
+
+    var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
     var localServer = 'http://localhost:' + connectorPort;
     var connectorMock = nock(localServer, {
         reqheaders: {
@@ -20,7 +28,6 @@ portfinder.getPort(function (err, connectorPort) {
         }
 
     });
-    var AUTH_COOKIE_VALUE = auth_cookie.create({passport: {user: {_json: {app_metadata: {account_id: gatewayAccountId}}}}});
 
     function connectorMock_responds(code, data, searchParameters) {
         var queryStr = '?';
@@ -35,8 +42,7 @@ portfinder.getPort(function (err, connectorPort) {
     function download_transaction_list(query) {
         return request(app)
             .get(paths.transactions.download + "?" + querystring.stringify(query))
-            .set('Accept', 'application/json')
-            .set('Cookie', ['session=' + AUTH_COOKIE_VALUE]);
+            .set('Accept', 'application/json');
     }
 
     describe('Transaction download endpoints', function () {

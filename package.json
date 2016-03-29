@@ -32,6 +32,7 @@
     "change-case": "^2.3.0",
     "client-sessions": ">= 0.3.1",
     "express": "4.13.1",
+    "express-session": "^1.13.0",
     "govuk-elements-sass": "1.1.1",
     "govuk_frontend_toolkit": "4.6.0",
     "grunt": "0.4.5",

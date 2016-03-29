@@ -1,32 +1,38 @@
-var request     = require('supertest');
-var app         = require(__dirname + '/../server.js').getApp;
+var express = require('express');
+var request = require('supertest');
+var _app         = require(__dirname + '/../server.js').getApp;
 var winston     = require('winston');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
-var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
 var should      = require('chai').should();
 var paths       = require(__dirname + '/../app/paths.js');
 
+var ACCOUNT_ID = 182364;
+
+var app = express();
+app.all("*", function (req, res, next) {
+  req.session = {passport: {user: {_json: {app_metadata: {account_id: ACCOUNT_ID}}}}};
+  next();
+});
+app.use(_app);
+
 portfinder.getPort(function (err, freePort) {
-  var ACCOUNT_ID = 182364;
+
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
-  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});
   var localServer = 'http://localhost:' + freePort;
   var connectorMock = nock(localServer);
 
-  function build_get_request(path, cookieValue) {
+  function build_get_request(path) {
     return request(app)
       .get(path)
-      .set('Accept', 'application/json')
-      .set('Cookie', cookieValue);
+      .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData, cookieValue) {
+  function build_form_post_request(path, sendData) {
     return request(app)
       .post(path)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Cookie', cookieValue)
       .send(sendData);
   }
 
@@ -65,7 +71,7 @@ portfinder.getPort(function (err, freePort) {
 
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, expectedData)
             .end(done);
       });
@@ -85,7 +91,7 @@ portfinder.getPort(function (err, freePort) {
 
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, expectedData)
             .end(done);
       });
@@ -107,7 +113,7 @@ portfinder.getPort(function (err, freePort) {
 
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, expectedData)
             .end(done);
       });
@@ -130,7 +136,7 @@ portfinder.getPort(function (err, freePort) {
 
         if(testSetup.edit) expectedData.editMode = 'true';
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, expectedData)
             .end(done);
       });
@@ -141,7 +147,7 @@ portfinder.getPort(function (err, freePort) {
             "message": "The gateway account id '"+ACCOUNT_ID+"' does not exist"
           });
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, {"message": "There is a problem with the payments platform"})
             .end(done);
       });
@@ -153,7 +159,7 @@ portfinder.getPort(function (err, freePort) {
             "message": "Some error in Connector"
           });
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, {"message": "There is a problem with the payments platform"})
             .end(done);
       });
@@ -161,7 +167,7 @@ portfinder.getPort(function (err, freePort) {
       it('should display an error if the connection to connector fails', function (done){
         // No connectorMock defined on purpose to mock a network failure
 
-        build_get_request(testSetup.path, ['session=' + AUTH_COOKIE_VALUE])
+        build_get_request(testSetup.path)
             .expect(200, {"message": "There is a problem with the payments platform"})
             .end(done);
       });
@@ -191,7 +197,7 @@ portfinder.getPort(function (err, freePort) {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
+    build_form_post_request(path, sendData)
         .expect(303, {})
         .expect('Location', expectedLocation)
         .end(done);
@@ -208,7 +214,7 @@ portfinder.getPort(function (err, freePort) {
     var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
+    build_form_post_request(path, sendData)
         .expect(303, {})
         .expect('Location', expectedLocation)
         .end(done);
@@ -226,7 +232,7 @@ portfinder.getPort(function (err, freePort) {
       var sendData = {'username': 'a-username', 'password': 'a-password'};
       var expectedData = {"message": "There is a problem with the payments platform"};
       var path = paths.credentials.index;
-      build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
+      build_form_post_request(path, sendData)
         .expect(200, expectedData)
         .end(done);
     });
@@ -237,7 +243,7 @@ portfinder.getPort(function (err, freePort) {
       var sendData = {'username': 'a-username', 'password': 'a-password'};
       var expectedData = {"message": "There is a problem with the payments platform"};
       var path = paths.credentials.index;
-      build_form_post_request(path, sendData, ['session=' + AUTH_COOKIE_VALUE])
+      build_form_post_request(path, sendData)
         .expect(200, expectedData)
         .end(done);
     });

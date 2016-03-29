@@ -4,8 +4,8 @@ var path              = require('path');
 var favicon           = require('serve-favicon');
 var router            = require(__dirname + '/app/routes.js');
 var bodyParser        = require('body-parser');
-var clientSessions    = require("client-sessions");
-var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfServiceCookie;
+var session           = require('express-session');
+var sessionCookie     = require(__dirname + '/app/utils/cookies.js').sessionCookie;
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
@@ -15,7 +15,7 @@ var port        = (process.env.PORT || 3000);
 var app         = express();
 
 app.enable('trust proxy');
-app.use(clientSessions(selfServiceCookie()));
+app.use(session(sessionCookie()));
 
 proxy.use();
 if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
