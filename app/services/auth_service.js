@@ -1,10 +1,10 @@
-var logger = require('winston');
-var clientSessions = require("client-sessions");
+var logger        = require('winston');
+var session       = require('express-session');
 var Auth0Strategy = require('passport-auth0');
-var passport = require('passport');
-var util = require('util');
+var passport      = require('passport');
+var util          = require('util');
 var sessionCookie = require(__dirname + '/../utils/cookies.js').sessionCookie;
-var paths = require(__dirname + '/../paths.js');
+var paths         = require(__dirname + '/../paths.js');
 
 
 var AUTH_STRATEGY_NAME = 'auth0';
@@ -68,7 +68,7 @@ var auth = module.exports = {
         app.use(passport.initialize());
         app.use(passport.session());
 
-        app.use(clientSessions(sessionCookie()));
+        app.use(session(sessionCookie()));
     },
 
     no_access: function(req, res, next) {
