@@ -59,6 +59,7 @@
     "readdir": "0.0.6",
     "request": "2.69.0",
     "serve-favicon": "~2.3.0",
+    "sinon": "^1.17.3",
     "winston": "^1.0.1"
   },
   "devDependencies": {

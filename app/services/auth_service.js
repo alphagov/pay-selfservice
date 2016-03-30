@@ -1,3 +1,4 @@
+"use strict";
 var logger        = require('winston');
 var session       = require('express-session');
 var Auth0Strategy = require('passport-auth0');
@@ -23,7 +24,12 @@ var AUTH_STRATEGY = new Auth0Strategy({
   }
 );
 
-var auth = module.exports = {
+var callbackToAuthenticate = function(req,res,next,auth_function) {
+  req.session.last_url = undefined;
+  return auth_function(req, res, next);
+};
+
+var auth = {
     enforce: function (req, res, next) {
         if (req.session.passport && req.session.passport.user) {
           if (auth.get_account_id(req)) {
@@ -48,9 +54,10 @@ var auth = module.exports = {
             successRedirect: req.session.last_url
           }
       );
-      req.session.last_url = undefined;
-      return authen_func(req, res, next);
+      return callbackToAuthenticate(req,res,next,authen_func)
     },
+
+    callbackToAuthenticate: callbackToAuthenticate,
 
     bind: function (app, override_strategy) {
         var strategy = override_strategy || AUTH_STRATEGY;
@@ -85,3 +92,5 @@ var auth = module.exports = {
       return user._json && user._json.app_metadata && user._json.app_metadata.account_id ? parseInt(user._json.app_metadata.account_id) : null;
     }
 };
+
+module.exports = auth;
