@@ -1,4 +1,3 @@
-var express     = require('express');
 var request     = require('supertest');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
@@ -6,19 +5,13 @@ var _app         = require(__dirname + '/../server.js').getApp;
 var dates       = require('../app/utils/dates.js');
 var winston     = require('winston');
 var paths       = require(__dirname + '/../app/paths.js');
-
+var session     = require(__dirname + '/test_helpers/mock_session.js');
 
 var CONNECTOR_DATE = "Wed Feb 10 2016 12:44:01 GMT+0000 (GMT)";
 var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
 var gatewayAccountId = 651342;
 
-var app = express();
-app.all("*", function (req, res, next) {
-  req.session = {passport: {user: {_json: {app_metadata: {account_id: gatewayAccountId}}}}};
-  next();
-});
-app.use(_app);
-
+var app = session.mockValidAccount(_app, gatewayAccountId);
 
 portfinder.getPort(function (err, connectorPort) {
 

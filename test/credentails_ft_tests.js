@@ -1,4 +1,3 @@
-var express = require('express');
 var request = require('supertest');
 var _app         = require(__dirname + '/../server.js').getApp;
 var winston     = require('winston');
@@ -6,15 +5,10 @@ var portfinder  = require('portfinder');
 var nock        = require('nock');
 var should      = require('chai').should();
 var paths       = require(__dirname + '/../app/paths.js');
-
+var session     = require(__dirname + '/test_helpers/mock_session.js');
 var ACCOUNT_ID = 182364;
 
-var app = express();
-app.all("*", function (req, res, next) {
-  req.session = {passport: {user: {_json: {app_metadata: {account_id: ACCOUNT_ID}}}}};
-  next();
-});
-app.use(_app);
+var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
 portfinder.getPort(function (err, freePort) {
 

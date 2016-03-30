@@ -7,24 +7,11 @@ process.env.SECURE_COOKIE_OFF = "true";
 process.env.COOKIE_MAX_AGE = "10800000";
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 
-
-var request = require('supertest');
-var auth = require(__dirname + '/../app/services/auth_service.js');
-var express = require('express');
-
-var paths = require(__dirname + '/../app/paths.js');
-
-var bindSession = function (app, sessionData) {
-  var proxyApp = express();
-  proxyApp.all("*", function (req, res, next) {
-    if (sessionData) {
-      req.session = sessionData;
-    }
-    next();
-  });
-  proxyApp.use(app);
-  return proxyApp;
-};
+var request     = require('supertest');
+var auth        = require(__dirname + '/../app/services/auth_service.js');
+var express     = require('express');
+var mockSession = require(__dirname + '/test_helpers/mock_session.js').mockSession;
+var paths       = require(__dirname + '/../app/paths.js');
 
 var valid_session = {
   passport: {
@@ -50,10 +37,7 @@ var session_no_account_id = {
 describe('An endpoint not protected', function () {
   var app = express();
   auth.bind(app);
-  var withNoSession = bindSession(app);
-  var withSession = function (sessionData) {
-    return bindSession(app, sessionData);
-  };
+  var withNoSession = mockSession(app);
 
   app.get('/unprotected', function (req, res) {
     res.send('Hello, World!');
@@ -68,7 +52,7 @@ describe('An endpoint not protected', function () {
   });
 
   it('allows access if authenticated', function (done) {
-    request(withSession(valid_session))
+    request(mockSession(app, valid_session))
       .get('/unprotected')
       .expect(200)
       .expect('Hello, World!')
@@ -79,10 +63,7 @@ describe('An endpoint not protected', function () {
 describe('An endpoint protected by auth.enforce', function () {
   var app = express();
   auth.bind(app);
-  var withNoSession = bindSession(app);
-  var withSession = function (sessionData) {
-    return bindSession(app, sessionData);
-  };
+  var withNoSession = mockSession(app);
 
   app.get('/protected', auth.enforce, function (req, res) {
     res.send('Hello, World!');
@@ -97,7 +78,7 @@ describe('An endpoint protected by auth.enforce', function () {
   });
 
   it('allows access if authenticated', function (done) {
-    request(withSession(valid_session))
+    request(mockSession(app, valid_session))
       .get('/protected')
       .expect(200)
       .expect('Hello, World!')
@@ -105,7 +86,7 @@ describe('An endpoint protected by auth.enforce', function () {
   });
 
   it('redirects to noaccess if no account_id', function (done) {
-    request(withSession(session_no_account_id))
+    request(mockSession(app, session_no_account_id))
       .get('/protected')
       .expect(302)
       .expect('Location', paths.user.noAccess)
@@ -113,7 +94,7 @@ describe('An endpoint protected by auth.enforce', function () {
   });
 
   it('allows access if authenticated', function (done) {
-    request(withSession(valid_session))
+    request(mockSession(app, valid_session))
       .get('/protected')
       .expect(200)
       .expect('Hello, World!')
@@ -121,7 +102,7 @@ describe('An endpoint protected by auth.enforce', function () {
   });
 
   it('redirects to noaccess if no account_id', function (done) {
-    request(withSession(session_no_account_id))
+    request(mockSession(app, session_no_account_id))
       .get('/protected')
       .expect(302)
       .expect('Location', paths.user.noAccess)
@@ -133,10 +114,7 @@ describe('An endpoint that enforces login', function (done) {
 
   var app = express();
   auth.bind(app);
-  var withNoSession = bindSession(app);
-  var withSession = function (sessionData) {
-    return bindSession(app, sessionData);
-  };
+  var withNoSession = mockSession(app);
 
   app.get(paths.user.logIn, auth.login);
 
@@ -147,15 +125,17 @@ describe('An endpoint that enforces login', function (done) {
       .expect('Location', /my.test.auth0/)
       .end(done);
   });
+
   it('redirects to auth0 if authenticated', function (done) {
-    request(withSession(valid_session))
+    request(mockSession(app, valid_session))
       .get(paths.user.logIn)
       .expect(302)
       .expect('Location', /my.test.auth0/)
       .end(done);
   });
+
   it('includes the callback url in the request', function (done) {
-    request(app)
+    request(withNoSession)
       .get('/login')
       .expect(302)
       .expect('Location', /redirect_uri=.*callback/)
@@ -167,9 +147,6 @@ describe('An endpoint that enforces login', function (done) {
 describe('An endpoint that handles callbacks', function (done) {
   var app = express();
   auth.bind(app);
-  var appWithSession = function (sessionData) {
-    return bindSession(app, sessionData);
-  };
 
   app.get('/return-to-me', auth.callback);
 
@@ -193,7 +170,7 @@ describe('An endpoint that handles callbacks', function (done) {
 
     auth.bind(app, new MockStrategy());
 
-    request(appWithSession(session_with_last_url))
+    request(mockSession(app, session_with_last_url))
       .get('/return-to-me')
       .expect(302)
       .expect('Location', '/my-protected-page')
