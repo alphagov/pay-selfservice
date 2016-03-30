@@ -112,29 +112,6 @@ describe('An endpoint protected by auth.enforce', function () {
       .end(done);
   });
 
-//  it('maintains url params of current url if not authed', function (done) {
-//    request(withNoSession)
-//      .get('/protected?foo=bar')
-//      .expect(302)
-//      //.expect(function (res) {
-//      //  //var session = res.session;
-//      //  //should.equal(session.last_url, '/protected?foo=bar');
-//      //})
-//      .end(done);
-//  });
-//});
-
-//  it('stores the current url in session if not authed', function(done) {
-//    request(app)
-//      .get('/protected')
-//      .expect(302)
-//      .expect(function (res) {
-//        var session = auth_cookie.decrypt(res);
-//        should.equal(session.last_url, '/protected');
-//      })
-//      .end(done);
-//  });
-
   it('allows access if authenticated', function (done) {
     request(withSession(valid_session))
       .get('/protected')
@@ -200,19 +177,6 @@ describe('An endpoint that handles callbacks', function (done) {
     last_url: '/my-protected-page'
   };
 
-  //it('unsets the last_url', function (done) {
-  //  request(app)
-  //    .get('/return-to-me')
-  //    .set('Cookie', session_with_last_url)
-  //    .expect(function (req) {
-  //      should.exist(req.headers['set-cookie']);
-  //
-  //      var session = auth_cookie.decrypt(req);
-  //      should.not.exist(session.last_url);
-  //    })
-  //    .end(done);
-  //});
-
   it('redirects to the last_url', function (done) {
     var Strategy = require('passport').Strategy, util = require('util');
 
@@ -226,7 +190,9 @@ describe('An endpoint that handles callbacks', function (done) {
         user: {name: 'Michael'}
       });
     };
+
     auth.bind(app, new MockStrategy());
+
     request(appWithSession(session_with_last_url))
       .get('/return-to-me')
       .expect(302)

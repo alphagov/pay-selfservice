@@ -67,12 +67,12 @@ describe('auth service', function () {
 
     it("should redirect to login if no passport info", function(done) {
       var invalid = _.cloneDeep(validRequest);
-      invalid.originalUrl ='/foo';
+      invalid.originalUrl ='/foo?user=random';
       delete invalid.session.passport;
       auth.enforce(invalid,response,next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.logIn));
-      expect(invalid.session.last_url).to.eq('/foo');
+      expect(invalid.session.last_url).to.eq('/foo?user=random');
       done();
     });
   });
