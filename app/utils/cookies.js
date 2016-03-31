@@ -1,22 +1,34 @@
 'use strict';
+var session = require('express-session')
+  , pg = require('pg')
+  , pgSession = require('connect-pg-simple')(session);
+
+var pgStore = new pgSession({
+  pg: pg,
+  tableName: 'user_sessions'
+});
 
 module.exports = function () {
 
   function sessionCookie() {
     checkEnv();
-    return {
+    var sessionConfig = {
       proxy: true,
       saveUninitialized: false,
-      resave: false,
+      resave: true,
       secret: process.env.SESSION_ENCRYPTION_KEY,
-      key: 'express.sessionID',
-      rolling: true,
+      rolling: true, //Force a session identifier cookie to be set on every response. expiration is reset to the original
       cookie: {
-        maxAge: parseInt(process.env.COOKIE_MAX_AGE), // it will expire after 3 hours
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE),
         httpOnly: true,
         secure: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
       }
     };
+    if (process.env.SESSION_IN_MEMORY !== "true") {
+      sessionConfig.store = pgStore;
+    }
+    return sessionConfig;
+
   }
 
   var checkEnv = function () {

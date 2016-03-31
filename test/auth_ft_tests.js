@@ -6,6 +6,7 @@ process.env.DISABLE_INTERNAL_HTTPS = "true"; // to support other unit tests
 process.env.SECURE_COOKIE_OFF = "true";
 process.env.COOKIE_MAX_AGE = "10800000";
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
+process.env.SESSION_IN_MEMORY = "true";
 
 var request     = require('supertest');
 var auth        = require(__dirname + '/../app/services/auth_service.js');
