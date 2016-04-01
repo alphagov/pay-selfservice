@@ -9,6 +9,7 @@ var selfServiceCookie = require(__dirname + '/app/utils/cookies.js').selfService
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
+var logger            = require('winston');
 
 var port        = (process.env.PORT || 3000);
 var app         = express();
@@ -19,6 +20,9 @@ app.use(clientSessions(selfServiceCookie()));
 proxy.use();
 if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
   customCertificate.use();
+}
+else {
+  logger.warn('DISABLE_INTERNAL_HTTPS is set.');
 }
 
 app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
