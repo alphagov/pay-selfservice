@@ -6,6 +6,7 @@ var expect = require('chai').expect;
 var nock   = require('nock');
 var auth   = require(__dirname + '/../../app/services/auth_service.js');
 var paths  = require(__dirname + '/../../app/paths.js');
+var proxyquire = require('proxyquire');
 
 describe('auth service', function () {
 
@@ -77,17 +78,19 @@ describe('auth service', function () {
     });
   });
 
-  // couldnt find a bettr way to test, really the whole file needs rewritten to
-  // use some DI
   describe('callback',function(){
     it("should unset the last url",function(done){
-      var passport = function(){};
-      passport.authenticate = function(){};
-      var authenticate = sinon.stub(passport,"authenticate");
+      var authCalled = false;
+      var authMock = proxyquire(__dirname + '/../../app/services/auth_service.js',{
+        'passport' : {
+          'authenticate': ()=> { return ()=> { authCalled = true;}; }
+        }
+      });
+
       var req = { session: {last_url: "foo" } };
-      auth.callbackToAuthenticate(req,response,next,passport.authenticate);
+      authMock.callback(req,response,next);
       expect(req.session.last_url).to.be.undefined;
-      expect(authenticate.calledOnce).to.be.true;
+      expect(authCalled).to.be.true;
       done();
     });
   });

@@ -24,11 +24,6 @@ var AUTH_STRATEGY = new Auth0Strategy({
   }
 );
 
-var callbackToAuthenticate = function (req, res, next, auth_function) {
-  req.session.last_url = undefined;
-  return auth_function(req, res, next);
-};
-
 var auth = {
   enforce: function (req, res, next) {
     if (req.session.passport && req.session.passport.user) {
@@ -47,17 +42,16 @@ var auth = {
   login: passport.authenticate(AUTH_STRATEGY_NAME, {session: true}),
 
   callback: function (req, res, next) {
-    var authen_func = passport.authenticate(
+    var auth_function = passport.authenticate(
       'auth0',
       {
         failureRedirect: paths.user.logIn,
         successRedirect: req.session.last_url
       }
     );
-    return callbackToAuthenticate(req, res, next, authen_func)
+    req.session.last_url = undefined;
+    return auth_function(req, res, next);
   },
-
-  callbackToAuthenticate: callbackToAuthenticate,
 
   bind: function (app, override_strategy) {
     var strategy = override_strategy || AUTH_STRATEGY;
