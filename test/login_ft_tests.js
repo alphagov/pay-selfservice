@@ -1,6 +1,5 @@
 var request     = require('supertest');
 var app         = require(__dirname + '/../server.js').getApp;
-var logger      = require('winston');
 var should      = require('chai').should();
 var paths       = require(__dirname + '/../app/paths.js');
 

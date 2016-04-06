@@ -1,41 +1,41 @@
 'use strict';
+var session = require('express-session')
+  , pg = require('pg')
+  , pgSession = require('connect-pg-simple')(session);
 
-/**
- * Constructs the cookie structure required by client-sessions.js
- * The property 'secureProxy:true' makes the cookie to be secured if 'X-Forwarded-Proto: https' header is present in request
- */
+var pgStore = new pgSession({
+  pg: pg,
+  tableName: 'user_sessions'
+});
+
 module.exports = function () {
 
-  function namedCookie(name) {
-    return {
-      cookieName: name,
+  function sessionCookie() {
+    checkEnv();
+    var sessionConfig = {
       proxy: true,
+      saveUninitialized: false,
+      resave: false,
       secret: process.env.SESSION_ENCRYPTION_KEY,
       cookie: {
-        maxAge: parseInt(process.env.COOKIE_MAX_AGE), // it will expire after 3 hours
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE),
         httpOnly: true,
-        secureProxy: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
+        secure: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
       }
     };
+    if (process.env.SESSION_IN_MEMORY !== "true") {
+      sessionConfig.store = pgStore;
+    }
+    return sessionConfig;
+
   }
 
-  var selfServiceCookie = function () {
-    checkEnv();
-    return namedCookie('selfservice_state');
-  };
-
-  var sessionCookie = function () {
-    checkEnv();
-    return namedCookie('session');
-  };
-
-  var checkEnv = function(){
+  var checkEnv = function () {
     if (process.env.SESSION_ENCRYPTION_KEY === undefined) throw new Error('cookie encryption key is not set');
     if (process.env.COOKIE_MAX_AGE === undefined) throw new Error('cookie max age is not set');
-  }
+  };
 
   return {
-    selfServiceCookie: selfServiceCookie,
     sessionCookie: sessionCookie
   }
 
