@@ -15,9 +15,8 @@ module.exports = function () {
     var sessionConfig = {
       proxy: true,
       saveUninitialized: false,
-      resave: true,
+      resave: false,
       secret: process.env.SESSION_ENCRYPTION_KEY,
-      rolling: false, 
       cookie: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE),
         httpOnly: true,
