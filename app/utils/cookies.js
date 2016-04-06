@@ -17,7 +17,7 @@ module.exports = function () {
       saveUninitialized: false,
       resave: true,
       secret: process.env.SESSION_ENCRYPTION_KEY,
-      rolling: true, //Force a session identifier cookie to be set on every response. expiration is reset to the original
+      rolling: false, 
       cookie: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE),
         httpOnly: true,
