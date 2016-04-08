@@ -1,22 +1,46 @@
 'use strict';
+var Sequelize = require('sequelize'),
+  session = require('express-session'),
+  uuid = require('uuid'),
+  SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+var sqlize = new Sequelize(
+  process.env.DATABASE_NAME,
+  process.env.DATABASE_USER,
+  process.env.DATABASE_PASSWORD, {
+    "dialect": "postgres",
+    "host":  process.env.DATABASE_HOST,
+    "port": process.env.DATABASE_PORT
+  });
+
+var sqlizeStore = new SequelizeStore({
+  db: sqlize
+});
 
 module.exports = function () {
 
-  function sessionCookie() {
+  function selfServiceSession() {
     checkEnv();
-    return {
+    var sessionConfig = {
+      genid: function (req) {
+        return uuid.v4();
+      },
+      name: 'selfservice_state',
       proxy: true,
-      saveUninitialized: false,
+      saveUninitialized: true,
       resave: false,
       secret: process.env.SESSION_ENCRYPTION_KEY,
-      key: 'express.sessionID',
-      rolling: true,
       cookie: {
-        maxAge: parseInt(process.env.COOKIE_MAX_AGE), // it will expire after 3 hours
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE),
         httpOnly: true,
-        secure: (process.env.SECURE_COOKIE_OFF !== "true") // default is true, only false if the env variable present
+        secure: (process.env.SECURE_COOKIE_OFF !== "true")
       }
     };
+    if (process.env.SESSION_IN_MEMORY !== "true") {
+      //sqlizeStore.sync();
+      sessionConfig.store = sqlizeStore;
+    }
+    return sessionConfig;
   }
 
   var checkEnv = function () {
@@ -25,7 +49,7 @@ module.exports = function () {
   };
 
   return {
-    sessionCookie: sessionCookie
+    sessionCookie: selfServiceSession
   }
 
 }();
