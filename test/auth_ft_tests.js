@@ -1,4 +1,4 @@
-// THESE ARE HERE TO SET GLOBAL ENV VARIABLES
+//// THESE ARE HERE TO SET GLOBAL ENV VARIABLES
 process.env.AUTH0_URL = 'my.test.auth0';
 process.env.AUTH0_CLIENT_ID = 'client12345';
 process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
@@ -8,8 +8,10 @@ process.env.COOKIE_MAX_AGE = "10800000";
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 process.env.SESSION_IN_MEMORY = "true";
 
+var realApp         = require(__dirname + '/../server.js').getApp;
 var request     = require('supertest');
 var auth        = require(__dirname + '/../app/services/auth_service.js');
+var session     = require('express-session');
 var express     = require('express');
 var mockSession = require(__dirname + '/test_helpers/mock_session.js').mockSession;
 var paths       = require(__dirname + '/../app/paths.js');
@@ -146,10 +148,6 @@ describe('An endpoint that enforces login', function (done) {
 });
 
 describe('An endpoint that handles callbacks', function (done) {
-  var app = express();
-  auth.bind(app);
-
-  app.get('/return-to-me', auth.callback);
 
   var session_with_last_url = {
     last_url: '/my-protected-page'
@@ -169,10 +167,10 @@ describe('An endpoint that handles callbacks', function (done) {
       });
     };
 
-    auth.bind(app, new MockStrategy());
+    auth.bind(realApp, new MockStrategy());
 
-    request(mockSession(app, session_with_last_url))
-      .get('/return-to-me')
+    request(mockSession(realApp, session_with_last_url))
+      .get(paths.user.callback)
       .expect(302)
       .expect('Location', '/my-protected-page')
       .end(done);

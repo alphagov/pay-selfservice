@@ -6,7 +6,17 @@ module.exports = function () {
   var mockSession = function (app, sessionData) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
-      req.session = sessionData;
+      req.session = sessionData || {};
+      req.session.reload = function (next) {
+        next();
+      };
+      req.session.save = function (next) {
+        next();
+      };
+      req.session.destroy = function (sessionId, next) {
+        next();
+      };
+
       next();
     });
     proxyApp.use(app);

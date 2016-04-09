@@ -2,6 +2,9 @@ var request     = require('supertest');
 var app         = require(__dirname + '/../server.js').getApp;
 var should      = require('chai').should();
 var paths       = require(__dirname + '/../app/paths.js');
+var session     = require(__dirname + '/test_helpers/mock_session.js');
+
+var app = session.mockValidAccount(app, '12345');
 
 function build_get_request(path) {
   return request(app)

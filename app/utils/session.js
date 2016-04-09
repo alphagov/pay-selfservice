@@ -1,33 +1,41 @@
 'use strict';
-var Sequelize = require('sequelize'),
-  session = require('express-session'),
-  uuid = require('uuid'),
+const session = require('express-session'),
+  Sequelize = require('sequelize'),
   SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-var sqlize = new Sequelize(
+const sqlize = new Sequelize(
   process.env.DATABASE_NAME,
   process.env.DATABASE_USER,
   process.env.DATABASE_PASSWORD, {
     "dialect": "postgres",
-    "host":  process.env.DATABASE_HOST,
-    "port": process.env.DATABASE_PORT
+    "host": process.env.DATABASE_HOST,
+    "port": process.env.DATABASE_PORT,
+    "logging": false
   });
 
-var sqlizeStore = new SequelizeStore({
-  db: sqlize
-});
-
 module.exports = function () {
+
+  var store;
+
+  function getStore() {
+    if (store) {
+      return store;
+    }
+    store = new SequelizeStore({
+      db: sqlize,
+      checkExpirationInterval: 2 * 60 * 1000, //cleaning up expired sessions every 2 minute in db
+      expiration: process.env.COOKIE_MAX_AGE
+    });
+    store.sync();
+    return store;
+  }
 
   function selfServiceSession() {
     checkEnv();
     var sessionConfig = {
-      genid: function (req) {
-        return uuid.v4();
-      },
       name: 'selfservice_state',
       proxy: true,
-      saveUninitialized: true,
+      saveUninitialized: false,
       resave: false,
       secret: process.env.SESSION_ENCRYPTION_KEY,
       cookie: {
@@ -37,8 +45,7 @@ module.exports = function () {
       }
     };
     if (process.env.SESSION_IN_MEMORY !== "true") {
-      //sqlizeStore.sync();
-      sessionConfig.store = sqlizeStore;
+      sessionConfig.store = getStore();
     }
     return sessionConfig;
   }
@@ -49,7 +56,7 @@ module.exports = function () {
   };
 
   return {
-    sessionCookie: selfServiceSession
+    selfServiceSession: selfServiceSession
   }
 
 }();
