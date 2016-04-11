@@ -3,7 +3,7 @@ const session = require('express-session'),
   Sequelize = require('sequelize'),
   SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-const sqlize = new Sequelize(
+const sequelizeConfig = new Sequelize(
   process.env.DATABASE_NAME,
   process.env.DATABASE_USER,
   process.env.DATABASE_PASSWORD, {
@@ -14,21 +14,6 @@ const sqlize = new Sequelize(
   });
 
 module.exports = function () {
-
-  var store;
-
-  function getStore() {
-    if (store) {
-      return store;
-    }
-    store = new SequelizeStore({
-      db: sqlize,
-      checkExpirationInterval: 2 * 60 * 1000, //cleaning up expired sessions every 2 minute in db
-      expiration: process.env.COOKIE_MAX_AGE
-    });
-    store.sync();
-    return store;
-  }
 
   function selfServiceSession() {
     checkEnv();
@@ -44,9 +29,17 @@ module.exports = function () {
         secure: (process.env.SECURE_COOKIE_OFF !== "true")
       }
     };
+
     if (process.env.SESSION_IN_MEMORY !== "true") {
-      sessionConfig.store = getStore();
+      var store = new SequelizeStore({
+        db: sequelizeConfig,
+        checkExpirationInterval: 2 * 60 * 1000, //cleaning up expired sessions every 2 minute in db
+        expiration: process.env.COOKIE_MAX_AGE
+      });
+      store.sync();
+      sessionConfig.store = store;
     }
+
     return sessionConfig;
   }
 
