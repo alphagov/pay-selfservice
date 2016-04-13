@@ -4,9 +4,13 @@ var session = require('express-session');
 var Auth0Strategy = require('passport-auth0');
 var passport = require('passport');
 var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
-var util = require('util');
 var paths = require(__dirname + '/../paths.js');
 
+var logIfError = function(scenario, err) {
+  if (err) {
+    logger.warn(scenario + ' [' + err + ']');
+  }
+};
 
 var AUTH_STRATEGY_NAME = 'auth0';
 var AUTH_STRATEGY = new Auth0Strategy({
@@ -27,6 +31,8 @@ var AUTH_STRATEGY = new Auth0Strategy({
 var auth = {
   enforce: function (req, res, next) {
     req.session.reload(function (err) {
+      logIfError('enforce reload',err);
+
       if (req.session.passport && req.session.passport.user) {
         if (auth.get_account_id(req)) {
           next();

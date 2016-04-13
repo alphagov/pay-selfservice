@@ -86,7 +86,6 @@ module.exports.create = function(req, res) {
 
 module.exports.update = function(req, res) {
     logger.info('PUT ' + router.paths.devTokens.index);
-    console.log('update');
     // this does not need to be explicitly tied down to account_id
     // right now because the UUID space is big enough that no-one
     // will be able to discover other peoples' tokens to change them
