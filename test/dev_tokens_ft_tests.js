@@ -1,43 +1,40 @@
-var request = require('supertest');
-var app = require(__dirname + '/../server.js').getApp;
-var winston = require('winston');
-var portfinder = require('portfinder');
-var nock = require('nock');
-var cookie = require(__dirname + '/test_helpers/session.js');
-var should = require('chai').should();
-var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
-var paths = require(__dirname + '/../app/paths.js');
+var request      = require('supertest');
+var _app         = require(__dirname + '/../server.js').getApp;
+var winston      = require('winston');
+var portfinder   = require('portfinder');
+var nock         = require('nock');
+var should       = require('chai').should();
+var paths        = require(__dirname + '/../app/paths.js');
+var session      = require(__dirname + '/test_helpers/mock_session.js');
 
 var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
-var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:ACCOUNT_ID}}}}});
+
+var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
 portfinder.getPort(function(err, freePort) {
   var localServer = 'http://localhost:' + freePort;
   var serverMock = nock(localServer);
 
-  function build_get_request(path, cookieValue) {
+  function build_get_request(path) {
     return request(app)
       .get(path)
-      .set('Accept', 'application/json')
-      .set('Cookie', cookieValue);
+      .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData, cookieValue) {
+  function build_form_post_request(path, sendData) {
     return request(app)
       .post(path)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Cookie', cookieValue)
       .send(sendData);
   }
 
-  function build_put_request(path, data, cookieValue) {
+  function build_put_request() {
      return request(app)
         .put(paths.devTokens.index)
-        .set('Cookie', cookieValue)
         .set('Accept', 'application/json')
         .send({'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': "token description"});
   }
@@ -64,17 +61,11 @@ portfinder.getPort(function(err, freePort) {
                 "account_id": ACCOUNT_ID
             });
 
-          build_get_request(paths.devTokens.index, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(paths.devTokens.index)
             .expect(200, {
               "active_tokens": [],
               "active_tokens_singular": false,
               "revoked_tokens": [],
-            })
-            .expect(function(res) {
-                should.not.exist(res.headers['set-cookie']);
-                var session = cookie.decrypt(res);
-                should.not.exist(session.token);
-                should.not.exist(session.description);
             })
             .end(done);
         });
@@ -89,17 +80,11 @@ portfinder.getPort(function(err, freePort) {
                 "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}]
             });
 
-          build_get_request(paths.devTokens.index, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(paths.devTokens.index)
             .expect(200, {
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
               "active_tokens_singular": true,
               "revoked_tokens": [],
-            })
-            .expect(function(res) {
-                should.not.exist(res.headers['set-cookie']);
-                var session = cookie.decrypt(res);
-                should.not.exist(session.token);
-                should.not.exist(session.description);
             })
             .end(done);
         });
@@ -114,18 +99,12 @@ portfinder.getPort(function(err, freePort) {
                            {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
             });
 
-          build_get_request(paths.devTokens.index, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(paths.devTokens.index)
             .expect(200, {
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                          {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
               "active_tokens_singular": false,
               "revoked_tokens": [],
-            })
-            .expect(function(res) {
-                should.not.exist(res.headers['set-cookie']);
-                var session = cookie.decrypt(res);
-                should.not.exist(session.token);
-                should.not.exist(session.description);
             })
             .end(done);
         });
@@ -140,17 +119,11 @@ portfinder.getPort(function(err, freePort) {
                            {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}]
             });
 
-          build_get_request(paths.devTokens.index, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(paths.devTokens.index)
             .expect(200, {
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
               "active_tokens_singular": true,
               "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
-            })
-            .expect(function(res) {
-                should.not.exist(res.headers['set-cookie']);
-                var session = cookie.decrypt(res);
-                should.not.exist(session.token);
-                should.not.exist(session.description);
             })
             .end(done);
         });
@@ -165,17 +138,11 @@ portfinder.getPort(function(err, freePort) {
                            {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}]
             });
 
-          build_get_request(paths.devTokens.index, ['session=' + AUTH_COOKIE_VALUE])
+          build_get_request(paths.devTokens.index)
             .expect(200, {
               "active_tokens": [],
               "active_tokens_singular": false,
               "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}, {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}],
-            })
-            .expect(function(res) {
-                should.not.exist(res.headers['set-cookie']);
-                var session = cookie.decrypt(res);
-                should.not.exist(session.token);
-                should.not.exist(session.description);
             })
             .end(done);
         });
@@ -189,7 +156,7 @@ portfinder.getPort(function(err, freePort) {
             "description": "token description"
           });
 
-          build_put_request(paths.devTokens.index, {'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': "token description"}, ['session=' + AUTH_COOKIE_VALUE])
+          build_put_request()
             .expect(200, {
               'token_link': '550e8400-e29b-41d4-a716-446655440000',
               'description': "token description"
@@ -203,7 +170,7 @@ portfinder.getPort(function(err, freePort) {
             "description": "token description"
           }).reply(400, {});
 
-          build_put_request(paths.devTokens.index, {'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': "token description"}, ['session=' + AUTH_COOKIE_VALUE])
+          build_put_request()
             .expect(400, {})
             .end(done);
 
@@ -211,7 +178,7 @@ portfinder.getPort(function(err, freePort) {
 
         it('should send 500 if any error happens while updating the resource', function (done){
           // No serverMock defined on purpose to mock a network failure
-          build_put_request(paths.devTokens.index, {'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': "token description"}, ['session=' + AUTH_COOKIE_VALUE])
+          build_put_request()
             .expect(500, {})
             .end(done);
         });
@@ -224,7 +191,6 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
             .expect(200, {"revoked": "15 Oct 2015"})
             .end(done);
 
@@ -237,7 +203,6 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
             .expect(400, {})
             .end(done);
         });
@@ -248,7 +213,6 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index)
-            .set('Cookie', ['session=' + AUTH_COOKIE_VALUE])
             .send({
               'token_link': '550e8400-e29b-41d4-a716-446655440000'
             })
@@ -263,15 +227,9 @@ portfinder.getPort(function(err, freePort) {
          it('should fail if the account does not exist for a GET', function (done){
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
 
-            build_get_request(paths.devTokens.show, ['session=' + AUTH_COOKIE_VALUE])
+            build_get_request(paths.devTokens.show)
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
-              })
-              .expect(function(res) {
-                  should.not.exist(res.headers['set-cookie']);
-                  var session = cookie.decrypt(res);
-                  should.not.exist(session.token);
-                  should.not.exist(session.description);
               })
               .end(done);
 
@@ -280,15 +238,9 @@ portfinder.getPort(function(err, freePort) {
           it('should only return the account_id', function (done){
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
-            build_get_request(paths.devTokens.show, ['session=' + AUTH_COOKIE_VALUE])
+            build_get_request(paths.devTokens.show)
               .expect(200, {
                 'account_id': ACCOUNT_ID
-              })
-              .expect(function(res) {
-                  should.not.exist(res.headers['set-cookie']);
-                  var session = cookie.decrypt(res);
-                  should.not.exist(session.token);
-                  should.not.exist(session.description);
               })
               .end(done);
           });
@@ -301,82 +253,21 @@ portfinder.getPort(function(err, freePort) {
               "description": "description"
             }).reply(200, {"token": TOKEN });
 
-            build_form_post_request(paths.devTokens.create, {'description': "description"}, ['session=' + AUTH_COOKIE_VALUE])
+            build_form_post_request(paths.devTokens.create)
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
-              })
-              .expect(function(res) {
-                  should.not.exist(res.headers['set-cookie']);
-                  var session = cookie.decrypt(res);
-                  should.not.exist(session.token);
-                  should.not.exist(session.description);
               })
               .end(done);
 
           });
 
-          it('should redirect the user and place the new token in the session', function (done){
+          it('should return the account_id', function (done){
 
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
-            serverMock.post(PUBLIC_AUTH_PATH, {
-              "account_id": ACCOUNT_ID,
-              "description": "description"
-            }).reply(200, {"token": TOKEN });
-
-            build_form_post_request(paths.devTokens.create, {'description': "description"}, ['session=' + AUTH_COOKIE_VALUE])
-               .expect(303, {})
-               .expect(function(res) {
-                  should.exist(res.headers['set-cookie']);
-                  var session = cookie.decrypt(res);
-                  should.equal(session.token, TOKEN);
-                  should.equal(session.description, "description");
-                })
-               .expect('Location', paths.devTokens.show)
-               .end(done);
-          });
-
-          it('should fail when posting if there is already a token in the session', function (done){
-
-            serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
-
-            serverMock.post(PUBLIC_AUTH_PATH, {
-              "account_id": ACCOUNT_ID,
-              "description": "description"
-            }).reply(200, {"token": TOKEN });
-
-            build_form_post_request(paths.devTokens.create, {'description': "description"}, ['session=' + AUTH_COOKIE_VALUE+'; selfservice_state=' + cookie.create(TOKEN)])
-              .send({
-                  'accountId': ACCOUNT_ID,
-                  'description': "description"
-               })
-               .expect(200, {
-                  'message' : 'There is a problem with the payments platform'
-               })
-               .expect(function(res) {
-                  should.exist(res.headers['set-cookie']);
-                  var session = cookie.decrypt(res);
-                  should.not.exist(session.token);
-                  should.not.exist(session.description);
-               })
-               .end(done);
-          });
-
-          it('should return the account_id and the new token if the token is in the session, and then clear the session', function (done){
-
-            serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
-
-            build_get_request(paths.devTokens.show, ['session=' + AUTH_COOKIE_VALUE+'; selfservice_state=' + cookie.create(TOKEN)])
+            build_get_request(paths.devTokens.show)
               .expect(200, {
-                'account_id': ACCOUNT_ID,
-                'token': TOKEN,
-                'description': 'description'
-              })
-              .expect(function(res) {
-                  should.exist(res.headers['set-cookie']);
-                  var session = cookie.decrypt(res);
-                  should.not.exist(session.token);
-                  should.not.exist(session.description);
+                'account_id': ACCOUNT_ID
               })
               .end(done);
           });

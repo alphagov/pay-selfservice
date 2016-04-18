@@ -17,7 +17,7 @@ module.exports.index = function(req, res) {
 
   withValidAccountId(req, res, accountId, function(accountId, req, res) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
-    client.get(publicAuthUrl + "/" + accountId, function (publicAuthData, publicAuthResponse) {
+    client.get(publicAuthUrl + "/" + accountId, function (publicAuthData) {
       var tokens = publicAuthData.tokens || [],
           activeTokens = [],
           revokedTokens = [];
@@ -29,7 +29,7 @@ module.exports.index = function(req, res) {
       responsePayload = {
         'active_tokens': activeTokens,
         'active_tokens_singular': activeTokens.length == 1,
-        'revoked_tokens': revokedTokens,
+        'revoked_tokens': revokedTokens
       };
 
       response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
@@ -39,36 +39,21 @@ module.exports.index = function(req, res) {
     });
 
   });
-}
+};
 
 module.exports.show = function(req, res) {
   logger.info('GET ' + router.paths.devTokens.show);
   var accountId = auth.get_account_id(req);
 
   withValidAccountId(req, res, accountId, function(accountId, req, res) {
-    responsePayload = {'account_id': accountId};
-    var tokenInSession = req.selfservice_state.token;
-    if (tokenInSession) {
-      responsePayload.token = tokenInSession;
-      responsePayload.description = req.selfservice_state.description;
-      delete req.selfservice_state.token;
-      delete req.selfservice_state.description;
-    }
-
-    response(req.headers.accept, res, TOKEN_GENERATE_VIEW, responsePayload);
+    response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
   });
-}
+};
 
 module.exports.create = function(req, res) {
   logger.info('POST ' + router.paths.devTokens.create);
   var accountId = auth.get_account_id(req);
 
-  if (req.selfservice_state.token) {
-    delete req.selfservice_state.token;
-    delete req.selfservice_state.description;
-    renderErrorView(req, res, ERROR_MESSAGE);
-    return;
-  }
 
   withValidAccountId(req, res, accountId, function(accountId, req, res) {
     var description = req.body.description;
@@ -82,14 +67,14 @@ module.exports.create = function(req, res) {
 
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
     client.post(publicAuthUrl, payload, function (publicAuthData, publicAuthResponse) {
-
-      if (publicAuthResponse.statusCode === 200) {
-        req.selfservice_state.token = publicAuthData.token;
-        req.selfservice_state.description = description;
-        res.redirect(303, router.paths.devTokens.show);
-        return;
+      if (publicAuthResponse.statusCode !== 200) {
+        return renderErrorView(req, res, 'Error creating dev token for account ' + accountId);
       }
-      renderErrorView(req, res, 'Error creating dev token for account ' + accountId);
+
+      response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {
+        token: publicAuthData.token,
+        description: description
+      });
 
     }).on('error', function (err) {
       logger.error('Exception raised calling publicauth:' + err);
@@ -97,11 +82,10 @@ module.exports.create = function(req, res) {
     });
 
   });
-}
+};
 
 module.exports.update = function(req, res) {
     logger.info('PUT ' + router.paths.devTokens.index);
-
     // this does not need to be explicitly tied down to account_id
     // right now because the UUID space is big enough that no-one
     // will be able to discover other peoples' tokens to change them
@@ -130,7 +114,7 @@ module.exports.update = function(req, res) {
       logger.error('Exception raised calling publicauth:' + err);
       res.sendStatus(500);
     });
-}
+};
 
 module.exports.destroy = function(req, res) {
     logger.info('DELETE ' + router.paths.devTokens.index);
@@ -159,7 +143,7 @@ module.exports.destroy = function(req, res) {
       logger.error('Exception raised calling publicauth:' + err);
       res.sendStatus(500);
     });
-}
+};
 
 function withValidAccountId(req, res, accountId, callback) {
   var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}';
@@ -177,4 +161,4 @@ function withValidAccountId(req, res, accountId, callback) {
 
 
 module.exports.bindRoutesTo = function (app) {
-}
+};

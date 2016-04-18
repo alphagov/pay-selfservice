@@ -1,13 +1,17 @@
 var request     = require('supertest');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
-var app         = require(__dirname + '/../server.js').getApp;
-var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
+var _app        = require(__dirname + '/../server.js').getApp;
 var winston     = require('winston');
 var paths       = require(__dirname + '/../app/paths.js');
+var session     = require(__dirname + '/test_helpers/mock_session.js');
+
+var gatewayAccountId = 15486734;
+
+var app = session.mockValidAccount(_app, gatewayAccountId);
 
 portfinder.getPort(function (err, connectorPort) {
-    var gatewayAccountId = 15486734;
+
     var chargeId = 452345;
     var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
     var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
@@ -15,7 +19,6 @@ portfinder.getPort(function (err, connectorPort) {
     var localServer = 'http://localhost:' + connectorPort;
 
     var connectorMock = nock(localServer);
-    var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
 
     function connectorMock_responds(path, data) {
         return connectorMock.get(path)
@@ -25,8 +28,7 @@ portfinder.getPort(function (err, connectorPort) {
     function when_getTransactionHistory(chargeId) {
         return request(app)
             .get(paths.generateRoute(paths.transactions.show,{chargeId: chargeId}))
-            .set('Accept', 'application/json')
-            .set('Cookie', ['session=' + AUTH_COOKIE_VALUE]);
+            .set('Accept', 'application/json');
     }
 
     function connectorChargePathFor(chargeId) {

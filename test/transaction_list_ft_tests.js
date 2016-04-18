@@ -1,26 +1,25 @@
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-
 var request     = require('supertest');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
-var app         = require(__dirname + '/../server.js').getApp;
+var _app         = require(__dirname + '/../server.js').getApp;
 var dates       = require('../app/utils/dates.js');
-var auth_cookie = require(__dirname + '/test_helpers/login_session.js');
 var winston     = require('winston');
 var paths       = require(__dirname + '/../app/paths.js');
-
+var session     = require(__dirname + '/test_helpers/mock_session.js');
 
 var CONNECTOR_DATE = "Wed Feb 10 2016 12:44:01 GMT+0000 (GMT)";
 var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
+var gatewayAccountId = 651342;
+
+var app = session.mockValidAccount(_app, gatewayAccountId);
 
 portfinder.getPort(function (err, connectorPort) {
-  var gatewayAccountId = 651342;
+
   var searchParameters= {};
   var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 
   var localServer = 'http://localhost:' + connectorPort;
   var connectorMock = nock(localServer);
-  var AUTH_COOKIE_VALUE = auth_cookie.create({passport:{user:{_json:{app_metadata:{account_id:gatewayAccountId}}}}});
 
   function connectorMock_responds(code, data, searchParameters) {
       var queryStr = '?';
@@ -35,8 +34,7 @@ portfinder.getPort(function (err, connectorPort) {
   function get_transaction_list() {
     return request(app)
       .get(paths.transactions.index)
-      .set('Accept', 'application/json')
-      .set('Cookie', ['session=' + AUTH_COOKIE_VALUE]);
+      .set('Accept', 'application/json');
   }
 
   describe('Transactions endpoints', function() {
