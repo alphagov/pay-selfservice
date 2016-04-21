@@ -8,6 +8,7 @@ var auth          = require('./services/auth_service.js');
 var querystring   = require('querystring');
 var _             = require('lodash');
 var paths         = require(__dirname + '/paths.js');
+var csrf          = require('./middleware/csrf.js');
 
 module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
@@ -28,31 +29,31 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
 
   var tr = paths.transactions;
-  app.get(tr.index, auth.enforce, transactions.transactionsIndex);
-  app.post(tr.index, auth.enforce, transactions.transactionsIndex);
-  app.get(tr.download, auth.enforce, transactions.transactionsDownload);
-  app.get(tr.show, auth.enforce, transactions.transactionsShow);
+  app.get(tr.index, csrf, auth.enforce, transactions.transactionsIndex);
+  app.post(tr.index , auth.enforce, transactions.transactionsIndex);
+  app.get(tr.download, csrf, auth.enforce, transactions.transactionsDownload);
+  app.get(tr.show, csrf, auth.enforce, transactions.transactionsShow);
 
   // CREDENTIALS
 
   var cred = paths.credentials;
-  app.get(cred.index, auth.enforce, credentials.index);
+  app.get(cred.index, csrf, auth.enforce, credentials.index);
   app.post(cred.index, auth.enforce, credentials.update);
 
   // LOGIN
 
   var user = paths.user;
-  app.get(user.logIn, auth.login, login.logIn);
-  app.get(user.logOut, login.logOut);
-  app.get(user.callback, auth.callback, login.callback);
-  app.get(user.loggedIn,  auth.enforce, login.loggedIn);
-  app.get(user.noAccess, auth.enforce, login.noAccess);
+  app.get(user.logIn, csrf, auth.login, login.logIn);
+  app.get(user.logOut, csrf, login.logOut);
+  app.get(user.callback, csrf, auth.callback, login.callback);
+  app.get(user.loggedIn, csrf, auth.enforce, login.loggedIn);
+  app.get(user.noAccess, csrf, auth.enforce, login.noAccess);
 
   // DEV TOKENS
 
   var dt = paths.devTokens;
-  app.get(dt.index, auth.enforce, devTokens.index);
-  app.get(dt.show, auth.enforce, devTokens.show);
+  app.get(dt.index, csrf, auth.enforce, devTokens.index);
+  app.get(dt.show, csrf, auth.enforce, devTokens.show);
   app.post(dt.create, auth.enforce, devTokens.create);
   app.put(dt.update, auth.enforce, devTokens.update);
   app.delete(dt.delete, auth.enforce, devTokens.destroy);

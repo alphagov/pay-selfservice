@@ -1,10 +1,12 @@
 "use strict";
-var logger = require('winston');
-var session = require('express-session');
+var logger        = require('winston');
+var session       = require('express-session');
 var Auth0Strategy = require('passport-auth0');
-var passport = require('passport');
+var passport      = require('passport');
+var paths         = require(__dirname + '/../paths.js');
+var csrf          = require('csrf');
 var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
-var paths = require(__dirname + '/../paths.js');
+
 
 var logIfError = function(scenario, err) {
   if (err) {
@@ -35,6 +37,7 @@ var auth = {
 
       if (req.session.passport && req.session.passport.user) {
         if (auth.get_account_id(req)) {
+          req.session.csrfSecret = csrf().secretSync()
           next();
         }
         else {

@@ -1,4 +1,4 @@
-var request = require('supertest');
+  var request = require('supertest');
 var _app         = require(__dirname + '/../server.js').getApp;
 var winston     = require('winston');
 var portfinder  = require('portfinder');
