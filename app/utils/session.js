@@ -13,7 +13,9 @@ const sequelizeConfig = new Sequelize(
     "dialect": "postgres",
     "host": process.env.DATABASE_HOST,
     "port": process.env.DATABASE_PORT,
-    "logging": false
+    "logging": false, 
+    "ssl": true,
+    "native": true
   });
 
 module.exports = function () {
