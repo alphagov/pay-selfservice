@@ -7,8 +7,16 @@ var request = require('request');
 var dates = require('../utils/dates.js');
 var querystring = require('querystring');
 
-var CHARGES_API_PATH = '/v1/api/accounts/{accountId}/charges';
+
+var ACCOUNTS_API_PATH = '/v1/api/accounts';
+var ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}';
+
+var CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges';
 var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
+
+var ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts';
+var ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}';
+var SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename';
 
 var CONTENT_TYPE_CSV = 'text/csv';
 
@@ -43,7 +51,7 @@ var createOnResponseEventHandler = function (self) {
 
         //
         // Necessary when streaming a response
-        // @See https://github.com/request/request/issues/1268
+        // @See https://github  .com/request/request/issues/1268
         //
         this.abort();
 
@@ -125,7 +133,7 @@ ConnectorClient.prototype.withGetCharge = function (gatewayAccountId, chargeId, 
 };
 
 /**
- * Retrives transaction history for a given charge Id that belongs to a gateway account Id.
+ * Retrieves transaction history for a given charge Id that belongs to a gateway account Id.
  * @param gatewayAccountId
  * @param chargeId
  * @param successCallback the callback to perform upon `200 OK` from connector along with history result set.
@@ -136,6 +144,36 @@ ConnectorClient.prototype.withChargeEvents = function (gatewayAccountId, chargeI
     logger.info('CONNECTOR GET ' + url);
     this.client(url, this.responseHandler(successCallback));
     return this;
+};
+
+/**
+ * Retrieves the service name for the given gateway account
+ * @param gatewayAccountId
+ */
+ConnectorClient.prototype.withGetAccountServiceName = function (gatewayAccountId, successCallback) {
+    var url = this._accountUrlFor(gatewayAccountId);
+    logger.info('CONNECTOR GET ' + url);
+    this.client(url, this.responseHandler(successCallback));
+    return this;
+};
+
+/**
+ * Updates the service name for to the given gateway account
+ * @param gatewayAccountId
+ */
+ConnectorClient.prototype.withPatchServiceName = function (gatewayAccountId, payload, successCallback) {
+    var url = this._serviceNameUrlFor(gatewayAccountId);
+    logger.info('CONNECTOR PUT ' + url);
+    this.client.patch({url: url, body: payload}, this.responseHandler(successCallback));
+    return this;
+};
+
+ConnectorClient.prototype._accountUrlFor = function (gatewayAccountId) {
+    return this.connectorUrl + ACCOUNT_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
+};
+
+ConnectorClient.prototype._serviceNameUrlFor = function (gatewayAccountId) {
+    return this.connectorUrl + SERVICE_NAME_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
 };
 
 ConnectorClient.prototype._chargeUrlFor = function (gatewayAccountId, chargeId) {
