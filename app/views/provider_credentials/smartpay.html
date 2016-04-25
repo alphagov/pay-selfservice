@@ -17,7 +17,7 @@
 
 {{#editMode}}
 <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
-
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
         <label class="form-label" for="username">Username</label>
         <input class="form-control" id="username" name="username" type="text" value="{{credentials.username}}">

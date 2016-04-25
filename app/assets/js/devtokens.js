@@ -31,6 +31,7 @@ $(document).ready(function(){
     var self = this,
         $container = getListItem(self),
         tokenLink = $container.attr('id'),
+        csrf = $container.attr('data-csrf'),
         newDescription = $container.find('.js-new-description').val();
 
     evt.preventDefault();
@@ -42,13 +43,11 @@ $(document).ready(function(){
         url: '/tokens',
         data: {
             'token_link': tokenLink,
-            'description': newDescription
+            'description': newDescription,
+            csrfToken: csrf
         },
-        dataType : 'json',
         success: function(responseData) {
-          $container.find('.js-old-description').text(newDescription);
-          toggleDescription.call(self, evt);
-          $container.addClass('yellow-fade');
+          $($container).replaceWith(responseData);
         },
         error: function(xhr, status) {
           $container.find('.form').addClass('error');
@@ -57,11 +56,12 @@ $(document).ready(function(){
   }
 
   function revokeToken(evt) {
-    var self = this,
-        $container = getListItem(self),
-        accountId = $('#accountId').text(),
-        tokenLink = $container.attr('id'),
-        deleteUrl = '/tokens/?token_link=' + tokenLink;
+    var self        = this,
+        $container  = getListItem(self),
+        accountId   = $('#accountId').text(),
+        tokenLink   = $container.attr('id'),
+        csrf        = $container.attr('data-csrf'),
+        deleteUrl   = '/tokens/?token_link=' + tokenLink;
 
     evt.preventDefault();
     $container.find('.error').removeClass('error');
@@ -70,6 +70,9 @@ $(document).ready(function(){
       type: 'DELETE',
       url: deleteUrl,
       dataType : 'json',
+      data: {
+        csrfToken: csrf
+      },
       success: function(responseData) {
         $container.find('.js-revoke-confirmation, .js-edit-controls').remove();
         $container.find('.js-revoke-confirmed').show();

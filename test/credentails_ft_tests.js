@@ -1,12 +1,13 @@
-  var request = require('supertest');
-var _app         = require(__dirname + '/../server.js').getApp;
+var request     = require('supertest');
+var _app        = require(__dirname + '/../server.js').getApp;
 var winston     = require('winston');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
+var csrf        = require('csrf');
 var should      = require('chai').should();
 var paths       = require(__dirname + '/../app/paths.js');
 var session     = require(__dirname + '/test_helpers/mock_session.js');
-var ACCOUNT_ID = 182364;
+var ACCOUNT_ID  = 182364;
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
@@ -22,7 +23,12 @@ portfinder.getPort(function (err, freePort) {
       .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData) {
+  function build_form_post_request(path, sendData, sendCSRF) {
+    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
+    if (sendCSRF) {
+      sendData.csrfToken = csrf().create('123');
+    }
+
     return request(app)
       .post(path)
       .set('Accept', 'application/json')
@@ -192,6 +198,7 @@ portfinder.getPort(function (err, freePort) {
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
     build_form_post_request(path, sendData)
+        .expect(function(res){ return console.log(res.body); })
         .expect(303, {})
         .expect('Location', expectedLocation)
         .end(done);
@@ -240,6 +247,23 @@ portfinder.getPort(function (err, freePort) {
       build_form_post_request(path, sendData)
         .expect(200, expectedData)
         .end(done);
+    });
+
+    it('fail if there is no csrf', function (done) {
+      connectorMock.put(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
+        "username": "a-username",
+        "password": "a-password"
+      })
+      .reply(200, {});
+
+
+//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
+    var sendData = {'username': 'a-username', 'password': 'a-password'};
+    var expectedLocation = paths.credentials.index;
+    var path = paths.credentials.index;
+    build_form_post_request(path, sendData,false)
+      .expect(200, { message: "There is a problem with the payments platform"})
+      .end(done);
     });
   });
 });

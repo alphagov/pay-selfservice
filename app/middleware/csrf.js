@@ -8,7 +8,6 @@ errorView   = require('../utils/response.js').renderErrorView;
 module.exports = function(req, res, next){
  var csrfToken  = req.body.csrfToken,
  session        = req.session;
-
   var init = function(){
     if (!sessionAvailable()) return showNoSession();
     if (!csrfValid()) return showCsrfInvalid();
@@ -29,6 +28,7 @@ module.exports = function(req, res, next){
   csrfValid = function(){
     if (!(req.route.methods.post || req.route.methods.put)) return true;
     if (!session.csrfTokens) session.csrfTokens = [];
+
 
     if(csrfUsed()) {
       logger.error('CSRF USED');

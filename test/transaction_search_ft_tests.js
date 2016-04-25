@@ -1,7 +1,8 @@
 var request     = require('supertest');
 var portfinder  = require('portfinder');
+var csrf        = require('csrf');
 var nock        = require('nock');
-var _app         = require(__dirname + '/../server.js').getApp;
+var _app        = require(__dirname + '/../server.js').getApp;
 var dates       = require('../app/utils/dates.js');
 var paths       = require(__dirname + '/../app/paths.js');
 var winston     = require('winston');
@@ -30,7 +31,12 @@ portfinder.getPort(function (err, connectorPort) {
       .reply(200, data);
   }
 
-  function search_transactions(data) {
+  function search_transactions(data, sendCSRF) {
+    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
+    if (sendCSRF) {
+      data.csrfToken = csrf().create('123');
+    }
+
     return request(app).post(paths.transactions.index)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -269,6 +275,23 @@ portfinder.getPort(function (err, connectorPort) {
                   .expect(function(res) {
                            res.body.results.should.eql(expectedData.results);
                    })
+                  .end(done);
+            });
+          it('should  not return if there is no csrf', function (done) {
+
+              var connectorData = {
+                'results': []
+              };
+
+              var data= {'reference': 'test'};
+              connectorMock_responds(connectorData, data);
+
+              var expectedData = {
+                'results': []
+              };
+
+              search_transactions(data,false)
+                  .expect(200, {message: "There is a problem with the payments platform"})
                   .end(done);
             });
 

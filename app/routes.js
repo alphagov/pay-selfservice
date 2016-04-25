@@ -30,7 +30,7 @@ module.exports.bind = function (app) {
 
   var tr = paths.transactions;
   app.get(tr.index, auth.enforce, csrf, transactions.transactionsIndex);
-  app.post(tr.index, auth.enforce, transactions.transactionsIndex);
+  app.post(tr.index, auth.enforce, csrf, transactions.transactionsIndex);
   app.get(tr.download, auth.enforce, csrf, transactions.transactionsDownload);
   app.get(tr.show, auth.enforce, csrf, transactions.transactionsShow);
 
@@ -38,7 +38,7 @@ module.exports.bind = function (app) {
 
   var cred = paths.credentials;
   app.get(cred.index, auth.enforce, csrf, credentials.index);
-  app.post(cred.index, auth.enforce, credentials.update);
+  app.post(cred.index, auth.enforce, csrf, credentials.update);
 
   // LOGIN
 
@@ -55,6 +55,6 @@ module.exports.bind = function (app) {
   app.get(dt.index, auth.enforce, csrf, devTokens.index);
   app.get(dt.show, auth.enforce, csrf, devTokens.show);
   app.post(dt.create, auth.enforce, csrf, devTokens.create);
-  app.put(dt.update, auth.enforce, devTokens.update);
-  app.delete(dt.delete, auth.enforce, devTokens.destroy);
+  app.put(dt.update, auth.enforce, csrf,  devTokens.update);
+  app.delete(dt.delete, auth.enforce, csrf, devTokens.destroy);
 };

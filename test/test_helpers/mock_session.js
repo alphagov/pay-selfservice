@@ -8,7 +8,6 @@ module.exports = function () {
     proxyApp.all("*", function (req, res, next) {
       req.session = sessionData || {};
       if (!noCSRF) req.session.csrfSecret = "123";
-
       req.session.reload = function (next) {
         next();
       };

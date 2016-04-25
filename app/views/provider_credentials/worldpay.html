@@ -20,7 +20,7 @@
 
 {{#editMode}}
 <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
-
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
         <label class="form-label" for="merchantId">Merchant ID</label>
         <input class="form-control" id="merchantId" name="merchantId" type="text" value="{{credentials.merchant_id}}">
