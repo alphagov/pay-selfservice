@@ -3,11 +3,11 @@ var express = require('express');
 
 module.exports = function () {
 
-  var mockSession = function (app, sessionData) {
+  var mockSession = function (app, sessionData,noCSRF) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       req.session = sessionData || {};
-      req.session.csrfSecret = "123"
+      if (!noCSRF) req.session.csrfSecret = "123";
 
       req.session.reload = function (next) {
         next();

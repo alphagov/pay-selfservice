@@ -1,5 +1,6 @@
 <div class="grid-row">
   <form class="form transactions-filter" method="post" action="{{search_path}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <fieldset>
       <div class="column-quarter">
         <label class="form-label" for="reference">

@@ -29,32 +29,32 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
 
   var tr = paths.transactions;
-  app.get(tr.index, csrf, auth.enforce, transactions.transactionsIndex);
-  app.post(tr.index , auth.enforce, transactions.transactionsIndex);
-  app.get(tr.download, csrf, auth.enforce, transactions.transactionsDownload);
-  app.get(tr.show, csrf, auth.enforce, transactions.transactionsShow);
+  app.get(tr.index, auth.enforce, csrf, transactions.transactionsIndex);
+  app.post(tr.index, auth.enforce, transactions.transactionsIndex);
+  app.get(tr.download, auth.enforce, csrf, transactions.transactionsDownload);
+  app.get(tr.show, auth.enforce, csrf, transactions.transactionsShow);
 
   // CREDENTIALS
 
   var cred = paths.credentials;
-  app.get(cred.index, csrf, auth.enforce, credentials.index);
+  app.get(cred.index, auth.enforce, csrf, credentials.index);
   app.post(cred.index, auth.enforce, credentials.update);
 
   // LOGIN
 
   var user = paths.user;
-  app.get(user.logIn, csrf, auth.login, login.logIn);
-  app.get(user.logOut, csrf, login.logOut);
-  app.get(user.callback, csrf, auth.callback, login.callback);
-  app.get(user.loggedIn, csrf, auth.enforce, login.loggedIn);
-  app.get(user.noAccess, csrf, auth.enforce, login.noAccess);
+  app.get(user.logIn, auth.login, login.logIn);
+  app.get(user.logOut, login.logOut);
+  app.get(user.callback, auth.callback, login.callback);
+  app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
+  app.get(user.noAccess, auth.enforce,  csrf, login.noAccess);
 
   // DEV TOKENS
 
   var dt = paths.devTokens;
-  app.get(dt.index, csrf, auth.enforce, devTokens.index);
-  app.get(dt.show, csrf, auth.enforce, devTokens.show);
-  app.post(dt.create, auth.enforce, devTokens.create);
+  app.get(dt.index, auth.enforce, csrf, devTokens.index);
+  app.get(dt.show, auth.enforce, csrf, devTokens.show);
+  app.post(dt.create, auth.enforce, csrf, devTokens.create);
   app.put(dt.update, auth.enforce, devTokens.update);
   app.delete(dt.delete, auth.enforce, devTokens.destroy);
 };

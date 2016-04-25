@@ -10,8 +10,8 @@ module.exports = function(req, res, next){
  session        = req.session;
 
   var init = function(){
-    // if (!sessionAvailable()) return showNoSession();
-    // if (!csrfValid()) return showCsrfInvalid();
+    if (!sessionAvailable()) return showNoSession();
+    if (!csrfValid()) return showCsrfInvalid();
 
     appendCsrf();
     next();

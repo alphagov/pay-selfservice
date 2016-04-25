@@ -32,12 +32,13 @@ var AUTH_STRATEGY = new Auth0Strategy({
 
 var auth = {
   enforce: function (req, res, next) {
+
     req.session.reload(function (err) {
       logIfError('enforce reload',err);
 
       if (req.session.passport && req.session.passport.user) {
         if (auth.get_account_id(req)) {
-          req.session.csrfSecret = csrf().secretSync()
+          if (!req.session.csrfSecret){ req.session.csrfSecret = csrf().secretSync(); console.log('created',req.session.csrfSecret) }
           next();
         }
         else {
@@ -57,6 +58,8 @@ var auth = {
   callback: passport.authenticate(AUTH_STRATEGY_NAME, {failureRedirect: paths.user.logIn}),
 
   bind: function (app, override_strategy) {
+    console.log('HIIIII');
+
     var strategy = override_strategy || AUTH_STRATEGY;
 
     passport.use(strategy);
