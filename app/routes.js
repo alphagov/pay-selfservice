@@ -47,7 +47,7 @@ module.exports.bind = function (app) {
   app.get(user.logOut, login.logOut);
   app.get(user.callback, auth.callback, login.callback);
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
-  app.get(user.noAccess, auth.enforce,  csrf, login.noAccess);
+  app.get(user.noAccess, auth.enforce, login.noAccess);
 
   // DEV TOKENS
 
