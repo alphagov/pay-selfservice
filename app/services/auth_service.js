@@ -1,10 +1,12 @@
 "use strict";
-var logger = require('winston');
-var session = require('express-session');
+var logger        = require('winston');
+var session       = require('express-session');
 var Auth0Strategy = require('passport-auth0');
-var passport = require('passport');
+var passport      = require('passport');
+var paths         = require(__dirname + '/../paths.js');
+var csrf          = require('csrf');
 var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
-var paths = require(__dirname + '/../paths.js');
+
 
 var logIfError = function(scenario, err) {
   if (err) {
@@ -30,11 +32,13 @@ var AUTH_STRATEGY = new Auth0Strategy({
 
 var auth = {
   enforce: function (req, res, next) {
+
     req.session.reload(function (err) {
       logIfError('enforce reload',err);
 
       if (req.session.passport && req.session.passport.user) {
         if (auth.get_account_id(req)) {
+          if (!req.session.csrfSecret){ req.session.csrfSecret = csrf().secretSync(); console.log('created',req.session.csrfSecret) }
           next();
         }
         else {
@@ -54,6 +58,7 @@ var auth = {
   callback: passport.authenticate(AUTH_STRATEGY_NAME, {failureRedirect: paths.user.logIn}),
 
   bind: function (app, override_strategy) {
+
     var strategy = override_strategy || AUTH_STRATEGY;
 
     passport.use(strategy);

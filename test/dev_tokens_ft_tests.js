@@ -3,6 +3,7 @@ var _app         = require(__dirname + '/../server.js').getApp;
 var winston      = require('winston');
 var portfinder   = require('portfinder');
 var nock         = require('nock');
+var csrf         = require('csrf');
 var should       = require('chai').should();
 var paths        = require(__dirname + '/../app/paths.js');
 var session      = require(__dirname + '/test_helpers/mock_session.js');
@@ -12,7 +13,9 @@ var TOKEN = '00112233';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app     = session.mockValidAccount(_app, ACCOUNT_ID);
+var nocsrf  = session.mockValidAccount(_app, ACCOUNT_ID,{noCSRF: true});
+
 
 portfinder.getPort(function(err, freePort) {
   var localServer = 'http://localhost:' + freePort;
@@ -24,7 +27,8 @@ portfinder.getPort(function(err, freePort) {
       .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData) {
+  function build_form_post_request(path, sendData,noCSRF) {
+    app = (noCSRF) ? nocsrf : app;
     return request(app)
       .post(path)
       .set('Accept', 'application/json')
@@ -32,11 +36,18 @@ portfinder.getPort(function(err, freePort) {
       .send(sendData);
   }
 
-  function build_put_request() {
+  function build_put_request(sendCSRF) {
+    var data = {};
+    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
+    if (sendCSRF) {
+      data.csrfToken = csrf().create('123');
+    }
+    data.token_link = '550e8400-e29b-41d4-a716-446655440000';
+    data.description = "token description";
      return request(app)
         .put(paths.devTokens.index)
         .set('Accept', 'application/json')
-        .send({'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': "token description"});
+        .send(data);
   }
 
   describe('Dev Tokens Endpoints', function() {
@@ -81,6 +92,10 @@ portfinder.getPort(function(err, freePort) {
             });
 
           build_get_request(paths.devTokens.index)
+          .expect(function(res){
+              if (!res.body.active_tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.active_tokens[0].csrfToken;
+            })
             .expect(200, {
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
               "active_tokens_singular": true,
@@ -100,6 +115,12 @@ portfinder.getPort(function(err, freePort) {
             });
 
           build_get_request(paths.devTokens.index)
+            .expect(function(res){
+              if (!res.body.active_tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.active_tokens[0].csrfToken;
+              if (!res.body.active_tokens[1].csrfToken)  throw new Error('no token');
+              delete res.body.active_tokens[1].csrfToken;
+            })
             .expect(200, {
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                          {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
@@ -120,6 +141,12 @@ portfinder.getPort(function(err, freePort) {
             });
 
           build_get_request(paths.devTokens.index)
+            .expect(function(res){
+              if (!res.body.active_tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.active_tokens[0].csrfToken;
+              if (!res.body.revoked_tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.revoked_tokens[0].csrfToken;
+            })
             .expect(200, {
               "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
               "active_tokens_singular": true,
@@ -139,6 +166,12 @@ portfinder.getPort(function(err, freePort) {
             });
 
           build_get_request(paths.devTokens.index)
+            .expect(function(res){
+              if (!res.body.revoked_tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.revoked_tokens[0].csrfToken;
+              if (!res.body.revoked_tokens[1].csrfToken)  throw new Error('no token');
+              delete res.body.revoked_tokens[1].csrfToken;
+            })
             .expect(200, {
               "active_tokens": [],
               "active_tokens_singular": false,
@@ -157,9 +190,29 @@ portfinder.getPort(function(err, freePort) {
           });
 
           build_put_request()
+            .expect(function(res){
+              if (!res.body.csrfToken)  throw new Error('no token');
+              delete res.body.csrfToken;
+            })
             .expect(200, {
               'token_link': '550e8400-e29b-41d4-a716-446655440000',
               'description': "token description"
+            })
+            .end(done);
+        });
+
+        it('should not update the description without csrf', function (done){
+          serverMock.put(PUBLIC_AUTH_PATH, {
+            "token_link": '550e8400-e29b-41d4-a716-446655440000',
+            "description": "token description"
+          }).reply(200, {
+            "token_link": '550e8400-e29b-41d4-a716-446655440000',
+            "description": "token description"
+          });
+
+          build_put_request(false)
+            .expect(200, {
+              'message': 'There is a problem with the payments platform'
             })
             .end(done);
         });
@@ -271,6 +324,23 @@ portfinder.getPort(function(err, freePort) {
               })
               .end(done);
           });
+
+          it('should fail if the csrf does not exist for the post', function (done){
+            serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+            serverMock.post(PUBLIC_AUTH_PATH, {
+              "account_id": ACCOUNT_ID,
+              "description": "description"
+            }).reply(200, {"token": TOKEN });
+
+            build_form_post_request(paths.devTokens.create,{},true)
+              .expect(200, {
+                 'message' : 'There is a problem with the payments platform'
+              })
+              .end(done);
+
+          });
+
 
       });
 

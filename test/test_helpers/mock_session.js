@@ -3,10 +3,11 @@ var express = require('express');
 
 module.exports = function () {
 
-  var mockSession = function (app, sessionData) {
+  var mockSession = function (app, sessionData,noCSRF) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       req.session = sessionData || {};
+      if (!noCSRF) req.session.csrfSecret = "123";
       req.session.reload = function (next) {
         next();
       };
@@ -17,6 +18,7 @@ module.exports = function () {
         next();
       };
 
+
       next();
     });
     proxyApp.use(app);
@@ -24,7 +26,7 @@ module.exports = function () {
   };
 
   var mockValidAccount = function (app, accountId) {
-    var validSession = {passport: {user: {_json: {app_metadata: {account_id: accountId}}}}};
+    var validSession = {csrfSecret: "123", passport: {user: {_json: {app_metadata: {account_id: accountId}}}}};
     return mockSession(app, validSession);
   };
 

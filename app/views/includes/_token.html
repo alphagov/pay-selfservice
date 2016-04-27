@@ -1,6 +1,6 @@
 <li
   id="{{token_link}}"
-  class="key-list-item js-{{^revoked}}active{{/revoked}}">
+  class="key-list-item js-{{^revoked}}active{{/revoked}}" data-csrf="{{ csrfToken }}">
   <div id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
   {{#revoked}}
     <div>Key was revoked on {{revoked}}.</div>

@@ -1,4 +1,5 @@
 var logger          = require('winston');
+var csrf            = require('csrf');
 var response        = require('../utils/response.js').response;
 var ERROR_MESSAGE   = require('../utils/response.js').ERROR_MESSAGE;
 var renderErrorView = require('../utils/response.js').renderErrorView;
@@ -23,9 +24,9 @@ module.exports.index = function(req, res) {
           revokedTokens = [];
 
       tokens.forEach(function(token) {
+        token.csrfToken = csrf().create(req.session.csrfSecret);
         token.revoked ? revokedTokens.push(token) : activeTokens.push(token);
       });
-
       responsePayload = {
         'active_tokens': activeTokens,
         'active_tokens_singular': activeTokens.length == 1,
@@ -105,11 +106,12 @@ module.exports.update = function(req, res) {
         res.sendStatus(responseStatusCode);
         return;
       }
-      res.setHeader('Content-Type', 'application/json');
-      res.json({
+      response(req.headers.accept, res, "includes/_token", {
         'token_link': publicAuthData.token_link,
-        'description': publicAuthData.description
+        'description': publicAuthData.description,
+        'csrfToken': csrf().create(req.session.csrfSecret)
       });
+
     }).on('error', function (err) {
       logger.error('Exception raised calling publicauth:' + err);
       res.sendStatus(500);

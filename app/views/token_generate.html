@@ -15,6 +15,7 @@ GOV.UK Pay - Generate API token
 {{^token}}
   <h2 class="heading-medium remove-top-margin">Generate a new API key</h2>
   <form class="form" method="post" action="{{routes.devTokens.create}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
       <label class="form-label-bold" for="description">
         Add a description for the key
