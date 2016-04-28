@@ -57,18 +57,19 @@ module.exports.update = function (req, res) {
   var requestPayload = {
     headers:{"Content-Type": "application/json"},
     data: {
-      username: req.body.username,
-      password: req.body.password
+      credentials: {
+        username: req.body.username,
+        password: req.body.password
+      }
     }
   };
 
   if('merchantId' in req.body) {
-    requestPayload.data.merchant_id = req.body.merchantId;
+    requestPayload.data.credentials.merchant_id = req.body.merchantId;
   }
 
   var connectorUrl = process.env.CONNECTOR_URL;
-  client.put(connectorUrl + "/v1/frontend/accounts/" + accountId, requestPayload, function (connectorData, connectorResponse) {
-
+  client.patch(connectorUrl + "/v1/frontend/accounts/" + accountId + "/credentials", requestPayload, function (connectorData, connectorResponse) {
     switch (connectorResponse.statusCode) {
       case 200:
         res.redirect(303, router.paths.credentials.index);

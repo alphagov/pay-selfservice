@@ -4,6 +4,7 @@ var transactions  = require('./controllers/transaction_controller.js');
 var credentials   = require('./controllers/credentials_controller.js');
 var login         = require('./controllers/login_controller.js');
 var devTokens     = require('./controllers/dev_tokens_controller.js');
+var serviceName   = require('./controllers/service_name_controller.js');
 var auth          = require('./services/auth_service.js');
 var querystring   = require('querystring');
 var _             = require('lodash');
@@ -57,4 +58,10 @@ module.exports.bind = function (app) {
   app.post(dt.create, auth.enforce, csrf, devTokens.create);
   app.put(dt.update, auth.enforce, csrf,  devTokens.update);
   app.delete(dt.delete, auth.enforce, csrf, devTokens.destroy);
+
+  // SERVICE NAME
+
+  var sn = paths.serviceName;
+  app.get(sn.index, auth.enforce, csrf, serviceName.index);
+  app.post(sn.index, auth.enforce, csrf, serviceName.update);
 };

@@ -13,7 +13,8 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
 portfinder.getPort(function (err, freePort) {
 
-  var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
+  var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
+  var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
   var localServer = 'http://localhost:' + freePort;
   var connectorMock = nock(localServer);
 
@@ -57,7 +58,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should display payment provider name in title case', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH)
+        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
           .reply(200, {
             "payment_provider": "sandbox",
             "gateway_account_id": "1",
@@ -77,7 +78,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should display empty credential values when no gateway credentials are set', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH)
+        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
           .reply(200, {
             "payment_provider": "sandbox",
             "gateway_account_id": "1",
@@ -97,7 +98,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should display received credentials from connector', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH)
+        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
           .reply(200, {
             "payment_provider": "sandbox",
             "gateway_account_id": "1",
@@ -119,7 +120,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should return the account', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH)
+        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
           .reply(200, {
             "payment_provider": "sandbox",
             "gateway_account_id": "1",
@@ -142,7 +143,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should display an error if the account does not exist', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH)
+        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
           .reply(404, {
             "message": "The gateway account id '"+ACCOUNT_ID+"' does not exist"
           });
@@ -154,7 +155,7 @@ portfinder.getPort(function (err, freePort) {
 
       it('should display an error if connector returns any other error', function (done) {
 
-        connectorMock.get(CONNECTOR_ACCOUNT_CREDENTIALS_PATH)
+        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
           .reply(999, {
             "message": "Some error in Connector"
           });
@@ -174,6 +175,7 @@ portfinder.getPort(function (err, freePort) {
     });
   });
 
+
   describe('The provider update credentials endpoint', function () {
     beforeEach(function () {
       process.env.CONNECTOR_URL = localServer;
@@ -186,9 +188,11 @@ portfinder.getPort(function (err, freePort) {
     });
 
     it('should send new username and password credentials to connector', function (done) {
-      connectorMock.put(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
-        "username": "a-username",
-        "password": "a-password"
+      connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
+        "credentials": {
+          "username": "a-username",
+          "password": "a-password"
+        }
       })
       .reply(200, {});
 
@@ -205,10 +209,12 @@ portfinder.getPort(function (err, freePort) {
     });
 
     it('should send any arbitrary credentials together with username and password to connector', function (done) {
-      connectorMock.put(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
-        "username": "a-username",
-        "password": "a-password",
-        "merchant_id": "a-merchant-id"
+      connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
+        "credentials": {
+          "username": "a-username",
+          "password": "a-password",
+          "merchant_id": "a-merchant-id"
+        }
       })
       .reply(200, {});
 
@@ -222,7 +228,7 @@ portfinder.getPort(function (err, freePort) {
     });
 
     it('should display an error if connector returns failure', function (done) {
-      connectorMock.put(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
+      connectorMock.patch(CONNECTOR_ACCOUNT_PATH, {
         "username": "a-username",
         "password": "a-password"
       })
@@ -250,7 +256,7 @@ portfinder.getPort(function (err, freePort) {
     });
 
     it('fail if there is no csrf', function (done) {
-      connectorMock.put(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
+      connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
         "username": "a-username",
         "password": "a-password"
       })
@@ -259,7 +265,6 @@ portfinder.getPort(function (err, freePort) {
 
 //    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
-    var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
     build_form_post_request(path, sendData,false)
       .expect(200, { message: "There is a problem with the payments platform"})
