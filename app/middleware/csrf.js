@@ -26,7 +26,7 @@ module.exports = function(req, res, next){
   },
 
   csrfValid = function(){
-    if (!(req.route.methods.post || req.route.methods.put)) return true;
+    if (req.route.methods.get) return true;
     if (!session.csrfTokens) session.csrfTokens = [];
 
 

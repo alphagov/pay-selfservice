@@ -244,9 +244,23 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .send({ csrfToken: csrf().create('123') })
             .expect(200, {"revoked": "15 Oct 2015"})
             .end(done);
 
+        });
+
+        it('should fail if no csrf', function (done){
+
+          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+            "token_link": '550e8400-e29b-41d4-a716-446655440000'
+          }).reply(200, {"revoked": "15 Oct 2015"});
+
+          request(app)
+            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .set('Accept', 'application/json')
+            .expect(200, {message: "There is a problem with the payments platform"})
+            .end(done);
         });
 
         it('should forward the error status code when revoking the token', function (done){
@@ -256,22 +270,24 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .send({ csrfToken: csrf().create('123') })
             .expect(400, {})
             .end(done);
         });
 
+
         it('should send 500 if any error happens while updating the resource', function (done){
 
           // No serverMock defined on purpose to mock a network failure
-
           request(app)
             .delete(paths.devTokens.index)
             .send({
-              'token_link': '550e8400-e29b-41d4-a716-446655440000'
+              token_link: '550e8400-e29b-41d4-a716-446655440000',
+              csrfToken: csrf().create('123')
+
             })
             .expect(500, {})
             .end(done);
-
         });
 
       });
