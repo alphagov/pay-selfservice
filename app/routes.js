@@ -20,6 +20,12 @@ module.exports.bind = function (app) {
     response(req.headers.accept, res, 'greeting', data);
   });
 
+  app.get('/healthcheck', function (req, res) {
+    var data = {'ping': {'healthy': true}};
+    res.writeHead(200, {"Content-Type": "application/json"});
+    res.end(JSON.stringify(data));
+  });
+
   app.get('/style-guide', function (req, res) {
     response(req.headers.accept, res, 'style_guide');
   });
