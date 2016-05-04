@@ -9,6 +9,7 @@ var session           = require('express-session');
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
+var dependenciesCheck = require(__dirname + '/app/utils/dependent_resource_checker.js');
 var logger            = require('winston');
 
 var port        = (process.env.PORT || 3000);
@@ -68,9 +69,18 @@ if (process.env.NODE_ENV !== 'production') {
 
 router.bind(app);
 
-app.listen(port);
-
-console.log('Listening on port ' + port);
-console.log('');
-
 module.exports.getApp = app;
+
+var applicationStartup = function() {
+  app.listen(port);
+  console.log('Listening on port ' + port);
+  console.log('');
+};
+
+if (process.env.NODE_ENV !== 'production') {
+  // startup application immediately on a non-production environment
+  applicationStartup();  
+} else {
+  console.log("Checking Dependent resources before startup....");
+  dependenciesCheck.checkDependentResources(applicationStartup, 5);
+}
