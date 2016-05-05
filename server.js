@@ -11,6 +11,8 @@ var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
 var dependenciesCheck = require(__dirname + '/app/utils/dependent_resource_checker.js');
 var logger            = require('winston');
+var argv              = require('minimist')(process.argv.slice(2));
+var environment       = require(__dirname + '/app/services/environment.js');      
 
 var port        = (process.env.PORT || 3000);
 var app         = express();
@@ -48,7 +50,7 @@ app.use(function (req, res, next) {
   if (req.url.indexOf('/selfservice/') === 0) {
     var oldUrl = req.url;
     req.url = oldUrl.substring('/selfservice'.length);
-    console.log('REDIRECTED ' + oldUrl + ' to ' + req.url);
+    logger.info('REDIRECTED ' + oldUrl + ' to ' + req.url);
   }
   
   next();
@@ -61,7 +63,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (!environment.isProduction()) {
   // Will return stack traces to the browser as well - only use in development!
   var errorhandler = require('errorhandler');
   app.use(errorhandler())
@@ -69,18 +71,31 @@ if (process.env.NODE_ENV !== 'production') {
 
 router.bind(app);
 
-module.exports.getApp = app;
-
-var applicationStartup = function() {
+/**
+ * Starts app
+ */
+function start() {
   app.listen(port);
-  console.log('Listening on port ' + port);
-  console.log('');
-};
-
-if (process.env.NODE_ENV !== 'production') {
-  // startup application immediately on a non-production environment
-  applicationStartup();  
-} else {
-  console.log("Checking Dependent resources before startup....");
-  dependenciesCheck.checkDependentResources(applicationStartup, 5);
+  logger.info('Listening on port ' + port);
+  logger.info('');
+  
+  return app;
 }
+
+if (!environment.isProduction()) {
+  // startup application immediately on a non-production environment
+  start();  
+} else {
+  logger.info("Checking Dependent resources before startup....");
+  dependenciesCheck.checkDependentResources(start, 5);
+}
+
+//immediately invoke start if -i flag set. Allows script to be run by task runner
+if (!!argv.i) {
+  start();
+}
+
+module.exports = {
+  start: start,
+  getApp: app
+};

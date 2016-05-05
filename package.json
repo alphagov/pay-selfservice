@@ -20,7 +20,8 @@
     }
   },
   "scripts": {
-    "start": "node start.js",
+    "start": "forever --minUptime 1000 --spinSleepTime 500 start.js",
+    "stop": "forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "test": "npm run lint && npm run grunt-test",
     "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js ./test/*.js",
@@ -31,11 +32,13 @@
     "body-parser": "1.13.3",
     "change-case": "^2.3.0",
     "client-sessions": ">= 0.3.1",
+    "cluster": "^0.7.7",
     "connect-session-sequelize": "^3.0.0",
     "cookie-parser": "^1.4.1",
     "csrf": "^3.0.1",
     "express": "4.13.1",
     "express-session": "^1.13.0",
+    "forever": "^0.15.1",
     "govuk-elements-sass": "1.1.1",
     "govuk_frontend_toolkit": "4.6.0",
     "grunt": "0.4.5",
@@ -65,10 +68,11 @@
     "readdir": "0.0.6",
     "request": "2.69.0",
     "sequelize": "^3.21.0",
-    "sleep": "3.0.1",
     "serve-favicon": "~2.3.0",
     "sinon": "^1.17.3",
+    "sleep": "3.0.1",
     "supertest-session": "^2.0.1",
+    "throng": "^4.0.0",
     "winston": "^1.0.1"
   },
   "devDependencies": {
