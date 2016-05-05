@@ -1,5 +1,6 @@
 var response      = require(__dirname + '/utils/response.js').response;
 var generateRoute = require(__dirname + '/utils/generate_route.js');
+var healthcheck   = require(__dirname + '/utils/healthcheck.js');
 var transactions  = require('./controllers/transaction_controller.js');
 var credentials   = require('./controllers/credentials_controller.js');
 var login         = require('./controllers/login_controller.js');
@@ -21,9 +22,7 @@ module.exports.bind = function (app) {
   });
 
   app.get('/healthcheck', function (req, res) {
-    var data = {'ping': {'healthy': true}};
-    res.writeHead(200, {"Content-Type": "application/json"});
-    res.end(JSON.stringify(data));
+    healthcheck.selfServiceHealthCheck(req, res);
   });
 
   app.get('/style-guide', function (req, res) {
