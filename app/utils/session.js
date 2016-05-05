@@ -1,22 +1,11 @@
 'use strict';
 
+var sequelizeConfig = require(__dirname + '/sequelize_config.js').sequelizeConfig;
+
 const session = require('express-session'),
-  Sequelize = require('sequelize'),
   _ = require('lodash'),
   SequelizeStore = require('connect-session-sequelize')(session.Store),
   logger = require('winston');
-
-const sequelizeConfig = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USER,
-  process.env.DATABASE_PASSWORD, {
-    "dialect": "postgres",
-    "host": process.env.DATABASE_HOST,
-    "port": process.env.DATABASE_PORT,
-    "logging": false, 
-    "ssl": true,
-    "native": true
-  });
 
 module.exports = function () {
 
