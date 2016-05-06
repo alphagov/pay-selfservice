@@ -65,6 +65,7 @@
     "readdir": "0.0.6",
     "request": "2.69.0",
     "sequelize": "^3.21.0",
+    "sleep": "3.0.1",
     "serve-favicon": "~2.3.0",
     "sinon": "^1.17.3",
     "supertest-session": "^2.0.1",
@@ -85,6 +86,7 @@
     "nock": "^2.10.0",
     "portfinder": "^0.4.0",
     "superagent": "^1.2.0",
-    "supertest": "^1.0.1"
+    "supertest": "^1.0.1",
+    "proxyquire": "~1.7.4"
   }
 }
