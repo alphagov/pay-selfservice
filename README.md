@@ -18,6 +18,7 @@ GOV.UK Pay Self Service portal (Node.js)
 | HTTP_PROXY                  |   |      | HTTP proxy url |
 | HTTPS_PROXY                 |   |      | HTTPS proxy url |
 | NO_PROXY                    |   |      | host:port(s) that need to be by passed by the proxy. Supports comma separated list |
+| NODE_WORKER_COUNT           |   | 1 | The number of worker threads started by node cluster when run in production mode |
 
 # authstub does not have a valid certificate
 NODE_TLS_REJECT_UNAUTHORIZED=0

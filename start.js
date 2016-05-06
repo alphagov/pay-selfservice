@@ -1,21 +1,90 @@
-var fs = require('fs'),
-    argv = require('minimist')(process.argv.slice(2)),
+(function () {
+  'use strict';
+
+  var fs = require('fs'),
+    cluster = require('cluster'),
+    logger = require('winston'),
+    throng = require('throng'),
+    server = require('./server'),
+    grunt = require('grunt'),
+    environment = require('./app/services/environment'),
+    gruntFilePath = __dirname + '/Gruntfile.js',
     pidFile = __dirname + '/.start.pid',
     fileOptions = { encoding : 'utf-8' },
-    gruntfile;
+    pid;
 
-// start grunt
-gruntfile = __dirname + '/Gruntfile.js';
-require(__dirname + '/node_modules/grunt/lib/grunt.js').cli({
-  'gruntfile' : gruntfile
-});
+  /**
+   * Use grunt to run app so that we can use watch, nodemon etc
+   */
+  function startInDevMode () {
+    grunt.cli({
+      gruntfile: gruntFilePath
+    });
+  }
 
-fs.writeFileSync(pidFile, process.pid, fileOptions);
+  /**
+   * throng is a wrapper around node cluster
+   * https://github.com/hunterloftis/throng
+   */
+  function startInProductionMode () {
+    throng({
+      workers: environment.getWorkerCount(),
+      master: startMaster,
+      start: startWorker
+    });
+  }
 
-process.on('SIGINT', function() {
-  var pid = fs.readFileSync(pidFile, fileOptions);
+  /**
+   * Start master process
+   */
+  function startMaster() {
+    logger.info(`Master started. PID: ${ process.pid }`);
+    process.on('SIGINT', () => {
+      logger.info(`Master exiting`);
+      process.exit()
+    });
+  }
 
-  fs.unlink(pidFile);
-  process.kill(pid, 'SIGTERM');
-  process.exit();
-});
+  /**
+   * Start cluster worker. Log start and exit
+   * @param  {Number} workerId 
+   */
+  function startWorker (workerId) {
+    server.start();
+
+    logger.info(`Started worker ${ workerId }, PID: ${ process.pid }`);
+
+    process.on('SIGINT', () => {
+      logger.info(`Worker ${ workerId } exiting...`);
+      process.exit()
+    });
+  }
+
+  /**
+   * Make sure all child processes are cleaned up
+   */
+  function onInterrupt () {
+    pid = fs.readFileSync(pidFile, fileOptions);
+    fs.unlink(pidFile);
+    process.kill(pid, 'SIGTERM');
+    process.exit();
+  }
+
+  /**
+   * Keep track of processes, and clean up on SIGINT
+   */
+  function monitor () {
+    fs.writeFileSync(pidFile, process.pid, fileOptions);
+    process.on('SIGINT', onInterrupt);
+  }
+
+  monitor();
+  
+  // Default to dev mode
+  if (environment.isProduction()) {
+    startInProductionMode();
+  } else {
+    startInDevMode();
+  }
+}());
+
