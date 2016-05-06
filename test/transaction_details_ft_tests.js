@@ -62,6 +62,18 @@ portfinder.getPort(function (err, connectorPort) {
                         {
                             'status': 'SUCCEEDED',
                             'updated': '2015-12-24 12:05:43'
+                        },
+                        {
+                            'status': 'EXPIRED',
+                            'updated': '2015-12-24 12:05:43'
+                        },
+                        {
+                            'status': 'SYSTEM CANCELLED',
+                            'updated': '2015-12-24 12:05:43'
+                        },
+                        {
+                            'status': 'USER CANCELLED',
+                            'updated': '2015-12-24 12:05:43'
                         }
                     ]
                 };
@@ -101,6 +113,21 @@ portfinder.getPort(function (err, connectorPort) {
                     'payment_provider': 'Sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'events': [
+                        {
+                             "status": "Payment of £50.00 cancelled by user",
+                             "updated": "2015-12-24 12:05:43",
+                             "updated_friendly": "24 Dec 2015 — 12:05:43",
+                         },
+                         {
+                            "status": "Payment of £50.00 cancelled by system",
+                            "updated": "2015-12-24 12:05:43",
+                            "updated_friendly": "24 Dec 2015 — 12:05:43"
+                        },
+                        {
+                            "status": "Payment of £50.00 expired",
+                            "updated": "2015-12-24 12:05:43",
+                            "updated_friendly": "24 Dec 2015 — 12:05:43"
+                        },
                         {
                             'status': 'Payment of £50.00 succeeded',
                             'updated': '2015-12-24 12:05:43',

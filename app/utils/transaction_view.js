@@ -9,7 +9,9 @@ var TransactionView = function () {
     this.eventStatuses['IN PROGRESS'] = 'Payment of AMOUNT is in progress';
     this.eventStatuses['SUCCEEDED'] = 'Payment of AMOUNT succeeded';
     this.eventStatuses['FAILED'] = 'Payment of AMOUNT succeeded';
-
+    this.eventStatuses['EXPIRED'] = 'Payment of AMOUNT expired';
+    this.eventStatuses['SYSTEM CANCELLED'] = 'Payment of AMOUNT cancelled by system';
+    this.eventStatuses['USER CANCELLED'] = 'Payment of AMOUNT cancelled by user';
 };
 
 TransactionView.prototype.eventStatuses = {};
@@ -17,7 +19,7 @@ TransactionView.prototype.eventStatuses = {};
 /** prepares the transaction list view */
 TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAccountId, filters) {
     connectorData.filters = filters;
-    connectorData.hasFilters = Object.keys(filters).length != 0;
+    connectorData.hasFilters = Object.keys(filters).length !== 0;
     connectorData.hasResults = connectorData.results.length !== 0;
     connectorData.eventStatuses = Object.keys(this.eventStatuses).map(function(str) {
         var value = {};
@@ -36,7 +38,7 @@ TransactionView.prototype.buildPaymentList = function (connectorData, gatewayAcc
         element.link    = router.generateRoute(router.paths.transactions.show,{
             chargeId: element.charge_id
         });
-        delete element.created_date
+        delete element.created_date;
     });
 
     // TODO normalise fromDate and ToDate so you can just pass them through no problem
