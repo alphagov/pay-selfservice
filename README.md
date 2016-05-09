@@ -70,3 +70,13 @@ Generate, edit and revoke tokens for a given account id.
 ```
     /tokens
 ```
+
+#### How to use delete-session.js
+
+This script is used to force log out a user from selfservice.
+Make sure to have the selfservice database environment variables set before running this script.
+
+Usage:
+```
+./node delete-session.js -u <email-address> ## Where email-address is the id of user you want to delete the session
+```
