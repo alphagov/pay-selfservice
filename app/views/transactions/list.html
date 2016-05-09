@@ -4,7 +4,8 @@
       <th id="charge-id-header">GOV.UK Pay ID</th>
       <th id="reference-header">Reference number</th>
       <th id="amount-header">Amount</th>
-      <th id="status-header">Status</th>
+      <th id="state-header">State</th>
+      <th id="finished-header">Finished</th>
       <th id="time-header">Date Created</th>
     </tr>
   </thead>
@@ -20,7 +21,8 @@
         {{reference}}
       </td>
       <td>£{{amount}}</td>
-      <td>{{status}}</td>
+      <td>{{state_friendly}}</td>
+      <td>{{#state.finished}}&#10004;{{/state.finished}}{{^state.finished}}&#10006;{{/state.finished}}</td>
       <td>{{created}}</td>
     </tr>
   {{/results}}

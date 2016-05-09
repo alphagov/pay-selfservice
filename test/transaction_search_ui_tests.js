@@ -12,21 +12,29 @@ describe('The transaction list view', function () {
                     'charge_id': '100',
                     'amount': '50.00',
                     'reference': 'ref1',
-                    'status': 'TEST STATUS',
+                    'state_friendly': 'Testing2',
+                    'state': {
+                      'status': 'testing2',
+                      'finished': true
+                    },
                     'created': '2016-01-11 01:01:01'
                 },
                 {
                     'charge_id': '101',
                     'amount': '20.00',
                     'reference': 'ref1',
-                    'status': 'TEST STATUS 2',
+                    'state_friendly': 'Testing2',
+                    'state': {
+                      'status': 'testing2',
+                      'finished': false
+                    },
                     'created': '2016-01-11 01:01:01'
                 }
             ],
-            'filters': {'reference': 'ref1', 'status': 'TEST STATUS', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
+            'filters': {'reference': 'ref1', 'state': 'Testing2', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
             'hasResults': true,
             'downloadTransactionLink':
-                '/transactions/download?reference=ref1&status=TEST5%20STATUS&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
+                '/transactions/download?reference=ref1&state=Testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
         };
 
         var body = renderTemplate('transactions/index', templateData);
@@ -34,7 +42,7 @@ describe('The transaction list view', function () {
         body.should.containSelector('#download-transactions-link').withAttribute('href', templateData.downloadTransactionLink);
 
         templateData.results.forEach(function (transactionData, ix) {
-            body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'TEST STATUS\' status\n');
+            body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'Testing2\' state\n');
             body.should.containInputField('reference', 'text').withAttribute('value', 'ref1');
             body.should.containInputField('fromDate', 'text').withAttribute('value', '2015-01-11 01:01:01');
             body.should.containSelector('table#transactions-list')
@@ -42,10 +50,9 @@ describe('The transaction list view', function () {
                 .withTableDataAt(1, templateData.results[ix].charge_id)
                 .withTableDataAt(2, templateData.results[ix].reference)
                 .withTableDataAt(3, "£" + templateData.results[ix].amount)
-                .withTableDataAt(4, templateData.results[ix].status)
-                //TODO: Change the index from 6 to 5 once PP-279 pay-endtoend has been merged to master
-                //      This is for backwards compatibility
-                .withTableDataAt(5, templateData.results[ix].created);
+                .withTableDataAt(4, templateData.results[ix].state_friendly)
+                .withTableDataAt(5, templateData.results[ix].state.finished ? "✔" : "✖")
+                .withTableDataAt(6, templateData.results[ix].created);
         });
     });
 

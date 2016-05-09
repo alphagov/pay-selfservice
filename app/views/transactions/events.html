@@ -2,7 +2,7 @@
     <tbody>
     {{#events}}
     <tr>
-      <td>{{status}}</td>
+      <td><span class="state">{{state_friendly}}</span>{{#state.message}}<br>{{state.code}} - {{state.message}}{{/state.message}} </td>
       <td align="right">{{updated_friendly}}</td>
     </tr>
     {{/events}}
