@@ -75,19 +75,21 @@ router.bind(app);
  * Starts app
  */
 function start() {
+  if (!environment.isProduction()) {
+    // startup application immediately on a non-production environment
+    listen();  
+  } else {
+    logger.info("Checking Dependent resources before startup....");
+    dependenciesCheck.checkDependentResources(listen, 5);
+  }
+}
+
+function listen() {
   app.listen(port);
   logger.info('Listening on port ' + port);
   logger.info('');
   
   return app;
-}
-
-if (!environment.isProduction()) {
-  // startup application immediately on a non-production environment
-  start();  
-} else {
-  logger.info("Checking Dependent resources before startup....");
-  dependenciesCheck.checkDependentResources(start, 5);
 }
 
 //immediately invoke start if -i flag set. Allows script to be run by task runner
