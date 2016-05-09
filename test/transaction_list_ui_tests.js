@@ -12,14 +12,33 @@ describe('The transaction list view', function () {
           'charge_id': 100,
           'amount': '50.00',
           'reference': 'ref1',
-          'status': 'TEST STATUS',
+          'state_friendly': 'Testing',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
           'created': '2016-01-11 01:01:01'
         },
         {
           'charge_id': 101,
           'amount': '20.00',
           'reference': 'ref1',
-          'status': 'TEST STATUS 2',
+          'state_friendly': 'Testing2',
+          'state': {
+            'status': 'testing2',
+            'finished': true
+          },
+          'created': '2016-01-11 01:01:01'
+        },
+        {
+          'charge_id': 101,
+          'amount': '20.00',
+          'reference': 'ref1',
+          'state_friendly': 'Testing2',
+          'state': {
+            'status': 'testing2',
+            'finished': true
+          },
           'created': '2016-01-11 01:01:01'
         }
       ]
@@ -33,10 +52,9 @@ describe('The transaction list view', function () {
         .withTableDataAt(1, parseInt(templateData.results[ix].charge_id))
         .withTableDataAt(2, templateData.results[ix].reference)
         .withTableDataAt(3, "£" + templateData.results[ix].amount)
-        .withTableDataAt(4, templateData.results[ix].status)
-        //TODO: Change the index from 6 to 5 once PP-279 pay-endtoend has been merged to master
-        //      This is for backwards compatibility
-        .withTableDataAt(5, templateData.results[ix].created);
+        .withTableDataAt(4, templateData.results[ix].state_friendly)
+        .withTableDataAt(5, templateData.results[ix].state.finished ? "✔" : "✖")
+        .withTableDataAt(6, templateData.results[ix].created);
     });
   });
 });

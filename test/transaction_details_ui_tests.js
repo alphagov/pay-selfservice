@@ -12,27 +12,35 @@ describe('The transaction details view', function () {
         'gateway_account_id':'1',
         'charge_id':'1',
         'description':'First ever',
-        'status':'SUCCEEDED',
+        'state' : {
+          'status':'confirmed',
+          'finished': true
+        },
+        'state_friendly': 'Confirmed',
         'gateway_transaction_id':'938c54a7-4186-4506-bfbe-72a122da6528',
 
         'events':[
             {'chargeId':1,
-             'status':'Payment of £10.00 succeeded',
+             'state:' : { 'status': 'confirmed', 'finished' : true },
+             'state_friendly':'Payment of £10.00 confirmed by payment provider',
              'updated': "2015-12-24 13:21:05",
              'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
-             'status':'Payment of £10.00 is in progress',
+             'state:' : { 'status': 'submitted', 'finished' : false },
+             'state_friendly':'User submitted payment details for payment of £10.00',
              'updated': "2015-12-24 13:21:05",
              'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
-             'status':'Payment of £10.00 is in progress',
+             'state:' : { 'status': 'started', 'finished' : false },
+             'state_friendly':'User started payment of AMOUNT',
              'updated': "2015-12-24 13:21:05",
              'updated_friendly': "24 January 2015 13:21:05"},
 
             {'chargeId':1,
-             'status':'Payment of £10.00 was created',
+             'state:' : { 'status': 'created', 'finished' : false },
+             'state_friendly':'Service created payment of £10.00',
              'updated': "2015-12-24 13:21:05",
              'updated_friendly': "24 January 2015 13:21:05"},
         ]
@@ -44,12 +52,13 @@ describe('The transaction details view', function () {
     $('#amount').text().should.equal(templateData.amount);
     $('#payment-id').text().should.equal(templateData.charge_id);
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id);
-    $('#status').text().should.equal(templateData.status);
+    $('#state').text().should.equal(templateData.state_friendly);
+    $('#finished').text().should.equal(templateData.state.finished ? "✔" : "✖");
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
         .havingRowAt(ix + 1)
-        .withTableDataAt(1, templateData.events[ix].status)
+        .withTableDataAt(1, templateData.events[ix].state_friendly)
         .withTableDataAt(2, templateData.events[ix].updated_friendly);
     });
   });
