@@ -9,8 +9,12 @@
       <td id="amount">{{amount}}</td>
     </tr>
     <tr>
-      <td>Status:</td>
-      <td id="status">{{status}}</td>
+      <td>State:</td>
+      <td id="state">{{state_friendly}}{{#state.message}} ({{state.code}} - {{state.message}}){{/state.message}}</td>
+    </tr>
+    <tr>
+      <td>Finished:</td>
+      <td id="finished">{{#state.finished}}&#10004;{{/state.finished}}{{^state.finished}}&#10006;{{/state.finished}}</td>
     </tr>
     <tr>
       <td>Method:</td>

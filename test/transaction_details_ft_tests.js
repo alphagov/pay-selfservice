@@ -52,27 +52,42 @@ portfinder.getPort(function (err, connectorPort) {
                     'charge_id': chargeId,
                     'events': [
                         {
-                            'status': 'CREATED',
+                            'state': {
+                              'status': 'created',
+                              'finished': false
+                            },
                             'updated': '2015-12-24 13:21:05'
                         },
                         {
-                            'status': 'IN PROGRESS',
+                            'state': {
+                              'status': 'started',
+                              'finished': false
+                            },
                             'updated': '2015-12-24 13:23:12'
                         },
                         {
-                            'status': 'SUCCEEDED',
+                            'state': {
+                              'status': 'confirmed',
+                              'finished': true
+                            },
                             'updated': '2015-12-24 12:05:43'
                         },
                         {
-                            'status': 'EXPIRED',
+                            'state': {
+                              'status': 'cancelled',
+                              'finished': true,
+                              'message': 'Payment was cancelled by the service',
+                              'code': 'P0040'
+                            },
                             'updated': '2015-12-24 12:05:43'
                         },
                         {
-                            'status': 'SYSTEM CANCELLED',
-                            'updated': '2015-12-24 12:05:43'
-                        },
-                        {
-                            'status': 'USER CANCELLED',
+                            'state': {
+                              'status': 'failed',
+                              'finished': true,
+                              'message': 'Payment was cancelled by the user',
+                              'code': 'P0030'
+                            },
                             'updated': '2015-12-24 12:05:43'
                         }
                     ]
@@ -86,7 +101,10 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': gatewayAccountId,
                     'payment_provider': 'sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
-                    'status': 'SUCCEEDED',
+                    'state': {
+                      'status': 'confirmed',
+                      'finished': true
+                    },
                     'return_url': 'http://example.service/return_from_payments',
                     'links': [
                         {
@@ -109,37 +127,60 @@ portfinder.getPort(function (err, connectorPort) {
                     'amount': '£50.00',
                     'gateway_account_id': gatewayAccountId,
                     'updated': '24 Dec 2015 — 13:21:05',
-                    'status': 'SUCCEEDED',
+                    'state': {
+                      'status': 'confirmed',
+                      'finished': true
+                    },
+                    'state_friendly': 'Confirmed',
                     'payment_provider': 'Sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'events': [
                         {
-                             "status": "Payment of £50.00 cancelled by user",
+                            'state': {
+                              'status': 'failed',
+                              'finished': true,
+                              'message': 'Payment was cancelled by the user',
+                              'code': 'P0030'
+                            },
+                             "state_friendly": "User failed to complete payment of £50.00",
                              "updated": "2015-12-24 12:05:43",
                              "updated_friendly": "24 Dec 2015 — 12:05:43",
                          },
                          {
-                            "status": "Payment of £50.00 cancelled by system",
+                           'state': {
+                             'status': 'cancelled',
+                             'finished': true,
+                             'message': 'Payment was cancelled by the service',
+                             'code': 'P0040'
+                           },
+                            "state_friendly": "Service cancelled payment of £50.00",
                             "updated": "2015-12-24 12:05:43",
                             "updated_friendly": "24 Dec 2015 — 12:05:43"
                         },
                         {
-                            "status": "Payment of £50.00 expired",
+                            'state': {
+                              'status': 'confirmed',
+                              'finished': true
+                            },
+                            "state_friendly": "Payment of £50.00 confirmed by payment provider",
                             "updated": "2015-12-24 12:05:43",
                             "updated_friendly": "24 Dec 2015 — 12:05:43"
                         },
                         {
-                            'status': 'Payment of £50.00 succeeded',
-                            'updated': '2015-12-24 12:05:43',
-                            'updated_friendly': '24 Dec 2015 — 12:05:43'
-                        },
-                        {
-                            'status': 'Payment of £50.00 is in progress',
+                            'state': {
+                              'status': 'started',
+                              'finished': false
+                            },
+                            'state_friendly': 'User started payment of £50.00',
                             'updated': '2015-12-24 13:23:12',
                             'updated_friendly': '24 Dec 2015 — 13:23:12'
                         },
                         {
-                            'status': 'Payment of £50.00 was created',
+                            'state': {
+                              'status': 'created',
+                              'finished': false
+                            },
+                            'state_friendly': 'Service created payment of £50.00',
                             'updated': '2015-12-24 13:21:05',
                             'updated_friendly': '24 Dec 2015 — 13:21:05'
                         }
