@@ -39,7 +39,7 @@ var session_no_account_id = {
 
 describe('An endpoint not protected', function () {
   var app = express();
-  auth.bind(app);
+  auth.initialise(app);
   var withNoSession = mockSession(app);
 
   app.get('/unprotected', function (req, res) {
@@ -65,7 +65,7 @@ describe('An endpoint not protected', function () {
 
 describe('An endpoint protected by auth.enforce', function () {
   var app = express();
-  auth.bind(app);
+  auth.initialise(app);
   var withNoSession = mockSession(app);
 
   app.get('/protected', auth.enforce, function (req, res) {
@@ -116,7 +116,7 @@ describe('An endpoint protected by auth.enforce', function () {
 describe('An endpoint that enforces login', function (done) {
 
   var app = express();
-  auth.bind(app);
+  auth.initialise(app);
   var withNoSession = mockSession(app);
 
   app.get(paths.user.logIn, auth.login);
@@ -167,7 +167,7 @@ describe('An endpoint that handles callbacks', function (done) {
       });
     };
 
-    auth.bind(realApp, new MockStrategy());
+    auth.initialise(realApp, new MockStrategy());
 
     request(mockSession(realApp, session_with_last_url))
       .get(paths.user.callback)

@@ -57,7 +57,7 @@ var auth = {
 
   callback: passport.authenticate(AUTH_STRATEGY_NAME, {failureRedirect: paths.user.logIn}),
 
-  bind: function (app, override_strategy) {
+  initialise: function (app, override_strategy) {
 
     var strategy = override_strategy || AUTH_STRATEGY;
 
