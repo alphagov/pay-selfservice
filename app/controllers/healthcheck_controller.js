@@ -17,6 +17,3 @@ module.exports.healthcheck = function (req, res) {
       responseHandler.response(req.headers.accept, res, null, data);
     });
 };
-
-module.exports.bindRoutesTo = function (app) {
-};

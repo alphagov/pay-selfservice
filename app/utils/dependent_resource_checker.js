@@ -1,7 +1,7 @@
 'use strict';
 
 var sleeper         = require('sleep');
-var Sequelize       = require('sequelize');
+var sequelizeConfig = require('../utils/sequelize_config.js');
 
 module.exports = function() {
   
@@ -10,20 +10,8 @@ module.exports = function() {
     var checkDatabaseConnection = function(startup, attempt) {
       console.log("Checking for Database connectivity");
 
-      var sequelize = new Sequelize(
-        process.env.DATABASE_NAME,
-        process.env.DATABASE_USER,
-        process.env.DATABASE_PASSWORD, {
-          "dialect": "postgres",
-          "host": process.env.DATABASE_HOST,
-          "port": process.env.DATABASE_PORT,
-          "logging": false,
-          "ssl": true,
-          "native": true
-        }
-      );
-
-      sequelize.authenticate()
+      sequelizeConfig.sequelize
+        .authenticate()
         .then(function() {
           console.log('Connection has been established successfully.');
           onResourceAvailable();

@@ -12,23 +12,33 @@ var sleeper = {
 var dependentResourceChecker = function (mockSleeper, mockSequelizer) {
   return proxyquire(__dirname + '/../../app/utils/dependent_resource_checker.js', {
     'sleep': mockSleeper,
-    'sequelize': mockSequelizer
+    '../utils/sequelize_config.js': mockSequelizer
   })
 };
 
-
 describe('session', function () {
+
+  var mockSequelizerConfig;
+  beforeEach(function() {
+    mockSequelizerConfig = function() {
+
+      mockSequelizer = {
+        authenticate: function(){}
+      };
+
+      return {
+        sequelize: mockSequelizer
+      }
+    }();
+  });
 
   it('should call success function when DB connectivity is successful', function(){
     var sucessfulFunction = sinon.spy();
     var successfulAuthenticationPromise =  { then: function(success,fail){ success(); }};
 
-    var mockSequelizer = function(){};
-    mockSequelizer.prototype.authenticate = function(){};
+    sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(successfulAuthenticationPromise);
 
-    sinon.stub(mockSequelizer.prototype, "authenticate").returns(successfulAuthenticationPromise);
-
-    dependentResourceChecker(sleeper, mockSequelizer).checkDependentResources(sucessfulFunction, 1);
+    dependentResourceChecker(sleeper, mockSequelizerConfig).checkDependentResources(sucessfulFunction, 1);
 
     sinon.assert.calledOnce(sucessfulFunction);
   });
@@ -43,13 +53,10 @@ describe('session', function () {
       fail();
     }};
 
-    var mockSequelizer = function(){};
-    mockSequelizer.prototype.authenticate = function(){};
-
     var usleepSpy = sinon.spy(sleeper, 'usleep');
-    sinon.stub(mockSequelizer.prototype, "authenticate").returns(secondTimeSuccessfulPromise);
+    sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(secondTimeSuccessfulPromise);
 
-    dependentResourceChecker(sleeper, mockSequelizer).checkDependentResources(sucessfulFunction, 0.1);
+    dependentResourceChecker(sleeper, mockSequelizerConfig).checkDependentResources(sucessfulFunction, 0.1);
 
     sinon.assert.calledOnce(sucessfulFunction);
     assert(usleepSpy.calledWithExactly(100000));
@@ -67,13 +74,11 @@ describe('session', function () {
       fail();
     }};
 
-    var mockSequelizer = function(){};
-    mockSequelizer.prototype.authenticate = function(){};
-    sinon.stub(mockSequelizer.prototype, "authenticate").returns(secondTimeSuccessfulPromise);
+    sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(secondTimeSuccessfulPromise);
 
     var consoleSpy = sinon.spy(console, 'log');
 
-    dependentResourceChecker(sleeper, mockSequelizer).checkDependentResources(sucessfulFunction, 0.1);
+    dependentResourceChecker(sleeper, mockSequelizerConfig).checkDependentResources(sucessfulFunction, 0.1);
 
     assert(consoleSpy.getCall(0).args[0] === "Checking for Database connectivity");
     assert(consoleSpy.getCall(1).args[0] === "Unable to connect to the database");

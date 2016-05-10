@@ -1,6 +1,6 @@
 'use strict';
 
-var sequelizeConfig = require(__dirname + '/sequelize_config.js').sequelizeConfig;
+var sequelizeConfig = require(__dirname + '/sequelize_config.js').sequelize;
 
 const session = require('express-session'),
   _ = require('lodash'),
