@@ -15,9 +15,6 @@ module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
 
 module.exports.bind = function (app) {
-
-  auth.bind(app);
-
   app.get('/greeting', function (req, res) {
     var data = {'greeting': 'Hello', 'name': 'World'};
     response(req.headers.accept, res, 'greeting', data);

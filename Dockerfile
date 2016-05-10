@@ -18,4 +18,4 @@ RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
 RUN npm install && npm test && npm prune --production
 
-CMD sleep 20 && NODE_ENV=production npm start
+CMD NODE_ENV=production npm start
