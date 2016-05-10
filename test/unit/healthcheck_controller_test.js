@@ -6,7 +6,7 @@ var sinon      = require('sinon');
 
 
 describe('health check controller', function () {
-  var spyingInputResponse, inputRes, mockSequelizer;
+  var spyingInputResponse, inputRes, mockSequelizerConfig;
 
   beforeEach(function() {
    inputRes = {
@@ -16,14 +16,22 @@ describe('health check controller', function () {
    };
    spyingInputResponse = sinon.spy(inputRes, 'status');
 
-   mockSequelizer = function(){};
-   mockSequelizer.prototype.authenticate = function(){};
+   mockSequelizerConfig = function() {
+
+    mockSequelizer = {
+      authenticate: function(){}
+    };
+
+    return {
+      sequelize: mockSequelizer
+    }
+   }();
   });
 
-  var healthCheckController = function (mockResponse, mockSequlizer) {
+  var healthCheckController = function (mockResponse, mockSequelizerConfig) {
       return proxyquire(__dirname + '/../../app/controllers/healthcheck_controller.js', {
         '../utils/response.js': mockResponse,
-        'sequelize': mockSequlizer
+        '../utils/sequelize_config.js': mockSequelizerConfig
       })
   };
 
@@ -53,9 +61,9 @@ describe('health check controller', function () {
       fail();
     }};
 
-    sinon.stub(mockSequelizer.prototype, "authenticate").returns(failedAuthenticationPromise);
+    sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(failedAuthenticationPromise);
 
-    var controller = healthCheckController(mockResponseHandler, mockSequelizer);
+    var controller = healthCheckController(mockResponseHandler, mockSequelizerConfig);
 
     controller.healthcheck(req, inputRes);
 
@@ -82,9 +90,9 @@ describe('health check controller', function () {
       success();
     }};
 
-    sinon.stub(mockSequelizer.prototype, "authenticate").returns(successfulAuthenticationPromise);
+    sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(successfulAuthenticationPromise);
 
-    var controller = healthCheckController(mockResponseHandler, mockSequelizer);
+    var controller = healthCheckController(mockResponseHandler, mockSequelizerConfig);
 
     controller.healthcheck(req, inputRes);
 

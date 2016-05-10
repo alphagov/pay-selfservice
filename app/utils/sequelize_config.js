@@ -2,7 +2,7 @@
 
 var Sequelize = require('sequelize');
 
-const sequelizeConfig = new Sequelize(
+const sequelizeInstance = new Sequelize(
   process.env.DATABASE_NAME,
   process.env.DATABASE_USER,
   process.env.DATABASE_PASSWORD, {
@@ -17,7 +17,7 @@ const sequelizeConfig = new Sequelize(
 module.exports = function () {
 
   return {
-    sequelizeConfig: sequelizeConfig
+    sequelize: sequelizeInstance
   }
 
 }();

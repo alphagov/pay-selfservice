@@ -1,24 +1,11 @@
 var logger          = require('winston');
 var responseHandler = require('../utils/response.js');
-var Sequelize       = require('sequelize');
+var sequelizeConfig = require('../utils/sequelize_config.js');
 
 module.exports.healthcheck = function (req, res) {
   var data = {'ping': {'healthy': true}, 'database': {'healthy': true}};
 
-  var sequelize = new Sequelize(
-    process.env.DATABASE_NAME,
-    process.env.DATABASE_USER,
-    process.env.DATABASE_PASSWORD, {
-      "dialect": "postgres",
-      "host": process.env.DATABASE_HOST,
-      "port": process.env.DATABASE_PORT,
-      "logging": false,
-      "ssl": true,
-      "native": true
-    }
-  );
-
-  sequelize
+   sequelizeConfig.sequelize
     .authenticate()
     .then(function(err) {
       logger.info('Connection has been established successfully.');
