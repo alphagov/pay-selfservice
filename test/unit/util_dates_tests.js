@@ -15,6 +15,10 @@ describe('date format', function () {
     assert.equal("2016-01-29 17:24:48", dates.dateToDefaultFormat("2016-01-29T17:24:48Z"));
   });
 
+  it('should return the valid default format in bst', function () {
+    assert.equal("2016-07-07 18:24:48", dates.dateToDefaultFormat("2016-07-07T17:24:48Z"));
+  });
+
   it("should return an error message for an invalid date format",function() {
     assert.equal("Invalid date",dates.userInputToApiFormat("11-11/1981"));
   });
