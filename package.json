@@ -30,6 +30,8 @@
   "dependencies": {
     "array.prototype.find": "1.0.x",
     "body-parser": "1.13.x",
+    "change-case": "2.3.x",
+    "check-types": "7.0.x",
     "chalk": "1.1.x",
     "change-case": "2.3.x",
     "client-sessions": "0.7.x",

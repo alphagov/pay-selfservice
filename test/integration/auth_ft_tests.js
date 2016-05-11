@@ -8,13 +8,13 @@ process.env.COOKIE_MAX_AGE = "10800000";
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 process.env.SESSION_IN_MEMORY = "true";
 
-var realApp         = require(__dirname + '/../server.js').getApp;
+var realApp         = require(__dirname + '/../../server.js').getApp;
 var request     = require('supertest');
-var auth        = require(__dirname + '/../app/services/auth_service.js');
+var auth        = require(__dirname + '/../../app/services/auth_service.js');
 var session     = require('express-session');
 var express     = require('express');
-var mockSession = require(__dirname + '/test_helpers/mock_session.js').mockSession;
-var paths       = require(__dirname + '/../app/paths.js');
+var mockSession = require(__dirname + '/../test_helpers/mock_session.js').mockSession;
+var paths       = require(__dirname + '/../../app/paths.js');
 
 var valid_session = {
   passport: {

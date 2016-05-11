@@ -1,7 +1,6 @@
-var renderTemplate = require(__dirname + '/test_helpers/html_assertions.js').render;
 var should = require('chai').should();
-var paths = require(__dirname + '/../app/paths.js');
-
+var renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
+var paths = require(__dirname + '/../../app/paths.js');
 
 describe('The token view', function() {
   it('should render the number of active API keys for the account (for no keys)', function () {

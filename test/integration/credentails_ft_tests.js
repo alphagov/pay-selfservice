@@ -1,12 +1,12 @@
 var request     = require('supertest');
-var _app        = require(__dirname + '/../server.js').getApp;
+var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
 var csrf        = require('csrf');
 var should      = require('chai').should();
-var paths       = require(__dirname + '/../app/paths.js');
-var session     = require(__dirname + '/test_helpers/mock_session.js');
+var paths       = require(__dirname + '/../../app/paths.js');
+var session     = require(__dirname + '/../test_helpers/mock_session.js');
 var ACCOUNT_ID  = 182364;
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);

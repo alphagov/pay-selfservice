@@ -2,11 +2,11 @@ var request     = require('supertest');
 var portfinder  = require('portfinder');
 var csrf        = require('csrf');
 var nock        = require('nock');
-var _app        = require(__dirname + '/../server.js').getApp;
-var dates       = require('../app/utils/dates.js');
-var paths       = require(__dirname + '/../app/paths.js');
+var _app        = require(__dirname + '/../../server.js').getApp;
+var dates       = require('../../app/utils/dates.js');
+var paths       = require(__dirname + '/../../app/paths.js');
 var winston     = require('winston');
-var session     = require(__dirname + '/test_helpers/mock_session.js');
+var session     = require(__dirname + '/../test_helpers/mock_session.js');
 
 var gatewayAccountId = 452345;
 
@@ -26,7 +26,10 @@ portfinder.getPort(function (err, connectorPort) {
         queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
                     '&state=' + (searchParameters.state ? searchParameters.state : '') +
                     '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-                    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
+                    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
+                    '&page=' + (searchParameters.page ? searchParameters.page : 1) +
+                    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : 100);
+
     return connectorMock.get(CHARGES_SEARCH_API_PATH + encodeURI(queryStr))
       .reply(200, data);
   }
@@ -206,7 +209,7 @@ portfinder.getPort(function (err, connectorPort) {
                   }
                 ]
               };
-              var data= {'reference': 'ref1', 'status': 'TEST_STATUS'};
+              var data= {'reference': 'ref1', 'state': 'TEST_STATUS'};
               connectorMock_responds(connectorData, data);
 
               var expectedData = {
@@ -258,7 +261,7 @@ portfinder.getPort(function (err, connectorPort) {
 
               var data= {
                 'reference': 'ref1',
-                'status': 'TEST_STATUS',
+                'state': 'TEST_STATUS',
                 'from_date': '01/01/2016',
                 'to_date': '01/01/2020'
                 };
