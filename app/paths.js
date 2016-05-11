@@ -30,5 +30,8 @@ module.exports = {
     index: '/service-name',
     edit: '/service-name?edit'
   },
+  healthcheck: {
+    path: '/healthcheck'
+  },
   generateRoute: require(__dirname + '/utils/generate_route.js')
 };

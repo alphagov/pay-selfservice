@@ -3,6 +3,7 @@ var generateRoute = require(__dirname + '/utils/generate_route.js');
 var transactions  = require('./controllers/transaction_controller.js');
 var credentials   = require('./controllers/credentials_controller.js');
 var login         = require('./controllers/login_controller.js');
+var healthcheck   = require('./controllers/healthcheck_controller.js');
 var devTokens     = require('./controllers/dev_tokens_controller.js');
 var serviceName   = require('./controllers/service_name_controller.js');
 var auth          = require('./services/auth_service.js');
@@ -61,4 +62,8 @@ module.exports.bind = function (app) {
   var sn = paths.serviceName;
   app.get(sn.index, auth.enforce, csrf, serviceName.index);
   app.post(sn.index, auth.enforce, csrf, serviceName.update);
+
+  // HEALTHCHECK
+  var hc = paths.healthcheck;
+  app.get(hc.path, healthcheck.healthcheck);
 };
