@@ -24,7 +24,7 @@ portfinder.getPort(function (err, connectorPort) {
   function connectorMock_responds(code, data, searchParameters) {
       var queryStr = '?';
           queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-                      '&status=' + (searchParameters.status ? searchParameters.status : '') +
+                      '&state=' + (searchParameters.state ? searchParameters.state : '') +
                       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
                       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
       return connectorMock.get(CHARGES_API_PATH + encodeURI(queryStr))
@@ -58,7 +58,10 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
               'reference': 'ref1',
-              'status': 'TEST STATUS',
+              'state': {
+                'status': 'testing',
+                'finished': false
+              },
               'updated': CONNECTOR_DATE,
               'created_date': CONNECTOR_DATE
 
@@ -68,7 +71,10 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
               'reference': 'ref2',
-              'status': 'TEST STATUS 2',
+              'state': {
+                'status': 'testing2',
+                'finished': false
+              },
               'updated': CONNECTOR_DATE,
               'created_date': CONNECTOR_DATE
 
@@ -85,7 +91,11 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
               'reference': 'ref1',
-              'status': 'TEST STATUS',
+              'state': {
+                'status': 'testing',
+                'finished': false
+              },
+              'state_friendly': 'Testing',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
@@ -96,7 +106,11 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': '20.00',
               'reference': 'ref2',
-              'status': 'TEST STATUS 2',
+              'state': {
+                'status': 'testing2',
+                'finished': false
+              },
+              'state_friendly': 'Testing2',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
@@ -120,7 +134,10 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
-              'status': 'TEST STATUS',
+              'state': {
+                'status': 'testing',
+                'finished': false
+              },
               'updated': CONNECTOR_DATE,
               'created_date': CONNECTOR_DATE
 
@@ -130,7 +147,10 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
               'reference': 'ref2',
-              'status': 'TEST STATUS 2',
+              'state': {
+                'status': 'testing2',
+                'finished': false
+              },
               'updated': CONNECTOR_DATE,
               'created_date': CONNECTOR_DATE
             }
@@ -145,7 +165,11 @@ portfinder.getPort(function (err, connectorPort) {
               'charge_id': '100',
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
-              'status': 'TEST STATUS',
+              'state': {
+                'status': 'testing',
+                'finished': false
+              },
+              'state_friendly': 'Testing',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,
@@ -157,7 +181,11 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': '20.00',
               'reference': 'ref2',
-              'status': 'TEST STATUS 2',
+              'state': {
+                'status': 'testing2',
+                'finished': false
+              },
+              'state_friendly': 'Testing2',
               'gateway_account_id': gatewayAccountId,
               'updated': DISPLAY_DATE,
               'created': DISPLAY_DATE,

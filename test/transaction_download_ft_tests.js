@@ -27,7 +27,7 @@ portfinder.getPort(function (err, connectorPort) {
     function connectorMock_responds(code, data, searchParameters) {
         var queryStr = '?';
         queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-            '&status=' + (searchParameters.status ? searchParameters.status : '') +
+            '&state=' + (searchParameters.state ? searchParameters.state : '') +
             '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
             '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
         return connectorMock.get(CHARGES_API_PATH + encodeURI(queryStr))
@@ -71,14 +71,14 @@ portfinder.getPort(function (err, connectorPort) {
 
                 connectorMock_responds(200, 'csv data', {
                     reference: 'ref',
-                    status: '1234',
+                    state: '1234',
                     from_date: '2016-01-11 01:01:01',
                     to_date: '2016-01-11 01:01:01'
                 });
 
                 download_transaction_list({
                     reference: 'ref',
-                    status: '1234',
+                    state: '1234',
                     from_date: '2016-01-11 01:01:01',
                     to_date: '2016-01-11 01:01:01'
                 })

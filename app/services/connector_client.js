@@ -187,7 +187,7 @@ ConnectorClient.prototype._transactionUrlFor = function (gatewayAccountId) {
 ConnectorClient.prototype._searchTransactionsUrlFor = function (gatewayAccountId, searchParameters) {
     var query = querystring.stringify({
         reference: searchParameters.reference,
-        status: searchParameters.status,
+      state: searchParameters.state,
         from_date: dates.userInputToApiFormat(searchParameters.fromDate),
         to_date: dates.userInputToApiFormat(searchParameters.toDate)
     });
