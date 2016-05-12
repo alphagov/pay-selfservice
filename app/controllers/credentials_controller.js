@@ -84,7 +84,3 @@ module.exports.update = function (req, res) {
       errorView(req, res, ERROR_MESSAGE);
   });
 };
-
-
-module.exports.bindRoutesTo = function (app) {
-}

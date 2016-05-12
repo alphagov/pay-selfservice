@@ -1,18 +1,16 @@
 var response        = require('../utils/response.js').response;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 var transactionView = require('../utils/transaction_view.js');
+var jsonToCsv       = require('../utils/json_to_csv.js');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var auth            = require('../services/auth_service.js');
 var _               = require('lodash');
 var date            = require('../utils/dates.js');
 var router          = require('../routes.js');
 var session = require('../utils/session');
+var Transaction     = require('../models/transaction.js');
 var paginationKeys = ['first_page', 'prev_page', 'next_page', 'last_page'];
 
-
-// TODO: Externalise into properties
-var TRANSACTION_CSV_FILENAME = 'GOVUK Pay <%= timestamp %>.csv';
-var CONTENT_TYPE_CSV = 'text/csv';
 
 function getPaginationLinks(data) {
     return _.pick(data._links, paginationKeys);
@@ -65,23 +63,19 @@ module.exports = {
   transactionsDownload: function (req, res) {
     var accountId = auth.get_account_id(req);
     var filters = req.query;
+    var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
     var init = function () {
-      connectorClient()
-          .withTransactionDownload(accountId, filters, setHeaders)
-          .on('connectorError', showError);
-    };
-
-    var setHeaders = function() {
-      var buildFileName = function() {
-        var compiled = _.template(TRANSACTION_CSV_FILENAME)
-        return compiled({ 'timestamp' : date.dateToDefaultFormat(new Date())})
-      }
-
-      res.setHeader('Content-Type', CONTENT_TYPE_CSV);
-      res.setHeader('Content-disposition', 'attachment; filename=' + buildFileName());
-      return res;
-    }
+    Transaction.search(accountId, filters)
+      .then(function(json){
+        return jsonToCsv(json.results);
+      }, showError)
+      .then(function(csv){
+        res.setHeader('Content-disposition', 'attachment; filename=' + name);
+        res.setHeader('Content-Type', 'text/csv');
+        res.send(csv);
+      });
+  };
 
     var showError = function (connectorError) {
       res.removeHeader("Content-Type");
@@ -90,8 +84,8 @@ module.exports = {
       if (connectorError) {
         renderErrorView(req, res, 'Internal server error');
         return;
-      };
-
+      }
+      
       renderErrorView(req, res, 'Unable to download list of transactions.');
     };
 
@@ -118,4 +112,4 @@ module.exports = {
     connectorClient().withGetCharge(accountId, chargeId, foundCharge)
       .on('connectorError', errorHandler);
   }
-}
+};
