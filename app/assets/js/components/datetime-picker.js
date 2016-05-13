@@ -16,7 +16,7 @@
       timePicker = function () {
         $('.time-picker').timepicker({
           'showDuration': true,
-          'timeFormat': 'G:i:s',
+          'timeFormat': 'G:i',
           'roundingFunction': function () {return null;}
         });
       }

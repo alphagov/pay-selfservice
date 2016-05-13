@@ -1,8 +1,7 @@
-<div class="grid-row">
-  <form class="form transactions-filter" method="post" action="{{search_path}}">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+<div class="grid-row transactions-filter">
+  <form class="form" method="get" action="{{search_path}}">
     <fieldset>
-        <div class="column-quarter">
+        <div class="column-half reference-number">
           <label class="form-label" for="reference">
             <strong>Reference Number</strong>
             <span class="form-hint">Enter full or partial number</span>
@@ -10,7 +9,7 @@
           <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
         </div>
 
-        <div class="column-quarter">
+        <div class="column-half">
           <label class="form-label" for="state">
             <strong>State</strong>
             <span class="form-hint">Select an option</span>
@@ -35,7 +34,7 @@
           <div class="time selector">
             <span class="form-hint">Time</span>
             <input class="form-control large time-picker start" id="fromTime" name="fromTime" type="text" value="{{filters.fromTime}}" autocomplete="off">
-            <span class="form-hint">eg 9:30:00</span>
+            <span class="form-hint">eg 9:30</span>
           </div>
         </div>
         <div class="datetime-seperator">
@@ -50,7 +49,7 @@
           <div class="time selector">
             <span class="form-hint">Time</span>
             <input class="form-control large time-picker end" id="toTime" name="toTime" type="text" value="{{filters.toTime}}" autocomplete="off">
-            <span class="form-hint">eg 15:00:00</span>
+            <span class="form-hint">eg 15:00</span>
           </div>
         </div>
       </div>

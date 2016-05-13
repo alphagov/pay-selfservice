@@ -3,6 +3,9 @@ header {
   .header-wrapper {
     max-width:1200px;
     margin: 0 auto;
+    @include respond-to-max(1260px) {
+      margin: 0 30px;
+    }
   }
   a {
     color: $white;
@@ -17,7 +20,7 @@ header {
     img {
       position: absolute;
       left: 0;
-      top: -6px;
+      top: -2px;
     }
   }
 
@@ -44,5 +47,6 @@ header {
   .logout {
     float: right;
     @include copy-16();
+    font-weight: bold;
   }
 }

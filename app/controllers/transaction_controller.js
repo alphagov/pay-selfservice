@@ -24,10 +24,22 @@ function filledBodyKeys(req) {
   return _.omitBy(req.body, _.isEmpty);
 }
 
-function createErrorhandler(req, res, defaultErrorMessage) {
-  return function (connectorError, connectorResponse) {
-    var errorMessage;
+module.exports.transactionsIndex = function (req, res) {
+  var accountId = auth.get_account_id(req);
+  var filters = filledBodyKeys(req);
 
+  var init = function(){
+    connectorClient()
+      .withTransactionList(accountId, filters, showTransactions)
+      .on('connectorError', showError);
+  };
+
+  var showTransactions = function (charges) {
+    charges.search_path = router.paths.transactions.index
+    var data = transactionView.buildPaymentList(charges, accountId, filters);
+    response(req.headers.accept, res, 'transactions/index', data);
+  };
+  var showError = function (connectorError) {
     if (connectorError) {
       errorMessage = 'Internal server error';
     } else if (connectorResponse.statusCode === 404) {

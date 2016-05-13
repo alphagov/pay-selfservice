@@ -20,8 +20,8 @@ GOV.UK Pay - View transactions
 {{/pageSpecificJS}}
 
 {{$content}}
-<h1 class="heading-large page-title tuck-bottom">Transactions</h1>
-<h2 class="heading-medium pull-top">Filter transactions list</h2>
+<h1 class="heading-large page-title tuck-bottom-sml">Transactions</h1>
+<h2 class="heading-medium pull-top pull-bottom">Filter transactions list</h2>
 
 {{>transactions/filter}}
 
@@ -42,7 +42,7 @@ GOV.UK Pay - View transactions
 {{>transactions/paginator}}
 
 {{#hasResults}}
-<a href="{{downloadTransactionLink}}" id="download-transactions-link"> Download a spreadsheet of these transactions </a>
+<a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
 {{/hasResults}}
 
 {{>transactions/list}}

@@ -13,7 +13,6 @@
 @import "design-patterns/_buttons";
 
 // Override New Transport font-stack from front-end toolkit
-$NTA-Light: Helvetica, Arial, sans-serif;
 $grey-8: #fff;
 
 @mixin media-down($mobile) {
@@ -46,3 +45,4 @@ $grey-8: #fff;
 
 
 @import "template/template";
+@import "template/fonts";

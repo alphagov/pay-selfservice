@@ -1,23 +1,50 @@
 .transactions-filter {
+
+  padding: 15px;
+  form {
+    background: $panel-colour;
+  }
   .filter-submit {
-    @include respond-to(tablet) {
-      margin-top: 20px;
-      margin-bottom: 0;
-      padding-right: 35px;
+    float: right;
+    display: block;
+    width: auto;
+    margin-top: 50px;
+    padding-right: 20px;
+    width:200px;
+    @include respond-to-max(860px) {
+      margin-top: 0;
+      margin-right: 15px;
+      padding-right: 0;
+    }
+    @include respond-to-max(640px) {
+      width: 100%;
+      margin: 15px 15px 15px;
     }
   }
 
   .button {
-    padding-top: 3px;
-    padding-bottom:4px;
-    float: right;
-    margin-right: 20px;
+    padding-top: 5px;
+    padding-bottom:1px;
+    float: left;
+    margin-right: 0;
+    width: auto;
+    @include respond-to-max(860px) {
+      float: right;
+    }
+
   }
 
   .clear-filter {
     @include core-14;
     float: right;
+    margin-left: 15px;
+    margin-top: 4px;
   }
+  .column-half {
+
+    margin: 15px 0;
+  }
+
 
   .column-quarter {
     @include respond-to-max(1040px) {
@@ -39,20 +66,56 @@
     }
   }
 
+  .datetime-pair {
+    width: 80%;
+    width: calc(100% - 200px);
+    margin-top: 0;
+    @include respond-to-max(860px) {
+      width: 100%;
+    }
+    @include respond-to-max(mobile) {
+      margin-top: 15px;
+    }
+  }
+
   .datetime-filter {
     float: left;
-    width:47.5%;
-  }
-  .datetime-filter .selector {
     width:45%;
+    width: calc(50% - 20px);
+    @include respond-to-max(mobile) {
+      width: 100%;
+      &:first-of-type {
+        margin-top: 5px;
+      }
+    }
+  }
+
+  .datetime-filter .selector {
+    width:47.5%;
     margin: 0 2.5%;
     float: left;
+    &:first-of-type {
+      margin-left: 0;
+    }
+    &:last-of-type {
+      float: right;
+      margin-right: 0;
+    }
+
   }
   .datetime-seperator {
-    width: 5%;
+    width: 40px;
     float: left;
-    line-height: 80px;
+    line-height: 86px;
     text-align: center;
+    @include respond-to-max(mobile) {
+      text-align: left;
+      line-height: 32px;
+      font-weight: bold;
+    }
+  }
 
+  .datetime-filter input + .form-hint {
+      margin-top: 5px;
   }
 }

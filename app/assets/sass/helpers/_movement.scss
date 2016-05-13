@@ -6,14 +6,26 @@
   margin-bottom: 0;
 }
 
+.pull-bottom-sml {
+  margin-bottom: 8px;
+}
+
+
 .push-left {
 	margin-left: $gutter
 }
 
 .push-bottom {
   margin-bottom: $gutter;
+  display: block;
 }
 
 .push-bottom-sml {
   margin-bottom: $gutter-half;
+  display: block;
 }
+
+.tuck-bottom-sml {
+  padding-bottom: 10px;
+}
+

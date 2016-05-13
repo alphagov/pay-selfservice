@@ -37,15 +37,11 @@ portfinder.getPort(function (err, connectorPort) {
       .reply(200, data);
   }
 
-  function search_transactions(data, sendCSRF) {
-    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
-    if (sendCSRF) {
-      data.csrfToken = csrf().create('123');
-    }
+  function search_transactions(data) {
+    var query = querystring.stringify(data);
 
-    return request(app).post(paths.transactions.index)
+    return request(app).get(paths.transactions.index + "?" + query)
       .set('Accept', 'application/json')
-      .set('Content-Type', 'application/x-www-form-urlencoded')
       .send(data);
   }
 
@@ -72,7 +68,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -84,7 +80,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-2',
                     'amount': 2000,
                     'reference': 'ref2',
-                    'state': { 
+                    'state': {
                       'status': 'testing2',
                       'finished' : false
                     },
@@ -104,7 +100,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -120,7 +116,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-2',
                     'amount': '20.00',
                     'reference': 'ref2',
-                    'state': { 
+                    'state': {
                       'status': 'testing2',
                       'finished' : false
                     },
@@ -152,7 +148,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -172,7 +168,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -202,7 +198,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -222,7 +218,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -252,7 +248,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -277,7 +273,7 @@ portfinder.getPort(function (err, connectorPort) {
             });
 
             connectorMock_responds(connectorData, queryStringParams);
-            
+
               var expectedData = {
                 'results': [
                   {
@@ -285,7 +281,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
-                    'state': { 
+                    'state': {
                       'status': 'testing',
                       'finished' : false
                     },
@@ -324,23 +320,6 @@ portfinder.getPort(function (err, connectorPort) {
                   .expect(function(res) {
                            res.body.results.should.eql(expectedData.results);
                    })
-                  .end(done);
-            });
-          it('should  not return if there is no csrf', function (done) {
-
-              var connectorData = {
-                'results': []
-              };
-
-              var data= {'reference': 'test'};
-              connectorMock_responds(connectorData, data);
-
-              var expectedData = {
-                'results': []
-              };
-
-              search_transactions(data,false)
-                  .expect(200, {message: "There is a problem with the payments platform"})
                   .end(done);
             });
 
