@@ -7,6 +7,8 @@ var dates       = require('../../app/utils/dates.js');
 var paths       = require(__dirname + '/../../app/paths.js');
 var winston     = require('winston');
 var session     = require(__dirname + '/../test_helpers/mock_session.js');
+var querystring = require('querystring');
+var _           = require('lodash');
 
 var gatewayAccountId = 452345;
 
@@ -22,15 +24,16 @@ portfinder.getPort(function (err, connectorPort) {
   var DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE);
 
   function connectorMock_responds(data, searchParameters) {
-    var queryStr = '?';
-        queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-                    '&state=' + (searchParameters.state ? searchParameters.state : '') +
-                    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-                    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-                    '&page=' + (searchParameters.page ? searchParameters.page : 1) +
-                    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : 100);
+    var queryString = querystring.stringify({
+      reference: searchParameters.reference ? searchParameters.reference : '',
+      state: searchParameters.state ? searchParameters.state : '',
+      from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
+      to_date: searchParameters.toDate ? searchParameters.toDate : '',
+      page: searchParameters.page ? searchParameters.page : 1,
+      display_size: searchParameters.pageSize ? searchParameters.pageSize : 100
+    });
 
-    return connectorMock.get(CHARGES_SEARCH_API_PATH + encodeURI(queryStr))
+    return connectorMock.get(CHARGES_SEARCH_API_PATH + '?' + queryString)
       .reply(200, data);
   }
 
@@ -46,7 +49,7 @@ portfinder.getPort(function (err, connectorPort) {
       .send(data);
   }
 
-  describe('Transactions endpoints', function() {
+  describe('Transactions endpoints', function () {
 
     beforeEach(function () {
       process.env.CONNECTOR_URL = localServer;
@@ -259,14 +262,22 @@ portfinder.getPort(function (err, connectorPort) {
                 ]
               };
 
-              var data= {
-                'reference': 'ref1',
-                'state': 'TEST_STATUS',
-                'from_date': '01/01/2016',
-                'to_date': '01/01/2020'
-                };
-              connectorMock_responds(connectorData, data);
+        var data = {
+          'reference': 'ref1',
+          'state': 'TEST_STATUS',
+          'fromDate': '21/01/2016',
+          'fromTime': '13:04:45',
+          'toDate': '22/01/2016',
+          'toTime': '14:12:18'
+        };
 
+            var queryStringParams = _.extend({}, data, {
+              'fromDate': '2016-01-21T13:04:45.000Z',
+              'toDate': '2016-01-22T14:12:19.000Z'
+            });
+
+            connectorMock_responds(connectorData, queryStringParams);
+            
               var expectedData = {
                 'results': [
                   {

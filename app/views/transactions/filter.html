@@ -2,46 +2,63 @@
   <form class="form transactions-filter" method="post" action="{{search_path}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <fieldset>
-      <div class="column-quarter">
-        <label class="form-label" for="reference">
-          <strong>Reference Number</strong>
-          <span class="form-hint">Enter full or partial number</span>
-        </label>
-        <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
-      </div>
+        <div class="column-quarter">
+          <label class="form-label" for="reference">
+            <strong>Reference Number</strong>
+            <span class="form-hint">Enter full or partial number</span>
+          </label>
+          <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
+        </div>
 
-      <div class="column-quarter">
-        <label class="form-label" for="state">
-          <strong>State</strong>
-          <span class="form-hint">Select an option</span>
-        </label>
-        <select class="form-control large" id="state" name="state">
-          <option value="">Any</option>
-          {{#eventStates}}
-            <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
-          {{/eventStates}}
-        </select>
-      </div>
-      <div class="column-quarter">
+        <div class="column-quarter">
+          <label class="form-label" for="state">
+            <strong>State</strong>
+            <span class="form-hint">Select an option</span>
+          </label>
+          <select class="form-control large" id="state" name="state">
+            <option value="">Any</option>
+            {{#eventStates}}
+              <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
+            {{/eventStates}}
+          </select>
+        </div>
+      <div class="column-half datetime-pair">
         <label class="form-label" for="fromDate">
           <strong>Date range</strong>
-          <span class="form-hint">eg 25/11/2015 to 27/11/2015</span>
         </label>
-        <div class="column-half tiny-guttering pull-left date-from">
-          <input class="form-control large" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" placeholder="from" >
+        <div class="datetime-filter">
+          <div class="date selector">
+            <span class="form-hint">Date</span>
+            <input class="form-control large date-picker start" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" autocomplete="off">
+            <span class="form-hint">eg 25/11/2015</span>
+          </div>
+          <div class="time selector">
+            <span class="form-hint">Time</span>
+            <input class="form-control large time-picker start" id="fromTime" name="fromTime" type="text" value="{{filters.fromTime}}" autocomplete="off">
+            <span class="form-hint">eg 9:30:00</span>
+          </div>
         </div>
-        <div class="column-half tiny-guttering pull-right date-to">
-          <input class="form-control large" id="toDate" name="toDate" type="text" value="{{filters.toDate}}" placeholder="to" >
+        <div class="datetime-seperator">
+          to
+        </div>
+        <div class="datetime-filter">
+          <div class="date selector">
+            <span class="form-hint">Date</span>
+            <input class="form-control large date-picker end" id="toDate" name="toDate" type="text" value="{{filters.toDate}}" autocomplete="off">
+            <span class="form-hint">eg 27/11/2015</span>
+          </div>
+          <div class="time selector">
+            <span class="form-hint">Time</span>
+            <input class="form-control large time-picker end" id="toTime" name="toTime" type="text" value="{{filters.toTime}}" autocomplete="off">
+            <span class="form-hint">eg 15:00:00</span>
+          </div>
         </div>
       </div>
-
-      <div class="column-quarter">
-        <div class="form-group filter-submit">
-          <input class="button" type="submit" id="filter" value="Filter">
-          {{#hasFilters}}
-            <a href="{{routes.transactions.index}}" class="clear-filter"> Clear Filter </a>
-          {{/hasFilters}}
-        </div>
+      <div class="form-group filter-submit">
+        {{#hasFilters}}
+        <a href="{{routes.transactions.index}}" class="clear-filter"> Clear Filter </a>
+        {{/hasFilters}}
+        <input class="button" type="submit" id="filter" value="Filter">
       </div>
     </fieldset>
   </form>

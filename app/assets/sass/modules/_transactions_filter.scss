@@ -1,18 +1,22 @@
 .transactions-filter {
   .filter-submit {
     @include respond-to(tablet) {
-      margin-top: 50px;
+      margin-top: 20px;
       margin-bottom: 0;
+      padding-right: 35px;
     }
   }
 
   .button {
     padding-top: 3px;
     padding-bottom:4px;
+    float: right;
+    margin-right: 20px;
   }
 
   .clear-filter {
     @include core-14;
+    float: right;
   }
 
   .column-quarter {
@@ -33,5 +37,22 @@
     @include respond-to-max(mobile) {
       margin-bottom: $gutter-half;
     }
+  }
+
+  .datetime-filter {
+    float: left;
+    width:47.5%;
+  }
+  .datetime-filter .selector {
+    width:45%;
+    margin: 0 2.5%;
+    float: left;
+  }
+  .datetime-seperator {
+    width: 5%;
+    float: left;
+    line-height: 80px;
+    text-align: center;
+
   }
 }
