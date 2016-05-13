@@ -11,6 +11,7 @@ var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
 var dependenciesCheck = require(__dirname + '/app/utils/dependent_resource_checker.js');
 var logger            = require('winston');
+var loggingMiddleware = require('morgan');
 var argv              = require('minimist')(process.argv.slice(2));
 var environment       = require(__dirname + '/app/services/environment.js');
 var auth              = require(__dirname + '/app/services/auth_service.js');      
@@ -19,7 +20,12 @@ var unconfiguredApp   = express();
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
-
+  logger.stream = {
+    write: function(message, encoding){
+      logger.info(message);
+    }
+  };
+  app.use('/\/((?!public\/).)*/',loggingMiddleware('combined', {'stream' : logger.stream}));
   app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
   app.use(function (req, res, next) {
     res.locals.assetPath  = '/public/';
