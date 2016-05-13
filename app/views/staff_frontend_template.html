@@ -24,7 +24,7 @@
     <header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
       <div class="header-wrapper">
         <div class="header-logo">
-          <a href="{{$homepageUrl}}/tokens{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
+          <a href="/" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
             <img src="/public/images/crest_white.png" width="35" height="35" alt=""> {{$globalHeaderText}}GOV.UK Pay Self Service{{/globalHeaderText}}
           </a>
           <a href="/logout" title="Log me out" id="logout" class="content logout">Log Out</a>
@@ -39,7 +39,7 @@
         <div class="inner">
           <nav role="navigation">
             <ul>
-              <li><a href="{{ routes.login.loggedIn }}">Homepage</a></li>
+              <li><a href="/">Homepage</a></li>
               <li><a href="{{ routes.devTokens.index }}">API keys</a></li>
               <li><a href="{{ routes.transactions.index }}" data-qa-transaction-link>Transactions</a></li>
               <li><a href="{{ routes.credentials.index }}">Account credentials</a></li>
