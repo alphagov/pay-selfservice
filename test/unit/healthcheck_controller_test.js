@@ -49,11 +49,10 @@ describe('health check controller', function () {
     };
 
     var mockResponseHandler = {
-      response: function (accept, res, template, data) {
+      healthCheckResponse: function (accept, res, data) {
         assert(data.database.healthy === false);
         assert(data.ping.healthy === true);
         assert(accept === 'application/json');
-        assert(template === null);
       }
     };
 
@@ -78,11 +77,10 @@ describe('health check controller', function () {
     };
 
     var mockResponseHandler = {
-      response: function (accept, res, template, data) {
+      healthCheckResponse: function (accept, res, data) {
         assert(data.database.healthy === true);
         assert(data.ping.healthy === true);
         assert(accept === 'application/json');
-        assert(template === null);
       }
     };
 
