@@ -16,11 +16,14 @@ module.exports = function () {
   var toDateToApiFormat = function (date, time) {
     var fixedTime = time;
 
+    // Increment needed to make the toDate inclusive
+    var increment = 1;
+
     if (!time ) {
       fixedTime = MAX_TIME;
     }
 
-    return (date) ? moment.tz(`${date} ${fixedTime}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').add(1, 'second').toISOString() : "";
+    return (date) ? moment.tz(`${date} ${fixedTime}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').add(increment, 'second').toISOString() : "";
   };
 
   var utcToDisplay = function (date) {

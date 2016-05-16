@@ -3,7 +3,6 @@
     var init = function () {
         datePicker();
         timePicker();
-        datePair();
       },
 
       datePicker = function () {
