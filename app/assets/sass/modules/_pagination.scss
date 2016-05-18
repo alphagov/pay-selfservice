@@ -1,11 +1,9 @@
 #pagination {
 	margin-bottom: $gutter-half;
-	height: $gutter;
-
 	input.pagination {
 		/* Remove all decorations to look like normal text */
 		background: none;
-		display: inline;
+		display: inline-block;
 		font: inherit;
 		margin: 0;
 		border: none;
@@ -13,15 +11,14 @@
 		outline-offset: 0;
 		/* Additional styles to look like a link */
 		color: $link-colour;
-		font-size: 12px;
 		cursor: pointer;
 		text-transform: capitalize;
 		padding: 0 $gutter-half;
 		line-height: 30px;
 	}
 
-	input.pagination.first:before {
-		content: "<<";
+	input.pagination.active {
+		background-color: $highlight-colour;
 	}
 
 	.paginationForm {
@@ -30,9 +27,48 @@
 		border: 1px solid $border-colour;
 		border-right: none;
 		vertical-align: middle;
+		color: $link-colour;
+		font-size: 12px;
 	}
 
 	.paginationForm:last-child {
 		border: 1px solid $border-colour;
+	}
+
+	.paginationForm:before {
+    display: inline-block;
+    margin: 0 -12px 0 8px;	
+    top: -1px;
+    position: relative;
+  }
+
+  .paginationForm:after {
+    display: inline-block;
+    margin: 0 8px 0 -12px;	
+    position: relative;
+    top: -1px;
+  }
+
+	.paginationForm.first:before {
+		content:"<<";
+	}
+
+	.paginationForm.previous:before {
+		content:"<";
+	}
+
+	.paginationForm.next:after {
+		content:">";
+	}
+
+	.paginationForm.last:after {
+		content:">>";
+	}
+
+
+	&::after{
+    content: "";
+    display: block;
+    clear: both;
 	}
 }

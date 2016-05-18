@@ -76,11 +76,11 @@ portfinder.getPort(function (err, connectorPort) {
                 .expect(200)
                 .expect(function(res) {
                    res.body.paginationLinks.should.eql([
-                    { pageNumber: 1, pageName: 1 },
-                    { pageNumber: 2, pageName: 2 },
-                    { pageNumber: 3, pageName: 3 },
-                    { pageNumber: 2, pageName: 'next'},
-                    { pageNumber: 6, pageName: 'last' }
+                    { pageNumber: 1, pageName: 1, activePage: true },
+                    { pageNumber: 2, pageName: 2 , activePage: false},
+                    { pageNumber: 3, pageName: 3 , activePage: false},
+                    { pageNumber: 2, pageName: 'next', activePage: false},
+                    { pageNumber: 6, pageName: 'last' , activePage: false}
                     ]);
                   })
                 .end(done);
@@ -103,14 +103,14 @@ portfinder.getPort(function (err, connectorPort) {
               .expect(200)
               .expect(function(res) {
                  res.body.paginationLinks.should.eql([
-                  { pageNumber: 2, pageName: 'previous' },
-                  { pageNumber: 1, pageName: 1 },
-                  { pageNumber: 2, pageName: 2 },
-                  { pageNumber: 3, pageName: 3 },
-                  { pageNumber: 4, pageName: 4 },
-                  { pageNumber: 5, pageName: 5 },
-                  { pageNumber: 4, pageName: 'next'},
-                  { pageNumber: 6, pageName: 'last' }
+                  { pageNumber: 2, pageName: 'previous' , activePage: false},
+                  { pageNumber: 1, pageName: 1 , activePage: false},
+                  { pageNumber: 2, pageName: 2 , activePage: false},
+                  { pageNumber: 3, pageName: 3 , activePage: true},
+                  { pageNumber: 4, pageName: 4 , activePage: false},
+                  { pageNumber: 5, pageName: 5 , activePage: false},
+                  { pageNumber: 4, pageName: 'next', activePage: false},
+                  { pageNumber: 6, pageName: 'last', activePage: false }
                   ]);
                 })
               .end(done);
@@ -134,14 +134,14 @@ portfinder.getPort(function (err, connectorPort) {
                 .expect(200)
                 .expect(function(res) {
                    res.body.paginationLinks.should.eql([
-                    { pageNumber: 2, pageName: 'previous' },
-                    { pageNumber: 1, pageName: 1 },
-                    { pageNumber: 2, pageName: 2 },
-                    { pageNumber: 3, pageName: 3 },
-                    { pageNumber: 4, pageName: 4 },
-                    { pageNumber: 5, pageName: 5 },
-                    { pageNumber: 4, pageName: 'next'},
-                    { pageNumber: 15, pageName: 'last' }
+                    { pageNumber: 2, pageName: 'previous' , activePage: false},
+                    { pageNumber: 1, pageName: 1 , activePage: false},
+                    { pageNumber: 2, pageName: 2 , activePage: false},
+                    { pageNumber: 3, pageName: 3 , activePage: true},
+                    { pageNumber: 4, pageName: 4 , activePage: false},
+                    { pageNumber: 5, pageName: 5 , activePage: false},
+                    { pageNumber: 4, pageName: 'next', activePage: false},
+                    { pageNumber: 15, pageName: 'last' , activePage: false}
                     ]);
                   })
                 .end(done);
@@ -164,11 +164,11 @@ portfinder.getPort(function (err, connectorPort) {
               .expect(200)
               .expect(function(res) {
                  res.body.paginationLinks.should.eql([
-                  { pageNumber: 1, pageName: 1 },
-                  { pageNumber: 2, pageName: 2 },
-                  { pageNumber: 3, pageName: 3 },
-                  { pageNumber: 2, pageName: 'next'},
-                  { pageNumber: 6, pageName: 'last' }
+                  { pageNumber: 1, pageName: 1 , activePage: true},
+                  { pageNumber: 2, pageName: 2, activePage: false },
+                  { pageNumber: 3, pageName: 3 , activePage: false},
+                  { pageNumber: 2, pageName: 'next', activePage: false},
+                  { pageNumber: 6, pageName: 'last' , activePage: false}
                   ]);
                 })
               .end(done);
