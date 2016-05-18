@@ -12,7 +12,6 @@ var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}';
 var ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts';
 var ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}';
 var SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename';
-var CONTENT_TYPE_CSV = 'text/csv';
 
 /**
  * @private
@@ -86,25 +85,6 @@ function _chargeUrlFor (gatewayAccountId, chargeId, url) {
     return url + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
 };
 
-/** @private */
-function _transactionUrlFor (gatewayAccountId, url) {
-    return url + FRONTEND_CHARGE_PATH + '?gatewayAccountId=' + gatewayAccountId;
-};
-
-/** @private */
-function _searchTransactionsUrlFor (gatewayAccountId, searchParameters, url) {
-    var query = querystring.stringify({
-        reference: searchParameters.reference,
-        state: searchParameters.state,
-        from_date: dates.userInputToApiFormat(searchParameters.fromDate),
-        to_date: dates.userInputToApiFormat(searchParameters.toDate),
-        page: searchParameters.page || 1,
-        display_size: searchParameters.pageSize || 100
-    });
-
-    return url + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) +"?" + query;
-};
-
 /**
  * Connects to connector
  * @param {string} connectorUrl connector url
@@ -127,34 +107,24 @@ ConnectorClient.prototype = {
      * @returns {ConnectorClient}
      */
     withTransactionList: function (gatewayAccountId, searchParameters, successCallback) {
-        var url = _searchTransactionsUrlFor(gatewayAccountId, searchParameters, this.connectorUrl);
+        var url = this.withSearchTransactions(gatewayAccountId, searchParameters, this.connectorUrl);
         logger.info('CONNECTOR GET ' + url);
         this.client(url, this.responseHandler(successCallback));
         return this;
     },
+    
+    withSearchTransactions (gatewayAccountId, searchParameters) {
+    var query = querystring.stringify({
+        reference: searchParameters.reference,
+        state: searchParameters.state,
+        from_date: dates.userInputToApiFormat(searchParameters.fromDate),
+        to_date: dates.userInputToApiFormat(searchParameters.toDate),
+        page: searchParameters.page || 1,
+        display_size: searchParameters.pageSize || 100
+    });
 
-    /**
-     * Download transaction list for a given gateway account id.
-     * @param gatewayAccountId
-     * @returns {ConnectorClient}
-     */
-    withTransactionDownload: function (gatewayAccountId, searchParameters, successCallback) {
-        var url = _searchTransactionsUrlFor(gatewayAccountId, searchParameters, this.connectorUrl);
-        logger.info('CONNECTOR GET ' + url);
-
-        var options = {
-            url: url,
-            headers: {
-                'Accept': CONTENT_TYPE_CSV
-            }
-        };
-
-        this.client(options)
-            .on('error', this.onErrorEventHandler)
-            .on('response', this.onResponseEventHandler)
-            .pipe(successCallback());
-        return this;
-    },
+    return this.connectorUrl + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) +"?" + query;
+  },
 
     /**
      * Retrieves a Charge from connector for a given charge Id that belongs to a gateway account Id
@@ -205,7 +175,7 @@ ConnectorClient.prototype = {
         this.client.patch({url: url, body: payload}, this.responseHandler(successCallback));
         return this;
     }
-}
+};
 
 util.inherits(ConnectorClient, EventEmitter);
 

@@ -119,7 +119,7 @@ module.exports = function(grunt){
         },
         src: [
           'test/**/*.js',
-          '!test/test_heplers/*.js',
+          '!test/test_helpers/*.js'
         ]
       }
     },

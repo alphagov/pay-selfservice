@@ -24,7 +24,7 @@
     "stop": "forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "test": "npm run lint && npm run grunt-test",
-    "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js ./test/*.js",
+    "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js",
     "grunt-test": "node ./node_modules/.bin/grunt test"
   },
   "dependencies": {
@@ -33,7 +33,6 @@
     "change-case": "2.3.x",
     "check-types": "7.0.x",
     "chalk": "1.1.x",
-    "change-case": "2.3.x",
     "client-sessions": "0.7.x",
     "cluster": "0.7.x",
     "connect-session-sequelize": "3.0.x",
