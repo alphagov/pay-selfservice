@@ -119,12 +119,19 @@ module.exports = function(grunt){
         },
         src: [
           'test/**/*.js',
-          '!test/test_heplers/*.js',
+          '!test/test_helpers/*.js'
         ]
+      }
+    },
+    env: {
+      test: {
+        src: "config/test-env.json"
       }
     }
 
   });
+
+
 
   [
     'grunt-contrib-copy',
@@ -134,7 +141,8 @@ module.exports = function(grunt){
     'grunt-nodemon',
     'grunt-text-replace',
     'grunt-concurrent',
-    'grunt-mocha-test'
+    'grunt-mocha-test',
+    'grunt-env'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task);
   });
@@ -146,7 +154,7 @@ module.exports = function(grunt){
     'sass'
   ]);
 
-  grunt.registerTask('test', ['generate-assets', 'mochaTest']);
+  grunt.registerTask('test', ['env:test','generate-assets', 'mochaTest']);
 
   grunt.registerTask('default', [
     'generate-assets',

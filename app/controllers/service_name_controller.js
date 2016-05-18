@@ -32,7 +32,7 @@ module.exports.index = function (req, res) {
       renderErrorView(req, res, 'Internal server error');
       return;
     }
-    
+
     renderErrorView(req, res, 'Unable to retrieve the service name.');
   };
 
@@ -69,6 +69,3 @@ module.exports.update = function (req, res) {
 
   init();
 };
-
-module.exports.bindRoutesTo = function () {
-}

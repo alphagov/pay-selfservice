@@ -46,6 +46,3 @@ module.exports.logOut = function (req, res) {
 module.exports.noAccess = function (req, res) {
   res.render('noaccess');
 };
-
-module.exports.bindRoutesTo = function (app) {
-};

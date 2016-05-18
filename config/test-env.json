@@ -1,0 +1,11 @@
+{
+"CONNECTOR_URL":"http://aServer:8002",
+"AUTH0_URL":"my.test.auth0",
+"AUTH0_CLIENT_ID":"client12345",
+"AUTH0_CLIENT_SECRET": "clientsupersecret",
+"DISABLE_INTERNAL_HTTPS": "true",
+"SECURE_COOKIE_OFF": "true",
+"COOKIE_MAX_AGE": "10800000",
+"SESSION_ENCRYPTION_KEY": "naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk",
+"SESSION_IN_MEMORY":"true"
+}

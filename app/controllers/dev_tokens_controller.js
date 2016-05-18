@@ -160,7 +160,3 @@ function withValidAccountId(req, res, accountId, callback) {
     renderErrorView(req, res, ERROR_MESSAGE);
   });
 }
-
-
-module.exports.bindRoutesTo = function (app) {
-};
