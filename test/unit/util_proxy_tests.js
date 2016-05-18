@@ -26,14 +26,4 @@ describe('proxy settings', function () {
     assert.equal(process.env.NO_PROXY, 'localhost:8080,localhost:9090');
 
   });
-
-  it('should not be available if HTTP_PROXY_ENABLED is undefined', function () {
-    proxy.use();
-
-    assert.equal(process.env.HTTP_PROXY, undefined);
-    assert.equal(process.env.HTTPS_PROXY, undefined);
-    assert.equal(process.env.NO_PROXY, undefined);
-
-  });
-
 });

@@ -18,6 +18,7 @@ var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
 
+
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
   logger.stream = {
@@ -114,13 +115,13 @@ function listen() {
 function initialise() {
   var app = unconfiguredApp;
 
+  initialiseTLS(app);
+  initialiseProxy(app);
   initialiseAuth(app);
   initialiseGlobalMiddleware(app);
-  initialiseProxy(app);
   initialiseAppVariables(app);
   initialiseTemplateEngine(app);
   initialiseRoutes(app);
-  initialiseTLS(app);
   initialiseErrorHandling(app);
   initialisePublic(app);
 
