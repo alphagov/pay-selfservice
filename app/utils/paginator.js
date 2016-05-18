@@ -24,7 +24,8 @@ function Paginator(total, limit, page) {
 function createPageObject(pageNumber, pageName) {
   return {
     pageNumber: pageNumber,
-    pageName: pageName || pageNumber
+    pageName: pageName || pageNumber,
+    activePage: pageNumber === this.page
   }
 }
 
@@ -101,7 +102,7 @@ Paginator.prototype = {
     var namedPages = [];
 
     for (var ctr = 0; ctr < range.length; ctr++) {
-      namedPages.push(createPageObject(range[ctr]));
+      namedPages.push(createPageObject.call(this, range[ctr]));
     }
 
     return namedPages;

@@ -4,15 +4,14 @@
 	<form class="paginationForm {{pageName}}" method="post" action="{{search_path}}">
 		<div style="display:none">
 	    	<input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-			<input class="state" name="state" type="text" value="{{filters.state}}" >
-			<input class="ref" name="ref" type="text" value="{{filters.reference}}" >
-			<input class="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" >
-	        <input class="toDate" name="toDate" type="text" value="{{filters.toDate}}">
-	        <input class="page" name="page" type="text" value="{{pageNumber}}">
-	        <input class="pageSize" name="pageSize" type="text" value="{{filters.pageSize}}">
-
+				<input class="state" name="state" type="text" value="{{filters.state}}"/>
+				<input class="ref" name="ref" type="text" value="{{filters.reference}}"/>
+				<input class="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" />
+	      <input class="toDate" name="toDate" type="text" value="{{filters.toDate}}"/>
+	      <input class="page" name="page" type="text" value="{{pageNumber}}"/>
+	      <input class="pageSize" name="pageSize" type="text" value="{{filters.pageSize}}"/>
 	    </div>
-	    <input class="pagination {{pageName}}" type="submit" value="{{pageName}}">
+	    <input class="pagination {{pageName}} {{#activePage}}active{{/activePage}}" type="submit" value="{{pageName}}"/>
 	</form>
 	{{/paginationLinks}}
 </div>
