@@ -15,7 +15,7 @@ var SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename';
 
 /**
  * @private
- * @param  {object} 
+ * @param  {object}
  */
 function _createResponseHandler (self) {
     return function(callback) {
@@ -117,8 +117,8 @@ ConnectorClient.prototype = {
     var query = querystring.stringify({
         reference: searchParameters.reference,
         state: searchParameters.state,
-        from_date: dates.userInputToApiFormat(searchParameters.fromDate),
-        to_date: dates.userInputToApiFormat(searchParameters.toDate),
+        from_date: dates.fromDateToApiFormat(searchParameters.fromDate, searchParameters.fromTime),
+        to_date: dates.toDateToApiFormat(searchParameters.toDate, searchParameters.toTime),
         page: searchParameters.page || 1,
         display_size: searchParameters.pageSize || 100
     });

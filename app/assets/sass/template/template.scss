@@ -13,6 +13,9 @@
   @include media(desktop) {
     padding: $gutter 0 $gutter*3;
   }
+  @include respond-to-max(1260px) {
+    padding: 30px;
+  }
 }
 
 .content-wrapper {
@@ -102,12 +105,16 @@
   width: $full-width;
 
   .inner {
-    padding: 0 $gutter-half $gutter;
+    padding: 0;
   }
 }
 
 // Navigation styles
 .navigation {
+
+  .inner {
+    padding: 11px 30px 30px 0;
+  }
   ul {
     li {
       @include bold-16;
@@ -117,7 +124,7 @@
       a {
         color: $link-colour;
         display: block;
-        padding: $gutter-one-third/2 0;
+        padding: 10px 0;
         text-decoration: none;
         &:active {
           color: $black;
@@ -144,8 +151,5 @@
     float: left;
     width: 80%;
 
-    .inner {
-      padding: 0 $gutter 0 $gutter-half;
-    }
   }
 }

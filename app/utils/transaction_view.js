@@ -80,14 +80,16 @@ module.exports = {
             delete element.created_date;
         });
 
-        // TODO normalise fromDate and ToDate so you can just pass them through no problem
-        connectorData.downloadTransactionLink = router.generateRoute(
-            router.paths.transactions.download,{
-            reference: filters.reference,
-            status: filters.status,
-            from_date: filters.fromDate,
-            to_date: filters.toDate
-        });
+    // TODO normalise fromDate and ToDate so you can just pass them through no problem
+    connectorData.downloadTransactionLink = router.generateRoute(
+        router.paths.transactions.download,{
+        reference: filters.reference,
+        status: filters.status,
+        from_date: filters.fromDate,
+        to_date: filters.toDate, 
+        fromTime: filters.fromTime,
+        toTime:filters.toTime
+    });
 
         return connectorData;
     },

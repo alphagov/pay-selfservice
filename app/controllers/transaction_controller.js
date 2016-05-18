@@ -35,7 +35,7 @@ function createErrorhandler(req, res, defaultErrorMessage) {
     } else {
       errorMessage = defaultErrorMessage;
     }
-    
+
     renderErrorView(req, res, errorMessage);
   };
 };

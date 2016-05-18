@@ -6,13 +6,22 @@ GOV.UK Pay - View transactions
 
 {{$bodyClasses}}transactions index{{/bodyClasses}}
 
+{{$pageSpecificStyle}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.standalone.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css">
+{{/pageSpecificStyle}}
+
 {{$pageSpecificJS}}
 <script src="/public/js/components/link-follower.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepair.js/0.4.14/jquery.datepair.min.js"></script>
+<script src="/public/js/components/datetime-picker.js"></script>
 {{/pageSpecificJS}}
 
 {{$content}}
-<h1 class="heading-large page-title tuck-bottom">Transactions</h1>
-<h2 class="heading-medium pull-top">Filter transactions list</h2>
+<h1 class="heading-large page-title tuck-bottom-sml">Transactions</h1>
+<h2 class="heading-medium pull-top pull-bottom">Filter transactions list</h2>
 
 {{>transactions/filter}}
 
@@ -33,7 +42,7 @@ GOV.UK Pay - View transactions
 {{>transactions/paginator}}
 
 {{#hasResults}}
-<a href="{{downloadTransactionLink}}" id="download-transactions-link"> Download a spreadsheet of these transactions </a>
+<a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
 {{/hasResults}}
 
 {{>transactions/list}}
