@@ -3,11 +3,11 @@ process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwe
 var request         = require('supertest');
 var portfinder      = require('portfinder');
 var nock            = require('nock');
-var _app             = require(__dirname + '/../server.js').getApp;
+var _app             = require(__dirname + '/../../server.js').getApp;
 var querystring     = require('querystring');
-var paths           = require(__dirname + '/../app/paths.js');
+var paths           = require(__dirname + '/../../app/paths.js');
 var winston         = require('winston');
-var session     = require(__dirname + '/test_helpers/mock_session.js');
+var session     = require(__dirname + '/../test_helpers/mock_session.js');
 
 var gatewayAccountId = 651342;
 
@@ -29,7 +29,10 @@ portfinder.getPort(function (err, connectorPort) {
         queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
             '&state=' + (searchParameters.state ? searchParameters.state : '') +
             '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-            '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '');
+            '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
+            '&page=' + (searchParameters.page ? searchParameters.page : 1) +
+            '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : 100);
+
         return connectorMock.get(CHARGES_API_PATH + encodeURI(queryStr))
             .reply(code, data);
     }

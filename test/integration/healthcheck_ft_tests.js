@@ -1,6 +1,6 @@
 var request = require('supertest');
 var sinon = require('sinon');
-var app = require(__dirname + '/../server.js').getApp;
+var app = require(__dirname + '/../../server.js').getApp;
 
 describe('The /healthcheck endpoint returned json', function () {
 

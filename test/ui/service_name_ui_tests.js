@@ -1,6 +1,6 @@
 var should = require('chai').should();
-var renderTemplate = require(__dirname + '/test_helpers/html_assertions.js').render;
-var paths = require(__dirname + '/../app/paths.js');
+var renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
+var paths = require(__dirname + '/../../app/paths.js');
 
 describe('The service name view in normal mode', function () {
   it('should display the service name view', function () {

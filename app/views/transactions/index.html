@@ -18,7 +18,7 @@ GOV.UK Pay - View transactions
 
 
 <h3 class="heading-small" id="total-results">
-  {{results.length}} transactions
+  {{total}} transactions
   {{#filters.fromDate}}
     from {{filters.fromDate}}
   {{/filters.fromDate}}
@@ -29,6 +29,8 @@ GOV.UK Pay - View transactions
     with '{{filters.state }}' state
   {{/filters.state}}
 </h3>
+
+{{>transactions/paginator}}
 
 {{#hasResults}}
 <a href="{{downloadTransactionLink}}" id="download-transactions-link"> Download a spreadsheet of these transactions </a>

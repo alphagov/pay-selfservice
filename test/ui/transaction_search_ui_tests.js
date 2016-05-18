@@ -1,12 +1,13 @@
-require(__dirname + '/test_helpers/html_assertions.js');
+require(__dirname + '/../test_helpers/html_assertions.js');
 var should = require('chai').should();
 
-var renderTemplate = require(__dirname + '/test_helpers/test_renderer.js').render;
+var renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
 
 describe('The transaction list view', function () {
     it('should render all transactions', function () {
 
         var templateData = {
+            'total': 2,
             'results': [
                 {
                     'charge_id': '100',
