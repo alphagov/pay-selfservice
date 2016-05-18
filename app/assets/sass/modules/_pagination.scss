@@ -38,7 +38,6 @@
 	.paginationForm:before {
     display: inline-block;
     margin: 0 -12px 0 8px;	
-    top: -1px;
     position: relative;
   }
 
@@ -46,23 +45,22 @@
     display: inline-block;
     margin: 0 8px 0 -12px;	
     position: relative;
-    top: -1px;
   }
 
 	.paginationForm.first:before {
-		content:"<<";
+		content:"\00AB";
 	}
 
 	.paginationForm.previous:before {
-		content:"<";
+		content:"\2039";
 	}
 
 	.paginationForm.next:after {
-		content:">";
+		content:"\203A";
 	}
 
 	.paginationForm.last:after {
-		content:">>";
+		content:"\00BB";
 	}
 
 
