@@ -67,7 +67,7 @@ portfinder.getPort(function (err, connectorPort) {
                         },
                         {
                             'state': {
-                              'status': 'confirmed',
+                              'status': 'success',
                               'finished': true
                             },
                             'updated': '2015-12-24 12:05:43'
@@ -102,7 +102,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'payment_provider': 'sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'state': {
-                      'status': 'confirmed',
+                      'status': 'success',
                       'finished': true
                     },
                     'return_url': 'http://example.service/return_from_payments',
@@ -128,10 +128,10 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_account_id': gatewayAccountId,
                     'updated': '24 Dec 2015 — 13:21:05',
                     'state': {
-                      'status': 'confirmed',
+                      'status': 'success',
                       'finished': true
                     },
-                    'state_friendly': 'Confirmed',
+                    'state_friendly': 'Success',
                     'payment_provider': 'Sandbox',
                     'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
                     'events': [
@@ -159,10 +159,10 @@ portfinder.getPort(function (err, connectorPort) {
                         },
                         {
                             'state': {
-                              'status': 'confirmed',
+                              'status': 'success',
                               'finished': true
                             },
-                            "state_friendly": "Payment of £50.00 confirmed by payment provider",
+                            "state_friendly": "Payment of £50.00 succeeded",
                             "updated": "2015-12-24 12:05:43",
                             "updated_friendly": "24 Dec 2015 — 12:05:43"
                         },

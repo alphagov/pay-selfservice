@@ -13,16 +13,16 @@ describe('The transaction details view', function () {
         'charge_id':'1',
         'description':'First ever',
         'state' : {
-          'status':'confirmed',
+          'status':'success',
           'finished': true
         },
-        'state_friendly': 'Confirmed',
+        'state_friendly': 'Success',
         'gateway_transaction_id':'938c54a7-4186-4506-bfbe-72a122da6528',
 
         'events':[
             {'chargeId':1,
-             'state:' : { 'status': 'confirmed', 'finished' : true },
-             'state_friendly':'Payment of £10.00 confirmed by payment provider',
+             'state:' : { 'status': 'success', 'finished' : true },
+             'state_friendly':'Payment of £10.00 succeeded',
              'updated': "2015-12-24 13:21:05",
              'updated_friendly': "24 January 2015 13:21:05"},
 
