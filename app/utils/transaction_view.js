@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var changeCase = require('change-case');
 var dates = require('../utils/dates.js');
 var router = require('../routes.js');
