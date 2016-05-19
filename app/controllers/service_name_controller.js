@@ -1,12 +1,12 @@
-var response = require('../utils/response.js').response;
-var auth = require('../services/auth_service.js');
-var router = require('../routes.js');
+var response        = require('../utils/response.js').response;
+var auth            = require('../services/auth_service.js');
+var router          = require('../routes.js');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 
 var connectorClient = function () {
   return new ConnectorClient(process.env.CONNECTOR_URL);
-}
+};
 
 module.exports.index = function (req, res) {
 
@@ -14,7 +14,7 @@ module.exports.index = function (req, res) {
     var accountId = auth.get_account_id(req);
 
     connectorClient()
-      .withGetAccountServiceName(accountId, onSuccess)
+      .withGetAccount(accountId, onSuccess)
       .on('connectorError', onError);
   };
 
@@ -62,8 +62,6 @@ module.exports.update = function (req, res) {
       renderErrorView(req, res, 'Internal server error');
       return;
     }
-    ;
-
     renderErrorView(req, res, 'Unable to update the service name.');
   };
 

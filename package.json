@@ -67,7 +67,7 @@
     "node-rest-client": "1.8.x",
     "node-sass": "3.4.x",
     "passport": "0.3.x",
-    "passport-auth0": "0.5.1",
+    "passport-auth0": "0.5.x",
     "pg": "4.5.x",
     "pg-native": "1.10.x",
     "proxyquire": "1.7.x",
@@ -77,7 +77,7 @@
     "serve-favicon": "2.3.x",
     "sleep": "3.0.x",
     "throng": "4.0.x",
-    "winston": "1.1.x",
+    "winston": "2.2.x",
     "yargs": "4.7.x"
   },
   "devDependencies": {

@@ -1,16 +1,16 @@
 "use strict";
-var logger        = require('winston');
-var session       = require('express-session');
+var logger = require('winston');
+var session = require('express-session');
 var Auth0Strategy = require('passport-auth0');
-var passport      = require('passport');
-var paths         = require(__dirname + '/../paths.js');
-var csrf          = require('csrf');
+var passport = require('passport');
+var paths = require(__dirname + '/../paths.js');
+var csrf = require('csrf');
 var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
 
 
-var logIfError = function(scenario, err) {
+var logIfError = function (scenario, err) {
   if (err) {
-    logger.warn(scenario + ' [' + err + ']');
+    logger.warn(scenario, {'warn': err});
   }
 };
 
@@ -25,7 +25,7 @@ var AUTH_STRATEGY = new Auth0Strategy({
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
-    logger.info('Logged in: ' + user.displayName);
+    logger.info('Logged in user', {'displayname': user.displayName});
     return done(null, user);
   }
 );
@@ -34,11 +34,14 @@ var auth = {
   enforce: function (req, res, next) {
 
     req.session.reload(function (err) {
-      logIfError('enforce reload',err);
+      logIfError('Enforce reload of LogIn', err);
 
       if (req.session.passport && req.session.passport.user) {
         if (auth.get_account_id(req)) {
-          if (!req.session.csrfSecret){ req.session.csrfSecret = csrf().secretSync(); console.log('created',req.session.csrfSecret) }
+          if (!req.session.csrfSecret) {
+            req.session.csrfSecret = csrf().secretSync();
+            logger.info('Created csrfSecret')
+          }
           next();
         }
         else {

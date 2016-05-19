@@ -5,13 +5,13 @@ var sequelizeConfig = require('../utils/sequelize_config.js');
 module.exports.healthcheck = function (req, res) {
   var data = {'ping': {'healthy': true}, 'database': {'healthy': true}};
 
-   sequelizeConfig.sequelize
+  sequelizeConfig.sequelize
     .authenticate()
-    .then(function(err) {
-      logger.info('Connection has been established successfully.');
+    .then(function (err) {
+      logger.info('Connection has been established successfully');
       responseHandler.healthCheckResponse(req.headers.accept, res, data);
     }, function (err) {
-      logger.warn('Unable to connect to the database:', err);
+      logger.error('Unable to connect to the database', {'err': err});
       data.database.healthy = false;
       res.status(503);
       responseHandler.healthCheckResponse(req.headers.accept, res, data);

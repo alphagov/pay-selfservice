@@ -28,7 +28,7 @@ module.exports = function () {
 
   var utcToDisplay = function (date) {
     return moment(date).tz('Europe/London').format('DD MMM YYYY — HH:mm:ss')
-  }
+  };
 
   return {
     dateToDefaultFormat: dateToDefaultFormat,

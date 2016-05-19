@@ -76,8 +76,8 @@ Paginator.prototype = {
     var referencePageNumber = referencePageNumber || this.page,
       pageNumber = referencePageNumber + offset;
 
-    pageNumber = Math.max(pageNumber, this.getFirst())
-    pageNumber = Math.min(pageNumber, this.getLast())
+    pageNumber = Math.max(pageNumber, this.getFirst());
+    pageNumber = Math.min(pageNumber, this.getLast());
 
     return pageNumber;
   },
@@ -149,6 +149,6 @@ Paginator.prototype = {
 
     return namedRange;
   }
-}
+};
 
 module.exports = Paginator;
