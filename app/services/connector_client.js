@@ -23,9 +23,14 @@ function _createResponseHandler(self) {
     return function (error, response, body) {
       if (error || (response.statusCode !== 200)) {
         if (error) {
-          logger.error('Calling connector error', {'error': JSON.stringify(error)});
+          logger.error('Calling connector error -', {
+            service: 'connector',
+            error: JSON.stringify(error)});
         } else {
-          logger.error('Calling connector response failed', {'status': response.statusCode});
+          logger.error('Calling connector response failed -', {
+            service: 'connector',
+            status: response.statusCode
+          });
         }
         self.emit('connectorError', error, response, body);
         return;
@@ -47,8 +52,9 @@ function _createOnResponseEventHandler(self) {
       return;
     }
 
-    logger.error('Error while accessing connector', {
-      'status': response.statusCode
+    logger.error('Calling connector failed -', {
+      service:'connector',
+      status: response.statusCode
     });
     //
     // Necessary when streaming a response
@@ -65,7 +71,10 @@ function _createOnResponseEventHandler(self) {
  */
 function _createOnErrorEventHandler(self) {
   return function (error) {
-    logger.error('Error while accessing connector, ' + JSON.stringify(error));
+    logger.error('Calling connector failed -', {
+      service: 'connector',
+      error: JSON.stringify(error)
+    });
     self.emit('connectorError', error, null);
   }
 }
@@ -122,10 +131,11 @@ ConnectorClient.prototype = {
       page: searchParameters.page || 1,
       display_size: searchParameters.pageSize || 100
     });
-    logger.info('Calling connector to search account transactions', {
-      'method': 'GET',
-      'url': this.connectorUrl + CHARGES_API_PATH,
-      'queryParams': query
+    logger.info('Calling connector to search account transactions -', {
+      service: 'connector',
+      method: 'GET',
+      url: this.connectorUrl + CHARGES_API_PATH,
+      queryParams: query
     });
     return this.connectorUrl + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) + "?" + query;
   },
@@ -139,10 +149,11 @@ ConnectorClient.prototype = {
    */
   withGetCharge: function (gatewayAccountId, chargeId, successCallback) {
     var url = _chargeUrlFor(gatewayAccountId, chargeId, this.connectorUrl);
-    logger.info('Calling connector to get charge', {
-      'method': 'GET',
-      'url': this.connectorUrl + CHARGE_API_PATH,
-      'chargeId': chargeId
+    logger.info('Calling connector to get charge -', {
+      service: 'connector',
+      method: 'GET',
+      url: this.connectorUrl + CHARGE_API_PATH,
+      chargeId: chargeId
     });
     this.client(url, this.responseHandler(successCallback));
     return this;
@@ -157,10 +168,11 @@ ConnectorClient.prototype = {
    */
   withChargeEvents: function (gatewayAccountId, chargeId, successCallback) {
     var url = _chargeUrlFor(gatewayAccountId, chargeId, this.connectorUrl) + "/events";
-    logger.info('Calling connector to get events', {
-      'method': 'GET',
-      'url': this.connectorUrl + CHARGE_API_PATH + '/events',
-      'chargeId': chargeId
+    logger.info('Calling connector to get events -', {
+      service: 'connector',
+      method: 'GET',
+      url: this.connectorUrl + CHARGE_API_PATH + '/events',
+      chargeId: chargeId
     });
     this.client(url, this.responseHandler(successCallback));
     return this;
@@ -172,9 +184,10 @@ ConnectorClient.prototype = {
    */
   withGetAccount: function (gatewayAccountId, successCallback) {
     var url = _accountUrlFor(gatewayAccountId, this.connectorUrl);
-    logger.info('Calling connector to get account', {
-      'method': 'GET',
-      'url': this.connectorUrl + ACCOUNT_FRONTEND_PATH
+    logger.info('Calling connector to get account -', {
+      service: 'connector',
+      method: 'GET',
+      url: this.connectorUrl + ACCOUNT_FRONTEND_PATH
     });
     this.client(url, this.responseHandler(successCallback));
     return this;
@@ -186,9 +199,10 @@ ConnectorClient.prototype = {
    */
   withPatchServiceName: function (gatewayAccountId, payload, successCallback) {
     var url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl);
-    logger.info('Calling connector to update service name', {
-      'method': 'PATCH',
-      'url': this.connectorUrl + SERVICE_NAME_FRONTEND_PATH
+    logger.info('Calling connector to update service name -', {
+      service: 'connector',
+      method: 'PATCH',
+      url: this.connectorUrl + SERVICE_NAME_FRONTEND_PATH
     });
     this.client.patch({url: url, body: payload}, this.responseHandler(successCallback));
     return this;

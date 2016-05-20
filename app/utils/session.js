@@ -14,7 +14,7 @@ module.exports = function () {
     if (process.env.SESSION_ENCRYPTION_KEY === undefined) throw new Error('cookie encryption key is not set');
     if (process.env.COOKIE_MAX_AGE === undefined) throw new Error('cookie max age is not set');
     
-    logger.info('Checking environment variables', {
+    logger.info('Checking environment variables -', {
       'SECURE_COOKIE_OFF':process.env.SECURE_COOKIE_OFF,
       'SESSION_IN_MEMORY':process.env.SESSION_IN_MEMORY,
       'COOKIE_MAX_AGE':process.env.COOKIE_MAX_AGE,

@@ -11,7 +11,7 @@ module.exports.healthcheck = function (req, res) {
       logger.info('Connection has been established successfully');
       responseHandler.healthCheckResponse(req.headers.accept, res, data);
     }, function (err) {
-      logger.error('Unable to connect to the database', {'err': err});
+      logger.error('Unable to connect to the database -', {'err': err});
       data.database.healthy = false;
       res.status(503);
       responseHandler.healthCheckResponse(req.headers.accept, res, data);

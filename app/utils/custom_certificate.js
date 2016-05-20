@@ -9,14 +9,14 @@ module.exports = function () {
     var certsPath = process.env.CERTS_PATH || __dirname + '/../../certs';
     try {
       if (!fs.lstatSync(certsPath).isDirectory()) {
-        logger.error('Provided CERTS_PATH is not a directory', {
+        logger.error('Provided CERTS_PATH is not a directory -', {
           'certsPath': certsPath
         });
         return;
       }
     }
     catch (e) {
-      logger.error('Provided CERTS_PATH could not be read', {
+      logger.error('Provided CERTS_PATH could not be read -', {
         'certsPath': certsPath
       });
       return;

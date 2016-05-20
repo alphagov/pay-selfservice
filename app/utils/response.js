@@ -23,7 +23,7 @@ module.exports = {
   healthCheckResponse: healthCheckResponse,
 
   renderErrorView: function (req, res, msg) {
-    logger.error('An error has occurred. Rendering error view', {'message': msg});
+    logger.error('An error has occurred. Rendering error view -', {errorMessage: msg});
     response(req.headers.accept, res, 'error', {
       'message': msg
     });

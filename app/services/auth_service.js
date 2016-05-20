@@ -10,7 +10,7 @@ var selfServiceSession = require(__dirname + '/../utils/session.js').selfService
 
 var logIfError = function (scenario, err) {
   if (err) {
-    logger.warn(scenario, {'warn': err});
+    logger.warn(scenario + ' -', {'warn': err});
   }
 };
 
@@ -25,7 +25,7 @@ var AUTH_STRATEGY = new Auth0Strategy({
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
-    logger.info('Logged in user', {'displayname': user.displayName});
+    logger.info('Logged in user -', {'displayname': user.displayName});
     return done(null, user);
   }
 );

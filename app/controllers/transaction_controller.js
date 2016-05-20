@@ -29,7 +29,7 @@ function createErrorHandler(req, res, defaultErrorMessage) {
     } else {
       errorMessage = defaultErrorMessage;
     }
-    logger.error('Connector error making a request', {
+    logger.error('Connector error making a request -', {
       'error': errorMessage
     });
     renderErrorView(req, res, errorMessage);
@@ -67,7 +67,7 @@ module.exports = {
           return jsonToCsv(json.results);
         }, showError)
         .then(function (csv) {
-          logger.info('Sending csv attachment download', {'filename': name});
+          logger.info('Sending csv attachment download -', {'filename': name});
           res.setHeader('Content-disposition', 'attachment; filename=' + name);
           res.setHeader('Content-Type', 'text/csv');
           res.send(csv);

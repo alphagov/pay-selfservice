@@ -4,7 +4,7 @@ var router    = require('../routes.js');
 
 var logIfError = function (scenario, err) {
   if (err) {
-    logger.warn(scenario, {'error': err});
+    logger.warn(scenario + ' -', {'error': err});
   }
 };
 

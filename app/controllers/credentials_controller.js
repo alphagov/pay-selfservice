@@ -18,7 +18,7 @@ function showSuccessView(connectorData, viewMode, req, res) {
 
   if (!viewMode) responsePayload.editMode = 'true';
 
-  logger.info('Showing provider credentials view', {
+  logger.info('Showing provider credentials view -', {
     view: 'credentials',
     viewMode: viewMode,
     provider: paymentProvider
@@ -33,7 +33,8 @@ module.exports.index = function (req, res) {
   var viewMode = req.query.edit === undefined;
   var accountUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}";
 
-  logger.info('Calling connector to get account information', {
+  logger.info('Calling connector to get account information -', {
+    service:'connector',
     method: 'GET',
     url: accountUrl
   });
@@ -44,7 +45,8 @@ module.exports.index = function (req, res) {
         showSuccessView(connectorData, viewMode, req, res);
         break;
       default:
-        logger.error('Calling connector to get account information failed', {
+        logger.error('Calling connector to get account information failed -', {
+          service:'connector',
           method: 'GET',
           url: accountUrl,
           status: connectorResponse.status
@@ -53,7 +55,8 @@ module.exports.index = function (req, res) {
     }
 
   }).on('error', function (err) {
-    logger.error('Calling connector to get account information threw exception', {
+    logger.error('Calling connector to get account information threw exception -', {
+      service:'connector',
       method: 'GET',
       url: accountUrl,
       error: err
@@ -83,7 +86,8 @@ module.exports.update = function (req, res) {
     requestPayload.data.credentials.merchant_id = req.body.merchantId;
   }
 
-  logger.info('Calling connector to update provider credentials', {
+  logger.info('Calling connector to update provider credentials -', {
+    service:'connector',
     method: 'PATCH',
     url: '/frontend/accounts/{id}/credentials'
   });
@@ -91,7 +95,9 @@ module.exports.update = function (req, res) {
   client.patch(connectorUrl.replace("{accountId}", accountId), requestPayload, function (connectorData, connectorResponse) {
     switch (connectorResponse.statusCode) {
       case 200:
-        logger.error('Calling connector to update provider credentials failed. Redirecting back to credentials view', {
+        logger.error('Calling connector to update provider credentials failed. Redirecting back to credentials view -', {
+          service:'connector',
+          method:'PATCH',
           url: connectorUrl,
           status: connectorResponse.status
         });
@@ -102,7 +108,8 @@ module.exports.update = function (req, res) {
     }
 
   }).on('error', function (err) {
-    logger.error('Calling connector to update provider credentials threw exception', {
+    logger.error('Calling connector to update provider credentials threw exception  -', {
+      service: 'connector',
       method: 'GET',
       url: connectorUrl,
       error: err

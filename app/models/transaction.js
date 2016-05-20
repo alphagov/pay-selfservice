@@ -32,7 +32,8 @@ module.exports = function() {
   },
 
   clientUnavailable = function(error, defer) {
-    logger.error('Calling connector to search transactions for an account threw exception', {
+    logger.error('Calling connector to search transactions for an account threw exception -', {
+      service: 'connector',
       method: 'GET',
       error: error
     });
