@@ -13,11 +13,10 @@ const eventStates = {
         'created': 'Service created payment of AMOUNT',
         'started':'User started payment of AMOUNT',
         'submitted': 'User submitted payment details for payment of AMOUNT',
-        'confirmed': 'Payment of AMOUNT confirmed by payment provider',
+        'success': 'Payment of AMOUNT succeeded',
         'error': 'Error processing payment of AMOUNT',
         'failed': 'User failed to complete payment of AMOUNT',
-        'cancelled': 'Service cancelled payment of AMOUNT',
-        'captured': 'Money collected for payment of AMOUNT'
+        'cancelled': 'Service cancelled payment of AMOUNT'
 };
 
 function getPaginationLinks(connectorData) {
