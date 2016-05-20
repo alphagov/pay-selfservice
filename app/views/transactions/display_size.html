@@ -1,0 +1,22 @@
+  {{#hasPageSizeLinks}}
+
+  <div id="displaySize">
+    <span>Results per page:</span>
+    {{#pageSizeLinks}}
+    <form class="displaySizeForm {{type}}" method="post" action="{{search_path}}">
+      <div style="display:none">
+          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+          <input class="state" name="state" type="text" value="{{filters.state}}"/>
+          <input class="ref" name="ref" type="text" value="{{filters.reference}}"/>
+          <input class="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" />
+          <input class="toDate" name="toDate" type="text" value="{{filters.toDate}}"/>
+          <input class="page" name="page" type="text" value="1"/>
+          <input class="pageSize" name="pageSize" type="text" value="{{value}}"/>
+          <input class="fromTime" name="fromTime" type="text" value="{{filters.fromTime}}">
+          <input class="toTime" name="toTime" type="text" value="{{filters.toTime}}">
+        </div>
+        <input class="displaySize {{#active}}active{{/active}}" type="submit" value="{{name}}"/>
+    </form>
+    {{/pageSizeLinks}}
+  </div>
+  {{/hasPageSizeLinks}}

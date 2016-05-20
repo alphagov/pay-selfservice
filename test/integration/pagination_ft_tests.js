@@ -173,6 +173,75 @@ portfinder.getPort(function (err, connectorPort) {
                 })
               .end(done);
         });
+
+        it('should return correct display size options when total over 500', function (done) {
+          var connectorData = {};
+          var data= {'display_size': 100};
+          connectorData.total = 600;
+          connectorData.results = [];
+
+
+          connectorData._links = {
+            self: {"href":"/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
+
+          }
+          connectorMock_responds(connectorData, data);
+
+          search_transactions(data)
+              .expect(200)
+              .expect(function(res) {
+                res.body.pageSizeLinks.should.eql([
+                  {type: 'small', name: 100, value: 100, active: true},
+                  {type: 'large', name: 500, value: 500, active: false}
+                ]);
+               })
+              .end(done);
+        });
+
+        it('should return correct display size options when total between 100 and 500', function (done) {
+          var connectorData = {};
+          var data= {'display_size': 100};
+          connectorData.total = 400;
+          connectorData.results = [];
+
+
+          connectorData._links = {
+            self: {"href":"/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
+
+          }
+          connectorMock_responds(connectorData, data);
+
+          search_transactions(data)
+              .expect(200)
+              .expect(function(res) {
+                res.body.pageSizeLinks.should.eql([
+                  {type: 'small', name: 100, value: 100, active: true},
+                  {type: 'large', name: "Show all", value: 500, active: false}
+                ]);
+               })
+              .end(done);
+        });
+
+        it('should return correct display size options when total under 100', function (done) {
+          var connectorData = {};
+          var data= {'display_size': 100};
+          connectorData.total = 50;
+          connectorData.results = [];
+
+
+          connectorData._links = {
+            self: {"href":"/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
+
+          }
+          connectorMock_responds(connectorData, data);
+
+          search_transactions(data)
+              .expect(200)
+              .expect(function(res) {
+                assert.equal(res.body.pageSizeLinks, undefined);
+               })
+              .end(done);
+        });
       });
     });
  });

@@ -40,4 +40,29 @@ describe('paginator', function () {
 		expect(paginator3.getCentredRange(2)).to.deep.equal([3, 4, 5, 6]);
 
 	});
+
+	it("should return correct display size options", function () {
+		var paginator1 = new Paginator(1000, 100, 2);
+		var paginator2 = new Paginator(1000, 500, 2);
+
+		var paginator3 = new Paginator(400, 100, 4);
+		var paginator4 = new Paginator(50, 100, 5);
+
+		expect(paginator1.getDisplaySizeOptions(3)).to.deep.equal([
+			{type: 'small', name: 100, value: 100, active: true},
+			{type: 'large', name: 500, value: 500, active: false}
+		]);
+
+		expect(paginator2.getDisplaySizeOptions(3)).to.deep.equal([
+			{type: 'small', name: 100, value: 100, active: false},
+			{type: 'large', name: 500, value: 500, active: true}
+		]);
+
+		expect(paginator3.getDisplaySizeOptions(3)).to.deep.equal([
+			{type: 'small', name: 100, value: 100, active: true},
+			{type: 'large', name: 'Show all', value: 500, active: false}
+		]);
+
+		expect(paginator4.getDisplaySizeOptions(3)).to.equal(undefined);
+	});
 });
