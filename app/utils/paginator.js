@@ -1,4 +1,7 @@
 var _ = require('lodash');
+const SMALL_PAGE_SIZE = 100;
+const LARGE_PAGE_SIZE = 500;
+
 
 /**
  * Utility to return pages from collection to manage pagination
@@ -12,7 +15,7 @@ var _ = require('lodash');
  */
 function Paginator(total, limit, page) {
   this.total = total;
-  this.limit = limit || 100;
+  this.limit = limit || SMALL_PAGE_SIZE;
   this.page = page || 1;
 }
 
@@ -28,6 +31,25 @@ function createPageObject(pageNumber, pageName) {
     activePage: pageNumber === this.page
   }
 }
+
+function createDisplaySizeOptions(smallPageSizeName, largePageSizeName) {
+  var limit = this.limit;
+  return [
+    {
+      type: "small",
+      name: smallPageSizeName || SMALL_PAGE_SIZE,
+      value: SMALL_PAGE_SIZE,
+      active: (limit === SMALL_PAGE_SIZE)
+    },
+    {
+      type: "large",
+      name: largePageSizeName || LARGE_PAGE_SIZE,
+      value: LARGE_PAGE_SIZE,
+      active: (limit === LARGE_PAGE_SIZE)
+    }
+  ];
+}
+
 
 Paginator.prototype = {
   /**
@@ -148,6 +170,19 @@ Paginator.prototype = {
     }
 
     return namedRange;
+  },
+
+  /**
+   * @return {array}
+   */
+  getDisplaySizeOptions: function () {
+    if (this.total < SMALL_PAGE_SIZE) {
+      return;
+    } else if(this.total < LARGE_PAGE_SIZE) {
+      return createDisplaySizeOptions.call(this, null, "Show all") 
+    } else {
+      return createDisplaySizeOptions.call(this); 
+    }
   }
 };
 

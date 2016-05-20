@@ -1,0 +1,35 @@
+#displaySize {
+    font-size: 14px;
+    display: inline-block;
+    margin-left: $gutter;
+
+    .displaySizeForm {
+      display: inline-block;
+
+      &.small::after {
+        content: "|";
+      }
+      input.displaySize {
+        /* Remove all decorations to look like normal text */
+        background: none;
+        display: inline-block;
+        font: inherit;
+        margin: 0;
+        border: none;
+        outline: none;
+        outline-offset: 0;
+        /* Additional styles to look like a link */
+        color: $link-colour;
+        cursor: pointer;
+        text-transform: capitalize;
+        line-height: 30px;
+
+
+        &.active {
+            pointer-events: none;
+            cursor: default;
+            color: black;
+        }
+      }
+    }
+}

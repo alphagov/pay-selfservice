@@ -26,6 +26,13 @@ function getPaginationLinks(connectorData) {
   }
 }
 
+function getPageSizeLinks(connectorData) {
+  if (getCurrentPageSize(connectorData)) {
+    var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData));
+    return paginator.getDisplaySizeOptions();
+  }
+}
+
 function getCurrentPageNumber (connectorData) {
     var selfLink = connectorData._links && connectorData._links.self;
     var pageNumber;
@@ -56,9 +63,14 @@ module.exports = {
         connectorData.filters = filters;
         connectorData.hasFilters = Object.keys(filters).length !== 0;
         connectorData.hasResults = connectorData.results.length !== 0;
+
         connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length);
         connectorData.paginationLinks = getPaginationLinks(connectorData);
         connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData);
+
+        connectorData.hasPageSizeLinks = !!getCurrentPageSize(connectorData);    
+        connectorData.pageSizeLinks = getPageSizeLinks(connectorData);
+
         connectorData.eventStates = Object.keys(eventStates).map(function(str) {
             var value = {};
             value.text = changeCase.upperCaseFirst(str.toLowerCase());
