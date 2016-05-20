@@ -93,7 +93,6 @@ portfinder.getPort(function (err, connectorPort) {
           .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
           .expect(function (res) {
             var csvContent = res.text;
-            console.log('content of csv is: ' + csvContent);
             var arrayOfLines = csvContent.split("\n");
             assert(3, arrayOfLines.length);
             assert.equal('Reference,Amount,State,Finished,Error Code,Error Message,Gateway Transaction ID,GOV.UK Pay ID,Date Created', arrayOfLines[0]);

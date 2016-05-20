@@ -15,15 +15,15 @@ function healthCheckResponse(accept, res, data) {
 }
 
 module.exports = {
-  ERROR_MESSAGE : 'There is a problem with the payments platform',
-  ERROR_VIEW : 'error',
-  PAGE_NOT_FOUND_ERROR_MESSAGE : 'Page cannot be found',
+  ERROR_MESSAGE: 'There is a problem with the payments platform',
+  ERROR_VIEW: 'error',
+  PAGE_NOT_FOUND_ERROR_MESSAGE: 'Page cannot be found',
 
-  response : response,
+  response: response,
   healthCheckResponse: healthCheckResponse,
 
-  renderErrorView : function (req, res, msg) {
-    logger.error('An error occurred: ' + msg);
+  renderErrorView: function (req, res, msg) {
+    logger.error('An error has occurred. Rendering error view -', {errorMessage: msg});
     response(req.headers.accept, res, 'error', {
       'message': msg
     });

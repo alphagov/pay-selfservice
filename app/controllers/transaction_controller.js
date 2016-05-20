@@ -1,20 +1,14 @@
-var response        = require('../utils/response.js').response;
+var response = require('../utils/response.js').response;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 var transactionView = require('../utils/transaction_view.js');
-var jsonToCsv       = require('../utils/json_to_csv.js');
+var jsonToCsv = require('../utils/json_to_csv.js');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
-var auth            = require('../services/auth_service.js');
-var _               = require('lodash');
-var date            = require('../utils/dates.js');
-var router          = require('../routes.js');
-var session = require('../utils/session');
-var Transaction     = require('../models/transaction.js');
-var paginationKeys = ['first_page', 'prev_page', 'next_page', 'last_page'];
-
-
-function getPaginationLinks(data) {
-    return _.pick(data._links, paginationKeys);
-}
+var auth = require('../services/auth_service.js');
+var _ = require('lodash');
+var date = require('../utils/dates.js');
+var logger = require('winston');
+var router = require('../routes.js');
+var Transaction = require('../models/transaction.js');
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
@@ -24,7 +18,7 @@ function filledBodyKeys(req) {
   return _.omitBy(req.body, _.isEmpty);
 }
 
-function createErrorhandler(req, res, defaultErrorMessage) {
+function createErrorHandler(req, res, defaultErrorMessage) {
   return function (connectorError, connectorResponse) {
     var errorMessage;
 
@@ -35,17 +29,19 @@ function createErrorhandler(req, res, defaultErrorMessage) {
     } else {
       errorMessage = defaultErrorMessage;
     }
-
+    logger.error('Connector error making a request -', {
+      'error': errorMessage
+    });
     renderErrorView(req, res, errorMessage);
   };
-};
+}
 
 module.exports = {
 
   transactionsIndex: function (req, res) {
     var accountId = auth.get_account_id(req);
     var filters = filledBodyKeys(req);
-    var errorHandler = createErrorhandler(req, res, 'Unable to retrieve list of transactions.');
+    var errorHandler = createErrorHandler(req, res, 'Unable to retrieve list of transactions.');
 
     function showTransactions(charges) {
       var data;
@@ -53,7 +49,7 @@ module.exports = {
       charges.search_path = router.paths.transactions.index;
       data = transactionView.buildPaymentList(charges, accountId, filters);
       response(req.headers.accept, res, 'transactions/index', data);
-    };
+    }
 
     connectorClient()
       .withTransactionList(accountId, filters, showTransactions)
@@ -66,40 +62,40 @@ module.exports = {
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
     var init = function () {
-    Transaction.search(accountId, filters)
-      .then(function(json){
-        return jsonToCsv(json.results);
-      }, showError)
-      .then(function(csv){
-        res.setHeader('Content-disposition', 'attachment; filename=' + name);
-        res.setHeader('Content-Type', 'text/csv');
-        res.send(csv);
-      });
-  };
+      Transaction.search(accountId, filters)
+        .then(function (json) {
+          return jsonToCsv(json.results);
+        }, showError)
+        .then(function (csv) {
+          logger.info('Sending csv attachment download -', {'filename': name});
+          res.setHeader('Content-disposition', 'attachment; filename=' + name);
+          res.setHeader('Content-Type', 'text/csv');
+          res.send(csv);
+        });
+    };
 
     var showError = function (connectorError) {
       res.removeHeader("Content-Type");
       res.removeHeader("Content-disposition");
-
       if (connectorError) {
         renderErrorView(req, res, 'Internal server error');
         return;
       }
-      
+
       renderErrorView(req, res, 'Unable to download list of transactions.');
     };
 
     init();
   },
 
-  transactionsShow: function(req, res) {
+  transactionsShow: function (req, res) {
     var accountId = auth.get_account_id(req);
     var chargeId = req.params.chargeId;
-    var errorHandler = createErrorhandler(req, res, 'Error processing transaction view');
+    var errorHandler = createErrorHandler(req, res, 'Error processing transaction view');
 
     function foundCharge(charge) { //on success of finding a charge
       var charge = charge;
-      connectorClient().withChargeEvents(accountId, chargeId, function(events) {
+      connectorClient().withChargeEvents(accountId, chargeId, function (events) {
         foundChargeEvents(events, charge);
       }).on('connectorError', errorHandler);
     }

@@ -1,8 +1,10 @@
-var q = require('q');
-var dates = require('../utils/dates.js');
-var json2csv = require('json2csv');
+var q         = require('q');
+var dates     = require('../utils/dates.js');
+var logger    = require('winston');
+var json2csv  = require('json2csv');
 
 module.exports = function (data) {
+  logger.info('Converting transactions list from json to csv');
   var defer = q.defer();
   json2csv(
     {

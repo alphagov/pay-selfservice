@@ -11,7 +11,7 @@ module.exports = function() {
 
   var searchUrl = function(accountID, filters){
     var connector = new ConnectorClient(process.env.CONNECTOR_URL);
-    return connector.withSearchTransactions(accountID, filters);
+    return connector.withSearchTransactionsUrl(accountID, filters);
   },
 
   search = function(accountID, filters){
@@ -32,7 +32,11 @@ module.exports = function() {
   },
 
   clientUnavailable = function(error, defer) {
-    logger.error('Exception raised calling connector for del: ' + error);
+    logger.error('Calling connector to search transactions for an account threw exception -', {
+      service: 'connector',
+      method: 'GET',
+      error: error
+    });
     defer.reject(new Error('CLIENT_UNAVAILABLE'), error);
   };
 

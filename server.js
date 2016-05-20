@@ -21,11 +21,11 @@ var unconfiguredApp   = express();
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
   logger.stream = {
-    write: function(message, encoding){
+    write: function(message){
       logger.info(message);
     }
   };
-  app.use('/\/((?!public\/).)*/',loggingMiddleware('combined', {'stream' : logger.stream}));
+  app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware('combined', {'stream' : logger.stream}));
   app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
   app.use(function (req, res, next) {
     res.locals.assetPath  = '/public/';
