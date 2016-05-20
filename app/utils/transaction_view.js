@@ -6,6 +6,8 @@ var qs = require('qs');
 var querystring = require('querystring');
 var Paginator = require('./paginator');
 var check = require('check-types');
+var url = require('url');
+
 
 const PAGINATION_SPREAD = 2;
 const CURRENCY = '£';
@@ -34,23 +36,17 @@ function getPageSizeLinks(connectorData) {
 }
 
 function getCurrentPageNumber (connectorData) {
-    var selfLink = connectorData._links && connectorData._links.self;
-    var pageNumber;
-
-    if (selfLink) {
-        pageNumber = Number(qs.parse(selfLink.href).page);
-        if (check.number(pageNumber) && pageNumber > 0) {
-            return pageNumber;
-        }
-    }
+    return connectorData.page;
 }
 
 function getCurrentPageSize (connectorData) {
     var selfLink = connectorData._links && connectorData._links.self;
+    var queryString ;
     var limit;
 
     if (selfLink) {
-        limit = Number(qs.parse(selfLink.href).display_size);
+        queryString = url.parse(selfLink.href).query;
+        limit = Number(qs.parse(queryString).display_size);
         if (check.number(limit) && limit > 0) {
             return limit;
         }
@@ -91,16 +87,17 @@ module.exports = {
             delete element.created_date;
         });
 
-    // TODO normalise fromDate and ToDate so you can just pass them through no problem
-    connectorData.downloadTransactionLink = router.generateRoute(
-        router.paths.transactions.download,{
-        reference: filters.reference,
-        status: filters.status,
-        from_date: filters.fromDate,
-        to_date: filters.toDate, 
-        fromTime: filters.fromTime,
-        toTime:filters.toTime
-    });
+        // TODO normalise fromDate and ToDate so you can just pass them through no problem
+        connectorData.downloadTransactionLink = router.generateRoute(
+            router.paths.transactions.download,{
+            reference: filters.reference,
+            status: filters.status,
+            from_date: filters.fromDate,
+            to_date: filters.toDate, 
+            fromTime: filters.fromTime,
+            toTime:filters.toTime
+        });
+
 
         return connectorData;
     },
