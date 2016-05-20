@@ -55,7 +55,7 @@ describe('The pagination links', function () {
       body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName);
       body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .state')
         .withAttribute('value','Testing2');
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .ref')
+      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .reference')
         .withAttribute('value','ref1');
       body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .fromDate')
         .withAttribute('value','2015-01-11 01:01:01');
