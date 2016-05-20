@@ -14,7 +14,7 @@ select.form-control {
   @include webkit-only() {
     -webkit-appearance: none;
     border-radius: 0;
-    background-image: url("/public/images/dropdown-arrow.svg");
+    background-image: url("/public/images/dd-arrow.svg");
     background-position: right top;
     background-position: right 4px top 2px;
     background-repeat: no-repeat;
