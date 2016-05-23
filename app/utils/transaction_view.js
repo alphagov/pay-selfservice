@@ -64,7 +64,7 @@ module.exports = {
         connectorData.paginationLinks = getPaginationLinks(connectorData);
         connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData);
 
-        connectorData.hasPageSizeLinks = !!getCurrentPageSize(connectorData);    
+        connectorData.hasPageSizeLinks = !!getCurrentPageSize(connectorData);
         connectorData.pageSizeLinks = getPageSizeLinks(connectorData);
 
         connectorData.eventStates = Object.keys(eventStates).map(function(str) {
@@ -87,16 +87,16 @@ module.exports = {
             delete element.created_date;
         });
 
-        // TODO normalise fromDate and ToDate so you can just pass them through no problem
-        connectorData.downloadTransactionLink = router.generateRoute(
-            router.paths.transactions.download,{
-            reference: filters.reference,
-            status: filters.status,
-            from_date: filters.fromDate,
-            to_date: filters.toDate, 
-            fromTime: filters.fromTime,
-            toTime:filters.toTime
-        });
+    // TODO normalise fromDate and ToDate so you can just pass them through no problem
+    connectorData.downloadTransactionLink = router.generateRoute(
+        router.paths.transactions.download,{
+        reference: filters.reference,
+        status: filters.status,
+        fromDate: filters.fromDate,
+        toDate: filters.toDate,
+        fromTime: filters.fromTime,
+        toTime:filters.toTime
+    });
 
 
         return connectorData;

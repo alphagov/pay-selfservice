@@ -31,7 +31,7 @@ portfinder.getPort(function (err, connectorPort) {
       '&page=' + (searchParameters.page ? searchParameters.page : 1) +
       '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : 100);
 
-    return connectorMock.get(CHARGES_API_PATH + encodeURI(queryStr))
+    return connectorMock.get(CHARGES_API_PATH + queryStr)
       .reply(code, data);
   }
 
@@ -107,19 +107,28 @@ portfinder.getPort(function (err, connectorPort) {
         connectorMock_responds(200, 'csv data', {
           reference: 'ref',
           state: '1234',
-          from_date: '2016-01-11 01:01:01',
-          to_date: '2016-01-11 01:01:01'
+          fromDate: '2016-01-11T13%3A04%3A45.000Z',
+          toDate: '2016-01-11T14%3A04%3A46.000Z',
+          page: 1,
+          display_size: 100
         });
 
         download_transaction_list({
           reference: 'ref',
           state: '1234',
-          from_date: '2016-01-11 01:01:01',
-          to_date: '2016-01-11 01:01:01'
+          fromDate: '11/01/2016',
+          fromTime: '13:04:45',
+          toDate: '11/01/2016',
+          toTime: '14:04:45'
         })
           .expect(200)
           .expect('Content-Type', 'text/csv; charset=utf-8')
           .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+           .expect(function (res) {
+              var csvContent = res.text;
+              var arrayOfLines = csvContent.split("\n");
+              assert.equal(1, arrayOfLines.length);
+          })
           .end(done);
       });
 
