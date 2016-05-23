@@ -91,6 +91,7 @@ portfinder.getPort(function (err, connectorPort) {
           var data= {'display_size': 5};
           connectorData.total = 30;
           connectorData.results = [];
+          connectorData.page = 3;
 
 
           connectorData._links = {
@@ -121,6 +122,7 @@ portfinder.getPort(function (err, connectorPort) {
             var data= {'display_size': 5};
             connectorData.total = 30;
             connectorData.results = [];
+            connectorData.page = 3;
 
 
             connectorData._links = {
@@ -203,6 +205,7 @@ portfinder.getPort(function (err, connectorPort) {
           var data= {'display_size': 100};
           connectorData.total = 400;
           connectorData.results = [];
+          connectorData.page = 1;
 
 
           connectorData._links = {
