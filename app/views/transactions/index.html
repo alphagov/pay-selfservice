@@ -47,11 +47,12 @@ GOV.UK Pay - View transactions
 <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
 <div>
 {{/hasResults}}
+
 {{>transactions/paginator}}
 
-
-
 {{>transactions/list}}
+
+{{>transactions/paginator}}
 
 {{/content}}
 
