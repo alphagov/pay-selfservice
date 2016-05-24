@@ -47,8 +47,7 @@ describe('The pagination links', function () {
 
     var body = renderTemplate('transactions/paginator', templateData);
 
-    body.should.containSelector('#pagination');
-    body.should.containSelector('#pagination');
+    body.should.containSelector('div.pagination');
     var paginationLinks = templateData.paginationLinks;
 
     for (var ctr = 0; ctr < paginationLinks.length; ctr++ ) {
