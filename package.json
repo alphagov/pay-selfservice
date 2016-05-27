@@ -30,9 +30,9 @@
   "dependencies": {
     "array.prototype.find": "1.0.x",
     "body-parser": "1.13.x",
+    "chalk": "1.1.x",
     "change-case": "2.3.x",
     "check-types": "7.0.x",
-    "chalk": "1.1.x",
     "client-sessions": "0.7.x",
     "cluster": "0.7.x",
     "connect-session-sequelize": "3.0.x",
@@ -77,6 +77,7 @@
     "serve-favicon": "2.3.x",
     "sleep": "3.0.x",
     "throng": "4.0.x",
+    "tunnel": "0.0.4",
     "winston": "2.2.x",
     "yargs": "4.7.x"
   },
