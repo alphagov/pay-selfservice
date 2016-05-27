@@ -32,7 +32,7 @@
     "body-parser": "1.13.x",
     "chalk": "1.1.x",
     "change-case": "2.3.x",
-    "check-types": "7.0.x",
+    "check-types": "^7.0.x",
     "client-sessions": "0.7.x",
     "cluster": "0.7.x",
     "connect-session-sequelize": "3.0.x",

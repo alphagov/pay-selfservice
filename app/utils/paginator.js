@@ -19,6 +19,9 @@ function Paginator(total, limit, page) {
   this.page = page || 1;
 }
 
+//Export this so logic is all in one place
+Paginator.MAX_PAGE_SIZE = LARGE_PAGE_SIZE;
+
 /**
  * @param  {number} pageNumber
  * @param  {number} pageName
