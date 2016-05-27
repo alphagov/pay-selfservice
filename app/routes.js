@@ -25,7 +25,6 @@ module.exports.bind = function (app) {
 
   var tr = paths.transactions;
   app.get(tr.index, auth.enforce, csrf, transactions.transactionsIndex);
-  app.post(tr.index, auth.enforce, csrf, transactions.transactionsIndex);
   app.get(tr.download, auth.enforce, csrf, transactions.transactionsDownload);
   app.get(tr.show, auth.enforce, csrf, transactions.transactionsShow);
 

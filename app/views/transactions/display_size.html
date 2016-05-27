@@ -3,9 +3,8 @@
   <div id="displaySize">
     <span>Results per page:</span>
     {{#pageSizeLinks}}
-    <form class="displaySizeForm {{type}}" method="post" action="{{search_path}}">
+    <form class="displaySizeForm {{type}}" method="get" action="{{search_path}}">
       <div style="display:none">
-          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
           <input class="state" name="state" type="text" value="{{filters.state}}"/>
           <input class="reference" name="reference" type="text" value="{{filters.reference}}" />
           <input class="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" />

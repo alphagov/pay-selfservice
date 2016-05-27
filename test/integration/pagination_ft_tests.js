@@ -38,7 +38,7 @@ portfinder.getPort(function (err, connectorPort) {
        data.csrfToken = csrf().create('123');
      }
 
-     return request(app).post(paths.transactions.index)
+     return request(app).get(paths.transactions.index)
        .set('Accept', 'application/json')
        .set('Content-Type', 'application/x-www-form-urlencoded')
        .send(data);

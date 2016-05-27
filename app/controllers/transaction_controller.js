@@ -9,13 +9,15 @@ var date = require('../utils/dates.js');
 var logger = require('winston');
 var router = require('../routes.js');
 var Transaction = require('../models/transaction.js');
+var qs = require('qs');
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
 }
 
-function filledBodyKeys(req) {
-  return _.omitBy(req.body, _.isEmpty);
+function getFilters(req) {
+  var all = qs.parse(req.query);
+  return _.omitBy(all, _.isEmpty);;
 }
 
 function createErrorHandler(req, res, defaultErrorMessage) {
@@ -40,7 +42,7 @@ module.exports = {
 
   transactionsIndex: function (req, res) {
     var accountId = auth.get_account_id(req);
-    var filters = filledBodyKeys(req);
+    var filters = getFilters(req);
     var errorHandler = createErrorHandler(req, res, 'Unable to retrieve list of transactions.');
 
     function showTransactions(charges) {
