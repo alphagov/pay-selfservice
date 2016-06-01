@@ -231,14 +231,13 @@ portfinder.getPort(function (err, connectorPort) {
 
           connectorData._links = {
             self: {"href":"/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
-
           }
           connectorMock_responds(connectorData, data);
 
           search_transactions(data)
               .expect(200)
               .expect(function(res) {
-                assert.equal(res.body.pageSizeLinks, undefined);
+                assert.equal(res.body.hasPageSizeLinks, false);
                })
               .end(done);
         });

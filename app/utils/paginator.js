@@ -35,22 +35,13 @@ function createPageObject(pageNumber, pageName) {
   }
 }
 
-function createDisplaySizeOptions(smallPageSizeName, largePageSizeName) {
-  var limit = this.limit;
-  return [
-    {
-      type: "small",
-      name: smallPageSizeName || SMALL_PAGE_SIZE,
-      value: SMALL_PAGE_SIZE,
-      active: (limit === SMALL_PAGE_SIZE)
-    },
-    {
-      type: "large",
-      name: largePageSizeName || LARGE_PAGE_SIZE,
-      value: LARGE_PAGE_SIZE,
-      active: (limit === LARGE_PAGE_SIZE)
-    }
-  ];
+function createDisplaySizeOption(type, pageName, value) {
+  return {
+      type: type,
+      name: pageName,
+      value: value,
+      active: (value === this.limit)
+    };
 }
 
 
@@ -180,11 +171,13 @@ Paginator.prototype = {
    */
   getDisplaySizeOptions: function () {
     if (this.total < SMALL_PAGE_SIZE) {
-      return;
+      return [createDisplaySizeOption.call(this, null, "Show all", SMALL_PAGE_SIZE)];
     } else if(this.total < LARGE_PAGE_SIZE) {
-      return createDisplaySizeOptions.call(this, null, "Show all") 
+      return [ createDisplaySizeOption.call(this,'small', SMALL_PAGE_SIZE, SMALL_PAGE_SIZE),
+               createDisplaySizeOption.call(this,'large', 'Show all', LARGE_PAGE_SIZE)];
     } else {
-      return createDisplaySizeOptions.call(this); 
+      return [ createDisplaySizeOption.call(this,'small', SMALL_PAGE_SIZE, SMALL_PAGE_SIZE),
+               createDisplaySizeOption.call(this,'large', LARGE_PAGE_SIZE, LARGE_PAGE_SIZE)];
     }
   }
 };
