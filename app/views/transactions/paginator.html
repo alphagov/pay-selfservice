@@ -1,9 +1,8 @@
 {{#hasPaginationLinks}}
 <div class="pagination">
 	{{#paginationLinks}}
-	<form class="paginationForm {{pageName}}" method="post" action="{{search_path}}">
+	<form class="paginationForm {{pageName}}" method="get" action="{{search_path}}">
 		<div style="display:none">
-	    	<input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 				<input class="state" name="state" type="text" value="{{filters.state}}"/>
         <input class="reference" name="reference" type="text" value="{{filters.reference}}" />
 				<input class="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" />

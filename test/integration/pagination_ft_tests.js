@@ -8,6 +8,8 @@ var paths       = require(__dirname + '/../../app/paths.js');
 var winston     = require('winston');
 var session     = require(__dirname + '/../test_helpers/mock_session.js');
 var assert = require('assert');
+var querystring = require('querystring');
+
 var gatewayAccountId = 452345;
 
 var app = session.mockValidAccount(_app, gatewayAccountId);
@@ -19,7 +21,7 @@ portfinder.getPort(function (err, connectorPort) {
     var localServer = 'http://localhost:' + connectorPort;
     var connectorMock = nock(localServer);
 
- function connectorMock_responds(data, searchParameters) {
+  function connectorMock_responds(data, searchParameters) {
      var queryStr = '?';
          queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
                      '&state=' + (searchParameters.state ? searchParameters.state : '') +
@@ -32,17 +34,12 @@ portfinder.getPort(function (err, connectorPort) {
        .reply(200, data);
    }
 
-   function search_transactions(data, sendCSRF) {
-     sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
-     if (sendCSRF) {
-       data.csrfToken = csrf().create('123');
-     }
+  function search_transactions(data) {
+    var query = querystring.stringify(data);
 
-     return request(app).post(paths.transactions.index)
-       .set('Accept', 'application/json')
-       .set('Content-Type', 'application/x-www-form-urlencoded')
-       .send(data);
-   }
+    return request(app).get(paths.transactions.index + "?" + query)
+      .set('Accept', 'application/json').send();
+  }
 
     describe('Pagination', function() {
 
@@ -234,16 +231,40 @@ portfinder.getPort(function (err, connectorPort) {
 
           connectorData._links = {
             self: {"href":"/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
-
           }
           connectorMock_responds(connectorData, data);
 
           search_transactions(data)
               .expect(200)
               .expect(function(res) {
-                assert.equal(res.body.pageSizeLinks, undefined);
+                assert.equal(res.body.hasPageSizeLinks, false);
                })
               .end(done);
+        });
+
+        it('should return return error if page out of bounds', function (done) {
+          var data= {'page': -1};
+
+          search_transactions(data)
+              .expect(200, {'message': "Invalid search"}).end(done);
+
+
+        });
+
+        it('should return return error if pageSize out of bounds 1', function (done) {
+          var data= {'pageSize': 600};
+
+          search_transactions(data)
+              .expect(200, {'message': "Invalid search"}).end(done);
+
+        });
+
+        it('should return return error if pageSize out of bounds 2', function (done) {
+          var data= {'pageSize': 0};
+
+          search_transactions(data)
+              .expect(200, {'message': "Invalid search"}).end(done);
+
         });
       });
     });

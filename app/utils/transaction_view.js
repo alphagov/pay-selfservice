@@ -53,6 +53,10 @@ function getCurrentPageSize (connectorData) {
     }
 }
 
+function hasPageSizeLinks(connectorData) {
+  return connectorData.total > getCurrentPageSize(connectorData);
+}
+
 module.exports = {
     /** prepares the transaction list view */
     buildPaymentList: function (connectorData, gatewayAccountId, filters) {
@@ -64,7 +68,7 @@ module.exports = {
         connectorData.paginationLinks = getPaginationLinks(connectorData);
         connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData);
 
-        connectorData.hasPageSizeLinks = !!getCurrentPageSize(connectorData);
+        connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData);
         connectorData.pageSizeLinks = getPageSizeLinks(connectorData);
 
         connectorData.eventStates = Object.keys(eventStates).map(function(str) {

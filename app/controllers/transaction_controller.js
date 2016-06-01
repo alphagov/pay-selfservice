@@ -1,6 +1,7 @@
 var response = require('../utils/response.js').response;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 var transactionView = require('../utils/transaction_view.js');
+var Paginator = require('../utils/paginator.js');
 var jsonToCsv = require('../utils/json_to_csv.js');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var auth = require('../services/auth_service.js');
@@ -9,13 +10,21 @@ var date = require('../utils/dates.js');
 var logger = require('winston');
 var router = require('../routes.js');
 var Transaction = require('../models/transaction.js');
+var qs = require('qs');
+var check = require('check-types');
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
 }
 
-function filledBodyKeys(req) {
-  return _.omitBy(req.body, _.isEmpty);
+function validateFilters(filters) {
+  return (!check.assigned(filters.pageSize) || check.inRange(Number(filters.pageSize), 1, Paginator.MAX_PAGE_SIZE)) &&
+         (!check.assigned(filters.page) || check.positive(Number(filters.page)));
+}
+
+function getFilters(req) {
+  var all = qs.parse(req.query);
+  return _.omitBy(all, _.isEmpty);
 }
 
 function createErrorHandler(req, res, defaultErrorMessage) {
@@ -40,8 +49,12 @@ module.exports = {
 
   transactionsIndex: function (req, res) {
     var accountId = auth.get_account_id(req);
-    var filters = filledBodyKeys(req);
     var errorHandler = createErrorHandler(req, res, 'Unable to retrieve list of transactions.');
+    var filters = getFilters(req);
+
+    if (!validateFilters(filters)) {
+      renderErrorView(req, res, "Invalid search");
+    }
 
     function showTransactions(charges) {
       var data;

@@ -41,8 +41,7 @@ portfinder.getPort(function (err, connectorPort) {
     var query = querystring.stringify(data);
 
     return request(app).get(paths.transactions.index + "?" + query)
-      .set('Accept', 'application/json')
-      .send(data);
+      .set('Accept', 'application/json').send();
   }
 
   describe('Transactions endpoints', function () {
