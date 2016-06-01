@@ -242,6 +242,26 @@ portfinder.getPort(function (err, connectorPort) {
               .end(done);
         });
 
+        it('should return correct display size options when total under 100', function (done) {
+          var connectorData = {};
+          var data= {'display_size': 500};
+          connectorData.total = 150;
+          connectorData.results = [];
+
+
+          connectorData._links = {
+            self: {"href":"/v1/api/accounts/111/charges?&page=1&display_size=500&state="},
+          }
+          connectorMock_responds(connectorData, data);
+
+          search_transactions(data)
+              .expect(200)
+              .expect(function(res) {
+                assert.equal(res.body.hasPageSizeLinks, true);
+               })
+              .end(done);
+        });
+
         it('should return return error if page out of bounds', function (done) {
           var data= {'page': -1};
 

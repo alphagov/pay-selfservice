@@ -54,7 +54,8 @@ function getCurrentPageSize (connectorData) {
 }
 
 function hasPageSizeLinks(connectorData) {
-  return connectorData.total > getCurrentPageSize(connectorData);
+    var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData));
+    return paginator.showDisplaySizeLinks();
 }
 
 module.exports = {

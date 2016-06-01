@@ -18,8 +18,13 @@ function connectorClient() {
 }
 
 function validateFilters(filters) {
-  return (!check.assigned(filters.pageSize) || check.inRange(Number(filters.pageSize), 1, Paginator.MAX_PAGE_SIZE)) &&
-         (!check.assigned(filters.page) || check.positive(Number(filters.page)));
+  var pageSizeIsNull = !check.assigned(filters.pageSize),
+    pageSizeInRange = check.inRange(Number(filters.pageSize), 1, Paginator.MAX_PAGE_SIZE),
+    pageIsNull = !check.assigned(filters.page),
+    pageIsPositive = check.positive(Number(filters.page));
+
+  return (pageSizeIsNull || pageSizeInRange) &&
+         (pageIsNull || pageIsPositive);
 }
 
 function getFilters(req) {

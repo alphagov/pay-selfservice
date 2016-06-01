@@ -173,12 +173,24 @@ Paginator.prototype = {
     if (this.total < SMALL_PAGE_SIZE) {
       return [createDisplaySizeOption.call(this, null, "Show all", SMALL_PAGE_SIZE)];
     } else if(this.total < LARGE_PAGE_SIZE) {
-      return [ createDisplaySizeOption.call(this,'small', SMALL_PAGE_SIZE, SMALL_PAGE_SIZE),
-               createDisplaySizeOption.call(this,'large', 'Show all', LARGE_PAGE_SIZE)];
+      return [
+        createDisplaySizeOption.call(this,'small', SMALL_PAGE_SIZE, SMALL_PAGE_SIZE),
+        createDisplaySizeOption.call(this,'large', 'Show all', LARGE_PAGE_SIZE)
+      ];
     } else {
-      return [ createDisplaySizeOption.call(this,'small', SMALL_PAGE_SIZE, SMALL_PAGE_SIZE),
-               createDisplaySizeOption.call(this,'large', LARGE_PAGE_SIZE, LARGE_PAGE_SIZE)];
+      return [
+        createDisplaySizeOption.call(this,'small', SMALL_PAGE_SIZE, SMALL_PAGE_SIZE),
+        createDisplaySizeOption.call(this,'large', LARGE_PAGE_SIZE, LARGE_PAGE_SIZE)
+      ];
     }
+  },
+
+  /**
+   * @return {boolean}
+   */
+  showDisplaySizeLinks: function () {
+    return this.total > SMALL_PAGE_SIZE ||
+           this.total > this.limit;
   }
 };
 
