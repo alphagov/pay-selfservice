@@ -1,6 +1,7 @@
 var Client  = require('node-rest-client').Client;
 var client  = new Client();
 var q       = require('q');
+var _       = require('lodash');
 var logger  = require('winston');
 var paths   = require('../paths.js');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
@@ -31,6 +32,32 @@ module.exports = function() {
     defer.resolve(data);
   },
 
+
+  searchAll = function(accountID, filters){
+    var defer = q.defer();
+    var results = [];
+    var entryUrl = searchUrl(accountID, filters);
+    var success = function(){ defer.resolve({results: results }); }
+
+    var recursiveRetrieve = function(url){
+      client.get(url, { headers: headers }, function(data, response) {
+        var error = response.statusCode !== 200;
+        if (error) return defer.reject(new Error('GET_FAILED'));
+        results = results.concat(data.results);
+
+        var next = _.get(data, "_links.next_page");
+        if (next === undefined) return success();
+
+        recursiveRetrieve(next.href);
+
+      }).on('error',function(err){
+        clientUnavailable(err, defer);
+      });
+    };
+    recursiveRetrieve(entryUrl);
+    return defer.promise;
+  },
+
   clientUnavailable = function(error, defer) {
     logger.error('Calling connector to search transactions for an account threw exception -', {
       service: 'connector',
@@ -41,6 +68,7 @@ module.exports = function() {
   };
 
   return {
-    search: search
+    search: search,
+    searchAll: searchAll
   };
 }();

@@ -80,7 +80,7 @@ module.exports = {
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
     var init = function () {
-      Transaction.search(accountId, filters)
+      Transaction.searchAll(accountId, filters)
         .then(function (json) {
           return jsonToCsv(json.results);
         }, showError)

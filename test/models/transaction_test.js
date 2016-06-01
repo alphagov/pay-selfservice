@@ -52,7 +52,7 @@ describe('transaction model', function() {
 
         nock(process.env.CONNECTOR_URL)
           .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=1&display_size=100")
-          .reply(200, '');
+          .reply(200, {});
       });
 
       it('should return delete_failed', function () {
