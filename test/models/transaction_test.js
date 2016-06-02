@@ -38,7 +38,7 @@ describe('transaction model', function() {
           .reply(404, '');
       });
 
-      it('should return delete_failed', function () {
+      it('should return get_failed', function () {
         return Transaction.search(123,{}).then(wrongPromise,
           function rejected(error){
             assert.equal(error.message,"GET_FAILED")
@@ -55,9 +55,9 @@ describe('transaction model', function() {
           .reply(200, {});
       });
 
-      it('should return delete_failed', function () {
+      it('should return the correct promise', function () {
         return Transaction.search(123,{}).then(function(data){
-
+          assert.equal(1,1);
         },wrongPromise);
       });
     });
@@ -93,7 +93,7 @@ describe('transaction model', function() {
           .reply(404, '');
       });
 
-      it('should return delete_failed', function () {
+      it('should return GET_FAILED', function () {
         return Transaction.searchAll(123,{pageSize: 1, page: 100}).then(wrongPromise,
           function rejected(error){
             assert.equal(error.message,"GET_FAILED")
@@ -110,9 +110,9 @@ describe('transaction model', function() {
           .reply(200, {});
       });
 
-      it('should return delete_failed', function () {
+      it('should return into the correct promise', function () {
         return Transaction.searchAll(123,{pageSize: 1, page: 100}).then(function(data){
-
+          assert.equal(1,1);
         },wrongPromise);
       });
     });

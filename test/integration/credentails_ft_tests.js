@@ -202,7 +202,6 @@ portfinder.getPort(function (err, freePort) {
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
     build_form_post_request(path, sendData)
-        .expect(function(res){ return console.log(res.body); })
         .expect(303, {})
         .expect('Location', expectedLocation)
         .end(done);

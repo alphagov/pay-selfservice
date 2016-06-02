@@ -44,17 +44,17 @@ function shouldProxy(options) {
 
   if (!parsedOptions.port) {
     // port not always set on options
-    parsedOptions.port = parsedOptions.uri ? parsedOptions.uri.port : 443; 
+    parsedOptions.port = parsedOptions.uri ? parsedOptions.uri.port : 443;
   }
   host = '.' + (parsedOptions.uri ? parsedOptions.uri.hostname : parsedOptions.host);
 
   port = parsedOptions.uri ? parsedOptions.uri.port : parsedOptions.port;
-  
+
   found = _.find(
     noProxyList,
     e => ('.' + host).endsWith(e) || ('.' + host + ':' + port).endsWith(e)
   );
-  
+
   return !found;
 }
 
