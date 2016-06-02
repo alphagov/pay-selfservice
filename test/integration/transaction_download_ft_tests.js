@@ -30,8 +30,8 @@ portfinder.getPort(function (err, connectorPort) {
       '&state=' + (searchParameters.state ? searchParameters.state : '') +
       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-      '&page=' + (searchParameters.page ? searchParameters.page : 1) +
-      '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : 100);
+      '&page=' + (searchParameters.page ? searchParameters.page : "") +
+      '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : "");
 
     return connectorMock.get(CHARGES_API_PATH + queryStr)
       .reply(code, data);
@@ -137,9 +137,7 @@ portfinder.getPort(function (err, connectorPort) {
           reference: 'ref',
           state: '1234',
           fromDate: '2016-01-11T13%3A04%3A45.000Z',
-          toDate: '2016-01-11T14%3A04%3A46.000Z',
-          page: 1,
-          display_size: 100
+          toDate: '2016-01-11T14%3A04%3A46.000Z'
         });
 
         download_transaction_list({

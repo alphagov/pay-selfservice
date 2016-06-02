@@ -109,18 +109,6 @@ function ConnectorClient(connectorUrl) {
 }
 
 ConnectorClient.prototype = {
-  /**
-   * Retrieves transaction list for a given gateway account id.
-   * @param gatewayAccountId
-   * @param searchParameters
-   * @param successCallback the callback to perform upon `200 OK` along with the connector results.
-   * @returns {ConnectorClient}
-   */
-  withTransactionList: function (gatewayAccountId, searchParameters, successCallback) {
-    var url = this.withSearchTransactionsUrl(gatewayAccountId, searchParameters, this.connectorUrl);
-    this.client(url, this.responseHandler(successCallback));
-    return this;
-  },
 
   withSearchTransactionsUrl (gatewayAccountId, searchParameters) {
     var query = querystring.stringify({
@@ -128,8 +116,8 @@ ConnectorClient.prototype = {
       state: searchParameters.state,
       from_date: dates.fromDateToApiFormat(searchParameters.fromDate, searchParameters.fromTime),
       to_date: dates.toDateToApiFormat(searchParameters.toDate, searchParameters.toTime),
-      page: searchParameters.page || 1,
-      display_size: searchParameters.pageSize || 100
+      page: searchParameters.page,
+      display_size: searchParameters.pageSize
     });
     logger.info('Calling connector to search account transactions -', {
       service: 'connector',

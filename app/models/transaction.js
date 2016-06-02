@@ -36,7 +36,7 @@ module.exports = function() {
   searchAll = function(accountID, filters){
     var defer = q.defer();
     var results = [];
-    var entryUrl = searchUrl(accountID, filters);
+    var entryUrl = searchUrl(accountID, _.omit(filters, ['pageSize', 'page']) );
     var success = function(){ defer.resolve({results: results }); }
 
     var recursiveRetrieve = function(url){

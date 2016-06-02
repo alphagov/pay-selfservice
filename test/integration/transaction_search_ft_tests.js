@@ -29,8 +29,8 @@ portfinder.getPort(function (err, connectorPort) {
       state: searchParameters.state ? searchParameters.state : '',
       from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
       to_date: searchParameters.toDate ? searchParameters.toDate : '',
-      page: searchParameters.page ? searchParameters.page : 1,
-      display_size: searchParameters.pageSize ? searchParameters.pageSize : 100
+      page: searchParameters.page ? searchParameters.page : "",
+      display_size: searchParameters.pageSize ? searchParameters.pageSize : ""
     });
 
     return connectorMock.get(CHARGES_SEARCH_API_PATH + '?' + queryString)
