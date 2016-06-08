@@ -30,8 +30,8 @@ portfinder.getPort(function (err, connectorPort) {
       '&state=' + (searchParameters.state ? searchParameters.state : '') +
       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-      '&page=' + (searchParameters.page ? searchParameters.page : "") +
-      '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : "");
+      '&page=' + (searchParameters.page ? searchParameters.page : "1") +
+      '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : "100");
 
     return connectorMock.get(CHARGES_API_PATH + queryStr)
       .reply(code, data);

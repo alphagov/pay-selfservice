@@ -116,8 +116,8 @@ ConnectorClient.prototype = {
       state: searchParameters.state,
       from_date: dates.fromDateToApiFormat(searchParameters.fromDate, searchParameters.fromTime),
       to_date: dates.toDateToApiFormat(searchParameters.toDate, searchParameters.toTime),
-      page: searchParameters.page,
-      display_size: searchParameters.pageSize
+      page: searchParameters.page || 1,
+      display_size: searchParameters.pageSize || 100
     });
     logger.info('Calling connector to search account transactions -', {
       service: 'connector',

@@ -34,7 +34,7 @@ describe('transaction model', function() {
         nock.cleanAll();
 
         nock(process.env.CONNECTOR_URL)
-          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=&display_size=")
+          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=1&display_size=100")
           .reply(404, '');
       });
 
@@ -51,7 +51,7 @@ describe('transaction model', function() {
         nock.cleanAll();
 
         nock(process.env.CONNECTOR_URL)
-          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=&display_size=")
+          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=1&display_size=100")
           .reply(200, {});
       });
 
@@ -89,7 +89,7 @@ describe('transaction model', function() {
         nock.cleanAll();
 
         nock(process.env.CONNECTOR_URL)
-          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=&display_size=")
+          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=1&display_size=100")
           .reply(404, '');
       });
 
@@ -106,7 +106,7 @@ describe('transaction model', function() {
         nock.cleanAll();
 
         nock(process.env.CONNECTOR_URL)
-          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=&display_size=")
+          .get("/v1/api/accounts/123/charges?reference=&state=&from_date=&to_date=&page=1&display_size=100")
           .reply(200, {});
       });
 
