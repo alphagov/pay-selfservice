@@ -1,0 +1,53 @@
+{{< payment_types}}
+
+{{$page_content}}
+
+<form id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.selectBrand}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="accepted-card-type" name="acceptedType" type="hidden" value="{{acceptedType}}"/>
+
+    <div class="panel panel-border-wide">
+        {{#isAcceptedTypeAll}}
+        <p id="payment-types-accept-all-types-message">Debit and credit cards are currently accepted</p>
+        {{/isAcceptedTypeAll}}
+        {{#isAcceptedTypeDebit}}
+        <p id="payment-types-accept-debit-types-message">You have chosen to only accept debit cards</p>
+        {{/isAcceptedTypeDebit}}
+    </div>
+    <div class="form-group">
+        <fieldset>
+            <legend>Now choose the debit card brands you want to accept?</legend>
+            <table>
+                <tbody>
+                {{#brands}}
+                <tr id="{{id}}">
+                    <td><span class="payment-types-label">{{label}}</span></td>
+                    <td>
+                        {{#available}}
+                        <input class="payment-types-checkbox" type="checkbox" name="acceptedBrands" value="{{value}}"
+                               {{selected}}>
+                        {{/available}}
+                        {{^available}}
+                        <span class="payment-types-not-available">Not available</span>
+                        {{/available}}
+                    </td>
+                </tr>
+                {{/brands}}
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+    {{#error}}
+    <div class="form-group error">
+        <span class="error-message" id="payment-types-error-message">{{error}}</span>
+    </div>
+    {{/error}}
+    <input id="payment-types-save-button" type="submit" class="button" value="Save changes">
+    <a id="payment-types-cancel-link" href="{{routes.paymentTypes.index}}">
+        Cancel
+    </a>
+</form>
+
+{{/page_content}}
+
+{{/payment_types}}

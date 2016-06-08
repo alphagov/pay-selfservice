@@ -30,6 +30,11 @@ module.exports = {
     index: '/service-name',
     edit: '/service-name?edit'
   },
+  paymentTypes: {
+    index: '/payment-types',
+    selectBrand: '/payment-types/select-brand',
+    summary: '/payment-types/summary'
+  },
   healthcheck: {
     path: '/healthcheck'
   },

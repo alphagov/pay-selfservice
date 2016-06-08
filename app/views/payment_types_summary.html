@@ -1,0 +1,62 @@
+{{< payment_types}}
+
+{{$page_content}}
+
+<div class="form-group">
+    <div class="panel panel-border-wide">
+        {{#isAcceptedTypeAll}}
+        <p id="payment-types-accept-all-types-message">Debit and credit cards are currently accepted</p>
+        {{/isAcceptedTypeAll}}
+        {{#isAcceptedTypeDebit}}
+        <p id="payment-types-accept-debit-types-message">You have chosen to only accept debit cards</p>
+        {{/isAcceptedTypeDebit}}
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th class="table-header-card-brand" colspan="2">Card brand</th>
+            <th class="table-header-accept">Accept</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#brands}}
+        <style>
+            .payment-types-not-selected {
+                color: grey;
+            }
+        </style>
+        <tr id="{{id}}">
+            <td class="card">
+                <ul class="accepted-cards">
+                    <li class="{{value}} selected">
+                        <span class="visuallyhidden">{{label}}</span>
+                    </li>
+                </ul>
+            </td>
+            <td><span class="payment-types-label">{{label}}</span></td>
+            <td class="status">
+                {{#available}}
+                {{#selected}}
+                <span class="payment-types-selected">Selected</span>
+                {{/selected}}
+                {{^selected}}
+                <span class="payment-types-not-selected">Not selected</span>
+                {{/selected}}
+                {{/available}}
+                {{^available}}
+                <span class="payment-types-not-available">Not available</span>
+                {{/available}}
+            </td>
+        </tr>
+        {{/brands}}
+        </tbody>
+    </table>
+</div>
+<a id="payment-types-cancel-link" href="{{routes.paymentTypes.index}}" class="button">
+    Manage
+</a>
+
+
+{{/page_content}}
+
+{{/payment_types}}

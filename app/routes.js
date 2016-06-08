@@ -1,16 +1,19 @@
-var response      = require(__dirname + '/utils/response.js').response;
+var response = require(__dirname + '/utils/response.js').response;
 var generateRoute = require(__dirname + '/utils/generate_route.js');
-var transactions  = require('./controllers/transaction_controller.js');
-var credentials   = require('./controllers/credentials_controller.js');
-var login         = require('./controllers/login_controller.js');
-var healthcheck   = require('./controllers/healthcheck_controller.js');
-var devTokens     = require('./controllers/dev_tokens_controller.js');
-var serviceName   = require('./controllers/service_name_controller.js');
-var auth          = require('./services/auth_service.js');
-var querystring   = require('querystring');
-var _             = require('lodash');
-var paths         = require(__dirname + '/paths.js');
-var csrf          = require('./middleware/csrf.js');
+var transactions = require('./controllers/transaction_controller.js');
+var credentials = require('./controllers/credentials_controller.js');
+var login = require('./controllers/login_controller.js');
+var healthcheck = require('./controllers/healthcheck_controller.js');
+var devTokens = require('./controllers/dev_tokens_controller.js');
+var serviceName = require('./controllers/service_name_controller.js');
+var paymentTypesSelectType = require('./controllers/payment_types_select_type_controller.js');
+var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
+var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
+var auth = require('./services/auth_service.js');
+var querystring = require('querystring');
+var _ = require('lodash');
+var paths = require(__dirname + '/paths.js');
+var csrf = require('./middleware/csrf.js');
 
 module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
@@ -49,7 +52,7 @@ module.exports.bind = function (app) {
   app.get(dt.index, auth.enforce, csrf, devTokens.index);
   app.get(dt.show, auth.enforce, csrf, devTokens.show);
   app.post(dt.create, auth.enforce, csrf, devTokens.create);
-  app.put(dt.update, auth.enforce, csrf,  devTokens.update);
+  app.put(dt.update, auth.enforce, csrf, devTokens.update);
   app.delete(dt.delete, auth.enforce, csrf, devTokens.destroy);
 
   // SERVICE NAME
@@ -57,6 +60,15 @@ module.exports.bind = function (app) {
   var sn = paths.serviceName;
   app.get(sn.index, auth.enforce, csrf, serviceName.index);
   app.post(sn.index, auth.enforce, csrf, serviceName.update);
+
+  // PAYMENT TYPES
+
+  var pt = paths.paymentTypes;
+  app.get(pt.index, auth.enforce, csrf, paymentTypesSelectType.index);
+  app.post(pt.index, auth.enforce, csrf, paymentTypesSelectType.updateType);
+  app.get(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.showBrands);
+  app.post(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.updateBrands);
+  app.get(pt.summary, auth.enforce, csrf, paymentTypesSummary.showSummary);
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

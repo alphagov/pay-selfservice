@@ -6,13 +6,16 @@ var request       = require('request');
 var dates         = require('../utils/dates.js');
 var querystring   = require('querystring');
 
-var ACCOUNTS_API_PATH           = '/v1/api/accounts';
-var ACCOUNT_API_PATH            = ACCOUNTS_API_PATH + '/{accountId}';
-var CHARGES_API_PATH            = ACCOUNT_API_PATH + '/charges';
-var CHARGE_API_PATH             = CHARGES_API_PATH + '/{chargeId}';
-var ACCOUNTS_FRONTEND_PATH      = '/v1/frontend/accounts';
-var ACCOUNT_FRONTEND_PATH       = ACCOUNTS_FRONTEND_PATH + '/{accountId}';
-var SERVICE_NAME_FRONTEND_PATH  = ACCOUNT_FRONTEND_PATH + '/servicename';
+var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
+var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';
+var CHARGES_API_PATH                  = ACCOUNT_API_PATH + '/charges';
+var CHARGE_API_PATH                   = CHARGES_API_PATH + '/{chargeId}';
+var CARD_TYPES_API_PATH               = '/v1/api/card-types';
+
+var ACCOUNTS_FRONTEND_PATH            = '/v1/frontend/accounts';
+var ACCOUNT_FRONTEND_PATH             = ACCOUNTS_FRONTEND_PATH + '/{accountId}';
+var SERVICE_NAME_FRONTEND_PATH        = ACCOUNT_FRONTEND_PATH + '/servicename';
+var ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types';
 
 /**
  * @private
@@ -85,6 +88,16 @@ function _accountUrlFor(gatewayAccountId, url) {
 };
 
 /** @private */
+function _accountAcceptedCardTypesUrlFor(gatewayAccountId, url) {
+  return url + ACCEPTED_CARD_TYPES_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
+};
+
+/** @private */
+function _cardTypesUrlFor(url) {
+  return url + CARD_TYPES_API_PATH;
+}
+
+/** @private */
 function _serviceNameUrlFor(gatewayAccountId, url) {
   return url + SERVICE_NAME_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
 };
@@ -140,7 +153,7 @@ ConnectorClient.prototype = {
     logger.info('Calling connector to get charge -', {
       service: 'connector',
       method: 'GET',
-      url: this.connectorUrl + CHARGE_API_PATH,
+      url: url,
       chargeId: chargeId
     });
     this.client(url, this.responseHandler(successCallback));
@@ -159,7 +172,7 @@ ConnectorClient.prototype = {
     logger.info('Calling connector to get events -', {
       service: 'connector',
       method: 'GET',
-      url: this.connectorUrl + CHARGE_API_PATH + '/events',
+      url: url,
       chargeId: chargeId
     });
     this.client(url, this.responseHandler(successCallback));
@@ -175,7 +188,52 @@ ConnectorClient.prototype = {
     logger.info('Calling connector to get account -', {
       service: 'connector',
       method: 'GET',
-      url: this.connectorUrl + ACCOUNT_FRONTEND_PATH
+      url: url
+    });
+    this.client(url, this.responseHandler(successCallback));
+    return this;
+  },
+
+  /**
+   * Retrieves the accepted payment types for the given account
+   * @param gatewayAccountId
+   */
+  withGetAccountAcceptedCards: function (gatewayAccountId, successCallback) {
+    var url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl);
+    logger.info('Calling connector to get accepted card types for account -', {
+      service: 'connector',
+      method: 'GET',
+      url: url
+    });
+    this.client(url, this.responseHandler(successCallback));
+    return this;
+  },
+
+  /**
+   * Updates the accepted payment types for to the given gateway account
+   * @param gatewayAccountId
+   */
+  withPostAccountAcceptedCards: function (gatewayAccountId, payload, successCallback) {
+    var url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl);
+    logger.info('Calling connector to post accepted card types for account -', {
+      service: 'connector',
+      method: 'POST',
+      url: url
+    });
+    this.client.post({url: url, body: payload}, this.responseHandler(successCallback));
+    return this;
+  },
+
+  /**
+   * Retrieves all card types
+   * @param gatewayAccountId
+   */
+  withGetAllCardTypes: function (successCallback) {
+    var url = _cardTypesUrlFor(this.connectorUrl);
+    logger.info('Calling connector to get all card types -', {
+      service: 'connector',
+      method: 'GET',
+      url: url
     });
     this.client(url, this.responseHandler(successCallback));
     return this;
@@ -190,7 +248,7 @@ ConnectorClient.prototype = {
     logger.info('Calling connector to update service name -', {
       service: 'connector',
       method: 'PATCH',
-      url: this.connectorUrl + SERVICE_NAME_FRONTEND_PATH
+      url: url
     });
     this.client.patch({url: url, body: payload}, this.responseHandler(successCallback));
     return this;
