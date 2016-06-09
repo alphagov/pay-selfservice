@@ -4,7 +4,7 @@ var sleeper         = require('sleep');
 var sequelizeConfig = require('../utils/sequelize_config.js');
 
 module.exports = function() {
-  
+
   var checkDependentResources = function(onResourceAvailable, incrementalWaitDuration, wait) {
 
     var checkDatabaseConnection = function(startup, attempt) {

@@ -6,8 +6,7 @@ var dates       = require('../../app/utils/dates.js');
 var winston     = require('winston');
 var paths       = require(__dirname + '/../../app/paths.js');
 var session     = require(__dirname + '/../test_helpers/mock_session.js');
-
-var CONNECTOR_DATE = "Wed Feb 10 2016 12:44:01 GMT+0000 (GMT)";
+var CONNECTOR_DATE = "2016-02-10T12:44:01.000Z";
 var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
 var gatewayAccountId = 651342;
 
@@ -27,8 +26,8 @@ portfinder.getPort(function (err, connectorPort) {
                       '&state=' + (searchParameters.state ? searchParameters.state : '') +
                       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
                       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-                      '&page=' + (searchParameters.page ? searchParameters.page : 1) +
-                      '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : 100);
+                      '&page=' + (searchParameters.page ? searchParameters.page : "1") +
+                      '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : "100");
 
       return connectorMock.get(CHARGES_API_PATH + encodeURI(queryStr))
         .reply(code, data);
@@ -226,7 +225,6 @@ portfinder.getPort(function (err, connectorPort) {
         get_transaction_list()
           .expect(200, {'message': errorMessage})
           .end(done);
-
       });
 
       it('should show a generic error message on a connector service error.', function (done) {
@@ -241,7 +239,7 @@ portfinder.getPort(function (err, connectorPort) {
         // No connectorMock defined on purpose to mock a network failure
 
         get_transaction_list()
-          .expect(200, {'message': 'Internal server error'})
+          .expect(200, {'message': 'Unable to retrieve list of transactions.'})
           .end(done);
       });
     });

@@ -1,7 +1,6 @@
 var response = require('../utils/response.js').response;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 var transactionView = require('../utils/transaction_view.js');
-var Paginator = require('../utils/paginator.js');
 var jsonToCsv = require('../utils/json_to_csv.js');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var auth = require('../services/auth_service.js');
@@ -12,9 +11,19 @@ var router = require('../routes.js');
 var Transaction = require('../models/transaction.js');
 var qs = require('qs');
 var check = require('check-types');
+var Paginator = require('../utils/paginator.js');
+
+function getFilters(req) {
+  var all = qs.parse(req.query);
+  return _.omitBy(all, _.isEmpty);
+}
 
 function connectorClient() {
   return new ConnectorClient(process.env.CONNECTOR_URL);
+}
+
+function filledBodyKeys(req) {
+  return _.omitBy(req.body, _.isEmpty);
 }
 
 function validateFilters(filters) {
@@ -27,51 +36,25 @@ function validateFilters(filters) {
          (pageIsNull || pageIsPositive);
 }
 
-function getFilters(req) {
-  var all = qs.parse(req.query);
-  return _.omitBy(all, _.isEmpty);
-}
-
-function createErrorHandler(req, res, defaultErrorMessage) {
-  return function (connectorError, connectorResponse) {
-    var errorMessage;
-
-    if (connectorError) {
-      errorMessage = 'Internal server error';
-    } else if (connectorResponse.statusCode === 404) {
-      errorMessage = 'Charge not found';
-    } else {
-      errorMessage = defaultErrorMessage;
-    }
-    logger.error('Connector error making a request -', {
-      'error': errorMessage
-    });
-    renderErrorView(req, res, errorMessage);
-  };
-}
-
 module.exports = {
 
   transactionsIndex: function (req, res) {
     var accountId = auth.get_account_id(req);
-    var errorHandler = createErrorHandler(req, res, 'Unable to retrieve list of transactions.');
+
     var filters = getFilters(req);
 
     if (!validateFilters(filters)) {
       renderErrorView(req, res, "Invalid search");
     }
-
-    function showTransactions(charges) {
-      var data;
-
-      charges.search_path = router.paths.transactions.index;
-      data = transactionView.buildPaymentList(charges, accountId, filters);
-      response(req.headers.accept, res, 'transactions/index', data);
-    }
-
-    connectorClient()
-      .withTransactionList(accountId, filters, showTransactions)
-      .on('connectorError', errorHandler);
+    Transaction
+      .search(accountId, filters)
+      .then(function(json){
+        json.search_path = router.paths.transactions.index;
+        var data = transactionView.buildPaymentList(json, accountId, filters);
+        response(req.headers.accept, res, 'transactions/index', data);
+      }, function(){
+        renderErrorView(req, res, 'Unable to retrieve list of transactions.');
+      });
   },
 
   transactionsDownload: function (req, res) {
@@ -80,7 +63,7 @@ module.exports = {
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
     var init = function () {
-      Transaction.search(accountId, filters)
+      Transaction.searchAll(accountId, filters)
         .then(function (json) {
           return jsonToCsv(json.results);
         }, showError)
@@ -109,13 +92,15 @@ module.exports = {
   transactionsShow: function (req, res) {
     var accountId = auth.get_account_id(req);
     var chargeId = req.params.chargeId;
-    var errorHandler = createErrorHandler(req, res, 'Error processing transaction view');
+    var defaultError = 'Error processing transaction view';
 
     function foundCharge(charge) { //on success of finding a charge
       var charge = charge;
       connectorClient().withChargeEvents(accountId, chargeId, function (events) {
         foundChargeEvents(events, charge);
-      }).on('connectorError', errorHandler);
+      }).on('connectorError', ()=> {
+        renderErrorView(req, res, defaultError);
+      });
     }
 
     function foundChargeEvents(events, charge) { //on success of finding events for charge
@@ -124,6 +109,10 @@ module.exports = {
     }
 
     connectorClient().withGetCharge(accountId, chargeId, foundCharge)
-      .on('connectorError', errorHandler);
+      .on('connectorError', (err, response)=> {
+        var message = defaultError;
+        if (response && response.statusCode === 404) message = 'Charge not found';
+        renderErrorView(req, res, message);
+      });
   }
 };

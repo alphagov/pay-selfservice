@@ -220,7 +220,7 @@ portfinder.getPort(function (err, connectorPort) {
 
             it('should return a generic if unable to communicate with connector', function (done) {
                 when_getTransactionHistory(chargeId)
-                    .expect(200, {'message': 'Internal server error'})
+                    .expect(200, {'message': 'Error processing transaction view'})
                     .end(done);
             });
         });
