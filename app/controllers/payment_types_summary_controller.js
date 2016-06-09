@@ -6,10 +6,10 @@ var {
   TYPES,
   connectorClient,
   renderConnectorError,
-  reconcileCardsByBrand}  = require('./payment_types_controller.js');
+  reconcileCardsByBrand,
+  inferAcceptedCardType}  = require('./payment_types_controller.js');
 
 module.exports.showSummary = function (req, res) {
-  var acceptedType = req.query.acceptedType;
 
   var init = function () {
     connectorClient()
@@ -19,6 +19,8 @@ module.exports.showSummary = function (req, res) {
 
   var onSuccessGetAllCards = function (allCards) {
     var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
+      var acceptedType = inferAcceptedCardType(acceptedCards['card_types']);
+
       var model = {
         isAcceptedTypeAll: acceptedType === TYPES.ALL,
         isAcceptedTypeDebit: acceptedType === TYPES.DEBIT,

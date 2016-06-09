@@ -47,18 +47,6 @@ portfinder.getPort(function (err, freePort) {
       .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData, sendCSRF) {
-    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
-    if (sendCSRF) {
-      sendData.csrfToken = csrf().create('123');
-    }
-    return request(app)
-      .post(path)
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .send(sendData);
-  }
-
   describe('The payment types endpoint,', function () {
     describe('render summary view,', function () {
       beforeEach(function () {
@@ -89,7 +77,7 @@ portfinder.getPort(function (err, freePort) {
           ]
         };
 
-        build_get_request(paths.paymentTypes.summary + "?acceptedType=ALL")
+        build_get_request(paths.paymentTypes.summary)
           .expect(200, expectedData)
           .end(done);
       });

@@ -7,9 +7,10 @@ var {
   TYPES,
   connectorClient,
   renderConnectorError,
-  redirectTo}  = require('./payment_types_controller.js');
+  redirectTo,
+  inferAcceptedCardType}  = require('./payment_types_controller.js');
 
-module.exports.index = function (req, res) {
+module.exports.selectType = function (req, res) {
 
   var init = function () {
     var accountId = auth.get_account_id(req);
@@ -20,20 +21,16 @@ module.exports.index = function (req, res) {
   };
 
   var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
-    var areAcceptedCardsAllDebit = false;
-
-    if (acceptedCards['card_types'].length > 0) {
-      areAcceptedCardsAllDebit = _.every(acceptedCards['card_types'], {'type': TYPES.DEBIT});
-    }
+    var acceptedType = inferAcceptedCardType(acceptedCards['card_types']);
 
     var model = {
       allCardOption: {
         type: TYPES.ALL,
-        selected: areAcceptedCardsAllDebit ? '' : 'checked'
+        selected: acceptedType === TYPES.ALL ? 'checked' : ''
       },
       debitCardOption: {
         type: TYPES.DEBIT,
-        selected: areAcceptedCardsAllDebit ? 'checked' : ''
+        selected: acceptedType === TYPES.DEBIT ? 'checked' : ''
       }
     };
 

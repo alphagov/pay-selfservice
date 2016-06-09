@@ -109,8 +109,8 @@ portfinder.getPort(function (err, freePort) {
           isAcceptedTypeDebit: true,
           brands: [
             buildAcceptedCardType("mastercard", true, selected="checked"),
-            buildAcceptedCardType("discover", false),
-            buildAcceptedCardType("maestro", true)
+            buildAcceptedCardType("maestro", true),
+            buildAcceptedCardType("discover", false)
           ]
         };
 

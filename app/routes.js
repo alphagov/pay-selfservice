@@ -64,8 +64,8 @@ module.exports.bind = function (app) {
   // PAYMENT TYPES
 
   var pt = paths.paymentTypes;
-  app.get(pt.index, auth.enforce, csrf, paymentTypesSelectType.index);
-  app.post(pt.index, auth.enforce, csrf, paymentTypesSelectType.updateType);
+  app.get(pt.selectType, auth.enforce, csrf, paymentTypesSelectType.selectType);
+  app.post(pt.selectType, auth.enforce, csrf, paymentTypesSelectType.updateType);
   app.get(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.showBrands);
   app.post(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.updateBrands);
   app.get(pt.summary, auth.enforce, csrf, paymentTypesSummary.showSummary);

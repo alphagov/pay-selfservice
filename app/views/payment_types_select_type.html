@@ -4,9 +4,10 @@
 
 <form id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    <h2 class="heading-small">What card types do you want to accept?</h2>
     <div class="form-group">
         <fieldset>
-            <legend>What card types do you want to accept?</legend>
+            <legend class="visuallyhidden">What card types do you want to accept?</legend>
 
             <label class="block-label" for="payment-types-all-type">
                 <input id="payment-types-all-type" type="radio" name="payment-types-card-type" value="{{allCardOption.type}}" {{allCardOption.selected}}>
@@ -18,9 +19,7 @@
             </label>
         </fieldset>
     </div>
-    <div class="form-group">
-        <input id="payment-types-continue-button" name="payment-types-continue-button" type="submit" class="button" value="Continue">
-    </div>
+    <input id="payment-types-continue-button" name="payment-types-continue-button" type="submit" class="button" value="Continue">
 </form>
 
 {{/page_content}}

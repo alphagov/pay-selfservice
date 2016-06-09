@@ -31,10 +31,13 @@ module.exports.reconcileCardsByBrand = function (acceptedType, acceptedCards, al
       first['selected'] = _.some(cardsById, {'selected': 'checked'}) ? 'checked' : '';
       return first;
     })
+    .sortBy(function (card) {
+      return !card['available'];
+    })
     .value();
 };
 
-module.exports.redirectTo = function(response, path, query) {
+module.exports.redirectTo = function (response, path, query) {
   response.redirect(303, path + "?" + querystring.stringify(query));
 };
 
@@ -48,3 +51,15 @@ module.exports.renderConnectorError = function (request, response, errorMessage)
     renderErrorView(request, response, errorMessage);
   }
 };
+
+module.exports.inferAcceptedCardType = function (acceptedCards) {
+  var areAcceptedCardsAllDebit = false;
+
+  if (acceptedCards.length > 0) {
+    areAcceptedCardsAllDebit = _.every(acceptedCards, {'type': TYPES.DEBIT});
+  }
+
+  return areAcceptedCardsAllDebit ?  TYPES.DEBIT: TYPES.ALL;
+}
+
+

@@ -68,7 +68,7 @@ portfinder.getPort(function (err, freePort) {
           }
         };
 
-        build_get_request(paths.paymentTypes.index)
+        build_get_request(paths.paymentTypes.selectType)
           .expect(200, expectedData)
           .end(done);
       });
@@ -90,7 +90,7 @@ portfinder.getPort(function (err, freePort) {
           }
         };
 
-        build_get_request(paths.paymentTypes.index)
+        build_get_request(paths.paymentTypes.selectType)
           .expect(200, expectedData)
           .end(done);
       });
@@ -112,7 +112,7 @@ portfinder.getPort(function (err, freePort) {
           }
         };
 
-        build_get_request(paths.paymentTypes.index)
+        build_get_request(paths.paymentTypes.selectType)
           .expect(200, expectedData)
           .end(done);
       });
@@ -123,7 +123,7 @@ portfinder.getPort(function (err, freePort) {
             "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
           });
 
-        build_get_request(paths.paymentTypes.index)
+        build_get_request(paths.paymentTypes.selectType)
           .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
           .end(done);
       });
@@ -134,7 +134,7 @@ portfinder.getPort(function (err, freePort) {
             "message": "Some error in Connector"
           });
 
-        build_get_request(paths.paymentTypes.index)
+        build_get_request(paths.paymentTypes.selectType)
           .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
           .end(done);
       });
@@ -142,7 +142,7 @@ portfinder.getPort(function (err, freePort) {
       it('should display an error if the connection to connector fails', function (done) {
         // No connectorMock defined on purpose to mock a network failure
 
-        build_get_request(paths.paymentTypes.index)
+        build_get_request(paths.paymentTypes.selectType)
           .expect(200, {"message": "Internal server error"})
           .end(done);
       });
@@ -155,7 +155,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should redirect to select brand view when debit cards option selected', function (done) {
-        build_form_post_request(paths.paymentTypes.index, {"payment-types-card-type": TYPES.ALL})
+        build_form_post_request(paths.paymentTypes.selectType, {"payment-types-card-type": TYPES.ALL})
           .expect(303)
           .end(function(err, res) {
             expect(res.headers.location).to.deep.equal(paths.paymentTypes.selectBrand + "?acceptedType=ALL");
@@ -164,7 +164,7 @@ portfinder.getPort(function (err, freePort) {
       });
 
       it('should redirect to select brand view when debit cards option selected', function (done) {
-        build_form_post_request(paths.paymentTypes.index, {"payment-types-card-type": TYPES.DEBIT})
+        build_form_post_request(paths.paymentTypes.selectType, {"payment-types-card-type": TYPES.DEBIT})
           .expect(303)
           .end(function(err, res) {
             expect(res.headers.location).to.deep.equal(paths.paymentTypes.selectBrand + "?acceptedType=DEBIT");

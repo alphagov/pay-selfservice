@@ -31,7 +31,7 @@ module.exports = {
     edit: '/service-name?edit'
   },
   paymentTypes: {
-    index: '/payment-types',
+    selectType: '/payment-types/select-type',
     selectBrand: '/payment-types/select-brand',
     summary: '/payment-types/summary'
   },
