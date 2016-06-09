@@ -1,0 +1,71 @@
+{{< payment_types}}
+
+{{$page_content}}
+
+<div id="payment-types-card-summary" class="form-group">
+    <div class="panel panel-border-wide">
+        {{#isAcceptedTypeAll}}
+        <p id="payment-types-accept-all-types-message">Debit and credit cards are currently accepted</p>
+        {{/isAcceptedTypeAll}}
+        {{#isAcceptedTypeDebit}}
+        <p id="payment-types-accept-debit-types-message">Debit cards only accepted</p>
+        {{/isAcceptedTypeDebit}}
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th colspan="2">Card brand</th>
+            <th class="table-header-accept">Accepted</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#brands}}
+            {{#available}}
+                <tr id="{{id}}">
+            {{/available}}
+            {{^available}}
+                <tr id="{{id}}" class="payment-types-not-available">
+            {{/available}}
+
+                <td class="table-data-card-brand">
+                    <ul class="accepted-cards">
+                        {{#available}}
+                        <li class="{{value}} selected">
+                        {{/available}}
+
+                        {{^available}}
+                        <li class="{{value}}">
+                        {{/available}}
+                            <span class="visuallyhidden">{{label}}</span>
+                        </li>
+                    </ul>
+                </td>
+                <td class="table-data-label"><span class="payment-types-label">{{label}}</span></td>
+                <td class="table-data-accept">
+                    {{#available}}
+                        {{#selected}}
+                            <span class="payment-types-selected">Yes</span>
+                        {{/selected}}
+
+                        {{^selected}}
+                            <span class="payment-types-not-selected">No</span>
+                        {{/selected}}
+                    {{/available}}
+
+                    {{^available}}
+                        <span>Not available</span>
+                    {{/available}}
+                </td>
+            </tr>
+        {{/brands}}
+        </tbody>
+    </table>
+</div>
+<a id="payment-types-manage-button" href="{{routes.paymentTypes.selectType}}" class="button">
+    Manage
+</a>
+
+
+{{/page_content}}
+
+{{/payment_types}}

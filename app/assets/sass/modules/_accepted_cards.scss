@@ -1,0 +1,26 @@
+.accepted-cards {
+  margin: 15px 0 15px;
+  padding: 0;
+  display: block;
+  float: none;
+  overflow: hidden;
+  li {
+    display: block;
+    float: left;
+    width: 50px;
+    height: 34px;
+    background-size: 100%;
+    margin-right: 10px;
+  }
+
+   $cards: american-express diners-club discover jcb master-card visa;
+    @for $i from 1 through length($cards) {
+      li.#{nth($cards, $i)} {
+        background-image: url("/public/images/#{nth($cards, $i)}-bw.png")
+      }
+      &.field-empty li.#{nth($cards, $i)},
+      li.#{nth($cards, $i)}.selected {
+        background-image: url("/public/images/#{nth($cards, $i)}-color.png")
+      }
+    }
+}

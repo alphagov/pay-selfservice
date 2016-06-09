@@ -1,0 +1,80 @@
+{{< payment_types}}
+
+{{$page_content}}
+
+<form id="payment-types-card-brand-selection-form" method="post" action="{{routes.paymentTypes.selectBrand}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="accepted-card-type" name="acceptedType" type="hidden" value="{{acceptedType}}"/>
+
+    <div class="panel panel-border-wide">
+        {{#isAcceptedTypeAll}}
+        <p id="payment-types-accept-all-types-message">You have chosen to accept debit and credit cards</p>
+        {{/isAcceptedTypeAll}}
+        {{#isAcceptedTypeDebit}}
+        <p id="payment-types-accept-debit-types-message">You have chosen to only accept debit cards</p>
+        {{/isAcceptedTypeDebit}}
+    </div>
+    <h2 class="heading-small">Now choose the card brands you want to accept?</h2>
+    <div class="form-group">
+        <fieldset>
+            <legend class="visuallyhidden">Now choose the card brands you want to accept?</legend>
+            <table class="checkbox-row-selection">
+                <thead>
+                <tr>
+                    <th colspan="2">Card brand</th>
+                    <th class="table-header-accept">Accept</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#brands}}
+
+                    {{#available}}
+                        <tr id="{{id}}">
+                    {{/available}}
+                    {{^available}}
+                        <tr id="{{id}}" class="payment-types-not-available">
+                    {{/available}}
+
+                        <td class="table-data-card-brand">
+                            <ul class="accepted-cards">
+                                {{#available}}
+                                <li class="{{value}} selected">
+                                {{/available}}
+
+                                {{^available}}
+                                <li class="{{value}}">
+                                {{/available}}
+                                    <span class="visuallyhidden">{{label}}</span>
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="table-data-label"><span class="payment-types-label">{{label}}</span></td>
+                        <td class="table-data-accept">
+                            {{#available}}
+                            <input class="payment-types-checkbox" type="checkbox" name="acceptedBrands" value="{{value}}"
+                                   {{selected}}>
+                            {{/available}}
+                            {{^available}}
+                                <span>Not available</span>
+                            {{/available}}
+                        </td>
+                    </tr>
+                {{/brands}}
+                </tbody>
+            </table>
+        </fieldset>
+        {{#error}}
+        <div class="form-group error">
+            <span class="error-message" id="payment-types-error-message">{{error}}</span>
+        </div>
+        {{/error}}
+    </div>
+    <input id="payment-types-save-button" type="submit" class="button" value="Save changes">
+    <a id="payment-types-cancel-link" href="{{routes.paymentTypes.summary}}">
+        Cancel
+    </a>
+</form>
+
+{{/page_content}}
+
+{{/payment_types}}
