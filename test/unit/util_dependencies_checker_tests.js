@@ -71,7 +71,7 @@ describe('session', function () {
     var secondTimeSuccessfulPromise =  { then: function(success,fail){
       if (count > 1) return success();
       count++;
-      fail();
+      fail("Error");
     }};
 
     sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(secondTimeSuccessfulPromise);
@@ -81,10 +81,10 @@ describe('session', function () {
     dependentResourceChecker(sleeper, mockSequelizerConfig).checkDependentResources(sucessfulFunction, 0.1);
 
     assert(consoleSpy.getCall(0).args[0] === "Checking for Database connectivity");
-    assert(consoleSpy.getCall(1).args[0] === "Unable to connect to the database");
+    assert(consoleSpy.getCall(1).args[0] === "Unable to connect to the database: Error");
     assert(consoleSpy.getCall(2).args[0] === "DB not available. Sleeping for 0.1 seconds -> attempt 1");
     assert(consoleSpy.getCall(3).args[0] === "Checking for Database connectivity");
-    assert(consoleSpy.getCall(4).args[0] === "Unable to connect to the database");
+    assert(consoleSpy.getCall(4).args[0] === "Unable to connect to the database: Error");
     assert(consoleSpy.getCall(5).args[0] === "DB not available. Sleeping for 0.2 seconds -> attempt 2");
     assert(consoleSpy.getCall(6).args[0] === "Checking for Database connectivity");
     assert(consoleSpy.getCall(7).args[0] === "Connection has been established successfully.");

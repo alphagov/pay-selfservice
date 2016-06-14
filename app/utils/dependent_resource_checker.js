@@ -15,8 +15,8 @@ module.exports = function() {
         .then(function() {
           console.log('Connection has been established successfully.');
           onResourceAvailable();
-        }, function () {
-          console.log('Unable to connect to the database');
+        }, function (e) {
+          console.log('Unable to connect to the database: '+ e);
           waitAndCheckDependentResources(startup, attempt, incrementalWaitDuration);
         });
     };
