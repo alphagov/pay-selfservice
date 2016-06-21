@@ -96,7 +96,7 @@ module.exports = {
     connectorData.downloadTransactionLink = router.generateRoute(
         router.paths.transactions.download,{
         reference: filters.reference,
-        status: filters.status,
+        state: filters.state,
         fromDate: filters.fromDate,
         toDate: filters.toDate,
         fromTime: filters.fromTime,
