@@ -129,6 +129,53 @@ portfinder.getPort(function (err, connectorPort) {
             .end(done);
       });
 
+      it('should return a list of transactions for the gateway account', function (done) {
+        var connectorData = {
+          'results': [
+            {
+              'charge_id': '100',
+              'gateway_transaction_id': 'tnx-id-1',
+              'amount': 5000,
+              'reference': 'ref1',
+              'state': {
+                'status': 'testing',
+                'finished': false
+              },
+              'updated': CONNECTOR_DATE,
+              'created_date': CONNECTOR_DATE
+
+            },
+            {
+              'charge_id': '101',
+              'gateway_transaction_id': 'tnx-id-2',
+              'amount': 2000,
+              'reference': 'ref2',
+              'state': {
+                'status': 'testing2',
+                'finished': false
+              },
+              'updated': CONNECTOR_DATE,
+              'created_date': CONNECTOR_DATE
+
+            }
+          ]
+        };
+
+        connectorMock_responds(200, connectorData, {state: "started"});
+          request(app)
+            .get(paths.transactions.index + "?state=started")
+            .set('Accept', 'application/json')
+            .expect(200)
+            .expect(function(res) {
+               res.body.downloadTransactionLink.should.eql("/transactions/download?state=started");
+             })
+            .end(done);
+      });
+
+
+
+
+
       it('should return a list of transactions for the gateway account with reference missing', function (done) {
         var connectorData = {
           'results': [
