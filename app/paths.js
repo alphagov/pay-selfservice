@@ -35,6 +35,9 @@ module.exports = {
     selectBrand: '/payment-types/select-brand',
     summary: '/payment-types/summary'
   },
+  emailNotifications: {
+    index: '/email-notifications'
+  },
   healthcheck: {
     path: '/healthcheck'
   },
