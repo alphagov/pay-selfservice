@@ -100,10 +100,15 @@
   }
 }
 
+.main-content {
+  @include respond-to(tablet) {
+    padding-left: $gutter;
+  }
+}
+
 .navigation,
 .main-content {
   width: $full-width;
-
   .inner {
     padding: 0;
   }

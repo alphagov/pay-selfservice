@@ -71,9 +71,11 @@ module.exports.bind = function (app) {
   app.post(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.updateBrands);
   app.get(pt.summary, auth.enforce, csrf, paymentTypesSummary.showSummary);
 
-  // HEALTHCHECK
+  // EMAIL
   var en = paths.emailNotifications;
   app.get(en.index, emailNotifications.index);
+  app.get(en.edit, emailNotifications.edit);
+
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

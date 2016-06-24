@@ -36,7 +36,9 @@ module.exports = {
     summary: '/payment-types/summary'
   },
   emailNotifications: {
-    index: '/email-notifications'
+    index: '/email-notifications',
+    edit: '/email-notifications/edit',
+
   },
   healthcheck: {
     path: '/healthcheck'
