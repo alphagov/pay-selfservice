@@ -2,27 +2,23 @@
 
 {{$content}}
 
-<h1 class="page-title">Email notifications</h1>
-<p>Payment confirmation emails are turned on for this account</p>
+<h1 class="page-title">
+  Email notifications
+</h1>
+<p>
+  Payment confirmation emails are turned on for this account
+</p>
 
-<h2 class="heading-medium">Current email template</h2>
-<div class="panel panel-border-wide">
-    <h3 class="heading-small">Email subject line:</h3>
-    <p class="push-bottom">{{serviceName}}: Successful Payment [Reference number]</p>
-    <h3 class="heading-small">Email copy:</h3>
-    <p class="push-bottom">Thank you for your recent payment for {{ serviceName }}</p>
-    <p>
-    Your payment summary:<br/>
-    Reference: [Reference number]<br/>
-    Date of payment: [Date]<br/>
-    Description: [Payment description detail]<br/>
-    Amount paid: [Amount]<br/>
-    </p>
-    <p> from {{serviceName}} </p>
-</div>
-<p>You can customise the email and add extra information related to your service</p>
+<h2 class="heading-medium">
+  Current email template
+</h2>
+{{>email_notifications/email_body}}
+<p class="small push-top">
+  The custom paragraph should give users extra information related
+  to your service.
+</p>
 <a class="button" href="/email-notifications/edit">
-    Customise the email
+  Add a custom paragraph
 </a>
 
 {{/content}}

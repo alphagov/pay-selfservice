@@ -15,6 +15,7 @@ var querystring = require('querystring');
 var _ = require('lodash');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
+var retrieveAccount = require('./middleware/retrieve_account.js');
 
 module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
@@ -73,8 +74,10 @@ module.exports.bind = function (app) {
 
   // EMAIL
   var en = paths.emailNotifications;
-  app.get(en.index, emailNotifications.index);
-  app.get(en.edit, emailNotifications.edit);
+  app.get(en.index, auth.enforce, csrf,retrieveAccount, emailNotifications.index);
+  app.get(en.edit, auth.enforce, csrf, retrieveAccount, emailNotifications.edit);
+  app.post(en.confirm, auth.enforce, csrf,retrieveAccount, emailNotifications.confirm);
+  app.post(en.update, auth.enforce, csrf, emailNotifications.update);
 
 
   // HEALTHCHECK

@@ -2,10 +2,17 @@
 
 {{$content}}
 
-<h1 class="page-title">Customise the email</h1>
-<p>Guidance on providing extra information</p>
+<h1 class="page-title heading-large">Add a custom paragraph to the email</h1>
+<h2 class="heading-medium">
+  Current email template
+</h2>
+{{>email_notifications/email_body}}
+<h2 class="heading-medium">
+  Add a custom paragraph
+</h2>
+<h3 class="heading-small push-bottom">Guidance on providing extra information</h3>
 
-<ul class="list-bullet">
+<ul class="list-bullet push-bottom">
     <li>let the user know if they need to do something else to complete the service or application</li>
     <li>include information regarding delivery dates or how lon it will take to process the payment</li>
     <li>link to a page on GOV.UK if you want to provide contact service details</li>
@@ -18,14 +25,13 @@
 
 <h2 class="heading-small">Enter extra information</h2>
 <p>This will appear after the payment summary in the email</p>
-<form  method="post">
-    <textarea ></textarea>
+<form method="post" action="{{routes.emailNotifications.confirm}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    <textarea name="custom-email-text">{{customEmailText}}</textarea>
     <input name="email-edit" type="submit" class="button push-top" value="Continue">
-    <a class="push-top-sml" href="">cancel</a>
+    <a class="push-top-sml" href="{{routes.emailNotifications.index}}">cancel</a>
 </form>
-
-
-
 </ul>
 {{/content}}
 

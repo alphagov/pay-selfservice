@@ -38,6 +38,8 @@ module.exports = {
   emailNotifications: {
     index: '/email-notifications',
     edit: '/email-notifications/edit',
+    confirm: '/email-notifications/confirm',
+    update: '/email-notifications/update'
 
   },
   healthcheck: {

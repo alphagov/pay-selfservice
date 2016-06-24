@@ -1,4 +1,6 @@
 var logger = require('winston');
+const ERROR_MESSAGE = 'There is a problem with the payments platform';
+const NOT_FOUND = 'Page cannot be found';
 
 function response(accept, res, template, data) {
   if (accept === "application/json") {
@@ -15,14 +17,15 @@ function healthCheckResponse(accept, res, data) {
 }
 
 module.exports = {
-  ERROR_MESSAGE: 'There is a problem with the payments platform',
+  ERROR_MESSAGE: ERROR_MESSAGE,
   ERROR_VIEW: 'error',
-  PAGE_NOT_FOUND_ERROR_MESSAGE: 'Page cannot be found',
+  PAGE_NOT_FOUND_ERROR_MESSAGE: NOT_FOUND,
 
   response: response,
   healthCheckResponse: healthCheckResponse,
 
   renderErrorView: function (req, res, msg) {
+    if (!msg) msg = ERROR_MESSAGE;
     logger.error('An error has occurred. Rendering error view -', {errorMessage: msg});
     response(req.headers.accept, res, 'error', {
       'message': msg

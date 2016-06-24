@@ -9,7 +9,7 @@ var headers = { "Accept": "application/json" };
 
 module.exports = function(){
   // temporaraily store on sessions, remove req once we can
-  get = function(req){
+  var get = function(req){
     var defer = q.defer();
     setTimeout(function(){
       defer.resolve(req.session.emailNotification);
@@ -17,10 +17,19 @@ module.exports = function(){
     return defer.promise;
   };
 
+  // temporaraily store on sessions, remove req once we can
+  var update = function(req,emailText){
+    var defer = q.defer();
+    setTimeout(function(){
+      req.session.emailNotification = emailText;
+      defer.resolve();
+    },400);
+    return defer.promise;
+  };
 
   return {
-    get: get
+    get: get,
+    update: update
   };
 
 }();
-
