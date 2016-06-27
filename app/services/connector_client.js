@@ -185,6 +185,7 @@ ConnectorClient.prototype = {
    */
   withGetAccount: function (gatewayAccountId, successCallback) {
     var url = _accountUrlFor(gatewayAccountId, this.connectorUrl);
+
     logger.info('Calling connector to get account -', {
       service: 'connector',
       method: 'GET',

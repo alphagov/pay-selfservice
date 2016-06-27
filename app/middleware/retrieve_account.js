@@ -11,7 +11,6 @@ Email     = require('../models/email.js');
 
 module.exports = function (req, res, next) {
   var accountId = auth.get_account_id(req);
-
   var init = function () {
     client.withGetAccount(accountId, function(data){
       req.account = data;
@@ -23,7 +22,6 @@ module.exports = function (req, res, next) {
     }).on('connectorError', connectorError);
   },
   connectorError = function(){
-    console.error('PROBLEM RETRIEVING ACCOUNT');
     errorView(req, res);
   };
 

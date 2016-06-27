@@ -13,7 +13,7 @@ module.exports = function(){
     var defer = q.defer();
     setTimeout(function(){
       defer.resolve(req.session.emailNotification);
-    },400);
+    },10);
     return defer.promise;
   };
 
