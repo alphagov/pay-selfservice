@@ -52,10 +52,8 @@
 <form method="post" action="{{routes.emailNotifications.confirm}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-    <textarea name="custom-email-text">
-        {{customEmailText}}
-    </textarea>
-    <input name="email-edit" type="submit" class="button push-top" value="Continue">
+    <textarea name="custom-email-text" class="qa-custom-p">{{customEmailText}}</textarea>
+    <input name="email-edit" type="submit" class="button push-top qa-edit-submit" value="Continue">
     <a class="push-top-sml" href="{{routes.emailNotifications.index}}">
         cancel
     </a>
