@@ -9,9 +9,20 @@
   Current email template
 </h2>
 {{>email_notifications/email_body}}
+
+{{#customEmailText}}
 <h2 class="heading-medium">
-  Add a custom paragraph
+Edit custom paragraph
 </h2>
+{{/customEmailText}}
+{{^customEmailText}}
+<h2 class="heading-medium">
+Add a custom paragraph
+</h2>
+{{/customEmailText}}
+
+
+
 <h3 class="heading-small push-bottom">
     Guidance on providing extra information
 </h3>
