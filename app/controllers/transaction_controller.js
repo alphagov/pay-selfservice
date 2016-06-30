@@ -9,6 +9,8 @@ var date = require('../utils/dates.js');
 var logger = require('winston');
 var router = require('../routes.js');
 var Transaction = require('../models/transaction.js');
+var Charge  = require('../models/charge.js');
+
 var qs = require('qs');
 var check = require('check-types');
 var Paginator = require('../utils/paginator.js');
@@ -93,26 +95,16 @@ module.exports = {
     var accountId = auth.get_account_id(req);
     var chargeId = req.params.chargeId;
     var defaultError = 'Error processing transaction view';
+    var notFound = 'Charge not found';
 
-    function foundCharge(charge) { //on success of finding a charge
-      var charge = charge;
-      connectorClient().withChargeEvents(accountId, chargeId, function (events) {
-        foundChargeEvents(events, charge);
-      }).on('connectorError', ()=> {
-        renderErrorView(req, res, defaultError);
-      });
-    }
 
-    function foundChargeEvents(events, charge) { //on success of finding events for charge
-      var data = transactionView.buildPaymentView(charge, events);
+    Charge.findWithEvents(accountId, chargeId).then(function(data){
       response(req.headers.accept, res, 'transactions/show', data);
-    }
+    }, function(err){
+      if (err == 'NOT_FOUND') return renderErrorView(req, res, notFound);
+      renderErrorView(req, res, defaultError);
+    });
 
-    connectorClient().withGetCharge(accountId, chargeId, foundCharge)
-      .on('connectorError', (err, response)=> {
-        var message = defaultError;
-        if (response && response.statusCode === 404) message = 'Charge not found';
-        renderErrorView(req, res, message);
-      });
+
   }
 };
