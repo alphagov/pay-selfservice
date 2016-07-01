@@ -13,8 +13,6 @@ var transactionView = require('../utils/transaction_view.js');
 
 module.exports = function() {
   'use strict';
-
-
   var findWithEvents = function(accountId, chargeId){
     var defer = q.defer();
     connector.withGetCharge(accountId, chargeId, function(charge){
@@ -30,7 +28,6 @@ module.exports = function() {
   };
 
   var connectorError = function(err, response, defer){
-    console.log('foo;', (response) ? response.statusCode : 'no repsonse' );
     if (response && response.statusCode === 404) return defer.reject('NOT_FOUND');
     if (response && response.statusCode !== 200) return defer.reject('GET_FAILED');
 
