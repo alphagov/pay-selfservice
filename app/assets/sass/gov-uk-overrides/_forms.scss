@@ -26,3 +26,10 @@ select.form-control {
   color: $black;
 }
 
+textarea {
+  resize: none;
+  width:100%;
+  max-width:600px;
+  min-height: 100px;
+}
+

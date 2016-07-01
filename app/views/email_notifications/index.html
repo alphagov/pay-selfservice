@@ -1,0 +1,26 @@
+{{< layout}}
+
+{{$content}}
+
+<h1 class="page-title">
+  Email notifications
+</h1>
+<p>
+  Payment confirmation emails are turned on for this account
+</p>
+
+<h2 class="heading-medium">
+  Current email template
+</h2>
+{{>email_notifications/email_body}}
+<p class="small push-top">
+  The custom paragraph should give users extra information related
+  to your service.
+</p>
+<a class="button qa-edit-link" href="/email-notifications/edit">
+  Add a custom paragraph
+</a>
+
+{{/content}}
+
+{{/layout}}

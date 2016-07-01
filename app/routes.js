@@ -9,11 +9,13 @@ var serviceName = require('./controllers/service_name_controller.js');
 var paymentTypesSelectType = require('./controllers/payment_types_select_type_controller.js');
 var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
+var emailNotifications = require('./controllers/email_notifications_controller.js');
 var auth = require('./services/auth_service.js');
 var querystring = require('querystring');
 var _ = require('lodash');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
+var retrieveAccount = require('./middleware/retrieve_account.js');
 
 module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
@@ -69,6 +71,14 @@ module.exports.bind = function (app) {
   app.get(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.showBrands);
   app.post(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.updateBrands);
   app.get(pt.summary, auth.enforce, csrf, paymentTypesSummary.showSummary);
+
+  // EMAIL
+  var en = paths.emailNotifications;
+  app.get(en.index, auth.enforce, csrf,retrieveAccount, emailNotifications.index);
+  app.get(en.edit, auth.enforce, csrf, retrieveAccount, emailNotifications.edit);
+  app.post(en.confirm, auth.enforce, csrf,retrieveAccount, emailNotifications.confirm);
+  app.post(en.update, auth.enforce, csrf, emailNotifications.update);
+
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

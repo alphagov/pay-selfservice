@@ -1,0 +1,26 @@
+<div class="">
+    <h3 class="heading-small">Subject</h3>
+    <p class="push-bottom panel panel-border-wide">{{serviceName}}: Successful Payment
+        <span class="grey">
+            [Reference number]
+        </span>
+    </p>
+    <h3 class="heading-small  ">Message content</h3>
+    <div class="message-body panel panel-border-wide">
+        <p class="push-bottom">Thank you for your recent payment for {{ serviceName }}</p>
+        <p>
+        Your payment summary:<br/>
+        Reference: <span class="grey">[Reference number]</span><br/>
+        Date of payment: <span class="grey">[Date]</span><br/>
+        Payment for: <span class="grey">[Payment description detail]</span><br/>
+        Total amount: <span class="grey">[Amount]</span><br/>
+        </p>
+        {{#customEmailText}}
+        <p class="push-bottom qa-custom-p">{{customEmailText}}</p>
+        {{/customEmailText}}
+        {{^customEmailText}}
+        <span class="grey push-bottom qa-custom-p">*Custom paragraph - add this below*</span>
+        {{/customEmailText}}
+        <p> from {{serviceName}} </p>
+    </div>
+</div>

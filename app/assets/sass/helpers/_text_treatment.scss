@@ -1,0 +1,7 @@
+.grey {
+  color: $grey-1
+}
+
+.small {
+  @include core-16();
+}
