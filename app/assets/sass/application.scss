@@ -45,6 +45,8 @@ $grey-8: #fff;
 @import "modules/_total_results";
 @import "modules/_accepted_cards";
 @import "modules/_payment_types";
+@import "modules/_transaction_refund";
+@import "modules/_transaction_show_actions";
 
 
 @import 'gov-uk-overrides/_forms';

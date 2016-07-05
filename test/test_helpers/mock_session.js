@@ -26,7 +26,19 @@ module.exports = function () {
   };
 
   var mockValidAccount = function (app, accountId) {
-    var validSession = {csrfSecret: "123", passport: {user: {_json: {app_metadata: {account_id: accountId}}}}};
+    var validSession = {
+      csrfSecret: "123",
+      chargeWithRefund: {refunded_amount: 100 },
+      passport: {
+        user: {
+          _json: {
+            app_metadata: {
+              account_id: accountId
+            }
+          }
+        }
+      }
+    };
     return mockSession(app, validSession);
   };
 

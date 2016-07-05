@@ -9,6 +9,16 @@
       <td id="amount">{{amount}}</td>
     </tr>
     <tr>
+      <td>Refunded:</td>
+      <td id="finished">{{#refunded}}&#10004;{{/refunded}}{{^refunded}}&#10006;{{/refunded}}</td>
+    </tr>
+    {{#refunded}}
+    <tr>
+      <td>Refunded amount</td>
+      <td>£{{refunded_amount}}</td>
+    </tr>
+    {{/refunded}}
+    <tr>
       <td>State:</td>
       <td id="state">{{state_friendly}}{{#state.message}} ({{state.code}} - {{state.message}}){{/state.message}}</td>
     </tr>

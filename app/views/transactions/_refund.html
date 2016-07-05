@@ -1,0 +1,41 @@
+{{#refundable}}
+
+<div id="show-refund">
+  <form action="/transactions/{{charge_id}}/refund" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    <div class="container">
+      <h2 class="heading-medium">Refund payment</h2>
+
+      {{#refunded}}
+      <label class="block-label" for="full">
+        <input id="full" type="radio" name="refund-type" value="full" checked="checked">
+        Remaining amount
+        <span class="form-hint">refund the remaining £{{ net_amount }}, (£{{refunded_amount}} has already been refunded) </span>
+      </label>
+      {{/refunded}}
+
+      {{^refunded}}
+      <label class="block-label" for="full">
+        <input id="full" type="radio" name="refund-type" value="full" checked="checked">
+        Full refund
+        <span class="form-hint">refund the full amount of {{ amount }}</span>
+      </label>
+      {{/refunded}}
+
+
+      <label class="block-label" for="partial">
+        <input id="partial" type="radio" name="refund-type" value="partial">
+        Partial refund
+        <span class="form-hint">refund a partial amount</span>
+      </label>
+      <div class="panel panel-border-wide refund-amount">
+       <p>refund amount</p>
+       <span class="currency">£</span>
+       <input class="form-control" name="refund-amount" type="number" step="any">
+     </div>
+     <input type="submit" value="Refund" class="button delete" />
+     <a href="#" class="close">cancel</a>
+   </div>
+ </form>
+</div>
+{{/refundable}}

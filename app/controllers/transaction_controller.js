@@ -18,7 +18,7 @@ function connectorClient() {
 
 module.exports = {
 
-  transactionsIndex: function (req, res) {
+  index: function (req, res) {
     var accountId = auth.get_account_id(req);
     var filters = getFilters(req);
     var init = function(){
@@ -41,7 +41,7 @@ module.exports = {
     init();
   },
 
-  transactionsDownload: function (req, res) {
+  download: function (req, res) {
     var accountId = auth.get_account_id(req);
     var filters = req.query;
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
@@ -73,14 +73,14 @@ module.exports = {
     init();
   },
 
-  transactionsShow: function (req, res) {
+  show: function (req, res) {
     var accountId = auth.get_account_id(req);
     var chargeId  = req.params.chargeId;
     var defaultMsg= 'Error processing transaction view';
     var notFound  = 'Charge not found';
-
     var init = function(){
-      Charge.findWithEvents(accountId, chargeId)
+      // REMOVE REQ GOING THROUGH ONCE WE HAVE REFUNDS
+      Charge.findWithEvents(accountId, chargeId, req)
       .then(render,error);
     },
 
@@ -94,5 +94,21 @@ module.exports = {
     };
 
     init();
+  },
+
+  refund: function(req, res) {
+    var accountId = auth.get_account_id(req);
+    var chargeId  = req.params.chargeId;
+    var show = router.generateRoute(router.paths.transactions.show, {
+      chargeId: chargeId
+    });
+    var error = function(){
+      renderErrorView(req, res, "Can't process refund");
+    };
+    // REMOVE FULL REQ GOING THROUGH ONCE WE HAVE REFUNDS
+    Charge.refund(accountId, chargeId, req.body['refund-type'],req.body['refund-amount'],req)
+      .then(function(){
+        res.redirect(show);
+      },error);
   }
 };
