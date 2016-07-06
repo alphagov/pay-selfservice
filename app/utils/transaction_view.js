@@ -123,7 +123,7 @@ module.exports = {
     chargeData.amount = CURRENCY + amount;
     //  REMOVE SESSION ONCE WE HAVE REFUNDS GOING THROUGH
     if (req.session[chargeData.charge_id] && req.session[chargeData.charge_id].refunded_amount) {
-      chargeData.refunded_amount = req.session[chargeData.charge_id].refunded_amount.toFixed(2);
+      chargeData.refunded_amount = req.session[chargeData.charge_id].refunded_amount.toFixed(2)
       chargeData.refunded = true;
 
       chargeData.net_amount = (amount - chargeData.refunded_amount).toFixed(2);

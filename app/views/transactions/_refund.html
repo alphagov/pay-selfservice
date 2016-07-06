@@ -16,7 +16,7 @@
 
       {{^refunded}}
       <label class="block-label" for="full">
-        <input id="full" type="radio" name="refund-type" value="full" checked="checked">
+        <input id="full" type="radio" name="refund-type" value="full" checked="checked" id="full-refund">
         Full refund
         <span class="form-hint">refund the full amount of {{ amount }}</span>
       </label>
@@ -24,14 +24,14 @@
 
 
       <label class="block-label" for="partial">
-        <input id="partial" type="radio" name="refund-type" value="partial">
+        <input id="partial" type="radio" name="refund-type" value="partial" id="partial-refund">
         Partial refund
         <span class="form-hint">refund a partial amount</span>
       </label>
       <div class="panel panel-border-wide refund-amount">
        <p>refund amount</p>
        <span class="currency">£</span>
-       <input class="form-control" name="refund-amount" type="number" step="any">
+       <input class="form-control refund-amount-input" name="refund-amount" type="number" step="any">
      </div>
      <input type="submit" value="Refund" class="button delete" />
      <a href="#" class="close">cancel</a>

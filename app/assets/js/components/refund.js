@@ -2,20 +2,25 @@
   refund = function(){
     var selects = $('input[name=refund-type]'),
     partial     =  selects.filter('[value=partial]'),
-    lightbox    = $('#show-refund');
+    lightbox    = $('#show-refund'),
+    showButton  = $('.show-refund-button');
 
     var init = function(){
       selects.on('change',toggleAmount);
-      lightbox.on('click',removeLightBox);
+      showButton.on('click',addLightBox)
     },
 
     toggleAmount = function(){
       $('.refund-amount').toggleClass('shown',partial.is(':checked'));
     },
+
     removeLightBox = function(e) {
-      let notChildElement = $(e.target).is(lightbox);
-      console.log("HI",notChildElement);
-      if (notChildElement) window.location.hash= "";
+      lightbox.removeClass('shown');
+    },
+
+    addLightBox = function(e){
+      e.preventDefault();
+      lightbox.addClass('shown');
     };
 
     init();

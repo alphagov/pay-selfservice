@@ -41,7 +41,7 @@ module.exports = function() {
         return defer.resolve();
       }
 
-      var netRefund = req.session[chargeId]["refunded_amount"] + parseInt(amount);
+      var netRefund = req.session[chargeId]["refunded_amount"] + parseFloat(amount);
       if (netRefund > (charge.amount /100)) {
         return defer.reject('REFUND_FAILED');
       }
