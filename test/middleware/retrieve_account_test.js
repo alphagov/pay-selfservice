@@ -63,7 +63,7 @@ describe('retrieve param test', function () {
         .reply(200,{ foo: "bar", gateway_account_id: 1 });
       nock(process.env.CONNECTOR_URL)
         .get("/v1/api/accounts/1/email-notification")
-        .reply(200,{templateBody: 'hello'});
+        .reply(200,{template_body: 'hello'});
       var valid_session = {
         passport: {
           user: {

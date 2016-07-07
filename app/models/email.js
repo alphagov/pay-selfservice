@@ -20,7 +20,7 @@ module.exports = function(){
       if (error) {
         return defer.reject(new Error('GET_FAILED'));
       }
-      defer.resolve(data.templateBody);
+      defer.resolve(data.template_body);
     }).on('error',function(err){
       clientUnavailable(err, defer, 'GET');
     });

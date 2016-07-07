@@ -52,7 +52,7 @@ describe('email notification', function() {
 
         nock(process.env.CONNECTOR_URL)
           .get("/v1/api/accounts/123/email-notification")
-          .reply(200, {"templateBody": "hello"});
+          .reply(200, {"template_body": "hello"});
       });
 
       it('should return the correct promise', function () {
