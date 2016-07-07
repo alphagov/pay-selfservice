@@ -28,7 +28,7 @@ module.exports = function () {
   var mockValidAccount = function (app, accountId) {
     var validSession = {
       csrfSecret: "123",
-      chargeWithRefund: {refunded_amount: 100 },
+      12345: {refunded_amount: 5 },
       passport: {
         user: {
           _json: {

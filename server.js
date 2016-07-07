@@ -14,7 +14,7 @@ var logger            = require('winston');
 var loggingMiddleware = require('morgan');
 var argv              = require('minimist')(process.argv.slice(2));
 var environment       = require(__dirname + '/app/services/environment.js');
-var auth              = require(__dirname + '/app/services/auth_service.js');      
+var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
 
@@ -41,7 +41,7 @@ function initialiseGlobalMiddleware (app) {
       req.url = oldUrl.substring('/selfservice'.length);
       logger.info('REDIRECTED ' + oldUrl + ' to ' + req.url);
     }
-    
+
     next();
   });
 
@@ -134,7 +134,7 @@ function initialise() {
 function start() {
   if (!environment.isProduction()) {
     // startup application immediately on a non-production environment
-    listen();  
+    listen();
   } else {
     logger.info("Checking Dependent resources before startup....");
     dependenciesCheck.checkDependentResources(listen, 5);
