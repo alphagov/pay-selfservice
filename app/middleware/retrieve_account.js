@@ -12,8 +12,7 @@ module.exports = function (req, res, next) {
   var init = function () {
     client.withGetAccount(accountId, function(data){
       req.account = data;
-      // not too sure if this is actually a seperate call
-      Email.get(req).then(function(customEmailText){
+      Email.get(req.account.gateway_account_id).then(function(customEmailText){
         req.account.customEmailText = customEmailText;
         next();
       },connectorError);

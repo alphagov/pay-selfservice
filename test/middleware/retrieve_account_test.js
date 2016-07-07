@@ -57,11 +57,26 @@ describe('retrieve param test', function () {
     },40);
   });
 
-  it("should set the account and emaila nd call next on success", function(done) {
+  it("should set the account and email and call next on success", function(done) {
       nock(process.env.CONNECTOR_URL)
         .get("/v1/frontend/accounts/1")
-        .reply(200,{ foo: "bar"});
-      var req =  { params: {}, body: {}, headers: {}, session: {emailNotification : "hello"}};
+        .reply(200,{ foo: "bar", gateway_account_id: 1 });
+      nock(process.env.CONNECTOR_URL)
+        .get("/v1/api/accounts/1/email-notification")
+        .reply(200,{templateBody: 'hello'});
+      var valid_session = {
+        passport: {
+          user: {
+            name: 'Michael',
+            _json: {
+              app_metadata: {
+                account_id: 1
+              }
+            }
+          }
+        }
+      };
+      var req =  { params: {}, body: {}, headers: {}, session: valid_session};
       retrieveAccount(req, response, next);
 
 
@@ -71,9 +86,10 @@ describe('retrieve param test', function () {
 
       testPromise.then((result) => {
         try {
+        console.log('THISS')
           expect(status.calledWith(200));
           expect(next.called).to.be.true;
-          expect(req.account).to.deep.equal({ foo: 'bar', customEmailText: "hello" });
+          expect(req.account).to.deep.equal({ foo: 'bar', customEmailText: "hello", "gateway_account_id": 1});
           done();
         }
         catch(err) { done(err); }
