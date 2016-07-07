@@ -1,3 +1,4 @@
+
 module.exports = function(grunt){
   grunt.initConfig({
     // Clean
@@ -112,15 +113,17 @@ module.exports = function(grunt){
     },
 
     mochaTest: {
+      run: {
+        src: grunt.option('only') ? [grunt.option('only')] : [
+          'test/**/*.js',
+          '!test/test_helpers/*.js'
+        ]
+      },
       test: {
         options: {
           reporter: 'spec',
           captureFile: 'mocha-test-results.txt'
-        },
-        src: [
-          'test/**/*.js',
-          '!test/test_helpers/*.js'
-        ]
+        }
       }
     },
     env: {
