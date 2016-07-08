@@ -2,12 +2,13 @@
   refund = function(){
     var selects = $('input[name=refund-type]'),
     partial     =  selects.filter('[value=partial]'),
-    lightbox    = $('#show-refund'),
+    close       = $('#show-refund .close'),
     showButton  = $('.show-refund-button');
 
     var init = function(){
       selects.on('change',toggleAmount);
-      showButton.on('click',addLightBox)
+      showButton.on('click',addLightBox);
+      close.on('click',removeLightBox);
     },
 
     toggleAmount = function(){
