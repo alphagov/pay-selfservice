@@ -10,6 +10,7 @@ var paymentTypesSelectType = require('./controllers/payment_types_select_type_co
 var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
 var emailNotifications = require('./controllers/email_notifications_controller.js');
+var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
 var querystring = require('querystring');
 var _ = require('lodash');
@@ -83,4 +84,8 @@ module.exports.bind = function (app) {
   // HEALTHCHECK
   var hc = paths.healthcheck;
   app.get(hc.path, healthcheck.healthcheck);
+
+  // STATIC
+  var st = paths.static;
+  app.get(st.naxsiError, static.naxsiError);
 };
