@@ -15,9 +15,9 @@ describe('static controller', function () {
       });
 
 
-  it('should returnan error page', function (done) {
+  it('should return an error page', function (done) {
     request(app)
-    .get("/400")
+    .get("/request-denied")
     .set('Accept', 'application/json')
     .expect(400)
     .end(done);
