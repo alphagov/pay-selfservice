@@ -87,5 +87,5 @@ module.exports.bind = function (app) {
 
   // STATIC
   var st = paths.static;
-  app.get(st.naxsiError, static.naxsiError);
+  app.all(st.naxsiError, static.naxsiError);
 };
