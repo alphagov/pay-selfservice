@@ -3,7 +3,8 @@ module.exports = {
   transactions: {
     index: '/transactions',
     download: '/transactions/download',
-    show: '/transactions/:chargeId'
+    show: '/transactions/:chargeId',
+    refund: '/transactions/:chargeId/refund'
   },
   credentials: {
     index: '/credentials',

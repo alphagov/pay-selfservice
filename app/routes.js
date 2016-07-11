@@ -29,9 +29,10 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
 
   var tr = paths.transactions;
-  app.get(tr.index, auth.enforce, csrf, transactions.transactionsIndex);
-  app.get(tr.download, auth.enforce, csrf, transactions.transactionsDownload);
-  app.get(tr.show, auth.enforce, csrf, transactions.transactionsShow);
+  app.get(tr.index, auth.enforce, csrf, transactions.index);
+  app.get(tr.download, auth.enforce, csrf, transactions.download);
+  app.get(tr.show, auth.enforce, csrf, transactions.show);
+  app.post(tr.refund, auth.enforce, csrf, transactions.refund);
 
   // CREDENTIALS
 
