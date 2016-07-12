@@ -46,5 +46,8 @@ module.exports = {
   healthcheck: {
     path: '/healthcheck'
   },
+  static: {
+    naxsiError: "/request-denied"
+  },
   generateRoute: require(__dirname + '/utils/generate_route.js')
 };
