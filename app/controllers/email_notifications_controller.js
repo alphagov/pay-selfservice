@@ -29,10 +29,9 @@ module.exports.confirm = (req, res) => {
 
 module.exports.update = (req, res) => {
   var indexPath = router.paths.emailNotifications.index,
-  newEmailText  = req.body["custom-email-text"];
-  // remove req once we have somewhere apart from the session
-  // to store this
-  Email.update(req, newEmailText)
+  newEmailText  = req.body["custom-email-text"],
+  accountID = req.account.gateway_account_id;
+  Email.update(accountID, newEmailText)
   .then((customEmailText) => {
     res.redirect(303, indexPath);
   });
