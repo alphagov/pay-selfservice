@@ -1,98 +1,111 @@
-"use strict";
-var logger = require('winston');
-var session = require('express-session');
-var Auth0Strategy = require('passport-auth0');
 var passport = require('passport');
-var paths = require(__dirname + '/../paths.js');
-var csrf = require('csrf');
+var Strategy = require('passport-local').Strategy;
+var session = require('express-session');
 var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
+var logger = require('winston');
+var csrf = require('csrf');
+var paths = require(__dirname + '/../paths.js');
+var User = require(__dirname + '/../models/user.js');
+var TotpStrategy = require('passport-totp').Strategy;
 
 
-var logIfError = function (scenario, err) {
-  if (err) {
-    logger.warn(scenario + ' -', {'warn': err});
-  }
-};
 
-var AUTH_STRATEGY_NAME = 'auth0';
-var AUTH_STRATEGY = new Auth0Strategy({
-    domain: process.env.AUTH0_URL,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL: paths.user.callback
-  },
-  function (accessToken, refreshToken, extraParams, user, done) {
-    // accessToken is the token to call Auth0 API (not needed in the most cases)
-    // extraParams.id_token has the JSON Web Token
-    // profile has all the information from the user
-    logger.info('Logged in user -', {'displayname': user.displayName});
-    return done(null, user);
-  }
-);
 
-var auth = {
-  enforce: function (req, res, next) {
 
+var db = require(__dirname + "/db.js");
+
+module.exports = function(){
+  var logIfError = function (scenario, err) {
+    if (err) {
+      logger.warn(scenario + ' -', {'warn': err});
+    }
+  };
+
+
+  var initialise = function(app){
+    app.use(session(selfServiceSession()));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use('local',
+      new Strategy(
+        function(username, password, cb) {
+          User.authenticate(username, password).then(function(user){
+            console.log('hello',user);
+            return cb(null, user);
+          },function(){
+            console.log('hi');
+            return cb(null, false);
+          });
+        }
+      )
+    );
+
+
+
+    passport.serializeUser(function(user, cb) {
+      cb(null, user.email);
+    });
+
+    passport.deserializeUser(function(userEmail, cb) {
+      User.find(userEmail).then(function(user){
+        cb(null, user.dataValues);
+      });
+    });
+  };
+
+  var enforce = function (req, res, next) {
     req.session.reload(function (err) {
       logIfError('Enforce reload of LogIn', err);
-
-      if (req.session.passport && req.session.passport.user) {
-        if (auth.get_account_id(req)) {
-          if (!req.session.csrfSecret) {
-            req.session.csrfSecret = csrf().secretSync();
-            logger.info('Created csrfSecret')
-          }
-          next();
-        }
-        else {
-          auth.no_access(req, res, next);
-        }
-      } else {
+      var hasUser = req.session.passport && req.session.passport.user;
+      var twoFactor = req.session.secondFactor == 'totp';
+      if (!hasUser) {
         req.session.last_url = req.originalUrl;
         req.session.save(function () {
           res.redirect(paths.user.logIn);
         });
+        return;
+      }
+
+      if (!twoFactor) {
+        res.redirect("/login-otp");
+      }
+
+      if (get_account_id(req)) {
+        if (!req.session.csrfSecret) {
+          req.session.csrfSecret = csrf().secretSync();
+          logger.info('Created csrfSecret');
+        }
+        next();
+      }
+      else {
+        no_access(req, res, next);
       }
     });
-  },
+  };
 
-  login: passport.authenticate(AUTH_STRATEGY_NAME, {session: true}),
-
-  callback: passport.authenticate(AUTH_STRATEGY_NAME, {failureRedirect: paths.user.logIn}),
-
-  initialise: function (app, override_strategy) {
-
-    var strategy = override_strategy || AUTH_STRATEGY;
-
-    passport.use(strategy);
-
-    passport.serializeUser(function (user, done) {
-      done(null, user);
-    });
-
-    passport.deserializeUser(function (user, done) {
-      done(null, user);
-    });
-
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    app.use(session(selfServiceSession()));
-  },
-
-  no_access: function (req, res, next) {
+ var no_access = function (req, res, next) {
     if (req.url != paths.user.noAccess) {
       res.redirect(paths.user.noAccess);
     }
     else {
       next(); // don't redirect again if we're already there
     }
-  },
+  };
 
-  get_account_id: function (req) {
-    var user = req.session.passport.user;
-    return user._json && user._json.app_metadata && user._json.app_metadata.account_id ? parseInt(user._json.app_metadata.account_id) : null;
-  }
-};
 
-module.exports = auth;
+ var get_account_id =  function (req) {
+    var user = req.user.account_id;
+    return user ? 1 : null;
+  };
+
+
+
+  return {
+    initialise: initialise,
+    enforce: enforce,
+    no_access: no_access,
+    get_account_id: get_account_id
+  };
+
+
+}();

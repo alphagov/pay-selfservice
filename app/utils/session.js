@@ -10,10 +10,10 @@ const session = require('express-session'),
 module.exports = function () {
 
   function checkEnv() {
-    
+
     if (process.env.SESSION_ENCRYPTION_KEY === undefined) throw new Error('cookie encryption key is not set');
     if (process.env.COOKIE_MAX_AGE === undefined) throw new Error('cookie max age is not set');
-    
+
     logger.info('Checking environment variables -', {
       'SECURE_COOKIE_OFF':process.env.SECURE_COOKIE_OFF,
       'SESSION_IN_MEMORY':process.env.SESSION_IN_MEMORY,
@@ -41,8 +41,8 @@ module.exports = function () {
     var sessionConfig = {
       name: 'selfservice_state',
       proxy: true,
-      saveUninitialized: false,
-      resave: false,
+      saveUninitialized: true,
+      resave: true,
       secret: process.env.SESSION_ENCRYPTION_KEY,
       cookie: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE),
