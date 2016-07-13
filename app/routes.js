@@ -35,7 +35,7 @@ module.exports.bind = function (app) {
   app.get(tr.show, auth.enforce, csrf, transactions.show);
   app.post(tr.refund, auth.enforce, csrf, transactions.refund);
 
-  // CREDENTIALS
+  // // CREDENTIALS
 
   var cred = paths.credentials;
   app.get(cred.index, auth.enforce, csrf, credentials.index);
@@ -44,10 +44,12 @@ module.exports.bind = function (app) {
   // LOGIN
 
   var user = paths.user;
-  app.get(user.logIn, auth.login, login.logIn);
+  app.get(user.logIn, login.logInGet);
+  app.post(user.logIn,login.logUserin(),login.postLogin);
+
   app.get(user.logOut, login.logOut);
-  app.get(user.callback, auth.callback, login.callback);
-  app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
+
+  app.get(user.loggedIn, auth.enforce, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
 
   // DEV TOKENS
@@ -59,13 +61,13 @@ module.exports.bind = function (app) {
   app.put(dt.update, auth.enforce, csrf, devTokens.update);
   app.delete(dt.delete, auth.enforce, csrf, devTokens.destroy);
 
-  // SERVICE NAME
+  // // SERVICE NAME
 
   var sn = paths.serviceName;
   app.get(sn.index, auth.enforce, csrf, serviceName.index);
   app.post(sn.index, auth.enforce, csrf, serviceName.update);
 
-  // PAYMENT TYPES
+  // // PAYMENT TYPES
 
   var pt = paths.paymentTypes;
   app.get(pt.selectType, auth.enforce, csrf, paymentTypesSelectType.selectType);
@@ -74,7 +76,7 @@ module.exports.bind = function (app) {
   app.post(pt.selectBrand, auth.enforce, csrf, paymentTypesSelectBrand.updateBrands);
   app.get(pt.summary, auth.enforce, csrf, paymentTypesSummary.showSummary);
 
-  // EMAIL
+  // // EMAIL
   var en = paths.emailNotifications;
   app.get(en.index, auth.enforce, csrf,retrieveAccount, emailNotifications.index);
   app.get(en.edit, auth.enforce, csrf, retrieveAccount, emailNotifications.edit);
@@ -82,11 +84,11 @@ module.exports.bind = function (app) {
   app.post(en.update, auth.enforce, csrf, retrieveAccount, emailNotifications.update);
 
 
-  // HEALTHCHECK
+  // // HEALTHCHECK
   var hc = paths.healthcheck;
   app.get(hc.path, healthcheck.healthcheck);
 
-  // STATIC
+  // // STATIC
   var st = paths.static;
   app.all(st.naxsiError, static.naxsiError);
 };

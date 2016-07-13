@@ -17,6 +17,22 @@ var environment       = require(__dirname + '/app/services/environment.js');
 var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
+var userModel         = require(__dirname + '/app/models/user.js');
+base32                = require('thirty-two');
+var passport = require('passport');
+var utils = require('./utils');
+var TotpStrategy = require('passport-totp').Strategy;
+
+function findKeyForUserId(id, fn) {
+  return fn(null, keys[id]);
+}
+var keys = {}
+
+
+function saveKeyForUserId(id, key, fn) {
+  keys[id] = key;
+  return fn(null);
+}
 
 
 function initialiseGlobalMiddleware (app) {
@@ -117,14 +133,22 @@ function initialise() {
 
   initialiseTLS(app);
   initialiseProxy(app);
+  initialisePublic(app);
   initialiseAuth(app);
   initialiseGlobalMiddleware(app);
   initialiseAppVariables(app);
   initialiseTemplateEngine(app);
   initialiseRoutes(app);
   initialiseErrorHandling(app);
-  initialisePublic(app);
 
+
+  passport.use(new TotpStrategy(
+    function(user, done) {
+      // setup function, supply key and period to done callback
+        return done(null, user.key, user.period);
+    }
+  ));
+  nasty2factor(app);
   return app;
 }
 
@@ -150,3 +174,49 @@ module.exports = {
   start: start,
   getApp: initialise()
 };
+
+function  nasty2factor(app){
+  app.get('/login-otp',
+    function(req, res) {
+      res.render('login-otp', { user: req.user });
+    });
+
+  app.post('/login-otp',
+    passport.authenticate('totp', { failureRedirect: '/login-otp' }),
+    function(req, res) {
+      req.session.secondFactor = 'totp';
+      res.redirect('/');
+    });
+
+  app.get('/setup', function(req, res, next){
+    var obj = req.user;
+      if (obj) {
+        // two-factor auth has already been setup
+        var encodedKey = base32.encode(obj.key);
+
+        // generate QR code for scanning into Google Authenticator
+        // reference: https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
+        var otpUrl = 'otpauth://totp/' + req.user.email
+                   + '?secret=' + encodedKey + '&period=' + (obj.period || 30);
+        var qrImage = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(otpUrl);
+
+        res.render('setup', { user: req.user, key: encodedKey, qrImage: qrImage });
+      } else {
+        // new two-factor setup.  generate and save a secret key
+        var key = utils.randomKey(10);
+        var encodedKey = base32.encode(key);
+
+        // generate QR code for scanning into Google Authenticator
+        // reference: https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
+        var otpUrl = 'otpauth://totp/' + req.user.email
+                   + '?secret=' + encodedKey + '&period=30';
+        var qrImage = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(otpUrl);
+        userModel.updateTotpKey(req.user.email,key).then(function(user){
+          res.render('setup', { user: user, key: encodedKey, qrImage: qrImage });
+        },function(){ console.log('BROKE')});
+      }
+  });
+
+}
+
+
