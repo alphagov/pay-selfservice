@@ -3,7 +3,8 @@ var auth  = require('../services/auth_service.js'),
 errorView = require('../utils/response.js').renderErrorView,
 Connector = require('../services/connector_client.js').ConnectorClient,
 client    = new Connector(process.env.CONNECTOR_URL),
-Email     = require('../models/email.js');
+Email     = require('../models/email.js'),
+_         = require('lodash');
 
 
 
@@ -12,8 +13,8 @@ module.exports = function (req, res, next) {
   var init = function () {
     client.withGetAccount(accountId, function(data){
       req.account = data;
-      Email.get(req.account.gateway_account_id).then(function(customEmailText){
-        req.account.customEmailText = customEmailText;
+      Email.get(req.account.gateway_account_id).then(function(data){
+        req.account = _.merge(req.account, data);
         next();
       },connectorError);
     }).on('connectorError', connectorError);

@@ -80,6 +80,9 @@ module.exports.bind = function (app) {
   app.get(en.edit, auth.enforce, csrf, retrieveAccount, emailNotifications.edit);
   app.post(en.confirm, auth.enforce, csrf,retrieveAccount, emailNotifications.confirm);
   app.post(en.update, auth.enforce, csrf, retrieveAccount, emailNotifications.update);
+  app.post(en.off, auth.enforce, csrf, retrieveAccount, emailNotifications.off);
+  app.get(en.offConfirm, auth.enforce, csrf, retrieveAccount, emailNotifications.offConfirm);
+  app.post(en.on, auth.enforce, csrf, retrieveAccount, emailNotifications.on);
 
 
   // HEALTHCHECK

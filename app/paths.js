@@ -40,7 +40,10 @@ module.exports = {
     index: '/email-notifications',
     edit: '/email-notifications/edit',
     confirm: '/email-notifications/confirm',
-    update: '/email-notifications/update'
+    update: '/email-notifications/update',
+    off: '/email-notifications/off',
+    offConfirm: '/email-notifications/off-confirm',
+    on: '/email-notifications/on'
 
   },
   healthcheck: {
