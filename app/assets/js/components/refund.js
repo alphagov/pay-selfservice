@@ -3,7 +3,8 @@
     var selects = $('input[name=refund-type]'),
     partial     =  selects.filter('[value=partial]'),
     close       = $('#show-refund .close'),
-    showButton  = $('.show-refund-button');
+    showButton  = $('.show-refund-button'),
+    lightbox    = $('#show-refund');
 
     var init = function(){
       selects.on('change',toggleAmount);
