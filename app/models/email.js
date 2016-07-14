@@ -44,7 +44,7 @@ module.exports = function(){
 
   var toggleEmail = function(accountID,enabled) {
     var defer = q.defer();
-    client.patch(connectorUrl(accountID), {headers: headers, data: {"enabled": enabled} }, function(data, response) {
+    client.patch(connectorUrl(accountID), {headers: headers, data: {"op": "replace", "path": "enabled", "value": enabled} }, function(data, response) {
       var error = response.statusCode !== 200;
       if (error) return defer.reject(new Error('PATCH_FAILED'));
       defer.resolve();

@@ -149,7 +149,7 @@ describe('email notification', function() {
           nock.cleanAll();
 
           nock(process.env.CONNECTOR_URL)
-            .patch("/v1/api/accounts/123/email-notification",{enabled: enabled})
+            .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": enabled})
             .reply(404, '');
         });
 
@@ -166,7 +166,7 @@ describe('email notification', function() {
           nock.cleanAll();
 
           nock(process.env.CONNECTOR_URL)
-            .patch("/v1/api/accounts/123/email-notification",{enabled: enabled})
+            .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": enabled})
             .reply(200, {});
         });
 
