@@ -9,7 +9,7 @@ var paths  = require('../../app/paths.js');
 
 var authServiceMock = function(){
   return {
-    get_account_id: function(){ return 1;}
+    get_gateway_account_id: function(){ return 1;}
   };
 }();
 
