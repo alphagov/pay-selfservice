@@ -1,0 +1,24 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+GOV.UK Pay - login
+{{/pageTitle}}
+{{$content}}
+
+<form action="/login" method="post">
+  <div>
+  <label>Username:</label>
+  <input type="text" name="username" value="jack" /><br/>
+  </div>
+  <div>
+  <label>Password:</label>
+  <input type="password" name="password" value="secret" />
+  </div>
+  <div>
+  <input type="submit" value="Submit"/>
+  </div>
+</form>
+
+
+{{/content}}
+{{/layout_logged_out}}

@@ -19,7 +19,7 @@ function connectorClient() {
 module.exports = {
 
   index: function (req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var filters = getFilters(req);
     var init = function(){
       if (!filters.valid) return error("Invalid search");
@@ -42,7 +42,7 @@ module.exports = {
   },
 
   download: function (req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var filters = req.query;
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
@@ -74,7 +74,7 @@ module.exports = {
   },
 
   show: function (req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var chargeId  = req.params.chargeId;
     var defaultMsg= 'Error processing transaction view';
     var notFound  = 'Charge not found';
@@ -97,7 +97,7 @@ module.exports = {
   },
 
   refund: function(req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var chargeId  = req.params.chargeId;
     var show = router.generateRoute(router.paths.transactions.show, {
       chargeId: chargeId

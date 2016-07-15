@@ -30,11 +30,7 @@ describe('auth service', function () {
         passport: {
           user: {
             name: 'Michael',
-            _json: {
-              app_metadata: {
-                account_id: 123
-              }
-            }
+            gateway_account_id: 123
           }
         },
         reload : mockByPass,
@@ -68,7 +64,7 @@ describe('auth service', function () {
 
     it("should call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
-      delete invalid.session.passport.user._json.app_metadata.account_id;
+      delete invalid.session.passport.user.gateway_account_id;
       auth.enforce(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
