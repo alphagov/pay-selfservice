@@ -9,17 +9,7 @@ var logIfError = function (scenario, err) {
   }
 };
 
-module.exports.callback = function (req, res) {
-  var lastUrl = req.session.last_url;
-  req.session.last_url = undefined;
-  req.session.save(function (err) {
-    logIfError('Callback save session', err);
-    res.redirect(lastUrl || router.paths.root);
-  });
-};
-
 module.exports.loggedIn = function (req, res) {
-  console.log(req.session);
   req.session.reload(function (err) {
     logIfError('LoggedIn reload session', err);
     res.render('logged_in', {
