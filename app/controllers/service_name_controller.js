@@ -11,7 +11,7 @@ var connectorClient = function () {
 module.exports.index = function (req, res) {
 
   var init = function () {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
 
     connectorClient()
       .withGetAccount(accountId, onSuccess)
@@ -42,7 +42,7 @@ module.exports.index = function (req, res) {
 module.exports.update = function (req, res) {
 
   var init = function () {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
 
     var payload = {
       service_name: req.body['service-name-input']

@@ -30,7 +30,7 @@ module.exports.showSummary = function (req, res) {
       response(req.headers.accept, res, "payment_types_summary", model);
     };
 
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
 
     connectorClient()
       .withGetAccountAcceptedCards(accountId, onSuccessGetAccountAcceptedCards)
