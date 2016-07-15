@@ -1,6 +1,7 @@
 var logger    = require('winston');
 var response  = require('../utils/response.js').response;
 var router    = require('../routes.js');
+var passport  = require('passport');
 
 var logIfError = function (scenario, err) {
   if (err) {
@@ -18,10 +19,11 @@ module.exports.callback = function (req, res) {
 };
 
 module.exports.loggedIn = function (req, res) {
+  console.log(req.session);
   req.session.reload(function (err) {
     logIfError('LoggedIn reload session', err);
     res.render('logged_in', {
-      name: req.session.passport.user.displayName
+      name: req.session.passport.user.username
     });
   });
 };
@@ -46,3 +48,18 @@ module.exports.logOut = function (req, res) {
 module.exports.noAccess = function (req, res) {
   res.render('noaccess');
 };
+
+
+module.exports.logInGet = function (req, res) {
+  res.render('login');
+};
+
+module.exports.postLogin = function (req, res) {
+  res.redirect('/');
+};
+
+module.exports.logUserin = function() {
+  return passport.authenticate('local', { failureRedirect: '/login' });
+};
+
+
