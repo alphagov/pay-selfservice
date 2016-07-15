@@ -1,18 +1,26 @@
 "use strict";
 var logger = require('winston');
-var session = require('express-session');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
 var User = require(__dirname + '/../models/user.js');
+var _ = require('lodash');
 
 
 var logIfError = function (scenario, err) {
   if (err) {
     logger.warn(scenario + ' -', {'warn': err});
   }
+};
+
+var localStrategyAuth = function(username, password, done) {
+  User.authenticate(username,password)
+  .then(function(user){
+    done(null, user);
+  },function(){
+    done(null, false);
+  });
 };
 
 
@@ -44,19 +52,9 @@ var auth = {
 
   initialise: function (app, override_strategy) {
 
-    app.use(session(selfServiceSession()));
     app.use(passport.initialize());
     app.use(passport.session());
-    passport.use('local',new localStrategy(
-      function(username, password, done) {
-        User.authenticate(username,password)
-        .then(function(user){
-          done(null, user);
-        },function(){
-          done(null, false);
-        });
-      }
-      ));
+    passport.use('local',new localStrategy(localStrategyAuth));
 
     passport.serializeUser(function (user, done) {
       done(null, user);
@@ -68,6 +66,8 @@ var auth = {
 
   },
 
+  localStrategyAuth: localStrategyAuth,
+
   no_access: function (req, res, next) {
     if (req.url != paths.user.noAccess) {
       res.redirect(paths.user.noAccess);
@@ -78,8 +78,9 @@ var auth = {
   },
 
   get_gateway_account_id: function (req) {
-    var user = req.session.passport.user;
-    return user && user.gateway_account_id ? parseInt(user.gateway_account_id) : null;
+    var id = _.get(req,"session.passport.user.gateway_account_id");
+    if (!id) return null;
+    return parseInt(id);
   }
 };
 
