@@ -99,4 +99,30 @@ describe('auth service', function () {
     });
   });
 
+  describe('get_gateway_account_id', function () {
+    it("should return gateway_account_id", function (done) {
+      var test = auth.get_gateway_account_id({session: {passport: {user: { gateway_account_id: 1}}}});
+      console.log(test);
+      assert.equal(test,1);
+      done();
+    });
+   it("should not return gateway_account_id", function (done) {
+      var test1 = auth.get_gateway_account_id({session: {passport: {user: { }}}});
+      var test2 = auth.get_gateway_account_id({session: {passport: {}}});
+      var test3 = auth.get_gateway_account_id({session: {}});
+      var test4 = auth.get_gateway_account_id({});
+
+      assert.equal(test1,null);
+      assert.equal(test2,null);
+      assert.equal(test3,null);
+      assert.equal(test4,null);
+      done();
+    });
+
+    // it("call redirect to no access", function (done) {
+    //   assert(redirect.calledWith(paths.user.noAccess));
+    //   done();
+    // });
+  });
+
 });
