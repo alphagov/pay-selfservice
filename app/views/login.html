@@ -5,14 +5,14 @@ GOV.UK Pay - login
 {{/pageTitle}}
 {{$content}}
 
-<form action="/login" method="post">
+<form action="/login" method="post" name="userLoginForm">
   <div>
   <label>Username:</label>
-  <input type="text" name="username" value="jack" /><br/>
+  <input type="text" name="username" /><br/>
   </div>
   <div>
   <label>Password:</label>
-  <input type="password" name="password" value="secret" />
+  <input type="password" name="password" />
   </div>
   <div>
   <input type="submit" value="Submit"/>
