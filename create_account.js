@@ -6,7 +6,7 @@ createUser = function(params){
   User.create({
   username: params.username,
   password: params.password,
-  gateway_account_id: params.gateway,
+  gateway_account_id: params.gateway_account_id,
   email: params.email
 }).then(function(user){
   console.log(JSON.stringify(user));
