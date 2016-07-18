@@ -42,8 +42,9 @@ module.exports = function(){
     return defer.promise;
   };
 
-  var toggleEmail = function(accountID,enabled) {
+  var setEnabled = function(accountID,enabled) {
     var defer = q.defer();
+    console.log('model',connectorUrl(accountID),{"op": "replace", "path": "enabled", "value": enabled})
     client.patch(connectorUrl(accountID), {headers: headers, data: {"op": "replace", "path": "enabled", "value": enabled} }, function(data, response) {
       var error = response.statusCode !== 200;
       if (error) return defer.reject(new Error('PATCH_FAILED'));
@@ -54,13 +55,6 @@ module.exports = function(){
     return defer.promise;
   };
 
-  var off = function(accountID){
-    return toggleEmail(accountID,false);
-  };
-
-  var on = function(accountID){
-    return toggleEmail(accountID,true);
-  };
 
   var clientUnavailable = function(error, defer, methodType) {
     logger.error('Calling connector to email notification for an account threw exception -', {
@@ -75,8 +69,7 @@ module.exports = function(){
   return {
     get: get,
     update: update,
-    off: off,
-    on: on
+    setEnabled: setEnabled
   };
 
 }();

@@ -42,7 +42,7 @@ module.exports.offConfirm = (req, res) => {
 toggleEmail = function(req,res,enabled){
   var indexPath = router.paths.emailNotifications.index,
   accountID = req.account.gateway_account_id;
-  Email[enabled](accountID)
+  Email.setEnabled(accountID,enabled)
   .then(() => {
     res.redirect(303, indexPath);
   });
@@ -50,11 +50,11 @@ toggleEmail = function(req,res,enabled){
 };
 
 module.exports.off = (req, res) => {
-  toggleEmail(req, res, 'off');
+  toggleEmail(req, res, false);
 };
 
 module.exports.on = (req, res) => {
-  toggleEmail(req, res, 'on');
+  toggleEmail(req, res, true);
 };
 
 module.exports.update = (req, res) => {

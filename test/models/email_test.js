@@ -123,8 +123,7 @@ describe('email notification', function() {
 
   describe('enabling/disabling email notifications', function(){
 
-    _.each(['on','off'],function(toggle){
-      var enabled = toggle == 'on';
+    _.each([true,false],function(toggle){
       describe('when connector is unavailable', function () {
         before(function() {
           nock.cleanAll();
@@ -135,7 +134,7 @@ describe('email notification', function() {
         });
 
         it('should return client unavailable', function () {
-          return Email[toggle](123).then(wrongPromise,
+          return Email.setEnabled(123,toggle).then(wrongPromise,
               function rejected(error){
                 assert.equal(error.message,"CLIENT_UNAVAILABLE")
               }
@@ -147,14 +146,14 @@ describe('email notification', function() {
       describe('when connector returns incorrect response code', function () {
         before(function() {
           nock.cleanAll();
-
+          console.log('test ',process.env.CONNECTOR_URL+"/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": toggle})
           nock(process.env.CONNECTOR_URL)
-            .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": enabled})
+            .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": toggle})
             .reply(404, '');
         });
 
         it('should return PATCH_FAILED', function () {
-          return Email[toggle](123, "hello")
+          return Email.setEnabled(123,toggle)
           .then(wrongPromise, function rejected(error){
               assert.equal(error.message,"PATCH_FAILED")
             });
@@ -164,14 +163,14 @@ describe('email notification', function() {
       describe('when connector returns correctly', function () {
         before(function() {
           nock.cleanAll();
-
+          console.log(toggle);
           nock(process.env.CONNECTOR_URL)
-            .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": enabled})
+            .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": toggle})
             .reply(200, {});
         });
 
         it('should disable email notifications', function () {
-          return Email[toggle](123).then(function(data){
+          return Email.setEnabled(123,toggle).then(function(data){
             assert.equal(1,1);
           },wrongPromise);
         });
