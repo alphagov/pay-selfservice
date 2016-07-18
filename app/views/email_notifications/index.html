@@ -5,10 +5,11 @@
 <h1 class="page-title">
   Email notifications
 </h1>
+{{#emailEnabled}}
 <p>
   Payment confirmation emails are turned on for this account
 </p>
-
+<a href="{{routes.emailNotifications.offConfirm}}" class="qa-off-confirm-link"> Turn off email notifications</a>
 <h2 class="heading-medium">
   Current email template
 </h2>
@@ -27,6 +28,19 @@
   Add a custom paragraph
 </a>
 {{/customEmailText}}
+{{/emailEnabled}}
+{{^emailEnabled}}
+<h1 class="heading-medium">
+  Email notifications are turned off
+</h1>
+<p>
+  Turn on payment confirmation emails so your users receive<br/>helpful information relating to their payments.
+</p>
+<form method="post" action="{{routes.emailNotifications.on}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input name="email-on" type="submit" class="button push-top qa-on" value="Turn on email notifications">
+</form>
+{{/emailEnabled}}
 
 
 

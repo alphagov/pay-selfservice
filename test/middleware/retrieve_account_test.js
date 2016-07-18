@@ -63,7 +63,7 @@ describe('retrieve param test', function () {
         .reply(200,{ foo: "bar", gateway_account_id: 1 });
       nock(process.env.CONNECTOR_URL)
         .get("/v1/api/accounts/1/email-notification")
-        .reply(200,{template_body: 'hello'});
+        .reply(200,{template_body: 'hello', enabled: true});
       var valid_session = {
         passport: {
           user: {
@@ -89,7 +89,12 @@ describe('retrieve param test', function () {
         console.log('THISS')
           expect(status.calledWith(200));
           expect(next.called).to.be.true;
-          expect(req.account).to.deep.equal({ foo: 'bar', customEmailText: "hello", "gateway_account_id": 1});
+          expect(req.account).to.deep.equal({
+            foo: 'bar',
+            customEmailText: "hello",
+            "gateway_account_id": 1,
+            "emailEnabled": true
+          });
           done();
         }
         catch(err) { done(err); }

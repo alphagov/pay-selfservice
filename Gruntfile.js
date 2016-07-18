@@ -28,14 +28,6 @@ module.exports = function(grunt){
 
     // Copies templates and assets from external modules and dirs
     copy: {
-      assets: {
-        files: [{
-          expand: true,
-          cwd: 'app/assets/',
-          src: ['**/*', '!sass/**'],
-          dest: 'public/'
-        }]
-      },
       govuk: {
         files: [{
           expand: true,
@@ -57,6 +49,20 @@ module.exports = function(grunt){
           cwd: 'node_modules/html5shiv/dist',
           src: 'html5shiv.min.js',
           dest: 'public/vendor/'
+        }]
+      },
+      assets: {
+        files: [{
+          expand: true,
+          cwd: 'app/assets/',
+          src: ['**/*', '!sass/**'],
+          dest: 'public/'
+        },
+        {
+          expand: true,
+          cwd: 'govuk_modules/govuk_frontend_toolkit/images/',
+          src: ['**/*', '!sass/**'],
+          dest: 'public/images/icons'
         }]
       },
     },

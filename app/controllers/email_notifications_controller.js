@@ -7,24 +7,54 @@ var client          = new ConnectorClient(process.env.CONNECTOR_URL);
 var auth            = require('../services/auth_service.js');
 var router          = require('../routes.js');
 
-var showEmail = function(req, res, resource, emailText){
+var showEmail = function(req, res, resource, locals){
   var template =  "email_notifications/" + resource;
-  response(req.headers.accept, res, template, {
-    customEmailText: emailText,
+  response(req.headers.accept, res, template, locals);
+};
+
+module.exports.index = (req, res) => {
+  showEmail(req, res, 'index', {
+    customEmailText: req.account.customEmailText,
+    serviceName: req.account.service_name,
+    emailEnabled: req.account.emailEnabled
+  });
+};
+
+module.exports.edit = (req, res) => {
+  showEmail(req, res, 'edit', {
+    customEmailText: req.account.customEmailText,
     serviceName: req.account.service_name
   });
 };
 
-module.exports.index = (req, res) => {
-  showEmail(req, res, 'index', req.account.customEmailText);
-};
-
-module.exports.edit = (req, res) => {
-  showEmail(req, res, 'edit', req.account.customEmailText);
-};
-
 module.exports.confirm = (req, res) => {
-  showEmail(req, res,  "confirm", req.body['custom-email-text']);
+  showEmail(req, res,  "confirm", {
+    customEmailText: req.body['custom-email-text'],
+    serviceName: req.account.service_name
+  });
+};
+
+module.exports.offConfirm = (req, res) => {
+  showEmail(req, res,  "off_confirm", {});
+};
+
+
+toggleEmail = function(req,res,enabled){
+  var indexPath = router.paths.emailNotifications.index,
+  accountID = req.account.gateway_account_id;
+  Email.setEnabled(accountID,enabled)
+  .then(() => {
+    res.redirect(303, indexPath);
+  });
+
+};
+
+module.exports.off = (req, res) => {
+  toggleEmail(req, res, false);
+};
+
+module.exports.on = (req, res) => {
+  toggleEmail(req, res, true);
 };
 
 module.exports.update = (req, res) => {

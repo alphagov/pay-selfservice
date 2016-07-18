@@ -20,7 +20,10 @@ module.exports = function(){
       if (error) {
         return defer.reject(new Error('GET_FAILED'));
       }
-      defer.resolve(data.template_body);
+      defer.resolve({
+        customEmailText: data.template_body,
+        emailEnabled: data.enabled
+      });
     }).on('error',function(err){
       clientUnavailable(err, defer, 'GET');
     });
@@ -39,6 +42,20 @@ module.exports = function(){
     return defer.promise;
   };
 
+  var setEnabled = function(accountID,enabled) {
+    var defer = q.defer();
+    console.log('model',connectorUrl(accountID),{"op": "replace", "path": "enabled", "value": enabled})
+    client.patch(connectorUrl(accountID), {headers: headers, data: {"op": "replace", "path": "enabled", "value": enabled} }, function(data, response) {
+      var error = response.statusCode !== 200;
+      if (error) return defer.reject(new Error('PATCH_FAILED'));
+      defer.resolve();
+    }).on('error',function(err){
+      clientUnavailable(err, defer, 'PATCH');
+    });
+    return defer.promise;
+  };
+
+
   var clientUnavailable = function(error, defer, methodType) {
     logger.error('Calling connector to email notification for an account threw exception -', {
       service: 'connector',
@@ -47,9 +64,12 @@ module.exports = function(){
     });
     defer.reject(new Error('CLIENT_UNAVAILABLE'), error);
   };
+
+
   return {
     get: get,
-    update: update
+    update: update,
+    setEnabled: setEnabled
   };
 
 }();

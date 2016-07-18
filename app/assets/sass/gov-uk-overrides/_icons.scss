@@ -1,0 +1,15 @@
+.info {
+  max-width: 510px;
+  position: relative;
+  padding-left: 40px;
+  &:before {
+    background: url("/public/images/icons/icon-important-2x.png");
+    background-size: 100%;
+    width:27px;
+    height:27px;
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 0;
+  }
+}
