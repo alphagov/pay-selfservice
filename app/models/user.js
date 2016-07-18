@@ -17,17 +17,21 @@ var User = sequelizeConnection.define('user', {
 // creates table if it does not exist
 sequelizeConnection.sync();
 
-
-var find = function(email, extraFields = []) {
+var _find = function(email, extraFields = []) {
   return User.findOne({
     where: { email: email },
     attributes:['username', 'email', 'gateway_account_id', 'key', 'id'].concat(extraFields)
   });
+
+};
+
+
+var find = function(email) {
+  _find(email);
 };
 
 var create = function(user){
   var defer = q.defer();
-
   User.create({
     username: user.username,
     password: bcrypt.hashSync(user.password, 10),
@@ -42,7 +46,7 @@ var create = function(user){
 
 var authenticate = function(email,password) {
   var defer = q.defer();
-  find(email,['password']).then(function(user){
+  _find(email,['password']).then(function(user){
     if (!user) return defer.reject();
     var data = user.dataValues;
     validPass = bcrypt.compareSync(password,data.password);
