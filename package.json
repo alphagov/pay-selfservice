@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "array.prototype.find": "2.0.x",
+    "bcrypt": "^0.8.7",
     "body-parser": "1.15.x",
     "chalk": "1.1.x",
     "change-case": "3.0.0",
