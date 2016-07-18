@@ -96,10 +96,11 @@
     "mockserver-grunt": "^1.0.26",
     "nock": "^8.0.0",
     "portfinder": "^0.4.0",
+    "proxyquire": "~1.7.4",
+    "sequelize-mocking": "^0.2.0",
+    "sinon": "^1.17.3",
     "superagent": "^1.2.0",
     "supertest": "^1.0.1",
-    "proxyquire": "~1.7.4",
-    "sinon": "^1.17.3",
     "supertest-session": "^2.0.1"
   }
 }
