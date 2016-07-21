@@ -20,6 +20,25 @@ var genereateRandomUsername = function(){
   return  Math.random().toString(36).substring(7);
 };
 
+var sendHTML = function(token,email,password){
+          res.send(['<p id="token">token:<span><br/>',
+          token,
+          "</span></p><p id='email'>email: <span><br/>",
+          email,
+          "</span></p><p id='password'>password: <span><br/>",
+          password,
+          "</span></p>"
+          ].join(""));
+};
+var sendJSON = function(token,email,password){
+          res.json({
+            token: token,
+            email: email,
+            password: password
+          });
+};
+
+
 
 app.post('/create_account', function (req, res) {
   var connector = _.merge({},emptyResource);
@@ -31,10 +50,7 @@ app.post('/create_account', function (req, res) {
 
   client.post(connectorAccount, connector, function (data, response) {
     var gateway_account_id = data.gateway_account_id;
-    auth.data = {
-      account_id: String(gateway_account_id),
-      email: randomEmail
-    };
+
     authToken.data = {
       account_id: String(gateway_account_id),
       description: "generated for pay-accept"
@@ -47,14 +63,14 @@ app.post('/create_account', function (req, res) {
       email: randomEmail
     }).then(function(user){
       client.post(publicAuthUrl, authToken, function (data, response) {
-        res.send(['<p id="token">token:<span><br/>',
-          data.token,
-          "</span></p><p id='email'>email: <span><br/>",
-          randomEmail,
-          "</span></p><p id='password'>password: <span><br/>",
-          password,
-          "</span></p>"
-          ].join(""));
+        if (req.headers['content-type'] == "application/json") {
+          sendJSON(data.token,email,password);
+        } else {
+          sendHTML(data.token,email,password);
+        }
+
+
+
       }, function(){ throw new Error('WAAAA'); });
 
     },function(){
