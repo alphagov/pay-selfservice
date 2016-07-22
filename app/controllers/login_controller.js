@@ -45,6 +45,12 @@ module.exports.logInGet = function (req, res) {
 };
 
 module.exports.postLogin = function (req, res) {
+  if (req.session.last_url) {
+    res.redirect(req.session.last_url);
+    delete req.session.last_url;
+    return;
+  }
+
   res.redirect('/');
 };
 
