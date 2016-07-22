@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 });
 
 
-var genereateRandomUsername = function(){
+var generateRandomUsername = function(){
   return  Math.random().toString(36).substring(7);
 };
 
@@ -33,11 +33,12 @@ var sendHTML = function(res,token,email,password,gatewayID){
           "</span></p><p id='password'>password: <span><br/>",
           password,
           "</span></p><p id='GatewayAccountID'>gateway account id: <span><br/>",
-          gatewayAccountID,
+          gatewayID,
           "</span></p>"
           ].join(""));
 };
 var sendJSON = function(res, token,email,password,gatewayID){
+
           res.json({
             token: token,
             email: email,
@@ -52,7 +53,7 @@ app.post('/create_account', function (req, res) {
   var connector = _.merge({},emptyResource);
   var auth      = _.merge({},emptyResource);
   var authToken = _.merge({},emptyResource);
-  var randomUserName = genereateRandomUsername();
+  var randomUserName = generateRandomUsername();
   var randomEmail = randomUserName + "@foo.com";
   connector.data.payment_provider = "sandbox";
 
@@ -89,11 +90,11 @@ app.post('/create_account', function (req, res) {
 });
 
 
-app.post('/create_user_account', function (req, res) {
+app.post('/create_user_account_with_token', function (req, res) {
   var connector = _.merge({},emptyResource);
   var auth      = _.merge({},emptyResource);
   var authToken = _.merge({},emptyResource);
-  var randomUserName = genereateRandomUsername();
+  var randomUserName = generateRandomUsername();
   var randomEmail = req.body.email ? req.body.email : randomUserName + "@foo.com";
   connector.data.payment_provider = req.body.provider ? req.body.provider : "sandbox";
   var gatewayAccountID = req.body.gatewayAccountID;
@@ -121,6 +122,44 @@ app.post('/create_user_account', function (req, res) {
   });
 
 });
+
+
+app.post('/create_user_account_without_token', function (req, res) {
+  var connector = _.merge({},emptyResource);
+  var auth      = _.merge({},emptyResource);
+  var authToken = _.merge({},emptyResource);
+  var randomUserName = generateRandomUsername();
+  var randomEmail = req.body.email ? req.body.email : randomUserName + "@foo.com";
+  connector.data.payment_provider = req.body.provider ? req.body.provider : "sandbox";
+  var gatewayAccountID = req.body.gatewayAccountID;
+
+  authToken.data = {
+    account_id: String(gatewayAccountID),
+    description: req.body.token_description ? req.body.token_description : "generated for pay-accept"
+  };
+    console.log('HIE')
+
+  User.create({
+    username: randomUserName,
+    password: password,
+    gateway_account_id: gatewayAccountID,
+    email: randomEmail
+  })
+  .then(function(user){
+    var isJSON = req.headers['content-type'].indexOf('application/json') >= 0;
+      console.log('HIeE',req.headers['content-type'])
+
+    if (isJSON) {
+      sendJSON(res, undefined, randomEmail, password, gatewayAccountID);
+    } else {
+      sendHTML(res, undefined, randomEmail, password, gatewayAccountID);
+    }
+  }, function(){
+    defer.reject();
+  });
+
+});
+
 
 
 
