@@ -27,6 +27,7 @@ describe('auth service', function () {
     next = undefined,
     validRequest = {
       session: {
+        secondFactor: 'totp',
         passport: {
           user: {
             name: 'Michael',
@@ -35,6 +36,10 @@ describe('auth service', function () {
         },
         reload : mockByPass,
         save: mockByPass
+      },
+      user: {
+        name: 'Michael',
+        gateway_account_id: 123
       }
     };
 
@@ -64,23 +69,14 @@ describe('auth service', function () {
 
     it("should call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
-      delete invalid.session.passport.user.gateway_account_id;
+      delete invalid.user.gateway_account_id;
       auth.enforce(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
       done();
     });
 
-    it("should redirect to login if no passport info", function (done) {
-      var invalid = _.cloneDeep(validRequest);
-      invalid.originalUrl = '/foo?user=random';
-      delete invalid.session.passport;
-      auth.enforce(invalid, response, next);
-      expect(next.called).to.be.false;
-      assert(redirect.calledWith(paths.user.logIn));
-      expect(invalid.session.last_url).to.eq('/foo?user=random');
-      done();
-    });
+
   });
 
   describe('no_access', function () {
@@ -101,8 +97,7 @@ describe('auth service', function () {
 
   describe('get_gateway_account_id', function () {
     it("should return gateway_account_id", function (done) {
-      var test = auth.get_gateway_account_id({session: {passport: {user: { gateway_account_id: 1}}}});
-      console.log(test);
+      var test = auth.get_gateway_account_id({user: { gateway_account_id: 1}});
       assert.equal(test,1);
       done();
     });

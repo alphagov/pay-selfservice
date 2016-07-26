@@ -6,6 +6,7 @@ var _         = require('lodash');
 var expect    = require("chai").expect;
 var nock      = require('nock');
 var bcrypt    = require('bcrypt');
+var q         = require('q');
 
 
 var wrongPromise = function(data){
@@ -39,7 +40,9 @@ describe('user model', function() {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function(){
         return { findOne: function(params){
+          var defer = q.defer();
           assert(params.where.email == "foo");
+          return defer.promise;
         }};
       };
       User(seq).find("foo");
@@ -49,8 +52,10 @@ describe('user model', function() {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function(){
         return { findOne: function(params){
+          var defer = q.defer();
           assert(params.where.email == "foo");
           assert(_.includes(params.attributes,'password') === false);
+          return defer.promise;
         }};
       };
       User(seq).find("foo");
@@ -134,6 +139,42 @@ describe('user model', function() {
         assert(true);
         done();
       });
+    });
+  });
+
+  describe('updateOtpKey',function(){
+    it('shouldupdate the otp key', function (done) {
+      var seq = _.cloneDeep(sequel);
+      seq.sequelize.define = function(){
+        return {
+          findOne: function(params){
+            return {
+              then: function(callback){
+                callback({
+                  dataValues: {
+                    password: "$2a$10$jJmJnbJFOLYz/DChN6VMVOfBQ0G94MRGSAjtp25j7BMBBQXpYoDZm",
+                    foo: "bar"
+                  },
+                  updateAttributes: function(params){
+                    return {
+                      then: function(callback){
+                        assert(params.otp_key === '1234');
+                        callback();
+                      }
+                    };
+                  }
+                });
+              }
+            };
+          }
+      };
+      };
+      User(seq)
+      .updateOtpKey('foo@bar.com',"1234")
+      .then(function (user) {
+        assert(true);
+        done();
+      },wrongPromise);
     });
   });
 
