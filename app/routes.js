@@ -32,7 +32,7 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
 
   var tr = paths.transactions;
-  app.get(tr.index, auth.enforce, csrf, transactions.index);
+  app.get(tr.index, auth.enforce, transactions.index);
   app.get(tr.download, auth.enforce, csrf, transactions.download);
   app.get(tr.show, auth.enforce, csrf, transactions.show);
   app.post(tr.refund, auth.enforce, csrf, transactions.refund);
@@ -51,6 +51,10 @@ module.exports.bind = function (app) {
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
   app.get(user.logOut, login.logOut);
+  app.get(user.otpLogIn, login.otpLogIn);
+  app.get(user.otpSetup, login.otpSetup);
+  app.post(user.otpLogIn,login.logUserinOTP(), login.afterOTPLogin);
+
 
   // DEV TOKENS
 

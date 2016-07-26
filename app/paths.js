@@ -13,6 +13,8 @@ module.exports = {
   },
   user: {
     logIn: '/login',
+    otpLogIn: '/otp-login',
+    otpSetup: '/otp-setup',
     logOut: '/logout',
     callback: '/callback',
     loggedIn: '/',
