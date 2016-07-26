@@ -18,7 +18,7 @@ var sequel = {
     {
       sync: function(){ },
       define: function(){ return {
-        findOne: function(){},
+        findOne: function(){ console.log('ARE YOU HERE?');},
         create: function(){ }
       };
     }
@@ -83,38 +83,6 @@ describe('user model', function() {
         try {
           assert(user.username == "foo");
           assert(_.includes(user,'password') === false);
-          done();
-        } catch (e) {
-          done(e);
-        }
-
-      });
-    });
-
-    it('should create a user witha specific otp_key', function (done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function(){
-        return { create: function(user){
-          assert(user.username == "foo");
-          assert(user.password != "password");
-          assert(bcrypt.compareSync('password',user.password))
-          return {then : function (callback) {
-            callback({dataValues: user});
-          }};
-        }};
-      };
-      User(seq).create({
-        username: "foo",
-        password: "password",
-        gateway_account_id: 1,
-        email: "foo@example.com",
-        otp_key: "123"
-      }).then(function(user){
-        try {
-          assert(user.username == "foo");
-          assert(_.includes(user,'password') === false);
-          assert(user.otp_key == "123");
-
           done();
         } catch (e) {
           done(e);
@@ -209,5 +177,9 @@ describe('user model', function() {
       },wrongPromise);
     });
   });
+
+
+
+
 });
 
