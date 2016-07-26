@@ -70,7 +70,7 @@ describe('notification client', function() {
     notifyClient = fresh('../../app/services/notification_client', require);
 
     notifyClient.sendEmail(process.env.NOTIFY_RESET_PASSWORD_EMAIL_TEMPLATE_ID, email, personalisation)
-      .then(function (response) {
+      .catch(function (response) {
         expect(response).to.equal('Notification sending not enabled');
         done();
         process.env.NOTIFICATIONS_ENABLED = notificationsEnabled;
@@ -89,7 +89,7 @@ describe('notification client', function() {
     notifyClient = fresh('../../app/services/notification_client', require);
 
     notifyClient.sendEmail(process.env.NOTIFY_RESET_PASSWORD_EMAIL_TEMPLATE_ID, email, personalisation)
-      .then(function (response) {
+      .catch(function (response) {
         expect(response).to.equal('Notification sending not enabled');
         done();
         process.env.NOTIFICATIONS_ENABLED = notificationsEnabled;

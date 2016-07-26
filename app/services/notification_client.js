@@ -19,7 +19,7 @@ module.exports = {
     if (!!notifyClient) {
       return notifyClient.sendEmail(templateId, emailAddress, personalisation);
     } else {
-      deferred.resolve('Notification sending not enabled');
+      deferred.reject('Notification sending not enabled');
       return deferred.promise;
     }
   },
@@ -36,7 +36,7 @@ module.exports = {
     if (!!notifyClient) {
       return notifyClient.sendSms(templateId, phoneNumber, personalisation);
     } else {
-      deferred.resolve('Notification sending not enabled');
+      deferred.reject('Notification sending not enabled');
       return deferred.promise;
     }
   }
