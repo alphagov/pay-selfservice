@@ -23,6 +23,7 @@ var user              = require('./app/models/user.js');
 
 
 
+
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
   logger.stream = {
