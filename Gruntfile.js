@@ -1,3 +1,4 @@
+var environment  = require(__dirname + '/app/services/environment.js');
 
 module.exports = function(grunt){
   grunt.initConfig({
@@ -135,6 +136,9 @@ module.exports = function(grunt){
     env: {
       test: {
         src: "config/test-env.json"
+      },
+      dev: {
+        src: "config/dev-env.json"
       }
     }
 
@@ -165,10 +169,16 @@ module.exports = function(grunt){
 
   grunt.registerTask('test', ['env:test','generate-assets', 'mochaTest']);
 
-  grunt.registerTask('default', [
-    'generate-assets',
-    'concurrent:target'
-  ]);
+  var defaultTasks = [
+      'generate-assets',
+      'concurrent:target'
+  ];
+
+  if (process.env.LOCAL_ENV) {
+    defaultTasks.unshift('env:dev');
+  }
+
+  grunt.registerTask('default',defaultTasks);
 
   grunt.event.on('watch', function(action, filepath, target) {
 

@@ -4,6 +4,11 @@ var Sequelize = require('sequelize');
 var bcrypt = require('bcrypt');
 var q = require('q');
 var _ = require('lodash');
+var notify = require('../services/notification_client.js');
+var notp = require('notp');
+var random = require('../utils/random.js');
+var logger = require('winston');
+
 
 
 var User = sequelizeConnection.define('user', {
@@ -11,7 +16,8 @@ var User = sequelizeConnection.define('user', {
   password: Sequelize.STRING,
   email: Sequelize.STRING,
   gateway_account_id: Sequelize.STRING,
-  otp_key: Sequelize.STRING
+  otp_key: Sequelize.STRING,
+  telephone_number: Sequelize.STRING
 });
 
 // creates table if it does not exist
@@ -20,20 +26,39 @@ sequelizeConnection.sync();
 var _find = function(email, extraFields = []) {
   return User.findOne({
     where: { email: email },
-    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id'].concat(extraFields)
+    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
   });
+},
 
+sendOTP = function(){
+  var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
+
+  if (!(this.otp_key && this.telephone_number && template)) {
+    throw new Error('missing required field to send text');
+  }
+  var code = this.generateOTP();
+  return notify.sendSms(template, this.telephone_number, { code: code });
+},
+
+generateOTP = function(){
+   return notp.totp.gen(this.otp_key);
+},
+
+resolveUser = function(user, defer){
+  delete user.dataValues.password;
+  user.dataValues.generateOTP = generateOTP;
+  user.dataValues.sendOTP = sendOTP;
+  defer.resolve(user.dataValues);
 };
-
 
 var find = function(email) {
   var defer = q.defer();
-  _find(email).then(function(user){
-    defer.resolve(user.dataValues);
-  });
+  _find(email).then((user)=> resolveUser(user, defer));
   return defer.promise;
 
 };
+
+
 
 var create = function(user){
   var defer = q.defer();
@@ -41,11 +66,10 @@ var create = function(user){
     username: user.username,
     password: bcrypt.hashSync(user.password, 10),
     gateway_account_id: user.gateway_account_id,
-    email: user.email
-  }).then(function(user){
-    delete user.dataValues.password;
-    defer.resolve(user.dataValues);
-  });
+    email: user.email,
+    telephone_number: user.telephone_number,
+    otp_key: random.key(10)
+  }).then((user)=> resolveUser(user, defer));
   return defer.promise;
 };
 
@@ -55,8 +79,8 @@ var authenticate = function(email,password) {
     if (!user) return defer.reject();
     var data = user.dataValues;
     validPass = bcrypt.compareSync(password,data.password);
-    delete data.password;
-    if (validPass) defer.resolve(data);
+
+    if (validPass) resolveUser(user, defer);
     defer.reject();
   });
   return defer.promise;
@@ -70,7 +94,7 @@ var updateOtpKey = function(email,otpKey){
       defer.resolve();
     },function(err){
       defer.reject();
-      console.log('OTP UPDATE ERROR',err,otpKey);
+      logger.info('OTP UPDATE ERROR',err,otpKey);
     });
   });
   return defer.promise;

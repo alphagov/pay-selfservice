@@ -1,0 +1,7 @@
+{
+  "NOTIFY_SERVICE_ID": "key",
+  "NOTIFY_SECRET": "key",
+  "NOTIFY_BASE_URL": "https://api.notifications.service.gov.uk",
+  "NOTIFICATIONS_ENABLED": "false",
+  "NOTIFY_2FA_TEMPLATE_ID": "key"
+}

@@ -18,7 +18,7 @@ var sequel = {
     {
       sync: function(){ },
       define: function(){ return {
-        findOne: function(){ console.log('ARE YOU HERE?');},
+        findOne: function(){},
         create: function(){ }
       };
     }
