@@ -3,6 +3,7 @@ GOV.UK Pay Self Service portal (Node.js)
 
 ## Key environment variables
 
+
 | Variable                    | required | default value | Description                               |
 | --------------------------- |:--------:|:-------------:| ----------------------------------------- |
 | PORT                        | X | 9200 | The port number for the express server to be bound at runtime |

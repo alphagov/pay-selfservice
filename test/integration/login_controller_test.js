@@ -96,75 +96,55 @@ describe('The postlogin endpoint', function () {
 
 
 describe('The otplogin endpoint', function () {
-  it('should redirect to setup if no otp key',function(done){
+  it('should render and send key on firt time',function(done){
     var ses =  session.mockAccountObj(ACCOUNT_ID);
     delete ses.passport.user.otp_key;
-    var app2 = session.mockAccount(_app,ses);
-     request(app2)
-      .get("/otp-login")
-      .expect(302)
-      .expect('Location', "/otp-setup")
-      .end(done);
-  });
+    callsSendOTP = false;
+    ses.passport.user.sendOTP = function(){
+      return { then: function(callback){
+        callsSendOTP = !!true;
+        callback();
+      }};
+    };
 
-  it('should render if it has an otp key',function(done){
-    var ses =  session.mockAccountObj(ACCOUNT_ID);
+
     var app2 = session.mockAccount(_app,ses);
      request(app2)
       .get("/otp-login")
       .expect(200)
-      .end(done);
+      .end(function(){
+        assert(callsSendOTP);
+        assert(ses.sentCode === true);
+        done();
+      });
   });
-});
+
+  it('should render and not send key on seccond time',function(done){
+    var ses =  session.mockAccountObj(ACCOUNT_ID);
+    delete ses.passport.user.otp_key;
+    doesNotcallSendOTP = true;
+    ses.sentCode = true;
+    ses.passport.user.sendOTP = function(){
+      return { then: function(callback){
+        doesNotcallSendOTP = false;
+        callback();
+      }};
+    };
 
 
-
-describe('The otpSetup endpoint', function () {
-  it('render redirect to root if already has key',function(done){
-    var app2 = session.mockValidAccount(_app,ACCOUNT_ID);
+    var app2 = session.mockAccount(_app,ses);
      request(app2)
-      .get("/otp-setup")
-      .expect(302)
-      .expect('Location', "/")
-      .end(done);
+      .get("/otp-login")
+      .expect(200)
+      .end(function(){
+        assert(doesNotcallSendOTP);
+        done();
+      });
   });
 
-  it('should show setup if no key is defined',function(done){
-    // not entirely happy with this approach, but not too sure how else
-    // to mock out the user
-    var login = proxyquire(__dirname + '/../../app/controllers/login_controller.js',
-    {"../models/user.js": {
-      updateOtpKey: function(then){
-        return { then: function(pass,fail){ pass();}};
-      }
-    }});
 
-    login.otpSetup({ user: { email: "foo@bar.com" }},{ render: function(path,locals){
-      assert(path == 'login/otp-setup');
-      assert(locals.user.email == "foo@bar.com");
-      assert(locals.key !== undefined);
-      assert(locals.qrImage !== undefined);
-    }});
-    done();
-  });
-
-  it('should show error view saving user key fails',function(done){
-    // not entirely happy with this approach, but not too sure how else
-    // to mock out the user
-    var login = proxyquire(__dirname + '/../../app/controllers/login_controller.js',
-    {"../models/user.js": {
-      updateOtpKey: function(then){
-        return { then: function(pass,fail){ fail();}};
-      }
-    }});
-
-    login.otpSetup({ user: { email: "foo@bar.com" }},{ render: function(path,locals){
-      assert(path == 'error');
-    }});
-    done();
-
-  });
 });
+
 
 describe('The afterOtpLogin endpoint', function () {
 
