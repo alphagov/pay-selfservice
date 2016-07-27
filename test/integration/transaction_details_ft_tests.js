@@ -358,7 +358,6 @@ describe('The transaction view scenarios', function () {
         it('should return charge not found if a non existing charge id requested', function (done) {
             var nonExistentChargeId = 888;
             var connectorError = {'message': 'Charge not found'};
-            console.log(connectorChargePathFor(nonExistentChargeId));
             connectorMock.get(connectorChargePathFor(nonExistentChargeId))
                 .reply(404, connectorError);
 
