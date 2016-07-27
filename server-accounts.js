@@ -54,7 +54,7 @@ app.post('/create_account', function (req, res) {
   var auth      = _.merge({},emptyResource);
   var authToken = _.merge({},emptyResource);
   var randomUserName = generateRandomUsername();
-  var randomEmail = randomUserName + "@foo.com";
+  var randomEmail = randomUserName + "@food.com";
   connector.data.payment_provider = "sandbox";
 
   client.post(connectorAccount, connector, function (data, response) {
@@ -64,13 +64,14 @@ app.post('/create_account', function (req, res) {
       account_id: String(gateway_account_id),
       description: "generated for pay-accept"
     };
-
-    User.create({
+    var user = {
       username: randomUserName,
       password: password,
       gateway_account_id: gateway_account_id,
       email: randomEmail
-    }).then(function(user){
+    };
+    if (process.env.TELEPHONE_NUMBER) user.telephone_number = process.env.TELEPHONE_NUMBER;
+    User.create(user).then(function(user){
       client.post(publicAuthUrl, authToken, function (data, response) {
         if (req.headers['content-type'].indexOf('application/json') >= 0) {
           sendJSON(res, data.token,randomEmail,password,gateway_account_id);

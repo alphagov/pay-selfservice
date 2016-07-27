@@ -68,6 +68,7 @@
     "node-rest-client": "1.8.x",
     "node-sass": "3.8.x",
     "notifications-node-client": "2.1.x",
+    "notp": "^2.0.3",
     "passport": "0.3.x",
     "passport-local": "^1.0.0",
     "passport-totp": "0.0.2",

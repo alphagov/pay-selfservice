@@ -4,6 +4,8 @@ var Sequelize = require('sequelize');
 var bcrypt = require('bcrypt');
 var q = require('q');
 var _ = require('lodash');
+var notify = require('../services/notification_client.js');
+var notp = require('notp');
 
 
 var User = sequelizeConnection.define('user', {
@@ -11,7 +13,8 @@ var User = sequelizeConnection.define('user', {
   password: Sequelize.STRING,
   email: Sequelize.STRING,
   gateway_account_id: Sequelize.STRING,
-  otp_key: Sequelize.STRING
+  otp_key: Sequelize.STRING,
+  telephone_number: Sequelize.STRING
 });
 
 // creates table if it does not exist
@@ -20,20 +23,30 @@ sequelizeConnection.sync();
 var _find = function(email, extraFields = []) {
   return User.findOne({
     where: { email: email },
-    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id'].concat(extraFields)
+    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
   });
 
 };
 
 
+var sendOTP = function(){
+  var code = notp.totp.gen(this.otp_key);
+  var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
+  notify.sendSms(template, this.telephone_number, { code: code });
+};
+
 var find = function(email) {
   var defer = q.defer();
   _find(email).then(function(user){
+    var user = user;
+    user.dataValues.sendOTP = sendOTP;
     defer.resolve(user.dataValues);
   });
   return defer.promise;
 
 };
+
+
 
 var create = function(user){
   var defer = q.defer();
@@ -41,7 +54,8 @@ var create = function(user){
     username: user.username,
     password: bcrypt.hashSync(user.password, 10),
     gateway_account_id: user.gateway_account_id,
-    email: user.email
+    email: user.email,
+    telephone_number: user.telephone_number
   }).then(function(user){
     delete user.dataValues.password;
     defer.resolve(user.dataValues);

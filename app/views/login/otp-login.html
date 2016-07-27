@@ -4,16 +4,23 @@
 Sign in to GOV.UK Pay
 {{/pageTitle}}
 {{$content}}
-<form action="/otp-login" method="post">
-  <div>
-  <label>TWO FACTOR CODE YO:</label>
-  <input type="text" name="code"/><br/>
-  </div>
-  <div>
-  <input type="submit" value="Submit"/>
-  </div>
-</form>
+<div class="column-half no-padding">
+  <form action="/otp-login" class="form" method="post">
+    <h1 class="form-title heading-large">
+      Check your phone
+    </h1>
+    <p>We've sent you a text message with a verificiation code</p>
+    <div class="form-group">
+      <label class="form-label" for="code">Text message code</label>
+      <input class="form-control form-control-5em" data-module="" id="sms_code" name="code" rows="6" type="text" value="">
+    </div>
+    <div class="form-group">
+      <input class="button" type="submit" value="Continue">
+    </div>
+  </form>
+  <p><a href="/otp-send-again">Not received a text message?</a></p>
 
+</div>
 
 {{/content}}
 {{/layout_logged_out}}

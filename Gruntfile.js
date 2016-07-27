@@ -135,6 +135,9 @@ module.exports = function(grunt){
     env: {
       test: {
         src: "config/test-env.json"
+      },
+      dev: {
+        src: "config/dev-env.json"
       }
     }
 
@@ -166,6 +169,7 @@ module.exports = function(grunt){
   grunt.registerTask('test', ['env:test','generate-assets', 'mochaTest']);
 
   grunt.registerTask('default', [
+    // 'env:dev',
     'generate-assets',
     'concurrent:target'
   ]);

@@ -5,6 +5,8 @@ var router    = require('../routes.js');
 var passport  = require('passport');
 var base32    = require('thirty-two');
 var User      = require('../models/user.js');
+var paths     = require('../paths.js');
+
 
 var logIfError = function (scenario, err) {
   if (err) {
@@ -15,7 +17,6 @@ var logIfError = function (scenario, err) {
 module.exports.loggedIn = function (req, res) {
   req.session.reload(function (err) {
     logIfError('LoggedIn reload session', err);
-    console.log(req.user);
     res.render('logged_in', {
       name: req.user.username
     });
@@ -54,17 +55,22 @@ module.exports.logUserin = function() {
   return passport.authenticate('local', { failureRedirect: '/login' });
 };
 
-module.exports.logUserinOTP = function() {
+module.exports.logUserinOTP = function(req, res, next) {
   return passport.authenticate('totp', { failureRedirect: '/otp-login' });
 };
 
 
 module.exports.otpLogIn = function (req, res) {
   if (!req.user.otp_key) {
-    res.redirect(router.paths.user.otpSetup);
-  } else {
-    res.render('login/otp-login');
+    return res.redirect(router.paths.user.otpSetup);
   }
+
+  if (!req.session.sentCode) {
+    req.user.sendOTP();
+    req.session.sentCode = true;
+  }
+  res.render('login/otp-login');
+
 };
 
 module.exports.otpSetup = function (req, res) {
@@ -90,6 +96,15 @@ module.exports.afterOTPLogin = function (req, res) {
   res.redirect('/');
 };
 
+
+module.exports.sendAgainGet = function(req, res){
+  res.render('login/send_otp_again');
+};
+
+module.exports.sendAgainPost = function(req, res){
+  req.user.sendOTP();
+  res.redirect(paths.user.otpLogIn);
+};
 
 
 
