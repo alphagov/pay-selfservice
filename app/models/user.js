@@ -6,6 +6,9 @@ var q = require('q');
 var _ = require('lodash');
 var notify = require('../services/notification_client.js');
 var notp = require('notp');
+var random = require('../utils/random.js');
+var logger = require('winston');
+
 
 
 var User = sequelizeConnection.define('user', {
@@ -32,7 +35,7 @@ var _find = function(email, extraFields = []) {
 var sendOTP = function(){
   var code = notp.totp.gen(this.otp_key);
   var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
-  notify.sendSms(template, this.telephone_number, { code: code });
+  return notify.sendSms(template, this.telephone_number, { code: code });
 };
 
 var find = function(email) {
@@ -55,7 +58,8 @@ var create = function(user){
     password: bcrypt.hashSync(user.password, 10),
     gateway_account_id: user.gateway_account_id,
     email: user.email,
-    telephone_number: user.telephone_number
+    telephone_number: user.telephone_number,
+    otp_key: random.key(10)
   }).then(function(user){
     delete user.dataValues.password;
     defer.resolve(user.dataValues);
@@ -84,7 +88,7 @@ var updateOtpKey = function(email,otpKey){
       defer.resolve();
     },function(err){
       defer.reject();
-      console.log('OTP UPDATE ERROR',err,otpKey);
+      logger.info('OTP UPDATE ERROR',err,otpKey);
     });
   });
   return defer.promise;

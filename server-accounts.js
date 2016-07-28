@@ -138,7 +138,6 @@ app.post('/create_user_account_without_token', function (req, res) {
     account_id: String(gatewayAccountID),
     description: req.body.token_description ? req.body.token_description : "generated for pay-accept"
   };
-    console.log('HIE')
 
   User.create({
     username: randomUserName,
@@ -148,7 +147,6 @@ app.post('/create_user_account_without_token', function (req, res) {
   })
   .then(function(user){
     var isJSON = req.headers['content-type'].indexOf('application/json') >= 0;
-      console.log('HIeE',req.headers['content-type'])
 
     if (isJSON) {
       sendJSON(res, undefined, randomEmail, password, gatewayAccountID);

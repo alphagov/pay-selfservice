@@ -86,7 +86,6 @@ describe('retrieve param test', function () {
 
       testPromise.then((result) => {
         try {
-        console.log('THISS')
           expect(status.calledWith(200));
           expect(next.called).to.be.true;
           expect(req.account).to.deep.equal({
