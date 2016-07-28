@@ -28,23 +28,32 @@ var _find = function(email, extraFields = []) {
     where: { email: email },
     attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
   });
+},
 
-};
-
-
-var sendOTP = function(){
-  var code = notp.totp.gen(this.otp_key);
+sendOTP = function(){
   var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
+
+  if (!(this.otp_key && this.telephone_number && template)) {
+    throw new Error('missing required field to send text');
+  }
+  var code = this.generateOTP();
   return notify.sendSms(template, this.telephone_number, { code: code });
+},
+
+generateOTP = function(){
+   return notp.totp.gen(this.otp_key);
+},
+
+resolveUser = function(user, defer){
+  delete user.dataValues.password;
+  user.dataValues.generateOTP = generateOTP;
+  user.dataValues.sendOTP = sendOTP;
+  defer.resolve(user.dataValues);
 };
 
 var find = function(email) {
   var defer = q.defer();
-  _find(email).then(function(user){
-    var user = user;
-    user.dataValues.sendOTP = sendOTP;
-    defer.resolve(user.dataValues);
-  });
+  _find(email).then((user)=> resolveUser(user, defer));
   return defer.promise;
 
 };
@@ -60,10 +69,7 @@ var create = function(user){
     email: user.email,
     telephone_number: user.telephone_number,
     otp_key: random.key(10)
-  }).then(function(user){
-    delete user.dataValues.password;
-    defer.resolve(user.dataValues);
-  });
+  }).then((user)=> resolveUser(user, defer));
   return defer.promise;
 };
 
@@ -73,8 +79,8 @@ var authenticate = function(email,password) {
     if (!user) return defer.reject();
     var data = user.dataValues;
     validPass = bcrypt.compareSync(password,data.password);
-    delete data.password;
-    if (validPass) defer.resolve(data);
+
+    if (validPass) resolveUser(user, defer);
     defer.reject();
   });
   return defer.promise;
