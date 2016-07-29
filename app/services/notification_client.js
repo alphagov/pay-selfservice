@@ -17,7 +17,7 @@ module.exports = {
   sendEmail: function(templateId, emailAddress, personalisation) {
     var deferred = q.defer();
     if (!!notifyClient) {
-      return notifyClient.sendEmail(templateId, emailAddress, personalisation)
+      return notifyClient.sendEmail(templateId, emailAddress, personalisation);
     } else {
       deferred.reject('Notification sending not enabled');
       return deferred.promise;
@@ -34,8 +34,7 @@ module.exports = {
   sendSms: function(templateId, phoneNumber, personalisation) {
     var deferred = q.defer();
     if (!!notifyClient) {
-      console.log(templateId, phoneNumber, personalisation)
-      return notifyClient.sendSms(templateId, phoneNumber, personalisation)
+      return notifyClient.sendSms(templateId, phoneNumber, personalisation);
     } else {
       deferred.reject('Notification sending not enabled');
       return deferred.promise;
