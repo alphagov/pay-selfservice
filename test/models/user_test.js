@@ -177,9 +177,5 @@ describe('user model', function() {
       },wrongPromise);
     });
   });
-
-
-
-
 });
 

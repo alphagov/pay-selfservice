@@ -54,7 +54,7 @@ describe('retrieve param test', function () {
       expect(next.notCalled).to.be.true;
       assert(render.calledWith( "error", { message: 'There is a problem with the payments platform' }));
       done();
-    },40);
+    },100);
   });
 
   it("should set the account and email and call next on success", function(done) {
