@@ -31,11 +31,7 @@ module.exports = function () {
       12345: {refunded_amount: 5 },
       passport: {
         user: {
-          _json: {
-            app_metadata: {
-              account_id: accountId
-            }
-          }
+          gateway_account_id: accountId
         }
       }
     };
