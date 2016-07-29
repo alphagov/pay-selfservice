@@ -12,12 +12,50 @@ var logger = require('winston');
 
 
 var User = sequelizeConnection.define('user', {
-  username: Sequelize.STRING,
-  password: Sequelize.STRING,
-  email: Sequelize.STRING,
-  gateway_account_id: Sequelize.STRING,
-  otp_key: Sequelize.STRING,
-  telephone_number: Sequelize.STRING
+  username: {
+    unique: true,
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    },
+  },
+  email: {
+    unique: true,
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    },
+  },
+  gateway_account_id: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    },
+  },
+  otp_key: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    },
+  },
+  telephone_number: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    },
+  }
 });
 
 // creates table if it does not exist
