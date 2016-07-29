@@ -2,8 +2,6 @@ var logger    = require('winston');
 var response  = require('../utils/response.js').response;
 var router    = require('../routes.js');
 var passport  = require('passport');
-var base32    = require('thirty-two');
-var User      = require('../models/user.js');
 var paths     = require('../paths.js');
 var renderErrorView = require('../utils/response.js').renderErrorView;
 
@@ -42,7 +40,6 @@ module.exports.noAccess = function (req, res) {
   res.render('noaccess');
 };
 
-
 module.exports.logInGet = function (req, res) {
   res.render('login');
 };
@@ -64,7 +61,6 @@ module.exports.logUserinOTP = function(req, res, next) {
   return passport.authenticate('totp', { failureRedirect: '/otp-login' });
 };
 
-
 module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
 
@@ -84,7 +80,6 @@ module.exports.afterOTPLogin = function (req, res) {
   res.redirect('/');
 };
 
-
 module.exports.sendAgainGet = function(req, res){
   res.render('login/send_otp_again');
 };
@@ -95,7 +90,3 @@ module.exports.sendAgainPost = function(req, res){
   },(err) => error(req,res,error)
   );
 };
-
-
-
-
