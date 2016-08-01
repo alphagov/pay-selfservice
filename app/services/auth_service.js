@@ -54,7 +54,7 @@ var auth = {
 
     app.use(passport.initialize());
     app.use(passport.session());
-    passport.use('local',new localStrategy(localStrategyAuth));
+    passport.use('local',new localStrategy({usernameField: 'email'}, localStrategyAuth));
 
     passport.serializeUser(function (user, done) {
       done(null, user);
