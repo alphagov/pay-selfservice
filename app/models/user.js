@@ -106,7 +106,7 @@ var create = function(user){
     gateway_account_id: user.gateway_account_id,
     email: user.email,
     telephone_number: user.telephone_number,
-    otp_key: random.key(10)
+    otp_key: user.otp_key ? user.otp_key : random.key(10)
   }).then((user)=> resolveUser(user, defer));
   return defer.promise;
 };
