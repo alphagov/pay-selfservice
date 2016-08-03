@@ -13,8 +13,8 @@ var logIfError = function (scenario, err) {
 };
 
 var error = function(req,res,err) {
-    logger.info(err);
     renderErrorView(req, res);
+    logger.info(err);
 };
 
 module.exports.loggedIn = function (req, res) {
@@ -45,11 +45,6 @@ module.exports.logInGet = function (req, res) {
 };
 
 module.exports.postLogin = function (req, res) {
-  if (req.session.last_url) {
-    res.redirect(req.session.last_url);
-    delete req.session.last_url;
-    return;
-  }
   res.redirect('/');
 };
 
@@ -67,7 +62,7 @@ module.exports.otpLogIn = function (req, res) {
     req.user.sendOTP().then(function(){
       req.session.sentCode = true;
       res.render('login/otp-login');
-    },(err) => error(req,res,error)
+    },function(err) { error(req,res,error) }
     );
   } else {
     res.render('login/otp-login');
@@ -77,6 +72,11 @@ module.exports.otpLogIn = function (req, res) {
 
 module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
+  if (req.session.last_url) {
+    res.redirect(req.session.last_url);
+    delete req.session.last_url;
+    return;
+  }
   res.redirect('/');
 };
 
