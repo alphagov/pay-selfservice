@@ -30,11 +30,7 @@ describe('auth service', function () {
         passport: {
           user: {
             name: 'Michael',
-            _json: {
-              app_metadata: {
-                account_id: 123
-              }
-            }
+            gateway_account_id: 123
           }
         },
         reload : mockByPass,
@@ -68,7 +64,7 @@ describe('auth service', function () {
 
     it("should call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
-      delete invalid.session.passport.user._json.app_metadata.account_id;
+      delete invalid.session.passport.user.gateway_account_id;
       auth.enforce(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
@@ -99,6 +95,26 @@ describe('auth service', function () {
     it("call redirect to no access", function (done) {
       auth.no_access(validRequest, response, next);
       assert(redirect.calledWith(paths.user.noAccess));
+      done();
+    });
+  });
+
+  describe('get_gateway_account_id', function () {
+    it("should return gateway_account_id", function (done) {
+      var test = auth.get_gateway_account_id({session: {passport: {user: { gateway_account_id: 1}}}});
+      assert.equal(test,1);
+      done();
+    });
+   it("should not return gateway_account_id", function (done) {
+      var test1 = auth.get_gateway_account_id({session: {passport: {user: { }}}});
+      var test2 = auth.get_gateway_account_id({session: {passport: {}}});
+      var test3 = auth.get_gateway_account_id({session: {}});
+      var test4 = auth.get_gateway_account_id({});
+
+      assert.equal(test1,null);
+      assert.equal(test2,null);
+      assert.equal(test3,null);
+      assert.equal(test4,null);
       done();
     });
   });

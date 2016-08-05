@@ -18,6 +18,6 @@ module.exports = function () {
 
   return {
     sequelize: sequelizeInstance
-  }
+  };
 
 }();

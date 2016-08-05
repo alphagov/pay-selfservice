@@ -1,11 +1,11 @@
 "use strict";
 var logger = require('winston');
-var session = require('express-session');
-var Auth0Strategy = require('passport-auth0');
 var passport = require('passport');
+var localStrategy = require('passport-local').Strategy;
 var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
+var User = require(__dirname + '/../models/user.js');
+var _ = require('lodash');
 
 
 var logIfError = function (scenario, err) {
@@ -14,21 +14,15 @@ var logIfError = function (scenario, err) {
   }
 };
 
-var AUTH_STRATEGY_NAME = 'auth0';
-var AUTH_STRATEGY = new Auth0Strategy({
-    domain: process.env.AUTH0_URL,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL: paths.user.callback
-  },
-  function (accessToken, refreshToken, extraParams, user, done) {
-    // accessToken is the token to call Auth0 API (not needed in the most cases)
-    // extraParams.id_token has the JSON Web Token
-    // profile has all the information from the user
-    logger.info('Logged in user -', {'displayname': user.displayName});
-    return done(null, user);
-  }
-);
+var localStrategyAuth = function(username, password, done) {
+  User.authenticate(username,password)
+  .then(function(user){
+    done(null, user);
+  },function(){
+    done(null, false);
+  });
+};
+
 
 var auth = {
   enforce: function (req, res, next) {
@@ -37,7 +31,7 @@ var auth = {
       logIfError('Enforce reload of LogIn', err);
 
       if (req.session.passport && req.session.passport.user) {
-        if (auth.get_account_id(req)) {
+        if (auth.get_gateway_account_id(req)) {
           if (!req.session.csrfSecret) {
             req.session.csrfSecret = csrf().secretSync();
             logger.info('Created csrfSecret')
@@ -56,15 +50,11 @@ var auth = {
     });
   },
 
-  login: passport.authenticate(AUTH_STRATEGY_NAME, {session: true}),
-
-  callback: passport.authenticate(AUTH_STRATEGY_NAME, {failureRedirect: paths.user.logIn}),
-
   initialise: function (app, override_strategy) {
 
-    var strategy = override_strategy || AUTH_STRATEGY;
-
-    passport.use(strategy);
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use('local',new localStrategy({usernameField: 'email'}, localStrategyAuth));
 
     passport.serializeUser(function (user, done) {
       done(null, user);
@@ -74,11 +64,9 @@ var auth = {
       done(null, user);
     });
 
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    app.use(session(selfServiceSession()));
   },
+
+  localStrategyAuth: localStrategyAuth,
 
   no_access: function (req, res, next) {
     if (req.url != paths.user.noAccess) {
@@ -89,9 +77,10 @@ var auth = {
     }
   },
 
-  get_account_id: function (req) {
-    var user = req.session.passport.user;
-    return user._json && user._json.app_metadata && user._json.app_metadata.account_id ? parseInt(user._json.app_metadata.account_id) : null;
+  get_gateway_account_id: function (req) {
+    var id = _.get(req,"session.passport.user.gateway_account_id");
+    if (!id) return null;
+    return parseInt(id);
   }
 };
 
