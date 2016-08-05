@@ -65,19 +65,6 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it('should redirect to login to the last url',function(done){
-    // happens after the passort middleware, so cant test through supertest
-    var passes = false,
-    url = "http://foo",
-    req = {session: { last_url: url } },
-    res = {
-      redirect: function(redirect){
-        if (redirect == url) passes = true;
-    }};
-    login_controller.postLogin(req, res);
-    assert(passes);
-    done();
-  });
 
   it('should redirect to root if no url',function(done){
     // happens after the passort middleware, so cant test through supertest
@@ -140,6 +127,20 @@ describe('The otplogin endpoint', function () {
         assert(doesNotcallSendOTP);
         done();
       });
+  });
+
+  it('should redirect to login to the last url',function(done){
+    // happens after the passort middleware, so cant test through supertest
+    var passes = false,
+    url = "http://foo",
+    req = {session: { last_url: url } },
+    res = {
+      redirect: function(redirect){
+        if (redirect == url) passes = true;
+    }};
+    login_controller.afterOTPLogin(req, res);
+    assert(passes);
+    done();
   });
 
 
