@@ -18,6 +18,9 @@ var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
 
+// make sure user db is initialised
+var user              = require('./app/models/user.js');
+
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
