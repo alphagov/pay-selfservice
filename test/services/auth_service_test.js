@@ -114,10 +114,6 @@ describe('auth service', function () {
       done();
     });
 
-    // it("call redirect to no access", function (done) {
-    //   assert(redirect.calledWith(paths.user.noAccess));
-    //   done();
-    // });
   });
 
 });
