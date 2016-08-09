@@ -3,8 +3,7 @@ var response  = require('../utils/response.js').response;
 var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
-var renderErrorView = require('../utils/response.js').renderErrorView;
-
+var errorView = require('../utils/response.js').renderErrorView;
 
 var logIfError = function (scenario, err) {
   if (err) {
@@ -13,7 +12,7 @@ var logIfError = function (scenario, err) {
 };
 
 var error = function(req,res,err) {
-    renderErrorView(req, res);
+    errorView(req, res);
     logger.info(err);
 };
 
@@ -62,7 +61,7 @@ module.exports.otpLogIn = function (req, res) {
     req.user.sendOTP().then(function(){
       req.session.sentCode = true;
       res.render('login/otp-login');
-    },function(err) { error(req,res,error) }
+    },function(err) { error(req,res,error); }
     );
   } else {
     res.render('login/otp-login');
