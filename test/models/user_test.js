@@ -6,6 +6,7 @@ var _         = require('lodash');
 var expect    = require("chai").expect;
 var nock      = require('nock');
 var bcrypt    = require('bcrypt');
+var q         = require('q');
 
 
 var wrongPromise = function(data){
@@ -17,7 +18,7 @@ var sequel = {
     {
       sync: function(){ },
       define: function(){ return {
-        findOne: function(){ console.log('ARE YOU HERE?');},
+        findOne: function(){},
         create: function(){ }
       };
     }
@@ -39,7 +40,9 @@ describe('user model', function() {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function(){
         return { findOne: function(params){
+          var defer = q.defer();
           assert(params.where.email == "foo");
+          return defer.promise;
         }};
       };
       User(seq).find("foo");
@@ -49,8 +52,10 @@ describe('user model', function() {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function(){
         return { findOne: function(params){
+          var defer = q.defer();
           assert(params.where.email == "foo");
           assert(_.includes(params.attributes,'password') === false);
+          return defer.promise;
         }};
       };
       User(seq).find("foo");
@@ -78,6 +83,38 @@ describe('user model', function() {
         try {
           assert(user.username == "foo");
           assert(_.includes(user,'password') === false);
+          done();
+        } catch (e) {
+          done(e);
+        }
+
+      });
+    });
+
+    it('should create a user witha specific otp_key', function (done) {
+      var seq = _.cloneDeep(sequel);
+      seq.sequelize.define = function(){
+        return { create: function(user){
+          assert(user.username == "foo");
+          assert(user.password != "password");
+          assert(bcrypt.compareSync('password',user.password))
+          return {then : function (callback) {
+            callback({dataValues: user});
+          }};
+        }};
+      };
+      User(seq).create({
+        username: "foo",
+        password: "password",
+        gateway_account_id: 1,
+        email: "foo@example.com",
+        otp_key: "123"
+      }).then(function(user){
+        try {
+          assert(user.username == "foo");
+          assert(_.includes(user,'password') === false);
+          assert(user.otp_key == "123");
+
           done();
         } catch (e) {
           done(e);
@@ -137,8 +174,40 @@ describe('user model', function() {
     });
   });
 
-
-
-
+  describe('updateOtpKey',function(){
+    it('shouldupdate the otp key', function (done) {
+      var seq = _.cloneDeep(sequel);
+      seq.sequelize.define = function(){
+        return {
+          findOne: function(params){
+            return {
+              then: function(callback){
+                callback({
+                  dataValues: {
+                    password: "$2a$10$jJmJnbJFOLYz/DChN6VMVOfBQ0G94MRGSAjtp25j7BMBBQXpYoDZm",
+                    foo: "bar"
+                  },
+                  updateAttributes: function(params){
+                    return {
+                      then: function(callback){
+                        assert(params.otp_key === '1234');
+                        callback();
+                      }
+                    };
+                  }
+                });
+              }
+            };
+          }
+      };
+      };
+      User(seq)
+      .updateOtpKey('foo@bar.com',"1234")
+      .then(function (user) {
+        assert(true);
+        done();
+      },wrongPromise);
+    });
+  });
 });
 

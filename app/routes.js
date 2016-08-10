@@ -51,6 +51,11 @@ module.exports.bind = function (app) {
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
   app.get(user.logOut, login.logOut);
+  app.get(user.otpLogIn,auth.enforceUser, login.otpLogIn);
+  app.post(user.otpLogIn,login.logUserinOTP(), login.afterOTPLogin);
+  app.get(user.otpSendAgain, auth.enforceUser, login.sendAgainGet);
+  app.post(user.otpSendAgain, auth.enforceUser, login.sendAgainPost);
+
 
   // DEV TOKENS
 

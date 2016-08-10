@@ -1,6 +1,7 @@
 var request     = require('supertest');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
+var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
 var paths       = require(__dirname + '/../../app/paths.js');
@@ -8,7 +9,7 @@ var session     = require(__dirname + '/../test_helpers/mock_session.js');
 
 var gatewayAccountId = 15486734;
 
-var app = session.mockValidAccount(_app, gatewayAccountId);
+var app = session.mockValidAccount(_app,gatewayAccountId);
 var chargeId = 452345;
 var chargeWithRefund = 12345;
 var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
@@ -353,7 +354,6 @@ describe('The transaction view scenarios', function () {
         it('should return charge not found if a non existing charge id requested', function (done) {
             var nonExistentChargeId = 888;
             var connectorError = {'message': 'Charge not found'};
-            console.log(connectorChargePathFor(nonExistentChargeId));
             connectorMock.get(connectorChargePathFor(nonExistentChargeId))
                 .reply(404, connectorError);
 

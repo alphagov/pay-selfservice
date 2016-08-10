@@ -13,6 +13,9 @@ module.exports = {
   },
   user: {
     logIn: '/login',
+    otpLogIn: '/otp-login',
+    otpSendAgain: '/otp-send-again',
+    otpSetup: '/otp-setup',
     logOut: '/logout',
     callback: '/callback',
     loggedIn: '/',
