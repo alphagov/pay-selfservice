@@ -59,9 +59,7 @@ var User = sequelizeConnection.define('user', {
 });
 
 // creates table if it does not exist
-sequelizeConnection.sync({
-    force: true
-});
+sequelizeConnection.sync();
 
 var _find = function(email, extraFields = []) {
   return User.findOne({
