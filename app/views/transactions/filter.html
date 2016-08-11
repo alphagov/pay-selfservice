@@ -9,6 +9,13 @@
           <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
         </div>
 
+        <div class="column-third email">
+          <label class="form-label" for="email">
+            <strong>Email Address</strong>
+            <span class="form-hint">Enter full or partial email</span>
+          </label>
+          <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
+        </div>
         <div class="column-third">
           <label class="form-label" for="state">
             <strong>State</strong>
@@ -20,13 +27,6 @@
               <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
             {{/eventStates}}
           </select>
-        </div>
-        <div class="column-third email">
-          <label class="form-label" for="email">
-            <strong>Email Address</strong>
-            <span class="form-hint">Enter full or partial email</span>
-          </label>
-          <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
         </div>
 
       <div class="column-half datetime-pair">
