@@ -5,6 +5,10 @@
       <td id="reference">{{reference}}</td>
     </tr>
     <tr>
+      <td>Email:</td>
+      <td id="email">{{email}}</td>
+    </tr>
+    <tr>
       <td>Amount:</td>
       <td id="amount">{{amount}}</td>
     </tr>
@@ -21,10 +25,6 @@
     <tr>
       <td>State:</td>
       <td id="state">{{state_friendly}}{{#state.message}} ({{state.code}} - {{state.message}}){{/state.message}}</td>
-    </tr>
-    <tr>
-      <td>Finished:</td>
-      <td id="finished">{{#state.finished}}&#10004;{{/state.finished}}{{^state.finished}}&#10006;{{/state.finished}}</td>
     </tr>
     <tr>
       <td>Method:</td>
