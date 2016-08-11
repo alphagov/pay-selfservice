@@ -21,7 +21,6 @@ var forgottenPassword = sequelizeConnection.define('forgotten_password', {
 
 
 var destroy = function(code){
-  console.log('hihi')
   return forgottenPassword.destroy({ where: { code: code } });
 };
 
