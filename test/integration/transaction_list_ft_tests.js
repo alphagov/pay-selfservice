@@ -23,6 +23,7 @@ portfinder.getPort(function (err, connectorPort) {
   function connectorMock_responds(code, data, searchParameters) {
       var queryStr = '?';
           queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
+                      '&email=' + (searchParameters.email ? searchParameters.email : '') +
                       '&state=' + (searchParameters.state ? searchParameters.state : '') +
                       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
                       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
@@ -60,7 +61,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
               'reference': 'ref1',
-              'email':'alice.111@mail.fake',
+              'email':'alice.222@mail.fake',
               'state': {
                 'status': 'testing',
                 'finished': false
@@ -74,6 +75,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
               'reference': 'ref2',
+              'email':'alice.111@mail.fake',
               'state': {
                 'status': 'testing2',
                 'finished': false
@@ -94,7 +96,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': '50.00',
               'reference': 'ref1',
-              'email':'alice.111@mail.fake',
+              'email':'alice.222@mail.fake',
               'state': {
                 'status': 'testing',
                 'finished': false
@@ -110,6 +112,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': '20.00',
               'reference': 'ref2',
+              'email':'alice.111@mail.fake',
               'state': {
                 'status': 'testing2',
                 'finished': false
@@ -139,7 +142,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-1',
               'amount': 5000,
               'reference': 'ref1',
-              'email':'alice.111@mail.fake',
+              'email':'alice.222@mail.fake',
               'state': {
                 'status': 'testing',
                 'finished': false
@@ -153,6 +156,7 @@ portfinder.getPort(function (err, connectorPort) {
               'gateway_transaction_id': 'tnx-id-2',
               'amount': 2000,
               'reference': 'ref2',
+              'email':'alice.111@mail.fake',
               'state': {
                 'status': 'testing2',
                 'finished': false

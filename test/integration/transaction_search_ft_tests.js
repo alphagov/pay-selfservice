@@ -26,6 +26,7 @@ portfinder.getPort(function (err, connectorPort) {
   function connectorMock_responds(data, searchParameters) {
     var queryString = querystring.stringify({
       reference: searchParameters.reference ? searchParameters.reference : '',
+      email: searchParameters.email ? searchParameters.email : '',
       state: searchParameters.state ? searchParameters.state : '',
       from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
       to_date: searchParameters.toDate ? searchParameters.toDate : '',
@@ -67,6 +68,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -79,6 +81,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-2',
                     'amount': 2000,
                     'reference': 'ref2',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing2',
                       'finished' : false
@@ -99,6 +102,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -115,6 +119,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-2',
                     'amount': '20.00',
                     'reference': 'ref2',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing2',
                       'finished' : false
@@ -147,6 +152,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -167,6 +173,112 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
+                    'state': {
+                      'status': 'testing',
+                      'finished' : false
+                    },
+                    'state_friendly': 'Testing',
+                    'gateway_account_id': 452345,
+                    'updated': DISPLAY_DATE,
+                    'created': DISPLAY_DATE,
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 100})
+                  }
+                ]
+              };
+
+              search_transactions(data)
+                  .expect(200)
+                  .expect(function(res) {
+                      res.body.results.should.eql(expectedData.results);
+                   })
+                  .end(done);
+            });
+
+          it('should return a list of transactions for the gateway account when searching by partial email', function (done) {
+
+              var connectorData = {
+                'results': [
+                  {
+                    'charge_id': '100',
+                    'gateway_transaction_id': 'tnx-id-1',
+                    'amount': 5000,
+                    'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
+                    'state': {
+                      'status': 'testing',
+                      'finished' : false
+                    },
+                    'updated': CONNECTOR_DATE,
+                    'created_date': CONNECTOR_DATE
+                  }
+                ]
+              };
+              var data= {'email': 'alice'};
+              connectorMock_responds(connectorData, data);
+
+              var expectedData = {
+                'results': [
+                  {
+                    'charge_id': '100',
+                    'gateway_transaction_id': 'tnx-id-1',
+                    'amount': '50.00',
+                    'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
+                    'state': {
+                      'status': 'testing',
+                      'finished' : false
+                    },
+                    'state_friendly': 'Testing',
+                    'gateway_account_id': 452345,
+                    'updated': DISPLAY_DATE,
+                    'created': DISPLAY_DATE,
+                    "link": paths.generateRoute(paths.transactions.show,{chargeId: 100})
+
+                  }
+                ]
+              };
+
+              search_transactions(data)
+                  .expect(200)
+                  .expect(function(res) {
+                    res.body.results.should.eql(expectedData.results);
+                   })
+                  .end(done);
+            });
+
+
+          it('should return a list of transactions for the gateway account when searching by full email', function (done) {
+
+              var connectorData = {
+                'results': [
+                  {
+                    'charge_id': '100',
+                    'gateway_transaction_id': 'tnx-id-1',
+                    'amount': 5000,
+                    'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
+                    'state': {
+                      'status': 'testing',
+                      'finished' : false
+                    },
+                    'updated': CONNECTOR_DATE,
+                    'created_date': CONNECTOR_DATE
+
+                  }
+                ]
+              };
+              var data= {'email': 'alice.111@mail.fake'};
+              connectorMock_responds(connectorData, data);
+
+              var expectedData = {
+                'results': [
+                  {
+                    'charge_id': '100',
+                    'gateway_transaction_id': 'tnx-id-1',
+                    'amount': '50.00',
+                    'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -197,6 +309,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -217,6 +330,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -247,6 +361,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': 5000,
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false
@@ -280,6 +395,7 @@ portfinder.getPort(function (err, connectorPort) {
                     'gateway_transaction_id': 'tnx-id-1',
                     'amount': '50.00',
                     'reference': 'ref1',
+                    'email': 'alice.111@mail.fake',
                     'state': {
                       'status': 'testing',
                       'finished' : false

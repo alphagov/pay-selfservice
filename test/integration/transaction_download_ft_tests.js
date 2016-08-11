@@ -27,6 +27,7 @@ portfinder.getPort(function (err, connectorPort) {
   function connectorMock_responds(code, data, searchParameters) {
     var queryStr = '?';
     queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
+      '&email=' + (searchParameters.email ? searchParameters.email : '') +
       '&state=' + (searchParameters.state ? searchParameters.state : '') +
       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
@@ -63,6 +64,7 @@ portfinder.getPort(function (err, connectorPort) {
           state: {status: 'succeeded', finished: false},
           description: 'desc-red',
           reference: 'red',
+          email: 'alice.111@mail.fake',
           links: [],
           charge_id: 'charge1',
           gateway_transaction_id: 'transaction-1',
@@ -75,6 +77,7 @@ portfinder.getPort(function (err, connectorPort) {
           state: {status: 'canceled', finished: true, code: 'P01234', message: 'Something happened'},
           description: 'desc-blue',
           reference: 'blue',
+          email: 'alice.111@mail.fake',
           links: [],
           charge_id: 'charge2',
           gateway_transaction_id: 'transaction-2',

@@ -1,7 +1,7 @@
 <div class="grid-row transactions-filter">
   <form class="form" method="get" action="{{search_path}}">
     <fieldset>
-        <div class="column-half reference-number">
+        <div class="column-third reference-number">
           <label class="form-label" for="reference">
             <strong>Reference Number</strong>
             <span class="form-hint">Enter full or partial number</span>
@@ -9,7 +9,7 @@
           <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
         </div>
 
-        <div class="column-half">
+        <div class="column-third">
           <label class="form-label" for="state">
             <strong>State</strong>
             <span class="form-hint">Select an option</span>
@@ -21,6 +21,14 @@
             {{/eventStates}}
           </select>
         </div>
+        <div class="column-third email">
+          <label class="form-label" for="email">
+            <strong>Email Address</strong>
+            <span class="form-hint">Enter full or partial email</span>
+          </label>
+          <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
+        </div>
+
       <div class="column-half datetime-pair">
         <label class="form-label" for="fromDate">
           <strong>Date range</strong>
