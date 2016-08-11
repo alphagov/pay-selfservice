@@ -83,6 +83,7 @@ module.exports = {
     connectorData.results.forEach(function (element) {
       element.state_friendly = changeCase.upperCaseFirst(element.state.status.toLowerCase());
       element.amount  = (element.amount / 100).toFixed(2);
+      element.email = (element.email && element.email.length > 20) ? element.email.substring(0,20) + '...' :  element.email;
       element.updated = dates.utcToDisplay(element.updated);
       element.created = dates.utcToDisplay(element.created_date);
       element.gateway_account_id = gatewayAccountId;
