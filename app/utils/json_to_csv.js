@@ -17,6 +17,10 @@ module.exports = function (data) {
           value: "reference"
         },
         {
+          label: 'Email',
+          value: "email"
+        },
+        {
           label: "Amount",
           value: function (row) {
             return (parseInt(row.amount) / 100).toFixed(2);
