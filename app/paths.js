@@ -19,7 +19,11 @@ module.exports = {
     logOut: '/logout',
     callback: '/callback',
     loggedIn: '/',
-    noAccess: '/noaccess'
+    noAccess: '/noaccess',
+    forgottenPassword: '/reset-password',
+    passwordRequested: '/reset-password-requested',
+    forgottenPasswordReset: '/reset-password/:id'
+
   },
   devTokens: {
     index: '/tokens',

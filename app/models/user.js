@@ -1,4 +1,4 @@
-var sequelizeConfig = require('../utils/sequelize_config.js');
+var sequelizeConfig = require('./../utils/sequelize_config.js');
 var sequelizeConnection = sequelizeConfig.sequelize;
 var Sequelize = require('sequelize');
 var bcrypt = require('bcrypt');
@@ -8,7 +8,9 @@ var notify = require('../services/notification_client.js');
 var notp = require('notp');
 var random = require('../utils/random.js');
 var logger = require('winston');
-
+var forgottenPassword  = require('./forgotten_password.js').sequelize;
+var moment = require('moment');
+var paths  = require(__dirname + '/../paths.js');
 
 
 var User = sequelizeConnection.define('user', {
@@ -57,18 +59,11 @@ var User = sequelizeConnection.define('user', {
     },
   }
 });
+User.hasMany(forgottenPassword, {as: 'forgotten'});
 
-// creates table if it does not exist
-sequelizeConnection.sync();
+// INSTANCE
 
-var _find = function(email, extraFields = []) {
-  return User.findOne({
-    where: { email: email },
-    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
-  });
-},
-
-sendOTP = function(){
+var sendOTP = function(){
   var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
 
   if (!(this.otp_key && this.telephone_number && template)) {
@@ -82,60 +77,146 @@ generateOTP = function(){
    return notp.totp.gen(this.otp_key);
 },
 
+
+sendPasswordResetToken = function(){
+  var defer = q.defer(),
+  code      = random.key(20),
+  template  = process.env.NOTIFY_FORGOTTEN_PASSWORD_ID,
+  user      = this,
+  data      = { date: Date.now(), code: code, userId: this.id },
+
+  init = function(){
+    forgottenPassword.create(data).then(sendEmail,defer.reject);
+  },
+
+  sendEmail = (forgotten)=> {
+    var uri = paths.generateRoute(paths.user.forgottenPasswordReset,{id: code});
+    var url = process.env.SELFSERVICE_BASE + uri;
+
+    notify.sendEmail(template, user.email, { code: url })
+    .then(defer.resolve, defer.reject);
+  };
+  init();
+  return defer.promise;
+}
+
+updatePassword = function(password){
+  var defer = q.defer();
+  User.update(
+    { password: hashPassword(password) },
+    { where: { id : this.id } }
+  )
+  .then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
 resolveUser = function(user, defer){
-  delete user.dataValues.password;
-  user.dataValues.generateOTP = generateOTP;
-  user.dataValues.sendOTP = sendOTP;
-  defer.resolve(user.dataValues);
+  if (user === null) return defer.reject();
+  var val = user.dataValues;
+  delete val.password;
+  val.generateOTP = generateOTP;
+  val.sendOTP = sendOTP;
+  val.sendPasswordResetToken = sendPasswordResetToken;
+  val.updatePassword = updatePassword;
+  defer.resolve(val);
 };
+
+// CLASS
 
 var find = function(email) {
   var defer = q.defer();
-  _find(email).then((user)=> resolveUser(user, defer));
+  _find(email).then((user)=> resolveUser(user, defer),
+  defer.reject);
   return defer.promise;
+},
 
-};
-
-
-
-var create = function(user){
+create = function(user){
   var defer = q.defer();
-  User.create({
+  var _user = {
     username: user.username,
-    password: bcrypt.hashSync(user.password, 10),
+    password: hashPassword(user.password),
     gateway_account_id: user.gateway_account_id,
     email: user.email,
     telephone_number: user.telephone_number,
     otp_key: user.otp_key ? user.otp_key : random.key(10)
-  }).then((user)=> resolveUser(user, defer));
-  return defer.promise;
-};
+  };
 
-var authenticate = function(email,password) {
-  var defer = q.defer();
-  _find(email,['password']).then(function(user){
+  User.create(_user).then((user)=> resolveUser(user, defer));
+  return defer.promise;
+},
+
+authenticate = function(email,password) {
+  var defer = q.defer(),
+
+  init = function(){
+    _find(email,['password']).then(authentic, defer.reject);
+  },
+
+  authentic = function(user){
     if (!user) return defer.reject();
     var data = user.dataValues;
     validPass = bcrypt.compareSync(password,data.password);
 
     if (validPass) resolveUser(user, defer);
     defer.reject();
-  });
+  };
+
+  init();
+  return defer.promise;
+},
+
+updateOtpKey = function(email,otpKey){
+  var defer = q.defer(),
+
+  init = function(){
+    _find(email).then(update, error);
+
+  },
+  error = (err)=> {
+    defer.reject();
+    logger.info('OTP UPDATE ERROR',err);
+  },
+
+  update = function(user){
+    if (!user) return defer.reject();
+    user.updateAttributes({otp_key: otpKey})
+      .then(defer.resolve, error);
+  };
+  init();
+  return defer.promise;
+},
+
+findByResetToken = function(code){
+  var defer = q.defer(),
+  params    = { where: { code: code }},
+
+  init = function(){
+    forgottenPassword.findOne(params).then(foundToken, defer.reject);
+  },
+
+  foundToken = (forgotten)=> {
+    if (forgotten === null) return defer.reject();
+    _find(undefined,[],{id : forgotten.userId})
+      .then(foundUser, defer.reject);
+  },
+
+  foundUser = (user)=> resolveUser(user, defer);
+
+  init();
   return defer.promise;
 };
 
-var updateOtpKey = function(email,otpKey){
-  var defer = q.defer();
-  _find(email).then(function(user){
-    if (!user) return defer.reject();
-    user.updateAttributes({otp_key: otpKey}).then(function(user){
-      defer.resolve();
-    },function(err){
-      defer.reject();
-      logger.info('OTP UPDATE ERROR',err,otpKey);
-    });
+// PRIVATE
+
+var _find = function(email, extraFields = [], where) {
+  if (!where) where = { email: email };
+  return User.findOne({
+    where: where,
+    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
   });
-  return defer.promise;
+},
+hashPassword = function(password){
+  return bcrypt.hashSync(password, 10);
 };
 
 
@@ -143,5 +224,10 @@ module.exports = {
   find: find,
   create: create,
   authenticate: authenticate,
-  updateOtpKey: updateOtpKey
+  updateOtpKey: updateOtpKey,
+  sequelize: User,
+  findByResetToken: findByResetToken
 };
+
+
+
