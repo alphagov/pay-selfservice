@@ -25,7 +25,6 @@ module.exports = {
   healthCheckResponse: healthCheckResponse,
 
   renderErrorView: function (req, res, msg) {
-    console.log('HIIII')
     if (!msg) msg = ERROR_MESSAGE;
     logger.error('An error has occurred. Rendering error view -', {errorMessage: msg});
     var accept = (req && req.headers) ? req.headers.accept : "";

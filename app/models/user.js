@@ -87,7 +87,6 @@ sendPasswordResetToken = function(){
 
   init = function(){
     forgottenPassword.create(data).then(sendEmail,defer.reject);
-
   },
 
   sendEmail = (forgotten)=> {
@@ -99,39 +98,7 @@ sendPasswordResetToken = function(){
   };
   init();
   return defer.promise;
-},
-
-passwordResetTokens = function(email){
-  var defer = q.defer(),
-
-  init = function(){
-    _find(this.email).then(gotUser,defer.reject);
-  },
-
-  gotUser = function(user){
-    if (!user) return defer.reject();
-    user.getForgotten().then(filterTokens, defer.reject);
-  },
-
-  filterTokens = function(forgottens) {
-    validTokens = _.filter(_.map(forgottens, justData), filterTimeValidTokens);
-    defer.resolve(validTokens);
-  },
-
-  justData  = (forgotten) => { return forgotten.dataValues; };
-
-  init();
-  return defer.promise;
-},
-
-filterTimeValidTokens = function(forgotten){
-  var createdDate = moment(forgotten.date);
-  var currentDate = moment(Date.now());
-  var ageOfLink   = currentDate.diff(createdDate, 'minutes');
-  var expiry      = process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES;
-  if (ageOfLink > expiry) return false;
-  return true;
-},
+}
 
 updatePassword = function(password){
   var defer = q.defer();
@@ -150,7 +117,6 @@ resolveUser = function(user, defer){
   val.generateOTP = generateOTP;
   val.sendOTP = sendOTP;
   val.sendPasswordResetToken = sendPasswordResetToken;
-  val.passwordResetTokens = passwordResetTokens;
   val.updatePassword = updatePassword;
   defer.resolve(val);
 };
@@ -159,7 +125,8 @@ resolveUser = function(user, defer){
 
 var find = function(email) {
   var defer = q.defer();
-  _find(email).then((user)=> resolveUser(user, defer),defer.reject);
+  _find(email).then((user)=> resolveUser(user, defer),
+  defer.reject);
   return defer.promise;
 },
 
@@ -220,7 +187,6 @@ updateOtpKey = function(email,otpKey){
 },
 
 findByResetToken = function(code){
-  console.log(code);
   var defer = q.defer(),
   params    = { where: { code: code }},
 
