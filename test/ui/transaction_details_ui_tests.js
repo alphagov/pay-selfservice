@@ -8,6 +8,7 @@ describe('The transaction details view', function () {
   it('should render all transaction details', function () {
     var templateData = {
         'reference':'<123412341234> &',
+        'email': 'alice.111@mail.fake',
         'amount':'£10.00',
         'gateway_account_id':'1',
         'charge_id':'1',
@@ -49,11 +50,11 @@ describe('The transaction details view', function () {
     var body = renderTemplate('transactions/show', templateData);
     var $ = cheerio.load(body);
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;');
+    $('#email').html().should.equal('alice.111@mail.fake');
     $('#amount').text().should.equal(templateData.amount);
     $('#payment-id').text().should.equal(templateData.charge_id);
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id);
     $('#state').text().should.equal(templateData.state_friendly);
-    $('#finished').text().should.equal(templateData.state.finished ? "✔" : "✖");
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')

@@ -126,6 +126,7 @@ ConnectorClient.prototype = {
   withSearchTransactionsUrl (gatewayAccountId, searchParameters) {
     var query = querystring.stringify({
       reference: searchParameters.reference,
+      email: searchParameters.email,
       state: searchParameters.state,
       from_date: dates.fromDateToApiFormat(searchParameters.fromDate, searchParameters.fromTime),
       to_date: dates.toDateToApiFormat(searchParameters.toDate, searchParameters.toTime),

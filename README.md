@@ -46,6 +46,7 @@ Search transactions by reference, status and from and to date
 | Form param               | always present | Description                               |
 | ------------------------ |:--------:| -----------------------------------------       |
 | `reference`              | X | The service reference for a given payment |
+| `email`                  | X | The user email address used for the given payment |
 | `status   `              | X | The payment status |
 | `fromDate   `            | X | A starting date to search for payments|
 | `toDate   `              | X | An ending date to search for payments|

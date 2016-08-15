@@ -44,7 +44,10 @@
 
     margin: 15px 0;
   }
+  .column-third {
 
+    margin: 15px 0;
+  }
 
   .column-quarter {
     @include respond-to-max(1040px) {

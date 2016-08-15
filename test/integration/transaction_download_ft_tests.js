@@ -27,12 +27,12 @@ portfinder.getPort(function (err, connectorPort) {
   function connectorMock_responds(code, data, searchParameters) {
     var queryStr = '?';
     queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
+      '&email=' + (searchParameters.email ? searchParameters.email : '') +
       '&state=' + (searchParameters.state ? searchParameters.state : '') +
       '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
       '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
       '&page=' + (searchParameters.page ? searchParameters.page : "1") +
       '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : "100");
-
     return connectorMock.get(CHARGES_API_PATH + queryStr)
       .reply(code, data);
   }
@@ -63,6 +63,7 @@ portfinder.getPort(function (err, connectorPort) {
           state: {status: 'succeeded', finished: false},
           description: 'desc-red',
           reference: 'red',
+          email: 'alice.111@mail.fake',
           links: [],
           charge_id: 'charge1',
           gateway_transaction_id: 'transaction-1',
@@ -75,6 +76,7 @@ portfinder.getPort(function (err, connectorPort) {
           state: {status: 'canceled', finished: true, code: 'P01234', message: 'Something happened'},
           description: 'desc-blue',
           reference: 'blue',
+          email: 'alice.222@mail.fake',
           links: [],
           charge_id: 'charge2',
           gateway_transaction_id: 'transaction-2',
@@ -113,18 +115,18 @@ portfinder.getPort(function (err, connectorPort) {
             var csvContent = res.text;
             var arrayOfLines = csvContent.split("\n");
             assert(5, arrayOfLines.length);
-            assert.equal('red,123.45,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29', arrayOfLines[1]);
-            assert.equal('blue,9.99,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29', arrayOfLines[2]);
+            assert.equal('red,alice.111@mail.fake,123.45,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29', arrayOfLines[1]);
+            assert.equal('blue,alice.222@mail.fake,9.99,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29', arrayOfLines[2]);
           })
           .end(function(err, res) {
             if (err) return done(err);
             var csvContent = res.text;
             var arrayOfLines = csvContent.split("\n");
             expect(arrayOfLines.length).to.equal(5);
-            expect(arrayOfLines[1]).to.equal('red,123.45,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
-            expect(arrayOfLines[2]).to.equal('blue,9.99,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
-            expect(arrayOfLines[3]).to.equal('red,12.34,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
-            expect(arrayOfLines[4]).to.equal('blue,1.23,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
+            expect(arrayOfLines[1]).to.equal('red,alice.111@mail.fake,123.45,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
+            expect(arrayOfLines[2]).to.equal('blue,alice.222@mail.fake,9.99,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
+            expect(arrayOfLines[3]).to.equal('red,alice.111@mail.fake,12.34,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
+            expect(arrayOfLines[4]).to.equal('blue,alice.222@mail.fake,1.23,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
             done()
           });
       });
@@ -135,6 +137,7 @@ portfinder.getPort(function (err, connectorPort) {
 
         connectorMock_responds(200, 'csv data', {
           reference: 'ref',
+          email: 'alice.111%40mail.fake',
           state: '1234',
           fromDate: '2016-01-11T13%3A04%3A45.000Z',
           toDate: '2016-01-11T14%3A04%3A46.000Z'
@@ -142,6 +145,7 @@ portfinder.getPort(function (err, connectorPort) {
 
         download_transaction_list({
           reference: 'ref',
+          email: 'alice.111@mail.fake',
           state: '1234',
           fromDate: '11/01/2016',
           fromTime: '13:04:45',

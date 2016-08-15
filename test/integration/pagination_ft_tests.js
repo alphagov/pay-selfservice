@@ -24,6 +24,7 @@ portfinder.getPort(function (err, connectorPort) {
   function connectorMock_responds(data, searchParameters) {
      var queryStr = '?';
          queryStr+=  'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
+                     '&email=' + (searchParameters.email ? searchParameters.email : '') +
                      '&state=' + (searchParameters.state ? searchParameters.state : '') +
                      '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
                      '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
