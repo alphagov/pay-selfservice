@@ -10,6 +10,7 @@ var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
 var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';
 var CHARGES_API_PATH                  = ACCOUNT_API_PATH + '/charges';
 var CHARGE_API_PATH                   = CHARGES_API_PATH + '/{chargeId}';
+var CHARGE_REFUNDS_API_PATH           = CHARGE_API_PATH + '/refunds';
 var CARD_TYPES_API_PATH               = '/v1/api/card-types';
 
 var ACCOUNTS_FRONTEND_PATH            = '/v1/frontend/accounts';
@@ -24,7 +25,7 @@ var ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types';
 function _createResponseHandler(self) {
   return function (callback) {
     return function (error, response, body) {
-      if (error || (response.statusCode !== 200)) {
+      if (error || !isInArray(response.statusCode, [200, 202])) {
         if (error) {
           logger.error('Calling connector error -', {
             service: 'connector',
@@ -42,6 +43,15 @@ function _createResponseHandler(self) {
       callback(body);
     }
   }
+}
+
+/**
+ * @private
+ * @param  {Object} value - value to find into the array
+ * @param {Object[]} array - array source for finding the given value
+ */
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
 }
 
 /**
@@ -105,6 +115,11 @@ function _serviceNameUrlFor(gatewayAccountId, url) {
 /** @private */
 function _chargeUrlFor(gatewayAccountId, chargeId, url) {
   return url + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
+}
+
+/** @private */
+function _chargeRefundsUrlFor(gatewayAccountId, chargeId, url) {
+  return url + CHARGE_REFUNDS_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
 }
 
 /**
@@ -254,7 +269,23 @@ ConnectorClient.prototype = {
     });
     this.client.patch({url: url, body: payload}, this.responseHandler(successCallback));
     return this;
-  }
+  },
+
+  /**
+   * Create a refund of the provided amount for the given payment
+   * @param gatewayAccountId
+   */
+  withPostChargeRefund: function (gatewayAccountId, chargeId, payload, successCallback) {
+    var url = _chargeRefundsUrlFor(gatewayAccountId, chargeId, this.connectorUrl);
+    logger.info('Calling connector to post a refund for payment -', {
+      service: 'connector',
+      method: 'POST',
+      url: url,
+      chargeId: chargeId
+    });
+    this.client.post({url: url, body: payload}, this.responseHandler(successCallback));
+    return this;
+  },
 };
 
 util.inherits(ConnectorClient, EventEmitter);
