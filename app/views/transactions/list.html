@@ -12,14 +12,14 @@
   {{#results}}
     <tr data-follow-link data-link="{{link}}">
       <td class="charge-column reference" data-gateway-transaction-id="{{gateway_transaction_id}}">
-        <a id="charge-id-{{charge_id}}" data-charge-id="{{charge_id}}" href="{{link}}">
+        <a class="reference" id="charge-id-{{charge_id}}" data-charge-id="{{charge_id}}" href="{{link}}">
           {{reference}}
         </a>
       </td>
-      <td>{{email}}</td>
-      <td>£{{amount}}</td>
-      <td>{{state_friendly}}</td>
-      <td>{{created}}</td>
+      <td class="email">{{email}}</td>
+      <td class="amount">£{{amount}}</td>
+      <td class="state">{{state_friendly}}</td>
+      <td class="time">{{created}}</td>
     </tr>
   {{/results}}
   </tbody>
