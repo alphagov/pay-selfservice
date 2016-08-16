@@ -12,11 +12,9 @@ e.emailGet = (req, res)=> {
 e.emailPost = (req, res)=> {
   var email = req.body.email,
 
-  redirect = ()=> res.redirect(paths.user.passwordRequested);
+  redirect  = () => res.redirect(paths.user.passwordRequested),
 
-  foundUser = (user)=>
-    user.sendPasswordResetToken().then(redirect, redirect);
-
+  foundUser = (user) => user.sendPasswordResetToken().then(redirect, redirect);
   User.find(email).then(foundUser, redirect);
 };
 
@@ -26,7 +24,10 @@ e.passwordRequested = (req, res)=> {
 
 e.newPasswordGet = (req, res)=> {
   var id = req.params.id,
-  render = (user)=> { res.render('forgotten_password/new_password', {id: id}); };
+  render = (user)=> {
+    if (!user) return errorView(req, res);
+    res.render('forgotten_password/new_password', {id: id});
+  };
 
   User.findByResetToken(id).then(render, ()=> errorView(req, res));
 };

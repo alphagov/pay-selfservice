@@ -1,4 +1,4 @@
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
+ process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 var dbMock          = require(__dirname + '/../test_helpers/db_mock.js');
 var request         = require('supertest');
 var portfinder      = require('portfinder');
