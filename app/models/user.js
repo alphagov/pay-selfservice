@@ -98,7 +98,7 @@ sendPasswordResetToken = function(){
   };
   init();
   return defer.promise;
-}
+},
 
 updatePassword = function(password){
   var defer = q.defer();
