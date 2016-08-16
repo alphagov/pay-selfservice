@@ -26,7 +26,6 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 #set this to 'true' only if you are running self service in a non HTTPS environment.
 SECURE_COOKIE_OFF=true
 
-
 ## Transaction list
 
 View the transaction list for a given account id.
