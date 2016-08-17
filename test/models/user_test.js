@@ -325,6 +325,8 @@ describe('user model', function() {
 
 
   describe('findByResetToken', function() {
+      // TODO
+      // REMOVE SEQUELIZE MOCKING ONCE WE HAVE A TEST DB SETUP
     it('should update the password', function(done) {
       var seq = _.cloneDeep(sequel);
       var values = {dataValues: { id: 2, password: 'foo'}};
@@ -349,6 +351,10 @@ describe('user model', function() {
         .then(function(user){ return user.updatePassword('foo')})
         .then(done)
         .catch(done);
+    });
+    it.skip('should not update the password if it is timed out', function(done) {
+      // WE REALLY NEED A DATABaSE TO TEST THIS PROPERLY PP-1006
+      // WILL BE HANDLED AFTER DEPLOY
     });
   });
 
