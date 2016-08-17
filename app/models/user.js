@@ -92,7 +92,7 @@ sendPasswordResetToken = function(){
   sendEmail = (forgotten)=> {
     var uri = paths.generateRoute(paths.user.forgottenPasswordReset,{id: code});
     var url = process.env.SELFSERVICE_BASE + uri;
-
+    console.log();
     notify.sendEmail(template, user.email, { code: url })
     .then(defer.resolve, defer.reject);
   };
