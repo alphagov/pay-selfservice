@@ -64,7 +64,7 @@ User.hasMany(forgottenPassword, {as: 'forgotten'});
 // INSTANCE
 
 var sendOTP = function(){
-  var template = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID;
+  var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
 
   if (!(this.otp_key && this.telephone_number && template)) {
     throw new Error('missing required field to send text');
@@ -81,7 +81,7 @@ generateOTP = function(){
 sendPasswordResetToken = function(){
   var defer = q.defer(),
   code      = random.key(20),
-  template  = process.env.NOTIFY_FORGOTTEN_PASSWORD_ID,
+  template  = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID,
   user      = this,
   data      = { date: Date.now(), code: code, userId: this.id },
 
