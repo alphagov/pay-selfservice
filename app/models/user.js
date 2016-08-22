@@ -86,15 +86,23 @@ sendPasswordResetToken = function(){
   data      = { date: Date.now(), code: code, userId: this.id },
 
   init = function(){
-    forgottenPassword.create(data).then(sendEmail,defer.reject);
+    forgottenPassword.create(data).then(sendEmail,()=> {
+      logger.info('PROBLEM CREATING FORGOTTEN PASSWORD', data);
+      defer.reject();
+    });
   },
 
   sendEmail = (forgotten)=> {
     var uri = paths.generateRoute(paths.user.forgottenPasswordReset,{id: code});
     var url = process.env.SELFSERVICE_BASE + uri;
-    console.log();
     notify.sendEmail(template, user.email, { code: url })
-    .then(defer.resolve, defer.reject);
+    .then(()=>{
+      logger.info('FORGOTTEN PASSWORD EMAIL SENT TO ' + user.email);
+      defer.resolve();
+    }, (e)=> {
+      logger.info('PROBLEM SENDING FORGOTTEN PASSWORD EMAIL ',e);
+      defer.reject();
+    });
   };
   init();
   return defer.promise;
@@ -110,8 +118,11 @@ updatePassword = function(password){
   return defer.promise;
 },
 
-resolveUser = function(user, defer){
-  if (user === null) return defer.reject();
+resolveUser = function(user, defer, email){
+  if (user === null) {
+    logger.info('USER NOT FOUND ' + email);
+    return defer.reject();
+  }
   var val = user.dataValues;
   delete val.password;
   val.generateOTP = generateOTP;
@@ -125,8 +136,9 @@ resolveUser = function(user, defer){
 
 var find = function(email) {
   var defer = q.defer();
-  _find(email).then((user)=> resolveUser(user, defer),
-  defer.reject);
+  _find(email).then(
+    (user)=> resolveUser(user, defer,email),
+    (e)=> { logger.info(email + "user not found"); defer.reject(e);});
   return defer.promise;
 },
 

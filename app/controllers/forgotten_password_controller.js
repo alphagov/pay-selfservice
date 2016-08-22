@@ -12,10 +12,10 @@ e.emailGet = (req, res)=> {
 e.emailPost = (req, res)=> {
   var email = req.body.email,
 
-  redirect  = () => res.redirect(paths.user.passwordRequested),
+  redirect  = (e) => res.redirect(paths.user.passwordRequested),
 
-  foundUser = (user) => user.sendPasswordResetToken().then(redirect, redirect);
-  User.find(email).then(foundUser, redirect);
+  foundUser = (user) => { user.sendPasswordResetToken().then(redirect, redirect);}
+  User.find(email).then(foundUser, redirect );
 };
 
 e.passwordRequested = (req, res)=> {
