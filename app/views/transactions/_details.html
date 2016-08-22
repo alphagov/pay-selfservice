@@ -14,12 +14,12 @@
     </tr>
     <tr>
       <td>Refunded:</td>
-      <td>{{#refunded}}&#10004;{{/refunded}}{{^refunded}}&#10006;{{/refunded}}</td>
+      <td id="refunded">{{#refunded}}&#10004;{{/refunded}}{{^refunded}}&#10006;{{/refunded}}</td>
     </tr>
     {{#refunded}}
     <tr>
       <td>Refunded amount</td>
-      <td class="qa-refunded-amount">£{{refunded_amount}}</td>
+      <td id="refunded-amount" class="qa-refunded-amount">{{refunded_amount}}</td>
     </tr>
     {{/refunded}}
     <tr>

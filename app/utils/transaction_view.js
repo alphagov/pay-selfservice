@@ -105,17 +105,15 @@ module.exports = {
         toTime:filters.toTime
       });
 
-
     return connectorData;
   },
-  //  REMOVE REQUEST GOING THROUGH ONCE WE HAVE REFUNDS
-  buildPaymentView: function (chargeData, eventsData, req) {
+
+  buildPaymentView: function (chargeData, eventsData) {
     eventsData.events.forEach(function (event) {
       event.state_friendly = eventStates[event.state.status];
       if (event.state_friendly) {
         event.state_friendly = event.state_friendly.replace('AMOUNT', CURRENCY + (chargeData.amount / 100).toFixed(2));
       }
-
       event.updated_friendly = dates.utcToDisplay(event.updated);
     });
 
@@ -123,18 +121,13 @@ module.exports = {
 
     var amount = (chargeData.amount / 100).toFixed(2);
     chargeData.amount = CURRENCY + amount;
-    //  REMOVE SESSION ONCE WE HAVE REFUNDS GOING THROUGH
-    if (req.session[chargeData.charge_id] && req.session[chargeData.charge_id].refunded_amount) {
-      chargeData.refunded_amount = req.session[chargeData.charge_id].refunded_amount.toFixed(2)
-      chargeData.refunded = true;
 
-      chargeData.net_amount = (amount - chargeData.refunded_amount).toFixed(2);
-      chargeData.net_amount_display = CURRENCY + chargeData.net_amount;
-      chargeData.refundable = parseInt(chargeData.net_amount*100) !== 0;
-    } else {
-      chargeData.refundable = true;
-    }
-    // /END
+    chargeData.refundable = chargeData.refund_summary.status === 'available';
+    chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2);
+    chargeData.refunded_amount = CURRENCY + (chargeData.refund_summary.amount_submitted / 100).toFixed(2);
+    chargeData.refunded = chargeData.refund_summary.amount_submitted != 0;
+    chargeData.net_amount_display = CURRENCY + chargeData.net_amount;
+
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider);
     chargeData.updated =  dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated);
     chargeData['events'] = eventsData.events.reverse();

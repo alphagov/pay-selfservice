@@ -5,23 +5,23 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="container">
       <h2 class="heading-medium">Refund payment</h2>
+      <input id="full-amount" type="hidden" name="full-amount" value="{{ net_amount }}" >
 
       {{#refunded}}
       <label class="block-label" for="full">
         <input id="full" type="radio" name="refund-type" value="full" checked="checked">
         Remaining amount
-        <span class="form-hint">refund the remaining £{{ net_amount }}, (£{{refunded_amount}} has already been refunded) </span>
+        <span class="form-hint">refund the remaining £{{ net_amount }}, ({{refunded_amount}} has already been refunded) </span>
       </label>
       {{/refunded}}
 
       {{^refunded}}
       <label class="block-label" for="full">
-        <input id="full" type="radio" name="refund-type" value="full" checked="checked" id="full-refund">
+          <input id="full" type="radio" name="refund-type" value="full" checked="checked">
         Full refund
         <span class="form-hint">refund the full amount of {{ amount }}</span>
       </label>
       {{/refunded}}
-
 
       <label class="block-label" for="partial">
         <input id="partial" type="radio" name="refund-type" value="partial" id="partial-refund">
