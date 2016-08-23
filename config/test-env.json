@@ -12,5 +12,7 @@
   "NOTIFICATIONS_ENABLED": "false",
   "NOTIFY_RESET_PASSWORD_EMAIL_TEMPLATE_ID": "email-template-id",
   "NOTIFY_SERVICE_ID": "pay-notify-service-id",
-  "NOTIFY_SECRET": "pay-notify-secret-needs-to-be-32-chars-fsghdngfhmhfkrgsfs"
+  "NOTIFY_SECRET": "pay-notify-secret-needs-to-be-32-chars-fsghdngfhmhfkrgsfs",
+  "NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID": "template_id",
+  "SELFSERVICE_BASE": "https://selfservice.pymnt.localdomain"
 }

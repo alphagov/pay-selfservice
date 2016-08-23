@@ -6,6 +6,7 @@ var router            = require(__dirname + '/app/routes.js');
 var bodyParser        = require('body-parser');
 var cookieParser      = require('cookie-parser');
 var session           = require('express-session');
+var selfServiceSession= require(__dirname + '/app/utils/session.js').selfServiceSession;
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
@@ -17,8 +18,9 @@ var environment       = require(__dirname + '/app/services/environment.js');
 var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
-// make sure user db is initialised
-var user              = require('./app/models/user.js');
+var models            = require('./app/models/models.js');
+
+
 
 
 function initialiseGlobalMiddleware (app) {
@@ -119,6 +121,7 @@ function initialise() {
 
   initialiseTLS(app);
   initialiseProxy(app);
+  app.use(session(selfServiceSession()));
   initialiseAuth(app);
   initialiseGlobalMiddleware(app);
   initialiseAppVariables(app);

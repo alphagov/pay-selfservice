@@ -1,0 +1,34 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+Sign in to GOV.UK Pay
+{{/pageTitle}}
+{{$content}}
+<div class="column-half no-padding">
+  <form action="/otp-login" class="form" method="post" class="submit-two-fa">
+    <h1 class="form-title heading-large">
+      Check your phone
+    </h1>
+    <p>We've sent you a text message with a verification code</p>
+    <div class="form-group">
+      <label class="form-label" for="code">Text message code</label>
+      <input class="form-control form-control-5em" data-module="" id="sms_code" name="code" rows="6" type="text" value="">
+    </div>
+    <div class="form-group">
+      <input class="button" type="submit" value="Continue">
+    </div>
+  </form>
+  <p><a href="/otp-send-again">Not received a text message?</a></p>
+
+</div>
+
+{{/content}}
+{{/layout_logged_out}}
+
+
+
+
+
+
+
+

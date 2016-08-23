@@ -1,3 +1,4 @@
+var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request     = require('supertest');
 var portfinder  = require('portfinder');
 var nock        = require('nock');
