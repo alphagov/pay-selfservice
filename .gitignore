@@ -5,12 +5,9 @@
 .project
 .settings
 .start.pid
-config/dev-env.json
 public
 govuk_modules
 node_modules/*
-*/node_modules/*
-
 *.txt
 *.log
 

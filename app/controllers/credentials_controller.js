@@ -29,7 +29,7 @@ function showSuccessView(connectorData, viewMode, req, res) {
 
 
 module.exports.index = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.get_account_id(req);
   var viewMode = req.query.edit === undefined;
   var accountUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}";
 
@@ -69,7 +69,7 @@ module.exports.index = function (req, res) {
 
 module.exports.update = function (req, res) {
 
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.get_account_id(req);
   var connectorUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}/credentials";
 
   var requestPayload = {

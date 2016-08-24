@@ -6,7 +6,6 @@ var q = require('q'),
     process.env.NOTIFY_SECRET
   );
 
-
 module.exports = {
   /**
    * @param {String} templateId
