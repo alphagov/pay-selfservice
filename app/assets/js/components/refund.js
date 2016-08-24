@@ -10,6 +10,7 @@
       selects.on('change',toggleAmount);
       showButton.on('click',addLightBox);
       close.on('click',removeLightBox);
+      toggleAmount();
     },
 
     toggleAmount = function(){
