@@ -70,7 +70,7 @@ describe('The postlogin endpoint', function () {
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "/",
-    req = {session: { } },
+    req = {session: { save: (cb)=> cb()} },
     res = {
       redirect: function(redirect){
         if (redirect == url) passes = true;
