@@ -44,7 +44,9 @@ module.exports.logInGet = function (req, res) {
 };
 
 module.exports.postLogin = function (req, res) {
-  res.redirect('/');
+  req.session.save(function() {
+    res.redirect('/');
+  });
 };
 
 module.exports.logUserin = function() {
