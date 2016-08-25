@@ -13,6 +13,8 @@ var ACCOUNT_ID  = 182364;
 var login_controller     = require(__dirname + '/../../app/controllers/login_controller.js');
 var proxyquire  = require('proxyquire');
 var q           = require('q');
+var notp        = require('notp');
+
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
@@ -65,12 +67,11 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-
   it('should redirect to root if no url',function(done){
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "/",
-    req = {session: { } },
+    req = {session: { save: (cb)=> cb()} },
     res = {
       redirect: function(redirect){
         if (redirect == url) passes = true;
@@ -142,14 +143,10 @@ describe('The otplogin endpoint', function () {
     assert(passes);
     done();
   });
-
-
 });
 
 
 describe('The afterOtpLogin endpoint', function () {
-
-
   it('should redirect to root',function(done){
     var passes = false,
     url = "/",
@@ -163,6 +160,67 @@ describe('The afterOtpLogin endpoint', function () {
     done();
   });
 });
+
+
+describe('login post enpoint',function(){
+  it('should display an error if csrf token does not exist for the login post', function (done) {
+    request(app)
+    .post(paths.user.logIn)
+    .set('Accept', 'application/json')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send({})
+    .expect(200, { message: "There is a problem with the payments platform"})
+    .end(done);
+  });
+});
+
+describe('otp login post enpoint',function(){
+  it('should display an error if csrf token does not exist for the login post', function (done) {
+  var app2 = session.mockAccount(_app, {
+    secondFactor: "totp",
+    passport: {
+      user: {
+        gateway_account_id: 123,
+        username: "username123",
+        otp_key: "12345"
+      }
+    }
+  });
+
+    request(app2)
+    .post(paths.user.otpLogIn)
+    .set('Accept', 'application/json')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send({code: notp.totp.gen("12345")})
+    .expect(200, { message: "There is a problem with the payments platform"})
+    .end(done);
+  });
+});
+
+
+describe('otp send again post enpoint',function(){
+  it('should display an error if csrf token does not exist for the send again post', function (done) {
+  var app2 = session.mockAccount(_app, {
+    secondFactor: "totp",
+    passport: {
+      user: {
+        gateway_account_id: 123,
+        username: "username123",
+        otp_key: "12345"
+      }
+    }
+  });
+
+    request(app2)
+    .post(paths.user.otpSendAgain)
+    .set('Accept', 'application/json')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send({})
+    .expect(200, { message: "There is a problem with the payments platform"})
+    .end(done);
+  });
+});
+
 
 
 

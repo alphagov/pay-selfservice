@@ -25,9 +25,18 @@ var localStrategyAuth = function(username, password, done) {
 };
 
 var appendCSRF = function(req){
+  if (req.session.csrfSecret) return;
   req.session.csrfSecret = csrf().secretSync();
-  logger.info('Created csrfSecret');
+  logger.info('Created logged in csrfSecret');
 },
+
+ appendLoggedOutCSRF = function(req, res, next){
+  if (req.session.csrfSecret) return next();
+  req.session.csrfSecret = csrf().secretSync();
+  req.session.save(next);
+  logger.info('Created logged out csrfSecret');
+},
+
 
 redirectToLogin = function(req,res){
   req.session.last_url = req.originalUrl;
@@ -42,6 +51,7 @@ function enforceUser(req, res, next){
 
   if (!hasUser) return redirectToLogin(req,res);
   if (!hasAccount) return auth.no_access(req, res, next);
+  if (!req.session.csrfSecret) appendCSRF(req);
   next();
 }
 
@@ -49,13 +59,13 @@ function enforceUser(req, res, next){
 var auth = {
 
   enforceUser: enforceUser,
+  appendLoggedOutCSRF: appendLoggedOutCSRF,
   enforce: function (req, res, next) {
     req.session.reload(function (err) {
       logIfError('Enforce reload of LogIn', err);
       var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
       enforceUser(req, res, function(){
-        if (!req.session.csrfSecret) appendCSRF(req);
         if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
         next();
       });
