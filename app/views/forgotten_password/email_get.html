@@ -6,6 +6,7 @@ Forgotten Password
 {{$content}}
 <div class="column-half no-padding">
   <form action="/reset-password" method="post" class="form submit-forgotten-email">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title heading-large">
       Forgot your password?
     </h1>
