@@ -6,6 +6,7 @@ Sign in to GOV.UK Pay
 {{$content}}
 <div class="column-half no-padding">
   <form action="/otp-login" class="form" method="post" class="submit-two-fa">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title heading-large">
       Check your phone
     </h1>

@@ -19,7 +19,7 @@ var error = function(req,res,err) {
 module.exports.loggedIn = function (req, res) {
   req.session.reload(function (err) {
     logIfError('LoggedIn reload session', err);
-    res.render('logged_in', {
+    res.render('login/logged_in', {
       name: req.user.username
     });
   });
@@ -36,11 +36,11 @@ module.exports.logOut = function (req, res) {
 };
 
 module.exports.noAccess = function (req, res) {
-  res.render('noaccess');
+  res.render('login/noaccess');
 };
 
 module.exports.logInGet = function (req, res) {
-  res.render('login');
+  res.render('login/login');
 };
 
 module.exports.postLogin = function (req, res) {

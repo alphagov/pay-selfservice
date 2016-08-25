@@ -97,6 +97,16 @@ describe('forgotten_password_controller', function () {
       assert.equal(name,"/reset-password-requested");
       }});
     });
+
+    it('should display an error if csrf token does not exist for the forgotten password', function (done) {
+      request(app)
+      .post(paths.user.forgottenPassword)
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({})
+      .expect(200, { message: "There is a problem with the payments platform"})
+      .end(done);
+    });
   });
 
   describe('newPasswordGet', function () {
@@ -199,15 +209,15 @@ describe('forgotten_password_controller', function () {
         assert.equal(path,"/login");
       }});
     });
+
+   it('should display an error if csrf token does not exist for the reset password', function (done) {
+      request(app)
+      .post(paths.user.forgottenPasswordReset)
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({})
+      .expect(200, { message: "There is a problem with the payments platform"})
+      .end(done);
+    });
   });
 });
-
-
-
-
-
-
-
-
-
-

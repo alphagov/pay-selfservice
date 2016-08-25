@@ -7,6 +7,7 @@ Sign in to GOV.UK Pay
 <div class="column-two-thirds no-padding">
   <h1 class="heading-large">Sign in</h1>
   <form action="/login" method="post" name="userLoginForm" class="push-bottom">
+  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
       <label class="form-label" for="email_address">
           <label for="email_address">Email address</label>
