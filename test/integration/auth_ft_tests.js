@@ -1,30 +1,26 @@
-//// THESE ARE HERE TO SET GLOBAL ENV VARIABLES
-process.env.AUTH0_URL = 'my.test.auth0';
-process.env.AUTH0_CLIENT_ID = 'client12345';
-process.env.AUTH0_CLIENT_SECRET = 'clientsupersecret';
-process.env.DISABLE_INTERNAL_HTTPS = "true"; // to support other unit tests
-process.env.SECURE_COOKIE_OFF = "true";
-process.env.COOKIE_MAX_AGE = "10800000";
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-process.env.SESSION_IN_MEMORY = "true";
-
-var realApp         = require(__dirname + '/../../server.js').getApp;
+var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
+var realApp     = require(__dirname + '/../../server.js').getApp;
 var request     = require('supertest');
 var auth        = require(__dirname + '/../../app/services/auth_service.js');
+var login       = require(__dirname + '/../../app/controllers/login_controller.js');
 var session     = require('express-session');
 var express     = require('express');
 var mockSession = require(__dirname + '/../test_helpers/mock_session.js').mockSession;
 var paths       = require(__dirname + '/../../app/paths.js');
+var sequelize   = require(__dirname + '/../../app/utils/sequelize_config.js');
+var path = require('path');
 
 var valid_session = {
   passport: {
+    user:  { email: "foo@bar.com", gateway_account_id: 123 }
+  },
+  secondFactor: 'totp'
+};
+
+var noOTPSession = {
+  passport: {
     user: {
-      name: 'Michael',
-      _json: {
-        app_metadata: {
-          account_id: 123
-        }
-      }
+      gateway_account_id: 123
     }
   }
 };
@@ -36,6 +32,9 @@ var session_no_account_id = {
     }
   }
 };
+
+
+
 
 describe('An endpoint not protected', function () {
   var app = express();
@@ -64,6 +63,8 @@ describe('An endpoint not protected', function () {
 });
 
 describe('An endpoint protected by auth.enforce', function () {
+
+
   var app = express();
   auth.initialise(app);
   var withNoSession = mockSession(app);
@@ -81,12 +82,22 @@ describe('An endpoint protected by auth.enforce', function () {
   });
 
   it('allows access if authenticated', function (done) {
+
     request(mockSession(app, valid_session))
       .get('/protected')
       .expect(200)
       .expect('Hello, World!')
       .end(done);
   });
+
+  it('redirects if not second factor loggedin', function (done) {
+    request(mockSession(app, noOTPSession))
+      .get('/protected')
+      .expect(302)
+      .expect('Location', paths.user.otpLogIn)
+      .end(done);
+  });
+
 
   it('redirects to noaccess if no account_id', function (done) {
     request(mockSession(app, session_no_account_id))
@@ -113,66 +124,3 @@ describe('An endpoint protected by auth.enforce', function () {
   });
 });
 
-describe('An endpoint that enforces login', function (done) {
-
-  var app = express();
-  auth.initialise(app);
-  var withNoSession = mockSession(app);
-
-  app.get(paths.user.logIn, auth.login);
-
-  it('redirects to auth0', function (done) {
-    request(withNoSession)
-      .get(paths.user.logIn)
-      .expect(302)
-      .expect('Location', /my.test.auth0/)
-      .end(done);
-  });
-
-  it('redirects to auth0 if authenticated', function (done) {
-    request(mockSession(app, valid_session))
-      .get(paths.user.logIn)
-      .expect(302)
-      .expect('Location', /my.test.auth0/)
-      .end(done);
-  });
-
-  it('includes the callback url in the request', function (done) {
-    request(withNoSession)
-      .get('/login')
-      .expect(302)
-      .expect('Location', /redirect_uri=.*callback/)
-      .end(done);
-  });
-
-});
-
-describe('An endpoint that handles callbacks', function (done) {
-
-  var session_with_last_url = {
-    last_url: '/my-protected-page'
-  };
-
-  it('redirects to the last_url', function (done) {
-    var Strategy = require('passport').Strategy, util = require('util');
-
-    function MockStrategy() {
-      this.name = 'auth0';
-    }
-
-    util.inherits(MockStrategy, Strategy);
-    MockStrategy.prototype.authenticate = function (req) {
-      this.success({
-        user: {name: 'Michael'}
-      });
-    };
-
-    auth.initialise(realApp, new MockStrategy());
-
-    request(mockSession(realApp, session_with_last_url))
-      .get(paths.user.callback)
-      .expect(302)
-      .expect('Location', '/my-protected-page')
-      .end(done);
-  });
-});
