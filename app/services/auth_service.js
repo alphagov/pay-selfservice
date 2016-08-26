@@ -47,10 +47,12 @@ redirectToLogin = function(req,res){
 
 function enforceUser(req, res, next){
   var hasUser     = _.get(req,"user"),
-  hasAccount      = auth.get_gateway_account_id(req);
+  hasAccount      = auth.get_gateway_account_id(req),
+  disabled        = _.get(hasUser,"disabled");
 
   if (!hasUser) return redirectToLogin(req,res);
   if (!hasAccount) return auth.no_access(req, res, next);
+  if (disabled === true) return auth.no_access(req, res, next);
   if (!req.session.csrfSecret) appendCSRF(req);
   next();
 }
