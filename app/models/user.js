@@ -57,6 +57,11 @@ var User = sequelizeConnection.define('user', {
     validate: {
       notEmpty: true
     },
+  },
+  disabled: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 });
 User.hasMany(forgottenPassword, {as: 'forgotten'});
@@ -75,6 +80,20 @@ var sendOTP = function(){
 
 generateOTP = function(){
    return notp.totp.gen(this.otp_key);
+},
+
+toggleDisabled = function(toggle) {
+  var defer = q.defer(),
+  log = ()=> logger.info(this.email + " disabled status is now " + toggle)
+
+  User.update(
+    { disabled: toggle },
+    { where: { id : this.id } }
+  )
+  .then(
+    ()=>{ log(); defer.resolve();},
+    ()=>{ log(); defer.reject();});
+  return defer.promise;
 },
 
 
@@ -129,6 +148,7 @@ resolveUser = function(user, defer, email){
   val.sendOTP = sendOTP;
   val.sendPasswordResetToken = sendPasswordResetToken;
   val.updatePassword = updatePassword;
+  val.toggleDisabled= toggleDisabled;
   defer.resolve(val);
 };
 
@@ -230,7 +250,7 @@ var _find = function(email, extraFields = [], where) {
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
-    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
+    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number','disabled'].concat(extraFields)
   });
 },
 hashPassword = function(password){
