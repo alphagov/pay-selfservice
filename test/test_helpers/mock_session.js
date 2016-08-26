@@ -1,5 +1,6 @@
 'use strict';
 var express = require('express');
+var _       = require('lodash');
 
 module.exports = function () {
 
@@ -26,24 +27,33 @@ module.exports = function () {
   };
 
   var mockValidAccount = function (app, accountId) {
-    var validSession = {
+    var validSession = mockAccountObj(accountId);
+    return mockSession(app, validSession);
+  },
+  mockAccount = function(app, account) {
+    return mockSession(app, account);
+  },
+  mockAccountObj = function(accountId){
+
+    return _.cloneDeep({
       csrfSecret: "123",
       12345: {refunded_amount: 5 },
       passport: {
         user: {
-          _json: {
-            app_metadata: {
-              account_id: accountId
-            }
-          }
+          gateway_account_id: accountId,
+          username: "username123",
+          otp_key: "foo"
         }
-      }
-    };
-    return mockSession(app, validSession);
+      },
+      secondFactor: 'totp'
+    });
+
   };
 
   return {
     mockSession: mockSession,
-    mockValidAccount: mockValidAccount
-  }
+    mockValidAccount: mockValidAccount,
+    mockAccount: mockAccount,
+    mockAccountObj: mockAccountObj
+  };
 }();

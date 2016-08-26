@@ -5,9 +5,12 @@
 .project
 .settings
 .start.pid
+config/dev-env.json
 public
 govuk_modules
 node_modules/*
+*/node_modules/*
+
 *.txt
 *.log
 
@@ -16,3 +19,5 @@ node_modules/*
 *.iml
 *.ipr
 *.iws
+
+create_user.js

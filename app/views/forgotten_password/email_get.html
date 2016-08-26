@@ -1,0 +1,40 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+Forgotten Password
+{{/pageTitle}}
+{{$content}}
+<div class="column-half no-padding">
+  <form action="/reset-password" method="post" class="form submit-forgotten-email">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    <h1 class="form-title heading-large">
+      Forgot your password?
+    </h1>
+    <p>We’ll send you an email to create a new password.</p>
+    <div class="form-group">
+      <label class="form-label" for="code">Email address</label>
+      <input  class="form-control form-control-5em"
+              data-module=""
+              name="email"
+              rows="6"
+              type="text"
+              value=""
+      />
+    </div>
+    <div class="form-group">
+      <input class="button" type="submit" value="Send email" />
+    </div>
+  </form>
+
+</div>
+
+{{/content}}
+{{/layout_logged_out}}
+
+
+
+
+
+
+
+
