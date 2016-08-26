@@ -67,9 +67,18 @@ describe('auth service', function () {
       done();
     });
 
-    it("should call next if has invalid user", function (done) {
+    it("should not call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
       delete invalid.user.gateway_account_id;
+      auth.enforce(invalid, response, next);
+      expect(next.called).to.be.false;
+      assert(redirect.calledWith(paths.user.noAccess));
+      done();
+    });
+
+    it("should not call next if has a disabled user", function (done) {
+      var invalid = _.cloneDeep(validRequest);
+      invalid.user.disabled = true;
       auth.enforce(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
