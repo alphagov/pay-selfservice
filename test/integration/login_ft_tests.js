@@ -1,4 +1,3 @@
-var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request     = require('supertest');
 var app         = require(__dirname + '/../../server.js').getApp;
 var should      = require('chai').should();

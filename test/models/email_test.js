@@ -146,6 +146,7 @@ describe('email notification', function() {
       describe('when connector returns incorrect response code', function () {
         before(function() {
           nock.cleanAll();
+          console.log('test ',process.env.CONNECTOR_URL+"/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": toggle})
           nock(process.env.CONNECTOR_URL)
             .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": toggle})
             .reply(404, '');
@@ -162,6 +163,7 @@ describe('email notification', function() {
       describe('when connector returns correctly', function () {
         before(function() {
           nock.cleanAll();
+          console.log(toggle);
           nock(process.env.CONNECTOR_URL)
             .patch("/v1/api/accounts/123/email-notification",{"op":"replace", "path":"enabled", "value": toggle})
             .reply(200, {});

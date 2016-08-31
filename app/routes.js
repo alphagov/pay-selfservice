@@ -10,8 +10,6 @@ var paymentTypesSelectType = require('./controllers/payment_types_select_type_co
 var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
 var emailNotifications = require('./controllers/email_notifications_controller.js');
-var forgotPassword = require('./controllers/forgotten_password_controller.js');
-
 var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
 var querystring = require('querystring');
@@ -19,8 +17,6 @@ var _ = require('lodash');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
 var retrieveAccount = require('./middleware/retrieve_account.js');
-var passport  = require('passport');
-
 
 module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
@@ -48,25 +44,11 @@ module.exports.bind = function (app) {
   // LOGIN
 
   var user = paths.user;
-  app.get(user.logIn, login.logInGet);
-  app.post(user.logIn,login.logUserin(), login.postLogin);
+  app.get(user.logIn, auth.login, login.logIn);
+  app.get(user.logOut, login.logOut);
+  app.get(user.callback, auth.callback, login.callback);
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
-  app.get(user.logOut, login.logOut);
-  app.get(user.otpLogIn,auth.enforceUser, login.otpLogIn);
-  app.get(user.otpSendAgain, auth.enforceUser, login.sendAgainGet);
-  app.post(user.otpSendAgain, auth.enforceUser, login.sendAgainPost);
-  app.post(user.otpLogIn,login.logUserinOTP(), login.afterOTPLogin);
-
-
-  app.get(user.forgottenPassword, forgotPassword.emailGet);
-  app.post(user.forgottenPassword, forgotPassword.emailPost);
-  app.get(user.passwordRequested, forgotPassword.passwordRequested);
-  app.get(user.forgottenPasswordReset, forgotPassword.newPasswordGet);
-  app.post(user.forgottenPasswordReset, forgotPassword.newPasswordPost);
-
-
-
 
   // DEV TOKENS
 
@@ -101,8 +83,6 @@ module.exports.bind = function (app) {
   app.post(en.off, auth.enforce, csrf, retrieveAccount, emailNotifications.off);
   app.get(en.offConfirm, auth.enforce, csrf, retrieveAccount, emailNotifications.offConfirm);
   app.post(en.on, auth.enforce, csrf, retrieveAccount, emailNotifications.on);
-
-
 
 
   // HEALTHCHECK
