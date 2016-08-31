@@ -13,7 +13,7 @@ var TOKEN_GENERATE_VIEW = 'token_generate';
 
 module.exports.index = function (req, res) {
 
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.get_account_id(req);
 
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
@@ -57,14 +57,14 @@ module.exports.index = function (req, res) {
 };
 
 module.exports.show = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.get_account_id(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
   });
 };
 
 module.exports.create = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.get_account_id(req);
 
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var description = req.body.description;
@@ -143,7 +143,7 @@ module.exports.update = function (req, res) {
 };
 
 module.exports.destroy = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.get_account_id(req);
   var publicAuthUrl = process.env.PUBLIC_AUTH_URL + '/{accountId}';
 
   var requestPayload = {

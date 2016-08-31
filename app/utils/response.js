@@ -27,8 +27,7 @@ module.exports = {
   renderErrorView: function (req, res, msg) {
     if (!msg) msg = ERROR_MESSAGE;
     logger.error('An error has occurred. Rendering error view -', {errorMessage: msg});
-    var accept = (req && req.headers) ? req.headers.accept : "";
-    response(accept, res, 'error', {
+    response(req.headers.accept, res, 'error', {
       'message': msg
     });
   }

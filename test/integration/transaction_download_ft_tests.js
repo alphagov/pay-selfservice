@@ -1,16 +1,16 @@
- process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-var dbMock          = require(__dirname + '/../test_helpers/db_mock.js');
+process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
+
 var request         = require('supertest');
 var portfinder      = require('portfinder');
 var nock            = require('nock');
 var _               = require('lodash');
-var _app            = require(__dirname + '/../../server.js').getApp;
+var _app             = require(__dirname + '/../../server.js').getApp;
 var querystring     = require('querystring');
 var paths           = require(__dirname + '/../../app/paths.js');
 var winston         = require('winston');
-var session         = require(__dirname + '/../test_helpers/mock_session.js');
-var assert          = require('chai').assert;
-var expect          = require('chai').expect;
+var session     = require(__dirname + '/../test_helpers/mock_session.js');
+var assert      = require('chai').assert;
+var expect      = require('chai').expect;
 
 var gatewayAccountId = 651342;
 var app = session.mockValidAccount(_app, gatewayAccountId);

@@ -3,33 +3,6 @@ GOV.UK Pay Self Service portal (Node.js)
 
 ## Key environment variables
 
-if you wish to override any variables, please do the following, this could be useful for testing live notify as an example
-
-
-setup
-```
-cd $WORKSPACE/pay-selfservice/config
-cp dev-env.json.example dev-env.json
-```
-
-
-to edit
-```
-cd ~/workspace/pay-selfservice/config
-vi dev-env.json
-
-```
-
-to run
-```
-LOCAL_ENV=true msl run
-
-```
-
-
-
-
-
 | Variable                    | required | default value | Description                               |
 | --------------------------- |:--------:|:-------------:| ----------------------------------------- |
 | PORT                        | X | 9200 | The port number for the express server to be bound at runtime |

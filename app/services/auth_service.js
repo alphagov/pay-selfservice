@@ -1,12 +1,11 @@
 "use strict";
 var logger = require('winston');
+var session = require('express-session');
+var Auth0Strategy = require('passport-auth0');
 var passport = require('passport');
-var localStrategy = require('passport-local').Strategy;
-var TotpStrategy = require('passport-totp').Strategy;
 var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var User = require(__dirname + '/../models/user.js');
-var _ = require('lodash');
+var selfServiceSession = require(__dirname + '/../utils/session.js').selfServiceSession;
 
 
 var logIfError = function (scenario, err) {
@@ -15,80 +14,71 @@ var logIfError = function (scenario, err) {
   }
 };
 
-var localStrategyAuth = function(username, password, done) {
-  User.authenticate(username,password)
-  .then(function(user){
-    done(null, user);
-  },function(){
-    done(null, false);
-  });
-};
-
-var appendCSRF = function(req){
-  req.session.csrfSecret = csrf().secretSync();
-  logger.info('Created csrfSecret');
-},
-
-redirectToLogin = function(req,res){
-  req.session.last_url = req.originalUrl;
-  req.session.save(function () {
-    res.redirect(paths.user.logIn);
-  });
-};
-
-function enforceUser(req, res, next){
-  var hasUser     = _.get(req,"user"),
-  hasAccount      = auth.get_gateway_account_id(req);
-
-  if (!hasUser) return redirectToLogin(req,res);
-  if (!hasAccount) return auth.no_access(req, res, next);
-  next();
-}
-
+var AUTH_STRATEGY_NAME = 'auth0';
+var AUTH_STRATEGY = new Auth0Strategy({
+    domain: process.env.AUTH0_URL,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    callbackURL: paths.user.callback
+  },
+  function (accessToken, refreshToken, extraParams, user, done) {
+    // accessToken is the token to call Auth0 API (not needed in the most cases)
+    // extraParams.id_token has the JSON Web Token
+    // profile has all the information from the user
+    logger.info('Logged in user -', {'displayname': user.displayName});
+    return done(null, user);
+  }
+);
 
 var auth = {
-
-  enforceUser: enforceUser,
   enforce: function (req, res, next) {
+
     req.session.reload(function (err) {
       logIfError('Enforce reload of LogIn', err);
-      var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
-      enforceUser(req, res, function(){
-        if (!req.session.csrfSecret) appendCSRF(req);
-        if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
-        next();
-      });
+      if (req.session.passport && req.session.passport.user) {
+        if (auth.get_account_id(req)) {
+          if (!req.session.csrfSecret) {
+            req.session.csrfSecret = csrf().secretSync();
+            logger.info('Created csrfSecret')
+          }
+          next();
+        }
+        else {
+          auth.no_access(req, res, next);
+        }
+      } else {
+        req.session.last_url = req.originalUrl;
+        req.session.save(function () {
+          res.redirect(paths.user.logIn);
+        });
+      }
     });
   },
+
+  login: passport.authenticate(AUTH_STRATEGY_NAME, {session: true}),
+
+  callback: passport.authenticate(AUTH_STRATEGY_NAME, {failureRedirect: paths.user.logIn}),
+
   initialise: function (app, override_strategy) {
+
+    var strategy = override_strategy || AUTH_STRATEGY;
+
+    passport.use(strategy);
+
+    passport.serializeUser(function (user, done) {
+      done(null, user);
+    });
+
+    passport.deserializeUser(function (user, done) {
+      done(null, user);
+    });
 
     app.use(passport.initialize());
     app.use(passport.session());
-    passport.use('local',new localStrategy({usernameField: 'email'},localStrategyAuth));
-    passport.use(new TotpStrategy(
-      function(user, done) {
-        return done(null, user.otp_key, 30);
-      }
-    ));
 
-    passport.serializeUser(this.serializeUser);
-
-    passport.deserializeUser(this.deserializeUser);
-
+    app.use(session(selfServiceSession()));
   },
-
-  deserializeUser: function (email, done) {
-    User.find(email).then(function(user){
-      done(null, user);
-    });
-  },
-
-  serializeUser: function (user, done) {
-    done(null, user.email);
-  },
-
-  localStrategyAuth: localStrategyAuth,
 
   no_access: function (req, res, next) {
     if (req.url != paths.user.noAccess) {
@@ -99,10 +89,9 @@ var auth = {
     }
   },
 
-  get_gateway_account_id: function (req) {
-    var id = _.get(req,"user.gateway_account_id");
-    if (!id) return null;
-    return parseInt(id);
+  get_account_id: function (req) {
+    var user = req.session.passport.user;
+    return user._json && user._json.app_metadata && user._json.app_metadata.account_id ? parseInt(user._json.app_metadata.account_id) : null;
   }
 };
 
