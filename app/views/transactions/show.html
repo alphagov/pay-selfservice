@@ -10,7 +10,7 @@ GOV.UK Pay - Transaction Details
 {{$content}}
 <h1 class="page-title pull-bottom">Transactions</h1>
 <div class="actions">
-  <a href="{{routes.transactions.index}}" class="arrowed"> &#9664; Back to transactions list </a>
+  <a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="arrowed"> &#9664; Back to transactions list </a>
   {{#refundable}}
   <a href="#show-refund" class="button show-refund-button delete"> Refund Payment </a>
   {{/refundable}}

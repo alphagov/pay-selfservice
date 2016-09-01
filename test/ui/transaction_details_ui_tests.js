@@ -9,6 +9,7 @@ describe('The transaction details view', function () {
     var templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
+      'indexFilters': 'reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=',
       'amount': '£10.00',
       'gateway_account_id': '1',
       'refundable': false,
@@ -60,6 +61,7 @@ describe('The transaction details view', function () {
     var $ = cheerio.load(body);
     body.should.not.containSelector('#show-refund');
     body.should.not.containSelector('#refunded-amount');
+    $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=');
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;');
     $('#email').html().should.equal('alice.111@mail.fake');
     $('#amount').text().should.equal(templateData.amount);

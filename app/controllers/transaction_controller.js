@@ -10,12 +10,14 @@ var router = require('../routes.js');
 var Transaction = require('../models/transaction.js');
 var Charge = require('../models/charge.js');
 var getFilters = require('../utils/filters.js').getFilters;
+var url = require('url');
 
 module.exports = {
 
   index: function (req, res) {
     var accountId = auth.get_account_id(req);
     var filters = getFilters(req);
+    req.session.filters= url.parse(req.url).query;
     var init = function () {
         if (!filters.valid) return error("Invalid search");
         Transaction
@@ -79,6 +81,7 @@ module.exports = {
       },
 
       render = function (data) {
+        data.indexFilters = req.session.filters;
         response(req.headers.accept, res, 'transactions/show', data);
       },
 
