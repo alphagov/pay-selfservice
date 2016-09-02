@@ -1,0 +1,31 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+Sign in to GOV.UK Pay
+{{/pageTitle}}
+{{$content}}
+<div class="column-two-thirds no-padding">
+  <h1 class="heading-large">Sign in</h1>
+  <form action="/login" method="post" name="userLoginForm" class="push-bottom">
+    <div class="form-group">
+      <label class="form-label" for="email_address">
+          <label for="email_address">Email address</label>
+      </label>
+      <input class="form-control form-control-2-3 " data-module="" id="email_address" name="email" rows="8" type="text" value="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="password">
+          <label for="password">Password</label>
+      </label>
+      <input class="form-control form-control-2-3 " data-module="" id="password" name="password" rows="8" type="password" value="">
+    </div>
+    <div>
+    <input type="submit" class="button" value="Continue">
+    </div>
+  </form>
+  <a href="/reset-password" class="reset-password clear"> reset your password </a>
+</div>
+
+
+{{/content}}
+{{/layout_logged_out}}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}</title>
+    <script>
+      (function(){if(navigator.userAgent.match(/IEMobile\/10\.0/)){var d=document,c="appendChild",a=d.createElement("style");a[c](d.createTextNode("@-ms-viewport{width:auto!important}"));d.getElementsByTagName("head")[0][c](a);}})();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]><script src="/public/vendor/html5shiv.min.js"></script><![endif]-->
+
+    {{$head}}{{/head}}
+  </head>
+
+  <body class="{{$bodyClasses}}{{/bodyClasses}}">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <div id="skiplink-container">
+      <div>
+        <a href="#content" class="skiplink">Skip to main content</a>
+      </div>
+    </div>
+
+    <header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
+      <div class="header-wrapper">
+        <div class="header-logo">
+          <a href="{{$homepageUrl}}/{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
+            <img src="/public/images/crown.png" width="35" alt=""> {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
+          </a>
+        </div>
+      </div>
+    </header>
+
+    {{$afterHeader}}{{/afterHeader}}
+
+    <main id="content" role="main">
+      <div class="main-content">
+        <div class="inner">
+          {{$content}}{{/content}}
+        </div>
+      </div>
+    </main>
+    {{$bodyEnd}}{{/bodyEnd}}
+  </body>
+</html>
