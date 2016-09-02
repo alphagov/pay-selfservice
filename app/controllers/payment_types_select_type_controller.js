@@ -13,7 +13,7 @@ var {
 module.exports.selectType = function (req, res) {
 
   var init = function () {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
 
     connectorClient()
       .withGetAccountAcceptedCards(accountId, onSuccessGetAccountAcceptedCards)

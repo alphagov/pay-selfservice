@@ -9,7 +9,7 @@ _         = require('lodash');
 
 
 module.exports = function (req, res, next) {
-  var accountId = auth.get_account_id(req);
+  var accountId = auth.get_gateway_account_id(req);
   var init = function () {
     client.withGetAccount(accountId, function(data){
       req.account = data;
