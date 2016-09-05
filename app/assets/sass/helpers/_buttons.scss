@@ -51,3 +51,11 @@
 .button.delete {
   background-color: $red;
 }
+
+.button.delete.disabled:hover,
+.button.delete[disabled="disabled"]:hover,
+.button.delete[disabled]:hover {
+  background-color: $red-50;
+
+}
+

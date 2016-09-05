@@ -4,13 +4,15 @@
     partial     =  selects.filter('[value=partial]'),
     close       = $('#show-refund .close'),
     showButton  = $('.show-refund-button'),
-    lightbox    = $('#show-refund');
+    lightbox    = $('#show-refund'),
+    submit       = lightbox.find('input[type=submit]');
 
     var init = function(){
       selects.on('change',toggleAmount);
       showButton.on('click',addLightBox);
       close.on('click',removeLightBox);
       toggleAmount();
+      submit.on('click',disableSubmit);
     },
 
     toggleAmount = function(){
@@ -24,6 +26,10 @@
     addLightBox = function(e){
       e.preventDefault();
       lightbox.addClass('shown');
+    },
+
+    disableSubmit = function(e){
+      setTimeout(()=> {$(this).attr('disabled', 'disabled');},50);
     };
 
     init();
