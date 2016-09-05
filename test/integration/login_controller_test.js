@@ -133,7 +133,7 @@ describe('The otplogin endpoint', function () {
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "http://foo",
-    req = {session: { last_url: url } },
+    req = {session: { last_url: url, save: (cb)=> cb() } },
     res = {
       redirect: function(redirect){
         if (redirect == url) passes = true;
@@ -153,7 +153,7 @@ describe('The afterOtpLogin endpoint', function () {
   it('should redirect to root',function(done){
     var passes = false,
     url = "/",
-    req = {session: { } },
+    req = {session: { save: (cb)=> cb() }, },
     res = {
       redirect: function(redirect){
         if (redirect == url && req.session.secondFactor == 'totp') passes = true;
