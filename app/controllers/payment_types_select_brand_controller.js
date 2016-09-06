@@ -34,7 +34,7 @@ module.exports.showBrands = function (req, res) {
       response(req.headers.accept, res, "payment_types_select_brand", model);
     };
 
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
 
     connectorClient()
       .withGetAccountAcceptedCards(accountId, onSuccessGetAccountAcceptedCards)
@@ -84,7 +84,7 @@ module.exports.updateBrands = function (req, res) {
       card_types: acceptedCardTypeIds
     };
 
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
 
     connectorClient()
       .withPostAccountAcceptedCards(accountId, payload, onSuccessPostAccountAcceptedCards)

@@ -15,7 +15,7 @@ var url = require('url');
 module.exports = {
 
   index: function (req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var filters = getFilters(req);
     req.session.filters= url.parse(req.url).query;
     var init = function () {
@@ -39,7 +39,7 @@ module.exports = {
   },
 
   download: function (req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var filters = req.query;
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
@@ -71,7 +71,7 @@ module.exports = {
   },
 
   show: function (req, res) {
-    var accountId = auth.get_account_id(req);
+    var accountId = auth.get_gateway_account_id(req);
     var chargeId = req.params.chargeId;
     var defaultMsg = 'Error processing transaction view';
     var notFound = 'Charge not found';
@@ -90,13 +90,13 @@ module.exports = {
         renderErrorView(req, res, msg);
       };
 
+
     init();
   },
 
-  refund: function (req, res) {
-
-    var accountId = auth.get_account_id(req);
-    var chargeId = req.params.chargeId;
+  refund: function(req, res) {
+    var accountId = auth.get_gateway_account_id(req);
+    var chargeId  = req.params.chargeId;
     var show = router.generateRoute(router.paths.transactions.show, {
       chargeId: chargeId
     });
@@ -113,7 +113,6 @@ module.exports = {
       .then(function () {
         res.redirect(show);
       }, function (err) {
-        console.log('>>>>>>>>>> err', err);
         var msg = errReasonMessages[err] ? errReasonMessages[err] : errReasonMessages.REFUND_FAILED;
         renderErrorView(req, res, msg);
       });
