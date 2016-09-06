@@ -3,7 +3,11 @@
 {{$providerContent}}
 
 {{^editMode}}
+
 <dl id="credentials">
+    <dt id="notification-endpoint-key" class="font-xsmall"><p>Notifications Endpoint</p></dt>
+    <dd id="notification-endpoint-value"><b>{{notifications_endpoint}}</b></dd>
+
     <dt id="merchant-id-key" class="font-xsmall"><p>Merchant ID</p></dt>
     <dd id="merchant-id-value"><b>{{credentials.merchant_id}}</b></dd>
 
