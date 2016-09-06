@@ -4,7 +4,7 @@ var logger    = require('winston');
 var json2csv  = require('json2csv');
 
 module.exports = function (data) {
-  logger.info('Converting transactions list from json to csv');
+  logger.debug('Converting transactions list from json to csv');
   var defer = q.defer();
   json2csv(
     {

@@ -18,7 +18,7 @@ function showSuccessView(connectorData, viewMode, req, res) {
 
   if (!viewMode) responsePayload.editMode = 'true';
 
-  logger.info('Showing provider credentials view -', {
+  logger.debug('Showing provider credentials view -', {
     view: 'credentials',
     viewMode: viewMode,
     provider: paymentProvider
@@ -33,7 +33,7 @@ module.exports.index = function (req, res) {
   var viewMode = req.query.edit === undefined;
   var accountUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}";
 
-  logger.info('Calling connector to get account information -', {
+  logger.debug('Calling connector to get account information -', {
     service:'connector',
     method: 'GET',
     url: accountUrl
@@ -86,7 +86,7 @@ module.exports.update = function (req, res) {
     requestPayload.data.credentials.merchant_id = req.body.merchantId;
   }
 
-  logger.info('Calling connector to update provider credentials -', {
+  logger.debug('Calling connector to update provider credentials -', {
     service:'connector',
     method: 'PATCH',
     url: '/frontend/accounts/{id}/credentials'

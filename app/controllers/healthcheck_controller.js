@@ -10,7 +10,7 @@ module.exports.healthcheck = function (req, res) {
   sequelizeConfig.sequelize
     .authenticate()
     .then(function (err) {
-      logger.info('Connection has been established successfully');
+      logger.debug('Connection has been established successfully');
       
       // ensure all migrations complete before returning good healthchecks
       if (!migrated) {

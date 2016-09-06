@@ -18,7 +18,7 @@ module.exports.index = function (req, res) {
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
 
-    logger.info('Calling publicAuth to get tokens -', {
+    logger.debug('Calling publicAuth to get tokens -', {
       service: 'publicAuth',
       method: 'GET',
       url: publicAuthUrl + '/{accountId}'
@@ -39,7 +39,7 @@ module.exports.index = function (req, res) {
         'revoked_tokens': revokedTokens
       };
 
-      logger.info('Showing tokens view -', {
+      logger.debug('Showing tokens view -', {
         view: 'token'
       });
       response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
@@ -79,7 +79,7 @@ module.exports.create = function (req, res) {
 
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
 
-    logger.info('Calling publicAuth to create a dev token -', {
+    logger.debug('Calling publicAuth to create a dev token -', {
       service: 'publicAuth',
       method: 'POST',
       url: publicAuthUrl
@@ -158,10 +158,10 @@ module.exports.destroy = function (req, res) {
     }
   };
 
-  logger.info('Calling public auth -', {
-    service: 'publicAuth',
-    method: 'DELETE',
-    url: publicAuthUrl
+  logger.debug('Calling public auth -', {
+    service:'publicAuth',
+    method:'DELETE',
+    url:publicAuthUrl
   });
   client.delete(publicAuthUrl.replace('{accountId}', accountId), requestPayload, function (publicAuthData, publicAuthResponse) {
     var responseStatusCode = publicAuthResponse.statusCode;
@@ -186,8 +186,8 @@ module.exports.destroy = function (req, res) {
 
 function withValidAccountId(req, res, accountId, callback) {
   var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}';
-  logger.info('Calling connector -', {
-    service: 'publicAuth',
+  logger.debug('Calling connector -', {
+    service:'publicAuth',
     method: 'GET',
     url: connectorUrl
   });
@@ -198,8 +198,8 @@ function withValidAccountId(req, res, accountId, callback) {
     }
     callback(accountId, req, res);
   }).on('error', function (err) {
-    logger.info('Calling connector threw exception -', {
-      service: 'connector',
+    logger.debug('Calling connector threw exception -', {
+      service:'connector',
       method: 'GET',
       url: connectorUrl
     });

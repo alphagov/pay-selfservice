@@ -76,18 +76,18 @@ describe('session', function () {
 
     sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(secondTimeSuccessfulPromise);
 
-    var consoleSpy = sinon.spy(console, 'log');
+    var loggerSpy = sinon.spy(require('winston'), 'info');
 
     dependentResourceChecker(sleeper, mockSequelizerConfig).checkDependentResources(sucessfulFunction, 0.1);
 
-    assert(consoleSpy.getCall(0).args[0] === "Checking for Database connectivity");
-    assert(consoleSpy.getCall(1).args[0] === "Unable to connect to the database: Error");
-    assert(consoleSpy.getCall(2).args[0] === "DB not available. Sleeping for 0.1 seconds -> attempt 1");
-    assert(consoleSpy.getCall(3).args[0] === "Checking for Database connectivity");
-    assert(consoleSpy.getCall(4).args[0] === "Unable to connect to the database: Error");
-    assert(consoleSpy.getCall(5).args[0] === "DB not available. Sleeping for 0.2 seconds -> attempt 2");
-    assert(consoleSpy.getCall(6).args[0] === "Checking for Database connectivity");
-    assert(consoleSpy.getCall(7).args[0] === "Connection has been established successfully.");
+    assert(loggerSpy.getCall(0).args[0] === "Checking for Database connectivity");
+    assert(loggerSpy.getCall(1).args[0] === "Unable to connect to the database: Error");
+    assert(loggerSpy.getCall(2).args[0] === "DB not available. Sleeping for 0.1 seconds -> attempt 1");
+    assert(loggerSpy.getCall(3).args[0] === "Checking for Database connectivity");
+    assert(loggerSpy.getCall(4).args[0] === "Unable to connect to the database: Error");
+    assert(loggerSpy.getCall(5).args[0] === "DB not available. Sleeping for 0.2 seconds -> attempt 2");
+    assert(loggerSpy.getCall(6).args[0] === "Checking for Database connectivity");
+    assert(loggerSpy.getCall(7).args[0] === "Connection has been established successfully.");
 
   });
 

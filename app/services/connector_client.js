@@ -148,7 +148,7 @@ ConnectorClient.prototype = {
       page: searchParameters.page || 1,
       display_size: searchParameters.pageSize || 100
     });
-    logger.info('Calling connector to search account transactions -', {
+    logger.debug('Calling connector to search account transactions -', {
       service: 'connector',
       method: 'GET',
       url: this.connectorUrl + CHARGES_API_PATH,
@@ -166,7 +166,7 @@ ConnectorClient.prototype = {
    */
   withGetCharge: function (gatewayAccountId, chargeId, successCallback) {
     var url = _chargeUrlFor(gatewayAccountId, chargeId, this.connectorUrl);
-    logger.info('Calling connector to get charge -', {
+    logger.debug('Calling connector to get charge -', {
       service: 'connector',
       method: 'GET',
       url: url,
@@ -185,7 +185,7 @@ ConnectorClient.prototype = {
    */
   withChargeEvents: function (gatewayAccountId, chargeId, successCallback) {
     var url = _chargeUrlFor(gatewayAccountId, chargeId, this.connectorUrl) + "/events";
-    logger.info('Calling connector to get events -', {
+    logger.debug('Calling connector to get events -', {
       service: 'connector',
       method: 'GET',
       url: url,
@@ -202,7 +202,7 @@ ConnectorClient.prototype = {
   withGetAccount: function (gatewayAccountId, successCallback) {
     var url = _accountUrlFor(gatewayAccountId, this.connectorUrl);
 
-    logger.info('Calling connector to get account -', {
+    logger.debug('Calling connector to get account -', {
       service: 'connector',
       method: 'GET',
       url: url
@@ -217,7 +217,7 @@ ConnectorClient.prototype = {
    */
   withGetAccountAcceptedCards: function (gatewayAccountId, successCallback) {
     var url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl);
-    logger.info('Calling connector to get accepted card types for account -', {
+    logger.debug('Calling connector to get accepted card types for account -', {
       service: 'connector',
       method: 'GET',
       url: url
@@ -232,7 +232,7 @@ ConnectorClient.prototype = {
    */
   withPostAccountAcceptedCards: function (gatewayAccountId, payload, successCallback) {
     var url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl);
-    logger.info('Calling connector to post accepted card types for account -', {
+    logger.debug('Calling connector to post accepted card types for account -', {
       service: 'connector',
       method: 'POST',
       url: url
@@ -247,7 +247,7 @@ ConnectorClient.prototype = {
    */
   withGetAllCardTypes: function (successCallback) {
     var url = _cardTypesUrlFor(this.connectorUrl);
-    logger.info('Calling connector to get all card types -', {
+    logger.debug('Calling connector to get all card types -', {
       service: 'connector',
       method: 'GET',
       url: url
@@ -262,7 +262,7 @@ ConnectorClient.prototype = {
    */
   withPatchServiceName: function (gatewayAccountId, payload, successCallback) {
     var url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl);
-    logger.info('Calling connector to update service name -', {
+    logger.debug('Calling connector to update service name -', {
       service: 'connector',
       method: 'PATCH',
       url: url
@@ -277,7 +277,7 @@ ConnectorClient.prototype = {
    */
   withPostChargeRefund: function (gatewayAccountId, chargeId, payload, successCallback) {
     var url = _chargeRefundsUrlFor(gatewayAccountId, chargeId, this.connectorUrl);
-    logger.info('Calling connector to post a refund for payment -', {
+    logger.debug('Calling connector to post a refund for payment -', {
       service: 'connector',
       method: 'POST',
       url: url,
