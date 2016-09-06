@@ -1,3 +1,4 @@
+
 var logger    = require('winston');
 var response  = require('../utils/response.js').response;
 var router    = require('../routes.js');
@@ -27,13 +28,7 @@ module.exports.loggedIn = function (req, res) {
 
 module.exports.logOut = function (req, res) {
   req.logout();
-  logger.info('Logged out user');
-  
-  req.session.destroy(req.session.id, function (err) {
-    logIfError('logOut destroy session', err);
-    logger.info('user session removed');
-    res.redirect(router.paths.user.logIn);
-  });
+  res.redirect(router.paths.user.logIn);
 };
 
 module.exports.noAccess = function (req, res) {
@@ -74,8 +69,9 @@ module.exports.afterOTPLogin = function (req, res) {
     var last_url = req.session.last_url;
     delete req.session.last_url;
     req.session.save(() => res.redirect(last_url));
+    return;
   }
-  
+
   req.session.save(() => res.redirect('/'));
 };
 
