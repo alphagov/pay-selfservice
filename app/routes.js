@@ -59,7 +59,7 @@ module.exports.bind = function (app) {
   app.post(user.otpLogIn,login.logUserinOTP(), csrf, login.afterOTPLogin);
 
 
-  app.get(user.forgottenPassword, csrf, forgotPassword.emailGet);
+  app.get(user.forgottenPassword, auth.appendLoggedOutCSRF, csrf, forgotPassword.emailGet);
   app.post(user.forgottenPassword,csrf, forgotPassword.emailPost);
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
   app.get(user.forgottenPasswordReset,csrf, forgotPassword.newPasswordGet);
