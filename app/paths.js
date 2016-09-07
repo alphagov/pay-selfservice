@@ -8,9 +8,16 @@ module.exports = {
   },
   credentials: {
     index: '/credentials',
-    edit: '/credentials?edit',
+    edit: '/credentials/edit',
     create: '/credentials'
   },
+
+  notificationCredentials: {
+    index: '/credentials',
+    edit: '/notification-credentials/edit',
+    create: '/notification-credentials'
+  },
+
   user: {
     logIn: '/login',
     otpLogIn: '/otp-login',
