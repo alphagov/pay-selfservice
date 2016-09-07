@@ -20,7 +20,7 @@ var localStrategyAuth = function(username, password, done) {
   .then(function(user){
     done(null, user);
   },function(){
-    done(null, false);
+    done(null, false,{ message: 'Invalid username or password'});
   });
 };
 

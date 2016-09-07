@@ -19,6 +19,8 @@ var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
 var models            = require('./app/models/models.js');
+var flash             = require('connect-flash');
+
 
 
 
@@ -32,26 +34,11 @@ function initialiseGlobalMiddleware (app) {
   };
   app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware('combined', {'stream' : logger.stream}));
   app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
-  app.use(function (req, res, next) {
-    res.locals.assetPath  = '/public/';
-    res.locals.routes     = router.paths;
-    noCache(res);
-    next();
-  });
-
-  app.use(function (req, res, next) {
-    if (req.url.indexOf('/selfservice/') === 0) {
-      var oldUrl = req.url;
-      req.url = oldUrl.substring('/selfservice'.length);
-      logger.info('REDIRECTED ' + oldUrl + ' to ' + req.url);
-    }
-
-    next();
-  });
 
   app.use(function (req, res, next) {
     res.locals.assetPath  = '/public/';
     res.locals.routes     = router.paths;
+    res.locals.flash      = req.flash();
     noCache(res);
     next();
   });
@@ -105,6 +92,7 @@ function initialiseAuth(app) {
   auth.initialise(app);
 }
 
+
 function listen() {
   var app = initialise();
   app.listen(port);
@@ -119,6 +107,7 @@ function listen() {
 function initialise() {
   var app = unconfiguredApp;
 
+  app.use(flash());
   initialiseTLS(app);
   initialiseProxy(app);
   app.use(session(selfServiceSession()));
@@ -129,6 +118,7 @@ function initialise() {
   initialiseRoutes(app);
   initialiseErrorHandling(app);
   initialisePublic(app);
+
 
   return app;
 }

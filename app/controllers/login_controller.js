@@ -44,7 +44,11 @@ module.exports.postLogin = function (req, res) {
 };
 
 module.exports.logUserin = function() {
-  return passport.authenticate('local', { failureRedirect: '/login' });
+  return passport.authenticate('local', {
+    failureRedirect: '/login',
+    badRequestMessage : 'Invalid username or password.',
+    failureFlash: true
+  });
 };
 
 module.exports.logUserinOTP = function(req, res, next) {

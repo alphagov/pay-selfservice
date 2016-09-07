@@ -6,6 +6,10 @@ Sign in to GOV.UK Pay
 {{$content}}
 <div class="column-two-thirds no-padding">
   <h1 class="heading-large">Sign in</h1>
+  {{#flash.error}}
+  <p class="error">{{.}}</p>
+  {{/flash.error}}
+
   <form action="/login" method="post" name="userLoginForm" class="push-bottom">
   <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
