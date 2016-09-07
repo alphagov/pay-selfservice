@@ -48,22 +48,22 @@ module.exports.bind = function (app) {
   // LOGIN
 
   var user = paths.user;
-  app.get(user.logIn, login.logInGet);
-  app.post(user.logIn,login.logUserin(), login.postLogin);
+  app.get(user.logIn, auth.appendLoggedOutCSRF, csrf, login.logInGet);
+  app.post(user.logIn, csrf, login.logUserin(), login.postLogin);
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
   app.get(user.logOut, login.logOut);
-  app.get(user.otpLogIn,auth.enforceUser, login.otpLogIn);
-  app.get(user.otpSendAgain, auth.enforceUser, login.sendAgainGet);
-  app.post(user.otpSendAgain, auth.enforceUser, login.sendAgainPost);
-  app.post(user.otpLogIn,login.logUserinOTP(), login.afterOTPLogin);
+  app.get(user.otpSendAgain, auth.enforceUser, csrf, login.sendAgainGet);
+  app.post(user.otpSendAgain, auth.enforceUser, csrf, login.sendAgainPost);
+  app.get(user.otpLogIn, csrf, auth.enforceUser,  login.otpLogIn);
+  app.post(user.otpLogIn,login.logUserinOTP(), csrf, login.afterOTPLogin);
 
 
-  app.get(user.forgottenPassword, forgotPassword.emailGet);
-  app.post(user.forgottenPassword, forgotPassword.emailPost);
+  app.get(user.forgottenPassword, csrf, forgotPassword.emailGet);
+  app.post(user.forgottenPassword,csrf, forgotPassword.emailPost);
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
-  app.get(user.forgottenPasswordReset, forgotPassword.newPasswordGet);
-  app.post(user.forgottenPasswordReset, forgotPassword.newPasswordPost);
+  app.get(user.forgottenPasswordReset,csrf, forgotPassword.newPasswordGet);
+  app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);
 
 
 

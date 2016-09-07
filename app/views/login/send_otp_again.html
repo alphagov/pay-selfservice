@@ -16,7 +16,7 @@ Sign in to GOV.UK Pay
     speak to your service manager to reset the number
   </p>
   <form action="/otp-send-again" class="form" method="post">
-
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
       <input type="hidden" name="send" value="true">
       <input class="button" type="submit" value="Resend verification code">
