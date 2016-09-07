@@ -13,7 +13,8 @@ function showSuccessView(connectorData, viewMode, req, res) {
 
   var responsePayload = {
     'payment_provider': changeCase.titleCase(paymentProvider),
-    'credentials': connectorData.credentials // this will never contain a password field
+    'credentials': connectorData.credentials, // this will never contain a password field
+    'notifications_endpoint': connectorData._links.notifications.href
   };
 
   if (!viewMode) responsePayload.editMode = 'true';
