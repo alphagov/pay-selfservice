@@ -40,19 +40,19 @@ var User = function(mockSequelize,includes=[]) {
 
 describe('user model', function() {
   describe('find', function() {
-    it('should return a user', function() {
+    it('should return a user and lowercase email', function() {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function() {
         return {
           findOne: function(params) {
             var defer = q.defer();
-            assert(params.where.email == "foo");
+            assert(params.where.email == "foo@foo.com");
             return defer.promise;
           },
           hasMany: () => {}
         };
       };
-      User(seq).find("foo");
+      User(seq).find("Foo@foo.com");
     });
 
     it('should never ever ever return a password with user outside the model', function() {
@@ -73,12 +73,13 @@ describe('user model', function() {
   });
 
   describe('create', function() {
-    it('should create a user', function(done) {
+    it('should create a user and lowercase email', function(done) {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function() {
         return {
           create: function(user) {
             assert(user.username == "foo");
+            assert(user.email ==  "foo@example.com");
             assert(user.password != "password");
             assert(bcrypt.compareSync('password', user.password))
             return {
@@ -96,7 +97,7 @@ describe('user model', function() {
         username: "foo",
         password: "password",
         gateway_account_id: 1,
-        email: "foo@example.com",
+        email: "Foo@example.com",
         telephone_number: "1"
       }).then(function(user) {
         try {
