@@ -148,7 +148,7 @@ create = function(user){
     username: user.username,
     password: hashPassword(user.password),
     gateway_account_id: user.gateway_account_id,
-    email: user.email,
+    email: user.email.toLowerCase(),
     telephone_number: user.telephone_number,
     otp_key: user.otp_key ? user.otp_key : random.key(10)
   };
@@ -227,6 +227,7 @@ findByResetToken = function(code){
 
 var _find = function(email, extraFields = [], where) {
   if (!where) where = { email: email };
+  if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
     attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
