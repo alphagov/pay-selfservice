@@ -28,8 +28,12 @@ portfinder.getPort(function(err, freePort) {
       .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData,noCSRF) {
-    app = (noCSRF) ? nocsrf : app;
+  function build_form_post_request(path, sendData, sendCSRF) {
+    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
+    if (sendCSRF) {
+      sendData.csrfToken = csrf().create('123');
+    }
+
     return request(app)
       .post(path)
       .set('Accept', 'application/json')
@@ -294,6 +298,25 @@ portfinder.getPort(function(err, freePort) {
       });
 
       describe('The /tokens/generate endpoint', function() {
+
+        it('should create a token successfully', function (done){
+          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+          serverMock.post(PUBLIC_AUTH_PATH, {
+            "account_id": ACCOUNT_ID,
+            "description": "description",
+            "created_by": "user@email.com"
+          }).reply(200, {"token": TOKEN });
+
+          build_form_post_request(paths.devTokens.create, {"description":'description'}, true)
+            .expect(200, {
+              'token': TOKEN,
+              'description': 'description'
+            })
+            .end(done);
+
+        });
+
          it('should fail if the account does not exist for a GET', function (done){
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
 
@@ -323,7 +346,7 @@ portfinder.getPort(function(err, freePort) {
               "description": "description"
             }).reply(200, {"token": TOKEN });
 
-            build_form_post_request(paths.devTokens.create)
+            build_form_post_request(paths.devTokens.create,{})
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
               })
