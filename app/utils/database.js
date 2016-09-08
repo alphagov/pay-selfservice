@@ -2,17 +2,15 @@
 
 const Sequelize = require('sequelize');
 
-const sequelizeSession = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USER,
-  process.env.DATABASE_PASSWORD, {
-    "dialect": "postgres",
-    "host": process.env.DATABASE_HOST,
-    "port": process.env.DATABASE_PORT,
+const sequelizeSession =  new Sequelize(process.env.DATABASE_URL,{
+    dialect: 'postgres',
+    protocol: 'postgres',
     "logging": false,
-    "ssl": true,
-    "native": true
-  });
+    native: true,
+    dialectOptions: {
+        ssl: true
+    }
+});
 
 module.exports.deleteSession = function (userEmail, next) {
 

@@ -359,4 +359,35 @@ describe('user model', function() {
     });
   });
 
+  describe('toggle user',function(){
+    _.each([true,false],function(boolean){
+      it('should be able to disable and enable the user',function(done){
+
+        var seq = _.cloneDeep(sequel);
+        var values = {dataValues: { id: 2, password: 'foo'}};
+
+        seq.sequelize.define = function() {
+          return {
+            update: function(toggle,where) {
+              assert(toggle.disabled === boolean);
+              assert.equal(values.dataValues.id,where.where.id);
+              return { then: function(success){ success(); } };
+            },
+            findOne: function(){
+              return { then: function(success){ success(values); }};
+            },
+            hasMany: () => {}
+          };
+        };
+        var user = User(seq);
+
+        user.find('1')
+          .then(function(user){ return user.toggleDisabled(boolean)})
+          .then(done)
+          .catch(done);
+
+      });
+    });
+  });
+
 });
