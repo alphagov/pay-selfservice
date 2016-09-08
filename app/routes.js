@@ -50,7 +50,7 @@ module.exports.bind = function (app) {
   var notCred = paths.notificationCredentials;
   app.get(notCred.index, auth.enforce, csrf, credentials.index);
   app.get(notCred.edit, auth.enforce, csrf, credentials.editNotificationCredentials);
-  // app.post(notCred.index, auth.enforce, csrf, credentials.updateNotificationCredentials);
+  app.post(notCred.update, auth.enforce, csrf, credentials.updateNotificationCredentials);
 
   // LOGIN
   var user = paths.user;

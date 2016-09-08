@@ -40,7 +40,6 @@ function showSuccessView(connectorData, viewMode, req, res) {
     provider: paymentProvider
   });
 
-  logger.info(responsePayload);
   response(req.headers.accept, res, 'provider_credentials/' + paymentProvider, responsePayload);
 }
 
@@ -97,6 +96,44 @@ module.exports = {
     loadIndex(req, res, EDIT_NOTIFICATION_CREDENTIALS_MODE);
   },
 
+  updateNotificationCredentials: function (req, res) {
+    var accountId = auth.get_gateway_account_id((req));
+    var connectorUrl = process.env.CONNECTOR_URL + "/v1/api/accounts/{accountId}/notification-credentials";
+
+    var requestPayLoad = {
+      headers: {"Content-Type": "application/json"},
+      data: {
+        username: req.body.username,
+        password: req.body.password
+      }
+    };
+
+    logger.info('Calling connector to update provider notification credentials -', {
+      service: 'connector',
+      method: 'POST',
+      url: '/frontend/accounts/{id}/notification-credentials'
+    });
+
+    client.post(connectorUrl.replace("{accountId}", accountId), requestPayLoad, function(connectorData, connectorResponse) {
+      switch (connectorResponse.statusCode) {
+        case 200:
+          res.redirect(303, router.paths.credentials.index);
+          break;
+        default:
+          errorView(req, res, ERROR_MESSAGE);
+      }
+    }).on('error', function(err){
+      logger.error('Calling connector to update provider notification credentials threw exception  -', {
+        service: 'connector',
+        method: 'POST',
+        url: connectorUrl,
+        error: err
+      });
+      errorView(req, res, ERROR_MESSAGE);
+    });
+
+  },
+
   update: function (req, res) {
 
     logger.debug('Calling connector to update provider credentials -', {
@@ -151,5 +188,4 @@ module.exports = {
       errorView(req, res, ERROR_MESSAGE);
     });
   }
-
 }

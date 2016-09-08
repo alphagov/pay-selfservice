@@ -85,7 +85,7 @@ describe('The credentials view in normal mode', function () {
         'username': 'a-username'
       },
       "notification_credentials": {
-        'username': 'a-notification-username'
+        'userName': 'a-notification-username'
       }
     };
 

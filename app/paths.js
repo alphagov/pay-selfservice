@@ -15,7 +15,7 @@ module.exports = {
   notificationCredentials: {
     index: '/credentials',
     edit: '/notification-credentials/edit',
-    create: '/notification-credentials'
+    update: '/notification-credentials'
   },
 
   user: {

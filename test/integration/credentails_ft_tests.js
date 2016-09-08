@@ -16,6 +16,8 @@ portfinder.getPort(function (err, freePort) {
 
   var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
+  var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = "/v1/api/accounts/" + ACCOUNT_ID + "/notification-credentials";
+
   var localServer = 'http://localhost:' + freePort;
   var connectorMock = nock(localServer);
 
@@ -323,4 +325,35 @@ portfinder.getPort(function (err, freePort) {
       .end(done);
     });
   });
-});
+
+  describe('The provider update notification credentials endpoint', function () {
+    beforeEach(function () {
+      process.env.CONNECTOR_URL = localServer;
+      nock.cleanAll();
+    });
+
+    before(function () {
+      // Disable logging.
+      winston.level = 'error';
+    });
+
+    it('should send new username and password notification credentials to connector', function (done) {
+      connectorMock.post(CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH, {
+          "username": "a-notification-username",
+          "password": "a-notification-password"
+      })
+        .reply(200, {});
+
+
+//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
+      var sendData = {'username': 'a-notification-username', 'password': 'a-notification-password'};
+      var expectedLocation = paths.credentials.index;
+      var path = paths.notificationCredentials.update;
+      build_form_post_request(path, sendData)
+        .expect(303, {})
+        .expect('Location', expectedLocation)
+        .end(done);
+    });
+  });
+
+  });
