@@ -1,4 +1,10 @@
-'use strict'
+'use strict';
+var exit = ()=> process.exit();
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL NOT SET, have you used ./env.sh?');
+  exit();
+  return;
+}
 
 var database = require('./app/utils/database.js');
 var User     = require('./app/models/user.js');
@@ -15,6 +21,13 @@ var userEmail = argv.u;
 
 User.find(userEmail)
   .then(
-    (user)=> user.toggleDisabled(true).then(()=> console.log('user disabled') ),
-    ()=> console.log('cant find user')
+    (user)=>
+      user.toggleDisabled(true).then(()=> {
+        console.log('user disabled');
+        exit();
+      }),
+    ()=> {
+      console.log('cant find user');
+      exit();
+    }
   );

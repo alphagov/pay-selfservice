@@ -1,4 +1,9 @@
 /*jshint esversion: 6 */
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL NOT SET, have you used ./env.sh?');
+  exit();
+  return;
+}
 
 var User = require(__dirname + '/app/models/user.js');
 user = {
