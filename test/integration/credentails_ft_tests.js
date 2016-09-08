@@ -43,7 +43,11 @@ portfinder.getPort(function (err, freePort) {
      'edit':false
     },
     {'path':paths.credentials.edit,
-    'edit':true
+      'edit':true
+    },
+    {
+     'path':paths.notificationCredentials.edit,
+      'notificationEdit':true
     }
    ].forEach(function(testSetup) {
 
@@ -68,10 +72,13 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+           "editMode": false,
+           "editNotificationCredentialsMode": false,
            "credentials": {}
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -88,10 +95,13 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+           "editMode": false,
+           "editNotificationCredentialsMode": false,
            "credentials": {}
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -108,12 +118,15 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+           "editNotificationCredentialsMode": false,
+           "editMode": false,
            "credentials": {
              'username': 'a-username'
            }
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -130,13 +143,16 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+          "editMode": false,
+          "editNotificationCredentialsMode": false,
             "credentials": {
               'username': 'a-username',
               'merchant_id': 'a-merchant-id'
             }
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
