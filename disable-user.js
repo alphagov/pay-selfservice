@@ -15,6 +15,6 @@ var userEmail = argv.u;
 
 User.find(userEmail)
   .then(
-    (user)=> user.toggleDisabled(true),
+    (user)=> user.toggleDisabled(true).then(()=> console.log('user disabled') ),
     ()=> console.log('cant find user')
   );
