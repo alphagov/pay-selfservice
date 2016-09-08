@@ -6,10 +6,8 @@ if (!process.env.DATABASE_URL) {
   return;
 }
 
-var database = require('./app/utils/database.js');
 var User     = require('./app/models/user.js');
 
-var chalk = require('chalk');
 var argv = require('yargs')
   .usage('Usage: $0 -u [email]')
   .demand(['u'])

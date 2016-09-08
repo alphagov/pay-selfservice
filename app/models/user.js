@@ -84,7 +84,7 @@ generateOTP = function(){
 
 toggleDisabled = function(toggle) {
   var defer = q.defer(),
-  log = ()=> logger.info(this.email + " disabled status is now " + toggle)
+  log = ()=> logger.info(this.id + " disabled status is now " + toggle)
 
   User.update(
     { disabled: toggle },
