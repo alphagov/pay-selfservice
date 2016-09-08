@@ -192,6 +192,42 @@ portfinder.getPort(function (err, freePort) {
     });
   });
 
+  describe('The notification credetials', function() {
+    beforeEach(function () {
+      process.env.CONNECTOR_URL = localServer;
+      nock.cleanAll();
+    });
+
+    before(function () {
+      // Disable logging.
+      winston.level = 'none';
+    });
+
+    it('should pass through the notification credentials', function(done) {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          "payment_provider": "smartpay",
+          "gateway_account_id": "1",
+          "credentials": {username: "a-username"},
+          "notificationCredentials": {username: "a-notification-username"}
+        });
+
+      var expectedData = {
+        "payment_provider": "Smartpay",
+        "editMode": false,
+        "editNotificationCredentialsMode": false,
+        "credentials": {
+          'username': 'a-username'
+        },
+        "notification_credentials": {username: "a-notification-username"}
+      };
+
+
+      build_get_request(paths.credentials.index)
+        .expect(200, expectedData)
+        .end(done);
+    });
+  });
 
   describe('The provider update credentials endpoint', function () {
     beforeEach(function () {

@@ -16,7 +16,8 @@ function showSuccessView(connectorData, viewMode, req, res) {
   logger.info(viewMode);
   var responsePayload = {
     'payment_provider': changeCase.titleCase(paymentProvider),
-    'credentials': connectorData.credentials // this will never contain a password field
+    'credentials': connectorData.credentials,
+    'notification_credentials': connectorData.notificationCredentials
   };
 
   switch(viewMode) {

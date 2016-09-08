@@ -33,6 +33,22 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('dd#password-value').withExactText('****');
   });
 
+  it('should not display notification credentials for worldpay', function() {
+    var templateData = {
+      "payment_provider": "Worldpay",
+      "credentials": {
+        'username': 'a-username',
+        'merchant_id': 'a-merchant-id'
+      }
+    };
+
+    var body = renderTemplate('provider_credentials/worldpay', templateData);
+
+    body.should.not.containSelector('h4#view-notification-title').withExactText('Your Worldpay Notification Credentials');
+    body.should.not.containSelector('dt#notification-username-key').withExactText('Username');
+
+  });
+
   it('should display credentials view for a smartpay account', function () {
     var templateData = {
       "payment_provider": "Smartpay",
@@ -60,6 +76,38 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('dt#password-key').withExactText('Password');
     body.should.containSelector('dd#password-value').withExactText('****');
+  });
+
+  it('should display notification credentials view for a smartpay account', function () {
+    var templateData = {
+      "payment_provider": "Smartpay",
+      "credentials": {
+        'username': 'a-username'
+      },
+      "notification_credentials": {
+        'username': 'a-notification-username'
+      }
+    };
+
+    var body = renderTemplate('provider_credentials/smartpay', templateData);
+
+    body.should.containSelector('h4#view-notification-title').withExactText('Your Smartpay Notification Credentials');
+
+    body.should.containSelector('a#edit-credentials-link')
+      .withAttribute("class", "button")
+      .withAttribute("href", paths.credentials.edit)
+      .withText("Edit credentials");
+
+    body.should.containSelector('dl#credentials');
+
+    body.should.not.containSelector('dt#merchant-id-key');
+    body.should.not.containSelector('dd#merchant-id-value');
+
+    body.should.containSelector('dt#notification-username-key').withExactText('Username');
+    body.should.containSelector('dd#notification-username-value').withExactText('a-notification-username');
+
+    body.should.containSelector('dt#notification-password-key').withExactText('Password');
+    body.should.containSelector('dd#notification-password-value').withExactText('****');
   });
 
   it('should display credentials view for a sandbox account', function () {
