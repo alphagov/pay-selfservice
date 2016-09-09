@@ -126,8 +126,12 @@ module.exports.update = function (req, res) {
       res.sendStatus(responseStatusCode);
       return;
     }
+
     response(req.headers.accept, res, "includes/_token", {
       'token_link': publicAuthData.token_link,
+      'created_by': publicAuthData.created_by,
+      'issued_date': publicAuthData.issued_date,
+      'last_used': publicAuthData.last_used,
       'description': publicAuthData.description,
       'csrfToken': csrf().create(req.session.csrfSecret)
     });
