@@ -191,7 +191,10 @@ portfinder.getPort(function(err, freePort) {
             "description": "token description"
           }).reply(200, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
+            "description": "token description",
+            "created_by": "test-user",
+            "issued_date": "18 Feb 2016 - 12:44",
+            "last_used": "23 Feb 2016 - 19:44"
           });
 
           build_put_request()
@@ -201,7 +204,10 @@ portfinder.getPort(function(err, freePort) {
             })
             .expect(200, {
               'token_link': '550e8400-e29b-41d4-a716-446655440000',
-              'description': "token description"
+              'description': "token description",
+              'created_by': "test-user",
+              'issued_date': "18 Feb 2016 - 12:44",
+              'last_used': "23 Feb 2016 - 19:44"
             })
             .end(done);
         });
