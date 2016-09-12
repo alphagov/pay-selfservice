@@ -5,14 +5,15 @@
     close       = $('#show-refund .close'),
     showButton  = $('.show-refund-button'),
     lightbox    = $('#show-refund'),
-    submit       = lightbox.find('input[type=submit]');
+    submit       = lightbox.find('input[type=submit]'),
+    refundForm  = $('.refund-form');
 
     var init = function(){
       selects.on('change',toggleAmount);
       showButton.on('click',addLightBox);
       close.on('click',removeLightBox);
       toggleAmount();
-      submit.on('click',disableSubmit);
+      refundForm.on('submit',disableSubmit);
     },
 
     toggleAmount = function(){
@@ -29,7 +30,7 @@
     },
 
     disableSubmit = function(e){
-      setTimeout(()=> {$(this).attr('disabled', 'disabled');},50);
+      submit.attr('disabled', 'disabled');
     };
 
     init();
