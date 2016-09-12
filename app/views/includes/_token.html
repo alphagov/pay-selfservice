@@ -2,9 +2,9 @@
   id="{{token_link}}"
   class="key-list-item js-{{^revoked}}active{{/revoked}}" data-csrf="{{ csrfToken }}">
   <div id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
-  <div id="created-by-{{token_link}}" class="font-xsmall">Created by: {{created_by}}</div>
-  <div id="date-created-{{token_link}}" class="font-xsmall">Date created: {{issued_date}}</div>
-  <div id="date-used-{{token_link}}" class="font-xsmall push-bottom-sml">
+  <div id="created-by-{{token_link}}" class="font-xsmall qa-created-by">Created by: {{created_by}}</div>
+  <div id="date-created-{{token_link}}" class="font-xsmall qa-created-date">Date created: {{issued_date}}</div>
+  <div id="date-used-{{token_link}}" class="font-xsmall push-bottom-sml qa-last-used">
     {{#last_used}}
       Last used: {{last_used}}
     {{/last_used}}
