@@ -42,6 +42,7 @@ module.exports = function () {
         user: {
           gateway_account_id: accountId,
           username: "username123",
+          email:"user@email.com",
           otp_key: "foo"
         }
       },

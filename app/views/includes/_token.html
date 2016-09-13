@@ -2,13 +2,23 @@
   id="{{token_link}}"
   class="key-list-item js-{{^revoked}}active{{/revoked}}" data-csrf="{{ csrfToken }}">
   <div id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
+  <div id="created-by-{{token_link}}" class="font-xsmall qa-created-by">Created by: {{created_by}}</div>
+  <div id="date-created-{{token_link}}" class="font-xsmall qa-created-date">Date created: {{issued_date}}</div>
+  <div id="date-used-{{token_link}}" class="font-xsmall push-bottom-sml qa-last-used">
+    {{#last_used}}
+      Last used: {{last_used}}
+    {{/last_used}}
+    {{^last_used}}
+      Not used
+    {{/last_used}}
+  </div>
   {{#revoked}}
     <div>Key was revoked on {{revoked}}.</div>
   {{/revoked}}
   {{^revoked}}
-    <div class="js-edit-controls">
-      <a href="#{{token_link}}" class="js-toggle-description">Edit description</a><br />
-      <a href="#{{token_link}}" class="js-toggle-revoke">Revoke key</a>
+    <div class="js-edit-controls" >
+      <span><a href="#{{token_link}}" class="js-toggle-description">Edit description</a></span>
+      <span class="push-left"><a href="#{{token_link}}" class="js-toggle-revoke">Revoke key</a></span>
     </div>
     <div class="js-edit-description form" hidden>
       <div class="form-group">

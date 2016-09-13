@@ -18,7 +18,13 @@ describe('The token view', function() {
   it('should render the active API keys for the account (for 1 key)', function () {
     var tokenLink = '550e8400-e29b-41d4-a716-446655440000',
         templateData = {
-          'active_tokens' : [{"token_link": tokenLink, "description":"description token 1"}],
+          'active_tokens' : [{
+            "token_link": tokenLink,
+            "description":"description token 1",
+            "created_by":"user@email.com",
+            "issued_date":"05 Sep 2016 - 11:30",
+            "last_used":"05 Sep 2016 - 14:35"}
+          ],
           'active_tokens_singular': true
         };
     var body = renderTemplate('token', templateData);
@@ -29,12 +35,28 @@ describe('The token view', function() {
     var tokenContainerSelector = '#' + tokenLink;
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user@email.com");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
   });
 
   it('should render the number of active API keys for the account (for 2 keys)', function () {
     var templateData = {
-      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
-                  {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}]
+      'active_tokens': [
+        {
+          "token_link": "550e8400-e29b-41d4-a716-446655440000",
+          "description": "description token 1",
+          "created_by":"user1@email.com",
+          "issued_date":"05 Sep 2016 - 11:30",
+          "last_used":"05 Sep 2016 - 14:35"
+        },
+        {
+          "token_link": "550e8400-e29b-41d4-a716-446655441234",
+          "description": "description token 2",
+          "created_by":"user2@email.com",
+          "issued_date":"05 Sep 2016 - 15:30"
+        }
+      ]
     };
     var body = renderTemplate('token', templateData);
 
@@ -44,16 +66,39 @@ describe('The token view', function() {
     var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user1@email.com");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
 
     tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655441234';
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 2');
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user2@email.com");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 15:30");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Not used");
   });
 
   it('should render revoked tokens', function () {
     var templateData = {
-      'active_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"non-revoked token"}],
-      'revoked_tokens' : [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"revoked token", "revoked": "18 Oct 2015"}]
+      'active_tokens': [
+        {
+          "token_link": "550e8400-e29b-41d4-a716-446655441234",
+          "description": "non-revoked token",
+          "created_by":"user1@email.com",
+          "issued_date":"05 Sep 2016 - 11:30",
+          "last_used":"05 Sep 2016 - 14:35"
+        }
+      ],
+      'revoked_tokens': [
+        {
+          "token_link": "550e8400-e29b-41d4-a716-446655440000",
+          "description": "revoked token",
+          "revoked": "18 Oct 2015",
+          "created_by":"user2@email.com",
+          "issued_date":"05 Sep 2016 - 15:30",
+          "last_used":"05 Sep 2016 - 19:35"
+        }
+      ]
     };
     var body = renderTemplate('token', templateData);
 
@@ -63,6 +108,9 @@ describe('The token view', function() {
     var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' div').withText("Key was revoked on 18 Oct 2015");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user2@email.com");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 15:30");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 19:35");
   });
 
 });

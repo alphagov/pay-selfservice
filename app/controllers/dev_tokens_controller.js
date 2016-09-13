@@ -8,7 +8,7 @@ var client          = new Client();
 var auth            = require('../services/auth_service.js');
 
 // TODO remove these and make them proper i.e. show update destroy etc
-var TOKEN_VIEW      = 'token';
+var TOKEN_VIEW = 'token';
 var TOKEN_GENERATE_VIEW = 'token_generate';
 
 module.exports.index = function (req, res) {
@@ -72,7 +72,8 @@ module.exports.create = function (req, res) {
       headers: {"Content-Type": "application/json"},
       data: {
         'account_id': accountId,
-        'description': description
+        'description': description,
+        'created_by': req.user.email
       }
     };
 
@@ -96,7 +97,7 @@ module.exports.create = function (req, res) {
     }).on('error', function (err) {
       logger.error('Calling publicAuth threw exception -', {
         service: 'publicAuth',
-        method:'POST',
+        method: 'POST',
         url: publicAuthUrl,
         error: err
       });
@@ -125,8 +126,12 @@ module.exports.update = function (req, res) {
       res.sendStatus(responseStatusCode);
       return;
     }
+
     response(req.headers.accept, res, "includes/_token", {
       'token_link': publicAuthData.token_link,
+      'created_by': publicAuthData.created_by,
+      'issued_date': publicAuthData.issued_date,
+      'last_used': publicAuthData.last_used,
       'description': publicAuthData.description,
       'csrfToken': csrf().create(req.session.csrfSecret)
     });
@@ -134,7 +139,7 @@ module.exports.update = function (req, res) {
   }).on('error', function (err) {
     logger.error('Calling publicAuth threw exception -', {
       service: 'publicAuth',
-      method:'POST',
+      method: 'POST',
       url: publicAuthUrl,
       error: err
     });
@@ -154,11 +159,11 @@ module.exports.destroy = function (req, res) {
   };
 
   logger.info('Calling public auth -', {
-    service:'publicAuth',
-    method:'DELETE',
-    url:publicAuthUrl
+    service: 'publicAuth',
+    method: 'DELETE',
+    url: publicAuthUrl
   });
-  client.delete(publicAuthUrl.replace('{accountId}',accountId), requestPayload, function (publicAuthData, publicAuthResponse) {
+  client.delete(publicAuthUrl.replace('{accountId}', accountId), requestPayload, function (publicAuthData, publicAuthResponse) {
     var responseStatusCode = publicAuthResponse.statusCode;
     if (responseStatusCode != 200) {
       res.sendStatus(responseStatusCode);
@@ -170,9 +175,9 @@ module.exports.destroy = function (req, res) {
     });
   }).on('error', function (err) {
     logger.error('Calling publicAuth threw exception -', {
-      service:'publicAuth',
-      method:'DELETE',
-      url:publicAuthUrl,
+      service: 'publicAuth',
+      method: 'DELETE',
+      url: publicAuthUrl,
       error: err
     });
     res.sendStatus(500);
@@ -182,7 +187,7 @@ module.exports.destroy = function (req, res) {
 function withValidAccountId(req, res, accountId, callback) {
   var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}';
   logger.info('Calling connector -', {
-    service:'publicAuth',
+    service: 'publicAuth',
     method: 'GET',
     url: connectorUrl
   });
@@ -194,7 +199,7 @@ function withValidAccountId(req, res, accountId, callback) {
     callback(accountId, req, res);
   }).on('error', function (err) {
     logger.info('Calling connector threw exception -', {
-      service:'connector',
+      service: 'connector',
       method: 'GET',
       url: connectorUrl
     });

@@ -28,8 +28,12 @@ portfinder.getPort(function(err, freePort) {
       .set('Accept', 'application/json');
   }
 
-  function build_form_post_request(path, sendData,noCSRF) {
-    app = (noCSRF) ? nocsrf : app;
+  function build_form_post_request(path, sendData, sendCSRF) {
+    sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
+    if (sendCSRF) {
+      sendData.csrfToken = csrf().create('123');
+    }
+
     return request(app)
       .post(path)
       .set('Accept', 'application/json')
@@ -187,7 +191,10 @@ portfinder.getPort(function(err, freePort) {
             "description": "token description"
           }).reply(200, {
             "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
+            "description": "token description",
+            "created_by": "test-user",
+            "issued_date": "18 Feb 2016 - 12:44",
+            "last_used": "23 Feb 2016 - 19:44"
           });
 
           build_put_request()
@@ -197,7 +204,10 @@ portfinder.getPort(function(err, freePort) {
             })
             .expect(200, {
               'token_link': '550e8400-e29b-41d4-a716-446655440000',
-              'description': "token description"
+              'description': "token description",
+              'created_by': "test-user",
+              'issued_date': "18 Feb 2016 - 12:44",
+              'last_used': "23 Feb 2016 - 19:44"
             })
             .end(done);
         });
@@ -294,6 +304,25 @@ portfinder.getPort(function(err, freePort) {
       });
 
       describe('The /tokens/generate endpoint', function() {
+
+        it('should create a token successfully', function (done){
+          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+          serverMock.post(PUBLIC_AUTH_PATH, {
+            "account_id": ACCOUNT_ID,
+            "description": "description",
+            "created_by": "user@email.com"
+          }).reply(200, {"token": TOKEN });
+
+          build_form_post_request(paths.devTokens.create, {"description":'description'}, true)
+            .expect(200, {
+              'token': TOKEN,
+              'description': 'description'
+            })
+            .end(done);
+
+        });
+
          it('should fail if the account does not exist for a GET', function (done){
             serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(400);
 
@@ -323,7 +352,7 @@ portfinder.getPort(function(err, freePort) {
               "description": "description"
             }).reply(200, {"token": TOKEN });
 
-            build_form_post_request(paths.devTokens.create)
+            build_form_post_request(paths.devTokens.create,{})
               .expect(200, {
                  'message' : 'There is a problem with the payments platform'
               })
