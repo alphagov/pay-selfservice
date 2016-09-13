@@ -82,12 +82,12 @@
     "sequelize": "3.22.x",
     "sequelize-mocking": "^0.2.0",
     "serve-favicon": "2.3.x",
-    "sleep": "3.0.x",
     "thirty-two": "^1.0.2",
     "throng": "4.0.x",
     "tunnel": "0.0.4",
     "winston": "2.2.x",
-    "yargs": "4.7.x"
+    "yargs": "4.7.x",
+    "sleep": "^3.0.1"
   },
   "devDependencies": {
     "chai": "^3.2.0",

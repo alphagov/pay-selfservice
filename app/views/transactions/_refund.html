@@ -1,7 +1,7 @@
 {{#refundable}}
 
 <div id="show-refund">
-  <form action="/transactions/{{charge_id}}/refund" method="post">
+  <form action="/transactions/{{charge_id}}/refund" method="post" class="refund-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="container">
       <h2 class="heading-medium">Refund payment</h2>
