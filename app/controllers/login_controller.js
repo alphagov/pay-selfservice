@@ -27,9 +27,11 @@ module.exports.loggedIn = function (req, res) {
 };
 
 module.exports.logOut = function (req, res) {
-  req.logout();
-  res.redirect(router.paths.user.logIn);
+  req.session.destroy(function (err) {
+    res.redirect(router.paths.user.logIn);
+  });
 };
+  
 
 module.exports.noAccess = function (req, res) {
   res.render('login/noaccess');

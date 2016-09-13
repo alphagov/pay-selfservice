@@ -16,7 +16,9 @@ module.exports = function () {
         next();
       };
       req.session.destroy = function (sessionId, next) {
-        next();
+        if (typeof sessionId == "function") next = sessionId;
+         if (typeof next == "function") next();
+        next()
       };
 
 

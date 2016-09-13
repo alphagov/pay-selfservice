@@ -5,7 +5,7 @@ var logger    = require('winston');
 user = {
    username: Math.random().toString(36).substring(7),
    password: "12345",
-   email: "andrew.hilton@digital.cabinet-office.gov.uk",
+   email: "andrew.hilton1@digital.cabinet-office.gov.uk",
    telephone_number: "07809610784",
    gateway_account_id: "12345"
  };
