@@ -19,6 +19,7 @@ var _ = require('lodash');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
 var retrieveAccount = require('./middleware/retrieve_account.js');
+var trimEmail = require('./middleware/trim_email.js');
 var passport  = require('passport');
 
 
@@ -49,7 +50,7 @@ module.exports.bind = function (app) {
 
   var user = paths.user;
   app.get(user.logIn, auth.appendLoggedOutCSRF, csrf, login.logInGet);
-  app.post(user.logIn, csrf, login.logUserin(), login.postLogin);
+  app.post(user.logIn, csrf, trimEmail, login.logUserin(), login.postLogin);
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, auth.enforce, login.noAccess);
   app.get(user.logOut, login.logOut);
@@ -60,7 +61,7 @@ module.exports.bind = function (app) {
 
 
   app.get(user.forgottenPassword, auth.appendLoggedOutCSRF, csrf, forgotPassword.emailGet);
-  app.post(user.forgottenPassword,csrf, forgotPassword.emailPost);
+  app.post(user.forgottenPassword,  trimEmail, csrf, forgotPassword.emailPost);
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
   app.get(user.forgottenPasswordReset, auth.appendLoggedOutCSRF, csrf, forgotPassword.newPasswordGet);
   app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);
