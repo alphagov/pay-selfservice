@@ -97,7 +97,7 @@ sendPasswordResetToken = function(){
     var url = process.env.SELFSERVICE_BASE + uri;
     notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
-      logger.debug('FORGOTTEN PASSWORD EMAIL SENT TO ' + user.email);
+      logger.info('FORGOTTEN PASSWORD EMAIL SENT TO USER ID:-' + user.id);
       defer.resolve();
     }, (e)=> {
       logger.error('PROBLEM SENDING FORGOTTEN PASSWORD EMAIL ',e);
