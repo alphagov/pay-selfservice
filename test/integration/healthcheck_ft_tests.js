@@ -1,3 +1,4 @@
+// TODO #FLAKY LOCALLY
 var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request = require('supertest');
 var sinon = require('sinon');
@@ -10,10 +11,9 @@ describe('The /healthcheck endpoint returned json', function () {
       request(app)
           .get('/healthcheck')
           .set('Accept', 'application/json')
-          // .expect(503)
+          .expect(503)
           .expect(function(res) {
             response = JSON.parse(res.text);
-            console.log(response);
             expectedResponse.ping.healthy.should.equal(response.ping.healthy);
             expectedResponse.database.healthy.should.equal(response.database.healthy);
           }).end(done);
