@@ -27,6 +27,7 @@ module.exports = {
   },
   devTokens: {
     index: '/tokens',
+    revoked: '/tokens/revoked',
     // we only show the token once, hence strange url
     show: '/tokens/generate',
     create: '/tokens/generate',

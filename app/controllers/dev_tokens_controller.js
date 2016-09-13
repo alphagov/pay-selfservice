@@ -12,42 +12,76 @@ var TOKEN_VIEW = 'token';
 var TOKEN_GENERATE_VIEW = 'token_generate';
 
 module.exports.index = function (req, res) {
-
   var accountId = auth.get_gateway_account_id(req);
-
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
 
-    logger.debug('Calling publicAuth to get tokens -', {
+    logger.debug('Calling publicAuth to get active tokens -', {
       service: 'publicAuth',
       method: 'GET',
       url: publicAuthUrl + '/{accountId}'
     });
 
     client.get(publicAuthUrl + "/" + accountId, function (publicAuthData) {
-      var tokens = publicAuthData.tokens || [],
-        activeTokens = [],
-        revokedTokens = [];
-
-      tokens.forEach(function (token) {
+      var activeTokens = publicAuthData.tokens || [];
+      activeTokens.forEach(function (token) {
         token.csrfToken = csrf().create(req.session.csrfSecret);
-        token.revoked ? revokedTokens.push(token) : activeTokens.push(token);
       });
-      responsePayload = {
-        'active_tokens': activeTokens,
-        'active_tokens_singular': activeTokens.length == 1,
-        'revoked_tokens': revokedTokens
-      };
-
       logger.debug('Showing tokens view -', {
         view: 'token'
       });
-      response(req.headers.accept, res, TOKEN_VIEW, responsePayload);
+      response(req.headers.accept, res, TOKEN_VIEW, {
+        'active': true,
+        'header': "available-tokens",
+        'wording': "active",
+        'tokens': activeTokens,
+        'tokens_singular': activeTokens.length == 1
+      });
     }).on('error', function (err) {
-      logger.error('Calling publicAuth to get tokens threw exception -', {
+      logger.error('Calling publicAuth to get active tokens threw exception -', {
         service: 'publicAuth',
         method: 'GET',
         url: publicAuthUrl + '/{accountId}',
+        err: err
+      });
+      renderErrorView(req, res, ERROR_MESSAGE);
+    });
+
+  });
+};
+
+module.exports.revoked = function (req, res) {
+  var accountId = auth.get_gateway_account_id(req);
+  withValidAccountId(req, res, accountId, function (accountId, req, res) {
+    var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+
+    logger.debug('Calling publicAuth to get revoked tokens -', {
+      service: 'publicAuth',
+      method: 'GET',
+      url: publicAuthUrl + '/{accountId}?state=revoked'
+    });
+
+    client.get(publicAuthUrl + "/" + accountId + "?state=revoked", function (publicAuthData) {
+      var revokedTokens = publicAuthData.tokens || [];
+      revokedTokens.forEach(function (token) {
+        token.csrfToken = csrf().create(req.session.csrfSecret);
+      });
+      logger.info('Showing tokens view -', {
+        view: TOKEN_VIEW
+      });
+      response(req.headers.accept, res, TOKEN_VIEW, {
+        'active': false,
+        'header': "revoked-tokens",
+        'wording': "revoked",
+        'tokens': revokedTokens,
+        'tokens_singular': revokedTokens.length == 1
+      });
+      //response(req.headers.accept, res, REVOKED_TOKEN_VIEW, responsePayload);
+    }).on('error', function (err) {
+      logger.error('Calling publicAuth to get revoked tokens threw exception -', {
+        service: 'publicAuth',
+        method: 'GET',
+        url: publicAuthUrl + '/{accountId}?state=revoked',
         err: err
       });
       renderErrorView(req, res, ERROR_MESSAGE);

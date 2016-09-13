@@ -11,42 +11,18 @@ GOV.UK Pay - API keys
 {{$content}}
 
 <h1 class="page-title">API Keys</h1>
+<ul class="tabs">
+  {{#active}}
+  <li class="current"><a href="{{ routes.devTokens.index }}">Active keys</a></li>
+  <li><a href="{{ routes.devTokens.revoked }}">Revoked keys</a></li>
+  {{/active}}
+  {{^active}}
+  <li><a href="{{ routes.devTokens.index }}">Active keys</a></li>
+  <li class="current"><a href="{{ routes.devTokens.revoked }}">Revoked keys</a></li>
+  {{/active}}
+</ul>
 
-<h2 id="available-tokens" class="heading-medium remove-top-margin">
-  {{#active_tokens.length}}
-  {{#active_tokens_singular}}
-    There is 1 active API key
-  {{/active_tokens_singular}}
-  {{^active_tokens_singular}}
-    There are {{active_tokens.length}} active API keys
-  {{/active_tokens_singular}}
-  {{/active_tokens.length}}
-  {{^active_tokens.length}}
-    There are no active API keys
-  {{/active_tokens.length}}
-</h2>
-
-<a class="button generate-key" href="/tokens/generate">
-  Generate a new key
-</a>
-
-{{#active_tokens.length}}
-  <h3 class="heading-medium">Active keys</h3>
-  <ul class="key-list">
-  {{#active_tokens}}
-    {{>includes/_token}}
-  {{/active_tokens}}
-  </ul>
-{{/active_tokens.length}}
-
-{{#revoked_tokens.length}}
-  <h3 class="heading-medium">Revoked keys</h3>
-  <ul class="key-list">
-  {{#revoked_tokens}}
-    {{>includes/_token}}
-  {{/revoked_tokens}}
-  </ul>
-{{/revoked_tokens.length}}
+{{>includes/_token_list}}
 
 {{/content}}
 
