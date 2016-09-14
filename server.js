@@ -22,9 +22,6 @@ var models            = require('./app/models/models.js');
 var flash             = require('connect-flash');
 
 
-
-
-
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
   logger.stream = {
@@ -96,8 +93,7 @@ function initialiseAuth(app) {
 function listen() {
   var app = initialise();
   app.listen(port);
-  console.log('Listening on port ' + port);
-  console.log('');
+  logger.log('Listening on port ' + port);
 }
 
 /**

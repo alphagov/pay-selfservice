@@ -14,7 +14,7 @@ var logIfError = function (scenario, err) {
 
 var error = function(req,res,err) {
     errorView(req, res);
-    logger.info(err);
+    logger.error(err);
 };
 
 module.exports.loggedIn = function (req, res) {

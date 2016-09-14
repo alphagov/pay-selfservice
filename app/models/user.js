@@ -87,7 +87,7 @@ sendPasswordResetToken = function(){
 
   init = function(){
     forgottenPassword.create(data).then(sendEmail,()=> {
-      logger.info('PROBLEM CREATING FORGOTTEN PASSWORD', data);
+      logger.warn('PROBLEM CREATING FORGOTTEN PASSWORD', data);
       defer.reject();
     });
   },
@@ -97,10 +97,10 @@ sendPasswordResetToken = function(){
     var url = process.env.SELFSERVICE_BASE + uri;
     notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
-      logger.info('FORGOTTEN PASSWORD EMAIL SENT TO ' + user.email);
+      logger.debug('FORGOTTEN PASSWORD EMAIL SENT TO ' + user.email);
       defer.resolve();
     }, (e)=> {
-      logger.info('PROBLEM SENDING FORGOTTEN PASSWORD EMAIL ',e);
+      logger.error('PROBLEM SENDING FORGOTTEN PASSWORD EMAIL ',e);
       defer.reject();
     });
   };
@@ -120,7 +120,7 @@ updatePassword = function(password){
 
 resolveUser = function(user, defer, email){
   if (user === null) {
-    logger.info('USER NOT FOUND ' + email);
+    logger.debug('USER NOT FOUND ' + email);
     return defer.reject();
   }
   var val = user.dataValues;
@@ -138,7 +138,7 @@ var find = function(email) {
   var defer = q.defer();
   _find(email).then(
     (user)=> resolveUser(user, defer,email),
-    (e)=> { logger.info(email + "user not found"); defer.reject(e);});
+    (e)=> { logger.debug(email + " user not found"); defer.reject(e);});
   return defer.promise;
 },
 
@@ -186,7 +186,7 @@ updateOtpKey = function(email,otpKey){
   },
   error = (err)=> {
     defer.reject();
-    logger.info('OTP UPDATE ERROR',err);
+    logger.error('OTP UPDATE ERROR',err);
   },
 
   update = function(user){
