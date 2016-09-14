@@ -204,7 +204,7 @@ describe('forgotten_password_controller', function () {
       {
         destroy: function(id){ assert.equal(id,2); }
       }
-      ).newPasswordPost({params: {id:2}, body: {password:'foo'}},{redirect: function(path){
+      ).newPasswordPost({params: {id:2}, body: {password:'foo'}, flash: ()=>{}},{redirect: function(path){
         assert.equal(updatePasswordCalled,true);
         assert.equal(path,"/login");
       }});

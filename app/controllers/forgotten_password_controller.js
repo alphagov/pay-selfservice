@@ -46,6 +46,7 @@ e.newPasswordPost = (req, res)=> {
     return forgottenPassword.destroy(req.params.id);
   })
   .then(function(){
+    req.flash('generic', 'Password has been updated');
     res.redirect('/login');
   }).catch(function(error) {
     res.redirect('/login');
