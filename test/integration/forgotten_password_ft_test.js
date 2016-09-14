@@ -135,8 +135,8 @@ describe('forgotten_password_controller', function () {
             }
           };
         }
-      }).newPasswordGet({params: {id:2}},{render: function(template, params){
-        assert.equal(template,"error");
+      }).newPasswordGet({params: {id:2},flash: ()=>{}},{redirect: function(url){
+        assert.equal(url,"/login");
       }});
     });
   });

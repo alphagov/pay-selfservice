@@ -33,7 +33,9 @@
     </header>
 
     {{$afterHeader}}{{/afterHeader}}
-
+    {{#flash.genericError}}
+    <p class="generic-error"> {{flash.genericError}} </p>
+    {{/flash.genericError}}
     <main id="content" role="main">
       <div class="navigation">
         <div class="inner">

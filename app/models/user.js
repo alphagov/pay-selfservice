@@ -207,6 +207,7 @@ findByResetToken = function(code){
   },
 
   foundToken = (forgotten)=> {
+    if (forgotten === null) return defer.reject();
     var current = moment(Date.now()),
     created     = moment(forgotten.date),
     duration    = Math.ceil(moment.duration(current.diff(created)).asMinutes()),

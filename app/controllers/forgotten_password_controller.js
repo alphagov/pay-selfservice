@@ -29,7 +29,10 @@ e.newPasswordGet = (req, res)=> {
     res.render('forgotten_password/new_password', {id: id});
   };
 
-  User.findByResetToken(id).then(render, ()=> errorView(req, res));
+  User.findByResetToken(id).then(render, ()=> {
+    req.flash('genericError', 'Invalid password reset link');
+    res.redirect('/login');
+  });
 };
 
 e.newPasswordPost = (req, res)=> {
@@ -45,6 +48,6 @@ e.newPasswordPost = (req, res)=> {
   .then(function(){
     res.redirect('/login');
   }).catch(function(error) {
-    errorView(req, res);
+    res.redirect('/login');
   });
 };
