@@ -56,6 +56,7 @@ module.exports.logUserinOTP = function(req, res, next) {
 };
 
 module.exports.otpLogIn = function (req, res) {
+  res.locals.showLogout = true;
   if (!req.session.sentCode) {
     req.user.sendOTP().then(function(){
       req.session.sentCode = true;
