@@ -11,3 +11,5 @@ staging-1.tag=alpha_staging-1-23
 staging-1.alpha_staging-1-23.date=2016-09-14:15:17:00
 
 staging-1.alpha_staging-1-23.status=success
+
+alpha_staging-1-23.approver=till.wirth@digital.cabinet-office.gov.uk
