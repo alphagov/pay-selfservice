@@ -9,3 +9,5 @@ alpha_release-25.approve-date=2016-09-14:17:43:47
 staging-1.tag=alpha_staging-1-25
 
 staging-1.alpha_staging-1-25.date=2016-09-14:18:33:40
+
+staging-1.alpha_staging-1-25.status=success
