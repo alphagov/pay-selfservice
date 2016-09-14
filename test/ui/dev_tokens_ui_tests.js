@@ -7,7 +7,7 @@ describe('The token view', function() {
     var templateData = {
       "active": true,
       "header": 'available-tokens',
-      "wording": 'active',
+      "token_state": 'active',
       "tokens": [],
       "tokens_singular": false
     };
@@ -23,7 +23,7 @@ describe('The token view', function() {
     var templateData = {
       "active": false,
       "header": 'revoked-tokens',
-      "wording": 'revoked',
+      "token_state": 'revoked',
       "tokens": [],
       "tokens_singular": false
     };
@@ -39,7 +39,7 @@ describe('The token view', function() {
       templateData = {
         "active": true,
         "header": 'available-tokens',
-        "wording": 'active',
+        "token_state": 'active',
         'tokens' : [{
           "token_link": tokenLink,
           "description":"description token 1",
@@ -66,7 +66,7 @@ describe('The token view', function() {
       templateData = {
         "active": false,
         "header": 'revoked-tokens',
-        "wording": 'revoked',
+        "token_state": 'revoked',
         "tokens_singular": true,
         'tokens' : [{
           "token_link": tokenLink,
@@ -91,7 +91,7 @@ describe('The token view', function() {
     var templateData = {
       "active": true,
       "header": 'available-tokens',
-      "wording": 'active',
+      "token_state": 'active',
       "tokens_singular": false,
       'tokens': [
         {
@@ -132,7 +132,7 @@ describe('The token view', function() {
     var templateData = {
       "active": false,
       "header": 'revoked-tokens',
-      "wording": 'revoked',
+      "token_state": 'revoked',
       "tokens_singular": false,
       'tokens': [
         {

@@ -81,7 +81,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               "active": false,
               "header": 'revoked-tokens',
-              "wording": 'revoked',
+              "token_state": 'revoked',
               "tokens": [],
               "tokens_singular": false
             })
@@ -105,7 +105,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               "active": false,
               "header": 'revoked-tokens',
-              "wording": 'revoked',
+              "token_state": 'revoked',
               "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
               "tokens_singular": true,
             })
@@ -132,7 +132,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               "active": false,
               "header": 'revoked-tokens',
-              "wording": 'revoked',
+              "token_state": 'revoked',
               "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1", 'revoked': "18 Oct 2015"},
                 {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2", 'revoked': "19 Oct 2015"}],
               "tokens_singular": false,
@@ -154,7 +154,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               "active": true,
               "header": 'available-tokens',
-              "wording": 'active',
+              "token_state": 'active',
               "tokens": [],
               "tokens_singular": false
             })
@@ -179,7 +179,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               "active": true,
               "header": 'available-tokens',
-              "wording": 'active',
+              "token_state": 'active',
               "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
               "tokens_singular": true,
             })
@@ -206,7 +206,7 @@ portfinder.getPort(function(err, freePort) {
             .expect(200, {
               "active": true,
               "header": 'available-tokens',
-              "wording": 'active',
+              "token_state": 'active',
               "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                          {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
               "tokens_singular": false,

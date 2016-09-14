@@ -19,7 +19,7 @@ module.exports.index = function (req, res) {
     logger.debug('Calling publicAuth to get active tokens -', {
       service: 'publicAuth',
       method: 'GET',
-      url: publicAuthUrl + '/{accountId}'
+      url: publicAuthUrl + '/{accountId}?state=active'
     });
 
     client.get(publicAuthUrl + "/" + accountId, function (publicAuthData) {
@@ -33,7 +33,7 @@ module.exports.index = function (req, res) {
       response(req.headers.accept, res, TOKEN_VIEW, {
         'active': true,
         'header': "available-tokens",
-        'wording': "active",
+        'token_state': "active",
         'tokens': activeTokens,
         'tokens_singular': activeTokens.length == 1
       });
@@ -72,11 +72,10 @@ module.exports.revoked = function (req, res) {
       response(req.headers.accept, res, TOKEN_VIEW, {
         'active': false,
         'header': "revoked-tokens",
-        'wording': "revoked",
+        'token_state': "revoked",
         'tokens': revokedTokens,
         'tokens_singular': revokedTokens.length == 1
       });
-      //response(req.headers.accept, res, REVOKED_TOKEN_VIEW, responsePayload);
     }).on('error', function (err) {
       logger.error('Calling publicAuth to get revoked tokens threw exception -', {
         service: 'publicAuth',

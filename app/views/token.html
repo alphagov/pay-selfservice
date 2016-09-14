@@ -13,12 +13,12 @@ GOV.UK Pay - API keys
 <h1 class="page-title">API Keys</h1>
 <ul class="tabs">
   {{#active}}
-  <li class="current"><a href="{{ routes.devTokens.index }}">Active keys</a></li>
+  <li class="current">Active keys</li>
   <li><a href="{{ routes.devTokens.revoked }}">Revoked keys</a></li>
   {{/active}}
   {{^active}}
   <li><a href="{{ routes.devTokens.index }}">Active keys</a></li>
-  <li class="current"><a href="{{ routes.devTokens.revoked }}">Revoked keys</a></li>
+  <li class="current">Revoked keys</li>
   {{/active}}
 </ul>
 
