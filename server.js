@@ -29,7 +29,7 @@ function initialiseGlobalMiddleware (app) {
       logger.info(message);
     }
   };
-  app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware('combined', {'stream' : logger.stream}));
+  app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware('combined'));
   app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
 
   app.use(function (req, res, next) {
