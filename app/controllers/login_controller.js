@@ -6,12 +6,6 @@ var passport  = require('passport');
 var paths     = require('../paths.js');
 var errorView = require('../utils/response.js').renderErrorView;
 
-var logIfError = function (scenario, err) {
-  if (err) {
-    logger.warn(scenario + ' -', {'error': err});
-  }
-};
-
 var error = function(req,res,err) {
     errorView(req, res);
     logger.error(err);
@@ -19,7 +13,6 @@ var error = function(req,res,err) {
 
 module.exports.loggedIn = function (req, res) {
   req.session.reload(function (err) {
-    logIfError('LoggedIn reload session', err);
     res.render('login/logged_in', {
       name: req.user.username
     });

@@ -8,13 +8,6 @@ var csrf = require('csrf');
 var User = require(__dirname + '/../models/user.js');
 var _ = require('lodash');
 
-
-var logIfError = function (scenario, err) {
-  if (err) {
-    logger.warn(scenario + ' -', {'warn': err});
-  }
-};
-
 var localStrategyAuth = function(username, password, done) {
   User.authenticate(username,password)
   .then(function(user){
@@ -62,7 +55,6 @@ var auth = {
   appendLoggedOutCSRF: appendLoggedOutCSRF,
   enforce: function (req, res, next) {
     req.session.reload(function (err) {
-      logIfError('Enforce reload of LogIn', err);
       var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
       enforceUser(req, res, function(){
