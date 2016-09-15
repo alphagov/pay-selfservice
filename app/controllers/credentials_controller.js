@@ -13,7 +13,6 @@ var router        = require('../routes.js');
 
 function showSuccessView(connectorData, viewMode, req, res) {
   var paymentProvider = connectorData.payment_provider;
-  logger.info(viewMode);
   var responsePayload = {
     'payment_provider': changeCase.titleCase(paymentProvider),
     'credentials': connectorData.credentials,
@@ -82,17 +81,14 @@ function loadIndex(req, res, viewMode) {
 
 module.exports = {
   index: function (req, res) {
-    logger.info("***** In index");
     loadIndex(req, res);
   },
 
   editCredentials: function(req, res) {
-    logger.info("***** In editCredentials");
     loadIndex(req, res, EDIT_CREDENTIALS_MODE);
   },
 
   editNotificationCredentials: function(req, res) {
-    logger.info("***** In editCredentials");
     loadIndex(req, res, EDIT_NOTIFICATION_CREDENTIALS_MODE);
   },
 
