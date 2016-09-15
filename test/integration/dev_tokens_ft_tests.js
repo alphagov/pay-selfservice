@@ -68,6 +68,79 @@ portfinder.getPort(function(err, freePort) {
         winston.level = 'none';
       });
 
+      describe('The /tokens/revoked endpoint', function() {
+        it('should return an empty list of tokens if no tokens have been revoked yet', function (done) {
+          serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
+
+          serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID + "?state=revoked")
+            .reply(200, {
+              "account_id": ACCOUNT_ID
+            });
+
+          build_get_request(paths.devTokens.revoked)
+            .expect(200, {
+              "active": false,
+              "header": 'revoked-tokens',
+              "token_state": 'revoked',
+              "tokens": [],
+              "tokens_singular": false
+            })
+            .end(done);
+        });
+        it('should return the account_id and the token list for the only revoked token', function (done){
+
+          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+          serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID + "?state=revoked")
+            .reply(200, {
+              "account_id": ACCOUNT_ID,
+              "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}]
+            });
+
+          build_get_request(paths.devTokens.revoked)
+            .expect(function(res){
+              if (!res.body.tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.tokens[0].csrfToken;
+            })
+            .expect(200, {
+              "active": false,
+              "header": 'revoked-tokens',
+              "token_state": 'revoked',
+              "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
+              "tokens_singular": true,
+            })
+            .end(done);
+        });
+
+        it('should return the account_id and the token list for multiple revoked tokens', function (done){
+          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
+
+          serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID + "?state=revoked")
+            .reply(200, {
+              "account_id": ACCOUNT_ID,
+              "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1", 'revoked': "18 Oct 2015"},
+                         {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2", 'revoked': "19 Oct 2015"}]
+            });
+
+          build_get_request(paths.devTokens.revoked)
+            .expect(function(res){
+              if (!res.body.tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.tokens[0].csrfToken;
+              if (!res.body.tokens[1].csrfToken)  throw new Error('no token');
+              delete res.body.tokens[1].csrfToken;
+            })
+            .expect(200, {
+              "active": false,
+              "header": 'revoked-tokens',
+              "token_state": 'revoked',
+              "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1", 'revoked': "18 Oct 2015"},
+                {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2", 'revoked': "19 Oct 2015"}],
+              "tokens_singular": false,
+            })
+            .end(done);
+        });
+      });
+
       describe('The /tokens endpoint', function() {
         it('should return an empty list of tokens if no tokens have been issued yet', function (done){
           serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
@@ -79,9 +152,11 @@ portfinder.getPort(function(err, freePort) {
 
           build_get_request(paths.devTokens.index)
             .expect(200, {
-              "active_tokens": [],
-              "active_tokens_singular": false,
-              "revoked_tokens": [],
+              "active": true,
+              "header": 'available-tokens',
+              "token_state": 'active',
+              "tokens": [],
+              "tokens_singular": false
             })
             .end(done);
         });
@@ -98,13 +173,15 @@ portfinder.getPort(function(err, freePort) {
 
           build_get_request(paths.devTokens.index)
           .expect(function(res){
-              if (!res.body.active_tokens[0].csrfToken)  throw new Error('no token');
-              delete res.body.active_tokens[0].csrfToken;
+              if (!res.body.tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.tokens[0].csrfToken;
             })
             .expect(200, {
-              "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
-              "active_tokens_singular": true,
-              "revoked_tokens": [],
+              "active": true,
+              "header": 'available-tokens',
+              "token_state": 'active',
+              "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
+              "tokens_singular": true,
             })
             .end(done);
         });
@@ -121,66 +198,18 @@ portfinder.getPort(function(err, freePort) {
 
           build_get_request(paths.devTokens.index)
             .expect(function(res){
-              if (!res.body.active_tokens[0].csrfToken)  throw new Error('no token');
-              delete res.body.active_tokens[0].csrfToken;
-              if (!res.body.active_tokens[1].csrfToken)  throw new Error('no token');
-              delete res.body.active_tokens[1].csrfToken;
+              if (!res.body.tokens[0].csrfToken)  throw new Error('no token');
+              delete res.body.tokens[0].csrfToken;
+              if (!res.body.tokens[1].csrfToken)  throw new Error('no token');
+              delete res.body.tokens[1].csrfToken;
             })
             .expect(200, {
-              "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
+              "active": true,
+              "header": 'available-tokens',
+              "token_state": 'active',
+              "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
                          {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
-              "active_tokens_singular": false,
-              "revoked_tokens": [],
-            })
-            .end(done);
-        });
-
-        it('should include revoked date in case the token has been already revoked', function (done){
-          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
-
-          serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
-            .reply(200, {
-                "account_id": ACCOUNT_ID,
-                "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", "revoked": "18 Oct 2015"},
-                           {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}]
-            });
-
-          build_get_request(paths.devTokens.index)
-            .expect(function(res){
-              if (!res.body.active_tokens[0].csrfToken)  throw new Error('no token');
-              delete res.body.active_tokens[0].csrfToken;
-              if (!res.body.revoked_tokens[0].csrfToken)  throw new Error('no token');
-              delete res.body.revoked_tokens[0].csrfToken;
-            })
-            .expect(200, {
-              "active_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 1"}],
-              "active_tokens_singular": true,
-              "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
-            })
-            .end(done);
-        });
-
-        it('should include all tokens even if all have been revoked', function (done){
-          serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
-
-          serverMock.get(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID)
-            .reply(200, {
-                "account_id": ACCOUNT_ID,
-                "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", "revoked": "18 Oct 2015"},
-                           {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}]
-            });
-
-          build_get_request(paths.devTokens.index)
-            .expect(function(res){
-              if (!res.body.revoked_tokens[0].csrfToken)  throw new Error('no token');
-              delete res.body.revoked_tokens[0].csrfToken;
-              if (!res.body.revoked_tokens[1].csrfToken)  throw new Error('no token');
-              delete res.body.revoked_tokens[1].csrfToken;
-            })
-            .expect(200, {
-              "active_tokens": [],
-              "active_tokens_singular": false,
-              "revoked_tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}, {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"token 2", "revoked": "18 Oct 2015"}],
+              "tokens_singular": false,
             })
             .end(done);
         });
@@ -386,7 +415,6 @@ portfinder.getPort(function(err, freePort) {
               .end(done);
 
           });
-
 
       });
 

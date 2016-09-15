@@ -1,0 +1,42 @@
+ul.tabs{
+  padding: 0px;
+  list-style: none;
+  border-bottom: 1px solid #ccc;
+}
+
+.tabs {
+  a, a:visited, a:hover, a:active {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+ul.tabs li{
+  margin-left: 10px;
+  font-weight: bold;
+  padding: 10px 40px;
+  background: none;
+  color: $link-colour;
+  display: inline-block;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+ul.tabs li.current{
+  color: black;
+  border: 1px solid #ccc;
+  border-bottom: hidden;
+  background-color: white;
+}
+
+.tab-content{
+  display: none;
+  padding-top: 30px;
+}
+
+.tab-content.current{
+  display: inherit;
+}
+
+.key-list {
+  margin-top: 30px;
+}

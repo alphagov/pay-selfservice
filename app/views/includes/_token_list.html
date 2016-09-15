@@ -1,0 +1,29 @@
+<div class="tab-content current">
+    <h2 id="{{header}}" class="heading-medium remove-top-margin">
+        {{#tokens.length}}
+        {{#tokens_singular}}
+        There is 1 {{token_state}} API key
+        {{/tokens_singular}}
+        {{^tokens_singular}}
+        There are {{tokens.length}} {{token_state}} API keys
+        {{/tokens_singular}}
+        {{/tokens.length}}
+        {{^tokens.length}}
+        There are no {{token_state}} API keys
+        {{/tokens.length}}
+    </h2>
+
+    {{#active}}
+        <a class="button generate-key" href="/tokens/generate">
+            Generate a new key
+        </a>
+    {{/active}}
+
+    {{#tokens.length}}
+    <ul class="key-list">
+        {{#tokens}}
+        {{>includes/_token}}
+        {{/tokens}}
+    </ul>
+    {{/tokens.length}}
+</div>

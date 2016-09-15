@@ -73,6 +73,7 @@ module.exports.bind = function (app) {
 
   var dt = paths.devTokens;
   app.get(dt.index, auth.enforce, csrf, devTokens.index);
+  app.get(dt.revoked, auth.enforce, csrf, devTokens.revoked);
   app.get(dt.show, auth.enforce, csrf, devTokens.show);
   app.post(dt.create, auth.enforce, csrf, devTokens.create);
   app.put(dt.update, auth.enforce, csrf, devTokens.update);
