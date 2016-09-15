@@ -22,7 +22,8 @@ var sequel = {
         create: function() {},
         hasMany: function() {}
       };
-    }
+    },
+    query: function(){ return { then: (suc)=> suc() }}
   }
 };
 
@@ -333,7 +334,8 @@ describe('user model', function() {
           findOne: function(){
             return { then: function(success){ success(values); }};
           },
-          hasMany: () => {}
+          hasMany: () => {},
+          query:() => {}
         };
       };
       var user = User(seq);
@@ -426,7 +428,7 @@ describe('user model', function() {
         .then(done)
         .catch(done);
     });
-    it.skip('should not update the password if it is timed out', function(done) {
+    it.skip('should not update the password if it is timed out.', function(done) {
       // WE REALLY NEED A DATABaSE TO TEST THIS PROPERLY PP-1006
       // WILL BE HANDLED AFTER DEPLOY
     });
