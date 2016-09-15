@@ -1,12 +1,16 @@
 $(document).ready(function(){
   "use strict";
 
-  $('.js-toggle-description').on('click', toggleDescription);
-  $('.js-toggle-revoke').on('click', toggleRevoke);
-  $('.js-save-description').on('click', saveDescription);
-  $('.js-revoke-token').on('click', revokeToken);
+  var keyList = $('.key-list');
+  keyList.on('click', '.js-toggle-description', toggleDescription);
+  keyList.on('click', '.js-toggle-revoke', toggleRevoke);
+  keyList.on('click', '.js-save-description', saveDescription);
+  keyList.on('click', '.js-revoke-token', revokeToken);
+
 
   function toggleDescription(evt) {
+    var oldDescription = $('.js-old-description').text();
+    $('.js-new-description').val(oldDescription);
     toggle.call(this, '.js-edit-description');
     toggle.call(this, '.js-edit-controls');
     evt.preventDefault();
