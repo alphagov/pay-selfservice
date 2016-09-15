@@ -15,3 +15,5 @@ staging-1.alpha_staging-1-36.status=success
 alpha_staging-1-36.approver=ian.maddison@digital.cabinet-office.gov.uk
 
 alpha_staging-1-36.approve-date=2016-09-15:16:06:33
+
+production-1.tag=alpha_production-1-36
