@@ -1,10 +1,10 @@
 $(document).ready(function(){
   "use strict";
 
-  $('.js-toggle-description').on('click', toggleDescription);
-  $('.js-toggle-revoke').on('click', toggleRevoke);
-  $('.js-save-description').on('click', saveDescription);
-  $('.js-revoke-token').on('click', revokeToken);
+  $(document.body).on('click', '.js-toggle-description', toggleDescription);
+  $(document.body).on('click', '.js-toggle-revoke', toggleRevoke);
+  $(document.body).on('click', '.js-save-description', saveDescription);
+  $(document.body).on('click', '.js-revoke-token', revokeToken);
 
   function toggleDescription(evt) {
     toggle.call(this, '.js-edit-description');
