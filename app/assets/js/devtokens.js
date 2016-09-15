@@ -9,6 +9,8 @@ $(document).ready(function(){
 
 
   function toggleDescription(evt) {
+    var oldDescription = $('.js-old-description').text();
+    $('.js-new-description').val(oldDescription);
     toggle.call(this, '.js-edit-description');
     toggle.call(this, '.js-edit-controls');
     evt.preventDefault();
