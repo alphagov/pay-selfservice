@@ -2,6 +2,10 @@
 
 {{$providerContent}}
 
+<p>
+<h4 class="heading-small" id="view-title">Your {{payment_provider}} Credentials</h4>
+</p>
+
 {{^editMode}}
 <dl id="credentials">
     <dt id="username-key" class="font-xsmall"><p>Username</p></dt>
@@ -32,6 +36,41 @@
 
 </form>
 {{/editMode}}
+
+<p>
+<h4 class="heading-small" id="view-notification-title">Your {{payment_provider}} Notification Credentials</h4>
+</p>
+
+{{^editNotificationCredentialsMode}}
+<dl id="notification_credentials">
+    <dt id="notification-username-key" class="font-xsmall"><p>Username</p></dt>
+    <dd id="notification-username-value"><b>{{notification_credentials.userName}}</b></dd>
+
+    <dt id="notification-password-key" class="font-xsmall"><p>Password</p></dt>
+    <dd id="notification-password-value"><b>{{#notification_credentials.userName}}****{{/notification_credentials.userName}}</b></dd>
+</dl>
+<a id="edit-notification_credentials-link" class="button" href="{{routes.notificationCredentials.edit}}">
+    Edit notification credentials
+</a>
+{{/editNotificationCredentialsMode}}
+
+{{#editNotificationCredentialsMode}}
+<form id="notification_credentials_form" method="post" action="{{routes.notificationCredentials.update}}">
+    <input id="notification-csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-control" id="notification-username" name="username" type="text" value="{{notification_credentials.userName}}">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-control" id="notification-password" name="password" type="password" value="">
+    </div>
+
+    <input id="submitNotificationCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
+
+</form>
+{{/editNotificationCredentialsMode}}
 
 {{/providerContent}}
 

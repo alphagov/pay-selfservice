@@ -16,6 +16,8 @@ portfinder.getPort(function (err, freePort) {
 
   var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
+  var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = "/v1/api/accounts/" + ACCOUNT_ID + "/notification-credentials";
+
   var localServer = 'http://localhost:' + freePort;
   var connectorMock = nock(localServer);
 
@@ -43,7 +45,11 @@ portfinder.getPort(function (err, freePort) {
      'edit':false
     },
     {'path':paths.credentials.edit,
-    'edit':true
+      'edit':true
+    },
+    {
+     'path':paths.notificationCredentials.edit,
+      'notificationEdit':true
     }
    ].forEach(function(testSetup) {
 
@@ -68,10 +74,13 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+           "editMode": false,
+           "editNotificationCredentialsMode": false,
            "credentials": {}
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -88,10 +97,13 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+           "editMode": false,
+           "editNotificationCredentialsMode": false,
            "credentials": {}
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -108,12 +120,15 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+           "editNotificationCredentialsMode": false,
+           "editMode": false,
            "credentials": {
              'username': 'a-username'
            }
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -130,13 +145,16 @@ portfinder.getPort(function (err, freePort) {
 
         var expectedData = {
            "payment_provider": "Sandbox",
+          "editMode": false,
+          "editNotificationCredentialsMode": false,
             "credentials": {
               'username': 'a-username',
               'merchant_id': 'a-merchant-id'
             }
         };
 
-        if(testSetup.edit) expectedData.editMode = 'true';
+        if(testSetup.edit) expectedData.editMode = true;
+        if(testSetup.notificationEdit) expectedData.editNotificationCredentialsMode = true;
 
         build_get_request(testSetup.path)
             .expect(200, expectedData)
@@ -176,6 +194,42 @@ portfinder.getPort(function (err, freePort) {
     });
   });
 
+  describe('The notification credetials', function() {
+    beforeEach(function () {
+      process.env.CONNECTOR_URL = localServer;
+      nock.cleanAll();
+    });
+
+    before(function () {
+      // Disable logging.
+      winston.level = 'none';
+    });
+
+    it('should pass through the notification credentials', function(done) {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          "payment_provider": "smartpay",
+          "gateway_account_id": "1",
+          "credentials": {username: "a-username"},
+          "notificationCredentials": {username: "a-notification-username"}
+        });
+
+      var expectedData = {
+        "payment_provider": "Smartpay",
+        "editMode": false,
+        "editNotificationCredentialsMode": false,
+        "credentials": {
+          'username': 'a-username'
+        },
+        "notification_credentials": {username: "a-notification-username"}
+      };
+
+
+      build_get_request(paths.credentials.index)
+        .expect(200, expectedData)
+        .end(done);
+    });
+  });
 
   describe('The provider update credentials endpoint', function () {
     beforeEach(function () {
@@ -271,4 +325,35 @@ portfinder.getPort(function (err, freePort) {
       .end(done);
     });
   });
-});
+
+  describe('The provider update notification credentials endpoint', function () {
+    beforeEach(function () {
+      process.env.CONNECTOR_URL = localServer;
+      nock.cleanAll();
+    });
+
+    before(function () {
+      // Disable logging.
+      winston.level = 'error';
+    });
+
+    it('should send new username and password notification credentials to connector', function (done) {
+      connectorMock.post(CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH, {
+          "username": "a-notification-username",
+          "password": "a-notification-password"
+      })
+        .reply(200, {});
+
+
+//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
+      var sendData = {'username': 'a-notification-username', 'password': 'a-notification-password'};
+      var expectedLocation = paths.credentials.index;
+      var path = paths.notificationCredentials.update;
+      build_form_post_request(path, sendData)
+        .expect(303, {})
+        .expect('Location', expectedLocation)
+        .end(done);
+    });
+  });
+
+  });

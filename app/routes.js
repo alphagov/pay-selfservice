@@ -44,10 +44,15 @@ module.exports.bind = function (app) {
 
   var cred = paths.credentials;
   app.get(cred.index, auth.enforce, csrf, credentials.index);
+  app.get(cred.edit, auth.enforce, csrf, credentials.editCredentials);
   app.post(cred.index, auth.enforce, csrf, credentials.update);
 
-  // LOGIN
+  var notCred = paths.notificationCredentials;
+  app.get(notCred.index, auth.enforce, csrf, credentials.index);
+  app.get(notCred.edit, auth.enforce, csrf, credentials.editNotificationCredentials);
+  app.post(notCred.update, auth.enforce, csrf, credentials.updateNotificationCredentials);
 
+  // LOGIN
   var user = paths.user;
   app.get(user.logIn, auth.appendLoggedOutCSRF, csrf, login.logInGet);
   app.post(user.logIn, csrf, trimEmail, login.logUserin(), login.postLogin);
