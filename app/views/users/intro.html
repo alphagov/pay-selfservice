@@ -1,0 +1,33 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+Create a GOV.UK Pay account
+{{/pageTitle}}
+{{$content}}
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+
+    <h1 class="heading-large">GOV.UK Pay</h1>
+
+    <p>
+      Making it easier for citizens and businesses to pay government.
+    </p>
+
+    <p>
+      If you work for a UK government department or agency you can try it now.
+    </p>
+
+    <div class="form-group">
+    <a href="{{ routes.user.new }}">
+        <input id="create-account" class="button" type="submit" value="Create an account">
+      </a>
+    </div>
+    <p>
+      If you’ve used GOV.UK Pay before, <a id="link-login" href="/login">sign in to your account</a>.
+    </p>
+  </div>
+</div>
+
+{{/content}}
+{{/layout_logged_out}}

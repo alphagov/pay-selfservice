@@ -11,6 +11,9 @@ var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
 var emailNotifications = require('./controllers/email_notifications_controller.js');
 var forgotPassword = require('./controllers/forgotten_password_controller.js');
+var userController = require('./controllers/user_controller.js');
+var gatewayController = require('./controllers/gateway_controller.js');
+
 
 var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
@@ -29,6 +32,23 @@ module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
 
 module.exports.bind = function (app) {
+  var user = paths.user;
+
+  // FEATURE FLAGGING
+
+  // USER CREATION
+  if (process.env.FF_USER_CREATION === 'true') {
+    app.get(user.intro, userController.intro);
+    app.get(user.new, userController.new);
+    app.post(user.create, userController.create);
+    app.get(user.index, userController.index);
+    app.get(user.show, userController.show);
+    app.post(user.disable, userController.disable);
+    app.post(user.enable, userController.enable);
+  }
+
+
+  // END OF FEATURE FLAGGING
 
   app.get('/style-guide', function (req, res) {
     response(req.headers.accept, res, 'style_guide');
@@ -55,7 +75,6 @@ module.exports.bind = function (app) {
   app.post(notCred.update, auth.enforceUserBothFactors, csrf, credentials.updateNotificationCredentials);
 
   // LOGIN
-  var user = paths.user;
   app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
   app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin(), login.postLogin);
   app.get(user.loggedIn, auth.enforceUserBothFactors, csrf, login.loggedIn);
@@ -72,8 +91,6 @@ module.exports.bind = function (app) {
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
   app.get(user.forgottenPasswordReset, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.newPasswordGet);
   app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);
-
-
 
 
   // DEV TOKENS
@@ -112,7 +129,9 @@ module.exports.bind = function (app) {
   app.post(en.on, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.on);
 
 
-
+  // GATEWAY
+  var gateway = paths.gateway;
+  app.get(gateway.index, auth.enforceUserBothFactors, csrf, gatewayController.index);
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

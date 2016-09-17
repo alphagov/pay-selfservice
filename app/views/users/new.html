@@ -1,0 +1,63 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+Create a GOV.UK Pay account
+{{/pageTitle}}
+{{$content}}
+
+<div class="grid-row">
+
+  <h1 class="form-title heading-large">
+    Create an account
+  </h1>
+  <form id="create-user" class="form" method="post" action="{{ routes.user.create }}">
+    <div class="form-group">
+      <label class="form-label" for="username">Full name</label>
+      <input type="text" class="form-control" id="username" name="username">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="email">
+        Email
+        <span class="form-hint">
+          Must be a government email address
+        </span>
+      </label>
+      <input type="text" class="form-control" id="email" name="email">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="telephone_number">
+        Mobile number
+        <span class="form-hint">
+          We’ll send you a verification code by text message
+        </span>
+      </label>
+      <input type="text" class="form-control" id="telephone_number" name="telephone_number" >
+    </div> 
+
+    <div class="form-group">
+      <label class="form-label" for="password">
+        <label for="password">Password</label>
+        <span class="form-hint">
+          At least 10 characters
+        </span>
+      </label>
+      <input class="form-control" data-module="" id="password" name="password" rows="8" type="password" value="">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="gateway_account_id">
+        <label for="password">Gateway account id (TODO ENUMERATE)</label>
+      </label>
+      <input class="form-control" data-module="" id="gateway_account_id" name="gateway_account_id" rows="8" type="test" value="">
+    </div>
+    
+    <div class="form-group">
+      <input class="button" type="submit" value="Continue">
+    </div>
+  </form>
+</div>
+
+{{/content}}
+{{/layout_logged_out}}

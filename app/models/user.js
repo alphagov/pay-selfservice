@@ -1,19 +1,20 @@
-var sequelizeConfig = require('./../utils/sequelize_config.js');
+var sequelizeConfig     = require('./../utils/sequelize_config.js');
 var sequelizeConnection = sequelizeConfig.sequelize;
-var Sequelize = require('sequelize');
-var bcrypt = require('bcrypt');
-var q = require('q');
-var _ = require('lodash');
-var notify = require('../services/notification_client.js');
-var notp = require('notp');
-var random = require('../utils/random.js');
-var logger = require('winston');
-var forgottenPassword = require('./forgotten_password.js').sequelize;
-var moment = require('moment');
-var paths = require(__dirname + '/../paths.js');
-var commonPassword = require('common-password');
-var MIN_PASSWORD_LENGTH = 10;
-var HASH_PASSWORD_SALT_ROUNDS = 10;
+var Sequelize           = require('sequelize');
+var bcrypt              = require('bcrypt');
+var q                   = require('q');
+var _                   = require('lodash');
+var notify              = require('../services/notification_client.js');
+var notp                = require('notp');
+var random              = require('../utils/random.js');
+var logger              = require('winston');
+var forgottenPassword   = require('./forgotten_password.js').sequelize;
+var moment              = require('moment');
+var paths               = require(__dirname + '/../paths.js');
+var commonPassword      = require('common-password');
+
+const MIN_PASSWORD_LENGTH = 10;
+const HASH_PASSWORD_SALT_ROUNDS = 10;
 
 var User = sequelizeConnection.define('user', {
   username: {
@@ -200,12 +201,12 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   return defer.promise;
 },
 
-resolveUser = function(user, defer){
+resolveUser = function(user, defer, identifier){
   if (user === null) {
-    logger.debug('USER NOT FOUND');
-    return defer.reject();
+    logger.info('USER NOT FOUND IDENTIFIER:' + identifier);
+    if (!defer) return;
+    return defer.reject("User not found");
   }
-
   var val = user.dataValues;
   delete val.password;
   val.generateOTP = generateOTP;
@@ -217,7 +218,9 @@ resolveUser = function(user, defer){
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
   val.logOut = logOut;
-  defer.resolve(val);
+  val.disabled = (user.dataValues.disabled === null || user.dataValues.disabled === false) ? false : true;
+  if (defer) return defer.resolve(val);
+  return val;
 };
 
 // CLASS
@@ -227,7 +230,15 @@ var find = function(email, correlationId) {
   var defer = q.defer();
   _find(email).then(
     (user)=> resolveUser(user, defer),
-    (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);});
+    (e)=> { logger.debug(`[${correlationId}] find user by email - error`); defer.reject(e);});
+  return defer.promise;
+},
+
+findById = function(id) {
+  var defer = q.defer();
+  _find({id : id}).then(
+    (user)=> resolveUser(user, defer,id),
+    (e)=> { logger.info("find user by id - error");  defer.reject(e);});
   return defer.promise;
 },
 
@@ -235,11 +246,24 @@ findByUsername = function(username, correlationId) {
   correlationId = correlationId || '';
   var defer = q.defer();
 
-  _find(undefined,['password'],{username: username}).then(
+  _find({username: username},['password']).then(
       (user)=> resolveUser(user, defer),
       (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);}
     );
   return defer.promise;
+},
+
+findAll = function(){
+  var resolvedUsers = [];
+  var defer = q.defer();
+
+  User.findAll().then((users)=> {
+    _.each(users,(user)=>
+      resolvedUsers.push(resolveUser(user))
+    )
+    defer.resolve(resolvedUsers);
+  })
+  return defer.promise
 },
 
 create = function(user){
@@ -261,7 +285,7 @@ authenticate = function(username,password) {
   var defer = q.defer();
 
   init = function(){
-    _find(undefined,['password'],{username: username}).then(authentic, defer.reject)
+    _find({username: username},['password']).then(authentic, defer.reject)
   };
 
   authentic = function(user){
@@ -314,7 +338,7 @@ findByResetToken = function(code){
     timedOut    = duration > parseInt(process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES),
     notfound    = forgotten === null;
     if (notfound || timedOut) return defer.reject();
-    _find(undefined,[],{id : forgotten.userId})
+    _find({id : forgotten.userId})
       .then(foundUser, defer.reject);
   },
 
@@ -325,8 +349,9 @@ findByResetToken = function(code){
 };
 
 // PRIVATE
-var _find = function(email, extraFields = [], where) {
-  if (!where) where = { email: email };
+
+var _find = function(where, extraFields = []) {
+  if (typeof where == 'string') where = { email: where };
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
@@ -346,9 +371,11 @@ var _find = function(email, extraFields = [], where) {
 module.exports = {
   find: find,
   findByUsername: findByUsername,
+  findAll: findAll,
   create: create,
   authenticate: authenticate,
   updateOtpKey: updateOtpKey,
   sequelize: User,
   findByResetToken: findByResetToken,
+  findById: findById
 };
