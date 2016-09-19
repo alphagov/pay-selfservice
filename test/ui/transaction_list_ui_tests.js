@@ -18,6 +18,7 @@ describe('The transaction list view', function () {
             'status': 'testing',
             'finished': false
           },
+          'card_brand': 'Visa',
           'created': '2016-01-11 01:01:01'
         },
         {
@@ -30,6 +31,7 @@ describe('The transaction list view', function () {
             'status': 'testing2',
             'finished': true
           },
+          'card_brand': 'Mastercard',
           'created': '2016-01-11 01:01:01'
         },
         {
@@ -42,6 +44,7 @@ describe('The transaction list view', function () {
             'status': 'testing2',
             'finished': true
           },
+          'card_brand': 'Amex',
           'created': '2016-01-11 01:01:01'
         }
       ]
@@ -55,8 +58,9 @@ describe('The transaction list view', function () {
         .withTableDataAt(1, templateData.results[ix].reference)
         .withTableDataAt(2, templateData.results[ix].email)
         .withTableDataAt(3, "£" + templateData.results[ix].amount)
-        .withTableDataAt(4, templateData.results[ix].state_friendly)
-        .withTableDataAt(5, templateData.results[ix].created);
+        .withTableDataAt(4, templateData.results[ix].card_brand)
+        .withTableDataAt(5, templateData.results[ix].state_friendly)
+        .withTableDataAt(6, templateData.results[ix].created);
     });
   });
 });

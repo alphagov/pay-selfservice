@@ -2,7 +2,6 @@ var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request     = require('supertest');
 var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
-var portfinder  = require('portfinder');
 var nock        = require('nock');
 var csrf        = require('csrf');
 var assert      = require('assert');
@@ -12,8 +11,6 @@ var session     = require(__dirname + '/../test_helpers/mock_session.js');
 var proxyquire  = require('proxyquire');
 var q           = require('q');
 var ACCOUNT_ID  = 182364;
-
-
 
 
 var forgotten = function(user = function(){}, forgottenPass = function(){}){

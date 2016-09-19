@@ -27,6 +27,10 @@ module.exports = function (data) {
           }
         },
         {
+          label: 'Card brand',
+          value: "card_brand"
+        },
+        {
           label: 'State',
           value: "state.status"
         },

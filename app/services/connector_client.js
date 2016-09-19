@@ -143,6 +143,7 @@ ConnectorClient.prototype = {
       reference: searchParameters.reference,
       email: searchParameters.email,
       state: searchParameters.state,
+      card_brand: searchParameters.brand,
       from_date: dates.fromDateToApiFormat(searchParameters.fromDate, searchParameters.fromTime),
       to_date: dates.toDateToApiFormat(searchParameters.toDate, searchParameters.toTime),
       page: searchParameters.page || 1,

@@ -23,6 +23,10 @@
     </tr>
     {{/refunded}}
     <tr>
+      <td>Brand:</td>
+      <td id="brand">{{card_brand}}</td>
+    </tr>
+    <tr>
       <td>State:</td>
       <td id="state">{{state_friendly}}{{#state.message}} ({{state.code}} - {{state.message}}){{/state.message}}</td>
     </tr>

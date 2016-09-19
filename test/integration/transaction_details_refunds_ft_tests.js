@@ -1,5 +1,4 @@
 var request = require('supertest');
-var portfinder = require('portfinder');
 var nock = require('nock');
 var csrf = require('csrf');
 var _app = require(__dirname + '/../../server.js').getApp;
@@ -10,13 +9,11 @@ var session = require(__dirname + '/../test_helpers/mock_session.js');
 var ACCOUNT_ID = 15486734;
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
-var localServer = 'http://aServer:8002';
-var connectorMock = nock(localServer);
+var connectorMock = nock(process.env.CONNECTOR_URL);
 
 describe('The transaction view - refund scenarios', function () {
 
   beforeEach(function () {
-    process.env.CONNECTOR_URL = localServer;
     nock.cleanAll();
   });
 

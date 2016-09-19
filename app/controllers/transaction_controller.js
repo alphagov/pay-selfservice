@@ -11,29 +11,37 @@ var Transaction = require('../models/transaction.js');
 var Charge = require('../models/charge.js');
 var getFilters = require('../utils/filters.js').getFilters;
 var url = require('url');
+var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
+var client = new ConnectorClient(process.env.CONNECTOR_URL);
 
 module.exports = {
 
   index: function (req, res) {
     var accountId = auth.get_gateway_account_id(req);
     var filters = getFilters(req);
-    req.session.filters= url.parse(req.url).query;
+    req.session.filters = url.parse(req.url).query;
     var init = function () {
-        if (!filters.valid) return error("Invalid search");
-        Transaction
-          .search(accountId, filters.result)
-          .then(render, ()=> error("Unable to retrieve list of transactions."));
-      },
+      if (!filters.valid) return error("Invalid search");
+      Transaction
+        .search(accountId, filters.result)
+        .then(onSuccessSearchTransactions, () => error("Unable to retrieve list of transactions."))
+    };
 
-      render = function (json) {
-        json.search_path = router.paths.transactions.index;
-        var data = transactionView.buildPaymentList(json, accountId, filters.result);
-        response(req.headers.accept, res, 'transactions/index', data);
-      },
-
-      error = function (msg) {
-        renderErrorView(req, res, msg);
+    var onSuccessSearchTransactions = function (transactions) {
+      var onSuccessGetAllCards = function (allCards) {
+        transactions.search_path = router.paths.transactions.index;
+        var model = transactionView.buildPaymentList(transactions, allCards, accountId, filters.result);
+        response(req.headers.accept, res, 'transactions/index', model)
       };
+
+      client
+        .withGetAllCardTypes(onSuccessGetAllCards)
+        .on('connectorError', () => error("Unable to retrieve card types."));
+    };
+
+    var error = function (msg) {
+      renderErrorView(req, res, msg);
+    };
 
     init();
   },
@@ -94,9 +102,9 @@ module.exports = {
     init();
   },
 
-  refund: function(req, res) {
+  refund: function (req, res) {
     var accountId = auth.get_gateway_account_id(req);
-    var chargeId  = req.params.chargeId;
+    var chargeId = req.params.chargeId;
     var show = router.generateRoute(router.paths.transactions.show, {
       chargeId: chargeId
     });

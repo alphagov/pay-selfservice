@@ -13,7 +13,7 @@ const PAGINATION_SPREAD = 2;
 const CURRENCY = '£';
 const eventStates = {
   'created': 'Service created payment of AMOUNT',
-  'started':'User started payment of AMOUNT',
+  'started': 'User started payment of AMOUNT',
   'submitted': 'User submitted payment details for payment of AMOUNT',
   'success': 'Payment of AMOUNT succeeded',
   'error': 'Error processing payment of AMOUNT',
@@ -35,13 +35,13 @@ function getPageSizeLinks(connectorData) {
   }
 }
 
-function getCurrentPageNumber (connectorData) {
+function getCurrentPageNumber(connectorData) {
   return connectorData.page;
 }
 
-function getCurrentPageSize (connectorData) {
+function getCurrentPageSize(connectorData) {
   var selfLink = connectorData._links && connectorData._links.self;
-  var queryString ;
+  var queryString;
   var limit;
 
   if (selfLink) {
@@ -60,7 +60,7 @@ function hasPageSizeLinks(connectorData) {
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, gatewayAccountId, filters) {
+  buildPaymentList: function (connectorData, allCards, gatewayAccountId, filters) {
     connectorData.filters = filters;
     connectorData.hasFilters = Object.keys(filters).length !== 0;
     connectorData.hasResults = connectorData.results.length !== 0;
@@ -72,22 +72,33 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData);
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData);
 
-    connectorData.eventStates = Object.keys(eventStates).map(function(str) {
+    connectorData.eventStates = Object.keys(eventStates).map(function (str) {
       var value = {};
       value.text = changeCase.upperCaseFirst(str.toLowerCase());
-      if(str === filters.state) {
+      if (str === filters.state) {
         value.selected = true;
       }
-      return { "key": str, "value": value};
+      return {"key": str, "value": value};
     });
+
+    connectorData.cardBrands = _.uniqBy(allCards.card_types, 'brand')
+      .map((card) => {
+        var value = {};
+        value.text = card.label;
+        if (card.brand === filters.brand) {
+          value.selected = true;
+        }
+        return {"key": card.brand, "value": value};
+      });
+
     connectorData.results.forEach(function (element) {
       element.state_friendly = changeCase.upperCaseFirst(element.state.status.toLowerCase());
-      element.amount  = (element.amount / 100).toFixed(2);
-      element.email = (element.email && element.email.length > 20) ? element.email.substring(0,20) + '...' :  element.email;
+      element.amount = (element.amount / 100).toFixed(2);
+      element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email;
       element.updated = dates.utcToDisplay(element.updated);
       element.created = dates.utcToDisplay(element.created_date);
       element.gateway_account_id = gatewayAccountId;
-      element.link    = router.generateRoute(router.paths.transactions.show,{
+      element.link = router.generateRoute(router.paths.transactions.show, {
         chargeId: element.charge_id
       });
       delete element.created_date;
@@ -95,14 +106,15 @@ module.exports = {
 
     // TODO normalise fromDate and ToDate so you can just pass them through no problem
     connectorData.downloadTransactionLink = router.generateRoute(
-      router.paths.transactions.download,{
+      router.paths.transactions.download, {
         reference: filters.reference,
         email: filters.email,
         state: filters.state,
+        brand: filters.brand,
         fromDate: filters.fromDate,
         toDate: filters.toDate,
         fromTime: filters.fromTime,
-        toTime:filters.toTime
+        toTime: filters.toTime
       });
 
     return connectorData;
@@ -129,7 +141,7 @@ module.exports = {
     chargeData.net_amount_display = CURRENCY + chargeData.net_amount;
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider);
-    chargeData.updated =  dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated);
+    chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated);
     chargeData['events'] = eventsData.events.reverse();
     delete chargeData['links'];
     delete chargeData['return_url'];

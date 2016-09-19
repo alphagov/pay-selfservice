@@ -2,7 +2,6 @@ var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
-var portfinder = require('portfinder');
 var nock = require('nock');
 var csrf = require('csrf');
 var should = require('chai').should();
@@ -15,12 +14,9 @@ var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controll
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
-portfinder.getPort(function (err, freePort) {
-
   var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
   var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = CONNECTOR_ACCOUNT_PATH + "/card-types";
-  var localServer = 'http://localhost:' + freePort;
-  var connectorMock = nock(localServer);
+  var connectorMock = nock(process.env.CONNECTOR_URL);
 
   function build_get_request(path) {
     return request(app)
@@ -42,14 +38,13 @@ portfinder.getPort(function (err, freePort) {
 
   describe('The payment types endpoint,', function () {
     describe('render select type view,', function () {
-      beforeEach(function () {
-        process.env.CONNECTOR_URL = localServer;
-        nock.cleanAll();
-      });
-
       before(function () {
         // Disable logging.
         winston.level = 'none';
+      });
+
+      beforeEach(function () {
+        nock.cleanAll();
       });
 
       it('should select debit and credit cards option by default if no card types are accepted for the account', function (done) {
@@ -174,4 +169,3 @@ portfinder.getPort(function (err, freePort) {
       });
     });
   });
-});
