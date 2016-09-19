@@ -8,10 +8,10 @@ var notify = require('../services/notification_client.js');
 var notp = require('notp');
 var random = require('../utils/random.js');
 var logger = require('winston');
-var forgottenPassword  = require('./forgotten_password.js').sequelize;
+var forgottenPassword = require('./forgotten_password.js').sequelize;
 var moment = require('moment');
-var paths  = require(__dirname + '/../paths.js');
-
+var paths = require(__dirname + '/../paths.js');
+var INVALID_PASSWORD = "Password must be at least 10 characters";
 
 var User = sequelizeConnection.define('user', {
   username: {
@@ -109,12 +109,17 @@ sendPasswordResetToken = function(){
 },
 
 updatePassword = function(password){
-  var defer = q.defer();
-  User.update(
-    { password: hashPassword(password) },
-    { where: { id : this.id } }
-  )
-  .then(defer.resolve,defer.reject);
+  var defer = q.defer(),
+  hashedPassword = hashValidPassword(password);
+
+    if (hashedPassword) {
+      User.update(
+        {password: hashedPassword},
+        {where: {id: this.id}}
+      ).then(defer.resolve, defer.reject);
+    } else {
+      defer.reject(INVALID_PASSWORD)
+    }
   return defer.promise;
 },
 
@@ -143,17 +148,22 @@ var find = function(email) {
 },
 
 create = function(user){
-  var defer = q.defer();
-  var _user = {
-    username: user.username,
-    password: hashPassword(user.password),
-    gateway_account_id: user.gateway_account_id,
-    email: user.email.toLowerCase(),
-    telephone_number: user.telephone_number,
-    otp_key: user.otp_key ? user.otp_key : random.key(10)
-  };
+  var defer = q.defer(),
+  hashedPassword = hashValidPassword(user.password);
+  if (hashedPassword) {
+    var _user = {
+      username: user.username,
+      password: hashedPassword,
+      gateway_account_id: user.gateway_account_id,
+      email: user.email.toLowerCase(),
+      telephone_number: user.telephone_number,
+      otp_key: user.otp_key ? user.otp_key : random.key(10)
+    };
 
-  User.create(_user).then((user)=> resolveUser(user, defer));
+    User.create(_user).then((user)=> resolveUser(user, defer));
+  } else {
+    defer.reject(INVALID_PASSWORD);
+  }
   return defer.promise;
 },
 
@@ -234,10 +244,11 @@ var _find = function(email, extraFields = [], where) {
     attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number'].concat(extraFields)
   });
 },
-hashPassword = function(password){
-  return bcrypt.hashSync(password, 10);
-};
 
+  hashValidPassword = function (password) {
+    var invalidPassword = password.length < 10;
+    return (invalidPassword) ? false : bcrypt.hashSync(password, 10);
+  };
 
 module.exports = {
   find: find,
