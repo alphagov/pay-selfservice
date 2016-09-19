@@ -42,6 +42,7 @@
     "csrf": "3.0.x",
     "express": "4.13.1",
     "express-session": "1.13.x",
+    "express-winston": "^2.0.0",
     "forever": "0.15.x",
     "govuk-elements-sass": "1.1.1",
     "govuk_frontend_toolkit": "4.6.0",
