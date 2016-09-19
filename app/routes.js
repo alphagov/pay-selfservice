@@ -62,7 +62,7 @@ module.exports.bind = function (app) {
   app.get(user.otpSendAgain, auth.enforceUser, csrf, login.sendAgainGet);
   app.post(user.otpSendAgain, auth.enforceUser, csrf, login.sendAgainPost);
   app.get(user.otpLogIn, csrf, auth.enforceUser,  login.otpLogIn);
-  app.post(user.otpLogIn, login.logUserinOTP(), csrf, login.afterOTPLogin);
+  app.post(user.otpLogIn, csrf, login.logUserinOTP(), login.afterOTPLogin);
 
 
   app.get(user.forgottenPassword, auth.appendLoggedOutCSRF, csrf, forgotPassword.emailGet);
