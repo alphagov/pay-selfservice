@@ -111,15 +111,19 @@ sendPasswordResetToken = function(){
 updatePassword = function(password){
   var defer = q.defer(),
   hashedPassword = hashValidPassword(password);
-
-    if (hashedPassword) {
-      User.update(
-        {password: hashedPassword},
-        {where: {id: this.id}}
-      ).then(defer.resolve, defer.reject);
-    } else {
-      defer.reject(INVALID_PASSWORD)
-    }
+  if (hashedPassword) {
+    User.update(
+      { password: hashedPassword },
+      { where: { id : this.id } }
+    )
+    .then(()=>{
+      deleteSession(this.email);
+      defer.resolve();
+    },
+    defer.reject);
+  } else {
+    defer.reject(INVALID_PASSWORD)
+  }
   return defer.promise;
 },
 
@@ -221,8 +225,8 @@ findByResetToken = function(code){
     var current = moment(Date.now()),
     created     = moment(forgotten.date),
     duration    = Math.ceil(moment.duration(current.diff(created)).asMinutes()),
-    timedOut    = duration > parseInt(process.env.FORGOTTEN_PASSWORD_TIMEOUT),
-    notfound    = forgotten === null
+    timedOut    = duration > parseInt(process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES),
+    notfound    = forgotten === null;
     if (notfound || timedOut) return defer.reject();
     _find(undefined,[],{id : forgotten.userId})
       .then(foundUser, defer.reject);
@@ -231,6 +235,20 @@ findByResetToken = function(code){
   foundUser = (user)=> resolveUser(user, defer);
 
   init();
+  return defer.promise;
+},
+
+deleteSession = function (userEmail) {
+  var defer = q.defer();
+  var checkUserQuery = 'delete from "Sessions" where data like \'%\' || \'"passport":{"user":"' + userEmail + '"}\' || \'%\'';
+  sequelizeConnection.query(checkUserQuery)
+  .then(()=> {
+    console.log('deleted session');
+    defer.resolve();
+  },(e)=> {
+    console.log('could not delete session:- ' + e);
+    defer.reject();
+  });
   return defer.promise;
 };
 
@@ -256,7 +274,8 @@ module.exports = {
   authenticate: authenticate,
   updateOtpKey: updateOtpKey,
   sequelize: User,
-  findByResetToken: findByResetToken
+  findByResetToken: findByResetToken,
+  deleteSession: deleteSession
 };
 
 
