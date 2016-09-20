@@ -50,6 +50,8 @@
   }
 
   .column-quarter {
+    padding-top: 15px;
+
     @include respond-to-max(1040px) {
       width: 50%;
       margin-bottom: $gutter;
