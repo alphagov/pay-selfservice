@@ -20,6 +20,7 @@ describe('The transaction details view', function () {
         'status': 'success',
         'finished': true
       },
+      'card_brand': 'Visa',
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
@@ -69,6 +70,7 @@ describe('The transaction details view', function () {
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id);
     $('#refunded').text().should.equal("✖");
     $('#state').text().should.equal(templateData.state_friendly);
+    $('#brand').text().should.equal(templateData.card_brand);
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
@@ -93,6 +95,7 @@ describe('The transaction details view', function () {
         'status': 'success',
         'finished': true
       },
+      'card_brand': 'Visa',
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
@@ -141,6 +144,7 @@ describe('The transaction details view', function () {
     $('#refunded').text().should.equal("✔");
     $('#refunded-amount').text().should.equal("£5.00");
     $('#state').text().should.equal(templateData.state_friendly);
+    $('#brand').text().should.equal(templateData.card_brand);
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')

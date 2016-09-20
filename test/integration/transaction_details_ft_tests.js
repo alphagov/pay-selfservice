@@ -1,5 +1,4 @@
 var request     = require('supertest');
-var portfinder  = require('portfinder');
 var nock        = require('nock');
 var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var _app        = require(__dirname + '/../../server.js').getApp;
@@ -16,8 +15,7 @@ var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/'
 var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
 
 var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/charges/{chargeId}';
-var localServer = 'http://aServer:8002';
-var connectorMock = nock(localServer);
+var connectorMock = nock(process.env.CONNECTOR_URL);
 
 function connectorMock_responds(path, data) {
   return connectorMock.get(path)
@@ -37,7 +35,6 @@ function connectorChargePathFor(chargeId) {
 describe('The transaction view scenarios', function () {
 
   beforeEach(function () {
-    process.env.CONNECTOR_URL = localServer;
     nock.cleanAll();
   });
 
@@ -108,6 +105,7 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
+        'card_brand': 'Visa',
         'refund_summary': {
           'status': 'available',
           'amount_available': 5000,
@@ -145,6 +143,7 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
+        'card_brand': 'Visa',
         'state_friendly': 'Success',
         'refund_summary': {
           'status': 'available',
@@ -275,6 +274,7 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
+        'card_brand': 'Visa',
         'refund_summary': {
           'status': 'full',
           'amount_available': 0,
@@ -307,6 +307,7 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
+        'card_brand': 'Visa',
         'refund_summary': {
           'status': 'full',
           'amount_available': 0,

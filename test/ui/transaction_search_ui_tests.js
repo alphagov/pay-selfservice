@@ -19,6 +19,7 @@ describe('The transaction list view', function () {
                       'status': 'testing2',
                       'finished': true
                     },
+                    'card_brand': 'Visa',
                     'created': '2016-01-11 01:01:01'
                 },
                 {
@@ -31,10 +32,11 @@ describe('The transaction list view', function () {
                       'status': 'testing2',
                       'finished': false
                     },
+                    'card_brand': 'Mastercard',
                     'created': '2016-01-11 01:01:01'
                 }
             ],
-            'filters': {'reference': 'ref1', 'state': 'Testing2', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
+            'filters': {'reference': 'ref1', 'state': 'Testing2', 'brand': 'Visa', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
             'hasResults': true,
             'downloadTransactionLink':
                 '/transactions/download?reference=ref1&state=Testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
@@ -45,7 +47,7 @@ describe('The transaction list view', function () {
         body.should.containSelector('#download-transactions-link').withAttribute('href', templateData.downloadTransactionLink);
 
         templateData.results.forEach(function (transactionData, ix) {
-            body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'Testing2\' state\n');
+            body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'Testing2\' state\n    with \'Visa\' card brand\n');
             body.should.containInputField('reference', 'text').withAttribute('value', 'ref1');
             body.should.containInputField('fromDate', 'text').withAttribute('value', '2015-01-11 01:01:01');
             body.should.containSelector('table#transactions-list')
@@ -53,8 +55,9 @@ describe('The transaction list view', function () {
                 .withTableDataAt(1, templateData.results[ix].reference)
                 .withTableDataAt(2, templateData.results[ix].email)
                 .withTableDataAt(3, "£" + templateData.results[ix].amount)
-                .withTableDataAt(4, templateData.results[ix].state_friendly)
-                .withTableDataAt(5, templateData.results[ix].created);
+                .withTableDataAt(4, templateData.results[ix].card_brand)
+                .withTableDataAt(5, templateData.results[ix].state_friendly)
+                .withTableDataAt(6, templateData.results[ix].created);
         });
     });
 

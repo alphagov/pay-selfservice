@@ -2,7 +2,6 @@ var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request     = require('supertest');
 var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
-var portfinder  = require('portfinder');
 var nock        = require('nock');
 var csrf        = require('csrf');
 var should      = require('chai').should();
@@ -12,14 +11,10 @@ var ACCOUNT_ID  = 182364;
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
-portfinder.getPort(function (err, freePort) {
-
   var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
   var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = "/v1/api/accounts/" + ACCOUNT_ID + "/notification-credentials";
-
-  var localServer = 'http://localhost:' + freePort;
-  var connectorMock = nock(localServer);
+  var connectorMock = nock(process.env.CONNECTOR_URL);
 
   function build_get_request(path) {
     return request(app)
@@ -55,7 +50,6 @@ portfinder.getPort(function (err, freePort) {
 
     describe('The ' + testSetup.path + ' endpoint', function () {
       beforeEach(function () {
-        process.env.CONNECTOR_URL = localServer;
         nock.cleanAll();
       });
 
@@ -196,7 +190,6 @@ portfinder.getPort(function (err, freePort) {
 
   describe('The notification credetials', function() {
     beforeEach(function () {
-      process.env.CONNECTOR_URL = localServer;
       nock.cleanAll();
     });
 
@@ -233,7 +226,6 @@ portfinder.getPort(function (err, freePort) {
 
   describe('The provider update credentials endpoint', function () {
     beforeEach(function () {
-      process.env.CONNECTOR_URL = localServer;
       nock.cleanAll();
     });
 
@@ -328,7 +320,6 @@ portfinder.getPort(function (err, freePort) {
 
   describe('The provider update notification credentials endpoint', function () {
     beforeEach(function () {
-      process.env.CONNECTOR_URL = localServer;
       nock.cleanAll();
     });
 
@@ -356,4 +347,3 @@ portfinder.getPort(function (err, freePort) {
     });
   });
 
-  });

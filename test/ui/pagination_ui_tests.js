@@ -16,6 +16,7 @@ describe('The pagination links', function () {
               'status': 'testing2',
               'finished': true
             },
+            'card_brand': 'Visa',
             'created': '2016-01-11 01:01:01'
           },
           {
@@ -27,6 +28,7 @@ describe('The pagination links', function () {
               'status': 'testing2',
               'finished': false
             },
+            'card_brand': 'Visa',
             'created': '2016-01-11 01:01:01'
           }
       ],

@@ -38,6 +38,9 @@ GOV.UK Pay - View transactions
   {{#filters.state}}
     with '{{filters.state }}' state
   {{/filters.state}}
+  {{#filters.brand}}
+    with '{{filters.brand }}' card brand
+  {{/filters.brand}}
 </h3>
 
 {{>transactions/display_size}}
