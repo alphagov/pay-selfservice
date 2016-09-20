@@ -18,9 +18,12 @@ module.exports = function() {
   search = function(accountID, filters){
     var defer = q.defer();
     var url = searchUrl(accountID, filters);
+    var startTime = new Date();
     client.get(url, { headers: headers }, function(data, response) {
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       successfulSearch(data, response, defer);
     }).on('error',function(err){
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       clientUnavailable(err, defer);
     });
     return defer.promise;
@@ -40,7 +43,9 @@ module.exports = function() {
     var success = function(){ defer.resolve({results: results }); }
 
     var recursiveRetrieve = function(url){
+      var startTime = new Date();
       client.get(url, { headers: headers }, function(data, response) {
+        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
         var error = response.statusCode !== 200;
         if (error) return defer.reject(new Error('GET_FAILED'));
         results = results.concat(data.results);
@@ -51,6 +56,7 @@ module.exports = function() {
         recursiveRetrieve(next.href);
 
       }).on('error',function(err){
+        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
         clientUnavailable(err, defer);
       });
     };

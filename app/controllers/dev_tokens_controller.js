@@ -22,6 +22,7 @@ module.exports.index = function (req, res) {
       url: publicAuthUrl + '/{accountId}?state=active'
     });
 
+    var startTime = new Date();
     client.get(publicAuthUrl + "/" + accountId, function (publicAuthData) {
       var activeTokens = publicAuthData.tokens || [];
       activeTokens.forEach(function (token) {
@@ -30,6 +31,8 @@ module.exports.index = function (req, res) {
       logger.debug('Showing tokens view -', {
         view: 'token'
       });
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl + "/" + accountId,  new Date() - startTime);
+
       response(req.headers.accept, res, TOKEN_VIEW, {
         'active': true,
         'header': "available-tokens",
@@ -38,6 +41,7 @@ module.exports.index = function (req, res) {
         'tokens_singular': activeTokens.length == 1
       });
     }).on('error', function (err) {
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl + "/" + accountId,  new Date() - startTime);
       logger.error('Calling publicAuth to get active tokens threw exception -', {
         service: 'publicAuth',
         method: 'GET',
@@ -117,7 +121,9 @@ module.exports.create = function (req, res) {
       method: 'POST',
       url: publicAuthUrl
     });
+    var startTime = new Date();
     client.post(publicAuthUrl, payload, function (publicAuthData, publicAuthResponse) {
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
       if (publicAuthResponse.statusCode !== 200) {
         return renderErrorView(req, res, 'Error creating dev token for account');
       }
@@ -128,6 +134,7 @@ module.exports.create = function (req, res) {
       });
 
     }).on('error', function (err) {
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
       logger.error('Calling publicAuth threw exception -', {
         service: 'publicAuth',
         method: 'POST',
@@ -153,7 +160,9 @@ module.exports.update = function (req, res) {
   };
 
   var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+  var startTime = new Date();
   client.put(publicAuthUrl, requestPayload, function (publicAuthData, publicAuthResponse) {
+   logger.info("[] - PUT to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
     var responseStatusCode = publicAuthResponse.statusCode;
     if (responseStatusCode != 200) {
       res.sendStatus(responseStatusCode);
@@ -170,9 +179,10 @@ module.exports.update = function (req, res) {
     });
 
   }).on('error', function (err) {
+    logger.info("[] - PUT to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
     logger.error('Calling publicAuth threw exception -', {
       service: 'publicAuth',
-      method: 'POST',
+      method: 'PUT',
       url: publicAuthUrl,
       error: err
     });
@@ -196,7 +206,11 @@ module.exports.destroy = function (req, res) {
     method:'DELETE',
     url:publicAuthUrl
   });
+
+  var startTime = new Date();
   client.delete(publicAuthUrl.replace('{accountId}', accountId), requestPayload, function (publicAuthData, publicAuthResponse) {
+    logger.info("[] - DELETE to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
+
     var responseStatusCode = publicAuthResponse.statusCode;
     if (responseStatusCode != 200) {
       res.sendStatus(responseStatusCode);
@@ -207,6 +221,7 @@ module.exports.destroy = function (req, res) {
       'revoked': publicAuthData.revoked
     });
   }).on('error', function (err) {
+    logger.info("[] - DELETE to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
     logger.error('Calling publicAuth threw exception -', {
       service: 'publicAuth',
       method: 'DELETE',
@@ -224,13 +239,16 @@ function withValidAccountId(req, res, accountId, callback) {
     method: 'GET',
     url: connectorUrl
   });
+  var startTime = new Date();
   client.get(connectorUrl.replace("{accountId}", accountId), function (connectorData, connectorResponse) {
+    logger.info("[] - GET to %s ended - elapsed time: %s ms", connectorUrl,  new Date() - startTime);
     if (connectorResponse.statusCode != 200) {
       renderErrorView(req, res, ERROR_MESSAGE);
       return;
     }
     callback(accountId, req, res);
   }).on('error', function (err) {
+    logger.info("[] - GET to %s ended - elapsed time: %s ms", connectorUrl,  new Date() - startTime);
     logger.debug('Calling connector threw exception -', {
       service:'connector',
       method: 'GET',

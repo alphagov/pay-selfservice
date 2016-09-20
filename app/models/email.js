@@ -15,7 +15,9 @@ var connectorUrl = function(accountID){
 module.exports = function(){
   var get = function(accountID){
     var defer = q.defer();
+    var startTime = new Date();
     client.get(connectorUrl(accountID), {headers: headers}, function(data, response) {
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", connectorUrl(accountID),  new Date() - startTime);
       var error = response.statusCode !== 200;
       if (error) {
         return defer.reject(new Error('GET_FAILED'));
@@ -25,6 +27,7 @@ module.exports = function(){
         emailEnabled: data.enabled
       });
     }).on('error',function(err){
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", connectorUrl(accountID),  new Date() - startTime);
       clientUnavailable(err, defer, 'GET');
     });
     return defer.promise;
@@ -32,11 +35,14 @@ module.exports = function(){
 
   var update = function(accountID,emailText){
     var defer = q.defer();
+    var startTime = new Date();
     client.post(connectorUrl(accountID), {headers: headers, data: {"custom-email-text": emailText} }, function(data, response) {
+      logger.info("[] - POST to %s ended - elapsed time: %s ms", connectorUrl(accountID),  new Date() - startTime);
       var error = response.statusCode !== 200;
       if (error) return defer.reject(new Error('POST_FAILED'));
       defer.resolve();
     }).on('error',function(err){
+      logger.info("[] - POST to %s ended - elapsed time: %s ms", connectorUrl(accountID),  new Date() - startTime);
       clientUnavailable(err, defer, 'POST');
     });
     return defer.promise;
@@ -44,12 +50,15 @@ module.exports = function(){
 
   var setEnabled = function(accountID,enabled) {
     var defer = q.defer();
-    logger.debug('model',connectorUrl(accountID),{"op": "replace", "path": "enabled", "value": enabled})
+    logger.debug('model',connectorUrl(accountID),{"op": "replace", "path": "enabled", "value": enabled});
+    var startTime = new Date();
     client.patch(connectorUrl(accountID), {headers: headers, data: {"op": "replace", "path": "enabled", "value": enabled} }, function(data, response) {
+      logger.info("[] - PATCH to %s ended - elapsed time: %s ms", connectorUrl(accountID),  new Date() - startTime);
       var error = response.statusCode !== 200;
       if (error) return defer.reject(new Error('PATCH_FAILED'));
       defer.resolve();
     }).on('error',function(err){
+      logger.info("[] - PATCH to %s ended - elapsed time: %s ms", connectorUrl(accountID),  new Date() - startTime);
       clientUnavailable(err, defer, 'PATCH');
     });
     return defer.promise;
