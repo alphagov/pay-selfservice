@@ -49,6 +49,7 @@ e.newPasswordPost = (req, res)=> {
     req.flash('generic', 'Password has been updated');
     res.redirect('/login');
   }).catch(function(error) {
-    res.redirect('/login');
+    req.flash('genericError', error);
+    res.redirect('/reset-password/' + req.params.id);
   });
 };

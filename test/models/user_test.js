@@ -80,8 +80,8 @@ describe('user model', function() {
           create: function(user) {
             assert(user.username == "foo");
             assert(user.email ==  "foo@example.com");
-            assert(user.password != "password");
-            assert(bcrypt.compareSync('password', user.password))
+            assert(user.password != "password10");
+            assert(bcrypt.compareSync('password10', user.password));
             return {
               then: function(callback) {
                 callback({
@@ -95,14 +95,14 @@ describe('user model', function() {
       };
       User(seq).create({
         username: "foo",
-        password: "password",
+        password: "password10",
         gateway_account_id: 1,
         email: "Foo@example.com",
         telephone_number: "1"
       }).then(function(user) {
         try {
           assert(user.username == "foo");
-          assert(_.includes(user, 'password') === false);
+          assert(_.includes(user, 'password10') === false);
           done();
         } catch (e) {
           done(e);
@@ -111,15 +111,16 @@ describe('user model', function() {
       });
     });
 
-    it('should create a user witha specific otp_key', function(done) {
+    it('should create a user with a specific otp_key', function(done) {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function() {
         return {
           hasMany: () => {},
           create: function(user) {
             assert(user.username == "foo");
-            assert(user.password != "password");
-            assert(bcrypt.compareSync('password', user.password))
+            assert(user.email ==  "foo@example.com");
+            assert(user.password != "password10");
+            assert(bcrypt.compareSync('password10', user.password));
             return {
               then: function(callback) {
                 callback({
@@ -133,22 +134,42 @@ describe('user model', function() {
       };
       User(seq).create({
         username: "foo",
-        password: "password",
+        password: "password10",
         gateway_account_id: 1,
-        email: "foo@example.com",
-        otp_key: "123",
+        email: "Foo@example.com",
         telephone_number: "1"
       }).then(function(user) {
         try {
           assert(user.username == "foo");
-          assert(_.includes(user, 'password') === false);
-          assert(user.otp_key == "123");
-
+          assert(_.includes(user, 'password10') === false);
           done();
         } catch (e) {
           done(e);
         }
 
+      });
+    });
+
+    it('should fail creating a user with less than 10 characters password', function(done) {
+      var seq = _.cloneDeep(sequel);
+      seq.sequelize.define = function () {
+        return {
+          create: function (user) {
+            assert.fail('Create user was not expected to be called');
+          },
+          hasMany: () => {
+          }
+        };
+      };
+      User(seq).create({
+        username: "foo",
+        password: "shortone1",
+        gateway_account_id: 1,
+        email: "Foo@example.com",
+        telephone_number: "1"
+      }).then(wrongPromise, function rejected(error){
+        assert.equal(error,"Password must be at least 10 characters");
+        done();
       });
     });
   });
@@ -216,7 +237,7 @@ describe('user model', function() {
   });
 
   describe('updateOtpKey', function() {
-    it('shouldupdate the otp key', function(done) {
+    it('should update the otp key', function(done) {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function() {
         return {
@@ -257,7 +278,7 @@ describe('user model', function() {
       var seq = _.cloneDeep(sequel);
       var pass = { sequelize: { create: function(data){
         return { then: function(cb,fail){cb()}}
-      }}}
+      }}};
       var sendEmail = { sendEmail: function(template,email,data){
         assert(template == "template_id");
         assert(email == "foo@bar.com");
@@ -265,7 +286,7 @@ describe('user model', function() {
         assert(data.code.length, 73);
 
         return { then: function(cb,fail){cb()}}
-      }}
+      }};
 
 
       seq.sequelize.define = function() {
@@ -286,7 +307,7 @@ describe('user model', function() {
       var user = User(seq,{
         './forgotten_password.js': pass,
         '../services/notification_client.js': sendEmail
-      })
+      });
 
       user.find('1')
         .then(function(user){ return user.sendPasswordResetToken();})
@@ -318,10 +339,37 @@ describe('user model', function() {
       var user = User(seq);
 
       user.find('1')
-        .then(function(user){ return user.updatePassword('foo')})
+        .then(function(user){ return user.updatePassword('foo1234567')})
         .then(done)
         .catch(done);
     });
+
+    it('should fail updating the password if length is less than 10 characters', function(done) {
+
+      var seq = _.cloneDeep(sequel);
+      var values = {dataValues: { id: 2, password: 'foo'}};
+
+      seq.sequelize.define = function() {
+        return {
+          update: function(password,sql) {
+            assert.fail('Update user was not expected to be called');
+          },
+          findOne: function(){
+            return { then: function(success){ success(values); }};
+          },
+          hasMany: () => {}
+        };
+      };
+      var user = User(seq);
+
+      user.find('1')
+        .then(function(user){ return user.updatePassword('1shortone')})
+        .then(wrongPromise, function rejected(error) {
+          assert.equal(error,"Password must be at least 10 characters");
+          done();
+      });
+    });
+
     it('should reject if forgotten password not found', function(done) {
       var seq = _.cloneDeep(sequel);
       var values = null;
@@ -374,7 +422,7 @@ describe('user model', function() {
       var user = User(seq);
 
       user.find('1')
-        .then(function(user){ return user.updatePassword('foo')})
+        .then(function(user){ return user.updatePassword('foo1234567')})
         .then(done)
         .catch(done);
     });
