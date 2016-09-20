@@ -25,3 +25,5 @@ production-1.FAILED-49.status=failed
 alpha_staging-1-49.approver=ian.maddison@digital.cabinet-office.gov.uk
 
 alpha_staging-1-49.approve-date=2016-09-20:18:27:11
+
+production-1.tag=alpha_production-1-49
