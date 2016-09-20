@@ -42,16 +42,28 @@
 </p>
 
 {{^editNotificationCredentialsMode}}
-<dl id="notification_credentials">
-    <dt id="notification-username-key" class="font-xsmall"><p>Username</p></dt>
-    <dd id="notification-username-value"><b>{{notification_credentials.userName}}</b></dd>
+    {{^notification_credentials.userName}}
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+            You must set SmartPay notification credentials
+        </h1>
+        <p>
+            You need to set these credentials here and in your Smartpay account. If
+            you do not set these credentials GOV.UK Pay will not be able to process your payments.
+            Read more <a href="https://www.barclaycard.co.uk/business/files/SmartPay_Notifications_Guide.pdf">here</a>.
+        </p>
+    </div>
+    {{/notification_credentials.userName}}
+    <dl id="notification_credentials">
+        <dt id="notification-username-key" class="font-xsmall"><p>Username</p></dt>
+        <dd id="notification-username-value"><b>{{notification_credentials.userName}}</b></dd>
 
-    <dt id="notification-password-key" class="font-xsmall"><p>Password</p></dt>
-    <dd id="notification-password-value"><b>{{#notification_credentials.userName}}****{{/notification_credentials.userName}}</b></dd>
-</dl>
-<a id="edit-notification_credentials-link" class="button" href="{{routes.notificationCredentials.edit}}">
-    Edit notification credentials
-</a>
+        <dt id="notification-password-key" class="font-xsmall"><p>Password</p></dt>
+        <dd id="notification-password-value"><b>{{#notification_credentials.userName}}****{{/notification_credentials.userName}}</b></dd>
+    </dl>
+    <a id="edit-notification_credentials-link" class="button" href="{{routes.notificationCredentials.edit}}">
+        Edit notification credentials
+    </a>
 {{/editNotificationCredentialsMode}}
 
 {{#editNotificationCredentialsMode}}
