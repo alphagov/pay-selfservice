@@ -12,7 +12,6 @@ var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
 var dependenciesCheck = require(__dirname + '/app/utils/dependent_resource_checker.js');
 var logger            = require('winston');
-var expressWinston    = require('express-winston');
 var loggingMiddleware = require('morgan');
 var argv              = require('minimist')(process.argv.slice(2));
 var environment       = require(__dirname + '/app/services/environment.js');
@@ -30,7 +29,8 @@ function initialiseGlobalMiddleware (app) {
       logger.info(message);
     }
   };
-  app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware('combined'));
+  app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware(
+    ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'));
   app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
 
   app.use(function (req, res, next) {
@@ -43,14 +43,6 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(expressWinston.logger({
-    winstonInstance: logger,
-    meta: false,
-    ignoreRoute: function (req, res) {
-      return (req.originalUrl || req.url).startsWith("/public");
-    },
-    msg: "{{req.method}} - to {{req.url}} ended - total time {{res.responseTime}}ms"
-  }));
 }
 
 function initialiseProxy(app) {
