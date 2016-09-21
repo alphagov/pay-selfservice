@@ -52,12 +52,16 @@ function loadIndex(req, res, viewMode) {
     url: accountUrl
   });
 
-  client.get(accountUrl.replace("{accountId}", accountId), function (connectorData, connectorResponse) {
+  var startTime = new Date();
+  var url = accountUrl.replace("{accountId}", accountId);
+  client.get(url, function (connectorData, connectorResponse) {
     switch (connectorResponse.statusCode) {
       case 200:
+        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
         showSuccessView(connectorData, viewMode, req, res);
         break;
       default:
+        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
         logger.error('Calling connector to get account information failed -', {
           service: 'connector',
           method: 'GET',
@@ -68,6 +72,7 @@ function loadIndex(req, res, viewMode) {
     }
 
   }).on('error', function (err) {
+    logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
     logger.error('Calling connector to get account information threw exception -', {
       service: 'connector',
       method: 'GET',
@@ -110,7 +115,10 @@ module.exports = {
       url: '/frontend/accounts/{id}/notification-credentials'
     });
 
-    client.post(connectorUrl.replace("{accountId}", accountId), requestPayLoad, function(connectorData, connectorResponse) {
+    var startTime = new Date();
+    var url = connectorUrl.replace("{accountId}", accountId);
+    client.post(url, requestPayLoad, function(connectorData, connectorResponse) {
+      logger.info("[] - POST to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       switch (connectorResponse.statusCode) {
         case 200:
           res.redirect(303, router.paths.credentials.index);
@@ -119,6 +127,7 @@ module.exports = {
           errorView(req, res, ERROR_MESSAGE);
       }
     }).on('error', function(err){
+      logger.info("[] - POST to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       logger.error('Calling connector to update provider notification credentials threw exception  -', {
         service: 'connector',
         method: 'POST',
@@ -158,10 +167,12 @@ module.exports = {
       method: 'PATCH',
       url: '/frontend/accounts/{id}/credentials'
     });
-
-    client.patch(connectorUrl.replace("{accountId}", accountId), requestPayload, function (connectorData, connectorResponse) {
+    var url = connectorUrl.replace("{accountId}", accountId);
+    var startTime = new Date();
+    client.patch(url, requestPayload, function (connectorData, connectorResponse) {
       switch (connectorResponse.statusCode) {
         case 200:
+          logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
           logger.error('Calling connector to update provider credentials failed. Redirecting back to credentials view -', {
             service: 'connector',
             method: 'PATCH',
@@ -171,10 +182,12 @@ module.exports = {
           res.redirect(303, router.paths.credentials.index);
           break;
         default:
+          logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
           errorView(req, res, ERROR_MESSAGE);
       }
 
     }).on('error', function (err) {
+      logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       logger.error('Calling connector to update provider credentials threw exception  -', {
         service: 'connector',
         method: 'GET',

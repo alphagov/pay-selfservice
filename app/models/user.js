@@ -95,11 +95,14 @@ sendPasswordResetToken = function(){
   sendEmail = (forgotten)=> {
     var uri = paths.generateRoute(paths.user.forgottenPasswordReset,{id: code});
     var url = process.env.SELFSERVICE_BASE + uri;
+    var startTime = new Date();
     notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       logger.info('FORGOTTEN PASSWORD EMAIL SENT TO USER ID:-' + user.id);
       defer.resolve();
     }, (e)=> {
+      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       logger.error('PROBLEM SENDING FORGOTTEN PASSWORD EMAIL ',e);
       defer.reject();
     });
