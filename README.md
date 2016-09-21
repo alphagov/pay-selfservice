@@ -99,12 +99,20 @@ Generate, edit and revoke tokens for a given account id.
     /tokens
 ```
 
-#### How to use delete-session.js
-
-This script is used to force log out a user from selfservice.
-Make sure to have the selfservice database environment variables set before running this script.
-
-Usage:
+## migrations
+to run migrations
 ```
-./node delete-session.js -u <email-address> ## Where email-address is the id of user you want to delete the session
+./env.sh node_modules/sequelize-cli/bin/sequelize db:migrate
 ```
+
+## to create your user
+copy create_user.js.example to create_user.js
+edit with your details
+` ./env.sh node create_user.js`
+
+## to get a 2fa token
+` ./env.sh node 2fa-token.js -u example@example.com`
+
+## to disable a user
+` ./env.sh node disable-user.js -u example@example.com`
+
