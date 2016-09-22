@@ -108,21 +108,31 @@ module.exports = {
     var show = router.generateRoute(router.paths.transactions.show, {
       chargeId: chargeId
     });
+    
     var refundAmount = (req.body['refund-type'] === 'full' ) ? req.body['full-amount'] : req.body['refund-amount'];
+    var refundMatch = /^([0-9]+)(?:\.([0-9]{2}))?$/.exec(refundAmount);
+    
+    if (refundMatch) {
+      var refundAmountForConnector = parseInt(refundMatch[1]) * 100;
+      if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2]);
+      
+      var errReasonMessages = {
+        "REFUND_FAILED": "Can't process refund",
+        "full": "Can't do refund: This charge has been already fully refunded",
+        "amount_not_available": "Can't do refund: The requested amount is bigger than the amount available for refund",
+        "amount_min_validation": "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge",
+      };
 
-    var errReasonMessages = {
-      "REFUND_FAILED": "Can't process refund",
-      "full": "Can't do refund: This charge has been already fully refunded",
-      "amount_not_available": "Can't do refund: The requested amount is bigger than the amount available for refund",
-      "amount_min_validation": "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge",
-    };
-
-    Charge.refund(accountId, chargeId, refundAmount * 100)
-      .then(function () {
-        res.redirect(show);
-      }, function (err) {
-        var msg = errReasonMessages[err] ? errReasonMessages[err] : errReasonMessages.REFUND_FAILED;
-        renderErrorView(req, res, msg);
-      });
+      Charge.refund(accountId, chargeId, refundAmountForConnector)
+        .then(function () {
+          res.redirect(show);
+        }, function (err) {
+          var msg = errReasonMessages[err] ? errReasonMessages[err] : errReasonMessages.REFUND_FAILED;
+          renderErrorView(req, res, msg);
+        });
+    }
+    else {
+      renderErrorView(req, res, "Can't do refund: amount must be pounds (10) or pounds and pence (10.10)");
+    }
   }
 };
