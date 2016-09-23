@@ -26,10 +26,6 @@ LOCAL_ENV=true msl run
 
 ```
 
-
-
-
-
 | Variable                    | required | default value | Description                               |
 | --------------------------- |:--------:|:-------------:| ----------------------------------------- |
 | PORT                        | X | 9200 | The port number for the express server to be bound at runtime |
@@ -105,7 +101,7 @@ to run migrations
 ./env.sh node_modules/sequelize-cli/bin/sequelize db:migrate
 ```
 
-## to create your user
+## to create your user for local testing
 copy create_user.js.example to create_user.js
 edit with your details
 ` ./env.sh node create_user.js`

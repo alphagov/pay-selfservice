@@ -106,7 +106,7 @@ sendPasswordResetToken = function(){
 
   init = function(){
     forgottenPassword.create(data).then(sendEmail,()=> {
-      logger.warn('PROBLEM CREATING FORGOTTEN PASSWORD', data);
+      logger.warn('PROBLEM CREATING FORGOTTEN PASSWORD. User:', data.userId);
       defer.reject();
     });
   },
@@ -149,9 +149,9 @@ updatePassword = function(password){
   return defer.promise;
 },
 
-resolveUser = function(user, defer, email){
+resolveUser = function(user, defer){
   if (user === null) {
-    logger.debug('USER NOT FOUND ' + email);
+    logger.debug('USER NOT FOUND');
     return defer.reject();
   }
   var val = user.dataValues;
@@ -169,8 +169,8 @@ resolveUser = function(user, defer, email){
 var find = function(email) {
   var defer = q.defer();
   _find(email).then(
-    (user)=> resolveUser(user, defer,email),
-    (e)=> { logger.debug(email + " user not found"); defer.reject(e);});
+    (user)=> resolveUser(user, defer),
+    (e)=> { logger.debug("find user by email - not found"); defer.reject(e);});
   return defer.promise;
 },
 

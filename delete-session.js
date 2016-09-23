@@ -15,9 +15,9 @@ logger.debug('Preparing to delete session for: ' + userEmail);
 database.deleteSession(userEmail, function (result, err) {
 
   if (result === 1) {
-    logger.debug('Deleted session for: ' + userEmail);
+    logger.debug('Deleted user session');
 
   } else if (result === 0) {
-    logger.debug('Session for : [' + userEmail + '] not found');
+    logger.debug('Session for the provided email was not found');
   }
 });
