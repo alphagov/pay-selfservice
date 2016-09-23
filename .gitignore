@@ -20,4 +20,4 @@ node_modules/*
 *.ipr
 *.iws
 
-create_user.js
+create_user.js$
