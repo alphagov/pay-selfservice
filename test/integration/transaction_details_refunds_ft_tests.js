@@ -36,7 +36,7 @@ describe('The transaction view - refund scenarios', function () {
       .reply(202, mockRefundResponse);
 
     var viewFormData = {
-      'refund-amount': 10.50,
+      'refund-amount': '10.50',
       'csrfToken': csrf().create('123')
     };
 
@@ -46,6 +46,89 @@ describe('The transaction view - refund scenarios', function () {
       .send(viewFormData)
       .expect(302)
       .expect('Location', '/transactions/' + chargeWithRefund)
+      .end(done);
+  });
+  
+  // known FP issue with node, it cannot mulitply 19.90 by 100 accurately
+  it('should redirect to transaction view after issuing a refund of £19.90', function (done) {
+
+    var chargeWithRefund = 12345;
+    var expectedRefundRequestToConnector = {
+      'amount': 1990
+    };
+    var mockRefundResponse = {
+      'refund_id': 'Just looking the status code of the response at the moment'
+    };
+
+    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeWithRefund + '/refunds', expectedRefundRequestToConnector)
+      .reply(202, mockRefundResponse);
+
+    var viewFormData = {
+      'refund-amount': '19.90',
+      'csrfToken': csrf().create('123')
+    };
+
+    request(app)
+      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeWithRefund}))
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send(viewFormData)
+      .expect(302)
+      .expect('Location', '/transactions/' + chargeWithRefund)
+      .end(done);
+  });
+  
+  it('should redirect to transaction view after issuing a refund of £10 (no pence)', function (done) {
+
+    var chargeWithRefund = 12345;
+    var expectedRefundRequestToConnector = {
+      'amount': 1000
+    };
+    var mockRefundResponse = {
+      'refund_id': 'Just looking the status code of the response at the moment'
+    };
+
+    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeWithRefund + '/refunds', expectedRefundRequestToConnector)
+      .reply(202, mockRefundResponse);
+
+    var viewFormData = {
+      'refund-amount': '10',
+      'csrfToken': csrf().create('123')
+    };
+
+    request(app)
+      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeWithRefund}))
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send(viewFormData)
+      .expect(302)
+      .expect('Location', '/transactions/' + chargeWithRefund)
+      .end(done);
+  });
+
+
+  it('should redirect to error view issuing a refund for amount that does not look like pounds and pence', function (done) {
+
+    var chargeId = 12345;
+    var expectedRefundRequestToConnector = {
+      'amount': 99999
+    };
+    var mockRefundResponse = {
+      'reason': 'amount_not_available'
+    };
+
+    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
+      .reply(400, mockRefundResponse);
+
+    var viewFormData = {
+      'refund-amount': '1.9',
+      'csrfToken': csrf().create('123')
+    };
+
+    request(app)
+      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Accept', 'application/json')
+      .send(viewFormData)
+      .expect(200, {"message": "Can't do refund: amount must be pounds (10) or pounds and pence (10.10)"})
       .end(done);
   });
 
@@ -63,7 +146,7 @@ describe('The transaction view - refund scenarios', function () {
       .reply(400, mockRefundResponse);
 
     var viewFormData = {
-      'refund-amount': 999.99,
+      'refund-amount': '999.99',
       'csrfToken': csrf().create('123')
     };
 
@@ -90,7 +173,7 @@ describe('The transaction view - refund scenarios', function () {
       .reply(400, mockRefundResponse);
 
     var viewFormData = {
-      'refund-amount': 0,
+      'refund-amount': '0',
       'csrfToken': csrf().create('123')
     };
 
@@ -117,7 +200,7 @@ describe('The transaction view - refund scenarios', function () {
       .reply(400, mockRefundResponse);
 
     var viewFormData = {
-      'refund-amount': 10,
+      'refund-amount': '10',
       'csrfToken': csrf().create('123')
     };
 
@@ -144,7 +227,7 @@ describe('The transaction view - refund scenarios', function () {
       .reply(400, mockRefundResponse);
 
     var viewFormData = {
-      'refund-amount': 10,
+      'refund-amount': '10',
       'csrfToken': csrf().create('123')
     };
 
