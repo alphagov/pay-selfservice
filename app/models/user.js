@@ -74,6 +74,11 @@ var User = sequelizeConnection.define('user', {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false
+  },
+  login_counter: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   }
 });
 User.hasMany(forgottenPassword, {as: 'forgotten'});
@@ -155,6 +160,13 @@ updatePassword = function(user, password){
   return defer.promise;
 },
 
+incrementLoginCount = function(user){
+  var defer = q.defer();
+  user.login_counter = user.login_counter + 1;
+  user.save().then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
 resolveUser = function(user, defer){
   if (user === null) {
     logger.debug('USER NOT FOUND');
@@ -168,6 +180,8 @@ resolveUser = function(user, defer){
   val.sendPasswordResetToken = sendPasswordResetToken;
   val.toggleDisabled= toggleDisabled;
   val.updatePassword = (password)=> { return updatePassword(user, password) };
+  val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
+
   defer.resolve(val);
 };
 
@@ -284,7 +298,16 @@ var _find = function(email, extraFields = [], where) {
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
-    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number','disabled'].concat(extraFields)
+    attributes:[
+    'username', 
+    'email', 
+    'gateway_account_id',
+    'otp_key',
+    'id',
+    'telephone_number',
+    'disabled',
+    'login_counter'
+    ].concat(extraFields)
   });
 };
 
