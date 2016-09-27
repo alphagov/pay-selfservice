@@ -50,7 +50,9 @@ describe('user model', function() {
             assert(params.where.email == "foo@foo.com");
             return defer.promise;
           },
-          hasMany: () => {}
+          hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
         };
       };
       User(seq).find("Foo@foo.com");
@@ -66,7 +68,9 @@ describe('user model', function() {
             assert(_.includes(params.attributes, 'password') === false);
             return defer.promise;
           },
-          hasMany: () => {}
+          hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
         };
       };
       User(seq).find("foo");
@@ -78,11 +82,12 @@ describe('user model', function() {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function() {
         return {
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
           create: function(user) {
             assert(user.username == "foo");
             assert(user.email ==  "foo@example.com");
-            assert(user.password != "password10");
-            assert(bcrypt.compareSync('password10', user.password));
+            assert(user.password == "password10");
             return {
               then: function(callback) {
                 callback({
@@ -112,16 +117,26 @@ describe('user model', function() {
       });
     });
 
-    it('should create a user with a specific otp_key', function(done) {
+    it('should create a user with a specific otp_key and encrypts password', function(done) {
       var seq = _.cloneDeep(sequel);
       seq.sequelize.define = function() {
         return {
           hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: (cb)=>{
+            cb({ 
+              changed: ()=> {return true},
+              get: () => { return "password10"; },
+              set: (name,hash)=> {
+                assert(name == "password");
+                assert(hash != "password10")
+              } 
+            })
+          },
           create: function(user) {
             assert(user.username == "foo");
             assert(user.email ==  "foo@example.com");
-            assert(user.password != "password10");
-            assert(bcrypt.compareSync('password10', user.password));
+            assert(user.password == "password10");
             return {
               then: function(callback) {
                 callback({
@@ -151,28 +166,6 @@ describe('user model', function() {
       });
     });
 
-    it('should fail creating a user with less than 10 characters password', function(done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function () {
-        return {
-          create: function (user) {
-            assert.fail('Create user was not expected to be called');
-          },
-          hasMany: () => {
-          }
-        };
-      };
-      User(seq).create({
-        username: "foo",
-        password: "shortone1",
-        gateway_account_id: 1,
-        email: "Foo@example.com",
-        telephone_number: "1"
-      }).then(wrongPromise, function rejected(error){
-        assert.equal(error,"Password must be at least 10 characters");
-        done();
-      });
-    });
   });
 
   describe('authenticate', function() {
@@ -181,6 +174,8 @@ describe('user model', function() {
       seq.sequelize.define = function() {
         return {
           hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
           findOne: function(params) {
             return {
               then: function(callback) {
@@ -214,6 +209,8 @@ describe('user model', function() {
       seq.sequelize.define = function() {
         return {
           hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
           findOne: function(params) {
             return {
               then: function(callback) {
@@ -243,6 +240,8 @@ describe('user model', function() {
       seq.sequelize.define = function() {
         return {
           hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
           findOne: function(params) {
             return {
               then: function(callback) {
@@ -250,7 +249,8 @@ describe('user model', function() {
                   dataValues: {
                     password: "$2a$10$jJmJnbJFOLYz/DChN6VMVOfBQ0G94MRGSAjtp25j7BMBBQXpYoDZm",
                     foo: "bar"
-                  },
+                  }
+                  ,
                   updateAttributes: function(params) {
                     return {
                       then: function(callback) {
@@ -302,7 +302,9 @@ describe('user model', function() {
             }, 10)
             return defer.promise;
           },
-          hasMany: () => {}
+          hasMany: () => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
         };
       };
       var user = User(seq,{
@@ -321,21 +323,17 @@ describe('user model', function() {
   describe('updatePassword', function() {
     it('should update the password', function(done) {
       var seq = _.cloneDeep(sequel);
-      var values = {dataValues: { id: 2, password: 'foo'}};
+      var values = {dataValues: { id: 2, password: 'foo'},save: ()=>  {return { then: (success,fail)=> {success(); }}}};
 
       seq.sequelize.define = function() {
         return {
-          update: function(password,sql) {
-            assert(values.dataValues.password != password);
-            assert(password.length !== 0);
-            assert.equal(values.dataValues.id,sql.where.id);
-            return { then: function(success){ success(); } };
-          },
           findOne: function(){
             return { then: function(success){ success(values); }};
           },
           hasMany: () => {},
-          query:() => {}
+          query:() => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
         };
       };
       var user = User(seq);
@@ -344,32 +342,6 @@ describe('user model', function() {
         .then(function(user){ return user.updatePassword('foo1234567')})
         .then(done)
         .catch(done);
-    });
-
-    it('should fail updating the password if length is less than 10 characters', function(done) {
-
-      var seq = _.cloneDeep(sequel);
-      var values = {dataValues: { id: 2, password: 'foo'}};
-
-      seq.sequelize.define = function() {
-        return {
-          update: function(password,sql) {
-            assert.fail('Update user was not expected to be called');
-          },
-          findOne: function(){
-            return { then: function(success){ success(values); }};
-          },
-          hasMany: () => {}
-        };
-      };
-      var user = User(seq);
-
-      user.find('1')
-        .then(function(user){ return user.updatePassword('1shortone')})
-        .then(wrongPromise, function rejected(error) {
-          assert.equal(error,"Password must be at least 10 characters");
-          done();
-      });
     });
 
     it('should reject if forgotten password not found', function(done) {
@@ -387,6 +359,8 @@ describe('user model', function() {
           findOne: function(){
             return { then: function(success){ success(values); }};
           },
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
           hasMany: () => {}
         };
       };
@@ -405,19 +379,15 @@ describe('user model', function() {
       // REMOVE SEQUELIZE MOCKING ONCE WE HAVE A TEST DB SETUP
     it('should update the password', function(done) {
       var seq = _.cloneDeep(sequel);
-      var values = {dataValues: { id: 2, password: 'foo'}};
+      var values = {dataValues: { id: 2, password: 'foo'},save: ()=>  {return { then: (success,fail)=> {success(); }}}};
 
       seq.sequelize.define = function() {
         return {
-          update: function(password,sql) {
-            assert(values.dataValues.password != password);
-            assert(password.length !== 0);
-            assert.equal(values.dataValues.id,sql.where.id);
-            return { then: function(success){ success(); } };
-          },
           findOne: function(){
             return { then: function(success){ success(values); }};
           },
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
           hasMany: () => {}
         };
       };
@@ -451,6 +421,8 @@ describe('user model', function() {
             findOne: function(){
               return { then: function(success){ success(values); }};
             },
+            beforeUpdate: ()=>{},
+            beforeCreate: ()=>{},
             hasMany: () => {}
           };
         };

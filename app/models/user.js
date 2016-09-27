@@ -11,7 +11,9 @@ var logger = require('winston');
 var forgottenPassword = require('./forgotten_password.js').sequelize;
 var moment = require('moment');
 var paths = require(__dirname + '/../paths.js');
-var INVALID_PASSWORD = "Password must be at least 10 characters";
+var commonPassword = require('common-password');
+var MIN_PASSWORD_LENGTH = 10;
+var HASH_PASSWORD_SALT_ROUNDS = 10;
 
 var User = sequelizeConnection.define('user', {
   username: {
@@ -26,7 +28,17 @@ var User = sequelizeConnection.define('user', {
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
-      notEmpty: true
+      notEmpty: true,
+      isValid: function(value, next){
+        if (commonPassword(value)) {
+          return next('Your password is too simple. Choose a password that is harder for people to guess.');
+        }
+
+        if ( value.length < MIN_PASSWORD_LENGTH) {
+          return next("Your password must be at least 10 characters.")
+        }
+        next();
+      }
     },
   },
   email: {
@@ -66,7 +78,13 @@ var User = sequelizeConnection.define('user', {
 });
 User.hasMany(forgottenPassword, {as: 'forgotten'});
 
-// INSTANCE
+var hashPasswordHook = function(instance) {
+  if (!instance.changed('password')) return;
+  var hash = bcrypt.hashSync(instance.get('password'), HASH_PASSWORD_SALT_ROUNDS);
+  instance.set('password', hash);
+};
+User.beforeCreate(hashPasswordHook);
+User.beforeUpdate(hashPasswordHook);
 
 var sendOTP = function(){
   var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
@@ -84,7 +102,7 @@ generateOTP = function(){
 
 toggleDisabled = function(toggle) {
   var defer = q.defer(),
-  log = ()=> logger.info(this.id + " disabled status is now " + toggle)
+  log = ()=> logger.info(this.id + " disabled status is now " + toggle);
 
   User.update(
     { disabled: toggle },
@@ -106,7 +124,7 @@ sendPasswordResetToken = function(){
 
   init = function(){
     forgottenPassword.create(data).then(sendEmail,()=> {
-      logger.warn('PROBLEM CREATING FORGOTTEN PASSWORD. User:', data.userId);
+      logger.warn('PROBLEM CREATING FORGOTTEN PASSWORD. User: ', data.userId);
       defer.reject();
     });
   },
@@ -118,7 +136,7 @@ sendPasswordResetToken = function(){
     notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
       logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
-      logger.info('FORGOTTEN PASSWORD EMAIL SENT TO USER ID:-' + user.id);
+      logger.info('FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ' + user.id);
       defer.resolve();
     }, (e)=> {
       logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
@@ -130,22 +148,10 @@ sendPasswordResetToken = function(){
   return defer.promise;
 },
 
-updatePassword = function(password){
-  var defer = q.defer(),
-  hashedPassword = hashValidPassword(password);
-  if (hashedPassword) {
-    User.update(
-      { password: hashedPassword },
-      { where: { id : this.id } }
-    )
-    .then(()=>{
-      deleteSession(this.email);
-      defer.resolve();
-    },
-    defer.reject);
-  } else {
-    defer.reject(INVALID_PASSWORD)
-  }
+updatePassword = function(user, password){
+  var defer = q.defer();
+  user.password = password;
+  user.save().then(defer.resolve,defer.reject);
   return defer.promise;
 },
 
@@ -154,13 +160,14 @@ resolveUser = function(user, defer){
     logger.debug('USER NOT FOUND');
     return defer.reject();
   }
+
   var val = user.dataValues;
   delete val.password;
   val.generateOTP = generateOTP;
   val.sendOTP = sendOTP;
   val.sendPasswordResetToken = sendPasswordResetToken;
-  val.updatePassword = updatePassword;
   val.toggleDisabled= toggleDisabled;
+  val.updatePassword = (password)=> { return updatePassword(user, password) };
   defer.resolve(val);
 };
 
@@ -176,21 +183,16 @@ var find = function(email) {
 
 create = function(user){
   var defer = q.defer(),
-  hashedPassword = hashValidPassword(user.password);
-  if (hashedPassword) {
-    var _user = {
-      username: user.username,
-      password: hashedPassword,
-      gateway_account_id: user.gateway_account_id,
-      email: user.email.toLowerCase(),
-      telephone_number: user.telephone_number,
-      otp_key: user.otp_key ? user.otp_key : random.key(10)
-    };
+  _user     = {
+    username: user.username,
+    password: user.password,
+    gateway_account_id: user.gateway_account_id,
+    email: user.email.toLowerCase(),
+    telephone_number: user.telephone_number,
+    otp_key: user.otp_key ? user.otp_key : random.key(10)
+  };
 
-    User.create(_user).then((user)=> resolveUser(user, defer));
-  } else {
-    defer.reject(INVALID_PASSWORD);
-  }
+  User.create(_user).then((user)=> resolveUser(user, defer));
   return defer.promise;
 },
 
@@ -266,10 +268,10 @@ deleteSession = function (userEmail) {
   var checkUserQuery = 'delete from "Sessions" where data like \'%\' || \'"passport":{"user":"' + userEmail + '"}\' || \'%\'';
   sequelizeConnection.query(checkUserQuery)
   .then(()=> {
-    console.log('deleted session');
+    logger.debug('deleted session');
     defer.resolve();
   },(e)=> {
-    console.log('could not delete session:- ' + e);
+    logger.warn('could not delete session:- ' + e);
     defer.reject();
   });
   return defer.promise;
@@ -284,12 +286,7 @@ var _find = function(email, extraFields = [], where) {
     where: where,
     attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number','disabled'].concat(extraFields)
   });
-},
-
-  hashValidPassword = function (password) {
-    var invalidPassword = password.length < 10;
-    return (invalidPassword) ? false : bcrypt.hashSync(password, 10);
-  };
+};
 
 module.exports = {
   find: find,
