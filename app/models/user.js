@@ -167,6 +167,13 @@ incrementLoginCount = function(user){
   return defer.promise;
 },
 
+resetLoginCount = function(user){
+  var defer = q.defer();
+  user.login_counter = 0
+  user.save().then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
 resolveUser = function(user, defer){
   if (user === null) {
     logger.debug('USER NOT FOUND');
@@ -181,6 +188,7 @@ resolveUser = function(user, defer){
   val.toggleDisabled= toggleDisabled;
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
+  val.resetLoginCount = ()=> { return resetLoginCount(user); }; 
 
   defer.resolve(val);
 };

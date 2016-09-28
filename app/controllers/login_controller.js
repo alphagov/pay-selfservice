@@ -12,6 +12,8 @@ var error = function(req,res,err) {
 };
 
 module.exports.loggedIn = function (req, res) {
+    console.log(req.user);
+
   req.session.reload(function (err) {
     res.render('login/logged_in', {
       name: req.user.username
@@ -64,14 +66,15 @@ module.exports.otpLogIn = function (req, res) {
 
 module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
-  if (req.session.last_url) {
-    var last_url = req.session.last_url;
-    delete req.session.last_url;
-    req.session.save(() => res.redirect(last_url));
-    return;
-  }
-
-  req.session.save(() => res.redirect('/'));
+  var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
+  delete req.session.last_url;
+  req.user.resetLoginCount().then(
+    ()=>{
+      req.session.save(() => res.redirect(redirect_url));    
+    },
+    (err) => error(req,res,error)
+  )
+  
 };
 
 module.exports.sendAgainGet = function(req, res){

@@ -17,8 +17,10 @@ module.exports = {
   enforce: function (req, res, next) {
    var email = req.body.email || req.user.email;
     User.find(email).then((user)=> {
-      var attempts = user.login_counter,
-      overLimit    = attempts > parseInt(process.env.LOGIN_ATTEMPT_CAP); 
+      var attempts  = user.login_counter,
+      cap           = (process.env.LOGIN_ATTEMPT_CAP) ? process.env.LOGIN_ATTEMPT_CAP : 10,
+      overLimit     = (attempts + 1) > cap; 
+      
       if (overLimit) return lockOut(req, res, user);
       user.incrementLoginCount().then(
         ()=> next(),
