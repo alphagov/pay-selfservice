@@ -12,8 +12,6 @@ var error = function(req,res,err) {
 };
 
 module.exports.loggedIn = function (req, res) {
-    console.log(req.user);
-
   req.session.reload(function (err) {
     res.render('login/logged_in', {
       name: req.user.username

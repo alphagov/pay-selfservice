@@ -2,7 +2,7 @@
 var Sequel = require('sequelize');
 
 module.exports = {
-  up: function (queryInterface, Sequelize,done) {
+  up: function (queryInterface) {
     return queryInterface.addColumn(
       'users',
       'login_counter',
@@ -10,11 +10,10 @@ module.exports = {
         type: Sequel.INTEGER,
         allowNull: false,
         defaultValue: 0
-      }).then(done,()=> {console.log(arguments); done()});
+      });
   },
 
-  down: function (queryInterface, Sequelize, done) {
-    return queryInterface.removeColumn('users', 'login_counter').then(done,
-      ()=> {console.log(arguments); done(); })
+  down: function (queryInterface) {
+    return queryInterface.removeColumn('users', 'login_counter');
   }
 };

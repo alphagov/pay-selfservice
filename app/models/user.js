@@ -108,9 +108,10 @@ generateOTP = function(){
 toggleDisabled = function(toggle) {
   var defer = q.defer(),
   log = ()=> logger.info(this.id + " disabled status is now " + toggle);
-
+  var update = { disabled: toggle }
+  if (toggle == false) update.login_counter = 0;
   User.update(
-    { disabled: toggle },
+    update,
     { where: { id : this.id } }
   )
   .then(
@@ -163,6 +164,7 @@ updatePassword = function(user, password){
 incrementLoginCount = function(user){
   var defer = q.defer();
   user.login_counter = user.login_counter + 1;
+  this.login_counter = this.login_counter + 1
   user.save().then(defer.resolve,defer.reject);
   return defer.promise;
 },
