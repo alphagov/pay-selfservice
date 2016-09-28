@@ -66,11 +66,17 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it('should redirect to root if no url',function(done){
+  it('should redirect to root ',function(done){
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "/",
-    req = {session: { save: (cb)=> cb()} },
+    req = {
+      session: { save: (cb)=> cb()},
+ user: { resetLoginCount: ()=> {
+        return { then: (cb,failCb)=> cb()  }
+        }
+      }
+    },
     res = {
       redirect: function(redirect){
         if (redirect == url) passes = true;

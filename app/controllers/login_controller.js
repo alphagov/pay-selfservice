@@ -37,7 +37,12 @@ module.exports.logInGet = function (req, res) {
 };
 
 module.exports.postLogin = function (req, res) {
-  req.session.save(() => res.redirect('/'));
+ req.user.resetLoginCount().then(
+    ()=>{
+      req.session.save(() => res.redirect('/'));
+    },
+    (err) => error(req,res,error)
+  )
 };
 
 module.exports.logUserin = function() {
