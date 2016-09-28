@@ -31,7 +31,6 @@ module.exports.noAccess = function (req, res) {
 };
 
 module.exports.logInGet = function (req, res) {
-  console.log(req.session);
   res.render('login/login');
 };
 

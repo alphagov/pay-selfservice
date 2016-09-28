@@ -18,13 +18,13 @@ module.exports = {
    var email = req.body.email || req.user.email;
     User.find(email).then((user)=> {
       var attempts = user.login_counter,
-      overLimit    = attempts > process.env.LOGIN_ATTEMPT_CAP; 
+      overLimit    = attempts > parseInt(process.env.LOGIN_ATTEMPT_CAP); 
       if (overLimit) return lockOut(req, res, user);
       user.incrementLoginCount().then(
         ()=> next(),
         ()=> { throw new Error("couldn't save user login counter");}
       )
-    })
+    },next)
   },
   
   reset: function(req, res, next) {
