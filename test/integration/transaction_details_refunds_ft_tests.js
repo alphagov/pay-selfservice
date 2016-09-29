@@ -221,4 +221,32 @@ describe('The transaction view - refund scenarios', function () {
       .expect(200, {"message": "Can't process refund"})
       .end(done);
   });
+
+  it('should redirect to error view if connector returns a 412 error code when issuing a refund', function (done) {
+    var chargeId = 12345;
+    var expectedRefundRequestToConnector = {
+      'amount': 1000,
+      'refund_amount_available': 5000
+    };
+    var mockRefundResponse = {
+      'message': 'Precondition Failed!'
+    };
+
+    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
+      .reply(412, mockRefundResponse);
+
+    var viewFormData = {
+      'refund-amount': '10',
+      'refund-amount-available': '50.00',
+      'csrfToken': csrf().create('123')
+    };
+
+    request(app)
+      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Accept', 'application/json')
+      .send(viewFormData)
+      .expect(200, {"message": "Refund failed. This refund request has already been submitted."})
+      .end(done);
+  });
 });

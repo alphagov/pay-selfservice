@@ -124,7 +124,7 @@ module.exports = {
         "full": "Can't do refund: This charge has been already fully refunded",
         "amount_not_available": "Can't do refund: The requested amount is bigger than the amount available for refund",
         "amount_min_validation": "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge",
-        "refund_amount_available_mismatch": "Pre condition failed, the refund_amount_available in the refund request is a mismatch"
+        "refund_amount_available_mismatch": "Refund failed. This refund request has already been submitted."
       };
 
       Charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableForConnector)
