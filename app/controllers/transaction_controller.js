@@ -110,10 +110,13 @@ module.exports = {
     });
     
     var refundAmount = (req.body['refund-type'] === 'full' ) ? req.body['full-amount'] : req.body['refund-amount'];
+    var refundAmountAvailable = req.body['refund-amount-available'];
+
     var refundMatch = /^([0-9]+)(?:\.([0-9]{2}))?$/.exec(refundAmount);
     
     if (refundMatch) {
       var refundAmountForConnector = parseInt(refundMatch[1]) * 100;
+      var refundAmountAvailableForConnector = parseInt(refundAmountAvailable) * 100;
       if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2]);
       
       var errReasonMessages = {
@@ -121,9 +124,10 @@ module.exports = {
         "full": "Can't do refund: This charge has been already fully refunded",
         "amount_not_available": "Can't do refund: The requested amount is bigger than the amount available for refund",
         "amount_min_validation": "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge",
+        "refund_amount_available_mismatch": "Pre condition failed, the refund_amount_available in the refund request is a mismatch"
       };
 
-      Charge.refund(accountId, chargeId, refundAmountForConnector)
+      Charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableForConnector)
         .then(function () {
           res.redirect(show);
         }, function (err) {

@@ -282,7 +282,8 @@ ConnectorClient.prototype = {
       service: 'connector',
       method: 'POST',
       url: url,
-      chargeId: chargeId
+      chargeId: chargeId,
+      payload: payload
     });
     this.client.post({url: url, body: payload}, this.responseHandler(successCallback));
     return this;
