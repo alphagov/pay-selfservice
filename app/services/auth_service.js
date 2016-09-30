@@ -20,14 +20,16 @@ var localStrategyAuth = function(username, password, done) {
 var appendCSRF = function(req){
   if (req.session.csrfSecret) return;
   req.session.csrfSecret = csrf().secretSync();
-  logger.info('Created logged in csrfSecret: ' + req.session.csrfSecret);
 },
 
  appendLoggedOutCSRF = function(req, res, next){
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
-  req.session.save(next);
-  logger.info('Created logged out csrfSecret: ' + req.session.csrfSecret);
+  req.session.save(function(err) {
+    logger.error('Error saving csrf secret ', err);
+    next();
+  });
+  logger.info('Created csrfSecret: ', req.session.csrfSecret);
 },
 
 
