@@ -25,16 +25,18 @@ module.exports = function () {
     return defer.promise;
   };
 
-  var refund = function (accountId, chargeId, amount) {
+  var refund = function (accountId, chargeId, amount, refundAmountAvailable) {
     var defer = q.defer();
 
     var payload = {
-      amount: amount
+      amount: amount,
+      refund_amount_available: refundAmountAvailable
     };
 
     logger.log('info', 'Submitting a refund for a charge', {
       'chargeId': chargeId,
-      'amount': amount
+      'amount': amount,
+      'refundAmountAvailable': refundAmountAvailable
     });
 
     connector.withPostChargeRefund(accountId, chargeId, payload, function () {
@@ -44,6 +46,13 @@ module.exports = function () {
       if (response && response.statusCode === 400) {
         if (response.body.reason) {
           err = response.body.reason;
+        }
+      }
+      if (response && response.statusCode === 412) {
+        if (response.body.reason) {
+          err = response.body.reason;
+        } else {
+          err = "refund_amount_available_mismatch";
         }
       }
       defer.reject(err);

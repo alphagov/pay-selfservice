@@ -22,39 +22,12 @@ describe('The transaction view - refund scenarios', function () {
     winston.level = 'none';
   });
 
-  it('should redirect to transaction view after issuing a refund', function (done) {
-
-    var chargeWithRefund = 12345;
-    var expectedRefundRequestToConnector = {
-      'amount': 1050
-    };
-    var mockRefundResponse = {
-      'refund_id': 'Just looking the status code of the response at the moment'
-    };
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeWithRefund + '/refunds', expectedRefundRequestToConnector)
-      .reply(202, mockRefundResponse);
-
-    var viewFormData = {
-      'refund-amount': '10.50',
-      'csrfToken': csrf().create('123')
-    };
-
-    request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeWithRefund}))
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .send(viewFormData)
-      .expect(302)
-      .expect('Location', '/transactions/' + chargeWithRefund)
-      .end(done);
-  });
-  
   // known FP issue with node, it cannot mulitply 19.90 by 100 accurately
   it('should redirect to transaction view after issuing a refund of £19.90', function (done) {
-
     var chargeWithRefund = 12345;
     var expectedRefundRequestToConnector = {
-      'amount': 1990
+      'amount': 1990,
+      'refund_amount_available': 5000
     };
     var mockRefundResponse = {
       'refund_id': 'Just looking the status code of the response at the moment'
@@ -65,6 +38,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '19.90',
+      'refund-amount-available': '50.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -76,12 +50,12 @@ describe('The transaction view - refund scenarios', function () {
       .expect('Location', '/transactions/' + chargeWithRefund)
       .end(done);
   });
-  
-  it('should redirect to transaction view after issuing a refund of £10 (no pence)', function (done) {
 
+  it('should redirect to transaction view after issuing a refund of £10 (no pence)', function (done) {
     var chargeWithRefund = 12345;
     var expectedRefundRequestToConnector = {
-      'amount': 1000
+      'amount': 1000,
+      'refund_amount_available': 5000
     };
     var mockRefundResponse = {
       'refund_id': 'Just looking the status code of the response at the moment'
@@ -92,6 +66,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
+      'refund-amount-available': '50.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -104,22 +79,12 @@ describe('The transaction view - refund scenarios', function () {
       .end(done);
   });
 
-
   it('should redirect to error view issuing a refund for amount that does not look like pounds and pence', function (done) {
-
     var chargeId = 12345;
-    var expectedRefundRequestToConnector = {
-      'amount': 99999
-    };
-    var mockRefundResponse = {
-      'reason': 'amount_not_available'
-    };
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
-      .reply(400, mockRefundResponse);
 
     var viewFormData = {
       'refund-amount': '1.9',
+      'refund-amount-available': '50.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -133,10 +98,10 @@ describe('The transaction view - refund scenarios', function () {
   });
 
   it('should redirect to error view issuing a refund when amount is not available for refund', function (done) {
-
     var chargeId = 12345;
     var expectedRefundRequestToConnector = {
-      'amount': 99999
+      'amount': 99999,
+      'refund_amount_available': 5000
     };
     var mockRefundResponse = {
       'reason': 'amount_not_available'
@@ -147,6 +112,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '999.99',
+      'refund-amount-available': '50.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -163,7 +129,8 @@ describe('The transaction view - refund scenarios', function () {
 
     var chargeId = 12345;
     var expectedRefundRequestToConnector = {
-      'amount': 0
+      'amount': 0,
+      'refund_amount_available': 5000
     };
     var mockRefundResponse = {
       'reason': 'amount_min_validation'
@@ -174,6 +141,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '0',
+      'refund-amount-available': '50.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -190,7 +158,8 @@ describe('The transaction view - refund scenarios', function () {
 
     var chargeId = 12345;
     var expectedRefundRequestToConnector = {
-      'amount': 1000
+      'amount': 1000,
+      'refund_amount_available': 0
     };
     var mockRefundResponse = {
       'reason': 'full'
@@ -201,6 +170,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
+      'refund-amount-available': '0.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -217,7 +187,8 @@ describe('The transaction view - refund scenarios', function () {
 
     var chargeId = 12345;
     var expectedRefundRequestToConnector = {
-      'amount': 1000
+      'amount': 1000,
+      'refund_amount_available': 5000
     };
     var mockRefundResponse = {
       'message': 'what happeneeed!'
@@ -228,6 +199,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
+      'refund-amount-available': '50.00',
       'csrfToken': csrf().create('123')
     };
 
@@ -237,6 +209,34 @@ describe('The transaction view - refund scenarios', function () {
       .set('Accept', 'application/json')
       .send(viewFormData)
       .expect(200, {"message": "Can't process refund"})
+      .end(done);
+  });
+
+  it('should redirect to error view if connector returns a 412 error code when issuing a refund', function (done) {
+    var chargeId = 12345;
+    var expectedRefundRequestToConnector = {
+      'amount': 1000,
+      'refund_amount_available': 5000
+    };
+    var mockRefundResponse = {
+      'message': 'Precondition Failed!'
+    };
+
+    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
+      .reply(412, mockRefundResponse);
+
+    var viewFormData = {
+      'refund-amount': '10',
+      'refund-amount-available': '50.00',
+      'csrfToken': csrf().create('123')
+    };
+
+    request(app)
+      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Accept', 'application/json')
+      .send(viewFormData)
+      .expect(200, {"message": "Refund failed. This refund request has already been submitted."})
       .end(done);
   });
 });
