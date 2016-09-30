@@ -55,13 +55,12 @@ function loadIndex(req, res, viewMode) {
   var startTime = new Date();
   var url = accountUrl.replace("{accountId}", accountId);
   client.get(url, function (connectorData, connectorResponse) {
+    logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
     switch (connectorResponse.statusCode) {
       case 200:
-        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
         showSuccessView(connectorData, viewMode, req, res);
         break;
       default:
-        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
         logger.error('Calling connector to get account information failed -', {
           service: 'connector',
           method: 'GET',
@@ -140,7 +139,6 @@ module.exports = {
   },
 
   update: function (req, res) {
-
     logger.debug('Calling connector to update provider credentials -', {
       service:'connector',
       method: 'PATCH',
@@ -170,22 +168,20 @@ module.exports = {
     var url = connectorUrl.replace("{accountId}", accountId);
     var startTime = new Date();
     client.patch(url, requestPayload, function (connectorData, connectorResponse) {
+      logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       switch (connectorResponse.statusCode) {
         case 200:
-          logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
+          res.redirect(303, router.paths.credentials.index);
+          break;
+        default:
           logger.error('Calling connector to update provider credentials failed. Redirecting back to credentials view -', {
             service: 'connector',
             method: 'PATCH',
             url: connectorUrl,
             status: connectorResponse.status
           });
-          res.redirect(303, router.paths.credentials.index);
-          break;
-        default:
-          logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
           errorView(req, res, ERROR_MESSAGE);
       }
-
     }).on('error', function (err) {
       logger.info("[] - PATCH to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
       logger.error('Calling connector to update provider credentials threw exception  -', {
@@ -197,4 +193,4 @@ module.exports = {
       errorView(req, res, ERROR_MESSAGE);
     });
   }
-}
+};
