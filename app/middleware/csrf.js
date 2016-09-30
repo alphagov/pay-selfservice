@@ -9,23 +9,23 @@ module.exports = function (req, res, next) {
   var csrfToken = req.body.csrfToken,
     session = req.session;
   var init = function () {
-      if (!session.csrfTokens) session.csrfTokens = [];
+      if (session) {
+        if (!session.csrfTokens) session.csrfTokens = [];
+        if (!session.csrfSecret) return showNoCsrf();
+        if (!csrfValid()) return showCsrfInvalid();
 
-      if (!sessionAvailable()) return showNoSession();
-      if (!csrfValid()) return showCsrfInvalid();
+        session.csrfTokens.push(csrfToken);
+        req.session.save( error => {
+          if (error) return showSessionSaveError
 
-      session.csrfTokens.push(csrfToken);
-      req.session.save( error => {
-        if (error) return showSessionSaveError
-
-        appendCsrf();
-        next();
-      });
+          appendCsrf();
+          next();
+        });
+      } else {
+        showNoSession();
+      }
     },
 
-    sessionAvailable = function () {
-      return session && session.csrfSecret;
-    },
 
     csrfValid = function () {
       if (req.route.methods.get) return true;
@@ -44,8 +44,13 @@ module.exports = function (req, res, next) {
       return session.csrfTokens.indexOf(csrfToken) !== -1;
     },
 
-    showNoSession = function () {
+    showNoCsrf = function () {
       logger.warn('CSRF secret is not defined');
+      errorView(req, res, errorMsg);
+    },
+
+    showNoSession = function () {
+      logger.warn('Session is not defined');
       errorView(req, res, errorMsg);
     },
 
