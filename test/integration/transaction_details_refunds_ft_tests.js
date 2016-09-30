@@ -81,16 +81,6 @@ describe('The transaction view - refund scenarios', function () {
 
   it('should redirect to error view issuing a refund for amount that does not look like pounds and pence', function (done) {
     var chargeId = 12345;
-    var expectedRefundRequestToConnector = {
-      'amount': 99999,
-      'refund_amount_available': 5000
-    };
-    var mockRefundResponse = {
-      'reason': 'amount_not_available'
-    };
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
-      .reply(400, mockRefundResponse);
 
     var viewFormData = {
       'refund-amount': '1.9',
