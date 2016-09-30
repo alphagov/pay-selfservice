@@ -14,12 +14,18 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
   var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
   var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
   var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = "/v1/api/accounts/" + ACCOUNT_ID + "/notification-credentials";
-  var connectorMock = nock(process.env.CONNECTOR_URL);
+
+  var requestId = 'some-unique-id';
+  var defaultCorrelationHeader = {
+    reqheaders: {'x-request-id': requestId}
+  };
+  var connectorMock = nock(process.env.CONNECTOR_URL, defaultCorrelationHeader);
 
   function build_get_request(path) {
     return request(app)
       .get(path)
-      .set('Accept', 'application/json');
+      .set('Accept', 'application/json')
+      .set('x-request-id',requestId);
   }
 
   function build_form_post_request(path, sendData, sendCSRF) {
@@ -32,6 +38,7 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
       .post(path)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('x-request-id',requestId)
       .send(sendData);
   }
 
