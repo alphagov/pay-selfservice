@@ -112,3 +112,6 @@ edit with your details
 ## to disable a user
 ` ./env.sh node disable-user.js -u example@example.com`
 
+
+## to enable a user
+` ./env.sh node enable-user.js -u example@example.com`
