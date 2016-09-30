@@ -5,15 +5,15 @@ module.exports = {
   up: function (queryInterface) {
     return queryInterface.addColumn(
       'users',
-      'disabled',
+      'login_counter',
       {
-        type: Sequel.BOOLEAN,
+        type: Sequel.INTEGER,
         allowNull: false,
-        defaultValue: false
+        defaultValue: 0
       });
   },
 
   down: function (queryInterface) {
-    return queryInterface.removeColumn('users', 'disabled');
+    return queryInterface.removeColumn('users', 'login_counter');
   }
 };

@@ -15,11 +15,13 @@ var forgotPassword = require('./controllers/forgotten_password_controller.js');
 var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
 var querystring = require('querystring');
-var _ = require('lodash');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
 var retrieveAccount = require('./middleware/retrieve_account.js');
 var trimEmail = require('./middleware/trim_email.js');
+var loginCounter = require('./middleware/login_counter.js');
+
+var _ = require('lodash');
 var passport  = require('passport');
 
 
@@ -55,14 +57,14 @@ module.exports.bind = function (app) {
   // LOGIN
   var user = paths.user;
   app.get(user.logIn, auth.appendLoggedOutCSRF, csrf, login.logInGet);
-  app.post(user.logIn, csrf, trimEmail, login.logUserin(), login.postLogin);
+  app.post(user.logIn, csrf, trimEmail, loginCounter.enforce, login.logUserin(), login.postLogin);
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, login.noAccess);
   app.get(user.logOut, login.logOut);
   app.get(user.otpSendAgain, auth.enforceUser, csrf, login.sendAgainGet);
   app.post(user.otpSendAgain, auth.enforceUser, csrf, login.sendAgainPost);
   app.get(user.otpLogIn, csrf, auth.enforceUser,  login.otpLogIn);
-  app.post(user.otpLogIn, csrf, login.logUserinOTP(), login.afterOTPLogin);
+  app.post(user.otpLogIn, csrf, loginCounter.enforce, login.logUserinOTP(), login.afterOTPLogin);
 
 
   app.get(user.forgottenPassword, auth.appendLoggedOutCSRF, csrf, forgotPassword.emailGet);

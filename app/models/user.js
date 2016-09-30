@@ -74,6 +74,11 @@ var User = sequelizeConnection.define('user', {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false
+  },
+  login_counter: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   }
 });
 User.hasMany(forgottenPassword, {as: 'forgotten'});
@@ -103,9 +108,10 @@ generateOTP = function(){
 toggleDisabled = function(toggle) {
   var defer = q.defer(),
   log = ()=> logger.info(this.id + " disabled status is now " + toggle);
-
+  var update = { disabled: toggle }
+  if (toggle == false) update.login_counter = 0;
   User.update(
-    { disabled: toggle },
+    update,
     { where: { id : this.id } }
   )
   .then(
@@ -155,6 +161,21 @@ updatePassword = function(user, password){
   return defer.promise;
 },
 
+incrementLoginCount = function(user){
+  var defer = q.defer();
+  user.login_counter = user.login_counter + 1;
+  this.login_counter = this.login_counter + 1
+  user.save().then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
+resetLoginCount = function(user){
+  var defer = q.defer();
+  user.login_counter = 0
+  user.save().then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
 resolveUser = function(user, defer){
   if (user === null) {
     logger.debug('USER NOT FOUND');
@@ -168,6 +189,9 @@ resolveUser = function(user, defer){
   val.sendPasswordResetToken = sendPasswordResetToken;
   val.toggleDisabled= toggleDisabled;
   val.updatePassword = (password)=> { return updatePassword(user, password) };
+  val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
+  val.resetLoginCount = ()=> { return resetLoginCount(user); }; 
+
   defer.resolve(val);
 };
 
@@ -284,7 +308,16 @@ var _find = function(email, extraFields = [], where) {
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
-    attributes:['username', 'email', 'gateway_account_id', 'otp_key', 'id','telephone_number','disabled'].concat(extraFields)
+    attributes:[
+    'username', 
+    'email', 
+    'gateway_account_id',
+    'otp_key',
+    'id',
+    'telephone_number',
+    'disabled',
+    'login_counter'
+    ].concat(extraFields)
   });
 };
 

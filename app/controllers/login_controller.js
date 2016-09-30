@@ -35,7 +35,12 @@ module.exports.logInGet = function (req, res) {
 };
 
 module.exports.postLogin = function (req, res) {
-  req.session.save(() => res.redirect('/'));
+ req.user.resetLoginCount().then(
+    ()=>{
+      req.session.save(() => res.redirect('/'));
+    },
+    (err) => error(req,res,error)
+  )
 };
 
 module.exports.logUserin = function() {
@@ -64,14 +69,15 @@ module.exports.otpLogIn = function (req, res) {
 
 module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
-  if (req.session.last_url) {
-    var last_url = req.session.last_url;
-    delete req.session.last_url;
-    req.session.save(() => res.redirect(last_url));
-    return;
-  }
-
-  req.session.save(() => res.redirect('/'));
+  var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
+  delete req.session.last_url;
+  req.user.resetLoginCount().then(
+    ()=>{
+      req.session.save(() => res.redirect(redirect_url));    
+    },
+    (err) => error(req,res,error)
+  )
+  
 };
 
 module.exports.sendAgainGet = function(req, res){

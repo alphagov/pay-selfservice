@@ -18,4 +18,4 @@ RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
 RUN npm install && npm test && npm prune --production
 
-CMD NODE_ENV=production npm start
+CMD bash ./docker-startup.sh

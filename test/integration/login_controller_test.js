@@ -66,11 +66,17 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it('should redirect to root if no url',function(done){
+  it('should redirect to root ',function(done){
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "/",
-    req = {session: { save: (cb)=> cb()} },
+    req = {
+      session: { save: (cb)=> cb()},
+ user: { resetLoginCount: ()=> {
+        return { then: (cb,failCb)=> cb()  }
+        }
+      }
+    },
     res = {
       redirect: function(redirect){
         if (redirect == url) passes = true;
@@ -133,7 +139,13 @@ describe('The otplogin endpoint', function () {
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "http://foo",
-    req = {session: { last_url: url, save: (cb)=> cb() } },
+    req = {session: { 
+      last_url: url, save: (cb)=> cb() },
+      user: { resetLoginCount: ()=> {
+        return { then: (cb,failCb)=> cb()  }
+        }
+      }
+    },
     res = {
       redirect: function(redirect){
         if (redirect == url) passes = true;
@@ -149,7 +161,13 @@ describe('The afterOtpLogin endpoint', function () {
   it('should redirect to root',function(done){
     var passes = false,
     url = "/",
-    req = {session: { save: (cb)=> cb() }, },
+    req = {
+      session: { save: (cb)=> cb() },
+      user: { resetLoginCount: ()=> {
+        return { then: (cb,failCb)=> cb()  }
+        }
+      }
+    },
     res = {
       redirect: function(redirect){
         if (redirect == url && req.session.secondFactor == 'totp') passes = true;

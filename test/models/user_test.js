@@ -409,12 +409,15 @@ describe('user model', function() {
       it('should be able to disable and enable the user',function(done){
 
         var seq = _.cloneDeep(sequel);
-        var values = {dataValues: { id: 2, password: 'foo'}};
+        var values = {dataValues: { id: 2, password: 'foo', login_counter: 1}};
 
         seq.sequelize.define = function() {
           return {
             update: function(toggle,where) {
               assert(toggle.disabled === boolean);
+              if (boolean == false) {
+                assert.equal(toggle.login_counter,0);
+              }
               assert.equal(values.dataValues.id,where.where.id);
               return { then: function(success){ success(); } };
             },
@@ -436,5 +439,19 @@ describe('user model', function() {
       });
     });
   });
+
+  describe('increment login count',function(){
+   it.skip('should update the lgoin count', function(done) {
+      // WE NEED A DATABASE TO TEST THIS PROPERLY PP-1006
+    });
+  });
+
+  describe('reset login count',function(){
+   it.skip('should reset the lgoin count', function(done) {
+      // WE NEED A DATABASE TO TEST THIS PROPERLY PP-1006
+    });
+  });
+
+
 
 });

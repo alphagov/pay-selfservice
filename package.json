@@ -34,7 +34,6 @@
     "chalk": "1.1.x",
     "change-case": "3.0.0",
     "check-types": "^7.0.x",
-    "client-sessions": "0.7.x",
     "cluster": "0.7.x",
     "common-password": "^0.1.2",
     "connect-flash": "^0.1.1",

@@ -13,7 +13,7 @@ var chalk = require('chalk');
 var argv = require('yargs')
   .usage('Usage: $0 -u [email]')
   .demand(['u'])
-  .describe('u', 'user email address to be disabled')
+  .describe('u', 'user email address to be enabled')
   .argv;
 
 var userEmail = argv.u;
@@ -22,8 +22,8 @@ var userEmail = argv.u;
 User.find(userEmail)
   .then(
     (user)=>
-      user.toggleDisabled(true).then(()=> {
-        console.log('user disabled');
+      user.toggleDisabled(false).then(()=> {
+        console.log('user enabled');
         exit();
       }),
     ()=> {
