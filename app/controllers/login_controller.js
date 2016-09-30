@@ -60,7 +60,7 @@ module.exports.otpLogIn = function (req, res) {
     req.user.sendOTP().then(function(){
       req.session.sentCode = true;
       req.session.save(() => res.render('login/otp-login'));
-    },function(err) { error(req,res,error); }
+    },function(err) { error(req,res,err); }
     );
   } else {
     res.render('login/otp-login');
@@ -87,6 +87,6 @@ module.exports.sendAgainGet = function(req, res){
 module.exports.sendAgainPost = function(req, res){
   req.user.sendOTP().then(function(){
     req.session.save(() => res.redirect(paths.user.otpLogIn));
-  },(err) => error(req,res,error)
+    },function(err) { error(req,res,err); }
   );
 };
