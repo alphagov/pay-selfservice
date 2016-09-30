@@ -176,6 +176,18 @@ resetLoginCount = function(user){
   return defer.promise;
 },
 
+logOut = function(){
+  var defer = q.defer();
+  sequelizeConnection.query('delete from "Sessions" where data LIKE :email ',
+    { replacements: { email: `%${this.email}%`  }, type: Sequelize.QueryTypes.DELETE }
+  ).then(
+    ()=> { defer.resolve() },
+    ()=> { defer.reject() }
+
+  )
+  return defer.promise
+},
+
 resolveUser = function(user, defer){
   if (user === null) {
     logger.debug('USER NOT FOUND');
@@ -191,6 +203,7 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); }; 
+  val.logOut = logOut
 
   defer.resolve(val);
 };
@@ -286,20 +299,6 @@ findByResetToken = function(code){
 
   init();
   return defer.promise;
-},
-
-deleteSession = function (userEmail) {
-  var defer = q.defer();
-  var checkUserQuery = 'delete from "Sessions" where data like \'%\' || \'"passport":{"user":"' + userEmail + '"}\' || \'%\'';
-  sequelizeConnection.query(checkUserQuery)
-  .then(()=> {
-    logger.debug('deleted session');
-    defer.resolve();
-  },(e)=> {
-    logger.warn('could not delete session:- ' + e);
-    defer.reject();
-  });
-  return defer.promise;
 };
 
 // PRIVATE
@@ -329,7 +328,6 @@ module.exports = {
   updateOtpKey: updateOtpKey,
   sequelize: User,
   findByResetToken: findByResetToken,
-  deleteSession: deleteSession
 };
 
 

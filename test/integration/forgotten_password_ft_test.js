@@ -172,6 +172,7 @@ describe('forgotten_password_controller', function () {
 
     it('should call everything needed to update user',function(){
       updatePasswordCalled = false;
+      logoutCalled = false
       forgotten({
         findByResetToken: function(id){
           return {
@@ -180,7 +181,11 @@ describe('forgotten_password_controller', function () {
                 updatePassword: function(password){
                   assert.equal(password,'foo');
                   updatePasswordCalled = true;
-                }
+                },
+                logOut: function(){
+                  logoutCalled = true;
+                  return { then: (cb)=> cb()}
+                },
               });
               return {
                 then: function(suc){
@@ -202,8 +207,9 @@ describe('forgotten_password_controller', function () {
       {
         destroy: function(id){ assert.equal(id,2); }
       }
-      ).newPasswordPost({params: {id:2}, body: {password:'foo'}, flash: ()=>{}},{redirect: function(path){
+      ).newPasswordPost({params: {id:2}, body: {password:'foo'}, session: { regenerate : function(){}}, flash: ()=>{}},{redirect: function(path){
         assert.equal(updatePasswordCalled,true);
+        assert.equal(logoutCalled,true);
         assert.equal(path,"/login");
       }});
     });

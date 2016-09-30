@@ -29,8 +29,11 @@ function initialiseGlobalMiddleware (app) {
       logger.info(message);
     }
   };
-  app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware(
-    ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'));
+  if (!process.env.DISABLE_REQUEST_LOGGING == "true") {
+    app.use(/\/((?!public|favicon.ico).)*/,loggingMiddleware(
+      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'));
+
+  }
   app.use(favicon(path.join(__dirname, 'public', 'images','favicon.ico')));
 
   app.use(function (req, res, next) {

@@ -37,18 +37,30 @@ e.newPasswordGet = (req, res)=> {
 };
 
 e.newPasswordPost = (req, res)=> {
+  var reqUser;
   User
   .findByResetToken(req.params.id)
   .then(function(user){
     if (!user) return errorView(req, res);
+    reqUser = user;
     return user.updatePassword(req.body.password);
   })
   .then(function(){
     return forgottenPassword.destroy(req.params.id);
   })
   .then(function(){
-    req.flash('generic', 'Password has been updated');
-    res.redirect('/login');
+    reqUser.logOut().then(
+      ()=>{
+        req.session.regenerate(()=>{
+          req.flash('generic', 'Password has been updated');
+          res.redirect('/login');
+        });
+      },
+      ()=>{
+        errorView(req, res);
+        logger.error('PROBLEM LOGGIN OUT LOGGED IN USERS')
+      }
+    );
   }).catch(function(error) {
     req.flash('genericError', error.errors[0].message);
     res.redirect('/reset-password/' + req.params.id);
