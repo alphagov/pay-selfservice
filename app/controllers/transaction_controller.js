@@ -23,7 +23,8 @@ module.exports = {
     req.session.filters = url.parse(req.url).query;
     var init = function () {
       if (!filters.valid) return error("Invalid search");
-      Transaction
+      var transactionModel = Transaction(req.headers[CORRELATION_HEADER]);
+      transactionModel
         .search(accountId, filters.result)
         .then(onSuccessSearchTransactions, () => error("Unable to retrieve list of transactions."))
     };
@@ -53,7 +54,8 @@ module.exports = {
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
     var init = function () {
-        Transaction.searchAll(accountId, filters)
+       var transactionModel = Transaction(req.headers[CORRELATION_HEADER]);
+        transactionModel.searchAll(accountId, filters)
           .then(toCsv)
           .then(render)
           .catch(error);

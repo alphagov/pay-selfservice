@@ -1,14 +1,18 @@
-var Client  = require('node-rest-client').Client;
-var client  = new Client();
-var q       = require('q');
-var _       = require('lodash');
-var logger  = require('winston');
-var paths   = require('../paths.js');
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
-var headers = { "Accept": "application/json" };
+var Client                  = require('node-rest-client').Client;
+var client                  = new Client();
+var q                       = require('q');
+var _                       = require('lodash');
+var logger                  = require('winston');
+var paths                   = require('../paths.js');
+var ConnectorClient         = require('../services/connector_client.js').ConnectorClient;
+var headers                 = { "Accept": "application/json" };
+var withCorrelationHeader   = require('../utils/correlation_header.js').withCorrelationHeader;
 
-module.exports = function() {
+
+module.exports = function(correlationId) {
   'use strict';
+
+  correlationId = correlationId || '';
 
   var searchUrl = function(accountID, filters){
     var connector = new ConnectorClient(process.env.CONNECTOR_URL);
@@ -19,12 +23,14 @@ module.exports = function() {
     var defer = q.defer();
     var url = searchUrl(accountID, filters);
     var startTime = new Date();
-    client.get(url, { headers: headers }, function(data, response) {
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
+    var args = { headers: headers };
+
+    client.get(url, withCorrelationHeader(args, correlationId), function(data, response) {
+      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
       successfulSearch(data, response, defer);
     }).on('error',function(err){
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
-      clientUnavailable(err, defer);
+      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      clientUnavailable(err, defer, correlationId);
     });
     return defer.promise;
   },
@@ -40,12 +46,13 @@ module.exports = function() {
     var defer = q.defer();
     var results = [];
     var entryUrl = searchUrl(accountID, _.omit(filters, ['pageSize', 'page']) );
-    var success = function(){ defer.resolve({results: results }); }
+    var success = function(){ defer.resolve({results: results }); };
 
     var recursiveRetrieve = function(url){
       var startTime = new Date();
-      client.get(url, { headers: headers }, function(data, response) {
-        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
+      var args = { headers: headers };
+      client.get(url, withCorrelationHeader(args, correlationId), function(data, response) {
+        logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
         var error = response.statusCode !== 200;
         if (error) return defer.reject(new Error('GET_FAILED'));
         results = results.concat(data.results);
@@ -56,16 +63,16 @@ module.exports = function() {
         recursiveRetrieve(next.href);
 
       }).on('error',function(err){
-        logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
-        clientUnavailable(err, defer);
+        logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+        clientUnavailable(err, defer, correlationId);
       });
     };
     recursiveRetrieve(entryUrl);
     return defer.promise;
   },
 
-  clientUnavailable = function(error, defer) {
-    logger.error('Calling connector to search transactions for an account threw exception -', {
+  clientUnavailable = function(error, defer, correlationId) {
+    logger.error(`[${correlationId}] Calling connector to search transactions for an account threw exception -`, {
       service: 'connector',
       method: 'GET',
       error: error
@@ -77,4 +84,4 @@ module.exports = function() {
     search: search,
     searchAll: searchAll
   };
-}();
+};
