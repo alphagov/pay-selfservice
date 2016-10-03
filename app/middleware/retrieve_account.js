@@ -1,11 +1,11 @@
 "use strict";
-var auth  = require('../services/auth_service.js'),
-errorView = require('../utils/response.js').renderErrorView,
-Connector = require('../services/connector_client.js').ConnectorClient,
-client    = new Connector(process.env.CONNECTOR_URL),
-Email     = require('../models/email.js'),
-_         = require('lodash');
-
+var auth                = require('../services/auth_service.js'),
+errorView               = require('../utils/response.js').renderErrorView,
+Connector               = require('../services/connector_client.js').ConnectorClient,
+client                  = new Connector(process.env.CONNECTOR_URL),
+Email                   = require('../models/email.js'),
+_                       = require('lodash');
+var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 
 module.exports = function (req, res, next) {
@@ -16,7 +16,9 @@ module.exports = function (req, res, next) {
   var init = function () {
     client.withGetAccount(params, function(data){
       req.account = data;
-      Email.get(req.account.gateway_account_id).then(function(data){
+
+      var emailModel = Email(req.headers[CORRELATION_HEADER]);
+      emailModel.get(req.account.gateway_account_id).then(function(data){
         req.account = _.merge(req.account, data);
         next();
       },connectorError);

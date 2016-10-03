@@ -10,6 +10,12 @@ var wrongPromise = function(data){
   throw new Error('Promise was unexpectedly fulfilled.');
 };
 
+var aCorrelationHeader = {
+  reqheaders: {
+    'x-request-id': 'some-unique-id'
+  }
+};
+
 describe('email notification', function() {
   describe('getting the template body', function(){
 
@@ -23,7 +29,8 @@ describe('email notification', function() {
       });
 
       it('should return client unavailable', function () {
-        return Email.get(123).then(wrongPromise,
+        var emailModel = Email("some-unique-id");
+        return emailModel.get(123).then(wrongPromise,
             function rejected(error){
               assert.equal(error.message,"CLIENT_UNAVAILABLE")
             }
@@ -36,13 +43,14 @@ describe('email notification', function() {
       before(function() {
         nock.cleanAll();
 
-        nock(process.env.CONNECTOR_URL)
+        nock(process.env.CONNECTOR_URL, aCorrelationHeader)
           .get("/v1/api/accounts/123/email-notification")
           .reply(404, '');
       });
 
       it('should return get_failed', function () {
-        return Email.get(123).then(wrongPromise,
+        var emailModel = Email("some-unique-id");
+        return emailModel.get(123).then(wrongPromise,
           function rejected(error){
             assert.equal(error.message,"GET_FAILED")
           });
@@ -59,7 +67,8 @@ describe('email notification', function() {
       });
 
       it('should return the correct promise', function () {
-        return Email.get(123).then(function(data){
+        var emailModel = Email("some-unique-id");
+        return emailModel.get(123).then(function(data){
           expect(data).to.deep.equal({"customEmailText": "hello", "emailEnabled":true});
         },wrongPromise);
       });
@@ -78,7 +87,8 @@ describe('email notification', function() {
       });
 
       it('should return client unavailable', function () {
-        return Email.update(123).then(wrongPromise,
+        var emailModel = Email("some-unique-id");
+        return emailModel.update(123).then(wrongPromise,
             function rejected(error){
               assert.equal(error.message,"CLIENT_UNAVAILABLE")
             }
@@ -97,7 +107,8 @@ describe('email notification', function() {
       });
 
       it('should return POST_FAILED', function () {
-        return Email.update(123, "hello")
+        var emailModel = Email("some-unique-id");
+        return emailModel.update(123, "hello")
         .then(wrongPromise, function rejected(error){
             assert.equal(error.message,"POST_FAILED")
           });
@@ -114,7 +125,8 @@ describe('email notification', function() {
       });
 
       it('should update the email notification template body', function () {
-        return Email.update(123,"hello").then(function(data){
+        var emailModel = Email("some-unique-id");
+        return emailModel.update(123,"hello").then(function(data){
           assert.equal(1,1);
         },wrongPromise);
       });
@@ -134,7 +146,8 @@ describe('email notification', function() {
         });
 
         it('should return client unavailable', function () {
-          return Email.setEnabled(123,toggle).then(wrongPromise,
+          var emailModel = Email("some-unique-id");
+          return emailModel.setEnabled(123,toggle).then(wrongPromise,
               function rejected(error){
                 assert.equal(error.message,"CLIENT_UNAVAILABLE")
               }
@@ -152,7 +165,8 @@ describe('email notification', function() {
         });
 
         it('should return PATCH_FAILED', function () {
-          return Email.setEnabled(123,toggle)
+          var emailModel = Email("some-unique-id");
+          return emailModel.setEnabled(123,toggle)
           .then(wrongPromise, function rejected(error){
               assert.equal(error.message,"PATCH_FAILED")
             });
@@ -168,7 +182,8 @@ describe('email notification', function() {
         });
 
         it('should disable email notifications', function () {
-          return Email.setEnabled(123,toggle).then(function(data){
+          var emailModel = Email("some-unique-id");
+          return emailModel.setEnabled(123,toggle).then(function(data){
             assert.equal(1,1);
           },wrongPromise);
         });

@@ -1,11 +1,12 @@
-var logger          = require('winston');
-var csrf            = require('csrf');
-var response        = require('../utils/response.js').response;
-var Email           = require('../models/email.js');
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
-var client          = new ConnectorClient(process.env.CONNECTOR_URL);
-var auth            = require('../services/auth_service.js');
-var router          = require('../routes.js');
+var logger                = require('winston');
+var csrf                  = require('csrf');
+var response              = require('../utils/response.js').response;
+var Email                 = require('../models/email.js');
+var ConnectorClient       = require('../services/connector_client.js').ConnectorClient;
+var client                = new ConnectorClient(process.env.CONNECTOR_URL);
+var auth                  = require('../services/auth_service.js');
+var router                = require('../routes.js');
+var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var showEmail = function(req, res, resource, locals){
   var template =  "email_notifications/" + resource;
@@ -42,7 +43,9 @@ module.exports.offConfirm = (req, res) => {
 toggleEmail = function(req,res,enabled){
   var indexPath = router.paths.emailNotifications.index,
   accountID = req.account.gateway_account_id;
-  Email.setEnabled(accountID,enabled)
+
+  var emailModel = Email(req.headers[CORRELATION_HEADER]);
+  emailModel.setEnabled(accountID,enabled)
   .then(() => {
     res.redirect(303, indexPath);
   });
@@ -61,7 +64,9 @@ module.exports.update = (req, res) => {
   var indexPath = router.paths.emailNotifications.index,
   newEmailText  = req.body["custom-email-text"],
   accountID = req.account.gateway_account_id;
-  Email.update(accountID, newEmailText)
+
+  var emailModel = Email(req.headers[CORRELATION_HEADER]);
+  emailModel.update(accountID, newEmailText)
   .then((customEmailText) => {
     res.redirect(303, indexPath);
   });
