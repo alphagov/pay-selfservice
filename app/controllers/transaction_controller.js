@@ -13,6 +13,7 @@ var getFilters = require('../utils/filters.js').getFilters;
 var url = require('url');
 var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
 var client = new ConnectorClient(process.env.CONNECTOR_URL);
+var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 module.exports = {
 
@@ -84,7 +85,8 @@ module.exports = {
     var defaultMsg = 'Error processing transaction view';
     var notFound = 'Charge not found';
     var init = function () {
-        Charge.findWithEvents(accountId, chargeId)
+        var chargeModel = Charge(req.headers[CORRELATION_HEADER]);
+        chargeModel.findWithEvents(accountId, chargeId)
           .then(render, error);
       },
 
@@ -127,7 +129,8 @@ module.exports = {
         "refund_amount_available_mismatch": "Refund failed. This refund request has already been submitted."
       };
 
-      Charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableForConnector)
+      var chargeModel = Charge(req.headers[CORRELATION_HEADER]);
+      chargeModel.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableForConnector)
         .then(function () {
           res.redirect(show);
         }, function (err) {

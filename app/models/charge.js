@@ -9,13 +9,17 @@ var connector = new ConnectorClient(process.env.CONNECTOR_URL);
 
 var transactionView = require('../utils/transaction_view.js');
 
-module.exports = function () {
+module.exports = function (correlationId) {
+
+  correlationId = correlationId || '';
+
   'use strict';
   var findWithEvents = function (accountId, chargeId) {
     var defer = q.defer();
     var params = {
       gatewayAccountId: accountId,
-      chargeId: chargeId
+      chargeId: chargeId,
+      correlationId : correlationId
     };
 
     connector.withGetCharge(params, function (charge) {
@@ -47,7 +51,8 @@ module.exports = function () {
     var params = {
       gatewayAccountId: accountId,
       chargeId: chargeId,
-      payload: payload
+      payload: payload,
+      correlationId : correlationId
     };
 
     connector.withPostChargeRefund(params, function () {
@@ -83,4 +88,4 @@ module.exports = function () {
     findWithEvents: findWithEvents,
     refund: refund
   };
-}();
+};
