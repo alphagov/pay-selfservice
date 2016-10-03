@@ -6,6 +6,8 @@ var renderErrorView = require('../utils/response.js').renderErrorView;
 var Client          = require('node-rest-client').Client;
 var client          = new Client();
 var auth            = require('../services/auth_service.js');
+var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
+var withCorrelationHeader = require('../utils/correlation_header.js').withCorrelationHeader;
 
 // TODO remove these and make them proper i.e. show update destroy etc
 var TOKEN_VIEW = 'token';
@@ -15,15 +17,19 @@ module.exports.index = function (req, res) {
   var accountId = auth.get_gateway_account_id(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+    var url = publicAuthUrl + "/" + accountId;
+
+    var correlationId = req.headers[CORRELATION_HEADER] || '';
+    var args = {};
 
     logger.debug('Calling publicAuth to get active tokens -', {
       service: 'publicAuth',
       method: 'GET',
-      url: publicAuthUrl + '/{accountId}?state=active'
+      url: url
     });
 
     var startTime = new Date();
-    client.get(publicAuthUrl + "/" + accountId, function (publicAuthData) {
+    client.get(url, withCorrelationHeader(args, correlationId), function (publicAuthData) {
       var activeTokens = publicAuthData.tokens || [];
       activeTokens.forEach(function (token) {
         token.csrfToken = csrf().create(req.session.csrfSecret);
@@ -31,7 +37,8 @@ module.exports.index = function (req, res) {
       logger.debug('Showing tokens view -', {
         view: 'token'
       });
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl + "/" + accountId,  new Date() - startTime);
+      var duration = new Date() - startTime;
+      logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
 
       response(req.headers.accept, res, TOKEN_VIEW, {
         'active': true,
@@ -41,11 +48,12 @@ module.exports.index = function (req, res) {
         'tokens_singular': activeTokens.length == 1
       });
     }).on('error', function (err) {
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl + "/" + accountId,  new Date() - startTime);
-      logger.error('Calling publicAuth to get active tokens threw exception -', {
+      var duration = new Date() - startTime;
+      logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
+      logger.error('[%s] Calling publicAuth to get active tokens threw exception -', correlationId, {
         service: 'publicAuth',
         method: 'GET',
-        url: publicAuthUrl + '/{accountId}',
+        url: url,
         err: err
       });
       renderErrorView(req, res, ERROR_MESSAGE);
@@ -58,14 +66,18 @@ module.exports.revoked = function (req, res) {
   var accountId = auth.get_gateway_account_id(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
+    var url = publicAuthUrl + "/" + accountId + "?state=revoked";
 
-    logger.debug('Calling publicAuth to get revoked tokens -', {
+    var correlationId = req.headers[CORRELATION_HEADER] || '';
+    var args = {};
+
+    logger.debug('[%s] Calling publicAuth to get revoked tokens -', correlationId, {
       service: 'publicAuth',
       method: 'GET',
-      url: publicAuthUrl + '/{accountId}?state=revoked'
+      url: url
     });
 
-    client.get(publicAuthUrl + "/" + accountId + "?state=revoked", function (publicAuthData) {
+    client.get(url, withCorrelationHeader(args, correlationId), function (publicAuthData) {
       var revokedTokens = publicAuthData.tokens || [];
       revokedTokens.forEach(function (token) {
         token.csrfToken = csrf().create(req.session.csrfSecret);
@@ -81,10 +93,10 @@ module.exports.revoked = function (req, res) {
         'tokens_singular': revokedTokens.length == 1
       });
     }).on('error', function (err) {
-      logger.error('Calling publicAuth to get revoked tokens threw exception -', {
+      logger.error('[%s] Calling publicAuth to get revoked tokens threw exception -', correlationId, {
         service: 'publicAuth',
         method: 'GET',
-        url: publicAuthUrl + '/{accountId}?state=revoked',
+        url: url,
         err: err
       });
       renderErrorView(req, res, ERROR_MESSAGE);
@@ -105,6 +117,8 @@ module.exports.create = function (req, res) {
 
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var description = req.body.description;
+    var correlationId = req.headers[CORRELATION_HEADER] || '';
+
     var payload = {
       headers: {"Content-Type": "application/json"},
       data: {
@@ -122,8 +136,9 @@ module.exports.create = function (req, res) {
       url: publicAuthUrl
     });
     var startTime = new Date();
-    client.post(publicAuthUrl, payload, function (publicAuthData, publicAuthResponse) {
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
+    client.post(publicAuthUrl, withCorrelationHeader(payload, correlationId), function (publicAuthData, publicAuthResponse) {
+      var duration = new Date() - startTime;
+      logger.info(`[${correlationId}] - GET to ${publicAuthUrl} ended - elapsed time: ${duration} ms`);
       if (publicAuthResponse.statusCode !== 200) {
         return renderErrorView(req, res, 'Error creating dev token for account');
       }
@@ -134,8 +149,9 @@ module.exports.create = function (req, res) {
       });
 
     }).on('error', function (err) {
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
-      logger.error('Calling publicAuth threw exception -', {
+      var duration = new Date() - startTime;
+      logger.info(`[${correlationId}] - GET to ${publicAuthUrl} ended - elapsed time: ${duration} ms`);
+      logger.error('[%s] Calling publicAuth threw exception -', correlationId, {
         service: 'publicAuth',
         method: 'POST',
         url: publicAuthUrl,
@@ -159,10 +175,14 @@ module.exports.update = function (req, res) {
     }
   };
 
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
+
   var publicAuthUrl = process.env.PUBLIC_AUTH_URL;
   var startTime = new Date();
-  client.put(publicAuthUrl, requestPayload, function (publicAuthData, publicAuthResponse) {
-   logger.info("[] - PUT to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
+
+  client.put(publicAuthUrl, withCorrelationHeader(requestPayload, correlationId), function (publicAuthData, publicAuthResponse) {
+    var duration = new Date() - startTime;
+    logger.info(`[${correlationId}] - PUT to ${publicAuthUrl} ended - elapsed time: ${duration} ms`);
     var responseStatusCode = publicAuthResponse.statusCode;
     if (responseStatusCode != 200) {
       res.sendStatus(responseStatusCode);
@@ -179,8 +199,9 @@ module.exports.update = function (req, res) {
     });
 
   }).on('error', function (err) {
-    logger.info("[] - PUT to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
-    logger.error('Calling publicAuth threw exception -', {
+    var duration = new Date() - startTime;
+    logger.info(`[${correlationId}] - PUT to ${publicAuthUrl} ended - elapsed time: ${duration} ms`);
+    logger.error('[%s] Calling publicAuth threw exception -', correlationId, {
       service: 'publicAuth',
       method: 'PUT',
       url: publicAuthUrl,
@@ -193,6 +214,8 @@ module.exports.update = function (req, res) {
 module.exports.destroy = function (req, res) {
   var accountId = auth.get_gateway_account_id(req);
   var publicAuthUrl = process.env.PUBLIC_AUTH_URL + '/{accountId}';
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
+  var url = publicAuthUrl.replace('{accountId}', accountId);
 
   var requestPayload = {
     headers: {"Content-Type": "application/json"},
@@ -204,12 +227,14 @@ module.exports.destroy = function (req, res) {
   logger.debug('Calling public auth -', {
     service:'publicAuth',
     method:'DELETE',
-    url:publicAuthUrl
+    url:url
   });
 
   var startTime = new Date();
-  client.delete(publicAuthUrl.replace('{accountId}', accountId), requestPayload, function (publicAuthData, publicAuthResponse) {
-    logger.info("[] - DELETE to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
+
+  client.delete(url, withCorrelationHeader(requestPayload, correlationId), function (publicAuthData, publicAuthResponse) {
+    var duration = new Date() - startTime;
+    logger.info(`[${correlationId}] - DELETE to ${url} ended - elapsed time: ${duration} ms`);
 
     var responseStatusCode = publicAuthResponse.statusCode;
     if (responseStatusCode != 200) {
@@ -221,8 +246,9 @@ module.exports.destroy = function (req, res) {
       'revoked': publicAuthData.revoked
     });
   }).on('error', function (err) {
-    logger.info("[] - DELETE to %s ended - elapsed time: %s ms", publicAuthUrl,  new Date() - startTime);
-    logger.error('Calling publicAuth threw exception -', {
+    var duration = new Date() - startTime;
+    logger.info(`[${correlationId}] - DELETE to ${url} ended - elapsed time: ${duration} ms`);
+    logger.error('[%s] Calling publicAuth threw exception -', correlationId, {
       service: 'publicAuth',
       method: 'DELETE',
       url: publicAuthUrl,
@@ -234,22 +260,28 @@ module.exports.destroy = function (req, res) {
 
 function withValidAccountId(req, res, accountId, callback) {
   var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}';
+  var url = connectorUrl.replace("{accountId}", accountId);
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
+  var args = {};
+
   logger.debug('Calling connector -', {
     service:'publicAuth',
     method: 'GET',
-    url: connectorUrl
+    url: url
   });
   var startTime = new Date();
-  client.get(connectorUrl.replace("{accountId}", accountId), function (connectorData, connectorResponse) {
-    logger.info("[] - GET to %s ended - elapsed time: %s ms", connectorUrl,  new Date() - startTime);
+  client.get(url, withCorrelationHeader(args, correlationId), function (connectorData, connectorResponse) {
+    var duration = new Date() - startTime;
+    logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
     if (connectorResponse.statusCode != 200) {
       renderErrorView(req, res, ERROR_MESSAGE);
       return;
     }
     callback(accountId, req, res);
   }).on('error', function (err) {
-    logger.info("[] - GET to %s ended - elapsed time: %s ms", connectorUrl,  new Date() - startTime);
-    logger.debug('Calling connector threw exception -', {
+    var duration = new Date() - startTime;
+    logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
+    logger.debug('[%s] Calling connector threw exception -', correlationId, {
       service:'connector',
       method: 'GET',
       url: connectorUrl
