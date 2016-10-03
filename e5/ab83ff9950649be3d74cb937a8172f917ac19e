@@ -9,3 +9,5 @@ alpha_release-60.approve-date=2016-10-03:10:53:24
 staging-1.tag=FAILED-60
 
 staging-1.FAILED-60.date=
+
+staging-1.FAILED-60.status=failed
