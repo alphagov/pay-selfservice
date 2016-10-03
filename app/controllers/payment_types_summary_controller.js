@@ -32,8 +32,12 @@ module.exports.showSummary = function (req, res) {
 
     var accountId = auth.get_gateway_account_id(req);
 
+    var params = {
+      gatewayAccountId: accountId
+    };
+
     connectorClient()
-      .withGetAccountAcceptedCards(accountId, onSuccessGetAccountAcceptedCards)
+      .withGetAccountAcceptedCards(params, onSuccessGetAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'));
   };
 

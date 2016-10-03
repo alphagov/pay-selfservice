@@ -9,12 +9,21 @@ var connector = new ConnectorClient(process.env.CONNECTOR_URL);
 
 var transactionView = require('../utils/transaction_view.js');
 
-module.exports = function () {
+module.exports = function (correlationId) {
+
+  correlationId = correlationId || '';
+
   'use strict';
   var findWithEvents = function (accountId, chargeId) {
     var defer = q.defer();
-    connector.withGetCharge(accountId, chargeId, function (charge) {
-      connector.withChargeEvents(accountId, chargeId, function (events) {
+    var params = {
+      gatewayAccountId: accountId,
+      chargeId: chargeId,
+      correlationId : correlationId
+    };
+
+    connector.withGetCharge(params, function (charge) {
+      connector.withChargeEvents(params, function (events) {
         defer.resolve(transactionView.buildPaymentView(charge, events));
       }).on('connectorError', (err, response)=> {
         findWithEventsError(err, response, defer);
@@ -39,7 +48,14 @@ module.exports = function () {
       'refundAmountAvailable': refundAmountAvailable
     });
 
-    connector.withPostChargeRefund(accountId, chargeId, payload, function () {
+    var params = {
+      gatewayAccountId: accountId,
+      chargeId: chargeId,
+      payload: payload,
+      correlationId : correlationId
+    };
+
+    connector.withPostChargeRefund(params, function () {
       defer.resolve();
     }).on('connectorError', (err, response)=> {
       var err = 'REFUND_FAILED';
@@ -72,4 +88,4 @@ module.exports = function () {
     findWithEvents: findWithEvents,
     refund: refund
   };
-}();
+};

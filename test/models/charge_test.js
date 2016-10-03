@@ -27,7 +27,8 @@ describe('charge model', function() {
       });
 
       it('should return client unavailable', function () {
-        return Charge.findWithEvents(1,1).then(wrongPromise,
+        var chargeModel = Charge("correlation-id");
+        return chargeModel.findWithEvents(1,1).then(wrongPromise,
             function rejected(error){
               assert.equal(error,"CLIENT_UNAVAILABLE");
             }
@@ -37,17 +38,22 @@ describe('charge model', function() {
     });
 
     describe('when connector returns incorrect response code', function () {
+      var defaultCorrelationHeader = {
+        reqheaders: {'x-request-id': 'some-unique-id'}
+      };
+
       before(function() {
         nock.cleanAll();
 
-        nock(process.env.CONNECTOR_URL)
+        nock(process.env.CONNECTOR_URL, defaultCorrelationHeader)
           .get("/v1/api/accounts/1/charges/2")
           .reply(405, '');
 
       });
 
       it('should return get_failed', function () {
-        return Charge.findWithEvents(1,2).then(wrongPromise,
+        var chargeModel = Charge("some-unique-id");
+        return chargeModel.findWithEvents(1,2).then(wrongPromise,
           function rejected(error){
             assert.equal(error,"GET_FAILED");
           });
@@ -70,7 +76,8 @@ describe('charge model', function() {
       });
 
       it('should return the correct promise', function () {
-        return Charge.findWithEvents(1,2).then(function(data){
+        var chargeModel = Charge("correlation-id");
+        return chargeModel.findWithEvents(1,2).then(function(data){
           expect(data).to.deep.equal({ foo: 'bar', hello: 'world' });
         },wrongPromise);
       });
