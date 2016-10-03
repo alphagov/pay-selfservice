@@ -22,6 +22,7 @@ var forgotten = function(user = function(){}, forgottenPass = function(){}){
 
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var mockReq = {body: { email: "foo@bar.com"}, headers:{}};
 
 describe('forgotten_password_controller', function () {
   describe('emailGet', function () {
@@ -51,7 +52,7 @@ describe('forgotten_password_controller', function () {
          };
 
        }
-     }).emailPost({body: { email: "foo@bar.com"}},{redirect: function(name){
+     }).emailPost(mockReq,{redirect: function(name){
       assert.equal(name,"/reset-password-requested");
       }});
     });
@@ -74,7 +75,7 @@ describe('forgotten_password_controller', function () {
          };
 
        }
-     }).emailPost({body: { email: "foo@bar.com"}},{redirect: function(name){
+     }).emailPost(mockReq,{redirect: function(name){
       assert.equal(name,"/reset-password-requested");
       }});
     });
@@ -90,7 +91,7 @@ describe('forgotten_password_controller', function () {
          };
 
        }
-     }).emailPost({body: { email: "foo@bar.com"}},{redirect: function(name){
+     }).emailPost(mockReq,{redirect: function(name){
       assert.equal(name,"/reset-password-requested");
       }});
     });

@@ -1,9 +1,10 @@
-var logger    = require('winston');
-var paths     = require('../paths.js');
-var errorView = require('../utils/response.js').renderErrorView;
-var User      = require('../models/user.js');
-var forgottenPassword = require('../models/forgotten_password.js');
-var e         = module.exports;
+var logger              = require('winston');
+var paths               = require('../paths.js');
+var errorView           = require('../utils/response.js').renderErrorView;
+var User                = require('../models/user.js');
+var forgottenPassword   = require('../models/forgotten_password.js');
+var e                   = module.exports;
+var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 e.emailGet = (req, res)=> {
   res.render('forgotten_password/email_get');
@@ -11,11 +12,11 @@ e.emailGet = (req, res)=> {
 
 e.emailPost = (req, res)=> {
   var email = req.body.email,
-
+  correlationId = req.headers[CORRELATION_HEADER] ||'',
   redirect  = (e) => res.redirect(paths.user.passwordRequested),
 
-  foundUser = (user) => { user.sendPasswordResetToken().then(redirect, redirect);}
-  User.find(email).then(foundUser, redirect );
+  foundUser = (user) => { user.sendPasswordResetToken(correlationId).then(redirect, redirect);}
+  User.find(email, correlationId).then(foundUser, redirect );
 };
 
 e.passwordRequested = (req, res)=> {

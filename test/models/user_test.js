@@ -313,7 +313,7 @@ describe('user model', function() {
       });
 
       user.find('1')
-        .then(function(user){ return user.sendPasswordResetToken();})
+        .then(function(user){ return user.sendPasswordResetToken('some-correlation-id');})
         .then(done)
         .catch(function(){ assert(false);});
     });

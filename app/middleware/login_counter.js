@@ -4,11 +4,12 @@ var User      = require('../models/user.js');
 var paths     = require('../paths.js');
 var _         = require('lodash');
 var logger    = require('winston');
-
+var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var lockOut = (req,res, user) => {
   user.toggleDisabled(true).then(()=>{
-    logger.error("locked out user id:" + user.id + " due to many password attempts");
+    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+    logger.error(`[${correlationId}] locked out user id: ${user.id} due to many password attempts`);
     res.render("login/noaccess");
   })
 }
@@ -16,7 +17,8 @@ var lockOut = (req,res, user) => {
 module.exports = {
   enforce: function (req, res, next) {
    var email = _.get(req.body, 'email') || _.get(req.user, 'email');
-    User.find(email).then((user)=> {
+    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+    User.find(email, correlationId).then((user)=> {
       user.incrementLoginCount().then(
         ()=> {
           var attempts  = user.login_counter,
