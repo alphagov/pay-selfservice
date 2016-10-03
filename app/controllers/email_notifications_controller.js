@@ -1,10 +1,6 @@
-var logger                = require('winston');
 var csrf                  = require('csrf');
 var response              = require('../utils/response.js').response;
 var Email                 = require('../models/email.js');
-var ConnectorClient       = require('../services/connector_client.js').ConnectorClient;
-var client                = new ConnectorClient(process.env.CONNECTOR_URL);
-var auth                  = require('../services/auth_service.js');
 var router                = require('../routes.js');
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
