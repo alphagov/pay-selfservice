@@ -26,10 +26,13 @@ var appendCSRF = function(req){
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   req.session.save(function(err) {
-    logger.error('Error saving csrf secret ', err);
+    if (err) {
+      logger.error('Error saving csrf secret ', err);
+    } else {
+      logger.info('Saved csrfSecret: ', req.session.csrfSecret);
+    }
     next();
   });
-  logger.info('Created csrfSecret: ', req.session.csrfSecret);
 },
 
 
