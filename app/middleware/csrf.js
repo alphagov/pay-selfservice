@@ -16,7 +16,9 @@ module.exports = function (req, res, next) {
 
         session.csrfTokens.push(csrfToken);
         req.session.save( error => {
-          if (error) return showSessionSaveError
+          if (error) {
+            return showSessionSaveError(error);
+          }
 
           appendCsrf();
           next();
