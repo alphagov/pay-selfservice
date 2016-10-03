@@ -112,13 +112,11 @@ module.exports = {
     });
     
     var refundAmount = (req.body['refund-type'] === 'full' ) ? req.body['full-amount'] : req.body['refund-amount'];
-    var refundAmountAvailable = req.body['refund-amount-available'];
-
+    var refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence']);
     var refundMatch = /^([0-9]+)(?:\.([0-9]{2}))?$/.exec(refundAmount);
-    
+
     if (refundMatch) {
       var refundAmountForConnector = parseInt(refundMatch[1]) * 100;
-      var refundAmountAvailableForConnector = parseInt(refundAmountAvailable) * 100;
       if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2]);
       
       var errReasonMessages = {
@@ -130,7 +128,7 @@ module.exports = {
       };
 
       var chargeModel = Charge(req.headers[CORRELATION_HEADER]);
-      chargeModel.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableForConnector)
+      chargeModel.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence)
         .then(function () {
           res.redirect(show);
         }, function (err) {
