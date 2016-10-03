@@ -37,16 +37,12 @@ describe('login counter test', function () {
   var login = (userMock)=> {
     return proxyquire(__dirname + '/../../app/middleware/login_counter.js',
     {'../models/user.js': userMock});
-  }
+  };
 
-
-
-
-
-  it('should call incrementloginCount',function(){
+  it('should call increment login count',function(){
     var user = {
-      find: ()=> { 
-        return  { 
+      find: ()=> {
+        return  {
           then: (success,fail)=> {
             success({
               login_counter: 0,
@@ -63,8 +59,7 @@ describe('login counter test', function () {
     var loginMiddleware = login(user);
     loginMiddleware.enforce({body: {email: "foo"}},{
     },()=> assert("next is called","next is called"))
-  })
-
+  });
 
   it('should call disable user and render noacess when over limit',function(){
 
@@ -92,6 +87,26 @@ describe('login counter test', function () {
     loginMiddleware.enforce({body: {email: "foo"}},{
       render: (path) => assert("login/noaccess",path)
     },()=> assert("next is called",false))
-  })
+  });
 
-})
+  it('should retrieve safely email field',function(){
+    var user = {
+      find: ()=> {
+        return  {
+          then: (success,fail)=> {
+            success({
+              login_counter: 0,
+              incrementLoginCount: () => {
+                assert("increment is called","increment is called");
+                return { then: (suc,fail)=> suc()}
+              }
+            })
+          }
+        }
+      }
+    };
+    var loginMiddleware = login(user);
+    loginMiddleware.enforce({body:{}},{
+    },()=> assert("next is called","next is called"))
+  });
+});
