@@ -12,9 +12,12 @@ module.exports.index = function (req, res) {
 
   var init = function () {
     var accountId = auth.get_gateway_account_id(req);
+    var params = {
+      gatewayAccountId: accountId
+    };
 
     connectorClient()
-      .withGetAccount(accountId, onSuccess)
+      .withGetAccount(params, onSuccess)
       .on('connectorError', onError);
   };
 
@@ -48,8 +51,13 @@ module.exports.update = function (req, res) {
       service_name: req.body['service-name-input']
     };
 
+    var params = {
+      gatewayAccountId: accountId,
+      payload : payload
+    };
+
     connectorClient()
-      .withPatchServiceName(accountId, payload, onSuccess)
+      .withPatchServiceName(params, onSuccess)
       .on('connectorError', onError);
   };
 

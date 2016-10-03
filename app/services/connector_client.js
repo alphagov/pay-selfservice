@@ -1,10 +1,11 @@
 'use strict';
-var util          = require('util');
-var EventEmitter  = require('events').EventEmitter;
-var logger        = require('winston');
-var request       = require('request');
-var dates         = require('../utils/dates.js');
-var querystring   = require('querystring');
+var util                  = require('util');
+var EventEmitter          = require('events').EventEmitter;
+var logger                = require('winston');
+var request               = require('request');
+var dates                 = require('../utils/dates.js');
+var querystring           = require('querystring');
+var withCorrelationHeader = require('../utils/correlation_header.js').withCorrelationHeader;
 
 var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
 var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';
@@ -122,6 +123,12 @@ function _chargeRefundsUrlFor(gatewayAccountId, chargeId, url) {
   return url + CHARGE_REFUNDS_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
 }
 
+function _options(url) {
+  return {
+    url: url
+  }
+}
+
 /**
  * Connects to connector
  * @param {string} connectorUrl connector url
@@ -160,134 +167,191 @@ ConnectorClient.prototype = {
 
   /**
    * Retrieves a Charge from connector for a given charge Id that belongs to a gateway account Id
-   * @param gatewayAccountId
-   * @param chargeId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            chargeId (required)
+   *            correlationId (optional)
    * @param successCallback the callback to perform upon `200 OK` from connector along with connector charge object.
+   *
    * @returns {ConnectorClient}
    */
-  withGetCharge: function (gatewayAccountId, chargeId, successCallback) {
-    var url = _chargeUrlFor(gatewayAccountId, chargeId, this.connectorUrl);
+  withGetCharge: function (params, successCallback) {
+    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl);
     logger.debug('Calling connector to get charge -', {
       service: 'connector',
       method: 'GET',
       url: url,
-      chargeId: chargeId
+      chargeId: params.chargeId
     });
-    this.client(url, this.responseHandler(successCallback));
+    this.client(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Retrieves transaction history for a given charge Id that belongs to a gateway account Id.
-   * @param gatewayAccountId
-   * @param chargeId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            chargeId (required)
+   *            correlationId (optional)
    * @param successCallback the callback to perform upon `200 OK` from connector along with history result set.
    * @returns {ConnectorClient}
    */
-  withChargeEvents: function (gatewayAccountId, chargeId, successCallback) {
-    var url = _chargeUrlFor(gatewayAccountId, chargeId, this.connectorUrl) + "/events";
+  withChargeEvents: function (params, successCallback) {
+    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + "/events";
     logger.debug('Calling connector to get events -', {
       service: 'connector',
       method: 'GET',
       url: url,
-      chargeId: chargeId
+      chargeId: params.chargeId
     });
-    this.client(url, this.responseHandler(successCallback));
+    this.client(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Retrieves the given gateway account
-   * @param gatewayAccountId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            correlationId (optional)
+   * @param successCallback
+   *          Callback function for successful refunds
    */
-  withGetAccount: function (gatewayAccountId, successCallback) {
-    var url = _accountUrlFor(gatewayAccountId, this.connectorUrl);
+  withGetAccount: function (params, successCallback) {
+    var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl);
 
     logger.debug('Calling connector to get account -', {
       service: 'connector',
       method: 'GET',
       url: url
     });
-    this.client(url, this.responseHandler(successCallback));
+    this.client(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Retrieves the accepted payment types for the given account
-   * @param gatewayAccountId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            correlationId (optional)
+   * @param successCallback
+   *          Callback function upon retrieving accepted cards successfully
    */
-  withGetAccountAcceptedCards: function (gatewayAccountId, successCallback) {
-    var url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl);
+  withGetAccountAcceptedCards: function (params, successCallback) {
+    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl);
     logger.debug('Calling connector to get accepted card types for account -', {
       service: 'connector',
       method: 'GET',
       url: url
     });
-    this.client(url, this.responseHandler(successCallback));
+    this.client(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Updates the accepted payment types for to the given gateway account
-   * @param gatewayAccountId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            payload (required)
+   *            correlationId (optional)
+   * @param successCallback
+   *          Callback function upon saving accepted cards successfully
    */
-  withPostAccountAcceptedCards: function (gatewayAccountId, payload, successCallback) {
-    var url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl);
+  withPostAccountAcceptedCards: function (params, successCallback) {
+    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl);
     logger.debug('Calling connector to post accepted card types for account -', {
       service: 'connector',
       method: 'POST',
       url: url
     });
-    this.client.post({url: url, body: payload}, this.responseHandler(successCallback));
+    var options = _options(url);
+    options.body = params.payload;
+
+    this.client.post(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Retrieves all card types
-   * @param gatewayAccountId
+   * @param params
+   *          And object with the following elements;
+   *            correationId (optional)
+   * @param successCallback
+   *          Callback function upon successful card type retrieval
    */
-  withGetAllCardTypes: function (successCallback) {
+  withGetAllCardTypes: function (params, successCallback) {
+    var corrleationParams = {};
+    if(typeof params === "function") {
+      successCallback = params;
+    } else {
+      corrleationParams = params;
+    }
+
     var url = _cardTypesUrlFor(this.connectorUrl);
     logger.debug('Calling connector to get all card types -', {
       service: 'connector',
       method: 'GET',
       url: url
     });
-    this.client(url, this.responseHandler(successCallback));
+    this.client(withCorrelationHeader(_options(url), corrleationParams), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Updates the service name for to the given gateway account
-   * @param gatewayAccountId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            payload (required)
+   *            correlationId (optional)
+   * @param successCallback
+   *          Callback function for successful patching of service name
    */
-  withPatchServiceName: function (gatewayAccountId, payload, successCallback) {
-    var url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl);
+  withPatchServiceName: function (params, successCallback) {
+    var url = _serviceNameUrlFor(params.gatewayAccountId, this.connectorUrl);
     logger.debug('Calling connector to update service name -', {
       service: 'connector',
       method: 'PATCH',
       url: url
     });
-    this.client.patch({url: url, body: payload}, this.responseHandler(successCallback));
+
+    var options = _options(url);
+    options.body = params.payload;
+    this.client.patch(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
     return this;
   },
 
   /**
    * Create a refund of the provided amount for the given payment
-   * @param gatewayAccountId
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            chargeId (required)
+   *            payload (required)
+   *            correlationId (optional)
+   * @param successCallback
+   *          Callback function for successful refunds
    */
-  withPostChargeRefund: function (gatewayAccountId, chargeId, payload, successCallback) {
-    var url = _chargeRefundsUrlFor(gatewayAccountId, chargeId, this.connectorUrl);
+  withPostChargeRefund: function (params, successCallback) {
+    var url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl);
     logger.debug('Calling connector to post a refund for payment -', {
       service: 'connector',
       method: 'POST',
       url: url,
-      chargeId: chargeId,
-      payload: payload
+      chargeId: params.chargeId,
+      payload: params.payload
     });
-    this.client.post({url: url, body: payload}, this.responseHandler(successCallback));
+
+    var options = _options(url);
+    options.body = params.payload;
+
+    this.client.post(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
     return this;
-  },
+  }
 };
 
 util.inherits(ConnectorClient, EventEmitter);

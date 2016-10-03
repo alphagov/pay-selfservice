@@ -10,8 +10,11 @@ _         = require('lodash');
 
 module.exports = function (req, res, next) {
   var accountId = auth.get_gateway_account_id(req);
+  var params = {
+    gatewayAccountId: accountId
+  };
   var init = function () {
-    client.withGetAccount(accountId, function(data){
+    client.withGetAccount(params, function(data){
       req.account = data;
       Email.get(req.account.gateway_account_id).then(function(data){
         req.account = _.merge(req.account, data);

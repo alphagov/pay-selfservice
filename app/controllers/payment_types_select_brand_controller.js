@@ -36,8 +36,12 @@ module.exports.showBrands = function (req, res) {
 
     var accountId = auth.get_gateway_account_id(req);
 
+    var params = {
+      gatewayAccountId: accountId
+    };
+
     connectorClient()
-      .withGetAccountAcceptedCards(accountId, onSuccessGetAccountAcceptedCards)
+      .withGetAccountAcceptedCards(params, onSuccessGetAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'));
   };
 
@@ -86,8 +90,12 @@ module.exports.updateBrands = function (req, res) {
 
     var accountId = auth.get_gateway_account_id(req);
 
+    var params = {
+      gatewayAccountId: accountId,
+      payload: payload
+    };
     connectorClient()
-      .withPostAccountAcceptedCards(accountId, payload, onSuccessPostAccountAcceptedCards)
+      .withPostAccountAcceptedCards(params, onSuccessPostAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to save accepted card types.'));
   };
 
