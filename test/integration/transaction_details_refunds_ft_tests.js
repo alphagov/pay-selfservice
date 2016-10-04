@@ -38,7 +38,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '19.90',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 
@@ -66,7 +66,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 
@@ -84,7 +84,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '1.9',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 
@@ -112,7 +112,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '999.99',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 
@@ -141,7 +141,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '0',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 
@@ -170,7 +170,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
-      'refund-amount-available': '0.00',
+      'refund-amount-available-in-pence': '000',
       'csrfToken': csrf().create('123')
     };
 
@@ -199,7 +199,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 
@@ -227,7 +227,7 @@ describe('The transaction view - refund scenarios', function () {
 
     var viewFormData = {
       'refund-amount': '10',
-      'refund-amount-available': '50.00',
+      'refund-amount-available-in-pence': '5000',
       'csrfToken': csrf().create('123')
     };
 

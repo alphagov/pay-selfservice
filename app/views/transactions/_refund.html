@@ -2,7 +2,7 @@
 
 <div id="show-refund">
   <form action="/transactions/{{charge_id}}/refund" method="post" class="refund-form">
-      <input id="amount-available" type="hidden" name="refund-amount-available" value="{{ refund_summary.amount_available }}" />
+      <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="container">
       <h2 class="heading-medium">Refund payment</h2>
