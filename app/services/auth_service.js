@@ -17,11 +17,6 @@ function localStrategyAuth(username, password, done) {
   });
 }
 
-function appendCSRF(req) {
-  if (req.session.csrfSecret) return;
-  req.session.csrfSecret = csrf().secretSync();
-}
-
 function ensureSessionHasCsrfSecret(req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
@@ -55,8 +50,7 @@ function enforceUser(req, res, next) {
   if (!hasUser) return redirectToLogin(req, res);
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
-  if (!req.session.csrfSecret) appendCSRF(req);
-  next();
+  ensureSessionHasCsrfSecret(req, res, next);
 }
 
 function no_access(req, res, next) {
