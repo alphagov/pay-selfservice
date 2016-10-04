@@ -37,7 +37,7 @@ module.exports.logInGet = function (req, res) {
 module.exports.postLogin = function (req, res) {
  req.user.resetLoginCount().then(
     ()=>{
-      req.session.save(() => res.redirect('/'));
+      req.session.save(() => res.redirect(paths.user.otpLogIn));
     },
     (err) => error(req,res,error)
   )
@@ -73,7 +73,7 @@ module.exports.afterOTPLogin = function (req, res) {
   delete req.session.last_url;
   req.user.resetLoginCount().then(
     ()=>{
-      req.session.save(() => res.redirect(redirect_url));    
+      req.session.save(() => res.redirect(redirect_url));
     },
     (err) => error(req,res,error)
   )
