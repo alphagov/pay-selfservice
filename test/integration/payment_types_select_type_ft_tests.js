@@ -14,14 +14,20 @@ var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controll
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
 
+var requestId = 'unique-request-id';
+var aCorrelationHeader = {
+  reqheaders: {'x-request-id': requestId}
+};
+
   var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
   var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = CONNECTOR_ACCOUNT_PATH + "/card-types";
-  var connectorMock = nock(process.env.CONNECTOR_URL);
+  var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
 
   function build_get_request(path) {
     return request(app)
       .get(path)
-      .set('Accept', 'application/json');
+      .set('Accept', 'application/json')
+      .set('x-request-id',requestId);
   }
 
   function build_form_post_request(path, sendData, sendCSRF) {
@@ -33,6 +39,7 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
       .post(path)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('x-request-id',requestId)
       .send(sendData);
   }
 

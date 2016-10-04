@@ -2,6 +2,7 @@ var response = require('../utils/response.js').response;
 var auth = require('../services/auth_service.js');
 var router = require('../routes.js');
 var _ = require('lodash');
+var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var {
   TYPES,
@@ -13,10 +14,15 @@ var {
 module.exports.showBrands = function (req, res) {
   var acceptedType = req.query.acceptedType;
   var error = req.query.error;
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
   var init = function () {
+    var params = {
+      correlationId: correlationId
+    };
+
     connectorClient()
-      .withGetAllCardTypes(onSuccessGetAllCards)
+      .withGetAllCardTypes(params, onSuccessGetAllCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'));
   };
 
@@ -37,7 +43,8 @@ module.exports.showBrands = function (req, res) {
     var accountId = auth.get_gateway_account_id(req);
 
     var params = {
-      gatewayAccountId: accountId
+      gatewayAccountId: accountId,
+      correlationId: correlationId
     };
 
     connectorClient()
@@ -51,6 +58,7 @@ module.exports.showBrands = function (req, res) {
 module.exports.updateBrands = function (req, res) {
   var acceptedType = req.body['acceptedType'];
   var acceptedBrands = req.body['acceptedBrands'];
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
   var init = function () {
     if (typeof(acceptedBrands) === 'undefined') {
@@ -61,8 +69,12 @@ module.exports.updateBrands = function (req, res) {
       return;
     }
 
+    var params = {
+      correlationId: correlationId
+    };
+
     connectorClient()
-      .withGetAllCardTypes(onSuccessGetAllCards)
+      .withGetAllCardTypes(params, onSuccessGetAllCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'));
   };
 
@@ -76,7 +88,7 @@ module.exports.updateBrands = function (req, res) {
         return false;
       }
       return _.includes(acceptedBrands, card['brand']);
-    }
+    };
 
     var acceptedCardTypeIds = _
       .chain(allCards['card_types'])
@@ -92,7 +104,8 @@ module.exports.updateBrands = function (req, res) {
 
     var params = {
       gatewayAccountId: accountId,
-      payload: payload
+      payload: payload,
+      correlationId: correlationId
     };
     connectorClient()
       .withPostAccountAcceptedCards(params, onSuccessPostAccountAcceptedCards)

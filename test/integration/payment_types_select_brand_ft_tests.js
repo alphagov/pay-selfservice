@@ -18,7 +18,13 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = CONNECTOR_ACCOUNT_PATH + "/card-types";
-var connectorMock = nock(process.env.CONNECTOR_URL);
+
+var requestId = 'unique-request-id';
+var aCorrelationHeader = {
+  reqheaders: {'x-request-id': requestId}
+};
+
+var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
 
 var buildAcceptedCardType = function (value, available = true, selected = '') {
   return {
@@ -28,7 +34,7 @@ var buildAcceptedCardType = function (value, available = true, selected = '') {
     "available": available,
     "selected": selected
   }
-}
+};
 
 var ALL_CARD_TYPES = {
   "card_types": [
@@ -41,7 +47,8 @@ var ALL_CARD_TYPES = {
 function build_get_request(path) {
   return request(app)
     .get(path)
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('x-request-id',requestId);
 }
 
 function build_form_post_request(path, sendData, sendCSRF) {
@@ -53,6 +60,7 @@ function build_form_post_request(path, sendData, sendCSRF) {
     .post(path)
     .set('Accept', 'application/json')
     .set('Content-Type', 'application/x-www-form-urlencoded')
+    .set('x-request-id',requestId)
     .send(sendData);
 }
 
