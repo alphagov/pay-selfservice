@@ -43,7 +43,7 @@ function get_gateway_account_id(req) {
   return parseInt(id);
 }
 
-function enforceUser(req, res, next) {
+function enforceUserFirstFactor(req, res, next) {
   var hasUser     = _.get(req, "user"),
   hasAccount      = get_gateway_account_id(req),
   disabled        = _.get(hasUser, "disabled");
@@ -62,11 +62,11 @@ function no_access(req, res, next) {
   }
 }
 
-function enforce(req, res, next) {
+function enforceUserBothFactors(req, res, next) {
   req.session.reload(function (err) {
     var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
-    enforceUser(req, res, function(){
+    enforceUserFirstFactor(req, res, function(){
       if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
       next();
     });
@@ -100,9 +100,9 @@ function serializeUser(user, done) {
 }
 
 module.exports = {
-  enforceUser: enforceUser,
+  enforceUserFirstFactor: enforceUserFirstFactor,
+  enforceUserBothFactors: enforceUserBothFactors,
   ensureSessionHasCsrfSecret: ensureSessionHasCsrfSecret,
-  enforce: enforce,
   initialise: initialise,
   deserializeUser: deserializeUser,
   serializeUser: serializeUser,

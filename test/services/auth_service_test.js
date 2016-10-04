@@ -60,9 +60,9 @@ describe('auth service', function () {
   });
 
 
-  describe('enforce', function () {
+  describe('enforceUserAndSecondFactor', function () {
     it("should call next if has valid user", function (done) {
-      auth.enforce(validRequest, response, next);
+      auth.enforceUserBothFactors(validRequest, response, next);
       expect(next.calledOnce).to.be.true;
       done();
     });
@@ -70,7 +70,7 @@ describe('auth service', function () {
     it("should not call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
       delete invalid.user.gateway_account_id;
-      auth.enforce(invalid, response, next);
+      auth.enforceUserBothFactors(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
       done();
@@ -79,7 +79,7 @@ describe('auth service', function () {
     it("should not call next if has a disabled user", function (done) {
       var invalid = _.cloneDeep(validRequest);
       invalid.user.disabled = true;
-      auth.enforce(invalid, response, next);
+      auth.enforceUserBothFactors(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
       done();
