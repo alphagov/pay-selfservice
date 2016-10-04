@@ -23,8 +23,12 @@ var ALL_CARD_TYPES = {
     {"id": "3", "brand": "discover", "label": "Discover", "type": "CREDIT"},
     {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
 };
+var requestId = 'unique-request-id';
+var aCorrelationHeader = {
+  reqheaders: {'x-request-id': requestId}
+};
 
-var connectorMock = nock(process.env.CONNECTOR_URL);
+var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
 
 function connectorMock_responds(code, data, searchParameters) {
   var queryStr = '?';
@@ -44,7 +48,8 @@ function connectorMock_responds(code, data, searchParameters) {
 function get_transaction_list() {
   return request(app)
     .get(paths.transactions.index)
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .set('x-request-id',requestId);
 }
 
 describe('Transactions endpoints', function () {
@@ -192,6 +197,7 @@ describe('Transactions endpoints', function () {
       request(app)
         .get(paths.transactions.index + "?state=started")
         .set('Accept', 'application/json')
+        .set('x-request-id',requestId)
         .expect(200)
         .expect(function (res) {
           res.body.downloadTransactionLink.should.eql("/transactions/download?state=started");
