@@ -165,7 +165,7 @@ describe('forgotten_password_controller', function () {
       {
         destroy: function(){ }
       }
-      ).newPasswordPost({params: {id:2}, body: {password:'foo'}},{render: function(template, params){
+      ).newPasswordPost({params: {id:2}, body: {password:'foo'}, headers:{}},{render: function(template, params){
         assert.equal(template,"error");
       }});
     });
