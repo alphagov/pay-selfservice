@@ -2,6 +2,7 @@
 var errorView = require('../utils/response.js').renderErrorView;
 var User      = require('../models/user.js');
 var paths     = require('../paths.js');
+var _         = require('lodash');
 var logger    = require('winston');
 
 
@@ -12,10 +13,9 @@ var lockOut = (req,res, user) => {
   })
 }
 
-
 module.exports = {
   enforce: function (req, res, next) {
-   var email = req.body.email || req.user.email;
+   var email = _.get(req.body, 'email') || _.get(req.user, 'email');
     User.find(email).then((user)=> {
       user.incrementLoginCount().then(
         ()=> {
@@ -29,4 +29,4 @@ module.exports = {
       )
     },next)
   }
-}
+};
