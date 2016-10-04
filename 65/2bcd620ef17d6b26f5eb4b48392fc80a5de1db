@@ -5,3 +5,5 @@ release.alpha_release-67.date=2016-10-04:09:08:38
 alpha_release-67.approver=ian.maddison@digital.cabinet-office.gov.uk
 
 alpha_release-67.approve-date=2016-10-04:11:39:58
+
+staging-1.tag=alpha_staging-1-67
