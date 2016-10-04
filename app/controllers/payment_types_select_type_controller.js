@@ -2,6 +2,7 @@ var response = require('../utils/response.js').response;
 var auth = require('../services/auth_service.js');
 var router = require('../routes.js');
 var _ = require('lodash');
+var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var {
   TYPES,
@@ -12,11 +13,14 @@ var {
 
 module.exports.selectType = function (req, res) {
 
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+
   var init = function () {
     var accountId = auth.get_gateway_account_id(req);
 
     var params = {
-      gatewayAccountId: accountId
+      gatewayAccountId: accountId,
+      correlationId: correlationId
     };
 
     connectorClient()

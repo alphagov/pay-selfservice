@@ -7,6 +7,13 @@ var wrongPromise = function(data){
   throw new Error('Promise was unexpectedly fulfilled.');
 };
 
+var aCorrelationHeader = {
+  reqheaders: {
+    'x-request-id': 'some-unique-id'
+  }
+};
+
+
 describe('transaction model', function() {
   describe('search', function(){
 
@@ -20,7 +27,8 @@ describe('transaction model', function() {
       });
 
       it('should return client unavailable', function () {
-        return Transaction.search(123,{}).then(wrongPromise,
+        var transactionModel = Transaction("some-unique-id");
+        return transactionModel.search(123,{}).then(wrongPromise,
             function rejected(error){
               assert.equal(error.message,"CLIENT_UNAVAILABLE")
             }
@@ -33,13 +41,14 @@ describe('transaction model', function() {
       before(function() {
         nock.cleanAll();
 
-        nock(process.env.CONNECTOR_URL)
+        nock(process.env.CONNECTOR_URL, aCorrelationHeader)
           .get("/v1/api/accounts/123/charges?reference=&email=&state=&card_brand=&from_date=&to_date=&page=1&display_size=100")
           .reply(404, '');
       });
 
       it('should return get_failed', function () {
-        return Transaction.search(123,{}).then(wrongPromise,
+        var transactionModel = Transaction("some-unique-id");
+        return transactionModel.search(123,{}).then(wrongPromise,
           function rejected(error){
             assert.equal(error.message,"GET_FAILED")
           });
@@ -56,7 +65,8 @@ describe('transaction model', function() {
       });
 
       it('should return the correct promise', function () {
-        return Transaction.search(123,{}).then(function(data){
+        var transactionModel = Transaction("some-unique-id");
+        return transactionModel.search(123,{}).then(function(data){
           assert.equal(1,1);
         },wrongPromise);
       });
@@ -75,7 +85,8 @@ describe('transaction model', function() {
       });
 
       it('should return client unavailable', function () {
-        return Transaction.searchAll(123,{pageSize: 1, page: 100}).then(wrongPromise,
+        var transactionModel = Transaction("some-unique-id");
+        return transactionModel.searchAll(123,{pageSize: 1, page: 100}).then(wrongPromise,
             function rejected(error){
               assert.equal(error.message,"CLIENT_UNAVAILABLE")
             }
@@ -94,7 +105,8 @@ describe('transaction model', function() {
       });
 
       it('should return GET_FAILED', function () {
-        return Transaction.searchAll(123,{pageSize: 1, page: 100}).then(wrongPromise,
+        var transactionModel = Transaction("some-unique-id");
+        return transactionModel.searchAll(123,{pageSize: 1, page: 100}).then(wrongPromise,
           function rejected(error){
             assert.equal(error.message,"GET_FAILED")
           });
@@ -111,7 +123,8 @@ describe('transaction model', function() {
       });
 
       it('should return into the correct promise', function () {
-        return Transaction.searchAll(123,{pageSize: 1, page: 100}).then(function(data){
+        var transactionModel = Transaction("some-unique-id");
+        return transactionModel.searchAll(123,{pageSize: 1, page: 100}).then(function(data){
           assert.equal(1,1);
         },wrongPromise);
       });

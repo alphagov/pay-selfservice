@@ -121,7 +121,7 @@ toggleDisabled = function(toggle) {
 },
 
 
-sendPasswordResetToken = function(){
+sendPasswordResetToken = function(correlationId){
   var defer = q.defer(),
   code      = random.key(20),
   template  = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID,
@@ -130,7 +130,7 @@ sendPasswordResetToken = function(){
 
   init = function(){
     forgottenPassword.create(data).then(sendEmail,()=> {
-      logger.warn('PROBLEM CREATING FORGOTTEN PASSWORD. User: ', data.userId);
+      logger.warn(`[${correlationId}] PROBLEM CREATING FORGOTTEN PASSWORD. User: `, data.userId);
       defer.reject();
     });
   },
@@ -141,12 +141,12 @@ sendPasswordResetToken = function(){
     var startTime = new Date();
     notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
-      logger.info('FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ' + user.id);
+      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      logger.info(`[${correlationId}] FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ` + user.id);
       defer.resolve();
     }, (e)=> {
-      logger.info("[] - GET to %s ended - elapsed time: %s ms", url,  new Date() - startTime);
-      logger.error('PROBLEM SENDING FORGOTTEN PASSWORD EMAIL ',e);
+      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      logger.error(`[${correlationId}] PROBLEM SENDING FORGOTTEN PASSWORD EMAIL `,e);
       defer.reject();
     });
   };
@@ -197,11 +197,12 @@ resolveUser = function(user, defer){
 
 // CLASS
 
-var find = function(email) {
+var find = function(email, correlationId) {
+  correlationId = correlationId || '';
   var defer = q.defer();
   _find(email).then(
     (user)=> resolveUser(user, defer),
-    (e)=> { logger.debug("find user by email - not found"); defer.reject(e);});
+    (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);});
   return defer.promise;
 },
 

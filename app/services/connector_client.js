@@ -277,18 +277,18 @@ ConnectorClient.prototype = {
 
   /**
    * Retrieves all card types
-   * @param params
+   * @param params (optional)
    *          And object with the following elements;
-   *            correationId (optional)
+   *            correlationId
    * @param successCallback
    *          Callback function upon successful card type retrieval
    */
   withGetAllCardTypes: function (params, successCallback) {
-    var corrleationParams = {};
+    var correlationParams = {};
     if(typeof params === "function") {
       successCallback = params;
     } else {
-      corrleationParams = params;
+      correlationParams = params;
     }
 
     var url = _cardTypesUrlFor(this.connectorUrl);
@@ -297,7 +297,7 @@ ConnectorClient.prototype = {
       method: 'GET',
       url: url
     });
-    this.client(withCorrelationHeader(_options(url), corrleationParams), this.responseHandler(successCallback));
+    this.client(withCorrelationHeader(_options(url), correlationParams.correlationId), this.responseHandler(successCallback));
     return this;
   },
 

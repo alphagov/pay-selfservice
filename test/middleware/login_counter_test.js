@@ -57,7 +57,7 @@ describe('login counter test', function () {
     };
 
     var loginMiddleware = login(user);
-    loginMiddleware.enforce({body: {email: "foo"}},{
+    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{
     },()=> assert("next is called","next is called"))
   });
 
@@ -84,7 +84,7 @@ describe('login counter test', function () {
     };
 
     var loginMiddleware = login(user);
-    loginMiddleware.enforce({body: {email: "foo"}},{
+    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{
       render: (path) => assert("login/noaccess",path)
     },()=> assert("next is called",false))
   });
@@ -106,7 +106,7 @@ describe('login counter test', function () {
       }
     };
     var loginMiddleware = login(user);
-    loginMiddleware.enforce({body:{}},{
+    loginMiddleware.enforce({body:{}, headers:{}},{
     },()=> assert("next is called","next is called"))
   });
 });

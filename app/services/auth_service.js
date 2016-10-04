@@ -7,6 +7,7 @@ var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
 var User = require(__dirname + '/../models/user.js');
 var _ = require('lodash');
+var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function(username, password, done) {
   User.authenticate(username,password)
@@ -25,11 +26,13 @@ var appendCSRF = function(req){
  appendLoggedOutCSRF = function(req, res, next){
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+
   req.session.save(function(err) {
     if (err) {
-      logger.error('Error saving csrf secret ', err);
+      logger.error(`[${correlationId}] Error saving csrf secret `, err);
     } else {
-      logger.info('Saved csrfSecret: ', req.session.csrfSecret);
+      logger.info(`[${correlationId}] Saved csrfSecret: `, req.session.csrfSecret);
     }
     next();
   });

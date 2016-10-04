@@ -1,19 +1,22 @@
-var response        = require('../utils/response.js').response;
-var auth            = require('../services/auth_service.js');
-var router          = require('../routes.js');
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
-var renderErrorView = require('../utils/response.js').renderErrorView;
+var response              = require('../utils/response.js').response;
+var auth                  = require('../services/auth_service.js');
+var router                = require('../routes.js');
+var ConnectorClient       = require('../services/connector_client.js').ConnectorClient;
+var renderErrorView       = require('../utils/response.js').renderErrorView;
+var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var connectorClient = function () {
   return new ConnectorClient(process.env.CONNECTOR_URL);
 };
 
 module.exports.index = function (req, res) {
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
   var init = function () {
     var accountId = auth.get_gateway_account_id(req);
     var params = {
-      gatewayAccountId: accountId
+      gatewayAccountId: accountId,
+      correlationId: correlationId
     };
 
     connectorClient()
@@ -44,6 +47,8 @@ module.exports.index = function (req, res) {
 
 module.exports.update = function (req, res) {
 
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+
   var init = function () {
     var accountId = auth.get_gateway_account_id(req);
 
@@ -53,7 +58,8 @@ module.exports.update = function (req, res) {
 
     var params = {
       gatewayAccountId: accountId,
-      payload : payload
+      payload : payload,
+      correlationId: correlationId
     };
 
     connectorClient()

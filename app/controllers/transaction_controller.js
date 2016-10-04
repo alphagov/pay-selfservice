@@ -20,10 +20,13 @@ module.exports = {
   index: function (req, res) {
     var accountId = auth.get_gateway_account_id(req);
     var filters = getFilters(req);
+    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+
     req.session.filters = url.parse(req.url).query;
     var init = function () {
       if (!filters.valid) return error("Invalid search");
-      Transaction
+      var transactionModel = Transaction(req.headers[CORRELATION_HEADER]);
+      transactionModel
         .search(accountId, filters.result)
         .then(onSuccessSearchTransactions, () => error("Unable to retrieve list of transactions."))
     };
@@ -35,8 +38,12 @@ module.exports = {
         response(req.headers.accept, res, 'transactions/index', model)
       };
 
+      var params = {
+        correlationId: correlationId
+      };
+
       client
-        .withGetAllCardTypes(onSuccessGetAllCards)
+        .withGetAllCardTypes(params, onSuccessGetAllCards)
         .on('connectorError', () => error("Unable to retrieve card types."));
     };
 
@@ -53,7 +60,8 @@ module.exports = {
     var name = "GOVUK Pay " + date.dateToDefaultFormat(new Date()) + '.csv';
 
     var init = function () {
-        Transaction.searchAll(accountId, filters)
+       var transactionModel = Transaction(req.headers[CORRELATION_HEADER]);
+        transactionModel.searchAll(accountId, filters)
           .then(toCsv)
           .then(render)
           .catch(error);

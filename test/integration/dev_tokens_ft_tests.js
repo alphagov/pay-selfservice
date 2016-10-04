@@ -19,13 +19,19 @@ var nocsrf  = session.mockValidAccount(_app, ACCOUNT_ID,{noCSRF: true});
 
 
 portfinder.getPort(function(err, freePort) {
+  var requestId = 'unique-request-id';
+  var aCorrelationHeader = {
+    reqheaders: {'x-request-id': requestId}
+  };
+
   var localServer = 'http://localhost:' + freePort;
-  var serverMock = nock(localServer);
+  var serverMock = nock(localServer, aCorrelationHeader);
 
   function build_get_request(path) {
     return request(app)
       .get(path)
-      .set('Accept', 'application/json');
+      .set('Accept', 'application/json')
+      .set('x-request-id',requestId);
   }
 
   function build_form_post_request(path, sendData, sendCSRF) {
@@ -38,6 +44,7 @@ portfinder.getPort(function(err, freePort) {
       .post(path)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('x-request-id',requestId)
       .send(sendData);
   }
 
@@ -52,6 +59,7 @@ portfinder.getPort(function(err, freePort) {
      return request(app)
         .put(paths.devTokens.index)
         .set('Accept', 'application/json')
+        .set('x-request-id',requestId)
         .send(data);
   }
 
@@ -284,6 +292,7 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .set('x-request-id',requestId)
             .send({ csrfToken: csrf().create('123') })
             .expect(200, {"revoked": "15 Oct 2015"})
             .end(done);
@@ -298,6 +307,7 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .set('x-request-id',requestId)
             .set('Accept', 'application/json')
             .expect(200, {message: "There is a problem with the payments platform"})
             .end(done);
@@ -310,6 +320,7 @@ portfinder.getPort(function(err, freePort) {
 
           request(app)
             .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+            .set('x-request-id',requestId)
             .send({ csrfToken: csrf().create('123') })
             .expect(400, {})
             .end(done);
@@ -321,6 +332,7 @@ portfinder.getPort(function(err, freePort) {
           // No serverMock defined on purpose to mock a network failure
           request(app)
             .delete(paths.devTokens.index)
+            .set('x-request-id',requestId)
             .send({
               token_link: '550e8400-e29b-41d4-a716-446655440000',
               csrfToken: csrf().create('123')

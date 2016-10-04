@@ -1,4 +1,6 @@
 var logger = require('winston');
+var CORRELATION_HEADER = require('./correlation_header.js').CORRELATION_HEADER;
+
 const ERROR_MESSAGE = 'There is a problem with the payments platform';
 const NOT_FOUND = 'Page cannot be found';
 
@@ -26,7 +28,9 @@ module.exports = {
 
   renderErrorView: function (req, res, msg) {
     if (!msg) msg = ERROR_MESSAGE;
-    logger.error('An error has occurred. Rendering error view -', {errorMessage: msg});
+    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+    logger.error(`[${correlationId}] An error has occurred. Rendering error view -`, {errorMessage: msg});
+
     var accept = (req && req.headers) ? req.headers.accept : "";
     response(accept, res, 'error', {
       'message': msg
