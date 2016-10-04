@@ -22,7 +22,7 @@ function appendCSRF(req) {
   req.session.csrfSecret = csrf().secretSync();
 }
 
-function appendLoggedOutCSRF(req, res, next) {
+function ensureSessionHasCsrfSecret(req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   req.session.save(function(err) {
@@ -107,7 +107,7 @@ function serializeUser(user, done) {
 
 module.exports = {
   enforceUser: enforceUser,
-  appendLoggedOutCSRF: appendLoggedOutCSRF,
+  ensureSessionHasCsrfSecret: ensureSessionHasCsrfSecret,
   enforce: enforce,
   initialise: initialise,
   deserializeUser: deserializeUser,

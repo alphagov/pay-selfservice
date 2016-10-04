@@ -56,7 +56,7 @@ module.exports.bind = function (app) {
 
   // LOGIN
   var user = paths.user;
-  app.get(user.logIn, auth.appendLoggedOutCSRF, csrf, login.logInGet);
+  app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
   app.post(user.logIn, csrf, trimEmail, loginCounter.enforce, login.logUserin(), login.postLogin);
   app.get(user.loggedIn, auth.enforce, csrf, login.loggedIn);
   app.get(user.noAccess, login.noAccess);
@@ -67,10 +67,10 @@ module.exports.bind = function (app) {
   app.post(user.otpLogIn, csrf, loginCounter.enforce, login.logUserinOTP(), login.afterOTPLogin);
 
 
-  app.get(user.forgottenPassword, auth.appendLoggedOutCSRF, csrf, forgotPassword.emailGet);
+  app.get(user.forgottenPassword, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.emailGet);
   app.post(user.forgottenPassword,  trimEmail, csrf, forgotPassword.emailPost);
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
-  app.get(user.forgottenPasswordReset, auth.appendLoggedOutCSRF, csrf, forgotPassword.newPasswordGet);
+  app.get(user.forgottenPasswordReset, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.newPasswordGet);
   app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);
 
 
