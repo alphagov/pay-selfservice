@@ -50,11 +50,11 @@ function get_gateway_account_id(req) {
 
 function enforceUser(req, res, next){
   var hasUser     = _.get(req,"user"),
-  hasAccount      = auth.get_gateway_account_id(req),
+  hasAccount      = get_gateway_account_id(req),
   disabled        = _.get(hasUser,"disabled");
   if (!hasUser) return redirectToLogin(req,res);
-  if (!hasAccount) return auth.no_access(req, res, next);
-  if (disabled === true) return auth.no_access(req, res, next);
+  if (!hasAccount) return no_access(req, res, next);
+  if (disabled === true) return no_access(req, res, next);
   if (!req.session.csrfSecret) appendCSRF(req);
   next();
 }
@@ -105,7 +105,7 @@ function serializeUser(user, done) {
   done(null, user.email);
 }
 
-var auth = {
+module.exports = {
   enforceUser: enforceUser,
   appendLoggedOutCSRF: appendLoggedOutCSRF,
   enforce: enforce,
@@ -116,5 +116,3 @@ var auth = {
   no_access: no_access,
   get_gateway_account_id: get_gateway_account_id
 };
-
-module.exports = auth;
