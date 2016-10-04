@@ -13,16 +13,16 @@ function localStrategyAuth(username, password, done) {
   .then(function(user){
     done(null, user);
   },function(){
-    done(null, false,{ message: 'Invalid username or password'});
+    done(null, false, { message: 'Invalid username or password' });
   });
-};
+}
 
-function appendCSRF(req){
+function appendCSRF(req) {
   if (req.session.csrfSecret) return;
   req.session.csrfSecret = csrf().secretSync();
 }
 
-function appendLoggedOutCSRF(req, res, next){
+function appendLoggedOutCSRF(req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   req.session.save(function(err) {
@@ -35,7 +35,7 @@ function appendLoggedOutCSRF(req, res, next){
   });
 }
 
-function redirectToLogin(req,res){
+function redirectToLogin(req,res) {
   req.session.last_url = req.originalUrl;
   req.session.save(function () {
     res.redirect(paths.user.logIn);
@@ -48,11 +48,11 @@ function get_gateway_account_id(req) {
   return parseInt(id);
 }
 
-function enforceUser(req, res, next){
-  var hasUser     = _.get(req,"user"),
+function enforceUser(req, res, next) {
+  var hasUser     = _.get(req, "user"),
   hasAccount      = get_gateway_account_id(req),
-  disabled        = _.get(hasUser,"disabled");
-  if (!hasUser) return redirectToLogin(req,res);
+  disabled        = _.get(hasUser, "disabled");
+  if (!hasUser) return redirectToLogin(req, res);
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
   if (!req.session.csrfSecret) appendCSRF(req);
@@ -82,7 +82,7 @@ function enforce(req, res, next) {
 function initialise(app, override_strategy) {
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.use('local',new localStrategy({usernameField: 'email'},localStrategyAuth));
+  passport.use('local',new localStrategy({ usernameField: 'email' }, localStrategyAuth));
   passport.use(new TotpStrategy(
     function(user, done) {
       return done(null, user.otp_key, 30);
