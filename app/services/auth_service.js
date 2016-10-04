@@ -8,16 +8,16 @@ var csrf = require('csrf');
 var User = require(__dirname + '/../models/user.js');
 var _ = require('lodash');
 
-function localStrategyAuth(username, password, done) {
+var localStrategyAuth = function (username, password, done) {
   User.authenticate(username,password)
   .then(function(user){
     done(null, user);
   },function(){
     done(null, false, { message: 'Invalid username or password' });
   });
-}
+};
 
-function ensureSessionHasCsrfSecret(req, res, next) {
+var ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   req.session.save(function(err) {
@@ -28,22 +28,22 @@ function ensureSessionHasCsrfSecret(req, res, next) {
     }
     next();
   });
-}
+};
 
-function redirectToLogin(req,res) {
+var redirectToLogin = function (req,res) {
   req.session.last_url = req.originalUrl;
   req.session.save(function () {
     res.redirect(paths.user.logIn);
   });
-}
+};
 
-function get_gateway_account_id(req) {
+var get_gateway_account_id = function (req) {
   var id = _.get(req,"user.gateway_account_id");
   if (!id) return null;
   return parseInt(id);
-}
+};
 
-function enforceUserFirstFactor(req, res, next) {
+var enforceUserFirstFactor = function (req, res, next) {
   var hasUser     = _.get(req, "user"),
   hasAccount      = get_gateway_account_id(req),
   disabled        = _.get(hasUser, "disabled");
@@ -51,18 +51,18 @@ function enforceUserFirstFactor(req, res, next) {
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
   ensureSessionHasCsrfSecret(req, res, next);
-}
+};
 
-function no_access(req, res, next) {
+var no_access = function (req, res, next) {
   if (req.url != paths.user.noAccess) {
     res.redirect(paths.user.noAccess);
   }
   else {
     next(); // don't redirect again if we're already there
   }
-}
+};
 
-function enforceUserBothFactors(req, res, next) {
+var enforceUserBothFactors = function (req, res, next) {
   req.session.reload(function (err) {
     var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
@@ -71,9 +71,9 @@ function enforceUserBothFactors(req, res, next) {
       next();
     });
   });
-}
+};
 
-function initialise(app, override_strategy) {
+var initialise = function (app, override_strategy) {
   app.use(passport.initialize());
   app.use(passport.session());
   passport.use('local',new localStrategy({ usernameField: 'email' }, localStrategyAuth));
@@ -87,17 +87,17 @@ function initialise(app, override_strategy) {
 
   passport.deserializeUser(this.deserializeUser);
 
-}
+};
 
-function deserializeUser(email, done) {
+var deserializeUser = function (email, done) {
   User.find(email).then(function(user){
     done(null, user);
   });
 }
 
-function serializeUser(user, done) {
+var serializeUser = function (user, done) {
   done(null, user.email);
-}
+};
 
 module.exports = {
   enforceUserFirstFactor: enforceUserFirstFactor,
