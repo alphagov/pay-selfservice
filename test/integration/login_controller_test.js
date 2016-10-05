@@ -69,7 +69,7 @@ describe('The postlogin endpoint', function () {
   it('should redirect to root ',function(done){
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
-    url = "/",
+    expectedUrl = paths.user.otpLogIn,
     req = {
       session: { save: (cb)=> cb()},
  user: { resetLoginCount: ()=> {
@@ -79,7 +79,7 @@ describe('The postlogin endpoint', function () {
     },
     res = {
       redirect: function(redirect){
-        if (redirect == url) passes = true;
+        if (redirect == expectedUrl) passes = true;
     }};
     login_controller.postLogin(req, res);
     assert(passes);

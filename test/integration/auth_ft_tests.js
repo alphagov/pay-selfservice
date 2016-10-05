@@ -62,14 +62,14 @@ describe('An endpoint not protected', function () {
   });
 });
 
-describe('An endpoint protected by auth.enforce', function () {
+describe('An endpoint protected by auth.enforceUserBothFactors', function () {
 
 
   var app = express();
   auth.initialise(app);
   var withNoSession = mockSession(app);
 
-  app.get('/protected', auth.enforce, function (req, res) {
+  app.get('/protected', auth.enforceUserBothFactors, function (req, res) {
     res.send('Hello, World!');
   });
 
