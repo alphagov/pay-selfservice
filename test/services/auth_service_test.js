@@ -40,6 +40,8 @@ describe('auth service', function () {
       user: {
         name: 'Michael',
         gateway_account_id: 123
+      },
+      headers: {
       }
     };
 
