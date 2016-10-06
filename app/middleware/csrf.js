@@ -10,18 +10,23 @@ module.exports = function (req, res, next) {
     session = req.session;
   var init = function () {
       if (session) {
-        if (!session.csrfTokens) session.csrfTokens = [];
-        if (!session.csrfSecret) return showNoCsrf();
-        if (!csrfValid()) return showCsrfInvalid();
-
-        session.csrfTokens.push(csrfToken);
-        req.session.save( error => {
-          if (error) {
-            return showSessionSaveError(error);
+        session.reload(function(err) {
+          if(err) {
+            logger.error('Error reloading session : ', err);
           }
+          if (!session.csrfTokens) session.csrfTokens = [];
+          if (!session.csrfSecret) return showNoCsrf();
+          if (!csrfValid()) return showCsrfInvalid();
 
-          appendCsrf();
+          session.csrfTokens.push(csrfToken);
+          req.session.save( error => {
+            if (error) {
+              return showSessionSaveError(error);
+            }
+
+            appendCsrf();
           next();
+          });
         });
       } else {
         showNoSession();
@@ -37,9 +42,7 @@ module.exports = function (req, res, next) {
         return false;
       }
       var verify = csrf().verify(session.csrfSecret, csrfToken);
-      if (verify === false) return false;
-
-      return true;
+      return verify !== false;
     },
 
     csrfUsed = function () {
