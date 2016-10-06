@@ -7,7 +7,7 @@ function createInstance(){
     return new Sequelize(process.env.DATABASE_URL,{
     dialect: 'postgres',
     protocol: 'postgres',
-    "logging": false,
+    "logging": process.env.DATABASE_LOGGING ? process.env.DATABASE_LOGGING : false,
     native: true,
     dialectOptions: {
         ssl: true

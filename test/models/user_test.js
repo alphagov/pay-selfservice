@@ -274,6 +274,9 @@ describe('user model', function() {
     });
   });
 
+
+
+
   describe('sendPasswordResetToken', function() {
     it('should send an email', function(done) {
       var seq = _.cloneDeep(sequel);
@@ -373,6 +376,59 @@ describe('user model', function() {
     });
   });
 
+
+  describe('logout', function() {
+    it('should logout', function(done) {
+      var seq = _.cloneDeep(sequel);
+      var values = {dataValues: { id: 2, password: 'foo'}};
+
+      seq.sequelize.define = function() {
+        return {
+          findOne: function(){
+            return { then: function(success){ success(values); }};
+          },
+          hasMany: () => {},
+          query:() => {},
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{}
+        };
+      };
+      var user = User(seq);
+
+      user.find('1')
+        .then(function(user){ return user.logOut()})
+        .then(done)
+        .catch(done)
+    });
+
+    it('should reject if forgotten password not found', function(done) {
+      var seq = _.cloneDeep(sequel);
+      var values = null;
+
+      seq.sequelize.define = function() {
+        return {
+          update: function(password,sql) {
+            assert(values.dataValues.password != password);
+            assert(password.length !== 0);
+            assert.equal(values.dataValues.id,sql.where.id);
+            return { then: function(success){ success(); } };
+          },
+          findOne: function(){
+            return { then: function(success){ success(values); }};
+          },
+          beforeUpdate: ()=>{},
+          beforeCreate: ()=>{},
+          hasMany: () => {}
+        };
+      };
+      var user = User(seq);
+
+      user.find('1')
+        .then(function(user){ return user.updatePassword('foo')})
+        .then(function(){ assert(false);})
+        .catch(done);
+    });
+  });
 
   describe('findByResetToken', function() {
       // TODO
