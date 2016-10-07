@@ -27,7 +27,7 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
     if (err) {
       logger.error(`[${correlationId}] Error saving csrf secret `, err);
     } else {
-      logger.info(`[${correlationId}] Saved csrfSecret: `, req.session.csrfSecret);
+      logger.info(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret} for session ID: ${req.session.id}`);
     }
     next();
   });

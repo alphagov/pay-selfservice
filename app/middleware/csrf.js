@@ -50,7 +50,7 @@ module.exports = function (req, res, next) {
     },
 
     showNoCsrf = function () {
-      logger.warn('CSRF secret is not defined');
+      logger.warn('CSRF secret is not defined for session with id : '+ session.id);
       errorView(req, res, errorMsg);
     },
 
