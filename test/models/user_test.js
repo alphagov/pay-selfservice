@@ -1,513 +1,313 @@
-require(__dirname + '/../test_helpers/html_assertions.js');
-var should = require('chai').should();
-var assert = require('assert');
+var expect = require('chai').expect;
 var proxyquire = require('proxyquire');
 var _ = require('lodash');
-var expect = require("chai").expect;
-var nock = require('nock');
-var bcrypt = require('bcrypt');
-var q = require('q');
+var Sequelize = require('sequelize');
 
+var defaultOtpKey = '123456789';
+var defaultPassword = 'password10';
+var defaultForgottenPasswordCode = 'xyz';
 
-var wrongPromise = function(data) {
-  throw new Error('Promise was unexpectedly fulfilled.');
-};
+process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES = 90;
 
-var sequel = {
-  sequelize: {
-    sync: function() {},
-    define: function() {
-      return {
-        findOne: function() {},
-        create: function() {},
-        hasMany: function() {}
-      };
-    },
-    query: function(){ return { then: (suc)=> suc() }}
+var mockedNotificationClient = {
+  sendEmail: function (template, email, data) {
+    expect(template).to.be.equal("template_id");
+    expect(email).to.be.equal("foo@foo.com");
+    expect(data.code.indexOf('https://selfservice.pymnt.localdomain/reset-password/')).to.be.equal(0);
+    expect(data.code.length).to.be.equal(62);
+
+    return {
+      then: function (cb) {
+        cb()
+      }
+    }
   }
 };
 
-var User = function(mockSequelize,includes=[]) {
-  var requires = _.merge(includes,{
-    'sequelize': { STRING: "" },
-    './../utils/sequelize_config.js': mockSequelize
-  });
+var testSequelizeConfig = require(__dirname + '/../test_helpers/test_sequelize_config.js');
 
+var ForgottenPassword = proxyquire(__dirname + '/../../app/models/forgotten_password.js', {
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
 
-  return proxyquire(__dirname + '/../../app/models/user.js', requires);
+var User = proxyquire(__dirname + '/../../app/models/user.js', {
+  './../utils/sequelize_config.js': testSequelizeConfig,
+  '../utils/random.js': {key: () => defaultOtpKey},
+  './forgotten_password.js': ForgottenPassword,
+  '../services/notification_client.js': mockedNotificationClient
+});
+
+var wrongPromise = function (done) {
+  return (reason) => {
+    var error = new Error('Promise was unexpectedly fulfilled. Error: ', reason);
+    if (done) {
+      done(error);
+    }
+    throw error;
+  }
 };
 
+var defaultUser = {
+  username: "foo",
+  password: defaultPassword,
+  gateway_account_id: 1,
+  email: "foo@foo.com",
+  telephone_number: "1"
+};
 
+var defaultSession = {
+  data: defaultUser.email
+}
 
-describe('user model', function() {
-  describe('find', function() {
-    it('should return a user and lowercase email', function() {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          findOne: function(params) {
-            var defer = q.defer();
-            assert(params.where.email == "foo@foo.com");
-            return defer.promise;
-          },
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-        };
-      };
-      User(seq).find("Foo@foo.com");
-    });
+var createDefaultSession = (extendedAttributes) => {
+  var sessionAttributes = _.extend({}, defaultSession, extendedAttributes);
+  return Sessions.create(sessionAttributes);
+};
 
-    it('should never ever ever return a password with user outside the model', function() {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          findOne: function(params) {
-            var defer = q.defer();
-            assert(params.where.email == "foo");
-            assert(_.includes(params.attributes, 'password') === false);
-            return defer.promise;
-          },
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-        };
-      };
-      User(seq).find("foo");
+var findFromSession = (where) => {
+  return Sessions.findOne({where: where});
+};
+
+var createDefaultUser = function (extendedAttributes) {
+  var userAttributes = _.extend({}, defaultUser, extendedAttributes);
+  return User.create(userAttributes);
+};
+
+var createDefaultForgottenPassword = function (extendedAttributes) {
+  var forgottenPasswordAttributes = _.extend({
+    date: Date.now(),
+    code: defaultForgottenPasswordCode
+  }, extendedAttributes);
+  return ForgottenPassword.sequelize.create(forgottenPasswordAttributes);
+};
+
+var yesterdayDate = () => {
+  var date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date;
+};
+
+var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Sequelize.STRING}});
+
+describe('user model', function () {
+  beforeEach(function (done) {
+    User.sequelize.sync({force: true}).then(() => {
+      ForgottenPassword.sequelize.sync({force: true}).then(() => {
+        Sessions.sync({force: true}).then(() => done());
+      });
     });
   });
 
-  describe('create', function() {
-    it('should create a user and lowercase email', function(done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          create: function(user) {
-            assert(user.username == "foo");
-            assert(user.email ==  "foo@example.com");
-            assert(user.password == "password10");
-            return {
-              then: function(callback) {
-                callback({
-                  dataValues: user
-                });
-              }
-            };
-          },
-          hasMany: () => {}
-        };
-      };
-      User(seq).create({
-        username: "foo",
-        password: "password10",
-        gateway_account_id: 1,
-        email: "Foo@example.com",
-        telephone_number: "1"
-      }).then(function(user) {
-        try {
-          assert(user.username == "foo");
-          assert(_.includes(user, 'password10') === false);
-          done();
-        } catch (e) {
-          done(e);
-        }
-
-      });
+  describe('find', function () {
+    it('should return a user and lowercase email', function (done) {
+      createDefaultUser().then(() => {
+        User.find("Foo@foo.com").then(() => done(), wrongPromise(done));
+      })
     });
 
-    it('should create a user with a specific otp_key and encrypts password', function(done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: (cb)=>{
-            cb({ 
-              changed: ()=> {return true},
-              get: () => { return "password10"; },
-              set: (name,hash)=> {
-                assert(name == "password");
-                assert(hash != "password10")
-              } 
-            })
-          },
-          create: function(user) {
-            assert(user.username == "foo");
-            assert(user.email ==  "foo@example.com");
-            assert(user.password == "password10");
-            return {
-              then: function(callback) {
-                callback({
-                  dataValues: user
-                });
-              },
-              hasMany: () => {}
-            };
-          }
-        };
-      };
-      User(seq).create({
-        username: "foo",
-        password: "password10",
-        gateway_account_id: 1,
-        email: "Foo@example.com",
-        telephone_number: "1"
-      }).then(function(user) {
-        try {
-          assert(user.username == "foo");
-          assert(_.includes(user, 'password10') === false);
+    it('should never ever ever return a password with user outside the model', function (done) {
+      createDefaultUser().then(() => {
+        User.find("foo@foo.com").then((user) => {
+          expect(user).to.not.have.property('password');
           done();
-        } catch (e) {
-          done(e);
-        }
-
-      });
+        }, wrongPromise(done));
+      })
     });
-
   });
 
-  describe('authenticate', function() {
-    it('should authenticate a valid user', function(done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          findOne: function(params) {
-            return {
-              then: function(callback) {
-                callback({
-                  dataValues: {
-                    password: "$2a$10$jJmJnbJFOLYz/DChN6VMVOfBQ0G94MRGSAjtp25j7BMBBQXpYoDZm",
-                    foo: "bar"
-                  }
-                });
-              }
-            };
-          }
-        };
+  describe('create', function () {
+    it('should create a user and lowercase email', function (done) {
+      var userAttributes = {
+        username: "foo",
+        password: "password10",
+        gateway_account_id: "1",
+        email: "Foo@example.com",
+        telephone_number: "1"
       };
-      User(seq)
-        .authenticate("foo@example.com", "password")
-        .then(function(user) {
-          try {
-            assert(user.foo, "bar");
-            assert(user.password === undefined);
+      User.create(userAttributes).then(user => {
+        expect(user.email).equal(userAttributes.email.toLowerCase());
+
+        User.find(user.email).then(user => {
+          expect(user.username).equal(userAttributes.username);
+          expect(user.gateway_account_id).equal(userAttributes.gateway_account_id);
+          expect(user.email).equal(userAttributes.email.toLowerCase());
+          expect(user.telephone_number).equal(userAttributes.telephone_number);
+          done();
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
+    it('should create a user with a specific otp_key and encrypts password', function (done) {
+      createDefaultUser().then(user => {
+        User.find(user.email).then(user => {
+          expect(user.otp_key).equal(defaultOtpKey);
+          done();
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+  });
+
+  describe('authenticate', function () {
+    it('should authenticate a valid user', function (done) {
+      createDefaultUser().then(user => {
+        User.authenticate(user.email, defaultPassword).then(() => done(), wrongPromise(done))
+      }, wrongPromise(done));
+    });
+
+    it('should not authenticate an invalid user', function (done) {
+      createDefaultUser().then(user => {
+        User.authenticate(user.email, "wrongPassword").then(wrongPromise(done), () => done())
+      }, wrongPromise(done));
+    });
+  });
+
+  describe('updateOtpKey', function () {
+    it('should update the otp key', function (done) {
+      createDefaultUser().then(user => {
+        User.updateOtpKey(user.email, "123").then(user => {
+          expect(user.otp_key).equal("123");
+          done();
+        }, wrongPromise(done));
+      });
+    });
+  });
+
+  describe('sendPasswordResetToken', function () {
+    it('should send an email', function (done) {
+      createDefaultUser().then(user => {
+        User.find(user.email).then(user => {
+          user.sendPasswordResetToken('some-correlation-id');
+          done();
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+  });
+
+  describe('updatePassword', function () {
+    it('should update the password', function (done) {
+      createDefaultUser().then(user => {
+        User.authenticate(user.email, "newPassword")
+          .then(wrongPromise(done), () => {
+            user.updatePassword("newPassword").then(() => {
+              User.authenticate(user.email, "newPassword").then(() => done(), wrongPromise(done));
+            }, wrongPromise(done))
+          })
+      }, wrongPromise(done));
+    });
+  });
+
+  describe('findByResetToken', function () {
+    it('should fail when forgotten password token is unknown', function (done) {
+      User.findByResetToken("unknownCode").then(wrongPromise(done), () => done());
+    });
+
+    it('should fail when forgotten password token has expired', function (done) {
+      createDefaultUser().then(user => {
+        createDefaultForgottenPassword({date: yesterdayDate(), userId: user.id}).then(() => {
+          User.findByResetToken(defaultForgottenPasswordCode).then(wrongPromise(done), () => done());
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
+    it('should find the forgotten password token', function (done) {
+      createDefaultUser().then(user => {
+        createDefaultForgottenPassword({userId: user.id}).then(() => {
+          User.findByResetToken(defaultForgottenPasswordCode).then(() => {
+            expect(user.username).equal(defaultUser.username);
+            expect(user.gateway_account_id).equal(defaultUser.gateway_account_id);
+            expect(user.email).equal(defaultUser.email.toLowerCase());
+            expect(user.telephone_number).equal(defaultUser.telephone_number);
             done();
-          } catch (e) {
-            done(e);
-          }
-
-        }, wrongPromise);
-    });
-
-    it('should not authenticate an invalid user', function(done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          findOne: function(params) {
-            return {
-              then: function(callback) {
-                callback({
-                  dataValues: {
-                    password: "$2a$10$jJmJnbJFOLYz/DChN6VMVOfBQ0G94MRGSAjtp25j7BMBBQXpYoDZm",
-                    foo: "bar"
-                  }
-                });
-              }
-            };
-          }
-        };
-      };
-      User(seq)
-        .authenticate("foo@example.com", "password2")
-        .then(wrongPromise, function() {
-          assert(true);
-          done();
-        });
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
     });
   });
 
-  describe('updateOtpKey', function() {
-    it('should update the otp key', function(done) {
-      var seq = _.cloneDeep(sequel);
-      seq.sequelize.define = function() {
-        return {
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          findOne: function(params) {
-            return {
-              then: function(callback) {
-                callback({
-                  dataValues: {
-                    password: "$2a$10$jJmJnbJFOLYz/DChN6VMVOfBQ0G94MRGSAjtp25j7BMBBQXpYoDZm",
-                    foo: "bar"
-                  }
-                  ,
-                  updateAttributes: function(params) {
-                    return {
-                      then: function(callback) {
-                        assert(params.otp_key === '1234');
-                        callback();
-                      }
-                    };
-                  }
-                });
-              }
-            };
-          }
-        };
-      };
-      User(seq)
-        .updateOtpKey('foo@bar.com', "1234")
-        .then(function(user) {
-          assert(true);
-          done();
-        }, wrongPromise);
+  describe('logout', function () {
+    it('should logout', function (done) {
+      createDefaultSession().then(() => {
+        createDefaultUser().then(user => {
+          findFromSession({data: defaultUser.email}).then((sessionData) => {
+            expect(sessionData).to.not.be.null;
+            user.logOut().then(() => {
+              findFromSession({data: defaultUser.email}).then((sessionData) => {
+                expect(sessionData).to.be.null;
+                done();
+              }, wrongPromise(done));
+            }, wrongPromise(done))
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
     });
   });
 
+  describe('toggle user', function () {
+    it('should be able to disable the user', function (done) {
+      createDefaultUser({disabled: false}).then(() => {
+        User.find(defaultUser.email).then((user) => {
+          user.toggleDisabled(true).then(() => {
+            User.find(defaultUser.email).then((updatedUser) => {
+              expect(updatedUser.disabled).to.be.true;
+              done();
+            }, wrongPromise(done));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
 
-
-
-  describe('sendPasswordResetToken', function() {
-    it('should send an email', function(done) {
-      var seq = _.cloneDeep(sequel);
-      var pass = { sequelize: { create: function(data){
-        return { then: function(cb,fail){cb()}}
-      }}};
-      var sendEmail = { sendEmail: function(template,email,data){
-        assert(template == "template_id");
-        assert(email == "foo@bar.com");
-        assert(data.code.indexOf('https://selfservice.pymnt.localdomain/reset-password/') == 0);
-        assert(data.code.length, 73);
-
-        return { then: function(cb,fail){cb()}}
-      }};
-
-
-      seq.sequelize.define = function() {
-        return {
-          findOne: function(params) {
-            var defer = q.defer();
-            setTimeout(function(){
-              defer.resolve({ dataValues: {
-                email: "foo@bar.com",
-                id: 1
-              }});
-            }, 10)
-            return defer.promise;
-          },
-          hasMany: () => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-        };
-      };
-      var user = User(seq,{
-        './forgotten_password.js': pass,
-        '../services/notification_client.js': sendEmail
-      });
-
-      user.find('1')
-        .then(function(user){ return user.sendPasswordResetToken('some-correlation-id');})
-        .then(done)
-        .catch(function(){ assert(false);});
+    it('should be able to enable the user', function (done) {
+      createDefaultUser().then(() => {
+        User.find(defaultUser.email).then((user) => {
+          user.toggleDisabled(true).then(() => {
+            User.find(defaultUser.email).then((user) => {
+              user.toggleDisabled(false).then(() => {
+                User.find(defaultUser.email).then((updatedUser) => {
+                  expect(updatedUser.disabled).to.be.false;
+                  expect(updatedUser.login_counter).to.be.equal(0);
+                  done();
+                }, wrongPromise(done));
+              }, wrongPromise(done));
+            }, wrongPromise(done));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
     });
   });
 
-
-  describe('updatePassword', function() {
-    it('should update the password', function(done) {
-      var seq = _.cloneDeep(sequel);
-      var values = {dataValues: { id: 2, password: 'foo'},save: ()=>  {return { then: (success,fail)=> {success(); }}}};
-
-      seq.sequelize.define = function() {
-        return {
-          findOne: function(){
-            return { then: function(success){ success(values); }};
-          },
-          hasMany: () => {},
-          query:() => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-        };
-      };
-      var user = User(seq);
-
-      user.find('1')
-        .then(function(user){ return user.updatePassword('foo1234567')})
-        .then(done)
-        .catch(done);
-    });
-
-    it('should reject if forgotten password not found', function(done) {
-      var seq = _.cloneDeep(sequel);
-      var values = null;
-
-      seq.sequelize.define = function() {
-        return {
-          update: function(password,sql) {
-            assert(values.dataValues.password != password);
-            assert(password.length !== 0);
-            assert.equal(values.dataValues.id,sql.where.id);
-            return { then: function(success){ success(); } };
-          },
-          findOne: function(){
-            return { then: function(success){ success(values); }};
-          },
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          hasMany: () => {}
-        };
-      };
-      var user = User(seq);
-
-      user.find('1')
-        .then(function(user){ return user.updatePassword('foo')})
-        .then(function(){ assert(false);})
-        .catch(done);
+  describe('increment login count', function () {
+    it('should update the login count', function (done) {
+      createDefaultUser().then(() => {
+        User.find(defaultUser.email).then((user) => {
+          user.incrementLoginCount().then(() => {
+            User.find(defaultUser.email).then((updatedUser) => {
+              expect(updatedUser.login_counter).to.be.equal(1);
+              done();
+            }, wrongPromise(done));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
     });
   });
 
-
-  describe('logout', function() {
-    it('should logout', function(done) {
-      var seq = _.cloneDeep(sequel);
-      var values = {dataValues: { id: 2, password: 'foo'}};
-
-      seq.sequelize.define = function() {
-        return {
-          findOne: function(){
-            return { then: function(success){ success(values); }};
-          },
-          hasMany: () => {},
-          query:() => {},
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{}
-        };
-      };
-      var user = User(seq);
-
-      user.find('1')
-        .then(function(user){ return user.logOut()})
-        .then(done)
-        .catch(done)
-    });
-
-    it('should reject if forgotten password not found', function(done) {
-      var seq = _.cloneDeep(sequel);
-      var values = null;
-
-      seq.sequelize.define = function() {
-        return {
-          update: function(password,sql) {
-            assert(values.dataValues.password != password);
-            assert(password.length !== 0);
-            assert.equal(values.dataValues.id,sql.where.id);
-            return { then: function(success){ success(); } };
-          },
-          findOne: function(){
-            return { then: function(success){ success(values); }};
-          },
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          hasMany: () => {}
-        };
-      };
-      var user = User(seq);
-
-      user.find('1')
-        .then(function(user){ return user.updatePassword('foo')})
-        .then(function(){ assert(false);})
-        .catch(done);
+  describe('reset login count', function () {
+    it('should reset the login count', function (done) {
+      createDefaultUser().then(() => {
+        User.find(defaultUser.email).then((user) => {
+          user.incrementLoginCount().then(() => {
+            User.find(defaultUser.email).then((user) => {
+              user.resetLoginCount().then(() => {
+                User.find(defaultUser.email).then((updatedUser) => {
+                  expect(updatedUser.login_counter).to.be.equal(0);
+                  done();
+                }, wrongPromise(done));
+              }, wrongPromise(done));
+            }, wrongPromise(done));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
     });
   });
 
-  describe('findByResetToken', function() {
-      // TODO
-      // REMOVE SEQUELIZE MOCKING ONCE WE HAVE A TEST DB SETUP
-    it('should update the password', function(done) {
-      var seq = _.cloneDeep(sequel);
-      var values = {dataValues: { id: 2, password: 'foo'},save: ()=>  {return { then: (success,fail)=> {success(); }}}};
-
-      seq.sequelize.define = function() {
-        return {
-          findOne: function(){
-            return { then: function(success){ success(values); }};
-          },
-          beforeUpdate: ()=>{},
-          beforeCreate: ()=>{},
-          hasMany: () => {}
-        };
-      };
-      var user = User(seq);
-
-      user.find('1')
-        .then(function(user){ return user.updatePassword('foo1234567')})
-        .then(done)
-        .catch(done);
-    });
-    it.skip('should not update the password if it is timed out.', function(done) {
-      // WE REALLY NEED A DATABaSE TO TEST THIS PROPERLY PP-1006
-      // WILL BE HANDLED AFTER DEPLOY
-    });
-  });
-
-  describe('toggle user',function(){
-    _.each([true,false],function(boolean){
-      it('should be able to disable and enable the user',function(done){
-
-        var seq = _.cloneDeep(sequel);
-        var values = {dataValues: { id: 2, password: 'foo', login_counter: 1}};
-
-        seq.sequelize.define = function() {
-          return {
-            update: function(toggle,where) {
-              assert(toggle.disabled === boolean);
-              if (boolean == false) {
-                assert.equal(toggle.login_counter,0);
-              }
-              assert.equal(values.dataValues.id,where.where.id);
-              return { then: function(success){ success(); } };
-            },
-            findOne: function(){
-              return { then: function(success){ success(values); }};
-            },
-            beforeUpdate: ()=>{},
-            beforeCreate: ()=>{},
-            hasMany: () => {}
-          };
-        };
-        var user = User(seq);
-
-        user.find('1')
-          .then(function(user){ return user.toggleDisabled(boolean)})
-          .then(done)
-          .catch(done);
-
-      });
-    });
-  });
-
-  describe('increment login count',function(){
-   it.skip('should update the lgoin count', function(done) {
-      // WE NEED A DATABASE TO TEST THIS PROPERLY PP-1006
-    });
-  });
-
-  describe('reset login count',function(){
-   it.skip('should reset the lgoin count', function(done) {
-      // WE NEED A DATABASE TO TEST THIS PROPERLY PP-1006
-    });
-  });
-
-
-
-});
+})
+;
