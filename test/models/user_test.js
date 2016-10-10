@@ -7,6 +7,8 @@ var defaultOtpKey = '123456789';
 var defaultPassword = 'password10';
 var defaultForgottenPasswordCode = 'xyz';
 
+process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES = 90;
+
 var mockedNotificationClient = {
   sendEmail: function (template, email, data) {
     expect(template).to.be.equal("template_id");
