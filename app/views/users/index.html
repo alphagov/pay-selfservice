@@ -5,6 +5,10 @@ GOV.UK Pay - View users
 {{/pageTitle}}
 
 {{$bodyClasses}}users index{{/bodyClasses}}
+{{$pageSpecificJS}}
+<script src="/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
 {{$content}}
 <h1 class="heading-large page-title tuck-bottom-sml">Users</h1>
 <a class="button generate-user push-bottom" href="{{routes.user.new}}">
@@ -24,7 +28,7 @@ GOV.UK Pay - View users
   </thead>
   <tbody>
     {{#users}}
-    <tr data-email="{{email}}" >
+    <tr data-follow-link  data-email="{{email}}" data-link="/users/{{id}}" >
       <td class="user-id">{{id}}</td>
       <td class="user-username">{{username}}</td>
       <td class="user-email">{{email}}</td>

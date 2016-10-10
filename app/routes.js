@@ -45,6 +45,7 @@ module.exports.bind = function (app) {
     app.get(user.show, userController.show);
     app.post(user.disable, userController.disable);
     app.post(user.enable, userController.enable);
+    app.post(user.reset, userController.sendPasswordReset);
   }
 
 

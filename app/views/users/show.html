@@ -21,8 +21,10 @@ GOV.UK Pay - View user
     <input name="enable" type="submit" class="button push-top " value="enable user">
   </form>
   {{/user.disabled}}
-  <a id="send-password-reset" class="button push-left push-bottom"> send password reset email </a>
-
+    <form method="post" action="/users/{{user.id}}/reset">
+        <input name="csrfToken" type="hidden" value="{{csrf}}"/>
+        <input id="send-password-reset" name="reset" type="submit" class="button push-bottom" value="send password reset email">
+    </form>
 </div>
 <h2 class="heading-small pull-top push-bottom-sml">User Details</h2>
 <table class="transaction-details">

@@ -37,8 +37,8 @@ module.exports = {
     index: '/users',
     show: '/users/:id',
     disable: '/users/:id/disable',
-    enable: '/users/:id/enable'
-
+    enable: '/users/:id/enable',
+    reset: '/users/:id/reset'
   },
   gateway: {
     index: '/gateways'
