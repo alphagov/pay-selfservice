@@ -36,6 +36,7 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
 var redirectToLogin = function (req,res) {
   req.session.last_url = req.originalUrl;
   req.session.save(function () {
+    logger.info(`Saved session ID: ${req.session.id} with last url ${req.session.last_url}`);
     res.redirect(paths.user.logIn);
   });
 };
