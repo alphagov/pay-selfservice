@@ -6,8 +6,8 @@ var csrf = require('csrf'),
 
 
 module.exports = function (req, res, next) {
-  var csrfToken = req.body.csrfToken,
-    session = req.session;
+  var csrfToken = req.body.csrfToken;
+  var session = req.session;
   var init = function () {
       if (session) {
         session.reload(function(err) {
@@ -18,15 +18,21 @@ module.exports = function (req, res, next) {
           if (!session.csrfSecret) return showNoCsrf();
           if (!csrfValid()) return showCsrfInvalid();
 
-          session.csrfTokens.push(csrfToken);
-          req.session.save( error => {
-            if (error) {
-              return showSessionSaveError(error);
-            }
+          if(csrfToken) {
+            session.csrfTokens.push(csrfToken);
+            session.save( error => {
+              if (error) {
+                return showSessionSaveError(error);
+              }
 
+              logger.info("Saved session with csrfToken : "+ csrfToken);
+              appendCsrf();
+              next();
+            });
+          } else {
             appendCsrf();
-          next();
-          });
+            next();
+          }
         });
       } else {
         showNoSession();
