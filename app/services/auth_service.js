@@ -35,8 +35,14 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
 
 var redirectToLogin = function (req,res) {
   req.session.last_url = req.originalUrl;
-  req.session.save(function () {
-    logger.info(`Saved session ID: ${req.session.id} with last url ${req.session.last_url}`);
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+
+  req.session.save(function (err) {
+    if(err) {
+      logger.error(`[${correlationId}] Error saving session on redirectToLogin `, err);
+    } else {
+      logger.info(`[${correlationId}] Saved session ID on redirectToLogin: ${req.session.id} with last url ${req.session.last_url}`);
+    }
     res.redirect(paths.user.logIn);
   });
 };
