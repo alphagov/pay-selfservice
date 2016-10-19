@@ -3,7 +3,7 @@ var response              = require('../utils/response.js').response;
 var Email                 = require('../models/email.js');
 var router                = require('../routes.js');
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
-
+// CLEAN AND NICE MAINLY
 var showEmail = function(req, res, resource, locals){
   var template =  "email_notifications/" + resource;
   response(req.headers.accept, res, template, locals);
