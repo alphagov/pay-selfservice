@@ -13,30 +13,36 @@ var router                = require('../routes.js');
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 var withCorrelationHeader = require('../utils/correlation_header.js').withCorrelationHeader;
 
+
+// THIS SEEMS TO BE A COMBINATION OF THE SHOW,EDIT, AND NEW 
 function showSuccessView(connectorData, viewMode, req, res) {
-  var paymentProvider = connectorData.payment_provider;
-  var responsePayload = {
+  var paymentProvider = connectorData.payment_provider,
+  responsePayload = {
     'payment_provider': changeCase.titleCase(paymentProvider),
     'credentials': connectorData.credentials,
-    'notification_credentials': connectorData.notificationCredentials
+    'notification_credentials': connectorData.notificationCredentials,
+    'editMode' : false,
+    'editNotificationCredentialsMode': false
+
+  },
+  viewModeConfig = {
+    EDIT_CREDENTIALS_MODE: {
+      editMode: true,
+      editNotificationCredentialsMode: false
+    },
+    EDIT_NOTIFICATION_CREDENTIALS_MODE: {
+      editMode: false,
+      editNotificationCredentialsMode: true
+    }
   };
 
-  switch(viewMode) {
-    case EDIT_CREDENTIALS_MODE:
-      responsePayload.editMode = true;
-      responsePayload.editNotificationCredentialsMode = false;
-      break;
-    case EDIT_NOTIFICATION_CREDENTIALS_MODE:
-      responsePayload.editMode = false;
-      responsePayload.editNotificationCredentialsMode = true;
-      break;
-    default:
-      responsePayload.editMode = false;
-      responsePayload.editNotificationCredentialsMode = false;
+  if (viewModeConfig[viewMode]) {
+    responsePayload.editMode = viewModeConfig[viewMode].editMode;
+    responsePayload.editNotificationCredentialsMode = viewModeConfig[viewMode].editNotificationCredentialsMode;
   }
 
-  logger.debug('Showing provider credentials view -', {
-    view: 'credentials',
+  logger.debug({
+    view: 'credentials/index',
     viewMode: viewMode,
     provider: paymentProvider
   });
@@ -54,11 +60,14 @@ function loadIndex(req, res, viewMode) {
     url: accountUrl
   });
 
+
   var startTime = new Date();
   var url = accountUrl.replace("{accountId}", accountId);
   var correlationId = req.headers[CORRELATION_HEADER] || '';
   var args = {};
 
+
+  // THIS SHOULD BE ABSTRACTED TO A MODEL
   client.get(url, withCorrelationHeader(args, correlationId), function (connectorData, connectorResponse) {
     var duration = new Date() - startTime;
     logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
@@ -96,6 +105,7 @@ module.exports = {
     loadIndex(req, res);
   },
 
+  // POSSIBLY TOO MUCH META PROGRAMMING ABOVE, HARD TO FOLLOW
   editCredentials: function(req, res) {
     loadIndex(req, res, EDIT_CREDENTIALS_MODE);
   },
@@ -106,6 +116,7 @@ module.exports = {
 
   updateNotificationCredentials: function (req, res) {
     var accountId = auth.get_gateway_account_id((req));
+    // ABSTRACT CONNECTOR URL
     var connectorUrl = process.env.CONNECTOR_URL + "/v1/api/accounts/{accountId}/notification-credentials";
 
     var requestPayLoad = {
@@ -116,6 +127,7 @@ module.exports = {
       }
     };
 
+    // SHOULD BE ON MODEL LEVEL
     logger.info('Calling connector to update provider notification credentials -', {
       service: 'connector',
       method: 'POST',
@@ -153,10 +165,12 @@ module.exports = {
       });
       errorView(req, res, ERROR_MESSAGE);
     });
+    // END OF SHOULD BE ON MODEL LEVEL
 
   },
 
   update: function (req, res) {
+    // SHOULD BE ON MODEL LEVEL
     logger.debug('Calling connector to update provider credentials -', {
       service:'connector',
       method: 'PATCH',
@@ -214,5 +228,6 @@ module.exports = {
       });
       errorView(req, res, ERROR_MESSAGE);
     });
+    // END OF SHOUDL BE ON MODEL LEVEL
   }
 };
