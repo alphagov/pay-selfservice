@@ -6,7 +6,7 @@ client                  = new Connector(process.env.CONNECTOR_URL),
 Email                   = require('../models/email.js'),
 _                       = require('lodash');
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
-
+// SEEMS FINE
 
 module.exports = function (req, res, next) {
   var accountId = auth.get_gateway_account_id(req);
@@ -25,6 +25,7 @@ module.exports = function (req, res, next) {
     }).on('connectorError', connectorError);
   },
   connectorError = function(){
+    // AGAIN MAYBE REPLACE WITH FRONTEND VIEWS
     errorView(req, res);
   };
 

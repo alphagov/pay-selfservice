@@ -22,6 +22,8 @@ module.exports = {
       user.incrementLoginCount().then(
         ()=> {
           var attempts  = user.login_counter,
+          // SHOULD GET RID OF THE IMPLICIT CAP AND PUT THIS CHANGE IN ANSIBLE< THROW AN ERROR IF IT IS NOT THERE
+          
           cap           = (process.env.LOGIN_ATTEMPT_CAP) ? process.env.LOGIN_ATTEMPT_CAP : 10,
           overLimit     = (attempts + 1) > cap; 
           if (overLimit) return lockOut(req, res, user);
