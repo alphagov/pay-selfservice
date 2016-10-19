@@ -11,6 +11,7 @@ var {
   redirectTo,
   reconcileCardsByBrand} = require('./payment_types_controller.js');
 
+// TWO CONTROLLER ACTIONS TAKING OVER 100 LINES, CODE SMELL
 module.exports.showBrands = function (req, res) {
   var acceptedType = req.query.acceptedType;
   var error = req.query.error;

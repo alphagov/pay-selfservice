@@ -33,7 +33,9 @@ module.exports = {
 
     var onSuccessSearchTransactions = function (transactions) {
       var onSuccessGetAllCards = function (allCards) {
+        // THIS SHOULD JUST BE AVAILABLE THE SAME AS IT IS IN FRONTENT
         transactions.search_path = router.paths.transactions.index;
+        // THIS NORMALISATION SHOUDL BE PUSHED DOWN A LIVEL I THINK< BUT HAVE TO CHECK
         var model = transactionView.buildPaymentList(transactions, allCards, accountId, filters.result);
         response(req.headers.accept, res, 'transactions/index', model)
       };
@@ -44,6 +46,7 @@ module.exports = {
 
       client
         .withGetAllCardTypes(params, onSuccessGetAllCards)
+        // IS THIS A GOOD ENOUGH ERROR?
         .on('connectorError', () => error("Unable to retrieve card types."));
     };
 
@@ -61,7 +64,8 @@ module.exports = {
 
     var init = function () {
        var transactionModel = Transaction(req.headers[CORRELATION_HEADER]);
-        transactionModel.searchAll(accountId, filters)
+        transactionModel
+          .searchAll(accountId, filters)
           .then(toCsv)
           .then(render)
           .catch(error);
@@ -118,7 +122,8 @@ module.exports = {
     var show = router.generateRoute(router.paths.transactions.show, {
       chargeId: chargeId
     });
-    
+    // DONT THINK THIS SHOULD BE IN THE CONTROLLER, SHOULD MAKE SURE THIS IS 100% TESTED
+    // FROM A UNIT LEVEL
     var refundAmount = (req.body['refund-type'] === 'full' ) ? req.body['full-amount'] : req.body['refund-amount'];
     var refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence']);
     var refundMatch = /^([0-9]+)(?:\.([0-9]{2}))?$/.exec(refundAmount);
@@ -126,7 +131,7 @@ module.exports = {
     if (refundMatch) {
       var refundAmountForConnector = parseInt(refundMatch[1]) * 100;
       if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2]);
-      
+      // THIS SHOULD BE IN TRANSLATIONS THE SAME AS FRONTEND
       var errReasonMessages = {
         "REFUND_FAILED": "Can't process refund",
         "full": "Can't do refund: This charge has been already fully refunded",
@@ -136,6 +141,7 @@ module.exports = {
       };
 
       var chargeModel = Charge(req.headers[CORRELATION_HEADER]);
+      // REFUNDAMOUNTFROCONNECTOR, AND REFUNDAMOUNTAVAILABLE, DO WE NEED THE WORD REFUND?
       chargeModel.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence)
         .then(function () {
           res.redirect(show);
@@ -145,6 +151,7 @@ module.exports = {
         });
     }
     else {
+      // ERROR INTO TRANSLATIONS
       renderErrorView(req, res, "Can't do refund: amount must be pounds (10) or pounds and pence (10.10)");
     }
   }

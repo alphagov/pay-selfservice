@@ -4,6 +4,8 @@ var router = require('../routes.js');
 var _ = require('lodash');
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
+// IS THIS THE NEW ES6 SYNTAX? ALSO WHY IS THIS CONTROLLER INEHRITING FROM ANOTHER ONE IF IT 
+// IS DOING WHAT I THINK IT IS, TAKING THE OUTPUT OF THE COLROLLER AND ASSIGNING IT TO THIS ONE
 var {
   TYPES,
   connectorClient,
@@ -22,7 +24,7 @@ module.exports.selectType = function (req, res) {
       gatewayAccountId: accountId,
       correlationId: correlationId
     };
-
+    // THIS INVLUDING THE NORMALISATION SHOULD BE PUSHED DOWN IF POSSIBLE
     connectorClient()
       .withGetAccountAcceptedCards(params, onSuccessGetAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'));

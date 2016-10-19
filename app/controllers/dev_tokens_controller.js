@@ -21,6 +21,7 @@ module.exports.index = function (req, res) {
 
     var correlationId = req.headers[CORRELATION_HEADER] || '';
     var args = {};
+    // MOVE DOWN TO THE MDOEL LEVEL
 
     logger.debug('Calling publicAuth to get active tokens -', {
       service: 'publicAuth',
@@ -58,6 +59,7 @@ module.exports.index = function (req, res) {
       });
       renderErrorView(req, res, ERROR_MESSAGE);
     });
+    // END OF MOVE DOWN TO MODEL LEVEL
 
   });
 };
@@ -70,7 +72,7 @@ module.exports.revoked = function (req, res) {
 
     var correlationId = req.headers[CORRELATION_HEADER] || '';
     var args = {};
-
+    // MOVE DOWN TO MDOEL LEVEL
     logger.debug('[%s] Calling publicAuth to get revoked tokens -', correlationId, {
       service: 'publicAuth',
       method: 'GET',
@@ -101,6 +103,7 @@ module.exports.revoked = function (req, res) {
       });
       renderErrorView(req, res, ERROR_MESSAGE);
     });
+    // END OF MOVE DOWN TO MDOEL LEVEL
 
   });
 };
@@ -118,7 +121,7 @@ module.exports.create = function (req, res) {
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     var description = req.body.description;
     var correlationId = req.headers[CORRELATION_HEADER] || '';
-
+    // MOVE DOWN TO MODEL LEVEL
     var payload = {
       headers: {"Content-Type": "application/json"},
       data: {
@@ -159,14 +162,18 @@ module.exports.create = function (req, res) {
       });
       renderErrorView(req, res, ERROR_MESSAGE);
     });
+    // END OF MOVE DOWN TO MODEL LEVEL
 
   });
 };
 
 module.exports.update = function (req, res) {
+  // BUT I THINK IT SHOULD BE? IS THIS JUST A SHORCTCUT? 
   // this does not need to be explicitly tied down to account_id
   // right now because the UUID space is big enough that no-one
   // will be able to discover other peoples' tokens to change them
+  
+  // MOVE DOWN TO MODE LEVEL
   var requestPayload = {
     headers: {"Content-Type": "application/json"},
     data: {
@@ -209,6 +216,7 @@ module.exports.update = function (req, res) {
     });
     res.sendStatus(500);
   });
+  // END OF MOVED DOWN TO MODEL LEVEL
 };
 
 module.exports.destroy = function (req, res) {
@@ -216,7 +224,7 @@ module.exports.destroy = function (req, res) {
   var publicAuthUrl = process.env.PUBLIC_AUTH_URL + '/{accountId}';
   var correlationId = req.headers[CORRELATION_HEADER] || '';
   var url = publicAuthUrl.replace('{accountId}', accountId);
-
+  // MOVE DOWN TO MODEL LEVEL
   var requestPayload = {
     headers: {"Content-Type": "application/json"},
     data: {
@@ -256,6 +264,7 @@ module.exports.destroy = function (req, res) {
     });
     res.sendStatus(500);
   });
+  // END OF MOVE DOWN TO MODEL LEVEL
 };
 
 function withValidAccountId(req, res, accountId, callback) {
@@ -263,7 +272,7 @@ function withValidAccountId(req, res, accountId, callback) {
   var url = connectorUrl.replace("{accountId}", accountId);
   var correlationId = req.headers[CORRELATION_HEADER] || '';
   var args = {};
-
+  // MOVE DOWN TO MODEL LEVEL
   logger.debug('Calling connector -', {
     service:'publicAuth',
     method: 'GET',
@@ -288,4 +297,5 @@ function withValidAccountId(req, res, accountId, callback) {
     });
     renderErrorView(req, res, ERROR_MESSAGE);
   });
+  // END OF MOVE DOWN TO MODEL D
 }

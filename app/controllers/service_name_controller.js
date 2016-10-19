@@ -18,13 +18,14 @@ module.exports.index = function (req, res) {
       gatewayAccountId: accountId,
       correlationId: correlationId
     };
-
+    // MOVE PARAMS DOWN, COULD THIS BE PART GATEWAY ACCOUNT, AS THIS IS ALL THIS IS DOING?
     connectorClient()
       .withGetAccount(params, onSuccess)
       .on('connectorError', onError);
   };
 
   var onSuccess = function (data) {
+    // THIS IS DUE TO HOGAN JS I THINK
     var model = {
       serviceName: data.service_name,
       editMode: !(req.query.edit === undefined)
@@ -44,6 +45,9 @@ module.exports.index = function (req, res) {
 
   init();
 };
+// SAME AS ABOVE, THIS IS JUST UPDATING A FIELD ON A GATEWAY ACCOUNT,
+// SERVICE NAME AS AN OBJECT IN ITS OWN RIGHT DOES NOT EXIST I DONT THINK
+// THE API SHOULD MAYBE REFLECT THIS?
 
 module.exports.update = function (req, res) {
 

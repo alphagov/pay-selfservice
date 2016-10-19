@@ -3,6 +3,7 @@ var auth = require('../services/auth_service.js');
 var router = require('../routes.js');
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
+// SAME THING AS PAYMENT TYPES SELECT
 var {
   TYPES,
   connectorClient,

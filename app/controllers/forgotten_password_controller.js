@@ -36,6 +36,8 @@ e.newPasswordGet = (req, res)=> {
   });
 };
 
+// SPEAK TO CHRISTOPHE ABOUT HOW TO CLEAN UP THESE PROMISES
+
 e.newPasswordPost = (req, res)=> {
   var reqUser;
   User

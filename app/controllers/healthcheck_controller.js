@@ -3,6 +3,7 @@ var responseHandler = require('../utils/response.js');
 var sequelizeConfig = require('../utils/sequelize_config.js');
 
 var migrated = false;
+// BIT HARD TO READ UT GENERAlLY FINE
 
 module.exports.healthcheck = function (req, res) {
   var data = {'ping': {'healthy': true}, 'database': {'healthy': true}};
