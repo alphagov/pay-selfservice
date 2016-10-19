@@ -42,7 +42,7 @@ module.exports.postLogin = function (req, res) {
     (err) => error(req,res,error)
   )
 };
-
+// NOT TOO SURE THESE RETURNS BELONG IN HERE< TRIPPED ME UP MORE THAN ONCE
 module.exports.logUserin = function() {
   return passport.authenticate('local', {
     failureRedirect: '/login',
@@ -54,6 +54,7 @@ module.exports.logUserin = function() {
 module.exports.logUserinOTP = function(req, res, next) {
   return passport.authenticate('totp', { failureRedirect: '/otp-login' });
 };
+// OTP COULD DO WITH MINOR CLEAN UP< CANT IMMEDIATELY GREP
 
 module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
