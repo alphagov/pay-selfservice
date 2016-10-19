@@ -21,7 +21,8 @@ module.exports = function (correlationId) {
       chargeId: chargeId,
       correlationId : correlationId
     };
-
+    // USE OF CONNECTOR CONFUSES ME< IS THIS PUBLIC API< OR THE API MADE JUST FOR THE FRONTEND
+    // IF IT IS JUST MADE FOR THE FRONTENT< WHY NOT JUST SEND THE EVENTS TOO?
     connector.withGetCharge(params, function (charge) {
       connector.withChargeEvents(params, function (events) {
         defer.resolve(transactionView.buildPaymentView(charge, events));
@@ -54,7 +55,7 @@ module.exports = function (correlationId) {
       payload: payload,
       correlationId : correlationId
     };
-
+    // IS THE CONNECTOR CONSISTENT WITH CODES, AS IN CAN WE GENERALISE THIS?
     connector.withPostChargeRefund(params, function () {
       defer.resolve();
     }).on('connectorError', (err, response)=> {

@@ -1,6 +1,7 @@
 var sequelizeConfig = require('../utils/sequelize_config.js');
 var sequelizeConnection = sequelizeConfig.sequelize;
 var Sequelize = require('sequelize');
+// CLEAN ALTHOUGH I THINK SOME STUFF IN THE USER CAN BE PUT IN HERE
 
 var forgottenPassword = sequelizeConnection.define('forgotten_password', {
   date: {
