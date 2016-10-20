@@ -210,10 +210,10 @@ resolveUser = function(user, defer){
 
 // CLASS
 
-var find = function(email, correlationId) {
+var find = function(username, correlationId) {
   correlationId = correlationId || '';
   var defer = q.defer();
-  _find(email).then(
+  _find(username).then(
     (user)=> resolveUser(user, defer),
     (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);});
   return defer.promise;
@@ -222,10 +222,10 @@ var find = function(email, correlationId) {
 create = function(user){
   var defer = q.defer(),
   _user     = {
-    username: user.username,
+    username: user.username.toLowerCase(),
     password: user.password,
     gateway_account_id: user.gateway_account_id,
-    email: user.email.toLowerCase(),
+    email: user.email,
     telephone_number: user.telephone_number,
     otp_key: user.otp_key ? user.otp_key : random.key(10)
   };
@@ -234,11 +234,11 @@ create = function(user){
   return defer.promise;
 },
 
-authenticate = function(email,password) {
+authenticate = function(username,password) {
   var defer = q.defer(),
 
   init = function(){
-    _find(email,['password']).then(authentic, defer.reject);
+    _find(username,['password']).then(authentic, defer.reject);
   },
 
   authentic = function(user){
@@ -254,11 +254,11 @@ authenticate = function(email,password) {
   return defer.promise;
 },
 
-updateOtpKey = function(email,otpKey){
+updateOtpKey = function(username,otpKey){
   var defer = q.defer(),
 
   init = function(){
-    _find(email).then(update, error);
+    _find(username).then(update, error);
 
   },
   error = (err)=> {
@@ -303,9 +303,9 @@ findByResetToken = function(code){
 
 // PRIVATE
 
-var _find = function(email, extraFields = [], where) {
-  if (!where) where = { email: email };
-  if (where.email) where.email = where.email.toLowerCase();
+var _find = function(username, extraFields = [], where) {
+  if (!where) where = { username: username };
+  if (where.username) where.username = where.username.toLowerCase();
   return User.findOne({
     where: where,
     attributes:[

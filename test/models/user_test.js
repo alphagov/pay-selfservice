@@ -48,7 +48,7 @@ var wrongPromise = function (done) {
 };
 
 var defaultUser = {
-  username: "foo",
+  username: "fooUser",
   password: defaultPassword,
   gateway_account_id: 1,
   email: "foo@foo.com",
@@ -99,15 +99,15 @@ describe('user model', function () {
   });
 
   describe('find', function () {
-    it('should return a user and lowercase email', function (done) {
+    it('should return a user by username', function (done) {
       createDefaultUser().then(() => {
-        User.find("Foo@foo.com").then(() => done(), wrongPromise(done));
-      })
+        User.find("fooUser").then(() => done(), wrongPromise(done));
+      });
     });
 
     it('should never ever ever return a password with user outside the model', function (done) {
       createDefaultUser().then(() => {
-        User.find("foo@foo.com").then((user) => {
+        User.find("fooUser").then((user) => {
           expect(user).to.not.have.property('password');
           done();
         }, wrongPromise(done));
@@ -116,21 +116,21 @@ describe('user model', function () {
   });
 
   describe('create', function () {
-    it('should create a user and lowercase email', function (done) {
+    it('should create a user and store username in lower case', function (done) {
       var userAttributes = {
-        username: "foo",
+        username: "Foo@example.com",
         password: "password10",
         gateway_account_id: "1",
         email: "Foo@example.com",
         telephone_number: "1"
       };
       User.create(userAttributes).then(user => {
-        expect(user.email).equal(userAttributes.email.toLowerCase());
+        expect(user.username).equal(userAttributes.username.toLowerCase());
 
-        User.find(user.email).then(user => {
-          expect(user.username).equal(userAttributes.username);
+        User.find(user.username).then(user => {
+          expect(user.username).equal(userAttributes.username.toLowerCase());
           expect(user.gateway_account_id).equal(userAttributes.gateway_account_id);
-          expect(user.email).equal(userAttributes.email.toLowerCase());
+          expect(user.email).equal(userAttributes.email);
           expect(user.telephone_number).equal(userAttributes.telephone_number);
           done();
         }, wrongPromise(done));
@@ -139,7 +139,7 @@ describe('user model', function () {
 
     it('should create a user with a specific otp_key and encrypts password', function (done) {
       createDefaultUser().then(user => {
-        User.find(user.email).then(user => {
+        User.find(user.username).then(user => {
           expect(user.otp_key).equal(defaultOtpKey);
           done();
         }, wrongPromise(done));
@@ -150,13 +150,13 @@ describe('user model', function () {
   describe('authenticate', function () {
     it('should authenticate a valid user', function (done) {
       createDefaultUser().then(user => {
-        User.authenticate(user.email, defaultPassword).then(() => done(), wrongPromise(done))
+        User.authenticate(user.username, defaultPassword).then(() => done(), wrongPromise(done))
       }, wrongPromise(done));
     });
 
     it('should not authenticate an invalid user', function (done) {
       createDefaultUser().then(user => {
-        User.authenticate(user.email, "wrongPassword").then(wrongPromise(done), () => done())
+        User.authenticate(user.username, "wrongPassword").then(wrongPromise(done), () => done())
       }, wrongPromise(done));
     });
   });
@@ -164,7 +164,7 @@ describe('user model', function () {
   describe('updateOtpKey', function () {
     it('should update the otp key', function (done) {
       createDefaultUser().then(user => {
-        User.updateOtpKey(user.email, "123").then(user => {
+        User.updateOtpKey(user.username, "123").then(user => {
           expect(user.otp_key).equal("123");
           done();
         }, wrongPromise(done));
@@ -175,7 +175,7 @@ describe('user model', function () {
   describe('sendPasswordResetToken', function () {
     it('should send an email', function (done) {
       createDefaultUser().then(user => {
-        User.find(user.email).then(user => {
+        User.find(user.username).then(user => {
           user.sendPasswordResetToken('some-correlation-id');
           done();
         }, wrongPromise(done));
@@ -186,10 +186,10 @@ describe('user model', function () {
   describe('updatePassword', function () {
     it('should update the password', function (done) {
       createDefaultUser().then(user => {
-        User.authenticate(user.email, "newPassword")
+        User.authenticate(user.username, "newPassword")
           .then(wrongPromise(done), () => {
             user.updatePassword("newPassword").then(() => {
-              User.authenticate(user.email, "newPassword").then(() => done(), wrongPromise(done));
+              User.authenticate(user.username, "newPassword").then(() => done(), wrongPromise(done));
             }, wrongPromise(done))
           })
       }, wrongPromise(done));
@@ -213,9 +213,9 @@ describe('user model', function () {
       createDefaultUser().then(user => {
         createDefaultForgottenPassword({userId: user.id}).then(() => {
           User.findByResetToken(defaultForgottenPasswordCode).then(() => {
-            expect(user.username).equal(defaultUser.username);
+            expect(user.username).equal(defaultUser.username.toLowerCase());
             expect(user.gateway_account_id).equal(defaultUser.gateway_account_id);
-            expect(user.email).equal(defaultUser.email.toLowerCase());
+            expect(user.email).equal(defaultUser.email);
             expect(user.telephone_number).equal(defaultUser.telephone_number);
             done();
           }, wrongPromise(done));
@@ -245,9 +245,9 @@ describe('user model', function () {
   describe('toggle user', function () {
     it('should be able to disable the user', function (done) {
       createDefaultUser({disabled: false}).then(() => {
-        User.find(defaultUser.email).then((user) => {
+        User.find(defaultUser.username).then((user) => {
           user.toggleDisabled(true).then(() => {
-            User.find(defaultUser.email).then((updatedUser) => {
+            User.find(defaultUser.username).then((updatedUser) => {
               expect(updatedUser.disabled).to.be.true;
               done();
             }, wrongPromise(done));
@@ -258,11 +258,11 @@ describe('user model', function () {
 
     it('should be able to enable the user', function (done) {
       createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
+        User.find(defaultUser.username).then((user) => {
           user.toggleDisabled(true).then(() => {
-            User.find(defaultUser.email).then((user) => {
+            User.find(defaultUser.username).then((user) => {
               user.toggleDisabled(false).then(() => {
-                User.find(defaultUser.email).then((updatedUser) => {
+                User.find(defaultUser.username).then((updatedUser) => {
                   expect(updatedUser.disabled).to.be.false;
                   expect(updatedUser.login_counter).to.be.equal(0);
                   done();
@@ -278,9 +278,9 @@ describe('user model', function () {
   describe('increment login count', function () {
     it('should update the login count', function (done) {
       createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
+        User.find(defaultUser.username).then((user) => {
           user.incrementLoginCount().then(() => {
-            User.find(defaultUser.email).then((updatedUser) => {
+            User.find(defaultUser.username).then((updatedUser) => {
               expect(updatedUser.login_counter).to.be.equal(1);
               done();
             }, wrongPromise(done));
@@ -293,11 +293,11 @@ describe('user model', function () {
   describe('reset login count', function () {
     it('should reset the login count', function (done) {
       createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
+        User.find(defaultUser.username).then((user) => {
           user.incrementLoginCount().then(() => {
-            User.find(defaultUser.email).then((user) => {
+            User.find(defaultUser.username).then((user) => {
               user.resetLoginCount().then(() => {
-                User.find(defaultUser.email).then((updatedUser) => {
+                User.find(defaultUser.username).then((updatedUser) => {
                   expect(updatedUser.login_counter).to.be.equal(0);
                   done();
                 }, wrongPromise(done));
