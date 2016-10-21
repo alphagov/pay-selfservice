@@ -188,6 +188,14 @@ logOut = function(){
   return defer.promise
 },
 
+updateUserNameAndEmail = function(user, newEmail) {
+  var defer = q.defer();
+  user.username = newEmail;
+  user.email    = newEmail;
+  user.save().then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
 resolveUser = function(user, defer){
   if (user === null) {
     logger.debug('USER NOT FOUND');
@@ -200,6 +208,7 @@ resolveUser = function(user, defer){
   val.sendOTP = sendOTP;
   val.sendPasswordResetToken = sendPasswordResetToken;
   val.toggleDisabled= toggleDisabled;
+  val.updateUserNameAndEmail = (email)=> { return updateUserNameAndEmail(user, email) };
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); }; 
