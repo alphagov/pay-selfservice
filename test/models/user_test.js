@@ -196,6 +196,21 @@ describe('user model', function () {
     });
   });
 
+  describe('updateUserNameAndEmail', function () {
+    it('should update the password', function (done) {
+      createDefaultUser().then(user => {
+        user.updateUserNameAndEmail('hi@bye.com')
+          .then((user)=>{
+            expect(user.username).equal('hi@bye.com');
+            expect(user.email).equal('hi@bye.com');
+            done()
+          }
+
+          ,wrongPromise(done));
+      }, wrongPromise(done));
+    });
+  });
+
   describe('findByResetToken', function () {
     it('should fail when forgotten password token is unknown', function (done) {
       User.findByResetToken("unknownCode").then(wrongPromise(done), () => done());
