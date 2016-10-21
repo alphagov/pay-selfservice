@@ -15,6 +15,7 @@ module.exports = function(correlationId) {
   correlationId = correlationId || '';
 
   var searchUrl = function(accountID, filters){
+    // CENTRALISE URL GENERATION AS A SERVICE, SAME AS FRONTEND
     var connector = new ConnectorClient(process.env.CONNECTOR_URL);
     return connector.withSearchTransactionsUrl(accountID, filters);
   },
@@ -22,13 +23,16 @@ module.exports = function(correlationId) {
   search = function(accountID, filters){
     var defer = q.defer();
     var url = searchUrl(accountID, filters);
+    // CENTRALISE LOGGING
     var startTime = new Date();
     var args = { headers: headers };
 
     client.get(url, withCorrelationHeader(args, correlationId), function(data, response) {
+      // CENTRALISE LOGGING
       logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
       successfulSearch(data, response, defer);
     }).on('error',function(err){
+      // CENTRALISE LOGGING
       logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
       clientUnavailable(err, defer, correlationId);
     });
