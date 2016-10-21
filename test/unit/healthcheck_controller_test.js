@@ -69,46 +69,6 @@ describe('health check controller', function () {
 
     assert(spyingInputResponse.calledWithExactly(503));
   });
-
-  it('should set the correct response code when database is healthy after migrations complete', function(){
-    var calls = 0;
-    
-    var mockResponseHandler = {
-      healthCheckResponse: function (accept, res, data) {
-        // false on first call, true on subsequent
-        assert(data.database.healthy === (calls++ !== 0));
-        assert(data.ping.healthy === true);
-        assert(accept === 'application/json');
-      }
-    };
-
-    var successfulAuthenticationPromise =  { then: function(success,fail){
-      success();
-    }};
-    
-    var syncCalled = false;
-    
-    var successfulSyncPromise =  {
-      then: function(success){
-        syncCalled = true;
-        success();
-        return {
-          catch: function() {}
-        };
-      }
-    };
-
-    sinon.stub(mockSequelizerConfig.sequelize, "authenticate").returns(successfulAuthenticationPromise);
-    sinon.stub(mockSequelizerConfig.sequelize, "sync").returns(successfulSyncPromise);
-
-    var controller = healthCheckController(mockResponseHandler, mockSequelizerConfig);
-    controller.healthcheck(req, inputRes);
-    controller.healthcheck(req, inputRes);
-
-    // 1x 503 first, then 200
-    assert(spyingInputResponse.callCount === 1);
-    assert(syncCalled);
-  });
 });
 
 
