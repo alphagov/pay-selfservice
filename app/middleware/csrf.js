@@ -4,7 +4,9 @@ var csrf = require('csrf'),
   errorMsg = require('../utils/response.js').ERROR_MESSAGE,
   errorView = require('../utils/response.js').renderErrorView;
 
-
+// GONNA SAY THIS IS TOO NESTED NOW, THIS WAS ALL THE DEBUG
+// DONT THINK WE SHOUDL BE SCARED TO MAKE IT MORE READABLE AGAIN
+// ALSO SHOUDL WRITE TESTS, CANT SEE ANY
 module.exports = function (req, res, next) {
   var csrfToken = req.body.csrfToken;
   var session = req.session;
