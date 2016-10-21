@@ -20,6 +20,7 @@ var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
 var models            = require('./app/models/models.js');
 var flash             = require('connect-flash');
+var middlwareUtils    = require('./app/utils/middleware.js');
 
 
 function initialiseGlobalMiddleware (app) {
@@ -38,11 +39,16 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(function (req, res, next) {
     res.locals.assetPath  = '/public/';
-    res.locals.routes     = router.paths;
-    res.locals.flash      = req.flash();
+    res.locals.routes     = router.paths;    
     noCache(res);
     next();
   });
+  
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], function(req, res, next) {
+    // flash requires sessions which also excludes healthcheck endpoint (see below)
+    res.locals.flash      = req.flash();
+    next();
+  }));
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -110,7 +116,9 @@ function initialise() {
   app.use(flash());
   initialiseTLS(app);
   initialiseProxy(app);
-  app.use(session(selfServiceSession()));
+  
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], session(selfServiceSession())));
+  
   initialiseAuth(app);
   initialiseGlobalMiddleware(app);
   initialiseAppVariables(app);
@@ -118,8 +126,7 @@ function initialise() {
   initialiseRoutes(app);
   initialiseErrorHandling(app);
   initialisePublic(app);
-
-
+  
   return app;
 }
 
