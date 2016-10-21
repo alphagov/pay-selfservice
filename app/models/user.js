@@ -184,7 +184,7 @@ logOut = function(){
     ()=> { defer.resolve() },
     ()=> { defer.reject() }
 
-  )
+  );
   return defer.promise
 },
 
@@ -212,8 +212,7 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); }; 
-  val.logOut = logOut
-
+  val.logOut = logOut;
   defer.resolve(val);
 };
 
@@ -225,6 +224,17 @@ var find = function(email, correlationId) {
   _find(email).then(
     (user)=> resolveUser(user, defer),
     (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);});
+  return defer.promise;
+},
+
+findByUsername = function(username, correlationId) {
+  correlationId = correlationId || '';
+  var defer = q.defer();
+
+  _find(undefined,['password'],{username: username}).then(
+      (user)=> resolveUser(user, defer),
+      (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);}
+    );
   return defer.promise;
 },
 
@@ -243,12 +253,12 @@ create = function(user){
   return defer.promise;
 },
 
-authenticate = function(email,password) {
-  var defer = q.defer(),
+authenticate = function(username,password) {
+  var defer = q.defer();
 
   init = function(){
-    _find(email,['password']).then(authentic, defer.reject);
-  },
+    _find(undefined,['password'],{username: username}).then(authentic, defer.reject)
+  };
 
   authentic = function(user){
     if (!user) return defer.reject();
@@ -311,15 +321,14 @@ findByResetToken = function(code){
 };
 
 // PRIVATE
-
 var _find = function(email, extraFields = [], where) {
   if (!where) where = { email: email };
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
     attributes:[
-    'username', 
-    'email', 
+    'username',
+    'email',
     'gateway_account_id',
     'otp_key',
     'id',
@@ -332,12 +341,10 @@ var _find = function(email, extraFields = [], where) {
 
 module.exports = {
   find: find,
+  findByUsername: findByUsername,
   create: create,
   authenticate: authenticate,
   updateOtpKey: updateOtpKey,
   sequelize: User,
   findByResetToken: findByResetToken,
 };
-
-
-

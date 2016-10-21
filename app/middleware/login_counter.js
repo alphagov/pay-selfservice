@@ -12,13 +12,13 @@ var lockOut = (req,res, user) => {
     logger.error(`[${correlationId}] locked out user id: ${user.id} due to many password attempts`);
     res.render("login/noaccess");
   })
-}
+};
 
 module.exports = {
   enforce: function (req, res, next) {
-   var email = _.get(req.body, 'email') || _.get(req.user, 'email');
+   var username = _.get(req.body, 'username') || _.get(req.user, 'username');
     var correlationId = req.headers[CORRELATION_HEADER] ||'';
-    User.find(email, correlationId).then((user)=> {
+    User.findByUsername(username, correlationId).then((user)=> {
       user.incrementLoginCount().then(
         ()=> {
           var attempts  = user.login_counter,
