@@ -1,8 +1,9 @@
-var logger = require('winston');
-var normalise = require('../services/normalise_user.js');
-var User = require('../models/user.js');
-var router = require('../routes.js');
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
+var logger              = require('winston');
+var normalise           = require('../services/normalise_user.js');
+var User                = require('../models/user.js');
+var router              = require('../routes.js');
+var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
+var errorView           = require('../utils/response.js').renderErrorView;
 
 module.exports.intro = function (req, res) {
   res.render('users/intro');
@@ -21,15 +22,17 @@ module.exports.create = function (req, res) {
 };
 
 module.exports.index = function (req, res) {
-  User.findAll().then((users)=> {
-    res.render('users/index', {users: users})
-  })
+  User.findAll().then(
+    (users)=> res.render('users/index', { users })
+    ,()=> errorView(req, res)
+  )
 };
 
 module.exports.show = function (req, res) {
-  User.findById(req.params.id).then((user)=> {
-    res.render('users/show', {user: user})
-  }, ()=> console.log('ERROR?'))
+  User.findById(req.params.id).then(
+    (user)=> res.render('users/show', { user })
+    ,()=> errorView(req, res)
+  )
 };
 
 module.exports.sendPasswordReset = function (req, res) {

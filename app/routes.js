@@ -12,7 +12,6 @@ var paymentTypesSummary = require('./controllers/payment_types_summary_controlle
 var emailNotifications = require('./controllers/email_notifications_controller.js');
 var forgotPassword = require('./controllers/forgotten_password_controller.js');
 var userController = require('./controllers/user_controller.js');
-var gatewayController = require('./controllers/gateway_controller.js');
 
 
 var static = require('./controllers/static_controller.js');
@@ -130,9 +129,6 @@ module.exports.bind = function (app) {
   app.post(en.on, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.on);
 
 
-  // GATEWAY
-  var gateway = paths.gateway;
-  app.get(gateway.index, auth.enforceUserBothFactors, csrf, gatewayController.index);
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

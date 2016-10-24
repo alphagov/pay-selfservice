@@ -19,10 +19,19 @@ module.exports = function(correlationId) {
   var allGatewaysUrl = function(){
     return connector.allGatewaysUrl();
   },
-
+  
+  clientUnavailable = function(error, defer, correlationId) {
+    logger.error(`[${correlationId}] Calling connector to retrieve gateway accounts for an account threw exception -`, {
+      service: 'connector',
+      method: 'GET',
+      error: error
+    });
+    defer.reject(new Error('CLIENT_UNAVAILABLE'), error);
+  },
 
   all = function(){
-    var startTime = new Date();
+    var defer = q.defer(),
+    startTime = new Date();
     client.get(allGatewaysUrl(), withCorrelationHeader({}, correlationId), function(data, response) {
       logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, allGatewaysUrl(),  new Date() - startTime);
       var error = response.statusCode !== 200;
@@ -31,20 +40,12 @@ module.exports = function(correlationId) {
       defer.resolve(results);
 
     }).on('error',function(err){
-      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      logger.info(`[${correlationId}] - GET error  to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
       clientUnavailable(err, defer, correlationId);
     });
+    return defer.promise
   }
 
-
-  clientUnavailable = function(error, defer, correlationId) {
-    logger.error(`[${correlationId}] Calling connector to retrieve gateway accounts for an account threw exception -`, {
-      service: 'connector',
-      method: 'GET',
-      error: error
-    });
-    defer.reject(new Error('CLIENT_UNAVAILABLE'), error);
-  };
 
   return {
     all: all,

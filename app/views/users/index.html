@@ -29,7 +29,11 @@ GOV.UK Pay - View users
   <tbody>
     {{#users}}
     <tr data-follow-link  data-email="{{email}}" data-link="/users/{{id}}" >
-      <td class="user-id">{{id}}</td>
+      <td class="user-id">
+        <a href="/users/{{id}}">
+          {{id}}
+        </a>
+      </td>
       <td class="user-username">{{username}}</td>
       <td class="user-email">{{email}}</td>
       <td class="user-gateway">{{gateway_account_id}}</td>
