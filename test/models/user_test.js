@@ -157,7 +157,6 @@ describe('user model', function () {
   describe('authenticate', function () {
     it('should authenticate a valid user', function (done) {
       createDefaultUser().then(user => {
-        console.log(user);
         User.authenticate(user.username, defaultPassword).then(() => done(), wrongPromise(done))
       }, wrongPromise(done));
     });
