@@ -18,7 +18,7 @@ var querystring = require('querystring');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
 var retrieveAccount = require('./middleware/retrieve_account.js');
-var trimEmail = require('./middleware/trim_email.js');
+var trimUsername = require('./middleware/trim_username.js');
 var loginCounter = require('./middleware/login_counter.js');
 
 var _ = require('lodash');
@@ -57,7 +57,7 @@ module.exports.bind = function (app) {
   // LOGIN
   var user = paths.user;
   app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
-  app.post(user.logIn, csrf, trimEmail, loginCounter.enforce, login.logUserin(), login.postLogin);
+  app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin(), login.postLogin);
   app.get(user.loggedIn, auth.enforceUserBothFactors, csrf, login.loggedIn);
   app.get(user.noAccess, login.noAccess);
   app.get(user.logOut, login.logOut);
@@ -68,7 +68,7 @@ module.exports.bind = function (app) {
 
 
   app.get(user.forgottenPassword, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.emailGet);
-  app.post(user.forgottenPassword,  trimEmail, csrf, forgotPassword.emailPost);
+  app.post(user.forgottenPassword,  trimUsername, csrf, forgotPassword.emailPost);
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
   app.get(user.forgottenPasswordReset, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.newPasswordGet);
   app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);

@@ -1,3 +1,4 @@
+
 var expect = require('chai').expect;
 var proxyquire = require('proxyquire');
 var _ = require('lodash');
@@ -105,6 +106,12 @@ describe('user model', function () {
       })
     });
 
+    it('should return a user by username', function (done) {
+      createDefaultUser().then(() => {
+        User.findByUsername("foo").then(() => done(), wrongPromise(done));
+      })
+    });
+
     it('should never ever ever return a password with user outside the model', function (done) {
       createDefaultUser().then(() => {
         User.find("foo@foo.com").then((user) => {
@@ -150,7 +157,7 @@ describe('user model', function () {
   describe('authenticate', function () {
     it('should authenticate a valid user', function (done) {
       createDefaultUser().then(user => {
-        User.authenticate(user.email, defaultPassword).then(() => done(), wrongPromise(done))
+        User.authenticate(user.username, defaultPassword).then(() => done(), wrongPromise(done))
       }, wrongPromise(done));
     });
 
@@ -186,10 +193,10 @@ describe('user model', function () {
   describe('updatePassword', function () {
     it('should update the password', function (done) {
       createDefaultUser().then(user => {
-        User.authenticate(user.email, "newPassword")
+        User.authenticate(user.username, "newPassword")
           .then(wrongPromise(done), () => {
             user.updatePassword("newPassword").then(() => {
-              User.authenticate(user.email, "newPassword").then(() => done(), wrongPromise(done));
+              User.authenticate(user.username, "newPassword").then(() => done(), wrongPromise(done));
             }, wrongPromise(done))
           })
       }, wrongPromise(done));
