@@ -245,6 +245,17 @@ describe('user model', function () {
 
   });
 
+  describe('findAll', function () {
+    it('should find all user', function (done) {
+      createDefaultUser().then(() => {
+        User.findAll().then((user) => { 
+          expect(user.length).equal(1); 
+          done() 
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+  });
+
   describe('findByResetToken', function () {
     it('should fail when forgotten password token is unknown', function (done) {
       User.findByResetToken("unknownCode").then(wrongPromise(done), () => done());

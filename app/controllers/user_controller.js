@@ -1,6 +1,7 @@
 var logger              = require('winston');
 var normalise           = require('../services/normalise_user.js');
 var User                = require('../models/user.js');
+var Gateway             = require('../models/gateway.js');
 var router              = require('../routes.js');
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 var errorView           = require('../utils/response.js').renderErrorView;
@@ -10,7 +11,15 @@ module.exports.intro = function (req, res) {
 };
 
 module.exports.new = function (req, res) {
-  res.render('users/new');
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
+  var gateways = Gateway(correlationId) 
+  gateways.all().then(
+    (gateways)=> {
+      res.locals.gateways = gateways;
+      res.render('users/new');
+    }
+    ,()=> errorView(req, res)
+  )
 };
 
 module.exports.create = function (req, res) {
@@ -51,19 +60,18 @@ module.exports.sendPasswordReset = function (req, res) {
           req.flash('genericError', 'Password reset sent failed');
           res.redirect(redirect)
         });
-  }, ()=> console.log('ERROR'))
+  },()=> errorView(req, res))
 };
 
 var toggleDisabled = function (req, res, toggle, text) {
   User.findById(req.params.id).then((user)=> {
-    console.log('toggling user ', text);
     user.toggleDisabled(toggle);
     req.flash('generic', `User ${text}`);
     var redirect = router.generateRoute(router.paths.user.show, {
       id: req.params.id
     });
     res.redirect(redirect)
-  }, ()=> console.log('ERROR?'))
+  }, ()=> errorView(req, res))
 };
 
 module.exports.disable = function (req, res) {

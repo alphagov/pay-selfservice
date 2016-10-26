@@ -1,15 +1,18 @@
 var request = require('supertest');
-var _app = require(__dirname + '/../../server.js').getApp;
+var app = require(__dirname + '/../../server.js').getApp;
 var assert = require('assert');
 var cheerio = require('cheerio');
 var should = require('chai').should();
 var user = require(__dirname + '/../../app/models/user.js');
+var gateway = require(__dirname + '/../../app/models/gateway.js')('foo');
+var nock = require('nock');
+
 var sinon = require('sinon');
 
 describe('users endpoint', function () {
 
   it('should open intro page and display expected links', function (done) {
-    request(_app)
+    request(app)
       .get("/users/intro")
       .expect(200)
       .expect(function (res) {
@@ -20,8 +23,12 @@ describe('users endpoint', function () {
       .end(done);
   });
 
-  it('should open new user page', function (done) {
-    request(_app)
+  it('should open new user page', function (done) { 
+    nock(process.env.CONNECTOR_URL)
+      .get('/v1/api/accounts')
+      .reply(200, {"accounts": []});
+
+    request(app)
       .get("/users/new")
       .expect(200)
       .expect(function (res) {
@@ -48,7 +55,7 @@ describe('users endpoint', function () {
         }
       });
 
-    request(_app)
+    request(app)
       .post("/users/create")
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send(data)
@@ -87,7 +94,7 @@ describe('users endpoint', function () {
         }
       });
 
-    request(_app)
+    request(app)
       .get("/users")
       .expect(200)
       .expect(function (res) {
@@ -115,7 +122,7 @@ describe('users endpoint', function () {
         }
       });
 
-    request(_app)
+    request(app)
       .get("/users/1")
       .expect(200)
       .expect(function (res) {
@@ -155,7 +162,7 @@ describe('users endpoint', function () {
         }
       });
 
-    request(_app)
+    request(app)
       .post("/users/1/reset")
       .set("X-Request-Id", correlationId)
       .expect(302)
@@ -187,7 +194,7 @@ describe('users endpoint', function () {
         }
       });
 
-    request(_app)
+    request(app)
       .post("/users/1/disable")
       .expect(302)
       .expect(function (res) {
@@ -218,7 +225,7 @@ describe('users endpoint', function () {
         }
       });
 
-    request(_app)
+    request(app)
       .post("/users/1/enable")
       .expect(302)
       .expect(function (res) {

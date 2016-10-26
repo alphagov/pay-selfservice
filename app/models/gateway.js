@@ -36,11 +36,9 @@ module.exports = function(correlationId) {
       logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, allGatewaysUrl(),  new Date() - startTime);
       var error = response.statusCode !== 200;
       if (error) return defer.reject(new Error('GET_FAILED'));
-      var results = data.accounts;
-      defer.resolve(results);
-
+      return defer.resolve(data.accounts);
     }).on('error',function(err){
-      logger.info(`[${correlationId}] - GET error  to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      logger.info(`[${correlationId}] - GET error  to %s ended - elapsed time: %s ms`, allGatewaysUrl(),  new Date() - startTime);
       clientUnavailable(err, defer, correlationId);
     });
     return defer.promise
