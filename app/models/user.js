@@ -188,10 +188,14 @@ logOut = function(){
   return defer.promise
 },
 
-updateUserNameAndEmail = function(user, newEmail) {
+updateUserNameAndEmail = function(user, newEmail, newUserName) {
   var defer = q.defer();
-  user.username = newEmail;
-  user.email    = newEmail;
+  if(newEmail && newEmail !='') {
+    user.email    = newEmail;
+  }
+  if (newUserName || newUserName != '') {
+    user.username = newUserName;
+  }
   user.save().then(defer.resolve,defer.reject);
   return defer.promise;
 },
@@ -208,10 +212,10 @@ resolveUser = function(user, defer){
   val.sendOTP = sendOTP;
   val.sendPasswordResetToken = sendPasswordResetToken;
   val.toggleDisabled= toggleDisabled;
-  val.updateUserNameAndEmail = (email)=> { return updateUserNameAndEmail(user, email) };
+  val.updateUserNameAndEmail = (email, userName)=> { return updateUserNameAndEmail(user, email, userName) };
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
-  val.resetLoginCount = ()=> { return resetLoginCount(user); }; 
+  val.resetLoginCount = ()=> { return resetLoginCount(user); };
   val.logOut = logOut;
   defer.resolve(val);
 };
