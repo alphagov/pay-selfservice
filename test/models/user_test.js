@@ -204,11 +204,11 @@ describe('user model', function () {
   });
 
   describe('updateUserNameAndEmail', function () {
-    it('should update the password', function (done) {
+    it('should update the username and email', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('hi@bye.com')
+        user.updateUserNameAndEmail('hi@bye.com','hibye')
           .then((user)=>{
-            expect(user.username).equal('hi@bye.com');
+            expect(user.username).equal('hibye');
             expect(user.email).equal('hi@bye.com');
             done()
           }
@@ -216,6 +216,33 @@ describe('user model', function () {
           ,wrongPromise(done));
       }, wrongPromise(done));
     });
+
+    it('should not update the username if new username is empty', function (done) {
+      createDefaultUser().then(user => {
+        user.updateUserNameAndEmail('hi@bye.com','')
+          .then((user)=>{
+              expect(user.username).equal('foo');
+              expect(user.email).equal('hi@bye.com');
+              done()
+            }
+
+            ,wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
+    it('should not update the email if new email is empty', function (done) {
+      createDefaultUser().then(user => {
+        user.updateUserNameAndEmail('','hibye')
+          .then((user)=>{
+              expect(user.username).equal('hibye');
+              expect(user.email).equal('foo@foo.com');
+              done()
+            }
+
+            ,wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
   });
 
   describe('findByResetToken', function () {

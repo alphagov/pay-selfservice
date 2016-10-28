@@ -115,3 +115,15 @@ edit with your details
 
 ## to enable a user
 ` ./env.sh node enable-user.js -u example@example.com`
+
+## to update username or user email 
+
+Use the change_user.js command line script 
+```
+Usage:  `node change-user.js`
+```
+#### to change user email
+` node change-user.js -e example@example.com -n updated@example.com`
+
+#### to change user name
+` node change-user.js -e example@example.com -u updatedUserName`
