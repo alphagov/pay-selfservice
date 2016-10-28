@@ -53,7 +53,8 @@ describe('The credentials view in normal mode', function () {
     var templateData = {
       "payment_provider": "Smartpay",
       "credentials": {
-        'username': 'a-username'
+        'username': 'a-username',
+        'merchant_id': 'a-merchant-id'
       }
     };
 
@@ -68,8 +69,8 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('dl#credentials');
 
-    body.should.not.containSelector('dt#merchant-id-key');
-    body.should.not.containSelector('dd#merchant-id-value');
+    body.should.containSelector('dt#merchant-id-key');
+    body.should.containSelector('dd#merchant-id-value');
 
     body.should.containSelector('dt#username-key').withExactText('Username');
     body.should.containSelector('dd#username-value').withExactText('a-username');
@@ -82,7 +83,8 @@ describe('The credentials view in normal mode', function () {
     var templateData = {
       "payment_provider": "Smartpay",
       "credentials": {
-        'username': 'a-username'
+        'username': 'a-username',
+        'merchant_id': 'a-merchant-id'
       },
       "notification_credentials": {
         'userName': 'a-notification-username'
@@ -100,8 +102,8 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('dl#credentials');
 
-    body.should.not.containSelector('dt#merchant-id-key');
-    body.should.not.containSelector('dd#merchant-id-value');
+    body.should.containSelector('dt#merchant-id-key');
+    body.should.containSelector('dd#merchant-id-value');
 
     body.should.containSelector('dt#notification-username-key').withExactText('Username');
     body.should.containSelector('dd#notification-username-value').withExactText('a-notification-username');
@@ -193,7 +195,9 @@ describe('The credentials view in edit mode', function () {
 
     body.should.not.containSelector('a#edit-credentials-link');
 
-    body.should.not.containSelector('input#merchant-id');
+    body.should.containInputField('merchantId', 'text')
+      .withAttribute('value', 'a-merchant-id')
+      .withLabel('Merchant ID');
 
     body.should.containInputField('username', 'text')
       .withAttribute('value', 'a-username')

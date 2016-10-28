@@ -8,6 +8,9 @@
 
 {{^editMode}}
 <dl id="credentials">
+    <dt id="merchant-id-key" class="font-xsmall"><p>Merchant ID</p></dt>
+    <dd id="merchant-id-value"><b>{{credentials.merchant_id}}</b></dd>
+
     <dt id="username-key" class="font-xsmall"><p>Username</p></dt>
     <dd id="username-value"><b>{{credentials.username}}</b></dd>
 
@@ -22,6 +25,11 @@
 {{#editMode}}
 <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    <div class="form-group">
+        <label class="form-label" for="merchantId">Merchant ID</label>
+        <input class="form-control" id="merchantId" name="merchantId" type="text" value="{{credentials.merchant_id}}">
+    </div>
+
     <div class="form-group">
         <label class="form-label" for="username">Username</label>
         <input class="form-control" id="username" name="username" type="text" value="{{credentials.username}}">
