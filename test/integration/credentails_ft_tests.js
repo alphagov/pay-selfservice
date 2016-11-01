@@ -210,7 +210,10 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
         .reply(200, {
           "payment_provider": "smartpay",
           "gateway_account_id": "1",
-          "credentials": {username: "a-username"},
+          "credentials": {
+            'username': "a-username",
+            'merchant_id': 'a-merchant-id'
+          },
           "notificationCredentials": {username: "a-notification-username"}
         });
 
@@ -219,7 +222,8 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
         "editMode": false,
         "editNotificationCredentialsMode": false,
         "credentials": {
-          'username': 'a-username'
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
         },
         "notification_credentials": {username: "a-notification-username"}
       };
@@ -241,18 +245,19 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
       winston.level = 'none';
     });
 
-    it('should send new username and password credentials to connector', function (done) {
+    it('should send new username, password and merchant_id credentials to connector', function (done) {
       connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
         "credentials": {
           "username": "a-username",
-          "password": "a-password"
+          "password": "a-password",
+          "merchant_id": "a-merchant-id"
         }
       })
       .reply(200, {});
 
 
 //    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
-    var sendData = {'username': 'a-username', 'password': 'a-password'};
+    var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
     build_form_post_request(path, sendData)
@@ -265,13 +270,12 @@ var app = session.mockValidAccount(_app, ACCOUNT_ID);
       connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
         "credentials": {
           "username": "a-username",
-          "password": "a-password",
-          "merchant_id": "a-merchant-id"
+          "password": "a-password"
         }
       })
       .reply(200, {});
 
-    var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'};
+    var sendData = {'username': 'a-username', 'password': 'a-password'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
     build_form_post_request(path, sendData)
