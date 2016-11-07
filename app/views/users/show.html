@@ -1,0 +1,61 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - View user
+{{/pageTitle}}
+
+{{$bodyClasses}}users show{{/bodyClasses}}
+{{$content}}
+<h1 class="page-title pull-bottom">Users</h1>
+<div class="actions">
+  <a href="/users" id="arrowed" class="arrowed"> ◀ Back to users list </a>
+  {{^user.disabled}}
+  <form method="post" action="/users/{{user.id}}/disable">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input name="disable" type="submit" class="button push-top " value="disable user">
+  </form>
+  {{/user.disabled}}
+  {{#user.disabled}}
+  <form method="post" action="/users/{{user.id}}/enable">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input name="enable" type="submit" class="button push-top " value="enable user">
+  </form>
+  {{/user.disabled}}
+    <form method="post" action="/users/{{user.id}}/reset">
+        <input name="csrfToken" type="hidden" value="{{csrf}}"/>
+        <input id="send-password-reset" name="reset" type="submit" class="button push-bottom" value="send password reset email">
+    </form>
+</div>
+<h2 class="heading-small pull-top push-bottom-sml">User Details</h2>
+<table class="transaction-details">
+  <tbody>
+      <tr>
+        <td>id</td>
+        <td id="user-id">{{user.id}}</td>
+      </tr>
+      <tr>
+        <td>username</td>
+        <td id="user-username"> {{user.username}}</td>
+      </tr>
+      <tr>
+        <td>email</td>
+        <td id="user-email">{{user.email}}</td>
+      </tr>
+      <tr>
+        <td>gateway_account_id</td>
+        <td id="user-gateway">{{user.gateway_account_id}}</td>
+      </tr>
+      <tr>
+        <td>telephone_number</td>
+        <td id="user-telephone">{{user.telephone_number}}</td>
+      </tr>
+      <tr>
+        <td>disabled</td>
+        <td id="user-disabled">{{user.disabled}}</td>
+      </tr>
+  </tbody>
+</table>
+
+{{/content}}
+
+{{/layout}}

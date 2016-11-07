@@ -33,6 +33,9 @@
     </header>
 
     {{$afterHeader}}{{/afterHeader}}
+    {{#flash.generic}}
+      <p class="generic-flash">{{flash.generic}}</p>
+    {{/flash.generic}}
     {{#flash.genericError}}
     <p class="generic-error"> {{flash.genericError}} </p>
     {{/flash.genericError}}

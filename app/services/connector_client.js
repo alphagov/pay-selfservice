@@ -165,6 +165,16 @@ ConnectorClient.prototype = {
     return this.connectorUrl + CHARGES_API_PATH.replace("{accountId}", gatewayAccountId) + "?" + query;
   },
 
+  allGatewaysUrl: function() {
+    logger.debug('Calling connector to get all accounts  -', {
+      service: 'connector',
+      method: 'GET',
+      url: this.connectorUrl + ACCOUNTS_API_PATH,
+    });
+    return this.connectorUrl + ACCOUNTS_API_PATH
+
+  },
+
   /**
    * Retrieves a Charge from connector for a given charge Id that belongs to a gateway account Id
    * @param params

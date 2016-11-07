@@ -1,4 +1,3 @@
-var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
 var request     = require('supertest');
 var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
@@ -10,7 +9,6 @@ var paths       = require(__dirname + '/../../app/paths.js');
 var session     = require(__dirname + '/../test_helpers/mock_session.js');
 var ACCOUNT_ID  = 182364;
 var login_controller     = require(__dirname + '/../../app/controllers/login_controller.js');
-var proxyquire  = require('proxyquire');
 var q           = require('q');
 var notp        = require('notp');
 
@@ -179,7 +177,7 @@ describe('The afterOtpLogin endpoint', function () {
 });
 
 
-describe('login post enpoint',function(){
+describe('login post endpoint',function(){
   it('should display an error if csrf token does not exist for the login post', function (done) {
     request(app)
     .post(paths.user.logIn)
@@ -191,7 +189,7 @@ describe('login post enpoint',function(){
   });
 });
 
-describe('otp login post enpoint',function(){
+describe('otp login post endpoint',function(){
   it('should display an error if csrf token does not exist for the login post', function (done) {
   var app2 = session.mockAccount(_app, {
     secondFactor: "totp",

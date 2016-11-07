@@ -29,8 +29,19 @@ module.exports = {
     noAccess: '/noaccess',
     forgottenPassword: '/reset-password',
     passwordRequested: '/reset-password-requested',
-    forgottenPasswordReset: '/reset-password/:id'
-
+    forgottenPasswordReset: '/reset-password/:id',
+    
+    new: '/users/new',
+    intro: '/users/intro',
+    create: '/users/create',
+    index: '/users',
+    show: '/users/:id',
+    disable: '/users/:id/disable',
+    enable: '/users/:id/enable',
+    reset: '/users/:id/reset'
+  },
+  gateway: {
+    index: '/gateways'
   },
   devTokens: {
     index: '/tokens',

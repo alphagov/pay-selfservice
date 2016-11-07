@@ -103,6 +103,7 @@
     "jshint": "latest",
     "jsonwebtoken": "5.5.4",
     "mocha": "^2.2.5",
+    "mock-require": "^1.3.0",
     "mockserver-client": "^1.0.6",
     "mockserver-grunt": "^1.0.26",
     "nock": "^8.0.0",

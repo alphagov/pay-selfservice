@@ -1,0 +1,50 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - View users
+{{/pageTitle}}
+
+{{$bodyClasses}}users index{{/bodyClasses}}
+{{$pageSpecificJS}}
+<script src="/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
+{{$content}}
+<h1 class="heading-large page-title tuck-bottom-sml">Users</h1>
+<a class="button generate-user push-bottom" href="{{routes.user.new}}">
+  Generate a new User
+</a>
+
+<table id="users-list">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Gateway Account ID</th>
+      <th>Telephone</th>
+      <th>Disabled</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#users}}
+    <tr data-follow-link  data-email="{{email}}" data-link="/users/{{id}}" >
+      <td class="user-id">
+        <a href="/users/{{id}}">
+          {{id}}
+        </a>
+      </td>
+      <td class="user-username">{{username}}</td>
+      <td class="user-email">{{email}}</td>
+      <td class="user-gateway">{{gateway_account_id}}</td>
+      <td class="user-telephone">{{telephone_number}}</td>
+      <td class="user-disabled">{{disabled}}</td>
+    </tr>
+    {{/users}}
+  </tbody>
+</table>
+
+
+{{/content}}
+
+{{/layout}}
