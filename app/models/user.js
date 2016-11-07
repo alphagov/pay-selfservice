@@ -1,19 +1,22 @@
-var sequelizeConfig = require('./../utils/sequelize_config.js');
-var sequelizeConnection = sequelizeConfig.sequelize;
-var Sequelize = require('sequelize');
-var bcrypt = require('bcrypt');
-var q = require('q');
-var _ = require('lodash');
-var notify = require('../services/notification_client.js');
-var notp = require('notp');
-var random = require('../utils/random.js');
-var logger = require('winston');
-var forgottenPassword = require('./forgotten_password.js').sequelize;
-var moment = require('moment');
-var paths = require(__dirname + '/../paths.js');
-var commonPassword = require('common-password');
-var MIN_PASSWORD_LENGTH = 10;
-var HASH_PASSWORD_SALT_ROUNDS = 10;
+var sequelizeConfig       = require('./../utils/sequelize_config.js');
+var sequelizeConnection   = sequelizeConfig.sequelize;
+var Sequelize             = require('sequelize');
+var bcrypt                = require('bcrypt');
+var q                     = require('q');
+var _                     = require('lodash');
+var notify                = require('../services/notification_client.js');
+var notp                  = require('notp');
+var random                = require('../utils/random.js');
+var logger                = require('winston');
+var forgottenPassword     = require('./forgotten_password.js').sequelize;
+var permissions           = require('./user_permissions.js').sequelize;
+var moment                = require('moment');
+var paths                 = require(__dirname + '/../paths.js');
+var commonPassword        = require('common-password');
+
+
+const MIN_PASSWORD_LENGTH       = 10;
+const HASH_PASSWORD_SALT_ROUNDS = 10;
 
 var User = sequelizeConnection.define('user', {
   username: {
@@ -81,7 +84,10 @@ var User = sequelizeConnection.define('user', {
     defaultValue: 0
   }
 });
+
+permissions.belongsTo(User);
 User.hasMany(forgottenPassword, {as: 'forgotten'});
+User.hasMany(permissions, {as: 'permissions'});
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -199,6 +205,11 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   user.save().then(defer.resolve,defer.reject);
   return defer.promise;
 },
+addPermission = function(type,user){
+  return user.createPermission({
+    permission: type
+  });
+},
 
 resolveUser = function(user, defer){
   if (user === null) {
@@ -216,7 +227,9 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
+  val.addPermission = (type)=> { return addPermission(type, user); };
   val.logOut = logOut;
+  val.user = user;
   defer.resolve(val);
 };
 
@@ -330,6 +343,7 @@ var _find = function(email, extraFields = [], where) {
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
     where: where,
+    include: [ permissions ],
     attributes:[
     'username',
     'email',
