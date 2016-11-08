@@ -9,7 +9,7 @@ var notp                  = require('notp');
 var random                = require('../utils/random.js');
 var logger                = require('winston');
 var forgottenPassword     = require('./forgotten_password.js').sequelize;
-var permissions           = require('./user_permissions.js').sequelize;
+var Permissions           = require('./user_permissions.js').sequelize;
 var moment                = require('moment');
 var paths                 = require(__dirname + '/../paths.js');
 var commonPassword        = require('common-password');
@@ -85,9 +85,9 @@ var User = sequelizeConnection.define('user', {
   }
 });
 
-permissions.belongsTo(User);
+Permissions.belongsTo(User);
 User.hasMany(forgottenPassword, {as: 'forgotten'});
-User.hasMany(permissions, {as: 'permissions'});
+User.hasMany(Permissions, { as: 'permissions'});
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -342,8 +342,8 @@ var _find = function(email, extraFields = [], where) {
   if (!where) where = { email: email };
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
+    include: [ {model: Permissions, as:'permissions'} ],
     where: where,
-    include: [ permissions ],
     attributes:[
     'username',
     'email',

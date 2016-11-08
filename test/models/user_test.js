@@ -1,4 +1,3 @@
-
 var expect = require('chai').expect;
 var proxyquire = require('proxyquire');
 var _ = require('lodash');
@@ -31,10 +30,15 @@ var ForgottenPassword = proxyquire(__dirname + '/../../app/models/forgotten_pass
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
+var UserPermissions = proxyquire(__dirname + '/../../app/models/user_permissions.js', {
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
+
 var User = proxyquire(__dirname + '/../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
+  './user_permissions.js': UserPermissions,
   '../services/notification_client.js': mockedNotificationClient
 });
 
@@ -42,6 +46,7 @@ var wrongPromise = function (done) {
   return (reason) => {
     var error = new Error('Promise was unexpectedly fulfilled. Error: ', reason);
     if (done) {
+      console.log('Reason => ', reason);
       done(error);
     }
     throw error;
@@ -58,7 +63,7 @@ var defaultUser = {
 
 var defaultSession = {
   data: defaultUser.email
-}
+};
 
 var createDefaultSession = (extendedAttributes) => {
   var sessionAttributes = _.extend({}, defaultSession, extendedAttributes);
@@ -82,6 +87,14 @@ var createDefaultForgottenPassword = function (extendedAttributes) {
   return ForgottenPassword.sequelize.create(forgottenPasswordAttributes);
 };
 
+var createPermission = function (extendedAttributes) {
+  var createPermissionAttributes = _.extend({
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }, extendedAttributes);
+  return UserPermissions.sequelize.create(createPermissionAttributes);
+};
+
 var yesterdayDate = () => {
   var date = new Date();
   date.setDate(date.getDate() - 1);
@@ -92,9 +105,10 @@ var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Se
 
 describe('user model', function () {
   beforeEach(function (done) {
-    User.sequelize.sync({force: true}).then(() => {
-      ForgottenPassword.sequelize.sync({force: true}).then(() => {
-        Sessions.sync({force: true}).then(() => done());
+    ForgottenPassword.sequelize.sync({force: true}).then(() => {
+      UserPermissions.sequelize.sync({force: true}).then(() => {
+        Sessions.sync({force: true}).then(() =>
+          User.sequelize.sync({force: true}).then(() => done()));
       });
     });
   });
@@ -206,40 +220,40 @@ describe('user model', function () {
   describe('updateUserNameAndEmail', function () {
     it('should update the username and email', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('hi@bye.com','hibye')
-          .then((user)=>{
-            expect(user.username).equal('hibye');
-            expect(user.email).equal('hi@bye.com');
-            done()
-          }
+        user.updateUserNameAndEmail('hi@bye.com', 'hibye')
+          .then((user)=> {
+              expect(user.username).equal('hibye');
+              expect(user.email).equal('hi@bye.com');
+              done()
+            }
 
-          ,wrongPromise(done));
+            , wrongPromise(done));
       }, wrongPromise(done));
     });
 
     it('should not update the username if new username is empty', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('hi@bye.com','')
-          .then((user)=>{
+        user.updateUserNameAndEmail('hi@bye.com', '')
+          .then((user)=> {
               expect(user.username).equal('foo');
               expect(user.email).equal('hi@bye.com');
               done()
             }
 
-            ,wrongPromise(done));
+            , wrongPromise(done));
       }, wrongPromise(done));
     });
 
     it('should not update the email if new email is empty', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('','hibye')
-          .then((user)=>{
+        user.updateUserNameAndEmail('', 'hibye')
+          .then((user)=> {
               expect(user.username).equal('hibye');
               expect(user.email).equal('foo@foo.com');
               done()
             }
 
-            ,wrongPromise(done));
+            , wrongPromise(done));
       }, wrongPromise(done));
     });
 
@@ -358,5 +372,19 @@ describe('user model', function () {
     });
   });
 
-})
-;
+  describe('user permissions', function () {
+
+    it('should find permissions', function (done) {
+      createDefaultUser().then(user => {
+        createPermission({permission: 'permissionABC', userId: user.id}).then(()=> {
+          User.find(defaultUser.email).then((user) => {
+            expect(user.permissions.length).to.be.equal(1);
+            expect(user.permissions[0].dataValues.permission).to.be.equal('permissionABC');
+            expect(user.permissions[0].dataValues.userId).to.be.equal(user.id);
+            done();
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+  });
+});
