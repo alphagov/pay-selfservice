@@ -9,11 +9,10 @@ var notp                  = require('notp');
 var random                = require('../utils/random.js');
 var logger                = require('winston');
 var forgottenPassword     = require('./forgotten_password.js').sequelize;
-var Permissions           = require('./user_permissions.js').sequelize;
+var Permission            = require('./permission.js').sequelize;
 var moment                = require('moment');
 var paths                 = require(__dirname + '/../paths.js');
 var commonPassword        = require('common-password');
-
 
 const MIN_PASSWORD_LENGTH       = 10;
 const HASH_PASSWORD_SALT_ROUNDS = 10;
@@ -85,9 +84,9 @@ var User = sequelizeConnection.define('user', {
   }
 });
 
-Permissions.belongsTo(User);
 User.hasMany(forgottenPassword, {as: 'forgotten'});
-User.hasMany(Permissions, { as: 'permissions'});
+User.belongsToMany(Permission, { as: 'permissions', through: 'user_permission'});
+User.sequelize.sync();
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -205,10 +204,8 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   user.save().then(defer.resolve,defer.reject);
   return defer.promise;
 },
-addPermission = function(type,user){
-  return user.createPermission({
-    permission: type
-  });
+addPermission = function(permission, user){
+  return user.addPermission(permission);
 },
 
 resolveUser = function(user, defer){
@@ -227,7 +224,8 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
-  val.addPermission = (type)=> { return addPermission(type, user); };
+  val.addPermission = (permission)=> { return addPermission(permission, user); };
+  val.getPermissions = ()=> { return getPermissions(user); };
   val.logOut = logOut;
   val.user = user;
   defer.resolve(val);
@@ -253,6 +251,10 @@ findByUsername = function(username, correlationId) {
       (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);}
     );
   return defer.promise;
+},
+
+getPermissions = function (user){
+return user.getPermissions();
 },
 
 create = function(user){
@@ -342,7 +344,6 @@ var _find = function(email, extraFields = [], where) {
   if (!where) where = { email: email };
   if (where.email) where.email = where.email.toLowerCase();
   return User.findOne({
-    include: [ {model: Permissions, as:'permissions'} ],
     where: where,
     attributes:[
     'username',

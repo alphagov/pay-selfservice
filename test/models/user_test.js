@@ -30,7 +30,7 @@ var ForgottenPassword = proxyquire(__dirname + '/../../app/models/forgotten_pass
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var UserPermissions = proxyquire(__dirname + '/../../app/models/user_permissions.js', {
+var Permission = proxyquire(__dirname + '/../../app/models/permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
@@ -38,7 +38,7 @@ var User = proxyquire(__dirname + '/../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
-  './user_permissions.js': UserPermissions,
+  './permission.js': Permission,
   '../services/notification_client.js': mockedNotificationClient
 });
 
@@ -88,11 +88,8 @@ var createDefaultForgottenPassword = function (extendedAttributes) {
 };
 
 var createPermission = function (extendedAttributes) {
-  var createPermissionAttributes = _.extend({
-    createdAt: Date.now(),
-    updatedAt: Date.now()
-  }, extendedAttributes);
-  return UserPermissions.sequelize.create(createPermissionAttributes);
+  var createPermissionAttributes = _.extend({}, extendedAttributes);
+  return Permission.sequelize.create(createPermissionAttributes);
 };
 
 var yesterdayDate = () => {
@@ -106,7 +103,7 @@ var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Se
 describe('user model', function () {
   beforeEach(function (done) {
     ForgottenPassword.sequelize.sync({force: true}).then(() => {
-      UserPermissions.sequelize.sync({force: true}).then(() => {
+      Permission.sequelize.sync({force: true}).then(() => {
         Sessions.sync({force: true}).then(() =>
           User.sequelize.sync({force: true}).then(() => done()));
       });
@@ -376,12 +373,14 @@ describe('user model', function () {
 
     it('should find permissions', function (done) {
       createDefaultUser().then(user => {
-        createPermission({permission: 'permissionABC', userId: user.id}).then(()=> {
+        createPermission({name: 'permissionABC'}).then(permission => {
+          user.addPermission(permission);
           User.find(defaultUser.email).then((user) => {
-            expect(user.permissions.length).to.be.equal(1);
-            expect(user.permissions[0].dataValues.permission).to.be.equal('permissionABC');
-            expect(user.permissions[0].dataValues.userId).to.be.equal(user.id);
-            done();
+            user.getPermissions().then(permissions=> {
+              expect(permissions.length).to.be.equal(1);
+              expect(permissions[0].dataValues.name).to.be.equal('permissionABC');
+              done();
+            }, wrongPromise(done));
           }, wrongPromise(done));
         }, wrongPromise(done));
       }, wrongPromise(done));

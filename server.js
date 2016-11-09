@@ -18,7 +18,6 @@ var environment       = require(__dirname + '/app/services/environment.js');
 var auth              = require(__dirname + '/app/services/auth_service.js');
 var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
-var models            = require('./app/models/models.js');
 var flash             = require('connect-flash');
 var middlwareUtils    = require('./app/utils/middleware.js');
 
