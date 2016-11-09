@@ -204,8 +204,9 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   user.save().then(defer.resolve,defer.reject);
   return defer.promise;
 },
-addPermission = function(permission, user){
-  return user.addPermission(permission);
+
+setPermissions = function(permissions, user){
+  return user.setPermissions(permissions);
 },
 
 resolveUser = function(user, defer){
@@ -224,7 +225,7 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
-  val.addPermission = (permission)=> { return addPermission(permission, user); };
+  val.setPermissions = (permissions)=> { return setPermissions(permissions, user); };
   val.getPermissions = ()=> { return getPermissions(user); };
   val.logOut = logOut;
   val.user = user;

@@ -371,15 +371,19 @@ describe('user model', function () {
 
   describe('user permissions', function () {
 
-    it('should find permissions', function (done) {
+    it('should set permissions to user', function (done) {
       createDefaultUser().then(user => {
         createPermission({name: 'permissionABC'}).then(permission => {
-          user.addPermission(permission);
-          User.find(defaultUser.email).then((user) => {
-            user.getPermissions().then(permissions=> {
-              expect(permissions.length).to.be.equal(1);
-              expect(permissions[0].dataValues.name).to.be.equal('permissionABC');
-              done();
+          var permission1 = permission;
+          createPermission({name: 'permissionDEF'}).then(permission2 => {
+            user.setPermissions([permission1, permission2]);
+            User.find(defaultUser.email).then((user) => {
+              user.getPermissions().then(permissions => {
+                expect(permissions.length).to.be.equal(2);
+                expect(permissions[0].dataValues.name).to.be.equal('permissionABC');
+                expect(permissions[1].dataValues.name).to.be.equal('permissionDEF');
+                done();
+              }, wrongPromise(done));
             }, wrongPromise(done));
           }, wrongPromise(done));
         }, wrongPromise(done));
