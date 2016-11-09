@@ -34,11 +34,16 @@ var Permission = proxyquire(__dirname + '/../../app/models/permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
+var Role = proxyquire(__dirname + '/../../app/models/role.js', {
+  './permission.js': Permission,
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
+
 var User = proxyquire(__dirname + '/../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
-  './permission.js': Permission,
+  './role.js': Role,
   '../services/notification_client.js': mockedNotificationClient
 });
 
@@ -87,9 +92,12 @@ var createDefaultForgottenPassword = function (extendedAttributes) {
   return ForgottenPassword.sequelize.create(forgottenPasswordAttributes);
 };
 
-var createPermission = function (extendedAttributes) {
-  var createPermissionAttributes = _.extend({}, extendedAttributes);
-  return Permission.sequelize.create(createPermissionAttributes);
+var createPermission = function (attributes) {
+  return Permission.sequelize.create(attributes);
+};
+
+var createRole = function (attributes) {
+  return Role.sequelize.create(attributes);
 };
 
 var yesterdayDate = () => {
@@ -101,11 +109,14 @@ var yesterdayDate = () => {
 var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Sequelize.STRING}});
 
 describe('user model', function () {
+
   beforeEach(function (done) {
     ForgottenPassword.sequelize.sync({force: true}).then(() => {
       Permission.sequelize.sync({force: true}).then(() => {
-        Sessions.sync({force: true}).then(() =>
-          User.sequelize.sync({force: true}).then(() => done()));
+        Role.sequelize.sync({force: true}).then(() => {
+          Sessions.sync({force: true}).then(() =>
+            User.sequelize.sync({force: true}).then(() => done()));
+        });
       });
     });
   });
@@ -371,18 +382,78 @@ describe('user model', function () {
 
   describe('user permissions', function () {
 
-    it('should set permissions to user', function (done) {
+    var roleAdmin;
+    var roleRead;
+
+    beforeEach(function (done) {
+      var createRefundPermission;
+      var viewTransactionsPermission;
+      createPermission({name: "refunds:create", description: "View & Create Refunds"}).then((permission)=> {
+        createRefundPermission = permission;
+        createPermission({name: "transactions:read", description: "View Transactions"}).then((permission)=> {
+          viewTransactionsPermission = permission;
+          createRole({description: "Admin"}).then((role)=> {
+            roleAdmin = role;
+            role.setPermissions([createRefundPermission, viewTransactionsPermission]).then(()=> {
+              createRole({description: "Read"}).then((role)=> {
+                roleRead = role;
+                role.setPermissions([viewTransactionsPermission]).then(()=> done(), wrongPromise(done))
+              }, wrongPromise(done));
+            }, wrongPromise(done));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
+    it('should has expected permissions from a user', function (done) {
       createDefaultUser().then(user => {
-        createPermission({name: 'permissionABC'}).then(permission => {
-          var permission1 = permission;
-          createPermission({name: 'permissionDEF'}).then(permission2 => {
-            user.setPermissions([permission1, permission2]);
-            User.find(defaultUser.email).then((user) => {
-              user.getPermissions().then(permissions => {
-                expect(permissions.length).to.be.equal(2);
-                expect(permissions[0].dataValues.name).to.be.equal('permissionABC');
-                expect(permissions[1].dataValues.name).to.be.equal('permissionDEF');
-                done();
+        user.setRole(roleAdmin).then(()=> {
+          User.find(defaultUser.email).then((user) => {
+            user.hasPermission("refunds:create")
+              .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.true, wrongPromise(done))
+              .then(user.hasPermission("transactions:read")
+                .then((viewTransactionsPermission)=> {
+                  expect(viewTransactionsPermission).to.be.true;
+                  done();
+                }, wrongPromise(done)));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
+    it('should not have permission when its role does not have it', function (done) {
+      createDefaultUser().then(user => {
+        user.setRole(roleRead).then(()=> {
+          User.find(defaultUser.email).then((user) => {
+            user.hasPermission("refunds:create")
+              .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.false, wrongPromise(done))
+              .then(user.hasPermission("transactions:read")
+                .then((viewTransactionsPermission)=> {
+                  expect(viewTransactionsPermission).to.be.true;
+                  done();
+                }, wrongPromise(done)));
+          }, wrongPromise(done));
+        }, wrongPromise(done));
+      }, wrongPromise(done));
+    });
+
+    it('should override permissions when user changes role', function (done) {
+      createDefaultUser().then((user) => {
+        user.setRole(roleAdmin).then(()=> {
+          createPermission({name: "tokens:create", description: "View & Create tokens"}).then((createToKensPermission)=> {
+            createRole({description: "Write"}).then((role)=> {
+              role.setPermissions([createToKensPermission]).then(()=> {
+                user.setRole(role).then(()=> {
+                  User.find(defaultUser.email).then((user) => {
+                    user.hasPermission("refunds:create").then((hasCreateRefundsPermission)=> {
+                      expect(hasCreateRefundsPermission).to.be.false;
+                      user.hasPermission("transactions:read").then((viewTransactionsPermission)=> {
+                        expect(viewTransactionsPermission).to.be.false;
+                        user.hasPermission("tokens:create").then((viewTransactionsPermission)=> { expect(viewTransactionsPermission).to.be.true; done();}, wrongPromise(done));
+                      }, wrongPromise(done));
+                    }, wrongPromise(done));
+                  }, wrongPromise(done));
+                }, wrongPromise(done));
               }, wrongPromise(done));
             }, wrongPromise(done));
           }, wrongPromise(done));

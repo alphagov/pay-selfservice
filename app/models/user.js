@@ -9,7 +9,7 @@ var notp                  = require('notp');
 var random                = require('../utils/random.js');
 var logger                = require('winston');
 var forgottenPassword     = require('./forgotten_password.js').sequelize;
-var Permission            = require('./permission.js').sequelize;
+var Role                  = require('./role.js').sequelize;
 var moment                = require('moment');
 var paths                 = require(__dirname + '/../paths.js');
 var commonPassword        = require('common-password');
@@ -85,7 +85,7 @@ var User = sequelizeConnection.define('user', {
 });
 
 User.hasMany(forgottenPassword, {as: 'forgotten'});
-User.belongsToMany(Permission, { as: 'permissions', through: 'user_permission'});
+User.belongsToMany(Role, { as: 'roles', through: 'user_role'});
 User.sequelize.sync();
 
 var hashPasswordHook = function(instance) {
@@ -113,7 +113,7 @@ generateOTP = function(){
 toggleDisabled = function(toggle) {
   var defer = q.defer(),
   log = ()=> logger.info(this.id + " disabled status is now " + toggle);
-  var update = { disabled: toggle }
+  var update = { disabled: toggle };
   if (toggle == false) update.login_counter = 0;
   User.update(
     update,
@@ -205,8 +205,8 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   return defer.promise;
 },
 
-setPermissions = function(permissions, user){
-  return user.setPermissions(permissions);
+setRole = function(role, user){
+  return user.setRoles([role]);
 },
 
 resolveUser = function(user, defer){
@@ -225,8 +225,8 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
-  val.setPermissions = (permissions)=> { return setPermissions(permissions, user); };
-  val.getPermissions = ()=> { return getPermissions(user); };
+  val.setRole = (roleDesc)=> { return setRole(roleDesc, user); };
+  val.hasPermission = (permissionName)=> { return hasPermission(permissionName, user); };
   val.logOut = logOut;
   val.user = user;
   defer.resolve(val);
@@ -254,8 +254,10 @@ findByUsername = function(username, correlationId) {
   return defer.promise;
 },
 
-getPermissions = function (user){
-return user.getPermissions();
+hasPermission = function (permissionName, user) {
+  return user.getRoles().then((roles)=>
+      roles[0].getPermissions({where: {name: permissionName}}).then((permissions)=>
+          permissions.length !== 0));
 },
 
 create = function(user){
