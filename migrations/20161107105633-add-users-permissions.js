@@ -4,8 +4,7 @@ const permission = {
 
   id: {
     type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+    primaryKey: true
   },
 
   name: {
@@ -23,14 +22,29 @@ const permission = {
       notEmpty: true
     }
   },
+
+  createdAt: {
+    type: Sequelize.DATE
+  },
+
+  updatedAt: {
+    type: Sequelize.DATE
+  },
 };
 
 const role = {
 
   id: {
     type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+    primaryKey: true
+  },
+
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   },
 
   description: {
@@ -40,11 +54,19 @@ const role = {
       notEmpty: true
     }
   },
+
+  createdAt: {
+    type: Sequelize.DATE
+  },
+
+  updatedAt: {
+    type: Sequelize.DATE
+  },
 };
 
 const rolePermission = {
 
-  roleId: {
+  role_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     validate: {
@@ -52,13 +74,13 @@ const rolePermission = {
     },
 
     references: {
-      model: 'role',
+      model: 'roles',
       key: 'id'
     },
     onDelete: 'cascade'
   },
 
-  permissionId: {
+  permission_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     validate: {
@@ -66,16 +88,24 @@ const rolePermission = {
     },
 
     references: {
-      model: 'permission',
+      model: 'permissions',
       key: 'id'
     },
     onDelete: 'cascade'
-  }
+  },
+
+  createdAt: {
+    type: Sequelize.DATE
+  },
+
+  updatedAt: {
+    type: Sequelize.DATE
+  },
 };
 
 const userRole = {
 
-  roleId: {
+  role_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     validate: {
@@ -83,13 +113,13 @@ const userRole = {
     },
 
     references: {
-      model: 'permission',
+      model: 'roles',
       key: 'id'
     },
     onDelete: 'cascade'
   },
 
-  userId: {
+  user_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     validate: {
@@ -101,22 +131,30 @@ const userRole = {
       key: 'id'
     },
     onDelete: 'cascade'
-  }
+  },
+
+  createdAt: {
+    type: Sequelize.DATE
+  },
+
+  updatedAt: {
+    type: Sequelize.DATE
+  },
 };
 
 module.exports = {
   up: function (queryInterface, Sequelize, done) {
-    queryInterface.createTable('permission', permission)
-      .then(()=> { return queryInterface.createTable('role', role) })
+    queryInterface.createTable('permissions', permission)
+      .then(()=> { return queryInterface.createTable('roles', role) })
       .then(()=> { return queryInterface.createTable('role_permission', rolePermission) })
       .then(()=> { return queryInterface.createTable('user_role', userRole) })
       .then(()=> {
-          return queryInterface.addIndex('role_permission', ['roleId', 'permissionId'], {
+          return queryInterface.addIndex('role_permission', ['role_id', 'permission_id'], {
             indexName: 'rolePermissionIndex',
             indicesType: 'UNIQUE'
           }) })
       .then(()=> {
-          return queryInterface.addIndex('user_role', ['userId', 'roleId'], {
+          return queryInterface.addIndex('user_role', ['user_id', 'role_id'], {
             indexName: 'userRoleIndex',
             indicesType: 'UNIQUE'
           }) })
@@ -129,8 +167,8 @@ module.exports = {
       .then(()=> { return queryInterface.removeIndex('role_permission', 'rolePermissionIndex')})
       .then(()=> { return queryInterface.dropTable('user_role') })
       .then(()=> { return queryInterface.dropTable('role_permission') })
-      .then(()=> { return queryInterface.dropTable('role') })
-      .then(()=> { return queryInterface.dropTable('permission') })
+      .then(()=> { return queryInterface.dropTable('roles') })
+      .then(()=> { return queryInterface.dropTable('permissions') })
       .then(()=> { done() });
   }
 };

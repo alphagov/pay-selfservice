@@ -2,13 +2,16 @@
 
 var Sequelize = require('sequelize');
 
-function createInstance(){
+function createInstance() {
   return new Sequelize('database', 'username', 'password', {
     dialect: 'sqlite',
 
     // the storage engine for sqlite
     // - default ':memory:'
-    storage: __dirname + '/database.sqlite'
+    storage: __dirname + '/database.sqlite',
+    define: {
+      syncOnAssociation: true
+    }
   });
 }
 
@@ -16,6 +19,6 @@ function createInstance(){
 module.exports = function () {
   return {
     sequelize: createInstance()
-};
+  };
 
 }();

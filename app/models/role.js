@@ -3,7 +3,7 @@ var sequelizeConnection = sequelizeConfig.sequelize;
 var Sequelize = require('sequelize');
 var Permission = require('./permission.js').sequelize;
 
-var Role = sequelizeConnection.define('role', {
+var Role = sequelizeConnection.define('roles', {
   description: {
     unique: true,
     type: Sequelize.STRING,

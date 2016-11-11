@@ -405,17 +405,18 @@ describe('user model', function () {
       }, wrongPromise(done));
     });
 
-    it('should has expected permissions from a user', function (done) {
+    it('should have expected permissions from a user', function (done) {
       createDefaultUser().then(user => {
         user.setRole(roleAdmin).then(()=> {
           User.find(defaultUser.email).then((user) => {
             user.hasPermission("refunds:create")
-              .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.true, wrongPromise(done))
-              .then(user.hasPermission("transactions:read")
-                .then((viewTransactionsPermission)=> {
+              .then((hasCreateRefundsPermission)=> {
+                expect(hasCreateRefundsPermission).to.be.true;
+                user.hasPermission("transactions:read").then((viewTransactionsPermission)=> {
                   expect(viewTransactionsPermission).to.be.true;
                   done();
-                }, wrongPromise(done)));
+                }, wrongPromise(done));
+              }, wrongPromise(done));
           }, wrongPromise(done));
         }, wrongPromise(done));
       }, wrongPromise(done));
@@ -426,12 +427,14 @@ describe('user model', function () {
         user.setRole(roleRead).then(()=> {
           User.find(defaultUser.email).then((user) => {
             user.hasPermission("refunds:create")
-              .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.false, wrongPromise(done))
-              .then(user.hasPermission("transactions:read")
-                .then((viewTransactionsPermission)=> {
-                  expect(viewTransactionsPermission).to.be.true;
-                  done();
-                }, wrongPromise(done)));
+              .then((hasCreateRefundsPermission)=> {
+                expect(hasCreateRefundsPermission).to.be.false;
+                user.hasPermission("transactions:read")
+                  .then((viewTransactionsPermission)=> {
+                    expect(viewTransactionsPermission).to.be.true;
+                    done();
+                  }, wrongPromise(done));
+              }, wrongPromise(done))
           }, wrongPromise(done));
         }, wrongPromise(done));
       }, wrongPromise(done));
@@ -440,7 +443,10 @@ describe('user model', function () {
     it('should override permissions when user changes role', function (done) {
       createDefaultUser().then((user) => {
         user.setRole(roleAdmin).then(()=> {
-          createPermission({name: "tokens:create", description: "View & Create tokens"}).then((createToKensPermission)=> {
+          createPermission({
+            name: "tokens:create",
+            description: "View & Create tokens"
+          }).then((createToKensPermission)=> {
             createRole({description: "Write"}).then((role)=> {
               role.setPermissions([createToKensPermission]).then(()=> {
                 user.setRole(role).then(()=> {
@@ -449,7 +455,10 @@ describe('user model', function () {
                       expect(hasCreateRefundsPermission).to.be.false;
                       user.hasPermission("transactions:read").then((viewTransactionsPermission)=> {
                         expect(viewTransactionsPermission).to.be.false;
-                        user.hasPermission("tokens:create").then((viewTransactionsPermission)=> { expect(viewTransactionsPermission).to.be.true; done();}, wrongPromise(done));
+                        user.hasPermission("tokens:create").then((viewTransactionsPermission)=> {
+                          expect(viewTransactionsPermission).to.be.true;
+                          done();
+                        }, wrongPromise(done));
                       }, wrongPromise(done));
                     }, wrongPromise(done));
                   }, wrongPromise(done));
