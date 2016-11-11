@@ -86,7 +86,6 @@ var User = sequelizeConnection.define('user', {
 
 User.hasMany(forgottenPassword, {as: 'forgotten'});
 User.belongsToMany(Role, { as: 'roles', through: 'user_role'});
-User.sequelize.sync();
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -254,10 +253,18 @@ findByUsername = function(username, correlationId) {
   return defer.promise;
 },
 
+/**
+ * @param {String} permissionName name of permission
+ * @param {User} user instance to check if is associated to a role with the given permissionName
+ *
+ * User is associated to a single role and this role must be populated, it cannot happen to exist any
+ * user not belonging to a single role (at least for now).
+ */
 hasPermission = function (permissionName, user) {
   return user.getRoles().then((roles)=>
-      roles[0].getPermissions({where: {name: permissionName}}).then((permissions)=>
-          permissions.length !== 0));
+    roles[0].getPermissions({where: {name: permissionName}})
+      .then((permissions)=> permissions.length !== 0, (e)=> logger.error('Error retrieving permissions of an user',e)),
+    (e)=> logger.error('Error retrieving role of user', e));
 },
 
 create = function(user){
