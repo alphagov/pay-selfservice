@@ -224,7 +224,7 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
-  val.setRole = (roleDesc)=> { return setRole(roleDesc, user); };
+  val.setRole = (role)=> { return setRole(role, user); };
   val.hasPermission = (permissionName)=> { return hasPermission(permissionName, user); };
   val.logOut = logOut;
   val.user = user;
