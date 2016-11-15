@@ -10,6 +10,7 @@ var random                = require('../utils/random.js');
 var logger                = require('winston');
 var forgottenPassword     = require('./forgotten_password.js').sequelize;
 var Role                  = require('./role.js').sequelize;
+var UserRole              = require('./user_role.js').sequelize;
 var moment                = require('moment');
 var paths                 = require(__dirname + '/../paths.js');
 var commonPassword        = require('common-password');
@@ -85,7 +86,7 @@ var User = sequelizeConnection.define('user', {
 });
 
 User.hasMany(forgottenPassword, {as: 'forgotten'});
-User.belongsToMany(Role, { as: 'roles', through: 'user_role'});
+User.belongsToMany(Role, { as: 'roles', through: UserRole, foreignKey:'user_id', otherKey:'role_id'});
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -204,7 +205,13 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   return defer.promise;
 },
 
-setRole = function(role, user){
+  /**
+   * @param {Role} role instance and also accept {Integer} primary key of a Role
+   * @param {User} user to set the given role
+   *
+   * Set given role to a user overriding its current one
+   */
+setRole = function(role, user) {
   return user.setRoles([role]);
 },
 
@@ -224,7 +231,7 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
-  val.setRole = (roleDesc)=> { return setRole(roleDesc, user); };
+  val.setRole = (role)=> { return setRole(role, user); };
   val.hasPermission = (permissionName)=> { return hasPermission(permissionName, user); };
   val.logOut = logOut;
   val.user = user;
@@ -267,7 +274,7 @@ hasPermission = function (permissionName, user) {
     (e)=> logger.error('Error retrieving role of user', e));
 },
 
-create = function(user){
+create = function(user, role){
   var defer = q.defer(),
   _user     = {
     username: user.username,
@@ -277,8 +284,12 @@ create = function(user){
     telephone_number: user.telephone_number,
     otp_key: user.otp_key ? user.otp_key : random.key(10)
   };
-
-  User.create(_user).then((user)=> resolveUser(user, defer));
+  //if(!role) defer.reject();
+  var savedUser;
+  User.create(_user)
+    .then((user)=> savedUser = user)
+    .then(()=> {if(role) savedUser.setRoles([role])})
+    .then(()=> resolveUser(savedUser, defer), defer.reject);
   return defer.promise;
 },
 
