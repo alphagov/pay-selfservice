@@ -1,4 +1,3 @@
-
 var expect = require('chai').expect;
 var proxyquire = require('proxyquire');
 var _ = require('lodash');
@@ -31,10 +30,20 @@ var ForgottenPassword = proxyquire(__dirname + '/../../app/models/forgotten_pass
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
+var Permission = proxyquire(__dirname + '/../../app/models/permission.js', {
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
+
+var Role = proxyquire(__dirname + '/../../app/models/role.js', {
+  './permission.js': Permission,
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
+
 var User = proxyquire(__dirname + '/../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
+  './role.js': Role,
   '../services/notification_client.js': mockedNotificationClient
 });
 
@@ -42,6 +51,7 @@ var wrongPromise = function (done) {
   return (reason) => {
     var error = new Error('Promise was unexpectedly fulfilled. Error: ', reason);
     if (done) {
+      console.log('Reason => ', reason);
       done(error);
     }
     throw error;
@@ -58,7 +68,7 @@ var defaultUser = {
 
 var defaultSession = {
   data: defaultUser.email
-}
+};
 
 var createDefaultSession = (extendedAttributes) => {
   var sessionAttributes = _.extend({}, defaultSession, extendedAttributes);
@@ -82,6 +92,14 @@ var createDefaultForgottenPassword = function (extendedAttributes) {
   return ForgottenPassword.sequelize.create(forgottenPasswordAttributes);
 };
 
+var createPermission = function (attributes) {
+  return Permission.sequelize.create(attributes);
+};
+
+var createRole = function (attributes) {
+  return Role.sequelize.create(attributes);
+};
+
 var yesterdayDate = () => {
   var date = new Date();
   date.setDate(date.getDate() - 1);
@@ -91,10 +109,14 @@ var yesterdayDate = () => {
 var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Sequelize.STRING}});
 
 describe('user model', function () {
+
   beforeEach(function (done) {
-    User.sequelize.sync({force: true}).then(() => {
-      ForgottenPassword.sequelize.sync({force: true}).then(() => {
-        Sessions.sync({force: true}).then(() => done());
+    ForgottenPassword.sequelize.sync({force: true}).then(() => {
+      Permission.sequelize.sync({force: true}).then(() => {
+        Role.sequelize.sync({force: true}).then(() => {
+          Sessions.sync({force: true}).then(() =>
+            User.sequelize.sync({force: true}).then(() => done()));
+        });
       });
     });
   });
@@ -206,40 +228,40 @@ describe('user model', function () {
   describe('updateUserNameAndEmail', function () {
     it('should update the username and email', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('hi@bye.com','hibye')
-          .then((user)=>{
-            expect(user.username).equal('hibye');
-            expect(user.email).equal('hi@bye.com');
-            done()
-          }
+        user.updateUserNameAndEmail('hi@bye.com', 'hibye')
+          .then((user)=> {
+              expect(user.username).equal('hibye');
+              expect(user.email).equal('hi@bye.com');
+              done()
+            }
 
-          ,wrongPromise(done));
+            , wrongPromise(done));
       }, wrongPromise(done));
     });
 
     it('should not update the username if new username is empty', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('hi@bye.com','')
-          .then((user)=>{
+        user.updateUserNameAndEmail('hi@bye.com', '')
+          .then((user)=> {
               expect(user.username).equal('foo');
               expect(user.email).equal('hi@bye.com');
               done()
             }
 
-            ,wrongPromise(done));
+            , wrongPromise(done));
       }, wrongPromise(done));
     });
 
     it('should not update the email if new email is empty', function (done) {
       createDefaultUser().then(user => {
-        user.updateUserNameAndEmail('','hibye')
-          .then((user)=>{
+        user.updateUserNameAndEmail('', 'hibye')
+          .then((user)=> {
               expect(user.username).equal('hibye');
               expect(user.email).equal('foo@foo.com');
               done()
             }
 
-            ,wrongPromise(done));
+            , wrongPromise(done));
       }, wrongPromise(done));
     });
 
@@ -358,5 +380,80 @@ describe('user model', function () {
     });
   });
 
-})
-;
+  describe('user permissions', function () {
+
+    var roleAdmin;
+    var roleRead;
+
+    beforeEach(function (done) {
+      var createRefundPermission;
+      var viewTransactionsPermission;
+      createPermission({name: "refunds:create", description: "View & Create Refunds"})
+        .then((permission)=> createRefundPermission = permission)
+        .then(() => createPermission({name: "transactions:read", description: "View Transactions"}))
+        .then((permission)=> viewTransactionsPermission = permission)
+        .then(() => createRole({description: "Admin"}))
+        .then((role)=> roleAdmin = role)
+        .then(() => roleAdmin.setPermissions([createRefundPermission, viewTransactionsPermission]))
+        .then(()=> createRole({description: "Read"}))
+        .then((role)=> roleRead = role)
+        .then(()=> roleRead.setPermissions([viewTransactionsPermission]))
+        .then(()=> done())
+        .catch(wrongPromise(done));
+    });
+
+    it('should have expected permissions from a user', function (done) {
+      var retrievedUser;
+      createDefaultUser()
+        .then(user => user.setRole(roleAdmin))
+        .then(()=> User.find(defaultUser.email))
+        .then((user)=> retrievedUser = user)
+        .then(()=> retrievedUser.hasPermission("refunds:create"))
+        .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.true)
+        .then(()=> retrievedUser.hasPermission("transactions:read"))
+        .then((viewTransactionsPermission)=> expect(viewTransactionsPermission).to.be.true)
+        .then(()=> done())
+        .catch(wrongPromise(done));
+    });
+
+    it('should not have permission when its role does not have it', function (done) {
+      var retrievedUser;
+      createDefaultUser()
+        .then(user => user.setRole(roleRead))
+        .then(()=> User.find(defaultUser.email))
+        .then((user) => retrievedUser = user)
+        .then(()=> retrievedUser.hasPermission("refunds:create"))
+        .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.false)
+        .then(()=> retrievedUser.hasPermission("transactions:read"))
+        .then((viewTransactionsPermission)=> expect(viewTransactionsPermission).to.be.true)
+        .then(()=> done())
+        .catch(wrongPromise(done));
+    });
+
+    it('should override permissions when user changes role', function (done) {
+      var userSetup;
+      var retrievedUser;
+      var roleWrite;
+      var createTokensPermission;
+      createDefaultUser()
+        .then((user)=> userSetup = user)
+        .then(() => userSetup.setRole(roleAdmin))
+        .then(()=> createPermission({ name: "tokens:create", description: "View & Create tokens"}))
+        .then((permission)=> createTokensPermission = permission)
+        .then(()=> createRole({description: "Write"}))
+        .then((role)=> roleWrite = role)
+        .then(()=> roleWrite.setPermissions([createTokensPermission]))
+        .then(()=> userSetup.setRole(roleWrite))
+        .then(()=> User.find(defaultUser.email))
+        .then((user) => retrievedUser = user)
+        .then(()=> retrievedUser.hasPermission("refunds:create"))
+        .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.false)
+        .then(()=> retrievedUser.hasPermission("transactions:read"))
+        .then((viewTransactionsPermission)=> expect(viewTransactionsPermission).to.be.false)
+        .then(()=> retrievedUser.hasPermission("tokens:create"))
+        .then((viewTransactionsPermission)=> expect(viewTransactionsPermission).to.be.true)
+        .then(()=> done())
+        .catch(wrongPromise(done));
+    });
+  });
+});

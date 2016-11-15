@@ -1,19 +1,21 @@
-var sequelizeConfig = require('./../utils/sequelize_config.js');
-var sequelizeConnection = sequelizeConfig.sequelize;
-var Sequelize = require('sequelize');
-var bcrypt = require('bcrypt');
-var q = require('q');
-var _ = require('lodash');
-var notify = require('../services/notification_client.js');
-var notp = require('notp');
-var random = require('../utils/random.js');
-var logger = require('winston');
-var forgottenPassword = require('./forgotten_password.js').sequelize;
-var moment = require('moment');
-var paths = require(__dirname + '/../paths.js');
-var commonPassword = require('common-password');
-var MIN_PASSWORD_LENGTH = 10;
-var HASH_PASSWORD_SALT_ROUNDS = 10;
+var sequelizeConfig       = require('./../utils/sequelize_config.js');
+var sequelizeConnection   = sequelizeConfig.sequelize;
+var Sequelize             = require('sequelize');
+var bcrypt                = require('bcrypt');
+var q                     = require('q');
+var _                     = require('lodash');
+var notify                = require('../services/notification_client.js');
+var notp                  = require('notp');
+var random                = require('../utils/random.js');
+var logger                = require('winston');
+var forgottenPassword     = require('./forgotten_password.js').sequelize;
+var Role                  = require('./role.js').sequelize;
+var moment                = require('moment');
+var paths                 = require(__dirname + '/../paths.js');
+var commonPassword        = require('common-password');
+
+const MIN_PASSWORD_LENGTH       = 10;
+const HASH_PASSWORD_SALT_ROUNDS = 10;
 
 var User = sequelizeConnection.define('user', {
   username: {
@@ -81,7 +83,9 @@ var User = sequelizeConnection.define('user', {
     defaultValue: 0
   }
 });
+
 User.hasMany(forgottenPassword, {as: 'forgotten'});
+User.belongsToMany(Role, { as: 'roles', through: 'user_role'});
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -108,7 +112,7 @@ generateOTP = function(){
 toggleDisabled = function(toggle) {
   var defer = q.defer(),
   log = ()=> logger.info(this.id + " disabled status is now " + toggle);
-  var update = { disabled: toggle }
+  var update = { disabled: toggle };
   if (toggle == false) update.login_counter = 0;
   User.update(
     update,
@@ -200,6 +204,10 @@ updateUserNameAndEmail = function(user, newEmail, newUserName) {
   return defer.promise;
 },
 
+setRole = function(role, user){
+  return user.setRoles([role]);
+},
+
 resolveUser = function(user, defer){
   if (user === null) {
     logger.debug('USER NOT FOUND');
@@ -216,7 +224,10 @@ resolveUser = function(user, defer){
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
+  val.setRole = (roleDesc)=> { return setRole(roleDesc, user); };
+  val.hasPermission = (permissionName)=> { return hasPermission(permissionName, user); };
   val.logOut = logOut;
+  val.user = user;
   defer.resolve(val);
 };
 
@@ -240,6 +251,20 @@ findByUsername = function(username, correlationId) {
       (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);}
     );
   return defer.promise;
+},
+
+/**
+ * @param {String} permissionName name of permission
+ * @param {User} user instance to check if is associated to a role with the given permissionName
+ *
+ * User is associated to a single role and this role must be populated, it cannot happen to exist any
+ * user not belonging to a single role (at least for now).
+ */
+hasPermission = function (permissionName, user) {
+  return user.getRoles().then((roles)=>
+    roles[0].getPermissions({where: {name: permissionName}})
+      .then((permissions)=> permissions.length !== 0, (e)=> logger.error('Error retrieving permissions of an user',e)),
+    (e)=> logger.error('Error retrieving role of user', e));
 },
 
 create = function(user){

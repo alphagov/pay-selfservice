@@ -20,6 +20,7 @@ var csrf = require('./middleware/csrf.js');
 var retrieveAccount = require('./middleware/retrieve_account.js');
 var trimUsername = require('./middleware/trim_username.js');
 var loginCounter = require('./middleware/login_counter.js');
+var permission = require('./middleware/permission.js');
 
 var _ = require('lodash');
 var passport  = require('passport');
@@ -37,22 +38,22 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
 
   var tr = paths.transactions;
-  app.get(tr.index, auth.enforceUserBothFactors, csrf, transactions.index);
-  app.get(tr.download, auth.enforceUserBothFactors, csrf, transactions.download);
-  app.get(tr.show, auth.enforceUserBothFactors, csrf, transactions.show);
-  app.post(tr.refund, auth.enforceUserBothFactors, csrf, transactions.refund);
+  app.get(tr.index, auth.enforceUserBothFactors, csrf, permission(), transactions.index);
+  app.get(tr.download, auth.enforceUserBothFactors, csrf, permission(), transactions.download);
+  app.get(tr.show, auth.enforceUserBothFactors, csrf, permission(), transactions.show);
+  app.post(tr.refund, auth.enforceUserBothFactors, csrf, permission(), transactions.refund);
 
   // CREDENTIALS
 
   var cred = paths.credentials;
-  app.get(cred.index, auth.enforceUserBothFactors, csrf, credentials.index);
-  app.get(cred.edit, auth.enforceUserBothFactors, csrf, credentials.editCredentials);
-  app.post(cred.index, auth.enforceUserBothFactors, csrf, credentials.update);
+  app.get(cred.index, auth.enforceUserBothFactors, csrf, permission(), credentials.index);
+  app.get(cred.edit, auth.enforceUserBothFactors, csrf, permission(), credentials.editCredentials);
+  app.post(cred.index, auth.enforceUserBothFactors, csrf, permission(), credentials.update);
 
   var notCred = paths.notificationCredentials;
-  app.get(notCred.index, auth.enforceUserBothFactors, csrf, credentials.index);
-  app.get(notCred.edit, auth.enforceUserBothFactors, csrf, credentials.editNotificationCredentials);
-  app.post(notCred.update, auth.enforceUserBothFactors, csrf, credentials.updateNotificationCredentials);
+  app.get(notCred.index, auth.enforceUserBothFactors, csrf, permission(), credentials.index);
+  app.get(notCred.edit, auth.enforceUserBothFactors, csrf, permission(), credentials.editNotificationCredentials);
+  app.post(notCred.update, auth.enforceUserBothFactors, csrf, permission(), credentials.updateNotificationCredentials);
 
   // LOGIN
   var user = paths.user;
@@ -79,37 +80,37 @@ module.exports.bind = function (app) {
   // DEV TOKENS
 
   var dt = paths.devTokens;
-  app.get(dt.index, auth.enforceUserBothFactors, csrf, devTokens.index);
-  app.get(dt.revoked, auth.enforceUserBothFactors, csrf, devTokens.revoked);
-  app.get(dt.show, auth.enforceUserBothFactors, csrf, devTokens.show);
-  app.post(dt.create, auth.enforceUserBothFactors, csrf, devTokens.create);
-  app.put(dt.update, auth.enforceUserBothFactors, csrf, devTokens.update);
-  app.delete(dt.delete, auth.enforceUserBothFactors, csrf, devTokens.destroy);
+  app.get(dt.index, auth.enforceUserBothFactors, csrf, permission(), devTokens.index);
+  app.get(dt.revoked, auth.enforceUserBothFactors, csrf, permission(), devTokens.revoked);
+  app.get(dt.show, auth.enforceUserBothFactors, csrf, permission(), devTokens.show);
+  app.post(dt.create, auth.enforceUserBothFactors, csrf, permission(), devTokens.create);
+  app.put(dt.update, auth.enforceUserBothFactors, csrf, permission(), devTokens.update);
+  app.delete(dt.delete, auth.enforceUserBothFactors, csrf, permission(), devTokens.destroy);
 
   // SERVICE NAME
 
   var sn = paths.serviceName;
-  app.get(sn.index, auth.enforceUserBothFactors, csrf, serviceName.index);
-  app.post(sn.index, auth.enforceUserBothFactors, csrf, serviceName.update);
+  app.get(sn.index, auth.enforceUserBothFactors, csrf, permission(), serviceName.index);
+  app.post(sn.index, auth.enforceUserBothFactors, csrf, permission(), serviceName.update);
 
   // PAYMENT TYPES
 
   var pt = paths.paymentTypes;
-  app.get(pt.selectType, auth.enforceUserBothFactors, csrf, paymentTypesSelectType.selectType);
-  app.post(pt.selectType, auth.enforceUserBothFactors, csrf, paymentTypesSelectType.updateType);
-  app.get(pt.selectBrand, auth.enforceUserBothFactors, csrf, paymentTypesSelectBrand.showBrands);
-  app.post(pt.selectBrand, auth.enforceUserBothFactors, csrf, paymentTypesSelectBrand.updateBrands);
-  app.get(pt.summary, auth.enforceUserBothFactors, csrf, paymentTypesSummary.showSummary);
+  app.get(pt.selectType, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectType.selectType);
+  app.post(pt.selectType, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectType.updateType);
+  app.get(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectBrand.showBrands);
+  app.post(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectBrand.updateBrands);
+  app.get(pt.summary, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSummary.showSummary);
 
   // EMAIL
   var en = paths.emailNotifications;
-  app.get(en.index, auth.enforceUserBothFactors, csrf,retrieveAccount, emailNotifications.index);
-  app.get(en.edit, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.edit);
-  app.post(en.confirm, auth.enforceUserBothFactors, csrf,retrieveAccount, emailNotifications.confirm);
-  app.post(en.update, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.update);
-  app.post(en.off, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.off);
-  app.get(en.offConfirm, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.offConfirm);
-  app.post(en.on, auth.enforceUserBothFactors, csrf, retrieveAccount, emailNotifications.on);
+  app.get(en.index, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.index);
+  app.get(en.edit, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.edit);
+  app.post(en.confirm, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.confirm);
+  app.post(en.update, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.update);
+  app.post(en.off, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.off);
+  app.get(en.offConfirm, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.offConfirm);
+  app.post(en.on, auth.enforceUserBothFactors, csrf, permission(), retrieveAccount, emailNotifications.on);
 
 
 
