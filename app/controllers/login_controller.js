@@ -5,13 +5,20 @@ var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
 var errorView = require('../utils/response.js').renderErrorView;
+var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var error = function(req,res,err) {
     errorView(req, res);
     logger.error(err);
 };
 
+var logLoginAction = function(req, message) {
+    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+    logger.info(`[${correlationId}] user id: ${req.user.id} ${message}`);
+};
+
 module.exports.loggedIn = function (req, res) {
+  logLoginAction(req, 'successfully logged in');
   req.session.reload(function (err) {
     res.render('login/logged_in', {
       name: req.user.username
@@ -20,6 +27,7 @@ module.exports.loggedIn = function (req, res) {
 };
 
 module.exports.logOut = function (req, res) {
+  logLoginAction(req, 'logged out');
   req.session.destroy(function (err) {
     res.redirect(router.paths.user.logIn);
   });
@@ -38,6 +46,7 @@ module.exports.postLogin = function (req, res) {
  req.user.resetLoginCount().then(
     ()=>{
       req.session.save(() => res.redirect(paths.user.otpLogIn));
+      logLoginAction(req, 'successfully attempted username/password combination');
     },
     (err) => error(req,res,error)
   )
@@ -73,11 +82,11 @@ module.exports.afterOTPLogin = function (req, res) {
   delete req.session.last_url;
   req.user.resetLoginCount().then(
     ()=>{
+      logLoginAction(req, 'successfully entered a valid 2fa token');
       req.session.save(() => res.redirect(redirect_url));
     },
     (err) => error(req,res,error)
   )
-  
 };
 
 module.exports.sendAgainGet = function(req, res){
