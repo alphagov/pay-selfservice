@@ -72,7 +72,8 @@ describe('The postlogin endpoint', function () {
     expectedUrl = paths.user.otpLogIn,
     req = {
       session: { save: (cb)=> cb()},
- user: { resetLoginCount: ()=> {
+      headers: {'x-request-id': 'some-unique-id' },
+      user: { resetLoginCount: ()=> {
         return { then: (cb,failCb)=> cb()  }
         }
       }
@@ -141,6 +142,7 @@ describe('The otplogin endpoint', function () {
     url = "http://foo",
     req = {session: { 
       last_url: url, save: (cb)=> cb() },
+      headers: {'x-request-id': 'some-unique-id' },
       user: { resetLoginCount: ()=> {
         return { then: (cb,failCb)=> cb()  }
         }
@@ -163,6 +165,7 @@ describe('The afterOtpLogin endpoint', function () {
     url = "/",
     req = {
       session: { save: (cb)=> cb() },
+      headers: {'x-request-id': 'some-unique-id' },
       user: { resetLoginCount: ()=> {
         return { then: (cb,failCb)=> cb()  }
         }
