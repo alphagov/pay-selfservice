@@ -64,6 +64,7 @@ describe('The transaction details view', function () {
     body.should.not.containSelector('#refunded-amount');
     $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=');
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;');
+    $('#description').html().should.equal('First ever');
     $('#email').html().should.equal('alice.111@mail.fake');
     $('#amount').text().should.equal(templateData.amount);
     $('#payment-id').text().should.equal(templateData.charge_id);
@@ -137,6 +138,7 @@ describe('The transaction details view', function () {
     var $ = cheerio.load(body);
     body.should.containSelector('#show-refund');
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;');
+    $('#description').html().should.equal('First ever');
     $('#email').html().should.equal('alice.111@mail.fake');
     $('#amount').text().should.equal(templateData.amount);
     $('#payment-id').text().should.equal(templateData.charge_id);
