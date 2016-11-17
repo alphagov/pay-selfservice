@@ -39,11 +39,16 @@ var Role = proxyquire(__dirname + '/../../app/models/role.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
+var UserRole = proxyquire(__dirname + '/../../app/models/user_role.js', {
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
+
 var User = proxyquire(__dirname + '/../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
   './role.js': Role,
+  './user_role.js': UserRole,
   '../services/notification_client.js': mockedNotificationClient
 });
 
@@ -111,14 +116,13 @@ var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Se
 describe('user model', function () {
 
   beforeEach(function (done) {
-    ForgottenPassword.sequelize.sync({force: true}).then(() => {
-      Permission.sequelize.sync({force: true}).then(() => {
-        Role.sequelize.sync({force: true}).then(() => {
-          Sessions.sync({force: true}).then(() =>
-            User.sequelize.sync({force: true}).then(() => done()));
-        });
-      });
-    });
+    ForgottenPassword.sequelize.sync({force: true})
+      .then(() => Permission.sequelize.sync({force: true}))
+      .then(() => Role.sequelize.sync({force: true}))
+      .then(() => Sessions.sync({force: true}))
+      .then(() => User.sequelize.sync({force: true}))
+      .then(() => UserRole.sequelize.sync({force: true}))
+      .then(() => done());
   });
 
   describe('find', function () {
@@ -414,6 +418,17 @@ describe('user model', function () {
         .then((viewTransactionsPermission)=> expect(viewTransactionsPermission).to.be.true)
         .then(()=> done())
         .catch(wrongPromise(done));
+    });
+
+    it('should have expected permissions when added role by primary key', function (done) {
+      var retrievedUser;
+      createDefaultUser()
+        .then((user)=> user.setRole(roleRead.id))
+        .then(()=> User.find(defaultUser.email))
+        .then((user) => retrievedUser.hasPermission("transactions:read"))
+        .then((viewTransactionsPermission)=> expect(viewTransactionsPermission).to.be.true)
+        .then(()=> done())
+        .catch(wrongPromise(done()));
     });
 
     it('should not have permission when its role does not have it', function (done) {
