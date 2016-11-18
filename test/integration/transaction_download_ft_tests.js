@@ -114,53 +114,20 @@ describe('Transaction download endpoints', function () {
           var csvContent = res.text;
           var arrayOfLines = csvContent.split("\n");
           assert(5, arrayOfLines.length);
-          assert.equal('red,alice.111@mail.fake,123.45,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29', arrayOfLines[1]);
-          assert.equal('blue,alice.222@mail.fake,9.99,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29', arrayOfLines[2]);
+          assert.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29', arrayOfLines[1]);
+          assert.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29', arrayOfLines[2]);
         })
         .end(function (err, res) {
           if (err) return done(err);
           var csvContent = res.text;
           var arrayOfLines = csvContent.split("\n");
           expect(arrayOfLines.length).to.equal(5);
-          expect(arrayOfLines[1]).to.equal('red,alice.111@mail.fake,123.45,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
-          expect(arrayOfLines[2]).to.equal('blue,alice.222@mail.fake,9.99,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
-          expect(arrayOfLines[3]).to.equal('red,alice.111@mail.fake,12.34,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
-          expect(arrayOfLines[4]).to.equal('blue,alice.222@mail.fake,1.23,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
+          expect(arrayOfLines[1]).to.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
+          expect(arrayOfLines[2]).to.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
+          expect(arrayOfLines[3]).to.equal('red,desc-red,alice.111@mail.fake,12.34,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
+          expect(arrayOfLines[4]).to.equal('blue,desc-blue,alice.222@mail.fake,1.23,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
           done()
         });
-    });
-
-
-    it('should download a csv file comprising a list of transactions for the gateway account and the given filter', function (done) {
-
-      connectorMock_responds(200, 'csv data', {
-        reference: 'ref',
-        email: 'alice.111%40mail.fake',
-        state: '1234',
-        brand: 'visa',
-        fromDate: '2016-01-11T13%3A04%3A45.000Z',
-        toDate: '2016-01-11T14%3A04%3A46.000Z'
-      });
-
-      download_transaction_list({
-        reference: 'ref',
-        email: 'alice.111@mail.fake',
-        state: '1234',
-        brand: 'visa',
-        fromDate: '11/01/2016',
-        fromTime: '13:04:45',
-        toDate: '11/01/2016',
-        toTime: '14:04:45'
-      })
-        .expect(200)
-        .expect('Content-Type', 'text/csv; charset=utf-8')
-        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
-        .expect(function (res) {
-          var csvContent = res.text;
-          var arrayOfLines = csvContent.split("\n");
-          assert.equal(1, arrayOfLines.length);
-        })
-        .end(done);
     });
 
     it('should show error message on a bad request', function (done) {

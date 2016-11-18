@@ -17,6 +17,10 @@ module.exports = function (data) {
           value: "reference"
         },
         {
+          label: 'Description',
+          value: "description"
+        },
+        {
           label: 'Email',
           value: "email"
         },
