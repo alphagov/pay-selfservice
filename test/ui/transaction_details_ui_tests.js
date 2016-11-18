@@ -21,6 +21,19 @@ describe('The transaction details view', function () {
         'finished': true
       },
       'card_brand': 'Visa',
+      'card_details': {
+        'billing_address': {
+          'city': 'TEST',
+          'country': 'GB',
+          'line1': 'TEST',
+          'line2': 'TEST - DO NOT PROCESS',
+          'postcode': 'SE1 3UZ'
+        },
+        'card_brand': 'Visa',
+        'cardholder_name': 'TEST',
+        'expiry_date': '12/19',
+        'last_digits_card_number': '4242'
+      },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
@@ -72,6 +85,9 @@ describe('The transaction details view', function () {
     $('#refunded').text().should.equal("✖");
     $('#state').text().should.equal(templateData.state_friendly);
     $('#brand').text().should.equal(templateData.card_brand);
+    $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name);
+    $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number);
+    $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date);
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
@@ -97,6 +113,19 @@ describe('The transaction details view', function () {
         'finished': true
       },
       'card_brand': 'Visa',
+      'card_details': {
+        'billing_address': {
+          'city': 'TEST',
+          'country': 'GB',
+          'line1': 'TEST',
+          'line2': 'TEST - DO NOT PROCESS',
+          'postcode': 'SE1 3UZ'
+        },
+        'card_brand': 'Visa',
+        'cardholder_name': 'TEST',
+        'expiry_date': '12/19',
+        'last_digits_card_number': '4242'
+      },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
@@ -147,6 +176,9 @@ describe('The transaction details view', function () {
     $('#refunded-amount').text().should.equal("£5.00");
     $('#state').text().should.equal(templateData.state_friendly);
     $('#brand').text().should.equal(templateData.card_brand);
+    $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name);
+    $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number);
+    $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date);
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
