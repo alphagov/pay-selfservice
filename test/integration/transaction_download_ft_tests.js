@@ -130,40 +130,6 @@ describe('Transaction download endpoints', function () {
         });
     });
 
-
-    it('should download a csv file comprising a list of transactions for the gateway account and the given filter', function (done) {
-
-      connectorMock_responds(200, 'csv data', {
-        reference: 'ref',
-        description: 'desc-ref',
-        email: 'alice.111%40mail.fake',
-        state: '1234',
-        brand: 'visa',
-        fromDate: '2016-01-11T13%3A04%3A45.000Z',
-        toDate: '2016-01-11T14%3A04%3A46.000Z'
-      });
-
-      download_transaction_list({
-        reference: 'ref',
-        email: 'alice.111@mail.fake',
-        state: '1234',
-        brand: 'visa',
-        fromDate: '11/01/2016',
-        fromTime: '13:04:45',
-        toDate: '11/01/2016',
-        toTime: '14:04:45'
-      })
-        .expect(200)
-        .expect('Content-Type', 'text/csv; charset=utf-8')
-        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
-        .expect(function (res) {
-          var csvContent = res.text;
-          var arrayOfLines = csvContent.split("\n");
-          assert.equal(1, arrayOfLines.length);
-        })
-        .end(done);
-    });
-
     it('should show error message on a bad request', function (done) {
 
       var errorMessage = 'Unable to download list of transactions.';
