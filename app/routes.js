@@ -92,11 +92,11 @@ module.exports.bind = function (app) {
   // PAYMENT TYPES
 
   var pt = paths.paymentTypes;
-  app.get(pt.selectType, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectType.selectType);
-  app.post(pt.selectType, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectType.updateType);
-  app.get(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectBrand.showBrands);
-  app.post(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSelectBrand.updateBrands);
-  app.get(pt.summary, auth.enforceUserBothFactors, csrf, permission(), paymentTypesSummary.showSummary);
+  app.get(pt.selectType, auth.enforceUserBothFactors, csrf, permission('payment-types:read'), paymentTypesSelectType.selectType);
+  app.post(pt.selectType, auth.enforceUserBothFactors, csrf, permission('payment-types:update'), paymentTypesSelectType.updateType);
+  app.get(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission('payment-types:read'), paymentTypesSelectBrand.showBrands);
+  app.post(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission('payment-types:update'), paymentTypesSelectBrand.updateBrands);
+  app.get(pt.summary, auth.enforceUserBothFactors, csrf, permission('payment-types:read'), paymentTypesSummary.showSummary);
 
   // EMAIL
   var en = paths.emailNotifications;

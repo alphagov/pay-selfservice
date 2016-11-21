@@ -7,18 +7,20 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var ACCOUNT_ID = 182364;
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
 var expect = require("chai").expect;
 var _ = require('lodash');
-
 var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
 
+var ACCOUNT_ID = 182364;
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
-
+var user = session.user;
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = CONNECTOR_ACCOUNT_PATH + "/card-types";
-
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
@@ -44,6 +46,13 @@ var ALL_CARD_TYPES = {
     {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
 };
 
+function sync_db() {
+  return Permission.sequelize.sync({force: true})
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}))
+}
+
 function build_get_request(path) {
   return request(app)
     .get(path)
@@ -66,9 +75,26 @@ function build_form_post_request(path, sendData, sendCSRF) {
 
 describe('The payment types endpoint,', function () {
   describe('render select brand view,', function () {
-    before(function () {
-      // Disable logging.
+
+    before(function (done) {
+      var roleDef;
+      var permissionDef;
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
       winston.level = 'none';
+      sync_db()
+        .then(()=> Permission.sequelize.create({name: 'payment-types:read', description: 'Read payment types'}))
+        .then((permission)=> permissionDef = permission)
+        .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
+        .then((role)=> roleDef = role)
+        .then(()=> roleDef.setPermissions([permissionDef]))
+        .then(()=> User.create(userAttributes, roleDef))
+        .then(()=> done());
     });
 
     beforeEach(function () {
@@ -250,9 +276,25 @@ describe('The payment types endpoint,', function () {
       nock.cleanAll();
     });
 
-    before(function () {
-      // Disable logging.
+    before(function (done) {
+      var roleDef;
+      var permissionDef;
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
       winston.level = 'none';
+      sync_db()
+        .then(()=> Permission.sequelize.create({name: 'payment-types:update', description: 'Update payment types'}))
+        .then((permission)=> permissionDef = permission)
+        .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
+        .then((role)=> roleDef = role)
+        .then(()=> roleDef.setPermissions([permissionDef]))
+        .then(()=> User.create(userAttributes, roleDef))
+        .then(()=> done());
     });
 
     it('should post debit and credit card options if accepted type is debit and credit cards', function (done) {
