@@ -25,10 +25,6 @@
       <td>{{payment_provider}}</td>
     </tr>
     <tr>
-      <td>Method:</td>
-      <td id="method"></td>
-    </tr>
-    <tr>
       <td>Refunded:</td>
       <td id="refunded">{{#refunded}}&#10004;{{/refunded}}{{^refunded}}&#10006;{{/refunded}}</td>
     </tr>
@@ -39,11 +35,11 @@
     </tr>
     {{/refunded}}
     <tr>
-      <td>Gateway Transaction ID:</td>
+      <td>Provider ID:</td>
       <td id="transaction-id">{{gateway_transaction_id}}</td>
     </tr>
     <tr>
-      <td>GOV.UK Pay ID:</td>
+      <td>GOV.UK Payment ID:</td>
       <td id="payment-id">{{charge_id}}</td>
     </tr>
   </tbody>
