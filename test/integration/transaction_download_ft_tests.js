@@ -148,6 +148,7 @@ describe('Transaction download endpoints', function () {
           var csvContent = res.text;
           var arrayOfLines = csvContent.split("\n");
           expect(arrayOfLines.length).to.equal(5);
+          expect(arrayOfLines[0]).to.equal('Reference,Description,Email,Amount,Card Brand,Cardholder Name,Card Expiry Date,Card Number,State,Finished,Error Code,Error Message,Provider ID,GOV.UK Payment ID,Date Created');
           expect(arrayOfLines[1]).to.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,TEST01,12/19,4242,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
           expect(arrayOfLines[2]).to.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,TEST02,12/19,4241,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
           expect(arrayOfLines[3]).to.equal('red,desc-red,alice.111@mail.fake,12.34,Visa,TEST01,12/19,4242,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
