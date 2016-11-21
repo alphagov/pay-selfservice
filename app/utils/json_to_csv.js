@@ -32,7 +32,19 @@ module.exports = function (data) {
         },
         {
           label: 'Card brand',
-          value: "card_brand"
+          value: "card_details.card_brand"
+        },
+        {
+          label: 'Cardholder name',
+          value: "card_details.cardholder_name"
+        },
+        {
+          label: 'Card expiry date',
+          value: "card_details.expiry_date"
+        },
+        {
+          label: 'Card number',
+          value: "card_details.last_digits_card_number"
         },
         {
           label: 'State',
