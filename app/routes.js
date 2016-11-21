@@ -46,14 +46,14 @@ module.exports.bind = function (app) {
   // CREDENTIALS
 
   var cred = paths.credentials;
-  app.get(cred.index, auth.enforceUserBothFactors, csrf, permission(), credentials.index);
-  app.get(cred.edit, auth.enforceUserBothFactors, csrf, permission(), credentials.editCredentials);
-  app.post(cred.index, auth.enforceUserBothFactors, csrf, permission(), credentials.update);
+  app.get(cred.index, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:read'), credentials.index);
+  app.get(cred.edit, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.editCredentials);
+  app.post(cred.index, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.update);
 
   var notCred = paths.notificationCredentials;
-  app.get(notCred.index, auth.enforceUserBothFactors, csrf, permission(), credentials.index);
-  app.get(notCred.edit, auth.enforceUserBothFactors, csrf, permission(), credentials.editNotificationCredentials);
-  app.post(notCred.update, auth.enforceUserBothFactors, csrf, permission(), credentials.updateNotificationCredentials);
+  app.get(notCred.index, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:read'), credentials.index);
+  app.get(notCred.edit, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.editNotificationCredentials);
+  app.post(notCred.update, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.updateNotificationCredentials);
 
   // LOGIN
   var user = paths.user;
@@ -74,11 +74,7 @@ module.exports.bind = function (app) {
   app.get(user.forgottenPasswordReset, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.newPasswordGet);
   app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);
 
-
-
-
   // DEV TOKENS
-
   var dt = paths.devTokens;
   app.get(dt.index, auth.enforceUserBothFactors, csrf, permission(), devTokens.index);
   app.get(dt.revoked, auth.enforceUserBothFactors, csrf, permission(), devTokens.revoked);

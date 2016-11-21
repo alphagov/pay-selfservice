@@ -268,15 +268,19 @@ findByUsername = function(username, correlationId) {
  * user not belonging to a single role (at least for now).
  */
 hasPermission = function (permissionName, user) {
-  return user.getRoles().then((roles)=>
-    roles[0].getPermissions({where: {name: permissionName}})
-      .then((permissions)=> permissions.length !== 0, (e)=> logger.error('Error retrieving permissions of an user',e)),
-    (e)=> logger.error('Error retrieving role of user', e));
+  return user.getRoles()
+    .then((roles)=> roles[0]
+      .getPermissions({where: {name: permissionName}}).then((permissions)=>
+        permissions.length !== 0,
+        (e)=> logger.error('Error retrieving permissions of an user',e)),
+      (e)=> logger.error('Error retrieving role of user', e)
+    );
 },
 
-create = function(user, role){
+create = function(user, role) {
   var defer = q.defer(),
-  _user     = {
+   savedUser,
+  _user = {
     username: user.username,
     password: user.password,
     gateway_account_id: user.gateway_account_id,
@@ -284,12 +288,12 @@ create = function(user, role){
     telephone_number: user.telephone_number,
     otp_key: user.otp_key ? user.otp_key : random.key(10)
   };
-  //if(!role) defer.reject();
-  var savedUser;
+  if(!role) defer.reject();
   User.create(_user)
     .then((user)=> savedUser = user)
-    .then(()=> {if(role) savedUser.setRoles([role])})
+    .then(()=> savedUser.setRoles([role]))
     .then(()=> resolveUser(savedUser, defer), defer.reject);
+
   return defer.promise;
 },
 

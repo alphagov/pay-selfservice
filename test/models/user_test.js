@@ -63,6 +63,16 @@ var wrongPromise = function (done) {
   }
 };
 
+var defaultRole = {
+  name: "Default Role",
+  description: "Default Role"
+};
+
+var defaultPermission = {
+  name: "perm1",
+  description: "Perm1"
+};
+
 var defaultUser = {
   username: "foo",
   password: defaultPassword,
@@ -86,7 +96,14 @@ var findFromSession = (where) => {
 
 var createDefaultUser = function (extendedAttributes) {
   var userAttributes = _.extend({}, defaultUser, extendedAttributes);
-  return User.create(userAttributes);
+  var permissionDef;
+  var roleDef;
+  return Permission.sequelize.create(defaultPermission)
+    .then((permission)=> permissionDef = permission)
+    .then(()=> Role.sequelize.create(defaultRole))
+    .then((role)=> roleDef = role)
+    .then(()=> roleDef.setPermissions([permissionDef]))
+    .then(()=> User.create(userAttributes, roleDef));
 };
 
 var createDefaultForgottenPassword = function (extendedAttributes) {
@@ -157,17 +174,17 @@ describe('user model', function () {
         email: "Foo@example.com",
         telephone_number: "1"
       };
-      User.create(userAttributes).then(user => {
-        expect(user.email).equal(userAttributes.email.toLowerCase());
-
-        User.find(user.email).then(user => {
+      createRole({description: "Admin"})
+        .then((role)=> User.create(userAttributes, role))
+        .then((user) => expect(user.email).equal(userAttributes.email.toLowerCase()))
+        .then(()=> User.find(userAttributes.email.toLowerCase()))
+        .then((user) => {
           expect(user.username).equal(userAttributes.username);
           expect(user.gateway_account_id).equal(userAttributes.gateway_account_id);
           expect(user.email).equal(userAttributes.email.toLowerCase());
           expect(user.telephone_number).equal(userAttributes.telephone_number);
-          done();
-        }, wrongPromise(done));
-      }, wrongPromise(done));
+        }).then(()=> done())
+        .catch(wrongPromise(done));
     });
 
     it('should create a user with a specific otp_key and encrypts password', function (done) {

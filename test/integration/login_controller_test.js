@@ -16,13 +16,14 @@ var notp        = require('notp');
 
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var user = session.user;
 
 describe('The logged in endpoint', function () {
   it('should render ok when logged in',function(done){
     request(app)
       .get("/")
       .expect(200)
-      .expect(function(res){ assert(res.text.indexOf("username123") !== -1); })
+      .expect(function(res){ assert(res.text.indexOf(user.username) !== -1); })
       .end(done);
   });
 
@@ -240,9 +241,3 @@ describe('otp send again post enpoint',function(){
     .end(done);
   });
 });
-
-
-
-
-
-

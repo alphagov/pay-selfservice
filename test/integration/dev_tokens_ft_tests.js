@@ -16,9 +16,10 @@ var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
 var app     = session.mockValidAccount(_app, ACCOUNT_ID);
 var nocsrf  = session.mockValidAccount(_app, ACCOUNT_ID,{noCSRF: true});
-
+var user = session.user;
 
 portfinder.getPort(function(err, freePort) {
+
   var requestId = 'unique-request-id';
   var aCorrelationHeader = {
     reqheaders: {'x-request-id': requestId}
@@ -352,7 +353,7 @@ portfinder.getPort(function(err, freePort) {
           serverMock.post(PUBLIC_AUTH_PATH, {
             "account_id": ACCOUNT_ID,
             "description": "description",
-            "created_by": "user@email.com"
+            "created_by": user.email
           }).reply(200, {"token": TOKEN });
 
           build_form_post_request(paths.devTokens.create, {"description":'description'}, true)
@@ -425,11 +426,7 @@ portfinder.getPort(function(err, freePort) {
                  'message' : 'There is a problem with the payments platform'
               })
               .end(done);
-
           });
-
       });
-
     });
-
  });

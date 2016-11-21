@@ -1,6 +1,11 @@
 'use strict';
 var express = require('express');
 var _       = require('lodash');
+var user = {
+  username: Math.random().toString(36).substring(7),
+  email: Math.random().toString(36).substring(7) + "@email.com",
+  otp_key: "foo"
+};
 
 module.exports = function () {
 
@@ -36,17 +41,12 @@ module.exports = function () {
     return mockSession(app, account);
   },
   mockAccountObj = function(accountId){
-
+    user.gateway_account_id = accountId;
     return _.cloneDeep({
       csrfSecret: "123",
       12345: {refunded_amount: 5 },
       passport: {
-        user: {
-          gateway_account_id: accountId,
-          username: "username123",
-          email:"user@email.com",
-          otp_key: "foo"
-        }
+        user: user,
       },
       secondFactor: 'totp'
     });
@@ -57,6 +57,7 @@ module.exports = function () {
     mockSession: mockSession,
     mockValidAccount: mockValidAccount,
     mockAccount: mockAccount,
-    mockAccountObj: mockAccountObj
+    mockAccountObj: mockAccountObj,
+    user: user
   };
 }();
