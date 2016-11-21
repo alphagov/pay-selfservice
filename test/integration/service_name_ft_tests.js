@@ -7,9 +7,15 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
+
 var ACCOUNT_ID = 182364;
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var user = session.user;
 
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
@@ -19,6 +25,13 @@ var aCorrelationHeader = {
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCOUNT_SERVICE_NAME_PATH = CONNECTOR_ACCOUNT_PATH + "/servicename";
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
+
+function sync_db() {
+  return Permission.sequelize.sync({force: true})
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}))
+}
 
 function build_get_request(path) {
   return request(app)
@@ -43,11 +56,11 @@ function build_form_post_request(path, sendData, sendCSRF) {
 [
   {
     'path': paths.serviceName.index,
-    'edit': false
+    'edit': false,
   },
   {
     'path': paths.serviceName.edit,
-    'edit': true
+    'edit': true,
   }
 ].forEach(function (testSetup) {
 
@@ -56,9 +69,25 @@ function build_form_post_request(path, sendData, sendCSRF) {
         nock.cleanAll();
       });
 
-      before(function () {
-        // Disable logging.
+      before(function (done) {
+        var roleDef;
+        var permissionDef;
+        var userAttributes = {
+          username: user.username,
+          password: 'password10',
+          gateway_account_id: user.gateway_account_id,
+          email: user.email,
+          telephone_number: "1"
+        };
         winston.level = 'none';
+        sync_db()
+          .then(()=> Permission.sequelize.create({name: 'service-name:read', description: 'Read service name'}))
+          .then((permission)=> permissionDef = permission)
+          .then(()=> Role.sequelize.create({name: 'Read', description: "User can read stuff"}))
+          .then((role)=> roleDef = role)
+          .then(()=> roleDef.setPermissions([permissionDef]))
+          .then(()=> User.create(userAttributes, roleDef))
+          .then(()=> done());
       });
 
       it('should display received service name from connector', function (done) {
@@ -109,15 +138,31 @@ function build_form_post_request(path, sendData, sendCSRF) {
     });
   });
 
-
 describe('The provider update service name endpoint', function () {
+
   beforeEach(function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
+  before(function (done) {
+    var roleDef;
+    var permissionDef;
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
     winston.level = 'none';
+    sync_db()
+      .then(()=> Permission.sequelize.create({name: 'service-name:update', description: 'Update service name'}))
+      .then((permission)=> permissionDef = permission)
+      .then(()=> Role.sequelize.create({name: 'Update', description: "User can update stuff"}))
+      .then((role)=> roleDef = role)
+      .then(()=> roleDef.setPermissions([permissionDef]))
+      .then(()=> User.create(userAttributes, roleDef))
+      .then(()=> done());
   });
 
   it('should send new service name to connector', function (done) {

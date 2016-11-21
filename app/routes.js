@@ -86,8 +86,8 @@ module.exports.bind = function (app) {
   // SERVICE NAME
 
   var sn = paths.serviceName;
-  app.get(sn.index, auth.enforceUserBothFactors, csrf, permission(), serviceName.index);
-  app.post(sn.index, auth.enforceUserBothFactors, csrf, permission(), serviceName.update);
+  app.get(sn.index, auth.enforceUserBothFactors, csrf, permission('service-name:read'), serviceName.index);
+  app.post(sn.index, auth.enforceUserBothFactors, csrf, permission('service-name:update'), serviceName.update);
 
   // PAYMENT TYPES
 
