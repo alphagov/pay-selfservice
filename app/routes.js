@@ -76,12 +76,12 @@ module.exports.bind = function (app) {
 
   // DEV TOKENS
   var dt = paths.devTokens;
-  app.get(dt.index, auth.enforceUserBothFactors, csrf, permission(), devTokens.index);
-  app.get(dt.revoked, auth.enforceUserBothFactors, csrf, permission(), devTokens.revoked);
-  app.get(dt.show, auth.enforceUserBothFactors, csrf, permission(), devTokens.show);
-  app.post(dt.create, auth.enforceUserBothFactors, csrf, permission(), devTokens.create);
-  app.put(dt.update, auth.enforceUserBothFactors, csrf, permission(), devTokens.update);
-  app.delete(dt.delete, auth.enforceUserBothFactors, csrf, permission(), devTokens.destroy);
+  app.get(dt.index, auth.enforceUserBothFactors, csrf, permission('tokens-active:read'), devTokens.index);
+  app.get(dt.revoked, auth.enforceUserBothFactors, csrf, permission('tokens-revoked:read'), devTokens.revoked);
+  app.get(dt.show, auth.enforceUserBothFactors, csrf, permission('tokens:create'), devTokens.show);
+  app.post(dt.create, auth.enforceUserBothFactors, csrf, permission('tokens:create'), devTokens.create);
+  app.put(dt.update, auth.enforceUserBothFactors, csrf, permission('tokens:update'), devTokens.update);
+  app.delete(dt.delete, auth.enforceUserBothFactors, csrf, permission('tokens:delete'), devTokens.destroy);
 
   // SERVICE NAME
 

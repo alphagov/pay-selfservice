@@ -8,6 +8,10 @@ var csrf         = require('csrf');
 var should       = require('chai').should();
 var paths        = require(__dirname + '/../../app/paths.js');
 var session      = require(__dirname + '/../test_helpers/mock_session.js');
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
@@ -27,6 +31,13 @@ portfinder.getPort(function(err, freePort) {
 
   var localServer = 'http://localhost:' + freePort;
   var serverMock = nock(localServer, aCorrelationHeader);
+
+  function sync_db() {
+    return Permission.sequelize.sync({force: true})
+      .then(() => Role.sequelize.sync({force: true}))
+      .then(() => User.sequelize.sync({force: true}))
+      .then(() => UserRole.sequelize.sync({force: true}))
+  }
 
   function build_get_request(path) {
     return request(app)
@@ -77,7 +88,29 @@ portfinder.getPort(function(err, freePort) {
         winston.level = 'none';
       });
 
-      describe('The /tokens/revoked endpoint', function() {
+      describe('The /tokens/revoked endpoint (read revoked tokens)', function() {
+
+        before(function (done) {
+          var roleDef;
+          var permissionDef;
+          var userAttributes = {
+            username: user.username,
+            password: 'password10',
+            gateway_account_id: user.gateway_account_id,
+            email: user.email,
+            telephone_number: "1"
+          };
+          winston.level = 'none';
+          sync_db()
+            .then(()=> Permission.sequelize.create({name: 'tokens-revoked:read', description: 'Read revoked tokens'}))
+            .then((permission)=> permissionDef = permission)
+            .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
+            .then((role)=> roleDef = role)
+            .then(()=> roleDef.setPermissions([permissionDef]))
+            .then(()=> User.create(userAttributes, roleDef))
+            .then(()=> done());
+        });
+
         it('should return an empty list of tokens if no tokens have been revoked yet', function (done) {
           serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
 
@@ -96,7 +129,8 @@ portfinder.getPort(function(err, freePort) {
             })
             .end(done);
         });
-        it('should return the account_id and the token list for the only revoked token', function (done){
+
+        it('should return the account_id and the token list for the only revoked token', function (done) {
 
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
@@ -150,7 +184,29 @@ portfinder.getPort(function(err, freePort) {
         });
       });
 
-      describe('The /tokens endpoint', function() {
+      describe('The GET /tokens endpoint (read active tokens)', function() {
+
+        before(function (done) {
+          var roleDef;
+          var permissionDef;
+          var userAttributes = {
+            username: user.username,
+            password: 'password10',
+            gateway_account_id: user.gateway_account_id,
+            email: user.email,
+            telephone_number: "1"
+          };
+          winston.level = 'none';
+          sync_db()
+            .then(()=> Permission.sequelize.create({name: 'tokens-active:read', description: 'Read active tokens'}))
+            .then((permission)=> permissionDef = permission)
+            .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
+            .then((role)=> roleDef = role)
+            .then(()=> roleDef.setPermissions([permissionDef]))
+            .then(()=> User.create(userAttributes, roleDef))
+            .then(()=> done());
+        });
+
         it('should return an empty list of tokens if no tokens have been issued yet', function (done){
           serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
 
@@ -222,132 +278,201 @@ portfinder.getPort(function(err, freePort) {
             })
             .end(done);
         });
+      });
 
-        it('should update the description', function (done){
-          serverMock.put(PUBLIC_AUTH_PATH, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          }).reply(200, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description",
-            "created_by": "test-user",
-            "issued_date": "18 Feb 2016 - 12:44",
-            "last_used": "23 Feb 2016 - 19:44"
-          });
+    describe('The PUT /tokens endpoint (update token - description)', function() {
 
-          build_put_request()
-            .expect(function(res){
-              if (!res.body.csrfToken)  throw new Error('no token');
-              delete res.body.csrfToken;
-            })
-            .expect(200, {
-              'token_link': '550e8400-e29b-41d4-a716-446655440000',
-              'description': "token description",
-              'created_by': "test-user",
-              'issued_date': "18 Feb 2016 - 12:44",
-              'last_used': "23 Feb 2016 - 19:44"
-            })
-            .end(done);
+      before(function (done) {
+        var roleDef;
+        var permissionDef;
+        var userAttributes = {
+          username: user.username,
+          password: 'password10',
+          gateway_account_id: user.gateway_account_id,
+          email: user.email,
+          telephone_number: "1"
+        };
+        winston.level = 'none';
+        sync_db()
+          .then(()=> Permission.sequelize.create({name: 'tokens:update', description: 'Update tokens'}))
+          .then((permission)=> permissionDef = permission)
+          .then(()=> Role.sequelize.create({name: 'update', description: "Update Stuff"}))
+          .then((role)=> roleDef = role)
+          .then(()=> roleDef.setPermissions([permissionDef]))
+          .then(()=> User.create(userAttributes, roleDef))
+          .then(()=> done());
+      });
+
+      it('should update the description', function (done){
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(200, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description",
+          "created_by": "test-user",
+          "issued_date": "18 Feb 2016 - 12:44",
+          "last_used": "23 Feb 2016 - 19:44"
         });
 
-        it('should not update the description without csrf', function (done){
-          serverMock.put(PUBLIC_AUTH_PATH, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          }).reply(200, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          });
+        build_put_request()
+          .expect(function(res){
+            if (!res.body.csrfToken)  throw new Error('no token');
+            delete res.body.csrfToken;
+          })
+          .expect(200, {
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': "token description",
+            'created_by': "test-user",
+            'issued_date': "18 Feb 2016 - 12:44",
+            'last_used': "23 Feb 2016 - 19:44"
+          })
+          .end(done);
+      });
 
-          build_put_request(false)
-            .expect(200, {
-              'message': 'There is a problem with the payments platform'
-            })
-            .end(done);
+      it('should not update the description without csrf', function (done){
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(200, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
         });
 
-        it('should forward the error status code when updating the description', function (done){
-          serverMock.put(PUBLIC_AUTH_PATH, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          }).reply(400, {});
+        build_put_request(false)
+          .expect(200, {
+            'message': 'There is a problem with the payments platform'
+          })
+          .end(done);
+      });
 
-          build_put_request()
-            .expect(400, {})
-            .end(done);
+      it('should forward the error status code when updating the description', function (done){
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(400, {});
 
-        });
-
-        it('should send 500 if any error happens while updating the resource', function (done){
-          // No serverMock defined on purpose to mock a network failure
-          build_put_request()
-            .expect(500, {})
-            .end(done);
-        });
-
-        it('should revoke and existing token', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(200, {"revoked": "15 Oct 2015"});
-
-          request(app)
-            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('x-request-id',requestId)
-            .send({ csrfToken: csrf().create('123') })
-            .expect(200, {"revoked": "15 Oct 2015"})
-            .end(done);
-
-        });
-
-        it('should fail if no csrf', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(200, {"revoked": "15 Oct 2015"});
-
-          request(app)
-            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('x-request-id',requestId)
-            .set('Accept', 'application/json')
-            .expect(200, {message: "There is a problem with the payments platform"})
-            .end(done);
-        });
-
-        it('should forward the error status code when revoking the token', function (done){
-          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(400, {});
-
-          request(app)
-            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('x-request-id',requestId)
-            .send({ csrfToken: csrf().create('123') })
-            .expect(400, {})
-            .end(done);
-        });
-
-
-        it('should send 500 if any error happens while updating the resource', function (done){
-
-          // No serverMock defined on purpose to mock a network failure
-          request(app)
-            .delete(paths.devTokens.index)
-            .set('x-request-id',requestId)
-            .send({
-              token_link: '550e8400-e29b-41d4-a716-446655440000',
-              csrfToken: csrf().create('123')
-
-            })
-            .expect(500, {})
-            .end(done);
-        });
+        build_put_request()
+          .expect(400, {})
+          .end(done);
 
       });
 
-      describe('The /tokens/generate endpoint', function() {
+      it('should send 500 if any error happens while updating the resource', function (done){
+        // No serverMock defined on purpose to mock a network failure
+        build_put_request()
+          .expect(500, {})
+          .end(done);
+      });
+    });
+
+    describe('The DELETE /tokens endpoint (delete tokens)', function() {
+
+      before(function (done) {
+        var roleDef;
+        var permissionDef;
+        var userAttributes = {
+          username: user.username,
+          password: 'password10',
+          gateway_account_id: user.gateway_account_id,
+          email: user.email,
+          telephone_number: "1"
+        };
+        winston.level = 'none';
+        sync_db()
+          .then(()=> Permission.sequelize.create({name: 'tokens:delete', description: 'Delete tokens'}))
+          .then((permission)=> permissionDef = permission)
+          .then(()=> Role.sequelize.create({name: 'delete', description: "Delete Stuff"}))
+          .then((role)=> roleDef = role)
+          .then(()=> roleDef.setPermissions([permissionDef]))
+          .then(()=> User.create(userAttributes, roleDef))
+          .then(()=> done());
+      });
+
+      it('should revoke and existing token', function (done){
+
+        serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000'
+        }).reply(200, {"revoked": "15 Oct 2015"});
+
+        request(app)
+          .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+          .set('x-request-id',requestId)
+          .send({ csrfToken: csrf().create('123') })
+          .expect(200, {"revoked": "15 Oct 2015"})
+          .end(done);
+
+      });
+
+      it('should fail if no csrf', function (done){
+
+        serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000'
+        }).reply(200, {"revoked": "15 Oct 2015"});
+
+        request(app)
+          .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+          .set('x-request-id',requestId)
+          .set('Accept', 'application/json')
+          .expect(200, {message: "There is a problem with the payments platform"})
+          .end(done);
+      });
+
+      it('should forward the error status code when revoking the token', function (done){
+        serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000'
+        }).reply(400, {});
+
+        request(app)
+          .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+          .set('x-request-id',requestId)
+          .send({ csrfToken: csrf().create('123') })
+          .expect(400, {})
+          .end(done);
+      });
+
+
+      it('should send 500 if any error happens while updating the resource', function (done){
+
+        // No serverMock defined on purpose to mock a network failure
+        request(app)
+          .delete(paths.devTokens.index)
+          .set('x-request-id',requestId)
+          .send({
+            token_link: '550e8400-e29b-41d4-a716-446655440000',
+            csrfToken: csrf().create('123')
+
+          })
+          .expect(500, {})
+          .end(done);
+      });
+    });
+
+      describe('The /tokens/generate endpoint (create tokens and show generated token)', function() {
+
+        before(function (done) {
+          var roleDef;
+          var permissionDef;
+          var userAttributes = {
+            username: user.username,
+            password: 'password10',
+            gateway_account_id: user.gateway_account_id,
+            email: user.email,
+            telephone_number: "1"
+          };
+          winston.level = 'none';
+          sync_db()
+            .then(()=> Permission.sequelize.create({name: 'tokens:create', description: 'Create tokens'}))
+            .then((permission)=> permissionDef = permission)
+            .then(()=> Role.sequelize.create({name: 'tokens:manager', description: "Tokens Manager"}))
+            .then((role)=> roleDef = role)
+            .then(()=> roleDef.setPermissions([permissionDef]))
+            .then(()=> User.create(userAttributes, roleDef))
+            .then(()=> done());
+        });
 
         it('should create a token successfully', function (done){
+
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
           serverMock.post(PUBLIC_AUTH_PATH, {
