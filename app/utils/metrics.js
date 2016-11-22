@@ -3,14 +3,9 @@
 var appmetrics = require("appmetrics-statsd");
 
 function initialiseMonitoring () {
-  const opts = {
-    "host": "localhost",
-    "port": 8125,
-    "prefix": "selfservice."
-  };
   console.log("Initialising....");
 
-  return appmetrics.StatsD(opts)
+  return appmetrics.StatsD(null, "localhost", 8125, 'selfservice.')
 }
 
 module.exports = function() {

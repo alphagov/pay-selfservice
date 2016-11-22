@@ -40,7 +40,7 @@ module.exports.noAccess = function (req, res) {
 };
 
 module.exports.logInGet = function (req, res) {
-  loginMetrics.gauge("selfservice.login", 10);
+  loginMetrics.gauge("login", 10);
   res.render('login/login');
 };
 
