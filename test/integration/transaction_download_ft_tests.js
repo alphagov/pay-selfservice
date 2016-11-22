@@ -67,7 +67,20 @@ describe('Transaction download endpoints', function () {
         gateway_transaction_id: 'transaction-1',
         return_url: 'https://demoservice.pymnt.localdomain:443/return/red',
         payment_provider: 'sandbox',
-        created_date: '2016-05-12T16:37:29.245Z'
+        created_date: '2016-05-12T16:37:29.245Z',
+        card_details: {
+          billing_address: {
+            city: 'TEST01',
+            country: 'GB',
+            line1: 'TEST',
+            line2: 'TEST - DO NOT PROCESS',
+            postcode: 'SE1 3UZ'
+          },
+          card_brand: 'Visa',
+          cardholder_name: 'TEST01',
+          expiry_date: '12/19',
+          last_digits_card_number: '4242'
+        },
       },
         {
           amount: 999,
@@ -81,7 +94,20 @@ describe('Transaction download endpoints', function () {
           gateway_transaction_id: 'transaction-2',
           return_url: 'https://demoservice.pymnt.localdomain:443/return/blue',
           payment_provider: 'worldpay',
-          created_date: '2015-04-12T18:55:29.999Z'
+          created_date: '2015-04-12T18:55:29.999Z',
+          card_details: {
+            billing_address: {
+              city: 'TEST02',
+              country: 'GB',
+              line1: 'TEST',
+              line2: 'TEST - DO NOT PROCESS',
+              postcode: 'SE1 3UZ'
+            },
+            card_brand: 'Mastercard',
+            cardholder_name: 'TEST02',
+            expiry_date: '12/19',
+            last_digits_card_number: '4241'
+          },
         }];
       mockJson = {
         results: results,
@@ -114,18 +140,19 @@ describe('Transaction download endpoints', function () {
           var csvContent = res.text;
           var arrayOfLines = csvContent.split("\n");
           assert(5, arrayOfLines.length);
-          assert.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29', arrayOfLines[1]);
-          assert.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29', arrayOfLines[2]);
+          assert.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,TEST01,12/19,4242,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29', arrayOfLines[1]);
+          assert.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,TEST02,12/19,4241,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29', arrayOfLines[2]);
         })
         .end(function (err, res) {
           if (err) return done(err);
           var csvContent = res.text;
           var arrayOfLines = csvContent.split("\n");
           expect(arrayOfLines.length).to.equal(5);
-          expect(arrayOfLines[1]).to.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
-          expect(arrayOfLines[2]).to.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
-          expect(arrayOfLines[3]).to.equal('red,desc-red,alice.111@mail.fake,12.34,Visa,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
-          expect(arrayOfLines[4]).to.equal('blue,desc-blue,alice.222@mail.fake,1.23,Mastercard,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
+          expect(arrayOfLines[0]).to.equal('Reference,Description,Email,Amount,Card Brand,Cardholder Name,Card Expiry Date,Card Number,State,Finished,Error Code,Error Message,Provider ID,GOV.UK Payment ID,Date Created');
+          expect(arrayOfLines[1]).to.equal('red,desc-red,alice.111@mail.fake,123.45,Visa,TEST01,12/19,4242,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
+          expect(arrayOfLines[2]).to.equal('blue,desc-blue,alice.222@mail.fake,9.99,Mastercard,TEST02,12/19,4241,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
+          expect(arrayOfLines[3]).to.equal('red,desc-red,alice.111@mail.fake,12.34,Visa,TEST01,12/19,4242,succeeded,false,,,transaction-1,charge1,12 May 2016 — 17:37:29');
+          expect(arrayOfLines[4]).to.equal('blue,desc-blue,alice.222@mail.fake,1.23,Mastercard,TEST02,12/19,4241,canceled,true,P01234,Something happened,transaction-2,charge2,12 Apr 2015 — 19:55:29');
           done()
         });
     });

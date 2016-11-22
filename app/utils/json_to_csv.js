@@ -31,8 +31,20 @@ module.exports = function (data) {
           }
         },
         {
-          label: 'Card brand',
-          value: "card_brand"
+          label: 'Card Brand',
+          value: "card_details.card_brand"
+        },
+        {
+          label: 'Cardholder Name',
+          value: "card_details.cardholder_name"
+        },
+        {
+          label: 'Card Expiry Date',
+          value: "card_details.expiry_date"
+        },
+        {
+          label: 'Card Number',
+          value: "card_details.last_digits_card_number"
         },
         {
           label: 'State',
@@ -51,11 +63,11 @@ module.exports = function (data) {
           value: "state.message"
         },
         {
-          label: 'Gateway Transaction ID',
+          label: 'Provider ID',
           value: "gateway_transaction_id"
         },
         {
-          label: 'GOV.UK Pay ID',
+          label: 'GOV.UK Payment ID',
           value: "charge_id"
         },
         {

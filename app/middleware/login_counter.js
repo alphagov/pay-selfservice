@@ -30,7 +30,7 @@ module.exports = {
       )
     }, function() {
         var correlationId = req.headers[CORRELATION_HEADER] ||'';
-        logger.info(`[${correlationId}] Unsuccessful user login due to invalid username or password.` +
+        logger.info(`[${correlationId}] Unsuccessful user login due to invalid username.` +
             `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}]`);
         next();
     })
