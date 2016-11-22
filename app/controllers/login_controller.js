@@ -6,6 +6,7 @@ var passport  = require('passport');
 var paths     = require('../paths.js');
 var errorView = require('../utils/response.js').renderErrorView;
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
+var loginMetrics   = require('../utils/metrics.js').metrics;
 
 var error = function(req,res,err) {
     errorView(req, res);
@@ -39,6 +40,7 @@ module.exports.noAccess = function (req, res) {
 };
 
 module.exports.logInGet = function (req, res) {
+  loginMetrics.gauge("selfservice.login", 10);
   res.render('login/login');
 };
 
