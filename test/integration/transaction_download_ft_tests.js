@@ -8,11 +8,16 @@ var querystring = require('querystring');
 var paths = require(__dirname + '/../../app/paths.js');
 var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 
 var gatewayAccountId = 651342;
 var app = session.mockValidAccount(_app, gatewayAccountId);
+var user = session.user;
 
 var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 var connectorMock = nock(process.env.CONNECTOR_URL, {
@@ -41,15 +46,38 @@ function download_transaction_list(query) {
     .set('Accept', 'application/json');
 }
 
+function sync_db() {
+  return Permission.sequelize.sync({force: true})
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}))
+}
+
 describe('Transaction download endpoints', function () {
 
   beforeEach(function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
+  before(function (done) {
+    var roleDef;
+    var permissionDef;
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
     winston.level = 'none';
+    sync_db()
+      .then(()=> Permission.sequelize.create({name: 'transactions-download:read', description: 'Download transactions'}))
+      .then((permission)=> permissionDef = permission)
+      .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
+      .then((role)=> roleDef = role)
+      .then(()=> roleDef.setPermissions([permissionDef]))
+      .then(()=> User.create(userAttributes, roleDef))
+      .then(()=> done());
   });
 
   describe('The /transactions/download endpoint', function () {

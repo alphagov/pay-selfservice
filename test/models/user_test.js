@@ -55,11 +55,8 @@ var User = proxyquire(__dirname + '/../../app/models/user.js', {
 var wrongPromise = function (done) {
   return (reason) => {
     var error = new Error('Promise was unexpectedly fulfilled. Error: ', reason);
-    if (done) {
-      console.log('Reason => ', reason);
-      done(error);
-    }
-    throw error;
+    console.log('Reason => ', reason);
+    done(error);
   }
 };
 
@@ -74,10 +71,10 @@ var defaultPermission = {
 };
 
 var defaultUser = {
-  username: "foo",
+  username: Math.random().toString(36).substring(7),
+  email: Math.random().toString(36).substring(7) + "@email.com",
   password: defaultPassword,
   gateway_account_id: 1,
-  email: "foo@foo.com",
   telephone_number: "1"
 };
 
@@ -144,20 +141,20 @@ describe('user model', function () {
 
   describe('find', function () {
     it('should return a user and lowercase email', function (done) {
-      createDefaultUser().then(() => {
+      createDefaultUser({email: 'foo@foo.com'}).then(() => {
         User.find("Foo@foo.com").then(() => done(), wrongPromise(done));
       })
     });
 
     it('should return a user by username', function (done) {
-      createDefaultUser().then(() => {
+      createDefaultUser({username: 'foo'}).then(() => {
         User.findByUsername("foo").then(() => done(), wrongPromise(done));
       })
     });
 
     it('should never ever ever return a password with user outside the model', function (done) {
       createDefaultUser().then(() => {
-        User.find("foo@foo.com").then((user) => {
+        User.find(defaultUser.email).then((user) => {
           expect(user).to.not.have.property('password');
           done();
         }, wrongPromise(done));
@@ -264,7 +261,7 @@ describe('user model', function () {
       createDefaultUser().then(user => {
         user.updateUserNameAndEmail('hi@bye.com', '')
           .then((user)=> {
-              expect(user.username).equal('foo');
+              expect(user.username).equal(defaultUser.username);
               expect(user.email).equal('hi@bye.com');
               done()
             }
@@ -278,7 +275,7 @@ describe('user model', function () {
         user.updateUserNameAndEmail('', 'hibye')
           .then((user)=> {
               expect(user.username).equal('hibye');
-              expect(user.email).equal('foo@foo.com');
+              expect(user.email).equal(defaultUser.email);
               done()
             }
 
@@ -470,7 +467,7 @@ describe('user model', function () {
       createDefaultUser()
         .then((user)=> userSetup = user)
         .then(() => userSetup.setRole(roleAdmin))
-        .then(()=> createPermission({ name: "tokens:create", description: "View & Create tokens"}))
+        .then(()=> createPermission({name: "tokens:create", description: "View & Create tokens"}))
         .then((permission)=> createTokensPermission = permission)
         .then(()=> createRole({description: "Write"}))
         .then((role)=> roleWrite = role)

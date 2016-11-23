@@ -5,11 +5,22 @@ var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var ACCOUNT_ID = 15486734;
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
-
+var user = session.user;
 var connectorMock = nock(process.env.CONNECTOR_URL);
+
+function sync_db() {
+  return Permission.sequelize.sync({force: true})
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}))
+}
 
 describe('The transaction view - refund scenarios', function () {
 
@@ -17,9 +28,25 @@ describe('The transaction view - refund scenarios', function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
+  before(function (done) {
+    var roleDef;
+    var permissionDef;
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
     winston.level = 'none';
+    sync_db()
+      .then(()=> Permission.sequelize.create({name: 'refunds:create', description: 'Issue refunds'}))
+      .then((permission)=> permissionDef = permission)
+      .then(()=> Role.sequelize.create({name: 'Write', description: "Write Stuff"}))
+      .then((role)=> roleDef = role)
+      .then(()=> roleDef.setPermissions([permissionDef]))
+      .then(()=> User.create(userAttributes, roleDef))
+      .then(()=> done());
   });
 
   // known FP issue with node, it cannot mulitply 19.90 by 100 accurately

@@ -5,17 +5,26 @@ var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
 var paths       = require(__dirname + '/../../app/paths.js');
 var session     = require(__dirname + '/../test_helpers/mock_session.js');
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var gatewayAccountId = ACCOUNT_ID = 15486734;
 
 var app = session.mockValidAccount(_app,gatewayAccountId);
+var user = session.user;
 var chargeId = 452345;
-var chargeWithRefund = 12345;
-var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
-var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
 
 var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/charges/{chargeId}';
 var connectorMock = nock(process.env.CONNECTOR_URL);
+
+function sync_db() {
+  return Permission.sequelize.sync({force: true})
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}))
+}
 
 function connectorMock_responds(path, data) {
   return connectorMock.get(path)
@@ -38,9 +47,25 @@ describe('The transaction view scenarios', function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
+  before(function (done) {
+    var roleDef;
+    var permissionDef;
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
     winston.level = 'none';
+    sync_db()
+      .then(()=> Permission.sequelize.create({name: 'transactions-details:read', description: 'Read transactions details'}))
+      .then((permission)=> permissionDef = permission)
+      .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
+      .then((role)=> roleDef = role)
+      .then(()=> roleDef.setPermissions([permissionDef]))
+      .then(()=> User.create(userAttributes, roleDef))
+      .then(()=> done());
   });
 
   describe('The transaction history endpoint', function () {

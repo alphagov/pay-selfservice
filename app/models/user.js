@@ -98,12 +98,12 @@ User.beforeUpdate(hashPasswordHook);
 
 var sendOTP = function(){
   var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
-
-  if (!(this.otp_key && this.telephone_number && template)) {
-    throw new Error('missing required field to send text');
-  }
-  var code = this.generateOTP();
-  return notify.sendSms(template, this.telephone_number, { code: code });
+    if (this.otp_key && this.telephone_number && template) {
+      var code = this.generateOTP();
+      return notify.sendSms(template, this.telephone_number, { code: code });
+    } else {
+      throw new Error('missing required field to send text');
+    }
 },
 
 generateOTP = function(){

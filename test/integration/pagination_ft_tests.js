@@ -9,10 +9,15 @@ var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 var assert = require('assert');
 var querystring = require('querystring');
+var User = require(__dirname + '/../../app/models/user.js');
+var Permission = require(__dirname + '/../../app/models/permission.js');
+var Role = require(__dirname + '/../../app/models/role.js');
+var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var gatewayAccountId = 452345;
 
 var app = session.mockValidAccount(_app, gatewayAccountId);
+var user = session.user;
 
 var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
@@ -26,6 +31,13 @@ var ALL_CARD_TYPES = {
     {"id": "3", "brand": "discover", "label": "Discover", "type": "CREDIT"},
     {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
 };
+
+function sync_db() {
+  return Permission.sequelize.sync({force: true})
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}))
+}
 
 function connectorMock_responds(data, searchParameters) {
   var queryStr = '?';
@@ -58,9 +70,25 @@ describe('Pagination', function () {
       .reply(200, ALL_CARD_TYPES);
   });
 
-  before(function () {
-    // Disable logging.
+  before(function (done) {
+    var roleDef;
+    var permissionDef;
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
     winston.level = 'none';
+    sync_db()
+      .then(()=> Permission.sequelize.create({name: 'transactions:read', description: 'Read transactions'}))
+      .then((permission)=> permissionDef = permission)
+      .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
+      .then((role)=> roleDef = role)
+      .then(()=> roleDef.setPermissions([permissionDef]))
+      .then(()=> User.create(userAttributes, roleDef))
+      .then(()=> done());
   });
 
   describe('Pagination', function () {
