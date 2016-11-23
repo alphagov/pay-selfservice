@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var csrf = require('csrf');
 var nock = require('nock');
@@ -9,10 +10,6 @@ var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 var assert = require('assert');
 var querystring = require('querystring');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var gatewayAccountId = 452345;
 
@@ -31,13 +28,6 @@ var ALL_CARD_TYPES = {
     {"id": "3", "brand": "discover", "label": "Discover", "type": "CREDIT"},
     {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
 };
-
-function sync_db() {
-  return Permission.sequelize.sync({force: true})
-    .then(() => Role.sequelize.sync({force: true}))
-    .then(() => User.sequelize.sync({force: true}))
-    .then(() => UserRole.sequelize.sync({force: true}))
-}
 
 function connectorMock_responds(data, searchParameters) {
   var queryStr = '?';
@@ -71,8 +61,6 @@ describe('Pagination', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -80,15 +68,7 @@ describe('Pagination', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'transactions:read', description: 'Read transactions'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done());
+    userPermissions.create(userAttributes, 'transactions:read', done);
   });
 
   describe('Pagination', function () {
@@ -98,12 +78,8 @@ describe('Pagination', function () {
       var data = {'display_size': 5};
       connectorData.total = 30;
       connectorData.results = [];
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=&display_size=5&state="},};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=&display_size=5&state="},
-
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -126,12 +102,8 @@ describe('Pagination', function () {
       connectorData.total = 30;
       connectorData.results = [];
       connectorData.page = 3;
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=3&display_size=5&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=3&display_size=5&state="},
-
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -157,14 +129,9 @@ describe('Pagination', function () {
       connectorData.total = 30;
       connectorData.results = [];
       connectorData.page = 3;
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=3&display_size=2&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=3&display_size=2&state="},
-
-      }
       connectorMock_responds(connectorData, data);
-
 
       search_transactions(data)
         .expect(200)
@@ -188,12 +155,8 @@ describe('Pagination', function () {
       var data = {'display_size': 5};
       connectorData.total = 600;
       connectorData.results = [];
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=&display_size=&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=&display_size=&state="},
-
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -215,12 +178,8 @@ describe('Pagination', function () {
       var data = {'display_size': 100};
       connectorData.total = 600;
       connectorData.results = [];
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=100&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
-
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -240,12 +199,8 @@ describe('Pagination', function () {
       connectorData.total = 400;
       connectorData.results = [];
       connectorData.page = 1;
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=100&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
-
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -264,11 +219,8 @@ describe('Pagination', function () {
       var data = {'display_size': 100};
       connectorData.total = 50;
       connectorData.results = [];
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=100&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=100&state="},
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -284,11 +236,8 @@ describe('Pagination', function () {
       var data = {'display_size': 500};
       connectorData.total = 150;
       connectorData.results = [];
+      connectorData._links = {self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=500&state="}};
 
-
-      connectorData._links = {
-        self: {"href": "/v1/api/accounts/111/charges?&page=1&display_size=500&state="},
-      }
       connectorMock_responds(connectorData, data);
 
       search_transactions(data)
@@ -304,8 +253,6 @@ describe('Pagination', function () {
 
       search_transactions(data)
         .expect(200, {'message': "Invalid search"}).end(done);
-
-
     });
 
     it('should return return error if pageSize out of bounds 1', function (done) {
@@ -313,7 +260,6 @@ describe('Pagination', function () {
 
       search_transactions(data)
         .expect(200, {'message': "Invalid search"}).end(done);
-
     });
 
     it('should return return error if pageSize out of bounds 2', function (done) {
@@ -321,7 +267,6 @@ describe('Pagination', function () {
 
       search_transactions(data)
         .expect(200, {'message': "Invalid search"}).end(done);
-
     });
   });
 });

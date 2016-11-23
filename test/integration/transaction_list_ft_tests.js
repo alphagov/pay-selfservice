@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var nock = require('nock');
 var _app = require(__dirname + '/../../server.js').getApp;
@@ -6,10 +7,6 @@ var dates = require('../../app/utils/dates.js');
 var winston = require('winston');
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var CONNECTOR_DATE = "2016-02-10T12:44:01.000Z";
 var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
@@ -35,13 +32,6 @@ var aCorrelationHeader = {
 };
 
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
-
-function sync_db() {
-  return Permission.sequelize.sync({force: true})
-    .then(() => Role.sequelize.sync({force: true}))
-    .then(() => User.sequelize.sync({force: true}))
-    .then(() => UserRole.sequelize.sync({force: true}))
-}
 
 function connectorMock_responds(code, data, searchParameters) {
   var queryStr = '?';
@@ -69,8 +59,6 @@ describe('Transactions endpoints', function () {
   describe('The /transactions endpoint', function () {
 
     before(function (done) {
-      var roleDef;
-      var permissionDef;
       var userAttributes = {
         username: user.username,
         password: 'password10',
@@ -78,15 +66,7 @@ describe('Transactions endpoints', function () {
         email: user.email,
         telephone_number: "1"
       };
-      winston.level = 'none';
-      sync_db()
-        .then(()=> Permission.sequelize.create({name: 'transactions:read', description: 'Read transactions'}))
-        .then((permission)=> permissionDef = permission)
-        .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
-        .then((role)=> roleDef = role)
-        .then(()=> roleDef.setPermissions([permissionDef]))
-        .then(()=> User.create(userAttributes, roleDef))
-        .then(()=> done());
+      userPermissions.create(userAttributes, 'transactions:read', done);
     });
 
     beforeEach(function () {

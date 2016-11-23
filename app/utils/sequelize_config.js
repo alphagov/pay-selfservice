@@ -1,12 +1,12 @@
 'use strict';
 var Sequelize = require('sequelize');
-function createInstance() {
+var env       = process.env.NODE_ENV || "development";
 
-  if(process.env.DATABASE_URL.startsWith('sqlite')) {
+function createInstance() {
+  if(env === "development") {
     return new Sequelize('database', 'username', 'password', {
       dialect: 'sqlite',
-      // - default ':memory:'
-      storage: __dirname + '/database.sqlite',
+      storage: __dirname + '/../../database.sqlite',
       define: {
         syncOnAssociation: true
       }

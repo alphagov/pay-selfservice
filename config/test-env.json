@@ -15,7 +15,7 @@
   "NOTIFY_SECRET": "pay-notify-secret-needs-to-be-32-chars-fsghdngfhmhfkrgsfs",
   "NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID": "template_id",
   "SELFSERVICE_BASE": "https://selfservice.pymnt.localdomain",
-  "DATABASE_URL": "sqlite",
+  "DATABASE_URL": "postgres://foo",
   "LOGIN_ATTEMPT_CAP": 2,
   "DISABLE_REQUEST_LOGGING": "true"
 }

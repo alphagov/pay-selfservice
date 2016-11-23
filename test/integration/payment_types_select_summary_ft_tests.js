@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -7,10 +8,6 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 var _ = require('lodash');
 
 var ACCOUNT_ID = 182364;
@@ -25,13 +22,6 @@ var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = CONNECTOR_ACCOUNT_PATH + "/card-types";
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
-
-function sync_db() {
-  return Permission.sequelize.sync({force: true})
-    .then(() => Role.sequelize.sync({force: true}))
-    .then(() => User.sequelize.sync({force: true}))
-    .then(() => UserRole.sequelize.sync({force: true}))
-}
 
 var buildAcceptedCardType = function (value, available = true, selected = '') {
   return {
@@ -65,8 +55,6 @@ describe('The payment types endpoint,', function () {
     });
 
     before(function (done) {
-      var roleDef;
-      var permissionDef;
       var userAttributes = {
         username: user.username,
         password: 'password10',
@@ -74,15 +62,7 @@ describe('The payment types endpoint,', function () {
         email: user.email,
         telephone_number: "1"
       };
-      winston.level = 'none';
-      sync_db()
-        .then(()=> Permission.sequelize.create({name: 'payment-types:read', description: 'Read payment types'}))
-        .then((permission)=> permissionDef = permission)
-        .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
-        .then((role)=> roleDef = role)
-        .then(()=> roleDef.setPermissions([permissionDef]))
-        .then(()=> User.create(userAttributes, roleDef))
-        .then(()=> done());
+      userPermissions.create(userAttributes, 'payment-types:read', done);
     });
 
     it('should show all the card type options that have been previously accepted', function (done) {

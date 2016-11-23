@@ -1,5 +1,6 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var nock = require('nock');
 var _ = require('lodash');
@@ -8,10 +9,6 @@ var querystring = require('querystring');
 var paths = require(__dirname + '/../../app/paths.js');
 var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 
@@ -46,13 +43,6 @@ function download_transaction_list(query) {
     .set('Accept', 'application/json');
 }
 
-function sync_db() {
-  return Permission.sequelize.sync({force: true})
-    .then(() => Role.sequelize.sync({force: true}))
-    .then(() => User.sequelize.sync({force: true}))
-    .then(() => UserRole.sequelize.sync({force: true}))
-}
-
 describe('Transaction download endpoints', function () {
 
   beforeEach(function () {
@@ -60,8 +50,6 @@ describe('Transaction download endpoints', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -69,15 +57,7 @@ describe('Transaction download endpoints', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'transactions-download:read', description: 'Download transactions'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done());
+    userPermissions.create(userAttributes, 'transactions-download:read', done);
   });
 
   describe('The /transactions/download endpoint', function () {

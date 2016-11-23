@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -7,10 +8,6 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var ACCOUNT_ID = 182364;
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
@@ -47,13 +44,6 @@ function build_form_post_request(path, sendData, sendCSRF) {
     .send(sendData);
 }
 
-function sync_db() {
-  return Permission.sequelize.sync({force: true})
-    .then(() => Role.sequelize.sync({force: true}))
-    .then(() => User.sequelize.sync({force: true}))
-    .then(() => UserRole.sequelize.sync({force: true}))
-}
-
 describe('The ' + paths.credentials.index + ' endpoint', function () {
 
   beforeEach(function () {
@@ -61,8 +51,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
+    winston.level = 'none';
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -70,15 +59,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'gateway-credentials:read', description: 'Read credentials'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done());
+    userPermissions.create(userAttributes, 'gateway-credentials:read', done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -208,8 +189,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
+    winston.level = 'none';
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -217,15 +197,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'gateway-credentials:update', description: 'Update credentials'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Write', description: "Edit Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=>done())
+    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -355,8 +327,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
+    winston.level = 'none';
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -364,15 +335,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'gateway-credentials:update', description: 'Update credentials'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Write', description: "Edit Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done())
+    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -502,8 +465,7 @@ describe('The notification credentials', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
+    winston.level = 'none';
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -511,15 +473,7 @@ describe('The notification credentials', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'gateway-credentials:read', description: 'Read credentials'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Read', description: "View Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done())
+    userPermissions.create(userAttributes, 'gateway-credentials:read', done);
   });
 
   it('should pass through the notification credentials', function (done) {
@@ -559,8 +513,7 @@ describe('The provider update credentials endpoint', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
+    winston.level = 'none';
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -568,15 +521,7 @@ describe('The provider update credentials endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'gateway-credentials:update', description: 'Update credentials'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Write', description: "Update Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done())
+    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should send new username, password and merchant_id credentials to connector', function (done) {
@@ -670,8 +615,7 @@ describe('The provider update notification credentials endpoint', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
+    winston.level = 'none';
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -679,15 +623,7 @@ describe('The provider update notification credentials endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'gateway-credentials:update', description: 'Update credentials'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Write', description: "Update Stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done())
+    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should send new username and password notification credentials to connector', function (done) {

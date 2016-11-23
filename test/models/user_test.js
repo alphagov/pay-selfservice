@@ -12,7 +12,7 @@ process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES = 90;
 var mockedNotificationClient = {
   sendEmail: function (template, email, data) {
     expect(template).to.be.equal("template_id");
-    expect(email).to.be.equal("foo@foo.com");
+    expect(email).to.be.equal(defaultUser.email.toLowerCase());
     expect(data.code.indexOf('https://selfservice.pymnt.localdomain/reset-password/')).to.be.equal(0);
     expect(data.code.length).to.be.equal(62);
 
@@ -71,20 +71,13 @@ var defaultPermission = {
 };
 
 var defaultUser = {
-  username: Math.random().toString(36).substring(7),
-  email: Math.random().toString(36).substring(7) + "@email.com",
   password: defaultPassword,
   gateway_account_id: 1,
   telephone_number: "1"
 };
 
-var defaultSession = {
-  data: defaultUser.email
-};
-
-var createDefaultSession = (extendedAttributes) => {
-  var sessionAttributes = _.extend({}, defaultSession, extendedAttributes);
-  return Sessions.create(sessionAttributes);
+var createSession = (email) => {
+  return Sessions.create({data: email});
 };
 
 var findFromSession = (where) => {
@@ -92,6 +85,9 @@ var findFromSession = (where) => {
 };
 
 var createDefaultUser = function (extendedAttributes) {
+  defaultUser.username = Math.random().toString(36).substring(7);
+  defaultUser.email = Math.random().toString(36).substring(7) + "@email.com";
+
   var userAttributes = _.extend({}, defaultUser, extendedAttributes);
   var permissionDef;
   var roleDef;
@@ -112,10 +108,12 @@ var createDefaultForgottenPassword = function (extendedAttributes) {
 };
 
 var createPermission = function (attributes) {
+  Permission.sequelize.sync();
   return Permission.sequelize.create(attributes);
 };
 
 var createRole = function (attributes) {
+  Role.sequelize.sync();
   return Role.sequelize.create(attributes);
 };
 
@@ -127,15 +125,19 @@ var yesterdayDate = () => {
 
 var Sessions = testSequelizeConfig.sequelize.define('Sessions', {data: {type: Sequelize.STRING}});
 
+var sync_db = () => {
+  return ForgottenPassword.sequelize.sync({force: true})
+    .then(() => Sessions.sync({force: true}))
+    .then(() => Permission.sequelize.sync({force: true}))
+    .then(() => Role.sequelize.sync({force: true}))
+    .then(() => User.sequelize.sync({force: true}))
+    .then(() => UserRole.sequelize.sync({force: true}));
+};
+
 describe('user model', function () {
 
   beforeEach(function (done) {
-    ForgottenPassword.sequelize.sync({force: true})
-      .then(() => Permission.sequelize.sync({force: true}))
-      .then(() => Role.sequelize.sync({force: true}))
-      .then(() => Sessions.sync({force: true}))
-      .then(() => User.sequelize.sync({force: true}))
-      .then(() => UserRole.sequelize.sync({force: true}))
+    sync_db()
       .then(() => done());
   });
 
@@ -232,14 +234,13 @@ describe('user model', function () {
 
   describe('updatePassword', function () {
     it('should update the password', function (done) {
-      createDefaultUser().then(user => {
-        User.authenticate(user.username, "newPassword")
-          .then(wrongPromise(done), () => {
-            user.updatePassword("newPassword").then(() => {
-              User.authenticate(user.username, "newPassword").then(() => done(), wrongPromise(done));
-            }, wrongPromise(done))
-          })
-      }, wrongPromise(done));
+      var createdUser;
+      createDefaultUser()
+        .then(user => createdUser = user)
+        .then(() => createdUser.updatePassword("newPassword"))
+        .then(() => User.authenticate(createdUser.username, "newPassword"))
+        .then(() => done())
+        .catch(wrongPromise(done))
     });
   });
 
@@ -282,7 +283,6 @@ describe('user model', function () {
             , wrongPromise(done));
       }, wrongPromise(done));
     });
-
   });
 
   describe('findByResetToken', function () {
@@ -315,86 +315,79 @@ describe('user model', function () {
 
   describe('logout', function () {
     it('should logout', function (done) {
-      createDefaultSession().then(() => {
-        createDefaultUser().then(user => {
-          findFromSession({data: defaultUser.email}).then((sessionData) => {
-            expect(sessionData).to.not.be.null;
-            user.logOut().then(() => {
-              findFromSession({data: defaultUser.email}).then((sessionData) => {
-                expect(sessionData).to.be.null;
-                done();
-              }, wrongPromise(done));
-            }, wrongPromise(done))
-          }, wrongPromise(done));
-        }, wrongPromise(done));
-      }, wrongPromise(done));
+      var createdUser;
+      createDefaultUser()
+        .then((user) => {
+          createdUser = user
+        })
+        .then(() => createSession(createdUser.email))
+        .then(() => findFromSession({data: createdUser.email}))
+        .then((sessionData) => expect(sessionData).to.not.be.null)
+        .then(() => createdUser.logOut())
+        .then(() => findFromSession({data: createdUser.email}))
+        .then((sessionData) => expect(sessionData).to.be.null)
+        .then(() => done())
+        .catch(wrongPromise(done));
     });
   });
 
   describe('toggle user', function () {
+
     it('should be able to disable the user', function (done) {
-      createDefaultUser({disabled: false}).then(() => {
-        User.find(defaultUser.email).then((user) => {
-          user.toggleDisabled(true).then(() => {
-            User.find(defaultUser.email).then((updatedUser) => {
-              expect(updatedUser.disabled).to.be.true;
-              done();
-            }, wrongPromise(done));
-          }, wrongPromise(done));
-        }, wrongPromise(done));
-      }, wrongPromise(done));
+      var createdUser;
+      createDefaultUser({disabled: false})
+        .then((user) => createdUser = user)
+        .then(() => User.find(createdUser.email))
+        .then((user) => user.toggleDisabled(true))
+        .then(() => User.find(createdUser.email))
+        .then((updatedUser) => expect(updatedUser.disabled).to.be.true)
+        .then(()=> done())
+        .catch(wrongPromise(done));
     });
 
     it('should be able to enable the user', function (done) {
-      createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
-          user.toggleDisabled(true).then(() => {
-            User.find(defaultUser.email).then((user) => {
-              user.toggleDisabled(false).then(() => {
-                User.find(defaultUser.email).then((updatedUser) => {
-                  expect(updatedUser.disabled).to.be.false;
-                  expect(updatedUser.login_counter).to.be.equal(0);
-                  done();
-                }, wrongPromise(done));
-              }, wrongPromise(done));
-            }, wrongPromise(done));
-          }, wrongPromise(done));
-        }, wrongPromise(done));
-      }, wrongPromise(done));
+      var createdUser;
+      createDefaultUser()
+        .then(user => createdUser = user)
+        .then(() => User.find(createdUser.email))
+        .then((user) => user.toggleDisabled(true))
+        .then(() => User.find(createdUser.email))
+        .then((user) => user.toggleDisabled(false))
+        .then(() => User.find(createdUser.email))
+        .then((updatedUser) => {
+          expect(updatedUser.disabled).to.be.false;
+          expect(updatedUser.login_counter).to.be.equal(0);
+        }).then(()=> done())
+        .catch(wrongPromise(done));
     });
   });
 
-  describe('increment login count', function () {
-    it('should update the login count', function (done) {
-      createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
-          user.incrementLoginCount().then(() => {
-            User.find(defaultUser.email).then((updatedUser) => {
-              expect(updatedUser.login_counter).to.be.equal(1);
-              done();
-            }, wrongPromise(done));
-          }, wrongPromise(done));
-        }, wrongPromise(done));
-      }, wrongPromise(done));
-    });
-  });
+  describe('login count', function () {
 
-  describe('reset login count', function () {
+    it('should increment the login count', function (done) {
+      var createdUser;
+      createDefaultUser()
+        .then(user => createdUser = user)
+        .then(() => User.find(createdUser.email))
+        .then((user) => user.incrementLoginCount())
+        .then(() => User.find(createdUser.email))
+        .then((updatedUser) => expect(updatedUser.login_counter).to.be.equal(1))
+        .then(done())
+        .catch(wrongPromise(done));
+    });
+
     it('should reset the login count', function (done) {
-      createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
-          user.incrementLoginCount().then(() => {
-            User.find(defaultUser.email).then((user) => {
-              user.resetLoginCount().then(() => {
-                User.find(defaultUser.email).then((updatedUser) => {
-                  expect(updatedUser.login_counter).to.be.equal(0);
-                  done();
-                }, wrongPromise(done));
-              }, wrongPromise(done));
-            }, wrongPromise(done));
-          }, wrongPromise(done));
-        }, wrongPromise(done));
-      }, wrongPromise(done));
+      var createdUser;
+      createDefaultUser()
+        .then(user => createdUser = user)
+        .then(() => User.find(createdUser.email))
+        .then((user) => user.incrementLoginCount())
+        .then(() => User.find(createdUser.email))
+        .then((user) => user.resetLoginCount())
+        .then(() => User.find(createdUser.email))
+        .then(updatedUser => expect(updatedUser.login_counter).to.be.equal(0))
+        .then(() => done())
+        .catch(wrongPromise(done));
     });
   });
 

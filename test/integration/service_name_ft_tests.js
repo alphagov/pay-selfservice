@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -7,10 +8,6 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var ACCOUNT_ID = 182364;
 
@@ -25,13 +22,6 @@ var aCorrelationHeader = {
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCOUNT_SERVICE_NAME_PATH = CONNECTOR_ACCOUNT_PATH + "/servicename";
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
-
-function sync_db() {
-  return Permission.sequelize.sync({force: true})
-    .then(() => Role.sequelize.sync({force: true}))
-    .then(() => User.sequelize.sync({force: true}))
-    .then(() => UserRole.sequelize.sync({force: true}))
-}
 
 function build_get_request(path) {
   return request(app)
@@ -70,8 +60,7 @@ function build_form_post_request(path, sendData, sendCSRF) {
       });
 
       before(function (done) {
-        var roleDef;
-        var permissionDef;
+        winston.level = 'none';
         var userAttributes = {
           username: user.username,
           password: 'password10',
@@ -79,15 +68,7 @@ function build_form_post_request(path, sendData, sendCSRF) {
           email: user.email,
           telephone_number: "1"
         };
-        winston.level = 'none';
-        sync_db()
-          .then(()=> Permission.sequelize.create({name: 'service-name:read', description: 'Read service name'}))
-          .then((permission)=> permissionDef = permission)
-          .then(()=> Role.sequelize.create({name: 'Read', description: "User can read stuff"}))
-          .then((role)=> roleDef = role)
-          .then(()=> roleDef.setPermissions([permissionDef]))
-          .then(()=> User.create(userAttributes, roleDef))
-          .then(()=> done());
+        userPermissions.create(userAttributes, 'service-name:read', done);
       });
 
       it('should display received service name from connector', function (done) {
@@ -145,8 +126,6 @@ describe('The provider update service name endpoint', function () {
   });
 
   before(function (done) {
-    var roleDef;
-    var permissionDef;
     var userAttributes = {
       username: user.username,
       password: 'password10',
@@ -154,15 +133,7 @@ describe('The provider update service name endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    winston.level = 'none';
-    sync_db()
-      .then(()=> Permission.sequelize.create({name: 'service-name:update', description: 'Update service name'}))
-      .then((permission)=> permissionDef = permission)
-      .then(()=> Role.sequelize.create({name: 'Update', description: "User can update stuff"}))
-      .then((role)=> roleDef = role)
-      .then(()=> roleDef.setPermissions([permissionDef]))
-      .then(()=> User.create(userAttributes, roleDef))
-      .then(()=> done());
+    userPermissions.create(userAttributes, 'service-name:update', done);
   });
 
   it('should send new service name to connector', function (done) {

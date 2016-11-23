@@ -1,4 +1,5 @@
 var dbMock       = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request      = require('supertest');
 var _app         = require(__dirname + '/../../server.js').getApp;
 var winston      = require('winston');
@@ -8,10 +9,6 @@ var csrf         = require('csrf');
 var should       = require('chai').should();
 var paths        = require(__dirname + '/../../app/paths.js');
 var session      = require(__dirname + '/../test_helpers/mock_session.js');
-var User = require(__dirname + '/../../app/models/user.js');
-var Permission = require(__dirname + '/../../app/models/permission.js');
-var Role = require(__dirname + '/../../app/models/role.js');
-var UserRole = require(__dirname + '/../../app/models/user_role.js');
 
 var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
@@ -19,7 +16,6 @@ var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
 var app     = session.mockValidAccount(_app, ACCOUNT_ID);
-var nocsrf  = session.mockValidAccount(_app, ACCOUNT_ID,{noCSRF: true});
 var user = session.user;
 
 portfinder.getPort(function(err, freePort) {
@@ -31,13 +27,6 @@ portfinder.getPort(function(err, freePort) {
 
   var localServer = 'http://localhost:' + freePort;
   var serverMock = nock(localServer, aCorrelationHeader);
-
-  function sync_db() {
-    return Permission.sequelize.sync({force: true})
-      .then(() => Role.sequelize.sync({force: true}))
-      .then(() => User.sequelize.sync({force: true}))
-      .then(() => UserRole.sequelize.sync({force: true}))
-  }
 
   function build_get_request(path) {
     return request(app)
@@ -91,8 +80,7 @@ portfinder.getPort(function(err, freePort) {
       describe('The /tokens/revoked endpoint (read revoked tokens)', function() {
 
         before(function (done) {
-          var roleDef;
-          var permissionDef;
+          winston.level = 'none';
           var userAttributes = {
             username: user.username,
             password: 'password10',
@@ -100,15 +88,7 @@ portfinder.getPort(function(err, freePort) {
             email: user.email,
             telephone_number: "1"
           };
-          winston.level = 'none';
-          sync_db()
-            .then(()=> Permission.sequelize.create({name: 'tokens-revoked:read', description: 'Read revoked tokens'}))
-            .then((permission)=> permissionDef = permission)
-            .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
-            .then((role)=> roleDef = role)
-            .then(()=> roleDef.setPermissions([permissionDef]))
-            .then(()=> User.create(userAttributes, roleDef))
-            .then(()=> done());
+          userPermissions.create(userAttributes, 'tokens-revoked:read', done);
         });
 
         it('should return an empty list of tokens if no tokens have been revoked yet', function (done) {
@@ -187,8 +167,7 @@ portfinder.getPort(function(err, freePort) {
       describe('The GET /tokens endpoint (read active tokens)', function() {
 
         before(function (done) {
-          var roleDef;
-          var permissionDef;
+          winston.level = 'none';
           var userAttributes = {
             username: user.username,
             password: 'password10',
@@ -196,15 +175,7 @@ portfinder.getPort(function(err, freePort) {
             email: user.email,
             telephone_number: "1"
           };
-          winston.level = 'none';
-          sync_db()
-            .then(()=> Permission.sequelize.create({name: 'tokens-active:read', description: 'Read active tokens'}))
-            .then((permission)=> permissionDef = permission)
-            .then(()=> Role.sequelize.create({name: 'View', description: "View Stuff"}))
-            .then((role)=> roleDef = role)
-            .then(()=> roleDef.setPermissions([permissionDef]))
-            .then(()=> User.create(userAttributes, roleDef))
-            .then(()=> done());
+          userPermissions.create(userAttributes, 'tokens-active:read', done);
         });
 
         it('should return an empty list of tokens if no tokens have been issued yet', function (done){
@@ -283,8 +254,7 @@ portfinder.getPort(function(err, freePort) {
     describe('The PUT /tokens endpoint (update token - description)', function() {
 
       before(function (done) {
-        var roleDef;
-        var permissionDef;
+        winston.level = 'none';
         var userAttributes = {
           username: user.username,
           password: 'password10',
@@ -292,15 +262,7 @@ portfinder.getPort(function(err, freePort) {
           email: user.email,
           telephone_number: "1"
         };
-        winston.level = 'none';
-        sync_db()
-          .then(()=> Permission.sequelize.create({name: 'tokens:update', description: 'Update tokens'}))
-          .then((permission)=> permissionDef = permission)
-          .then(()=> Role.sequelize.create({name: 'update', description: "Update Stuff"}))
-          .then((role)=> roleDef = role)
-          .then(()=> roleDef.setPermissions([permissionDef]))
-          .then(()=> User.create(userAttributes, roleDef))
-          .then(()=> done());
+        userPermissions.create(userAttributes, 'tokens:update', done);
       });
 
       it('should update the description', function (done){
@@ -368,9 +330,9 @@ portfinder.getPort(function(err, freePort) {
 
     describe('The DELETE /tokens endpoint (delete tokens)', function() {
 
+
       before(function (done) {
-        var roleDef;
-        var permissionDef;
+        winston.level = 'none';
         var userAttributes = {
           username: user.username,
           password: 'password10',
@@ -378,15 +340,7 @@ portfinder.getPort(function(err, freePort) {
           email: user.email,
           telephone_number: "1"
         };
-        winston.level = 'none';
-        sync_db()
-          .then(()=> Permission.sequelize.create({name: 'tokens:delete', description: 'Delete tokens'}))
-          .then((permission)=> permissionDef = permission)
-          .then(()=> Role.sequelize.create({name: 'delete', description: "Delete Stuff"}))
-          .then((role)=> roleDef = role)
-          .then(()=> roleDef.setPermissions([permissionDef]))
-          .then(()=> User.create(userAttributes, roleDef))
-          .then(()=> done());
+        userPermissions.create(userAttributes, 'tokens:delete', done);
       });
 
       it('should revoke and existing token', function (done){
@@ -451,8 +405,7 @@ portfinder.getPort(function(err, freePort) {
       describe('The /tokens/generate endpoint (create tokens and show generated token)', function() {
 
         before(function (done) {
-          var roleDef;
-          var permissionDef;
+          winston.level = 'none';
           var userAttributes = {
             username: user.username,
             password: 'password10',
@@ -460,15 +413,7 @@ portfinder.getPort(function(err, freePort) {
             email: user.email,
             telephone_number: "1"
           };
-          winston.level = 'none';
-          sync_db()
-            .then(()=> Permission.sequelize.create({name: 'tokens:create', description: 'Create tokens'}))
-            .then((permission)=> permissionDef = permission)
-            .then(()=> Role.sequelize.create({name: 'tokens:manager', description: "Tokens Manager"}))
-            .then((role)=> roleDef = role)
-            .then(()=> roleDef.setPermissions([permissionDef]))
-            .then(()=> User.create(userAttributes, roleDef))
-            .then(()=> done());
+          userPermissions.create(userAttributes, 'tokens:create', done);
         });
 
         it('should create a token successfully', function (done){
