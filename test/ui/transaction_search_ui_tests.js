@@ -19,7 +19,19 @@ describe('The transaction list view', function () {
                       'status': 'testing2',
                       'finished': true
                     },
-                    'card_brand': 'Visa',
+                    'card_details': {
+                        'billing_address': {
+                            'city': 'TEST',
+                            'country': 'GB',
+                            'line1': 'TEST',
+                            'line2': 'TEST - DO NOT PROCESS',
+                            'postcode': 'SE1 3UZ'
+                        },
+                        'card_brand': 'Visa',
+                        'cardholder_name': 'TEST',
+                        'expiry_date': '12/19',
+                        'last_digits_card_number': '4242'
+                    },
                     'created': '2016-01-11 01:01:01'
                 },
                 {
@@ -32,7 +44,19 @@ describe('The transaction list view', function () {
                       'status': 'testing2',
                       'finished': false
                     },
-                    'card_brand': 'Mastercard',
+                    'card_details': {
+                        'billing_address': {
+                            'city': 'TEST',
+                            'country': 'GB',
+                            'line1': 'TEST',
+                            'line2': 'TEST - DO NOT PROCESS',
+                            'postcode': 'SE1 3UZ'
+                        },
+                        'card_brand': 'Mastercard',
+                        'cardholder_name': 'TEST',
+                        'expiry_date': '12/19',
+                        'last_digits_card_number': '4242'
+                    },
                     'created': '2016-01-11 01:01:01'
                 }
             ],
@@ -55,7 +79,7 @@ describe('The transaction list view', function () {
                 .withTableDataAt(1, templateData.results[ix].reference)
                 .withTableDataAt(2, templateData.results[ix].email)
                 .withTableDataAt(3, "£" + templateData.results[ix].amount)
-                .withTableDataAt(4, templateData.results[ix].card_brand)
+                .withTableDataAt(4, templateData.results[ix].card_details.card_brand)
                 .withTableDataAt(5, templateData.results[ix].state_friendly)
                 .withTableDataAt(6, templateData.results[ix].created);
         });
