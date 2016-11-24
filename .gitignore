@@ -11,7 +11,8 @@ govuk_modules
 node_modules/*
 */node_modules/*
 database.sqlite
-
+nightwatch-reports
+nightwatch-screenshots
 *.txt
 *.log
 

@@ -1,6 +1,8 @@
 var environment  = require(__dirname + '/app/services/environment.js');
+var selenium     = require('selenium-server-standalone-jar');
+var chromedriver = require('chromedriver');
 
-module.exports = function(grunt){
+module.exports = function (grunt) {
   grunt.initConfig({
     // Clean
     clean: ['public', 'govuk_modules'],
@@ -36,12 +38,12 @@ module.exports = function(grunt){
           src: '**',
           dest: 'govuk_modules/govuk_frontend_toolkit/'
         },
-        {
-          expand: true,
-          cwd: 'node_modules/govuk-elements-sass',
-          src: '**',
-          dest: 'govuk_modules/govuk-elements-sass/'
-        }
+          {
+            expand: true,
+            cwd: 'node_modules/govuk-elements-sass',
+            src: '**',
+            dest: 'govuk_modules/govuk-elements-sass/'
+          }
         ]
       },
       html5shiv: {
@@ -59,12 +61,12 @@ module.exports = function(grunt){
           src: ['**/*', '!sass/**'],
           dest: 'public/'
         },
-        {
-          expand: true,
-          cwd: 'govuk_modules/govuk_frontend_toolkit/images/',
-          src: ['**/*', '!sass/**'],
-          dest: 'public/images/icons'
-        }]
+          {
+            expand: true,
+            cwd: 'govuk_modules/govuk_frontend_toolkit/images/',
+            src: ['**/*', '!sass/**'],
+            dest: 'public/images/icons'
+          }]
       },
     },
 
@@ -89,7 +91,7 @@ module.exports = function(grunt){
           spawn: false,
         }
       },
-      assets:{
+      assets: {
         files: ['app/assets/**/*', '!app/assets/sass/**'],
         tasks: ['copy:assets'],
         options: {
@@ -111,19 +113,20 @@ module.exports = function(grunt){
     },
 
     concurrent: {
-        target: {
-            tasks: ['watch', 'nodemon'],
-            options: {
-                logConcurrentOutput: true
-            }
+      target: {
+        tasks: ['watch', 'nodemon'],
+        options: {
+          logConcurrentOutput: true
         }
+      }
     },
 
     mochaTest: {
       run: {
         src: grunt.option('only') ? [grunt.option('only')] : [
           'test/**/*.js',
-          '!test/test_helpers/*.js'
+          '!test/test_helpers/*.js',
+          '!test/nightwatch/*'
         ]
       },
       test: {
@@ -133,6 +136,28 @@ module.exports = function(grunt){
         }
       }
     },
+
+    nightwatch: {
+      options: {
+        test_workers:  {
+          "enabled" : false,
+        },
+        "selenium" : {
+          "start_process" : true,
+          "server_path" : selenium.path,
+          "log_path" : "./logs",
+          "host" : "127.0.0.1",
+          "port" : 4444,
+          "cli_args" : {
+            "webdriver.chrome.driver" : chromedriver.path,
+          }
+        }
+      },
+      custom: {
+        config_path: '/nightwatch.json'
+      }
+    },
+
     env: {
       test: {
         src: "config/test-env.json"
@@ -141,9 +166,7 @@ module.exports = function(grunt){
         src: "config/dev-env.json"
       }
     }
-
   });
-
 
 
   [
@@ -155,6 +178,7 @@ module.exports = function(grunt){
     'grunt-text-replace',
     'grunt-concurrent',
     'grunt-mocha-test',
+    'grunt-nightwatch',
     'grunt-env'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task);
@@ -167,25 +191,25 @@ module.exports = function(grunt){
     'sass'
   ]);
 
-  grunt.registerTask('test', ['env:test','generate-assets', 'mochaTest']);
+  grunt.registerTask('test', ['env:test', 'generate-assets', 'mochaTest', 'nightwatch']);
 
   var defaultTasks = [
-      'generate-assets',
-      'concurrent:target'
+    'generate-assets',
+    'concurrent:target'
   ];
 
   if (process.env.LOCAL_ENV) {
     defaultTasks.unshift('env:dev');
   }
 
-  grunt.registerTask('default',defaultTasks);
+  grunt.registerTask('default', defaultTasks);
 
-  grunt.event.on('watch', function(action, filepath, target) {
+  grunt.event.on('watch', function (action, filepath, target) {
 
     // just copy the asset that was changed, not all of them
 
-    if (target == "assets"){
-      grunt.config('copy.assets.files.0.src', filepath.replace("app/assets/",""));
+    if (target == "assets") {
+      grunt.config('copy.assets.files.0.src', filepath.replace("app/assets/", ""));
     }
 
   });
