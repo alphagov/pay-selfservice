@@ -14,6 +14,7 @@ module.exports.index = function (req, res) {
 
   var init = function () {
     var accountId = auth.get_gateway_account_id(req);
+    console.log('Account id is', accountId);
     var params = {
       gatewayAccountId: accountId,
       correlationId: correlationId

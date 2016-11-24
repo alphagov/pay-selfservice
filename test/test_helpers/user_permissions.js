@@ -10,17 +10,17 @@ function sync_db() {
     .then(() => UserRole.sequelize.sync({force: true}))
 }
 
-function create(user, permissionName, cb) {
+function create(user, permissionName, done) {
   var roleDef;
   var permissionDef;
-  sync_db()
+  return sync_db()
     .then(()=> Permission.sequelize.create({name: permissionName, description: 'Permission Desc'}))
     .then((permission)=> permissionDef = permission)
     .then(()=> Role.sequelize.create({name: 'Role', description: "Role Desc"}))
     .then((role)=> roleDef = role)
     .then(()=> roleDef.setPermissions([permissionDef]))
     .then(()=> User.create(user, roleDef))
-    .then(()=> cb());
+    .then(()=> {if(done) done()});
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
-var environment  = require(__dirname + '/app/services/environment.js');
-var selenium     = require('selenium-server-standalone-jar');
+var environment = require(__dirname + '/app/services/environment.js');
+var selenium = require('selenium-server-standalone-jar');
 var chromedriver = require('chromedriver');
 
 module.exports = function (grunt) {
@@ -139,23 +139,62 @@ module.exports = function (grunt) {
 
     nightwatch: {
       options: {
-        test_workers:  {
-          "enabled" : false,
+        "src_folders": [
+          "./test/nightwatch/tests"
+        ],
+        "output_folder": "./nightwatch-reports",
+        "custom_commands_path": "./test/nightwatch/command",
+        "custom_assertions_path": "./test/nightwatch/assertion",
+        "page_objects_path": "./test/nightwatch/page",
+        "live_output": true,
+        "disable_colors": false,
+        "end_session_on_fail": true,
+        test_workers: {
+          "enabled": false,
         },
-        "selenium" : {
-          "start_process" : true,
-          "server_path" : selenium.path,
-          "log_path" : "./logs",
-          "host" : "127.0.0.1",
-          "port" : 4444,
-          "cli_args" : {
-            "webdriver.chrome.driver" : chromedriver.path,
+        "test_settings": {
+          "default": {
+            "launch_url": "http://localhost",
+            "selenium_port": 4444,
+            "selenium_host": "localhost",
+            "silent": true,
+            "screenshots": {
+              "enabled": true,
+              "path": "./nightwatch-screenshots"
+            },
+            "desiredCapabilities": {
+              "browserName": "phantomjs",
+              "javascriptEnabled": true,
+            }
+          },
+          "chrome": {
+            "desiredCapabilities": {
+              "browserName": "chrome",
+              "javascriptEnabled": true
+            }
+          }
+        },
+        "test_runner": {
+          "type": "mocha",
+          "options": {
+            "ui": "bdd",
+            "reporter": "list"
+          }
+        },
+        "selenium": {
+          "start_process": true,
+          "server_path": selenium.path,
+          "log_path": "./logs",
+          "host": "127.0.0.1",
+          "port": 4444,
+          "cli_args": {
+            "webdriver.chrome.driver": chromedriver.path,
           }
         }
-      },
-      custom: {
-        config_path: '/nightwatch.json'
-      }
+      }/*,
+       custom: {
+       config_path: '/nightwatch.json'
+       }*/
     },
 
     env: {

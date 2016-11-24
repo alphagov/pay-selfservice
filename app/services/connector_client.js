@@ -95,6 +95,7 @@ function _createOnErrorEventHandler(self) {
 
 /** @private */
 function _accountUrlFor(gatewayAccountId, url) {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _accountUrlFor ' + gatewayAccountId, url);
   return url + ACCOUNT_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
 };
 
@@ -110,6 +111,7 @@ function _cardTypesUrlFor(url) {
 
 /** @private */
 function _serviceNameUrlFor(gatewayAccountId, url) {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _serviceNameUrlFor ' + gatewayAccountId, url);
   return url + SERVICE_NAME_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
 };
 
@@ -220,6 +222,7 @@ ConnectorClient.prototype = {
    *          Callback function for successful refunds
    */
   withGetAccount: function (params, successCallback) {
+    console.log('calling withGetAccount');
     var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl);
 
     logger.debug('Calling connector to get account -', {
