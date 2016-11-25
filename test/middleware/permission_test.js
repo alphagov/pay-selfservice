@@ -14,7 +14,7 @@ describe('permission test', function () {
     var nextSpy = sinon.spy();
     var permissionMiddleware = permission({});
 
-    permissionMiddleware()({body: {username: "foo"}, headers: {}}, {}, nextSpy);
+    permissionMiddleware()({user: {username: "foo"}, headers: {}}, {}, nextSpy);
 
     assert(nextSpy.called);
   });
@@ -39,7 +39,7 @@ describe('permission test', function () {
     var nextSpy = sinon.spy();
     var permissionMiddleware = permission(user);
 
-    permissionMiddleware('refunds:create')({body: {username: "foo"}, headers: {}}, {}, nextSpy);
+    permissionMiddleware('refunds:create')({user: {username: "foo"}, headers: {}}, {}, nextSpy);
 
     assert(nextSpy.called);
   });
@@ -66,7 +66,7 @@ describe('permission test', function () {
     var res = {render: sinon.spy()};
     var permissionMiddleware = permission(user);
 
-    permissionMiddleware('refunds:create')({body: {username: "foo"}, headers: {}}, res, nextSpy);
+    permissionMiddleware('refunds:create')({user: {username: "foo"}, headers: {}}, res, nextSpy);
 
     assert(nextSpy.notCalled);
     assert(res.render.calledWithExactly('error', {'message': 'You are not Authorized to do this operation'}))
@@ -84,7 +84,7 @@ describe('permission test', function () {
     var nextSpy = sinon.spy();
     var permissionMiddleware = permission(user);
 
-    expect(() => permissionMiddleware('refunds:create')({body: {username: "foo"}, headers: {}}, {}, nextSpy))
+    expect(() => permissionMiddleware('refunds:create')({user: {username: "foo"}, headers: {}}, {}, nextSpy))
       .to.throw(Error, "Could not get user");
 
     assert(nextSpy.notCalled);
@@ -111,7 +111,7 @@ describe('permission test', function () {
     var nextSpy = sinon.spy();
     var permissionMiddleware = permission(user);
 
-    expect(() => permissionMiddleware('refunds:create')({body: {username: "foo"}, headers: {}}, {}, nextSpy))
+    expect(() => permissionMiddleware('refunds:create')({user: {username: "foo"}, headers: {}}, {}, nextSpy))
       .to.throw(Error, "Could not check user permission");
 
     assert(nextSpy.notCalled);

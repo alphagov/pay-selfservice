@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -7,22 +8,19 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var ACCOUNT_ID = 182364;
 var expect = require("chai").expect;
 var _ = require('lodash');
-
-var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
-
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
-
-var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
-var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
-var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = CONNECTOR_ACCOUNT_PATH + "/card-types";
 
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
 };
+var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
+var ACCOUNT_ID = 182364;
+var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var user = session.user;
+var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
+var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID + "/card-types";
 
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
 
@@ -66,9 +64,16 @@ function build_form_post_request(path, sendData, sendCSRF) {
 
 describe('The payment types endpoint,', function () {
   describe('render select brand view,', function () {
-    before(function () {
-      // Disable logging.
-      winston.level = 'none';
+
+    before(function (done) {
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
+      userPermissions.create(userAttributes, 'payment-types:read', done);
     });
 
     beforeEach(function () {
@@ -250,9 +255,15 @@ describe('The payment types endpoint,', function () {
       nock.cleanAll();
     });
 
-    before(function () {
-      // Disable logging.
-      winston.level = 'none';
+    before(function (done) {
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
+      userPermissions.create(userAttributes, 'payment-types:update', done);
     });
 
     it('should post debit and credit card options if accepted type is debit and credit cards', function (done) {

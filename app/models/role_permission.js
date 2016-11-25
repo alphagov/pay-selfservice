@@ -2,21 +2,21 @@ var sequelizeConfig = require('../utils/sequelize_config.js');
 var sequelizeConnection = sequelizeConfig.sequelize;
 var Sequelize = require('sequelize');
 
-var UserRole = sequelizeConnection.define('user_role', {
+var RolePermission = sequelizeConnection.define('role_permission', {
     role_id: Sequelize.INTEGER,
-    user_id: Sequelize.INTEGER
+    permission_id: Sequelize.INTEGER
   },
   {
-    tableName: 'user_role',
+    tableName: 'role_permission',
     indexes: [
       {
-        name: 'userRoleIndex',
+        name: 'rolePermissionIndex',
         unique: true,
-        fields: ['user_id', 'role_id']
+        fields: ['role_id', 'permission_id']
       }
     ]
   });
 
 module.exports = {
-  sequelize: UserRole,
+  sequelize: RolePermission,
 };

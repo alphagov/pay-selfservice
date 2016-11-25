@@ -18,5 +18,4 @@
   "DATABASE_URL": "postgres://foo",
   "LOGIN_ATTEMPT_CAP": 2,
   "DISABLE_REQUEST_LOGGING": "true"
-
 }

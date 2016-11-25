@@ -1,5 +1,6 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var nock = require('nock');
 var _ = require('lodash');
@@ -13,6 +14,7 @@ var expect = require('chai').expect;
 
 var gatewayAccountId = 651342;
 var app = session.mockValidAccount(_app, gatewayAccountId);
+var user = session.user;
 
 var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 var connectorMock = nock(process.env.CONNECTOR_URL, {
@@ -47,9 +49,15 @@ describe('Transaction download endpoints', function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
-    winston.level = 'none';
+  before(function (done) {
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
+    userPermissions.create(userAttributes, 'transactions-download:read', done);
   });
 
   describe('The /transactions/download endpoint', function () {

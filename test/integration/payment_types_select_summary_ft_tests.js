@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -7,14 +8,11 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var ACCOUNT_ID = 182364;
-var expect = require("chai").expect;
 var _ = require('lodash');
 
-var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
-
+var ACCOUNT_ID = 182364;
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
-
+var user = session.user;
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
@@ -56,9 +54,15 @@ describe('The payment types endpoint,', function () {
       nock.cleanAll();
     });
 
-    before(function () {
-      // Disable logging.
-      winston.level = 'none';
+    before(function (done) {
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
+      userPermissions.create(userAttributes, 'payment-types:read', done);
     });
 
     it('should show all the card type options that have been previously accepted', function (done) {

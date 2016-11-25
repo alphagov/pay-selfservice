@@ -1,6 +1,7 @@
 var request     = require('supertest');
 var nock        = require('nock');
 var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
 var paths       = require(__dirname + '/../../app/paths.js');
@@ -9,10 +10,8 @@ var session     = require(__dirname + '/../test_helpers/mock_session.js');
 var gatewayAccountId = ACCOUNT_ID = 15486734;
 
 var app = session.mockValidAccount(_app,gatewayAccountId);
+var user = session.user;
 var chargeId = 452345;
-var chargeWithRefund = 12345;
-var CONNECTOR_EVENTS_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events';
-var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
 
 var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/charges/{chargeId}';
 var connectorMock = nock(process.env.CONNECTOR_URL);
@@ -38,9 +37,15 @@ describe('The transaction view scenarios', function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
-    winston.level = 'none';
+  before(function (done) {
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
+    userPermissions.create(userAttributes, 'transactions-details:read', done);
   });
 
   describe('The transaction history endpoint', function () {

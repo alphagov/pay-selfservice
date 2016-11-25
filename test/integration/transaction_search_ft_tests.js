@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var csrf = require('csrf');
 var nock = require('nock');
@@ -13,6 +14,7 @@ var _ = require('lodash');
 var gatewayAccountId = 452345;
 
 var app = session.mockValidAccount(_app, gatewayAccountId);
+var user = session.user;
 
 var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
@@ -55,9 +57,16 @@ function search_transactions(data) {
 describe('Transactions endpoints', function () {
   describe('The search transactions endpoint', function () {
 
-    before(function () {
-      // Disable logging.
+    before(function (done) {
       winston.level = 'none';
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
+      userPermissions.create(userAttributes, 'transactions:read', done);
     });
 
     beforeEach(function () {

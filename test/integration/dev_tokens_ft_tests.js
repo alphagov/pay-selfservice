@@ -1,4 +1,5 @@
 var dbMock       = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request      = require('supertest');
 var _app         = require(__dirname + '/../../server.js').getApp;
 var winston      = require('winston');
@@ -15,10 +16,10 @@ var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
 var app     = session.mockValidAccount(_app, ACCOUNT_ID);
-var nocsrf  = session.mockValidAccount(_app, ACCOUNT_ID,{noCSRF: true});
-
+var user = session.user;
 
 portfinder.getPort(function(err, freePort) {
+
   var requestId = 'unique-request-id';
   var aCorrelationHeader = {
     reqheaders: {'x-request-id': requestId}
@@ -76,7 +77,20 @@ portfinder.getPort(function(err, freePort) {
         winston.level = 'none';
       });
 
-      describe('The /tokens/revoked endpoint', function() {
+      describe('The /tokens/revoked endpoint (read revoked tokens)', function() {
+
+        before(function (done) {
+          winston.level = 'none';
+          var userAttributes = {
+            username: user.username,
+            password: 'password10',
+            gateway_account_id: user.gateway_account_id,
+            email: user.email,
+            telephone_number: "1"
+          };
+          userPermissions.create(userAttributes, 'tokens-revoked:read', done);
+        });
+
         it('should return an empty list of tokens if no tokens have been revoked yet', function (done) {
           serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
 
@@ -95,7 +109,8 @@ portfinder.getPort(function(err, freePort) {
             })
             .end(done);
         });
-        it('should return the account_id and the token list for the only revoked token', function (done){
+
+        it('should return the account_id and the token list for the only revoked token', function (done) {
 
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
@@ -149,7 +164,20 @@ portfinder.getPort(function(err, freePort) {
         });
       });
 
-      describe('The /tokens endpoint', function() {
+      describe('The GET /tokens endpoint (read active tokens)', function() {
+
+        before(function (done) {
+          winston.level = 'none';
+          var userAttributes = {
+            username: user.username,
+            password: 'password10',
+            gateway_account_id: user.gateway_account_id,
+            email: user.email,
+            telephone_number: "1"
+          };
+          userPermissions.create(userAttributes, 'tokens-active:read', done);
+        });
+
         it('should return an empty list of tokens if no tokens have been issued yet', function (done){
           serverMock.get(CONNECTOR_PATH.replace("{accountId}", ACCOUNT_ID)).reply(200);
 
@@ -221,138 +249,181 @@ portfinder.getPort(function(err, freePort) {
             })
             .end(done);
         });
+      });
 
-        it('should update the description', function (done){
-          serverMock.put(PUBLIC_AUTH_PATH, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          }).reply(200, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description",
-            "created_by": "test-user",
-            "issued_date": "18 Feb 2016 - 12:44",
-            "last_used": "23 Feb 2016 - 19:44"
-          });
+    describe('The PUT /tokens endpoint (update token - description)', function() {
 
-          build_put_request()
-            .expect(function(res){
-              if (!res.body.csrfToken)  throw new Error('no token');
-              delete res.body.csrfToken;
-            })
-            .expect(200, {
-              'token_link': '550e8400-e29b-41d4-a716-446655440000',
-              'description': "token description",
-              'created_by': "test-user",
-              'issued_date': "18 Feb 2016 - 12:44",
-              'last_used': "23 Feb 2016 - 19:44"
-            })
-            .end(done);
+      before(function (done) {
+        winston.level = 'none';
+        var userAttributes = {
+          username: user.username,
+          password: 'password10',
+          gateway_account_id: user.gateway_account_id,
+          email: user.email,
+          telephone_number: "1"
+        };
+        userPermissions.create(userAttributes, 'tokens:update', done);
+      });
+
+      it('should update the description', function (done){
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(200, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description",
+          "created_by": "test-user",
+          "issued_date": "18 Feb 2016 - 12:44",
+          "last_used": "23 Feb 2016 - 19:44"
         });
 
-        it('should not update the description without csrf', function (done){
-          serverMock.put(PUBLIC_AUTH_PATH, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          }).reply(200, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          });
+        build_put_request()
+          .expect(function(res){
+            if (!res.body.csrfToken)  throw new Error('no token');
+            delete res.body.csrfToken;
+          })
+          .expect(200, {
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': "token description",
+            'created_by': "test-user",
+            'issued_date': "18 Feb 2016 - 12:44",
+            'last_used': "23 Feb 2016 - 19:44"
+          })
+          .end(done);
+      });
 
-          build_put_request(false)
-            .expect(200, {
-              'message': 'There is a problem with the payments platform'
-            })
-            .end(done);
+      it('should not update the description without csrf', function (done){
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(200, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
         });
 
-        it('should forward the error status code when updating the description', function (done){
-          serverMock.put(PUBLIC_AUTH_PATH, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000',
-            "description": "token description"
-          }).reply(400, {});
+        build_put_request(false)
+          .expect(200, {
+            'message': 'There is a problem with the payments platform'
+          })
+          .end(done);
+      });
 
-          build_put_request()
-            .expect(400, {})
-            .end(done);
+      it('should forward the error status code when updating the description', function (done){
+        serverMock.put(PUBLIC_AUTH_PATH, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000',
+          "description": "token description"
+        }).reply(400, {});
 
-        });
-
-        it('should send 500 if any error happens while updating the resource', function (done){
-          // No serverMock defined on purpose to mock a network failure
-          build_put_request()
-            .expect(500, {})
-            .end(done);
-        });
-
-        it('should revoke and existing token', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(200, {"revoked": "15 Oct 2015"});
-
-          request(app)
-            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('x-request-id',requestId)
-            .send({ csrfToken: csrf().create('123') })
-            .expect(200, {"revoked": "15 Oct 2015"})
-            .end(done);
-
-        });
-
-        it('should fail if no csrf', function (done){
-
-          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(200, {"revoked": "15 Oct 2015"});
-
-          request(app)
-            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('x-request-id',requestId)
-            .set('Accept', 'application/json')
-            .expect(200, {message: "There is a problem with the payments platform"})
-            .end(done);
-        });
-
-        it('should forward the error status code when revoking the token', function (done){
-          serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
-            "token_link": '550e8400-e29b-41d4-a716-446655440000'
-          }).reply(400, {});
-
-          request(app)
-            .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
-            .set('x-request-id',requestId)
-            .send({ csrfToken: csrf().create('123') })
-            .expect(400, {})
-            .end(done);
-        });
-
-
-        it('should send 500 if any error happens while updating the resource', function (done){
-
-          // No serverMock defined on purpose to mock a network failure
-          request(app)
-            .delete(paths.devTokens.index)
-            .set('x-request-id',requestId)
-            .send({
-              token_link: '550e8400-e29b-41d4-a716-446655440000',
-              csrfToken: csrf().create('123')
-
-            })
-            .expect(500, {})
-            .end(done);
-        });
+        build_put_request()
+          .expect(400, {})
+          .end(done);
 
       });
 
-      describe('The /tokens/generate endpoint', function() {
+      it('should send 500 if any error happens while updating the resource', function (done){
+        // No serverMock defined on purpose to mock a network failure
+        build_put_request()
+          .expect(500, {})
+          .end(done);
+      });
+    });
+
+    describe('The DELETE /tokens endpoint (delete tokens)', function() {
+
+
+      before(function (done) {
+        winston.level = 'none';
+        var userAttributes = {
+          username: user.username,
+          password: 'password10',
+          gateway_account_id: user.gateway_account_id,
+          email: user.email,
+          telephone_number: "1"
+        };
+        userPermissions.create(userAttributes, 'tokens:delete', done);
+      });
+
+      it('should revoke and existing token', function (done){
+
+        serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000'
+        }).reply(200, {"revoked": "15 Oct 2015"});
+
+        request(app)
+          .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+          .set('x-request-id',requestId)
+          .send({ csrfToken: csrf().create('123') })
+          .expect(200, {"revoked": "15 Oct 2015"})
+          .end(done);
+
+      });
+
+      it('should fail if no csrf', function (done){
+
+        serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000'
+        }).reply(200, {"revoked": "15 Oct 2015"});
+
+        request(app)
+          .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+          .set('x-request-id',requestId)
+          .set('Accept', 'application/json')
+          .expect(200, {message: "There is a problem with the payments platform"})
+          .end(done);
+      });
+
+      it('should forward the error status code when revoking the token', function (done){
+        serverMock.delete(PUBLIC_AUTH_PATH + "/" + ACCOUNT_ID, {
+          "token_link": '550e8400-e29b-41d4-a716-446655440000'
+        }).reply(400, {});
+
+        request(app)
+          .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
+          .set('x-request-id',requestId)
+          .send({ csrfToken: csrf().create('123') })
+          .expect(400, {})
+          .end(done);
+      });
+
+
+      it('should send 500 if any error happens while updating the resource', function (done){
+
+        // No serverMock defined on purpose to mock a network failure
+        request(app)
+          .delete(paths.devTokens.index)
+          .set('x-request-id',requestId)
+          .send({
+            token_link: '550e8400-e29b-41d4-a716-446655440000',
+            csrfToken: csrf().create('123')
+
+          })
+          .expect(500, {})
+          .end(done);
+      });
+    });
+
+      describe('The /tokens/generate endpoint (create tokens and show generated token)', function() {
+
+        before(function (done) {
+          winston.level = 'none';
+          var userAttributes = {
+            username: user.username,
+            password: 'password10',
+            gateway_account_id: user.gateway_account_id,
+            email: user.email,
+            telephone_number: "1"
+          };
+          userPermissions.create(userAttributes, 'tokens:create', done);
+        });
 
         it('should create a token successfully', function (done){
+
           serverMock.get(CONNECTOR_PATH.replace("{accountId}",ACCOUNT_ID)).reply(200);
 
           serverMock.post(PUBLIC_AUTH_PATH, {
             "account_id": ACCOUNT_ID,
             "description": "description",
-            "created_by": "user@email.com"
+            "created_by": user.email
           }).reply(200, {"token": TOKEN });
 
           build_form_post_request(paths.devTokens.create, {"description":'description'}, true)
@@ -425,11 +496,7 @@ portfinder.getPort(function(err, freePort) {
                  'message' : 'There is a problem with the payments platform'
               })
               .end(done);
-
           });
-
       });
-
     });
-
  });

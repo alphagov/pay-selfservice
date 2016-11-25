@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -7,9 +8,11 @@ var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
+
 var ACCOUNT_ID = 182364;
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var user = session.user;
 
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
@@ -43,11 +46,11 @@ function build_form_post_request(path, sendData, sendCSRF) {
 [
   {
     'path': paths.serviceName.index,
-    'edit': false
+    'edit': false,
   },
   {
     'path': paths.serviceName.edit,
-    'edit': true
+    'edit': true,
   }
 ].forEach(function (testSetup) {
 
@@ -56,9 +59,16 @@ function build_form_post_request(path, sendData, sendCSRF) {
         nock.cleanAll();
       });
 
-      before(function () {
-        // Disable logging.
+      before(function (done) {
         winston.level = 'none';
+        var userAttributes = {
+          username: user.username,
+          password: 'password10',
+          gateway_account_id: user.gateway_account_id,
+          email: user.email,
+          telephone_number: "1"
+        };
+        userPermissions.create(userAttributes, 'service-name:read', done);
       });
 
       it('should display received service name from connector', function (done) {
@@ -109,15 +119,21 @@ function build_form_post_request(path, sendData, sendCSRF) {
     });
   });
 
-
 describe('The provider update service name endpoint', function () {
+
   beforeEach(function () {
     nock.cleanAll();
   });
 
-  before(function () {
-    // Disable logging.
-    winston.level = 'none';
+  before(function (done) {
+    var userAttributes = {
+      username: user.username,
+      password: 'password10',
+      gateway_account_id: user.gateway_account_id,
+      email: user.email,
+      telephone_number: "1"
+    };
+    userPermissions.create(userAttributes, 'service-name:update', done);
   });
 
   it('should send new service name to connector', function (done) {

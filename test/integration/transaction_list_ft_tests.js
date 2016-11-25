@@ -1,4 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 var request = require('supertest');
 var nock = require('nock');
 var _app = require(__dirname + '/../../server.js').getApp;
@@ -6,11 +7,13 @@ var dates = require('../../app/utils/dates.js');
 var winston = require('winston');
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
+
 var CONNECTOR_DATE = "2016-02-10T12:44:01.000Z";
 var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
 var gatewayAccountId = 651342;
 
 var app = session.mockValidAccount(_app, gatewayAccountId);
+var user = session.user;
 
 var searchParameters = {};
 var CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
@@ -55,9 +58,15 @@ function get_transaction_list() {
 describe('Transactions endpoints', function () {
   describe('The /transactions endpoint', function () {
 
-    before(function () {
-      // Disable logging.
-      winston.level = 'none';
+    before(function (done) {
+      var userAttributes = {
+        username: user.username,
+        password: 'password10',
+        gateway_account_id: user.gateway_account_id,
+        email: user.email,
+        telephone_number: "1"
+      };
+      userPermissions.create(userAttributes, 'transactions:read', done);
     });
 
     beforeEach(function () {
