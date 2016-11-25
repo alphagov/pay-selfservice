@@ -62,6 +62,14 @@ describe('The logout endpoint', function () {
       .expect('Location', "/login")
       .end(done);
   });
+
+  it("should handle case where session expired", (done) => {
+    request(_app)
+      .get("/logout")
+      .expect(302)
+      .expect('Location', "/login")
+      .end(done);
+  });
 });
 
 

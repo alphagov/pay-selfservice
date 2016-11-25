@@ -1,5 +1,6 @@
 
 var logger    = require('winston');
+var _ = require('lodash');
 var response  = require('../utils/response.js').response;
 var router    = require('../routes.js');
 var passport  = require('passport');
@@ -13,8 +14,8 @@ var error = function(req,res,err) {
 };
 
 var logLoginAction = function(req, message) {
-    var correlationId = req.headers[CORRELATION_HEADER] ||'';
-    logger.info(`[${correlationId}] user id: ${req.user.id} ${message}`);
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  logger.info(`[${correlationId}] user id: ${_.get(req, 'user.id')} ${message}`);
 };
 
 module.exports.loggedIn = function (req, res) {
