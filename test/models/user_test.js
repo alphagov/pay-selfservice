@@ -34,8 +34,13 @@ var Permission = proxyquire(__dirname + '/../../app/models/permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
+var RolePermission = proxyquire(__dirname + '/../../app/models/role_permission.js', {
+  '../utils/sequelize_config.js': testSequelizeConfig
+});
+
 var Role = proxyquire(__dirname + '/../../app/models/role.js', {
   './permission.js': Permission,
+  './role_permission.js': RolePermission,
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
@@ -130,6 +135,7 @@ var sync_db = () => {
     .then(() => Sessions.sync({force: true}))
     .then(() => Permission.sequelize.sync({force: true}))
     .then(() => Role.sequelize.sync({force: true}))
+    .then(() => RolePermission.sequelize.sync({force: true}))
     .then(() => User.sequelize.sync({force: true}))
     .then(() => UserRole.sequelize.sync({force: true}));
 };

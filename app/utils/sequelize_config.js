@@ -19,9 +19,6 @@ function createInstance() {
     native: true,
     dialectOptions: {
       ssl: true
-    },
-    define: {
-      syncOnAssociation: true
     }
   });
 }

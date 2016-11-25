@@ -87,6 +87,7 @@ var User = sequelizeConnection.define('user', {
 
 User.hasMany(forgottenPassword, {as: 'forgotten'});
 User.belongsToMany(Role, { as: 'roles', through: UserRole, foreignKey:'user_id', otherKey:'role_id'});
+User.sequelize.sync();
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
