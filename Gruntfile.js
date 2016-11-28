@@ -167,7 +167,7 @@ module.exports = function(grunt){
     'sass'
   ]);
 
-  grunt.registerTask('test', ['env:test','generate-assets', 'mochaTest']);
+  grunt.registerTask('test', ['env:test', 'mochaTest']);
 
   var defaultTasks = [
       'generate-assets',

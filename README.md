@@ -20,6 +20,11 @@ vi dev-env.json
 
 ```
 
+to test
+```
+npm run compile && npm test
+```
+
 to run
 ```
 LOCAL_ENV=true msl run
