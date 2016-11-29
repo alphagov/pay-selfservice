@@ -20,7 +20,7 @@ var port              = (process.env.PORT || 3000);
 var unconfiguredApp   = express();
 var flash             = require('connect-flash');
 var middlwareUtils    = require('./app/utils/middleware.js');
-
+var applicationMetrics= require('./app/utils/metrics.js').metrics;
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
