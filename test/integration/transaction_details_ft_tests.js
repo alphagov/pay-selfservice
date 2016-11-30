@@ -110,7 +110,19 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
-        'card_brand': 'Visa',
+        'card_details': {
+          'billing_address': {
+            'city': 'TEST',
+            'country': 'GB',
+            'line1': 'TEST',
+            'line2': 'TEST - DO NOT PROCESS',
+            'postcode': 'SE1 3UZ'
+          },
+          'card_brand': 'Mastercard',
+          'cardholder_name': 'TEST',
+          'expiry_date': '12/19',
+          'last_digits_card_number': '4242'
+        },
         'refund_summary': {
           'status': 'available',
           'amount_available': 5000,
@@ -148,7 +160,19 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
-        'card_brand': 'Visa',
+        'card_details': {
+          'billing_address': {
+            'city': 'TEST',
+            'country': 'GB',
+            'line1': 'TEST',
+            'line2': 'TEST - DO NOT PROCESS',
+            'postcode': 'SE1 3UZ'
+          },
+          'card_brand': 'Mastercard',
+          'cardholder_name': 'TEST',
+          'expiry_date': '12/19',
+          'last_digits_card_number': '4242'
+        },
         'state_friendly': 'Success',
         'refund_summary': {
           'status': 'available',
@@ -279,7 +303,19 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
-        'card_brand': 'Visa',
+        'card_details': {
+          'billing_address': {
+            'city': 'TEST',
+            'country': 'GB',
+            'line1': 'TEST',
+            'line2': 'TEST - DO NOT PROCESS',
+            'postcode': 'SE1 3UZ'
+          },
+          'card_brand': 'Mastercard',
+          'cardholder_name': 'TEST',
+          'expiry_date': '12/19',
+          'last_digits_card_number': '4242'
+        },
         'refund_summary': {
           'status': 'full',
           'amount_available': 0,
@@ -312,7 +348,19 @@ describe('The transaction view scenarios', function () {
           'status': 'success',
           'finished': true
         },
-        'card_brand': 'Visa',
+        'card_details': {
+          'billing_address': {
+            'city': 'TEST',
+            'country': 'GB',
+            'line1': 'TEST',
+            'line2': 'TEST - DO NOT PROCESS',
+            'postcode': 'SE1 3UZ'
+          },
+          'card_brand': 'Mastercard',
+          'cardholder_name': 'TEST',
+          'expiry_date': '12/19',
+          'last_digits_card_number': '4242'
+        },
         'refund_summary': {
           'status': 'full',
           'amount_available': 0,
