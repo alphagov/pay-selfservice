@@ -242,6 +242,246 @@ describe('The transaction view scenarios', function () {
         .end(done);
     });
 
+    it('should show a transaction when no card details are present', function (done) {
+      var chargeId = 452345;
+      var mockEventsResponse = {
+        'charge_id': chargeId,
+        'events': [
+          {
+            'state': {
+              'status': 'created',
+              'finished': false
+            },
+            'updated': '2015-12-24 13:21:05'
+          },
+          {
+            'state': {
+              'status': 'started',
+              'finished': false
+            },
+            'updated': '2015-12-24 13:23:12'
+          }
+        ]
+      };
+
+      var mockChargeResponse = {
+        'charge_id': chargeId,
+        'description': 'Breathing licence',
+        'reference': 'Ref-1234',
+        'email': 'alice.111@mail.fake',
+        'amount': 5000,
+        'gateway_account_id': ACCOUNT_ID,
+        'payment_provider': 'sandbox',
+        'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
+        'state': {
+          'status': 'started',
+          'finished': false
+        },
+        'refund_summary': {
+          'status': 'available',
+          'amount_available': 5000,
+          'amount_submitted': 0
+        },
+        'return_url': 'http://example.service/return_from_payments',
+        'links': [
+          {
+            'rel': 'self',
+            'method': 'GET',
+            'href': 'http://connector.service/v1/api/charges/1'
+          },
+          {
+            'rel': 'next_url',
+            'method': 'GET',
+            'href': 'http://frontend/charges/1?chargeTokenId=82347'
+          }
+        ]
+      };
+
+      var expectedEventsView = {
+        'charge_id': chargeId,
+        'description': 'Breathing licence',
+        'reference': 'Ref-1234',
+        'email': 'alice.111@mail.fake',
+        'refundable': true,
+        'net_amount': "50.00",
+        'net_amount_display': '£50.00',
+        'refunded_amount': '£0.00',
+        'refunded': false,
+        'amount': '£50.00',
+        'gateway_account_id': ACCOUNT_ID,
+        'updated': '24 Dec 2015 — 13:21:05',
+        'state': {
+          'status': 'started',
+          'finished': false
+        },
+        'card_details': {
+          'card_brand': 'Data unavailable',
+          'cardholder_name': 'Data unavailable',
+          'expiry_date': 'Data unavailable',
+          'last_digits_card_number': '****'
+        },
+        'state_friendly': 'Started',
+        'refund_summary': {
+          'status': 'available',
+          'amount_available': 5000,
+          'amount_submitted': 0
+        },
+        'payment_provider': 'Sandbox',
+        'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
+        'events': [
+          {
+            'state': {
+              'status': 'started',
+              'finished': false
+            },
+            'state_friendly': 'User started payment of £50.00',
+            'updated': '2015-12-24 13:23:12',
+            'updated_friendly': '24 Dec 2015 — 13:23:12'
+          },
+          {
+            'state': {
+              'status': 'created',
+              'finished': false
+            },
+            'state_friendly': 'Service created payment of £50.00',
+            'updated': '2015-12-24 13:21:05',
+            'updated_friendly': '24 Dec 2015 — 13:21:05'
+          }
+        ]
+      };
+
+      connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
+      connectorMock_responds('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/events', mockEventsResponse);
+
+      when_getTransactionHistory(chargeId)
+        .expect(200, expectedEventsView)
+        .end(done);
+    });
+
+    it('should show a transaction when legacy cards details are present', function (done) {
+      var chargeId = 452345;
+      var mockEventsResponse = {
+        'charge_id': chargeId,
+        'events': [
+          {
+            'state': {
+              'status': 'created',
+              'finished': false
+            },
+            'updated': '2015-12-24 13:21:05'
+          },
+          {
+            'state': {
+              'status': 'started',
+              'finished': false
+            },
+            'updated': '2015-12-24 13:23:12'
+          }
+        ]
+      };
+
+      var mockChargeResponse = {
+        'charge_id': chargeId,
+        'description': 'Breathing licence',
+        'reference': 'Ref-1234',
+        'email': 'alice.111@mail.fake',
+        'amount': 5000,
+        'gateway_account_id': ACCOUNT_ID,
+        'payment_provider': 'sandbox',
+        'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
+        'state': {
+          'status': 'started',
+          'finished': false
+        },
+        'card_details': {
+          'billing_address': null,
+          'card_brand': 'Mastercard',
+          'cardholder_name': null,
+          'expiry_date': null,
+          'last_digits_card_number': null
+        },
+        'refund_summary': {
+          'status': 'available',
+          'amount_available': 5000,
+          'amount_submitted': 0
+        },
+        'return_url': 'http://example.service/return_from_payments',
+        'links': [
+          {
+            'rel': 'self',
+            'method': 'GET',
+            'href': 'http://connector.service/v1/api/charges/1'
+          },
+          {
+            'rel': 'next_url',
+            'method': 'GET',
+            'href': 'http://frontend/charges/1?chargeTokenId=82347'
+          }
+        ]
+      };
+
+      var expectedEventsView = {
+        'charge_id': chargeId,
+        'description': 'Breathing licence',
+        'reference': 'Ref-1234',
+        'email': 'alice.111@mail.fake',
+        'refundable': true,
+        'net_amount': "50.00",
+        'net_amount_display': '£50.00',
+        'refunded_amount': '£0.00',
+        'refunded': false,
+        'amount': '£50.00',
+        'gateway_account_id': ACCOUNT_ID,
+        'updated': '24 Dec 2015 — 13:21:05',
+        'state': {
+          'status': 'started',
+          'finished': false
+        },
+        'card_details': {
+          'billing_address': null,
+          'card_brand': 'Mastercard',
+          'cardholder_name': 'Data unavailable',
+          'expiry_date': 'Data unavailable',
+          'last_digits_card_number': '****'
+        },
+        'state_friendly': 'Started',
+        'refund_summary': {
+          'status': 'available',
+          'amount_available': 5000,
+          'amount_submitted': 0
+        },
+        'payment_provider': 'Sandbox',
+        'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
+        'events': [
+          {
+            'state': {
+              'status': 'started',
+              'finished': false
+            },
+            'state_friendly': 'User started payment of £50.00',
+            'updated': '2015-12-24 13:23:12',
+            'updated_friendly': '24 Dec 2015 — 13:23:12'
+          },
+          {
+            'state': {
+              'status': 'created',
+              'finished': false
+            },
+            'state_friendly': 'Service created payment of £50.00',
+            'updated': '2015-12-24 13:21:05',
+            'updated_friendly': '24 Dec 2015 — 13:21:05'
+          }
+        ]
+      };
+
+      connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
+      connectorMock_responds('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/events', mockEventsResponse);
+
+      when_getTransactionHistory(chargeId)
+        .expect(200, expectedEventsView)
+        .end(done);
+    });
+
     it('should return a list of transaction history for a given charge id and show refunded', function (done) {
 
       var chargeWithRefund = 12345;
