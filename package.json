@@ -20,8 +20,10 @@
     }
   },
   "scripts": {
-    "start": "forever --minUptime 1000 --spinSleepTime 500 start.js",
-    "stop": "forever stop start.js",
+    "compile": "grunt generate-assets",
+    "clean": "grunt clean",
+    "start": "node_modules/forever/bin/forever --minUptime 1000 --spinSleepTime 500 start.js",
+    "stop": "node_modules/forever/bin/forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "test": "npm run lint && npm run grunt-test",
     "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js",
