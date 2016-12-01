@@ -8,15 +8,19 @@ module.exports = {
     var date = new Date();
     queryInterface.select(User, 'users')
       .then((users)=> {
-        var bulkUserRole = _.map(users, function (user) {
-          return {
-            user_id: user.id,
-            role_id: roleAdminId,
-            createdAt: date,
-            updatedAt: date
-          };
-        });
-        queryInterface.bulkInsert('user_role', bulkUserRole).then(()=>done())
+        if (Array.isArray(users) && users.length != 0) {
+          var bulkUserRole = _.map(users, function (user) {
+            return {
+              user_id: user.id,
+              role_id: roleAdminId,
+              createdAt: date,
+              updatedAt: date
+            };
+          });
+          queryInterface.bulkInsert('user_role', bulkUserRole).then(()=>done());
+        } else {
+          done();
+        }
       });
   },
 
