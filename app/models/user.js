@@ -45,7 +45,6 @@ var User = sequelizeConnection.define('user', {
     },
   },
   email: {
-    unique: true,
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
