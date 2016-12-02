@@ -12,7 +12,6 @@ var proxyquire  = require('proxyquire');
 var q           = require('q');
 var ACCOUNT_ID  = 182364;
 
-
 var forgotten = function(user = function(){}, forgottenPass = function(){}){
   return proxyquire(__dirname + '/../../app/controllers/forgotten_password_controller.js',{
   '../models/user.js': user,
@@ -20,82 +19,18 @@ var forgotten = function(user = function(){}, forgottenPass = function(){}){
 });
 };
 
-
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
-var mockReq = {body: { email: "foo@bar.com"}, headers:{}};
 
 describe('forgotten_password_controller', function () {
-  describe('emailGet', function () {
+  describe('usernameGet', function () {
     it('should render the view',function(){
       forgotten().emailGet({},{render: function(name){
-        assert.equal(name,"forgotten_password/email_get");
+        assert.equal(name,"forgotten_password/username_get");
       }});
     });
   });
 
   describe('emailPost', function () {
-    it('should redirect on success',function(){
-      forgotten({
-        find : function(email){
-          assert.equal(email,"foo@bar.com");
-          return {
-            then: function(success,fail){
-             success({ sendPasswordResetToken:
-              function(suc){
-                return {
-                  then:function(suc){
-                    suc();
-                  }
-                };
-              }});
-           }
-         };
-
-       }
-     }).emailPost(mockReq,{redirect: function(name){
-      assert.equal(name,"/reset-password-requested");
-      }});
-    });
-
-    it('should redirect on failure of resetting token',function(){
-      forgotten({
-        find : function(email){
-          assert.equal(email,"foo@bar.com");
-          return {
-            then: function(success,fail){
-             success({ sendPasswordResetToken:
-              function(suc){
-                return {
-                  then:function(suc,failure){
-                    failure();
-                  }
-                };
-              }});
-           }
-         };
-
-       }
-     }).emailPost(mockReq,{redirect: function(name){
-      assert.equal(name,"/reset-password-requested");
-      }});
-    });
-
-    it('should redirect on failure of not finding user',function(){
-      forgotten({
-        find : function(email){
-          assert.equal(email,"foo@bar.com");
-          return {
-            then: function(success,fail){
-              fail();
-           }
-         };
-
-       }
-     }).emailPost(mockReq,{redirect: function(name){
-      assert.equal(name,"/reset-password-requested");
-      }});
-    });
-
     it('should display an error if csrf token does not exist for the forgotten password', function (done) {
       request(app)
       .post(paths.user.forgottenPassword)
