@@ -70,11 +70,6 @@ var defaultRole = {
   description: "Default Role"
 };
 
-var defaultPermission = {
-  name: "perm1",
-  description: "Perm1"
-};
-
 var defaultUser = {
   password: defaultPassword,
   gateway_account_id: 1,
@@ -96,7 +91,7 @@ var createDefaultUser = function (extendedAttributes) {
   var userAttributes = _.extend({}, defaultUser, extendedAttributes);
   var permissionDef;
   var roleDef;
-  return Permission.sequelize.create(defaultPermission)
+  return Permission.sequelize.create({name: Math.random().toString(36).substring(7), description: "Permission"})
     .then((permission)=> permissionDef = permission)
     .then(()=> Role.sequelize.create(defaultRole))
     .then((role)=> roleDef = role)
@@ -171,6 +166,7 @@ describe('user model', function () {
   });
 
   describe('create', function () {
+
     it('should create a user and lowercase email', function (done) {
       var userAttributes = {
         username: "foo",
@@ -199,6 +195,13 @@ describe('user model', function () {
           done();
         }, wrongPromise(done));
       }, wrongPromise(done));
+    });
+
+    it('should be able to create two users with same email', function (done) {
+      createDefaultUser({email: "meh@example.com"})
+        .then(createDefaultUser({email: "meh@example.com" }))
+        .then(() => done())
+        .catch(wrongPromise(done));
     });
   });
 
