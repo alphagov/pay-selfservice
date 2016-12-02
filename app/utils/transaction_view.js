@@ -9,6 +9,7 @@ var check = require('check-types');
 var url = require('url');
 
 
+const DATA_UNAVAILABLE = 'Data unavailable';
 const PAGINATION_SPREAD = 2;
 const CURRENCY = '£';
 const eventStates = {
@@ -133,6 +134,20 @@ module.exports = {
 
     var amount = (chargeData.amount / 100).toFixed(2);
     chargeData.amount = CURRENCY + amount;
+
+    if (chargeData.card_details) {
+      if (chargeData.card_details.card_brand == null)  chargeData.card_details.card_brand = DATA_UNAVAILABLE;
+      if (chargeData.card_details.cardholder_name == null)  chargeData.card_details.cardholder_name = DATA_UNAVAILABLE;
+      if (chargeData.card_details.expiry_date == null)  chargeData.card_details.expiry_date = DATA_UNAVAILABLE;
+      if (chargeData.card_details.last_digits_card_number == null)  chargeData.card_details.last_digits_card_number = '****';
+    } else {
+      chargeData.card_details = {
+        card_brand: DATA_UNAVAILABLE,
+        cardholder_name: DATA_UNAVAILABLE,
+        expiry_date: DATA_UNAVAILABLE,
+        last_digits_card_number: '****'
+      }
+    }
 
     chargeData.refundable = chargeData.refund_summary.status === 'available';
     chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2);
