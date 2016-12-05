@@ -9,3 +9,5 @@ alpha_release-103.approve-date=2016-12-05:10:55:45
 staging-1.tag=alpha_staging-1-103
 
 staging-1.alpha_staging-1-103.date=2016-12-05:11:13:42
+
+staging-1.alpha_staging-1-103.status=success
