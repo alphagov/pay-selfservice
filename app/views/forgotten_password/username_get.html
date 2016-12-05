@@ -1,0 +1,59 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+Forgotten Password
+{{/pageTitle}}
+{{$content}}
+<div class="column-half no-padding">
+    <form action="/reset-password" method="post" class="form submit-forgotten-email">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+        <h1 class="form-title heading-large">
+            Forgot your password?
+        </h1>
+        <p>As a reminder, our usernames follow this format:</p>
+        <table>
+            <tbody>
+            <tr>
+                <th>Sandbox accounts</th>
+                <td>email address alone</td>
+                <td>eg joe.bloggs@example.com</td>
+            </tr>
+            <tr>
+                <th>Provider test accounts</th>
+                <td>name+provider-test@...</td>
+                <td>eg joe.bloggs+smartpay-test@example.com</td>
+            </tr>
+            <tr>
+                <th>Provider live accounts</th>
+                <td> name+provider-live@...</td>
+                <td>eg joe.bloggs+smartpay-live@example.com</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>Please enter the username for the specific account that you need a password for.</p>
+        <p>We'll then send you an email which you can use to set up a new password.</p>
+        <div class="form-group">
+            <label class="form-label">Username</label>
+            <input class="form-control form-control-5em"
+                   data-module=""
+                   name="username"
+                   rows="6"
+                   type="text"
+                   value=""/>
+        </div>
+        <div class="form-group">
+            <input class="button" type="submit" value="Send email"/>
+        </div>
+    </form>
+</div>
+
+{{/content}}
+{{/layout_logged_out}}
+
+
+
+
+
+
+
+

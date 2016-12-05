@@ -7,16 +7,16 @@ var e                   = module.exports;
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 e.emailGet = (req, res)=> {
-  res.render('forgotten_password/email_get');
+  res.render('forgotten_password/username_get');
 };
 
 e.emailPost = (req, res)=> {
-  var email = req.body.email,
+  var username = req.body.username,
   correlationId = req.headers[CORRELATION_HEADER] ||'',
   redirect  = (e) => res.redirect(paths.user.passwordRequested),
+  foundUser = (user) => { user.sendPasswordResetToken(correlationId).then(redirect, redirect);};
 
-  foundUser = (user) => { user.sendPasswordResetToken(correlationId).then(redirect, redirect);}
-  User.find(email, correlationId).then(foundUser, redirect );
+  User.findByUsername(username, correlationId).then(foundUser, redirect);
 };
 
 e.passwordRequested = (req, res)=> {
