@@ -10,27 +10,26 @@ var User = require('./app/models/user.js');
 
 var chalk = require('chalk');
 var argv = require('yargs')
-  .usage('Usage: $0 -e [current_email] -n [new_email] -u [username]')
-  .demand(['e'])
-  .describe('e', 'current email address of the user')
-  .describe('n', 'new email address for the user')
-  .describe('u', 'new username for the user')
+  .usage('Usage: $0 -u [current username] -n [new_username] -e [new_email]')
+  .demand(['u'])
+  .describe('u', 'current username')
+  .describe('n', 'new username for the user')
+  .describe('e', 'new email address for the user')
   .argv;
 
-var oldEmail = argv.e;
-var newEmail = argv.n || '';
-var newUserName = argv.u || '';
+var currentUsername = argv.u;
+var newUsername = argv.n || '';
+var newEmail = argv.e || '';
 
-
-User.find(oldEmail)
+User.findByUsername(currentUsername)
   .then(
     (user)=> {
-      user.updateUserNameAndEmail(newEmail, newUserName).then(()=> {
+      user.updateUserNameAndEmail(newEmail, newUsername).then(()=> {
         if (argv.n) {
-          console.log('email:' + oldEmail + " updated to:" + newEmail);
+          console.log('username:' + currentUsername + " updated to:" + newUsername);
         }
-        if (argv.u) {
-          console.log('username updated to:' + newUserName);
+        if (argv.e) {
+          console.log('email updated to:' + newEmail);
         }
         exit();
       }, ()=> console.log("BOOM"))
