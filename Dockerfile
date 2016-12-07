@@ -1,5 +1,7 @@
 FROM node:6.7.0
 
+ADD docker/upgrade-base.sh /upgrade-base.sh
+
 ENV PORT 9000
 ENV ENABLE_NEWRELIC no
 ENV NEW_RELIC_HOME /app/newrelic
