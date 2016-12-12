@@ -13,7 +13,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 
 var gatewayAccountId = 651342;
-var app = session.mockValidAccount(_app, gatewayAccountId);
+var app = session.getAppWithLoggedInSession(_app, gatewayAccountId);
 var user = session.user;
 
 var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';

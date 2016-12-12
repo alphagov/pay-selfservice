@@ -10,57 +10,48 @@ var user = User.build({
   password: "password"
 });
 
-module.exports = function () {
 
-  var mockSession = function (app, sessionData,noCSRF) {
+var mockSession = function (app, sessionData, noCSRF) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       req.session = sessionData || {};
-      if (!noCSRF) req.session.csrfSecret = "123";
-      req.session.reload = function (next) {
-        next();
-      };
-      req.session.save = function (next) {
-        next();
-      };
-      req.session.destroy = function (sessionId, next) {
-        if (typeof sessionId == "function") next = sessionId;
-         if (typeof next == "function") next();
-        next()
-      };
-
 
       next();
     });
     proxyApp.use(app);
     return proxyApp;
-  };
+  },
 
-  var mockValidAccount = function (app, accountId) {
-    var validSession = mockAccountObj(accountId);
+  getAppWithLoggedInSession = function (app, accountId) {
+    var validSession = getMockAccount(accountId);
     return mockSession(app, validSession);
   },
-  mockAccount = function(app, account) {
+
+  getAppWithLoggedOutSession = function (app, account) {
     return mockSession(app, account);
   },
-  mockAccountObj = function(accountId){
+
+  getMockAccount = function (accountId) {
     user.gateway_account_id = accountId;
     return _.cloneDeep({
       csrfSecret: "123",
-      12345: {refunded_amount: 5 },
+      12345: {refunded_amount: 5},
       passport: {
         user: user,
       },
       secondFactor: 'totp'
     });
-
   };
 
-  return {
-    mockSession: mockSession,
-    mockValidAccount: mockValidAccount,
-    mockAccount: mockAccount,
-    mockAccountObj: mockAccountObj,
-    user: user
-  };
-}();
+
+module.exports = {
+  getAppWithLoggedInSession: getAppWithLoggedInSession,
+  getAppWithLoggedOutSession: getAppWithLoggedOutSession,
+  getMockAccount: getMockAccount,
+  user: user
+};
+
+
+
+
+

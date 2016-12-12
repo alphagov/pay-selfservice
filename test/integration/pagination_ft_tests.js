@@ -13,7 +13,7 @@ var querystring = require('querystring');
 
 var gatewayAccountId = 452345;
 
-var app = session.mockValidAccount(_app, gatewayAccountId);
+var app = session.getAppWithLoggedInSession(_app, gatewayAccountId);
 var user = session.user;
 
 var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';

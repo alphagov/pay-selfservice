@@ -12,7 +12,7 @@ var CONNECTOR_DATE = "2016-02-10T12:44:01.000Z";
 var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
 var gatewayAccountId = 651342;
 
-var app = session.mockValidAccount(_app, gatewayAccountId);
+var app = session.getAppWithLoggedInSession(_app, gatewayAccountId);
 var user = session.user;
 
 var searchParameters = {};
