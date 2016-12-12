@@ -5,7 +5,6 @@ var favicon           = require('serve-favicon');
 var router            = require(__dirname + '/app/routes.js');
 var bodyParser        = require('body-parser');
 var cookieParser      = require('cookie-parser');
-var session           = require('express-session');
 var selfServiceSession= require(__dirname + '/app/utils/session.js').selfServiceSession;
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
@@ -116,8 +115,11 @@ function initialise() {
   initialiseTLS(app);
   initialiseProxy(app);
   
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], session(selfServiceSession())));
-  
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'],
+      selfServiceSession()
+    )
+  );
+
   initialiseAuth(app);
   initialiseGlobalMiddleware(app);
   initialiseAppVariables(app);

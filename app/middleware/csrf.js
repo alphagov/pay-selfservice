@@ -10,30 +10,19 @@ module.exports = function (req, res, next) {
   var session = req.session;
   var init = function () {
       if (session) {
-        session.reload(function(err) {
-          if(err) {
-            logger.error('Error reloading session : ', err);
-          }
           if (!session.csrfTokens) session.csrfTokens = [];
           if (!session.csrfSecret) return showNoCsrf();
           if (!csrfValid()) return showCsrfInvalid();
 
           if(csrfToken) {
             session.csrfTokens.push(csrfToken);
-            session.save( error => {
-              if (error) {
-                return showSessionSaveError(error);
-              }
-
               logger.info("Saved session with csrfToken : "+ csrfToken);
               appendCsrf();
               next();
-            });
           } else {
             appendCsrf();
             next();
           }
-        });
       } else {
         showNoSession();
       }
