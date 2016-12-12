@@ -12,7 +12,7 @@ var expect = require("chai").expect;
 var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
 
 var ACCOUNT_ID = 182364;
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
