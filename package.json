@@ -30,12 +30,15 @@
     "grunt-test": "node ./node_modules/.bin/grunt test"
   },
   "dependencies": {
+    "appmetrics": "1.1.2",
+    "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
     "bcrypt": "^0.8.7",
     "body-parser": "1.15.x",
     "chalk": "1.1.x",
     "change-case": "3.0.0",
     "check-types": "^7.0.x",
+    "client-sessions": "^0.7.0",
     "cluster": "0.7.x",
     "common-password": "^0.1.2",
     "connect-flash": "^0.1.1",
@@ -43,7 +46,6 @@
     "cookie-parser": "1.4.x",
     "csrf": "3.0.x",
     "express": "4.13.1",
-    "express-session": "1.13.x",
     "forever": "0.15.x",
     "govuk-elements-sass": "1.1.1",
     "govuk_frontend_toolkit": "4.6.0",
@@ -90,9 +92,7 @@
     "throng": "4.0.x",
     "tunnel": "0.0.4",
     "winston": "2.2.x",
-    "yargs": "4.7.x",
-    "appmetrics": "1.1.2",
-    "appmetrics-statsd": "1.0.1"
+    "yargs": "4.7.x"
   },
   "devDependencies": {
     "chai": "^3.2.0",

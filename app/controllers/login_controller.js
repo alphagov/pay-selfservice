@@ -21,18 +21,14 @@ var logLoginAction = function(req, message) {
 
 module.exports.loggedIn = function (req, res) {
   logLoginAction(req, 'successfully logged in');
-  req.session.reload(function (err) {
-    res.render('login/logged_in', {
-      name: req.user.username
-    });
+  res.render('login/logged_in', {
+    name: req.user.username
   });
 };
 
 module.exports.logOut = function (req, res) {
   logLoginAction(req, 'logged out');
-  req.session.destroy(function (err) {
-    res.redirect(router.paths.user.logIn);
-  });
+  res.redirect(router.paths.user.logIn);
 };
   
 
@@ -47,8 +43,8 @@ module.exports.logInGet = function (req, res) {
 module.exports.postLogin = function (req, res) {
  req.user.resetLoginCount().then(
     ()=>{
-      req.session.save(() => res.redirect(paths.user.otpLogIn));
       logLoginAction(req, 'successfully attempted username/password combination');
+      res.redirect(paths.user.otpLogIn);
     },
     (err) => error(req,res,error)
   )
@@ -70,7 +66,7 @@ module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
     userService.sendOTP(req.user).then(function(){
       req.session.sentCode = true;
-      req.session.save(() => res.render('login/otp-login'));
+      res.render('login/otp-login');
     },function(err) { error(req,res,err); }
     );
   } else {
@@ -85,7 +81,7 @@ module.exports.afterOTPLogin = function (req, res) {
   req.user.resetLoginCount().then(
     ()=>{
       logLoginAction(req, 'successfully entered a valid 2fa token');
-      req.session.save(() => res.redirect(redirect_url));
+      res.redirect(redirect_url);
     },
     (err) => error(req,res,error)
   )
