@@ -15,7 +15,7 @@ var error = function(req,res,err) {
 };
 
 var logLoginAction = function(req, message) {
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  var correlationId = _.get('req.headers.' + CORRELATION_HEADER, '');
   logger.info(`[${correlationId}] user id: ${_.get(req, 'user.id')} ${message}`);
 };
 
@@ -27,8 +27,10 @@ module.exports.loggedIn = function (req, res) {
 };
 
 module.exports.logOut = function (req, res) {
-  logLoginAction(req, 'logged out');
-  req.session.destroy();
+  if (req.session) {
+    logLoginAction(req, 'logged out');
+    req.session.destroy();
+  }
   res.redirect(router.paths.user.logIn);
 };
   
