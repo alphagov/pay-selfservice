@@ -6,7 +6,7 @@ var expect = require('chai').expect;
 describe('permission test', function () {
 
   var permission = (userMock)=> {
-    return proxyquire(__dirname + '/../../app/middleware/permission.js',
+    return proxyquire(__dirname + '/../../../app/middleware/permission.js',
       {'../models/user.js': userMock});
   };
 

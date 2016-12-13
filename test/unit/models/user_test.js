@@ -24,31 +24,31 @@ var mockedNotificationClient = {
   }
 };
 
-var testSequelizeConfig = require(__dirname + '/../test_helpers/test_sequelize_config.js');
+var testSequelizeConfig = require(__dirname + '/../../test_helpers/test_sequelize_config.js');
 
-var ForgottenPassword = proxyquire(__dirname + '/../../app/models/forgotten_password.js', {
+var ForgottenPassword = proxyquire(__dirname + '/../../../app/models/forgotten_password.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var Permission = proxyquire(__dirname + '/../../app/models/permission.js', {
+var Permission = proxyquire(__dirname + '/../../../app/models/permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var RolePermission = proxyquire(__dirname + '/../../app/models/role_permission.js', {
+var RolePermission = proxyquire(__dirname + '/../../../app/models/role_permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var Role = proxyquire(__dirname + '/../../app/models/role.js', {
+var Role = proxyquire(__dirname + '/../../../app/models/role.js', {
   './permission.js': Permission,
   './role_permission.js': RolePermission,
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var UserRole = proxyquire(__dirname + '/../../app/models/user_role.js', {
+var UserRole = proxyquire(__dirname + '/../../../app/models/user_role.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var User = proxyquire(__dirname + '/../../app/models/user.js', {
+var User = proxyquire(__dirname + '/../../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
