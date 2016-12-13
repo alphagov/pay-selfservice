@@ -27,6 +27,7 @@ module.exports.loggedIn = function (req, res) {
 
 module.exports.logOut = function (req, res) {
   logLoginAction(req, 'logged out');
+  req.session.destroy();
   res.redirect(router.paths.user.logIn);
 };
   
@@ -58,7 +59,7 @@ module.exports.logUserin = function() {
 };
 
 module.exports.logUserinOTP = function(req, res, next) {
-  return passport.authenticate('totp', { failureRedirect: '/otp-login' });
+  return passport.authenticate('totp', { failureRedirect: '/otp-login' })(req, res, next);
 };
 
 module.exports.otpLogIn = function (req, res) {
