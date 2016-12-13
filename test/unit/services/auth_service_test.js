@@ -4,8 +4,8 @@ var sinon = require('sinon');
 var _ = require('lodash');
 var expect = require('chai').expect;
 var nock = require('nock');
-var auth = require(__dirname + '/../../app/services/auth_service.js');
-var paths = require(__dirname + '/../../app/paths.js');
+var auth = require(__dirname + '/../../../app/services/auth_service.js');
+var paths = require(__dirname + '/../../../app/paths.js');
 var proxyquire = require('proxyquire');
 
 describe('auth service', function () {

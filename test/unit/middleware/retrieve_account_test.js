@@ -5,7 +5,7 @@ var _      = require('lodash');
 var expect = require('chai').expect;
 var nock   = require('nock');
 var proxyquire = require('proxyquire');
-var paths  = require('../../app/paths.js');
+var paths  = require(__dirname + '/../../../app/paths.js');
 
 var authServiceMock = function(){
   return {
@@ -14,7 +14,7 @@ var authServiceMock = function(){
 }();
 
 
-var retrieveAccount = proxyquire(__dirname + '/../../app/middleware/retrieve_account.js',
+var retrieveAccount = proxyquire(__dirname + '/../../../app/middleware/retrieve_account.js',
 {'../services/auth_service.js': authServiceMock});
 
 describe('retrieve param test', function () {
