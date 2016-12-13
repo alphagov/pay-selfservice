@@ -10,7 +10,7 @@ var user = {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       req.session = sessionData || {};
-
+      req.session.destroy = () => {};
       next();
     });
     proxyApp.use(app);
