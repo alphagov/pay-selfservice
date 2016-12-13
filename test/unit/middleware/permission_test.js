@@ -7,9 +7,9 @@ var q                     = require('q');
 describe('permission test', function () {
   var mockUserService, res;
 
-  var permission = (userMock)=> {
-    return proxyquire(__dirname + '/../../app/middleware/permission.js',
-      {'../services/user_service.js': userMock});
+  var permission = (userServiceMock)=> {
+    return proxyquire(__dirname + '/../../../app/middleware/permission.js',
+      {'../services/user_service.js': userServiceMock});
   };
 
   afterEach(() => {

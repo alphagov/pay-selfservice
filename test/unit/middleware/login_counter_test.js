@@ -36,8 +36,8 @@ describe('login counter test', function () {
   });
 
   var login = (userServiceMock)=> {
-    return proxyquire(__dirname + '/../../app/middleware/login_counter.js',
-    {'../services/user_service.js': userServiceMock});
+    return proxyquire(__dirname + '/../../../app/middleware/login_counter.js',
+    {'../services/user_user_service.js': userServiceMock});
   };
 
   it('should call increment login count',function(done){

@@ -1,7 +1,7 @@
-require(__dirname + '/../test_helpers/html_assertions.js');
+require(__dirname + '/../../test_helpers/html_assertions.js');
 var should    = require('chai').should();
 var assert    = require('assert');
-var Email     = require(__dirname + '/../../app/models/email.js');
+var Email     = require(__dirname + '/../../../app/models/email.js');
 var nock      = require('nock');
 var expect    = require("chai").expect;
 var _         = require("lodash")
