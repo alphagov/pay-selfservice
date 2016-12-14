@@ -11,3 +11,5 @@ staging-1.tag=FAILED-107
 staging-1.FAILED-107.date=
 
 staging-1.FAILED-107.status=failed
+
+staging-1.tag=alpha_staging-1-107
