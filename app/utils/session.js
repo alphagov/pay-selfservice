@@ -3,13 +3,17 @@
 const session = require('client-sessions'),
   _ = require('lodash'),
   logger = require('winston');
+
+function checkEnv() {
   if (process.env.SECURE_COOKIE_OFF == 'true') {
     logger.error('SECURE COOKIE IS OFF');
   }
-
-function checkEnv() {
-  if (process.env.SESSION_ENCRYPTION_KEY === undefined) throw new Error('cookie encryption key is not set');
-  if (process.env.COOKIE_MAX_AGE === undefined) throw new Error('cookie max age is not set');
+  if (process.env.SESSION_ENCRYPTION_KEY === undefined) {
+    throw new Error('cookie encryption key is not set');
+  }
+  if (process.env.COOKIE_MAX_AGE === undefined) {
+    throw new Error('cookie max age is not set');
+  }
 }
 
 module.exports.selfServiceSession = function selfServiceSession() {
@@ -22,7 +26,7 @@ module.exports.selfServiceSession = function selfServiceSession() {
     cookie: {
       ephemeral: false, // when true, cookie expires when the browser closes
       httpOnly: true, // when true, cookie is not accessible from javascript
-      secure: (process.env.SECURE_COOKIE_OFF !== "true")
+      secureProxy: true
     }
   });
 };

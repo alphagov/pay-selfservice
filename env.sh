@@ -9,6 +9,5 @@ fi
 
 export CERTS_PATH=$WORKSPACE/pay-scripts/services/ssl/certs
 export PGSSLROOTCERT=$CERTS_PATH/selfservice.db.pymnt.localdomain.crt
-export SECURE_COOKIE_OFF=true
 
 eval "$@"
