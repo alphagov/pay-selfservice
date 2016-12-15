@@ -76,6 +76,7 @@ var defaultUser = {
   telephone_number: "1"
 };
 
+<<<<<<< f5033d475dc2876318e01c0259a8e8541a938f74
 var createSession = (email) => {
   return Sessions.create({data: `{"passport":{"user":"${email}"}}`});
 };
@@ -84,6 +85,8 @@ var findFromSession = (email) => {
   return Sessions.findOne({where: {data: `{"passport":{"user":"${email}"}}`}});
 };
 
+=======
+>>>>>>> PP-1407 session version wip
 var createDefaultUser = function (extendedAttributes) {
   defaultUser.username = Math.random().toString(36).substring(7);
   defaultUser.email = Math.random().toString(36).substring(7) + "@email.com";
@@ -335,6 +338,7 @@ describe('user model', function () {
     });
   });
 
+
   describe('toggle user', function () {
 
     it('should be able to disable the user', function (done) {
@@ -482,4 +486,19 @@ describe('user model', function () {
         .catch(wrongPromise(done));
     });
   });
+
+  describe('session version', () => {
+    it('should increment session version', (done) => {
+      var userSetup;
+
+      createDefaultUser()
+        .then((user)=> userSetup = user)
+        .then(() => {
+          expect(userSetup.session_version).to.equal(0);
+          userSetup.incrementSessionVersion();
+          expect(userSetup.session_version).to.equal(1);
+          done();
+        });
+    })
+  })
 });

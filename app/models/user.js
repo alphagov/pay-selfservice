@@ -81,6 +81,11 @@ var User = sequelizeConnection.define('user', {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
+  },
+  session_version: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   }
 });
 
@@ -166,6 +171,13 @@ updatePassword = function(user, password){
   return defer.promise;
 },
 
+incrementSessionVersion = function(user){
+  var defer = q.defer();
+  user.session_version = user.session_version + 1;
+  user.save().then(defer.resolve,defer.reject);
+  return defer.promise;
+},
+
 incrementLoginCount = function(user){
   var defer = q.defer();
   user.login_counter = user.login_counter + 1;
@@ -230,6 +242,7 @@ resolveUser = function(user, defer){
   val.updateUserNameAndEmail = (email, userName)=> { return updateUserNameAndEmail(user, email, userName) };
   val.updatePassword = (password)=> { return updatePassword(user, password) };
   val.incrementLoginCount = ()=> { return incrementLoginCount(user); };
+  val.incrementSessionVersion = ()=> { return incrementSessionVersion(user); };
   val.resetLoginCount = ()=> { return resetLoginCount(user); };
   val.setRole = (role)=> { return setRole(role, user); };
   val.hasPermission = (permissionName)=> { return hasPermission(permissionName, user); };

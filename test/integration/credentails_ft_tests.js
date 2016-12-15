@@ -44,7 +44,7 @@ function build_form_post_request(path, sendData, sendCSRF) {
     .send(sendData);
 }
 
-describe('The ' + paths.credentials.index + ' endpoint', function () {
+describe.only('The ' + paths.credentials.index + ' endpoint', function () {
 
   beforeEach(function () {
     nock.cleanAll();
@@ -57,7 +57,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       password: 'password10',
       gateway_account_id: user.gateway_account_id,
       email: user.email,
-      telephone_number: "1"
+      telephone_number: "1",
+      session_version: 0
     };
     userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
   });

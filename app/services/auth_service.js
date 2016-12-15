@@ -1,12 +1,14 @@
 "use strict";
 var logger = require('winston');
+var _ = require('lodash');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var TotpStrategy = require('passport-totp').Strategy;
-var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var User = require('../models/user.js');
-var _ = require('lodash');
+
+var sessionValidator = require(__dirname + '/session_validator.js');
+var paths = require(__dirname + '/../paths.js');
+var User = require(__dirname + '/../models/user.js');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {
@@ -61,11 +63,25 @@ var no_access = function (req, res, next) {
 
 var enforceUserBothFactors = function (req, res, next) {
   var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
+  if (!hasLoggedInOtp) {
+    return res.redirect(paths.user.otpLogIn);
+  }
 
-  enforceUserFirstFactor(req, res, function(){
-    if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
-    next();
-  });
+  enforceUserFirstFactor(req, res, next);
+};
+
+var enforceUserAuthenticated = function(req, res, next) {
+  if (!hasValidSession(req.user)) {
+    return res.redirect(paths.user.login);
+  }
+
+  enforceUserBothFactors(req, res, next);
+};
+
+var hasValidSession = function (req) {
+  console.log(JSON.stringify(req));
+
+  return sessionValidator.validate(req.user, req.session);
 };
 
 var initialise = function (app, override_strategy) {
@@ -96,7 +112,7 @@ var serializeUser = function (user, done) {
 
 module.exports = {
   enforceUserFirstFactor: enforceUserFirstFactor,
-  enforceUserBothFactors: enforceUserBothFactors,
+  enforceUserAuthenticated: enforceUserAuthenticated,
   ensureSessionHasCsrfSecret: ensureSessionHasCsrfSecret,
   initialise: initialise,
   deserializeUser: deserializeUser,
