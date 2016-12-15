@@ -15,7 +15,7 @@ var TOKEN = '00112233';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
 var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
 
-var app     = session.mockValidAccount(_app, ACCOUNT_ID);
+var app     = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
 
 portfinder.getPort(function(err, freePort) {

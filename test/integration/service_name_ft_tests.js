@@ -11,7 +11,7 @@ var session = require(__dirname + '/../test_helpers/mock_session.js');
 
 var ACCOUNT_ID = 182364;
 
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
 
 var requestId = 'unique-request-id';

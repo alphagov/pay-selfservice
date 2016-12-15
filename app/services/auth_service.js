@@ -22,29 +22,16 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
-
-  req.session.save(function(err) {
-    if (err) {
-      logger.error(`[${correlationId}] Error saving csrf secret `, err);
-    } else {
-      logger.info(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret} for session ID: ${req.session.id}`);
-    }
-    next();
-  });
+  logger.info(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret} for session ID: ${req.session.id}`);
+  next();
 };
 
 var redirectToLogin = function (req,res) {
   req.session.last_url = req.originalUrl;
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
-  req.session.save(function (err) {
-    if(err) {
-      logger.error(`[${correlationId}] Error saving session on redirectToLogin `, err);
-    } else {
-      logger.info(`[${correlationId}] Saved session ID on redirectToLogin: ${req.session.id} with last url ${req.session.last_url}`);
-    }
-    res.redirect(paths.user.logIn);
-  });
+  logger.info(`[${correlationId}] Saved session ID on redirectToLogin: ${req.session.id} with last url ${req.session.last_url}`);
+  res.redirect(paths.user.logIn);
 };
 
 var get_gateway_account_id = function (req) {
@@ -73,13 +60,11 @@ var no_access = function (req, res, next) {
 };
 
 var enforceUserBothFactors = function (req, res, next) {
-  req.session.reload(function (err) {
-    var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
+  var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
-    enforceUserFirstFactor(req, res, function(){
-      if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
-      next();
-    });
+  enforceUserFirstFactor(req, res, function(){
+    if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
+    next();
   });
 };
 

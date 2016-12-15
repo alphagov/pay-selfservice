@@ -19,7 +19,7 @@ var forgotten = function(user = function(){}, forgottenPass = function(){}){
 });
 };
 
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 
 describe('forgotten_password_controller', function () {
   describe('usernameGet', function () {

@@ -24,31 +24,31 @@ var mockedNotificationClient = {
   }
 };
 
-var testSequelizeConfig = require(__dirname + '/../test_helpers/test_sequelize_config.js');
+var testSequelizeConfig = require(__dirname + '/../../test_helpers/test_sequelize_config.js');
 
-var ForgottenPassword = proxyquire(__dirname + '/../../app/models/forgotten_password.js', {
+var ForgottenPassword = proxyquire(__dirname + '/../../../app/models/forgotten_password.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var Permission = proxyquire(__dirname + '/../../app/models/permission.js', {
+var Permission = proxyquire(__dirname + '/../../../app/models/permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var RolePermission = proxyquire(__dirname + '/../../app/models/role_permission.js', {
+var RolePermission = proxyquire(__dirname + '/../../../app/models/role_permission.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var Role = proxyquire(__dirname + '/../../app/models/role.js', {
+var Role = proxyquire(__dirname + '/../../../app/models/role.js', {
   './permission.js': Permission,
   './role_permission.js': RolePermission,
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var UserRole = proxyquire(__dirname + '/../../app/models/user_role.js', {
+var UserRole = proxyquire(__dirname + '/../../../app/models/user_role.js', {
   '../utils/sequelize_config.js': testSequelizeConfig
 });
 
-var User = proxyquire(__dirname + '/../../app/models/user.js', {
+var User = proxyquire(__dirname + '/../../../app/models/user.js', {
   './../utils/sequelize_config.js': testSequelizeConfig,
   '../utils/random.js': {key: () => defaultOtpKey},
   './forgotten_password.js': ForgottenPassword,
@@ -74,14 +74,6 @@ var defaultUser = {
   password: defaultPassword,
   gateway_account_id: 1,
   telephone_number: "1"
-};
-
-var createSession = (email) => {
-  return Sessions.create({data: email});
-};
-
-var findFromSession = (where) => {
-  return Sessions.findOne({where: where});
 };
 
 var createDefaultUser = function (extendedAttributes) {
@@ -322,24 +314,6 @@ describe('user model', function () {
     });
   });
 
-  describe('logout', function () {
-    it('should logout', function (done) {
-      var createdUser;
-      createDefaultUser()
-        .then((user) => {
-          createdUser = user
-        })
-        .then(() => createSession(createdUser.email))
-        .then(() => findFromSession({data: createdUser.email}))
-        .then((sessionData) => expect(sessionData).to.not.be.null)
-        .then(() => createdUser.logOut())
-        .then(() => findFromSession({data: createdUser.email}))
-        .then((sessionData) => expect(sessionData).to.be.null)
-        .then(() => done())
-        .catch(wrongPromise(done));
-    });
-  });
-
   describe('toggle user', function () {
 
     it('should be able to disable the user', function (done) {
@@ -487,4 +461,19 @@ describe('user model', function () {
         .catch(wrongPromise(done));
     });
   });
+
+  describe.only('session version', () => {
+    it('should increment session version', (done) => {
+      var userSetup;
+
+      createDefaultUser()
+        .then((user)=> userSetup = user)
+        .then(() => {
+          expect(userSetup.session_version).to.equal(0);
+          userSetup.incrementSessionVersion();
+          expect(userSetup.session_version).to.equal(1);
+          done();
+        });
+    })
+  })
 });

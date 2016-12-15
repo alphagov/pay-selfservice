@@ -9,7 +9,7 @@ var session     = require(__dirname + '/../test_helpers/mock_session.js');
 
 var gatewayAccountId = ACCOUNT_ID = 15486734;
 
-var app = session.mockValidAccount(_app,gatewayAccountId);
+var app = session.getAppWithLoggedInSession(_app,gatewayAccountId);
 var user = session.user;
 var chargeId = 452345;
 

@@ -35,7 +35,7 @@ describe('login counter test', function () {
   });
 
   var login = (userMock)=> {
-    return proxyquire(__dirname + '/../../app/middleware/login_counter.js',
+    return proxyquire(__dirname + '/../../../app/middleware/login_counter.js',
     {'../models/user.js': userMock});
   };
 

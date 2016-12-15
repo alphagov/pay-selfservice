@@ -8,7 +8,7 @@ var session = require(__dirname + '/../test_helpers/mock_session.js');
 var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
 
 var ACCOUNT_ID = 15486734;
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
 var connectorMock = nock(process.env.CONNECTOR_URL);
 
