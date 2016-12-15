@@ -88,14 +88,6 @@ var defaultUser = {
   telephone_number: "1"
 };
 
-var createSession = (email) => {
-  return Sessions.create({data: `{"passport":{"user":"${email}"}}`});
-};
-
-var findFromSession = (email) => {
-  return Sessions.findOne({where: {data: `{"passport":{"user":"${email}"}}`}});
-};
-
 var createDefaultUser = function (extendedAttributes) {
   defaultUser.username = Math.random().toString(36).substring(7);
   defaultUser.email = Math.random().toString(36).substring(7) + "@email.com";
@@ -343,20 +335,16 @@ describe('user model', function () {
   });
 
   describe('logout', function () {
-    it('should logout', function (done) {
+    it('should increment session version', function (done) {
       this.timeout(5000);
-
       var createdUser;
       createDefaultUser()
         .then((user) => {
           createdUser = user
         })
-        .then(() => createSession(createdUser.username))
-        .then(() => findFromSession(createdUser.username))
-        .then((sessionData) => expect(sessionData).to.not.be.null)
+        .then(() => expect(createdUser.session_version).to.equal(0))
         .then(() => userService.logOut(createdUser))
-        .then(() => findFromSession(createdUser.username))
-        .then((sessionData) => expect(sessionData).to.be.null)
+        .then(() => expect(createdUser.session_version).to.equal(1))
         .then(() => done())
         .catch(wrongPromise(done));
     });
@@ -508,4 +496,19 @@ describe('user model', function () {
         .catch(wrongPromise(done));
     });
   });
+
+  describe('session version', () => {
+    it('should increment session version', (done) => {
+      var userSetup;
+
+      createDefaultUser()
+        .then((user)=> userSetup = user)
+        .then(() => {
+          expect(userSetup.session_version).to.equal(0);
+          userSetup.incrementSessionVersion();
+          expect(userSetup.session_version).to.equal(1);
+          done();
+        });
+    })
+  })
 });

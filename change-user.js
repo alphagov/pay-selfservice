@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
   return;
 }
 
-var User = require('./app/models/user.js');
+var userService = require('./app/services/user_service.js');
 
 var chalk = require('chalk');
 var argv = require('yargs')
@@ -21,7 +21,7 @@ var currentUsername = argv.u;
 var newUsername = argv.n || '';
 var newEmail = argv.e || '';
 
-User.findByUsername(currentUsername)
+userService.findByUsername(currentUsername)
   .then(
     (user)=> {
       user.updateUserNameAndEmail(newEmail, newUsername).then(()=> {

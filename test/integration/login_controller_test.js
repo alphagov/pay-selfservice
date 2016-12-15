@@ -76,15 +76,18 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it('should redirect to root ',function(done){
+  it('should redirect to root and clean session of all but passport and last_url',function(done){
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     expectedUrl = paths.user.otpLogIn,
     req = {
-      session: { save: (cb)=> cb()},
-      headers: {'x-request-id': 'some-unique-id' },
-      user: { resetLoginCount: ()=> {
-        return { then: (cb,failCb)=> cb()  }
+      session: {passport: 'abc', last_url: 'last_url', spurious_session_data: 'foo'},
+      headers: {'x-request-id': 'some-unique-id'},
+      user: {
+        resetLoginCount: ()=> {
+          var defer = q.defer();
+          defer.resolve();
+          return defer.promise;
         }
       }
     },
@@ -92,9 +95,16 @@ describe('The postlogin endpoint', function () {
       redirect: function(redirect){
         if (redirect == expectedUrl) passes = true;
     }};
-    login_controller.postLogin(req, res);
-    assert(passes);
-    done();
+    login_controller.postLogin(req, res)
+      .then(() => {
+        assert(passes);
+        assert(req.session.passport === 'abc');
+        assert(req.session.last_url === 'last_url');
+        assert(typeof req.session.spurious_session_data === 'undefined');
+        done();
+      });
+
+
   });
 });
 

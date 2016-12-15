@@ -5,9 +5,6 @@ const session = require('client-sessions'),
   logger = require('winston');
 
 function checkEnv() {
-  if (process.env.SECURE_COOKIE_OFF == 'true') {
-    logger.error('SECURE COOKIE IS OFF');
-  }
   if (process.env.SESSION_ENCRYPTION_KEY === undefined) {
     throw new Error('cookie encryption key is not set');
   }

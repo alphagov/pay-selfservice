@@ -17,6 +17,16 @@ var paths                 = require(__dirname + '/../paths.js');
 var sequelizeConnection   = sequelizeConfig.sequelize;
 
 /**
+<<<<<<< d8f5c6f23f6c4a4983e7518b97c070018301606d
+=======
+ * @returns {String}
+ */
+var generateOTP = function(user) {
+  return notp.totp.gen(user.otp_key);
+};
+
+/**
+>>>>>>> wip trying to fix ss accounts compatibility
  * @param email
  * @param extraFields
  * @param where
@@ -36,7 +46,8 @@ var _find = function(email, extraFields = [], where) {
       'id',
       'telephone_number',
       'disabled',
-      'login_counter'
+      'login_counter',
+      'session_version'
     ].concat(extraFields)
   });
 };
@@ -82,9 +93,14 @@ module.exports = {
     var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
     if (user.otp_key && user.telephone_number && template) {
       var code = user.generateOTP();
+      return notify.sendSms(template, user.telephone_number, {code: code});
     } else {
       throw new Error('missing required field to send text');
     }
+  },
+
+  generateOtp: function (user) {
+    return generateOTP(user);
   },
 
   /**
@@ -251,14 +267,6 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user) {
-    var defer = q.defer();
-    sequelizeConnection.query('delete from "Sessions" where data LIKE :username ',
-      {
-        replacements: {username: `%"user":"${user.username}"%`},
-        type: Sequelize.QueryTypes.DELETE
-      })
-      .then(defer.resolve, defer.reject);
-
-    return defer.promise
+    return user.incrementSessionVersion();
   }
 };

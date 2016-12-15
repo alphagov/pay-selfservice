@@ -27,6 +27,10 @@ module.exports.loggedIn = function (req, res) {
 };
 
 module.exports.logOut = function (req, res) {
+  if (req.user) {
+    userService.logOut(req.user);
+  }
+
   if (req.session) {
     logLoginAction(req, 'logged out');
     req.session.destroy();
@@ -43,8 +47,17 @@ module.exports.logInGet = function (req, res) {
   res.render('login/login');
 };
 
+/**
+ * Reset the login counter for the user, and clean
+ * session
+ *
+ * @param req
+ * @param res
+ */
 module.exports.postLogin = function (req, res) {
- req.user.resetLoginCount().then(
+ return req.user.resetLoginCount()
+   .then(() => req.session = _.pick(req.session, ['passport', 'last_url']))
+   .then(
     ()=>{
       logLoginAction(req, 'successfully attempted username/password combination');
       res.redirect(paths.user.otpLogIn);

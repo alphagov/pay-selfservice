@@ -7,6 +7,8 @@ var nock = require('nock');
 var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
+var userService = require(__dirname + '/../../app/services/user_service.js');
+
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 
 var ACCOUNT_ID = 182364;
@@ -57,7 +59,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       password: 'password10',
       gateway_account_id: user.gateway_account_id,
       email: user.email,
-      telephone_number: "1"
+      telephone_number: user.telephone_number,
+      session_version: 0
     };
     userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
   });

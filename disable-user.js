@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
   return;
 }
 
-var User = require('./app/models/user.js');
+var userService = require('./app/services/user_service.js');
 
 var chalk = require('chalk');
 var argv = require('yargs')
@@ -17,7 +17,7 @@ var argv = require('yargs')
 
 var username = argv.u;
 
-User.findByUsername(username)
+userService.findByUsername(username)
   .then(
     (user)=>
       user.toggleDisabled(true).then(()=> {

@@ -37,7 +37,7 @@ describe('login counter test', function () {
 
   var login = (userServiceMock)=> {
     return proxyquire(__dirname + '/../../../app/middleware/login_counter.js',
-    {'../services/user_user_service.js': userServiceMock});
+    {'../services/user_service.js': userServiceMock});
   };
 
   it('should call increment login count',function(done){
@@ -59,8 +59,7 @@ describe('login counter test', function () {
     };
     var loginMiddleware = login(mockedUserService);
 
-    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{
-    },() => {
+    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{},() => {
       assert(incrementLoginCountSpy.calledOnce);
       done();
     });
