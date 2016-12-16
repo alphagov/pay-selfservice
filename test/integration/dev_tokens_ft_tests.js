@@ -1,5 +1,5 @@
 var dbMock       = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request      = require('supertest');
 var _app         = require(__dirname + '/../../server.js').getApp;
 var winston      = require('winston');
@@ -88,7 +88,7 @@ portfinder.getPort(function(err, freePort) {
             email: user.email,
             telephone_number: "1"
           };
-          userPermissions.create(userAttributes, 'tokens-revoked:read', done);
+          userCreator.createUserWithPermission(userAttributes, 'tokens-revoked:read', done);
         });
 
         it('should return an empty list of tokens if no tokens have been revoked yet', function (done) {
@@ -175,7 +175,7 @@ portfinder.getPort(function(err, freePort) {
             email: user.email,
             telephone_number: "1"
           };
-          userPermissions.create(userAttributes, 'tokens-active:read', done);
+          userCreator.createUserWithPermission(userAttributes, 'tokens-active:read', done);
         });
 
         it('should return an empty list of tokens if no tokens have been issued yet', function (done){
@@ -262,7 +262,7 @@ portfinder.getPort(function(err, freePort) {
           email: user.email,
           telephone_number: "1"
         };
-        userPermissions.create(userAttributes, 'tokens:update', done);
+        userCreator.createUserWithPermission(userAttributes, 'tokens:update', done);
       });
 
       it('should update the description', function (done){
@@ -340,7 +340,7 @@ portfinder.getPort(function(err, freePort) {
           email: user.email,
           telephone_number: "1"
         };
-        userPermissions.create(userAttributes, 'tokens:delete', done);
+        userCreator.createUserWithPermission(userAttributes, 'tokens:delete', done);
       });
 
       it('should revoke and existing token', function (done){
@@ -413,7 +413,7 @@ portfinder.getPort(function(err, freePort) {
             email: user.email,
             telephone_number: "1"
           };
-          userPermissions.create(userAttributes, 'tokens:create', done);
+          userCreator.createUserWithPermission(userAttributes, 'tokens:create', done);
         });
 
         it('should create a token successfully', function (done){

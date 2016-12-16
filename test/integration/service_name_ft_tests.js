@@ -1,5 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -68,7 +68,7 @@ function build_form_post_request(path, sendData, sendCSRF) {
           email: user.email,
           telephone_number: "1"
         };
-        userPermissions.create(userAttributes, 'service-name:read', done);
+        userCreator.createUserWithPermission(userAttributes, 'service-name:read', done);
       });
 
       it('should display received service name from connector', function (done) {
@@ -133,7 +133,7 @@ describe('The provider update service name endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'service-name:update', done);
+    userCreator.createUserWithPermission(userAttributes, 'service-name:update', done);
   });
 
   it('should send new service name to connector', function (done) {

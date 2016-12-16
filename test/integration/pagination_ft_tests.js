@@ -1,5 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var csrf = require('csrf');
 var nock = require('nock');
@@ -68,7 +68,7 @@ describe('Pagination', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'transactions:read', done);
+    userCreator.createUserWithPermission(userAttributes, 'transactions:read', done);
   });
 
   describe('Pagination', function () {

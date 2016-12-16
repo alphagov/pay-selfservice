@@ -1,5 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -62,7 +62,7 @@ describe('The payment types endpoint,', function () {
         email: user.email,
         telephone_number: "1"
       };
-      userPermissions.create(userAttributes, 'payment-types:read', done);
+      userCreator.createUserWithPermission(userAttributes, 'payment-types:read', done);
     });
 
     it('should show all the card type options that have been previously accepted', function (done) {
