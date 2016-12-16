@@ -183,8 +183,8 @@ resetLoginCount = function(user){
 
 logOut = function(){
   var defer = q.defer();
-  sequelizeConnection.query('delete from "Sessions" where data LIKE :email ',
-    { replacements: { email: `%${this.email}%`  }, type: Sequelize.QueryTypes.DELETE }
+  sequelizeConnection.query('delete from "Sessions" where data LIKE :username ',
+    { replacements: { username: `%${this.username}%`  }, type: Sequelize.QueryTypes.DELETE }
   ).then(
     ()=> { defer.resolve() },
     ()=> { defer.reject() }
@@ -239,15 +239,6 @@ resolveUser = function(user, defer){
 };
 
 // CLASS
-
-var find = function(email, correlationId) {
-  correlationId = correlationId || '';
-  var defer = q.defer();
-  _find(email).then(
-    (user)=> resolveUser(user, defer),
-    (e)=> { logger.debug(`[${correlationId}] find user by email - not found`); defer.reject(e);});
-  return defer.promise;
-},
 
 findByUsername = function(username, correlationId) {
   correlationId = correlationId || '';
@@ -384,7 +375,6 @@ var _find = function(email, extraFields = [], where) {
 };
 
 module.exports = {
-  find: find,
   findByUsername: findByUsername,
   create: create,
   authenticate: authenticate,

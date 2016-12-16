@@ -143,11 +143,6 @@ describe('user model', function () {
   });
 
   describe('find', function () {
-    it('should return a user and lowercase email', function (done) {
-      createDefaultUser({email: 'foo@foo.com'}).then(() => {
-        User.find("Foo@foo.com").then(() => done(), wrongPromise(done));
-      })
-    });
 
     it('should return a user by username', function (done) {
       createDefaultUser({username: 'foo'}).then(() => {
@@ -157,7 +152,7 @@ describe('user model', function () {
 
     it('should never ever ever return a password with user outside the model', function (done) {
       createDefaultUser().then(() => {
-        User.find(defaultUser.email).then((user) => {
+        User.findByUsername(defaultUser.username).then((user) => {
           expect(user).to.not.have.property('password');
           done();
         }, wrongPromise(done));
@@ -178,7 +173,7 @@ describe('user model', function () {
       createRole({description: "Admin"})
         .then((role)=> User.create(userAttributes, role))
         .then((user) => expect(user.email).equal(userAttributes.email.toLowerCase()))
-        .then(()=> User.find(userAttributes.email.toLowerCase()))
+        .then(()=> User.findByUsername(userAttributes.username))
         .then((user) => {
           expect(user.username).equal(userAttributes.username);
           expect(user.gateway_account_id).equal(userAttributes.gateway_account_id);
@@ -190,7 +185,7 @@ describe('user model', function () {
 
     it('should create a user with a specific otp_key and encrypts password', function (done) {
       createDefaultUser().then(user => {
-        User.find(user.email).then(user => {
+        User.findByUsername(user.username).then(user => {
           expect(user.otp_key).equal(defaultOtpKey);
           done();
         }, wrongPromise(done));
@@ -233,7 +228,7 @@ describe('user model', function () {
   describe('sendPasswordResetToken', function () {
     it('should send an email', function (done) {
       createDefaultUser().then(user => {
-        User.find(user.email).then(user => {
+        User.findByUsername(user.username).then(user => {
           user.sendPasswordResetToken('some-correlation-id');
           done();
         }, wrongPromise(done));
@@ -329,11 +324,11 @@ describe('user model', function () {
         .then((user) => {
           createdUser = user
         })
-        .then(() => createSession(createdUser.email))
-        .then(() => findFromSession({data: createdUser.email}))
+        .then(() => createSession(createdUser.username))
+        .then(() => findFromSession({data: createdUser.username}))
         .then((sessionData) => expect(sessionData).to.not.be.null)
         .then(() => createdUser.logOut())
-        .then(() => findFromSession({data: createdUser.email}))
+        .then(() => findFromSession({data: createdUser.username}))
         .then((sessionData) => expect(sessionData).to.be.null)
         .then(() => done())
         .catch(wrongPromise(done));
@@ -346,9 +341,9 @@ describe('user model', function () {
       var createdUser;
       createDefaultUser({disabled: false})
         .then((user) => createdUser = user)
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((user) => user.toggleDisabled(true))
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((updatedUser) => expect(updatedUser.disabled).to.be.true)
         .then(()=> done())
         .catch(wrongPromise(done));
@@ -358,11 +353,11 @@ describe('user model', function () {
       var createdUser;
       createDefaultUser()
         .then(user => createdUser = user)
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((user) => user.toggleDisabled(true))
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((user) => user.toggleDisabled(false))
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((updatedUser) => {
           expect(updatedUser.disabled).to.be.false;
           expect(updatedUser.login_counter).to.be.equal(0);
@@ -377,9 +372,9 @@ describe('user model', function () {
       var createdUser;
       createDefaultUser()
         .then(user => createdUser = user)
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((user) => user.incrementLoginCount())
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((updatedUser) => expect(updatedUser.login_counter).to.be.equal(1))
         .then(done())
         .catch(wrongPromise(done));
@@ -389,11 +384,11 @@ describe('user model', function () {
       var createdUser;
       createDefaultUser()
         .then(user => createdUser = user)
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((user) => user.incrementLoginCount())
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then((user) => user.resetLoginCount())
-        .then(() => User.find(createdUser.email))
+        .then(() => User.findByUsername(createdUser.username))
         .then(updatedUser => expect(updatedUser.login_counter).to.be.equal(0))
         .then(() => done())
         .catch(wrongPromise(done));
@@ -426,7 +421,7 @@ describe('user model', function () {
       var retrievedUser;
       createDefaultUser()
         .then(user => user.setRole(roleAdmin))
-        .then(()=> User.find(defaultUser.email))
+        .then(()=> User.findByUsername(defaultUser.username))
         .then((user)=> retrievedUser = user)
         .then(()=> retrievedUser.hasPermission("refunds:create"))
         .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.true)
@@ -451,7 +446,7 @@ describe('user model', function () {
       var retrievedUser;
       createDefaultUser()
         .then(user => user.setRole(roleRead))
-        .then(()=> User.find(defaultUser.email))
+        .then(()=> User.findByUsername(defaultUser.username))
         .then((user) => retrievedUser = user)
         .then(()=> retrievedUser.hasPermission("refunds:create"))
         .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.false)
@@ -475,7 +470,7 @@ describe('user model', function () {
         .then((role)=> roleWrite = role)
         .then(()=> roleWrite.setPermissions([createTokensPermission]))
         .then(()=> userSetup.setRole(roleWrite))
-        .then(()=> User.find(defaultUser.email))
+        .then(()=> User.findByUsername(defaultUser.username))
         .then((user) => retrievedUser = user)
         .then(()=> retrievedUser.hasPermission("refunds:create"))
         .then((hasCreateRefundsPermission)=> expect(hasCreateRefundsPermission).to.be.false)

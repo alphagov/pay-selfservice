@@ -10,15 +10,15 @@ var User = require('./app/models/user.js');
 
 var chalk = require('chalk');
 var argv = require('yargs')
-  .usage('Usage: $0 -u [email]')
+  .usage('Usage: $0 -u [username]')
   .demand(['u'])
-  .describe('u', 'user email address to be enabled')
+  .describe('u', 'username of the user to be enabled')
   .argv;
 
-var userEmail = argv.u;
+var username = argv.u;
 
 
-User.find(userEmail)
+User.findByUsername(username)
   .then(
     (user)=>
       user.toggleDisabled(false).then(()=> {

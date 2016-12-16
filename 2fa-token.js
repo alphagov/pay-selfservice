@@ -9,15 +9,14 @@ if (!process.env.DATABASE_URL) {
 var User     = require('./app/models/user.js');
 
 var argv = require('yargs')
-  .usage('Usage: $0 -u [email]')
+  .usage('Usage: $0 -u [username]')
   .demand(['u'])
-  .describe('u', 'user email address to be deleted from session')
+  .describe('u', 'username of the user to generate an OTP')
   .argv;
 
-var userEmail = argv.u;
+var username = argv.u;
 
-
-User.find(userEmail)
+User.findByUsername(username)
   .then(
     (user)=>{
       console.log(user.generateOTP());
