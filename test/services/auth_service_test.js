@@ -61,6 +61,40 @@ describe('auth service', function () {
     redirect.restore();
   });
 
+  describe('serialize user', function() {
+
+    it("should call done function with username", function (done) {
+      let user = {username: 'foo'};
+      let doneSpy = sinon.spy(done);
+
+      auth.serializeUser(user, doneSpy);
+
+      assert(doneSpy.calledWithExactly(null, 'foo'))
+    });
+  });
+
+  describe('deserialize user', function(){
+
+    it("should find user by username", function (done) {
+
+      let authService = (userMock)=> {
+        return proxyquire(__dirname + '/../../app/services/auth_service.js',
+          {'../models/user.js': userMock});
+      };
+
+      let user = {};
+      let doneSpy = sinon.spy(done);
+      let userMock = {
+        findByUsername: (username) => {
+          expect(username).to.be.equal('foo');
+          return {then: (suc, fail)=> suc(user)}
+        }
+      };
+
+      authService(userMock).deserializeUser('foo', doneSpy);
+      assert(doneSpy.calledWithExactly(null, user))
+    });
+  });
 
   describe('enforceUserAndSecondFactor', function () {
     it("should call next if has valid user", function (done) {
