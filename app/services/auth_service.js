@@ -5,7 +5,7 @@ var localStrategy = require('passport-local').Strategy;
 var TotpStrategy = require('passport-totp').Strategy;
 var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var User = require(__dirname + '/../models/user.js');
+var User = require('../models/user.js');
 var _ = require('lodash');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
@@ -99,14 +99,14 @@ var initialise = function (app, override_strategy) {
 
 };
 
-var deserializeUser = function (email, done) {
-  User.find(email).then(function(user){
+var deserializeUser = function (username, done) {
+  User.findByUsername(username).then(function(user){
     done(null, user);
   });
-}
+};
 
 var serializeUser = function (user, done) {
-  done(null, user.email);
+  done(null, user.username);
 };
 
 module.exports = {
