@@ -1,5 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -54,7 +54,7 @@ describe('The payment types endpoint,', function () {
         email: user.email,
         telephone_number: "1"
       };
-      userPermissions.create(userAttributes, 'payment-types:read', done);
+      userCreator.createUserWithPermission(userAttributes, 'payment-types:read', done);
     });
 
     beforeEach(function () {
@@ -168,7 +168,7 @@ describe('The payment types endpoint,', function () {
         email: user.email,
         telephone_number: "1"
       };
-      userPermissions.create(userAttributes, 'payment-types:update', done);
+      userCreator.createUserWithPermission(userAttributes, 'payment-types:update', done);
     });
 
     it('should redirect to select brand view when debit cards option selected', function (done) {

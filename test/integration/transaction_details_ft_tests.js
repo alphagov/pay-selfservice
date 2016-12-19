@@ -1,7 +1,7 @@
 var request     = require('supertest');
 var nock        = require('nock');
 var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var _app        = require(__dirname + '/../../server.js').getApp;
 var winston     = require('winston');
 var paths       = require(__dirname + '/../../app/paths.js');
@@ -45,7 +45,7 @@ describe('The transaction view scenarios', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'transactions-details:read', done);
+    userCreator.createUserWithPermission(userAttributes, 'transactions-details:read', done);
   });
 
   describe('The transaction history endpoint', function () {

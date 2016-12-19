@@ -12,7 +12,7 @@ function sync_db() {
     .then(() => UserRole.sequelize.sync({force: true}))
 }
 
-function create(user, permissionName, cb) {
+function createUserWithPermission(user, permissionName, cb) {
   var roleDef;
   var permissionDef;
   sync_db()
@@ -25,6 +25,11 @@ function create(user, permissionName, cb) {
     .then(()=> cb());
 }
 
+function createUser(user, cb) {
+  createUserWithPermission(user, 'meaningless-permission-needed-by-Sequelize', cb);
+}
+
 module.exports = {
-  create: create
+  createUserWithPermission: createUserWithPermission,
+  createUser: createUser
 };

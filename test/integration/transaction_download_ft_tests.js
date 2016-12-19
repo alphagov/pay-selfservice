@@ -1,6 +1,6 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var nock = require('nock');
 var _ = require('lodash');
@@ -57,7 +57,7 @@ describe('Transaction download endpoints', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'transactions-download:read', done);
+    userCreator.createUserWithPermission(userAttributes, 'transactions-download:read', done);
   });
 
   describe('The /transactions/download endpoint', function () {

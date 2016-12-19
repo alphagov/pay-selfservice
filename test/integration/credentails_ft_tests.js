@@ -1,5 +1,5 @@
 var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
@@ -59,7 +59,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'gateway-credentials:read', done);
+    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -197,7 +197,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
+    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -335,7 +335,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
+    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -473,7 +473,7 @@ describe('The notification credentials', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'gateway-credentials:read', done);
+    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
   });
 
   it('should pass through the notification credentials', function (done) {
@@ -521,7 +521,7 @@ describe('The provider update credentials endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
+    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should send new username, password and merchant_id credentials to connector', function (done) {
@@ -623,7 +623,7 @@ describe('The provider update notification credentials endpoint', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'gateway-credentials:update', done);
+    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
   });
 
   it('should send new username and password notification credentials to connector', function (done) {

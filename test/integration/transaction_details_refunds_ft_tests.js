@@ -5,7 +5,7 @@ var _app = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
-var userPermissions = require(__dirname + '/../test_helpers/user_permissions.js');
+var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 
 var ACCOUNT_ID = 15486734;
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
@@ -26,7 +26,7 @@ describe('The transaction view - refund scenarios', function () {
       email: user.email,
       telephone_number: "1"
     };
-    userPermissions.create(userAttributes, 'refunds:create', done);
+    userCreator.createUserWithPermission(userAttributes, 'refunds:create', done);
   });
 
   // known FP issue with node, it cannot mulitply 19.90 by 100 accurately
