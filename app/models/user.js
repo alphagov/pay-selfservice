@@ -184,7 +184,7 @@ resetLoginCount = function(user){
 logOut = function(){
   var defer = q.defer();
   sequelizeConnection.query('delete from "Sessions" where data LIKE :username ',
-    { replacements: { username: `%${this.username}%`  }, type: Sequelize.QueryTypes.DELETE }
+    { replacements: { username: `%"user":"${this.username}"%`  }, type: Sequelize.QueryTypes.DELETE }
   ).then(
     ()=> { defer.resolve() },
     ()=> { defer.reject() }

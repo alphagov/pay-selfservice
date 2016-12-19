@@ -77,11 +77,11 @@ var defaultUser = {
 };
 
 var createSession = (email) => {
-  return Sessions.create({data: email});
+  return Sessions.create({data: `{"passport":{"user":"${email}"}}`});
 };
 
-var findFromSession = (where) => {
-  return Sessions.findOne({where: where});
+var findFromSession = (email) => {
+  return Sessions.findOne({where: {data: `{"passport":{"user":"${email}"}}`}});
 };
 
 var createDefaultUser = function (extendedAttributes) {
@@ -325,10 +325,10 @@ describe('user model', function () {
           createdUser = user
         })
         .then(() => createSession(createdUser.username))
-        .then(() => findFromSession({data: createdUser.username}))
+        .then(() => findFromSession(createdUser.username))
         .then((sessionData) => expect(sessionData).to.not.be.null)
         .then(() => createdUser.logOut())
-        .then(() => findFromSession({data: createdUser.username}))
+        .then(() => findFromSession(createdUser.username))
         .then((sessionData) => expect(sessionData).to.be.null)
         .then(() => done())
         .catch(wrongPromise(done));
