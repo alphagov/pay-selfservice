@@ -11,3 +11,5 @@ staging-1.tag=alpha_staging-1-111
 staging-1.alpha_staging-1-111.date=2016-12-19:15:26:43
 
 staging-1.alpha_staging-1-111.status=success
+
+release.tag=alpha_release-112
