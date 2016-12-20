@@ -19,3 +19,5 @@ release.alpha_release-112.date=2016-12-19:15:36:16
 production-1.tag=FAILED-111
 
 production-1.FAILED-111.date=
+
+production-1.FAILED-111.status=failed
