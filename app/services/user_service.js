@@ -3,6 +3,8 @@ var Sequelize             = require('sequelize');
 var bcrypt                = require('bcrypt');
 var q                     = require('q');
 var _                     = require('lodash');
+
+var notp                  = require('notp');
 var logger                = require('winston');
 
 var sequelizeConfig       = require('./../utils/sequelize_config.js');
@@ -80,7 +82,6 @@ module.exports = {
     var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
     if (user.otp_key && user.telephone_number && template) {
       var code = user.generateOTP();
-      return notify.sendSms(template, user.telephone_number, {code: code});
     } else {
       throw new Error('missing required field to send text');
     }

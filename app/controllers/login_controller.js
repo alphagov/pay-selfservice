@@ -96,8 +96,8 @@ module.exports.sendAgainGet = function(req, res){
 };
 
 module.exports.sendAgainPost = function(req, res){
-  userService.sendOTP(req.user).then(function(){
-    req.session.save(() => res.redirect(paths.user.otpLogIn));
-    },function(err) { error(req,res,err); }
+  userService.sendOTP(req.user).then(
+    () => { res.redirect(paths.user.otpLogIn); },
+    (err) => { error(req,res,err); }
   );
 };

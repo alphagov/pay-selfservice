@@ -94,8 +94,6 @@ var hashPasswordHook = function(instance) {
 User.beforeCreate(hashPasswordHook);
 User.beforeUpdate(hashPasswordHook);
 
-
-
 /**
  * @param {boolean} toggle
  * @returns {Promise}
