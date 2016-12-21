@@ -149,6 +149,11 @@ var sync_db = () => {
 
 describe('user model', function () {
 
+  before((done) => {
+    sync_db()
+      .then(() => done());
+  });
+
   beforeEach(function (done) {
     this.timeout(5000);
 
@@ -175,6 +180,10 @@ describe('user model', function () {
   });
 
   describe('create', function () {
+    beforeEach(function (done) {
+      sync_db()
+        .then(() => done());
+    });
 
     it('should create a user and lowercase email', function (done) {
       var userAttributes = {
@@ -215,7 +224,6 @@ describe('user model', function () {
   });
 
   describe('authenticate', function () {
-
     it('should authenticate a valid user', function (done) {
       createDefaultUser().then(user => {
         userService.authenticate(user.username, defaultPassword).then(() => done(), wrongPromise(done))
@@ -265,7 +273,6 @@ describe('user model', function () {
   });
 
   describe('updateUserNameAndEmail', function () {
-
     it('should update the username and email', function (done) {
       createDefaultUser().then(user => {
         user.updateUserNameAndEmail('hi@bye.com', 'hibye')
@@ -321,7 +328,6 @@ describe('user model', function () {
 
     it('should find the forgotten password token', function (done) {
       this.timeout(5000);
-
       createDefaultUser().then(user => {
         createDefaultForgottenPassword({userId: user.id}).then(() => {
           userService.findByResetToken(defaultForgottenPasswordCode).then(() => {
