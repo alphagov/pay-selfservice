@@ -11,7 +11,11 @@ var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_H
 
 var localStrategyAuth = function (username, password, done) {
   return userService.findByUsername(username)
+<<<<<<< 11f5d3f144e67fbdc41b82c1e600231f6caf0c26
     .then((user) => userService.authenticate(user.username, password))
+=======
+    .then((user) => userService.authenticate(user, password))
+>>>>>>> PP-1407 use new user service and fix tests
     .then((user) => done(null, user))
     .catch(() => done(null, false, { message: 'Invalid username or password' }));
 };
