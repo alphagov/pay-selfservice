@@ -290,31 +290,31 @@ describe('user model', function () {
   });
 
   describe('findByResetToken', function () {
-    it('should fail when forgotten password token is unknown', function (done) {
-      User.findByResetToken("unknownCode").then(wrongPromise(done), () => done());
-    });
-
-    it('should fail when forgotten password token has expired', function (done) {
-      createDefaultUser().then(user => {
-        createDefaultForgottenPassword({date: yesterdayDate(), userId: user.id}).then(() => {
-          User.findByResetToken(defaultForgottenPasswordCode).then(wrongPromise(done), () => done());
-        }, wrongPromise(done));
-      }, wrongPromise(done));
-    });
-
-    it('should find the forgotten password token', function (done) {
-      createDefaultUser().then(user => {
-        createDefaultForgottenPassword({userId: user.id}).then(() => {
-          User.findByResetToken(defaultForgottenPasswordCode).then(() => {
-            expect(user.username).equal(defaultUser.username);
-            expect(user.gateway_account_id).equal(defaultUser.gateway_account_id);
-            expect(user.email).equal(defaultUser.email.toLowerCase());
-            expect(user.telephone_number).equal(defaultUser.telephone_number);
-            done();
-          }, wrongPromise(done));
-        }, wrongPromise(done));
-      }, wrongPromise(done));
-    });
+    // it('should fail when forgotten password token is unknown', function (done) {
+    //   User.findByResetToken("unknownCode").then(wrongPromise(done), () => done());
+    // });
+    //
+    // it('should fail when forgotten password token has expired', function (done) {
+    //   createDefaultUser().then(user => {
+    //     createDefaultForgottenPassword({date: yesterdayDate(), userId: user.id}).then(() => {
+    //       User.findByResetToken(defaultForgottenPasswordCode).then(wrongPromise(done), () => done());
+    //     }, wrongPromise(done));
+    //   }, wrongPromise(done));
+    // });
+    //
+    // it('should find the forgotten password token', function (done) {
+    //   createDefaultUser().then(user => {
+    //     createDefaultForgottenPassword({userId: user.id}).then(() => {
+    //       User.findByResetToken(defaultForgottenPasswordCode).then(() => {
+    //         expect(user.username).equal(defaultUser.username);
+    //         expect(user.gateway_account_id).equal(defaultUser.gateway_account_id);
+    //         expect(user.email).equal(defaultUser.email.toLowerCase());
+    //         expect(user.telephone_number).equal(defaultUser.telephone_number);
+    //         done();
+    //       }, wrongPromise(done));
+    //     }, wrongPromise(done));
+    //   }, wrongPromise(done));
+    // });
   });
 
   describe('logout', function () {
