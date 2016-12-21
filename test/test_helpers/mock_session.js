@@ -1,11 +1,14 @@
 'use strict';
 var express = require('express');
+var User = require('../../app/models/user').User;
 var _       = require('lodash');
-var user = {
+var user = User.build({
   username: Math.random().toString(36).substring(7),
   email: Math.random().toString(36).substring(7) + "@email.com",
-  otp_key: "foo"
-};
+  telephone_number: Math.random().toString(36).substring(7),
+  otp_key: "foo",
+  password: "password"
+});
 
 module.exports = function () {
 

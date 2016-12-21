@@ -13,6 +13,7 @@ var login_controller     = require(__dirname + '/../../app/controllers/login_con
 var proxyquire  = require('proxyquire');
 var q           = require('q');
 var notp        = require('notp');
+createGovukNotifyToken = require('../test_helpers/jwt');
 
 
 var app = session.mockValidAccount(_app, ACCOUNT_ID);
@@ -99,16 +100,20 @@ describe('The postlogin endpoint', function () {
 
 
 describe('The otplogin endpoint', function () {
-  it('should render and send key on firt time',function(done){
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
+  it('should render and send key on first time',function(done){
     var ses =  session.mockAccountObj(ACCOUNT_ID);
-    delete ses.passport.user.otp_key;
-    callsSendOTP = false;
-    ses.passport.user.sendOTP = function(){
-      return { then: function(callback){
-        callsSendOTP = !!true;
-        callback();
-      }};
-    };
+    var notify = nock(process.env.NOTIFY_BASE_URL, {
+      reqheaders: {
+        'Authorization': 'Bearer ' +
+        createGovukNotifyToken('POST', '/notifications/sms', process.env.NOTIFY_SECRET, process.env.NOTIFY_SERVICE_ID)
+      }
+    })
+      .post('/notifications/sms')
+      .reply(200);
 
 
     var app2 = session.mockAccount(_app,ses);
@@ -116,7 +121,7 @@ describe('The otplogin endpoint', function () {
       .get("/otp-login")
       .expect(200)
       .end(function(){
-        assert(callsSendOTP);
+        assert(notify.isDone());
         assert(ses.sentCode === true);
         done();
       });
@@ -124,15 +129,17 @@ describe('The otplogin endpoint', function () {
 
   it('should render and not send key on seccond time',function(done){
     var ses =  session.mockAccountObj(ACCOUNT_ID);
-    delete ses.passport.user.otp_key;
     doesNotcallSendOTP = true;
     ses.sentCode = true;
-    ses.passport.user.sendOTP = function(){
-      return { then: function(callback){
-        doesNotcallSendOTP = false;
-        callback();
-      }};
-    };
+
+    var notify = nock(process.env.NOTIFY_BASE_URL, {
+      reqheaders: {
+        'Authorization': 'Bearer ' +
+        createGovukNotifyToken('POST', '/notifications/sms', process.env.NOTIFY_SECRET, process.env.NOTIFY_SERVICE_ID)
+      }
+    })
+      .post('/notifications/sms')
+      .reply(200);
 
 
     var app2 = session.mockAccount(_app,ses);
@@ -140,7 +147,7 @@ describe('The otplogin endpoint', function () {
       .get("/otp-login")
       .expect(200)
       .end(function(){
-        assert(doesNotcallSendOTP);
+        assert(!notify.isDone());
         done();
       });
   });
@@ -149,7 +156,7 @@ describe('The otplogin endpoint', function () {
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     url = "http://foo",
-    req = {session: { 
+    req = {session: {
       last_url: url, save: (cb)=> cb() },
       headers: {'x-request-id': 'some-unique-id' },
       user: { resetLoginCount: ()=> {

@@ -84,7 +84,6 @@ var User = sequelizeConnection.define('user', {
 
 User.hasMany(forgottenPassword, {as: 'forgotten'});
 User.belongsToMany(Role, { as: 'roles', through: UserRole, foreignKey:'user_id', otherKey:'role_id'});
-User.sequelize.sync();
 
 var hashPasswordHook = function(instance) {
   if (!instance.changed('password')) return;
@@ -95,8 +94,23 @@ var hashPasswordHook = function(instance) {
 User.beforeCreate(hashPasswordHook);
 User.beforeUpdate(hashPasswordHook);
 
-// console.log('user = ' + JSON.stringify(User.Instance.prototype));
 
+
+/**
+ * @param {boolean} toggle
+ * @returns {Promise}
+ */
+User.Instance.prototype.toJSON = function(toggle) {
+  var values = Object.assign({}, this.get());
+
+  delete values.password;
+  return values;
+};
+
+/**
+ * @param {boolean} toggle
+ * @returns {Promise}
+ */
 User.Instance.prototype.toggleDisabled = function(toggle) {
   var defer = q.defer(),
   log = ()=> logger.info(this.id + " disabled status is now " + toggle);
@@ -112,37 +126,52 @@ User.Instance.prototype.toggleDisabled = function(toggle) {
   return defer.promise;
 };
 
-User.Instance.prototype.updatePassword = function(password){
-  var defer = q.defer();
+/**
+ * @param {string} password
+ * @returns {Promise}
+ */
+User.Instance.prototype.updatePassword = function(password) {
   this.password = password;
-  this.save().then(defer.resolve,defer.reject);
-  return defer.promise;
+  return this.save();
 };
 
-User.Instance.prototype.incrementLoginCount = function(user){
-  var defer = q.defer();
-  this.login_counter = this.login_counter + 1
-  this.save().then(defer.resolve,defer.reject);
-  return defer.promise;
+/**
+ * @returns {Promise}
+ */
+User.Instance.prototype.incrementLoginCount = function(){
+  this.login_counter = this.login_counter + 1;
+  return this.save();
 };
 
-  User.Instance.prototype.resetLoginCount = function(user){
-  var defer = q.defer();
-  this.login_counter = 0
-  this.save().then(defer.resolve,defer.reject);
-  return defer.promise;
+/**
+ * @returns {Promise}
+ */
+User.Instance.prototype.resetLoginCount = function(){
+  this.login_counter = 0;
+  return this.save();
 };
 
+/**
+ * @param {string} newEmail
+ * @param {string} newUserName
+ * @returns {Promise}
+ */
 User.Instance.prototype.updateUserNameAndEmail = function(newEmail, newUserName) {
-  var defer = q.defer();
   if(newEmail && newEmail !='') {
     this.email    = newEmail;
   }
   if (newUserName || newUserName != '') {
     this.username = newUserName;
   }
-  this.save().then(defer.resolve, defer.reject);
-  return defer.promise;
+
+  return this.save();
+};
+
+/**
+ * @returns {String}
+ */
+User.Instance.prototype.generateOTP = function() {
+  return notp.totp.gen(this.otp_key);
 };
 
 /**
@@ -152,9 +181,16 @@ User.Instance.prototype.updateUserNameAndEmail = function(newEmail, newUserName)
  * Set given role to a user overriding its current one
  */
 User.Instance.prototype.setRole = function(role) {
-  return user.setRoles([role]);
+  let roleId;
+  if (typeof role === 'number' || typeof role === 'string') {
+    roleId = role;
+  } else {
+    roleId = role.id;
+  }
+  return this.setRoles([roleId]);
 };
 
+User.sequelize.sync();
 
 module.exports = {
   User: User

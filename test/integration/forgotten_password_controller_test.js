@@ -6,7 +6,7 @@ var proxyquire = require('proxyquire');
 var q                     = require('q');
 
 
-describe.only('forgotten password', function () {
+describe('forgotten password', function () {
 
   var forgottenPassword = (userMock) => {
     return proxyquire(__dirname + '/../../app/controllers/forgotten_password_controller.js',

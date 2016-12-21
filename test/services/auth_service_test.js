@@ -1,6 +1,7 @@
 var should = require('chai').should();
 var assert = require('assert');
 var sinon = require('sinon');
+var q = require('q');
 var _ = require('lodash');
 var expect = require('chai').expect;
 var nock = require('nock');
@@ -79,20 +80,25 @@ describe('auth service', function () {
 
       let authService = (userMock)=> {
         return proxyquire(__dirname + '/../../app/services/auth_service.js',
-          {'../models/user.js': userMock});
+          {'../services/user_service.js': userMock});
       };
 
-      let user = {};
-      let doneSpy = sinon.spy(done);
-      let userMock = {
+      let user = {id: 'unimportantid'};
+      let doneSpy = sinon.spy(() => {});
+      let userServiceMock = {
         findByUsername: (username) => {
           expect(username).to.be.equal('foo');
-          return {then: (suc, fail)=> suc(user)}
+          var defer = q.defer();
+          defer.resolve(user);
+          return defer.promise;
         }
       };
 
-      authService(userMock).deserializeUser('foo', doneSpy);
-      assert(doneSpy.calledWithExactly(null, user))
+      authService(userServiceMock).deserializeUser('foo', doneSpy)
+        .then(() => {
+          assert(doneSpy.calledWithExactly(null, user));
+          done();
+        });
     });
   });
 

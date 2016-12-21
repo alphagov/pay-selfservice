@@ -2,6 +2,7 @@
 var logger    = require('winston');
 var _ = require('lodash');
 var response  = require('../utils/response.js').response;
+var userService  = require('../services/user_service.js');
 var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
@@ -67,7 +68,7 @@ module.exports.logUserinOTP = function(req, res, next) {
 
 module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
-    req.user.sendOTP().then(function(){
+    userService.sendOTP(req.user).then(function(){
       req.session.sentCode = true;
       req.session.save(() => res.render('login/otp-login'));
     },function(err) { error(req,res,err); }
@@ -95,7 +96,7 @@ module.exports.sendAgainGet = function(req, res){
 };
 
 module.exports.sendAgainPost = function(req, res){
-  req.user.sendOTP().then(function(){
+  userService.sendOTP(req.user).then(function(){
     req.session.save(() => res.redirect(paths.user.otpLogIn));
     },function(err) { error(req,res,err); }
   );
