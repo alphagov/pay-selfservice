@@ -91,3 +91,5 @@ production-1.tag=FAILED-112
 production-1.FAILED-112.date=
 
 production-1.FAILED-112.status=failed
+
+staging-1.tag=FAILED-112
