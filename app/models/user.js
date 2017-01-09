@@ -14,6 +14,7 @@ var UserRole              = require('./user_role.js').sequelize;
 var moment                = require('moment');
 var paths                 = require(__dirname + '/../paths.js');
 var commonPassword        = require('common-password');
+var applicationMetrics    = require('./../utils/metrics.js').metrics;
 
 const MIN_PASSWORD_LENGTH       = 10;
 const HASH_PASSWORD_SALT_ROUNDS = 10;
@@ -146,11 +147,16 @@ sendPasswordResetToken = function(correlationId){
     var startTime = new Date();
     notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
-      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      var elapsed = new Date() - startTime;
+      applicationMetrics.histogram('notify-operations.response_time', elapsed);
+      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  elapsed);
       logger.info(`[${correlationId}] FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ` + user.id);
       defer.resolve();
     }, (e)=> {
-      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      var elapsed = new Date() - startTime;
+      applicationMetrics.increment('notify-operations.failures');
+      applicationMetrics.histogram('notify-operations.response_time', elapsed);
+      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  elapsed);
       logger.error(`[${correlationId}] PROBLEM SENDING FORGOTTEN PASSWORD EMAIL `,e);
       defer.reject();
     });
