@@ -9,8 +9,7 @@ module.exports = function (data) {
   json2csv(
     {
       data: data,
-      default: 'NULL',
-      quotes: "",
+      defaultValue: "",
       fields: [
         {
           label: 'Reference',
