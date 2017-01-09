@@ -1,5 +1,7 @@
 {
   "CONNECTOR_URL":"http://localhost:8001",
+  "ADMIN_USERS_URL":"http://localhost:8002",
+  "ADMIN_USERS_API_ENABLED": true,
   "AUTH0_URL":"my.test.auth0",
   "AUTH0_CLIENT_ID":"client12345",
   "AUTH0_CLIENT_SECRET": "clientsupersecret",

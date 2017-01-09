@@ -77,9 +77,9 @@ describe('auth service', function () {
 
     it("should find user by username", function (done) {
 
-      let authService = (userMock)=> {
+      let authService = (adminUsersMock)=> {
         return proxyquire(__dirname + '/../../app/services/auth_service.js',
-          {'../models/user.js': userMock});
+          {'./admin_users_service': adminUsersMock});
       };
 
       let user = {};

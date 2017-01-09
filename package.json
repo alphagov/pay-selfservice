@@ -30,6 +30,8 @@
     "grunt-test": "node ./node_modules/.bin/grunt test"
   },
   "dependencies": {
+    "appmetrics": "1.1.2",
+    "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
     "bcrypt": "^0.8.7",
     "body-parser": "1.15.x",
@@ -81,18 +83,16 @@
     "qs": "^6.2.0",
     "readdir": "0.0.x",
     "request": "2.72.x",
+    "request-promise": "4.1.x",
     "sequelize": "3.25.x",
     "sequelize-cli": "^2.4.0",
-    "sequelize-mocking": "^0.2.0",
     "serve-favicon": "2.3.x",
     "sleep": "^3.0.1",
     "thirty-two": "^1.0.2",
     "throng": "4.0.x",
     "tunnel": "0.0.4",
     "winston": "2.2.x",
-    "yargs": "4.7.x",
-    "appmetrics": "1.1.2",
-    "appmetrics-statsd": "1.0.1"
+    "yargs": "4.7.x"
   },
   "devDependencies": {
     "chai": "^3.2.0",

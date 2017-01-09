@@ -5,12 +5,12 @@ var localStrategy = require('passport-local').Strategy;
 var TotpStrategy = require('passport-totp').Strategy;
 var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var User = require('../models/user.js');
+let usersAdminService = require('./admin_users_service');
 var _ = require('lodash');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {
-  User.authenticate(username,password)
+  usersAdminService.authenticate(username,password)
   .then(function(user){
     done(null, user);
   },function(){
@@ -100,7 +100,7 @@ var initialise = function (app, override_strategy) {
 };
 
 var deserializeUser = function (username, done) {
-  User.findByUsername(username).then(function(user){
+  usersAdminService.findByUsername(username).then(function(user){
     done(null, user);
   });
 };
