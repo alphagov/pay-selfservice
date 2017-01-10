@@ -5,6 +5,7 @@ var _      = require('lodash');
 var expect = require('chai').expect;
 var nock   = require('nock');
 var proxyquire = require('proxyquire');
+var q                     = require('q');
 
 describe('login counter test', function () {
 
@@ -34,79 +35,68 @@ describe('login counter test', function () {
     render.restore();
   });
 
-  var login = (userMock)=> {
+  var login = (userServiceMock)=> {
     return proxyquire(__dirname + '/../../app/middleware/login_counter.js',
-    {'../models/user.js': userMock});
+    {'../services/user_service.js': userServiceMock});
   };
 
-  it('should call increment login count',function(){
+  it('should call increment login count',function(done){
     var user = {
-      find: ()=> {
-        return  {
-          then: (success,fail)=> {
-            success({
-              login_counter: 0,
-              incrementLoginCount: () => {
-                assert("increment is called","increment is called")
-                return { then: (suc,fail)=> suc()}
-              }
-            })
-          }
-        }
+      login_counter: 0,
+      incrementLoginCount: () => {
+        var defer = q.defer();
+        defer.resolve();
+        return defer.promise;
       }
     };
+    var incrementLoginCountSpy = sinon.spy(user, 'incrementLoginCount');
+    var mockedUserService = {
+      findByUsername: ()=> {
+        var defer = q.defer();
+        defer.resolve(user);
+        return defer.promise;
+      }
+    };
+    var loginMiddleware = login(mockedUserService);
 
-    var loginMiddleware = login(user);
     loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{
-    },()=> assert("next is called","next is called"))
+    },() => {
+      assert(incrementLoginCountSpy.calledOnce);
+      done();
+    });
   });
 
-  it('should call disable user and render noacess when over limit',function(){
-
+  it('should call disable user and render noacess when over limit',function(done){
     var user = {
-      find: ()=> { 
-        return  { 
-          then: (success,fail)=> {
-            success({
-              login_counter: 100,
-              incrementLoginCount: () => {
-                assert("increment is called",false)
-                return { then: (suc,fail)=> suc()}
-              },
-              toggleDisabled: (boolean)=> {
-                assert(boolean, true);
-                return { then: (suc)=> suc() }
-              }
-            })
-          }
-        }
+      login_counter: 2,
+      incrementLoginCount: () => {
+        var defer = q.defer();
+        defer.resolve();
+        return defer.promise;
+      },
+      toggleDisabled: () => {
+        var defer = q.defer();
+        defer.resolve();
+        return defer.promise;
       }
     };
 
-    var loginMiddleware = login(user);
-    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{
-      render: (path) => assert("login/noaccess",path)
-    },()=> assert("next is called",false))
-  });
+    var incrementLoginCountSpy = sinon.spy(user, 'incrementLoginCount');
+    var toggleDisabledSpy = sinon.spy(user, 'toggleDisabled');
 
-  it('should retrieve safely email field',function(){
-    var user = {
-      find: ()=> {
-        return  {
-          then: (success,fail)=> {
-            success({
-              login_counter: 0,
-              incrementLoginCount: () => {
-                assert("increment is called","increment is called");
-                return { then: (suc,fail)=> suc()}
-              }
-            })
-          }
-        }
+    var mockedUserService = {
+      findByUsername: () => {
+        var defer = q.defer();
+        defer.resolve(user);
+        return defer.promise;
       }
     };
-    var loginMiddleware = login(user);
-    loginMiddleware.enforce({body:{}, headers:{}},{
-    },()=> assert("next is called","next is called"))
+
+    var loginMiddleware = login(mockedUserService);
+    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{}).then(() => {
+      assert(incrementLoginCountSpy.calledOnce);
+      assert(toggleDisabledSpy.calledWith(true));
+      done();
+    });
   });
 });

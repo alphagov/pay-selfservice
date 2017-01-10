@@ -5,17 +5,15 @@ var localStrategy = require('passport-local').Strategy;
 var TotpStrategy = require('passport-totp').Strategy;
 var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var User = require('../models/user.js');
+var userService = require('../services/user_service.js');
 var _ = require('lodash');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {
-  User.authenticate(username,password)
-  .then(function(user){
-    done(null, user);
-  },function(){
-    done(null, false, { message: 'Invalid username or password' });
-  });
+  return userService.findByUsername(username)
+    .then((user) => userService.authenticate(user.username, password))
+    .then((user) => done(null, user))
+    .catch(() => done(null, false, { message: 'Invalid username or password' }));
 };
 
 var ensureSessionHasCsrfSecret = function (req, res, next) {
@@ -100,9 +98,10 @@ var initialise = function (app, override_strategy) {
 };
 
 var deserializeUser = function (username, done) {
-  User.findByUsername(username).then(function(user){
-    done(null, user);
-  });
+  return userService.findByUsername(username)
+    .then((user) => {
+      done(null, user);
+    });
 };
 
 var serializeUser = function (user, done) {

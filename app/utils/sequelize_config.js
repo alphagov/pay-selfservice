@@ -9,7 +9,8 @@ function createInstance() {
       storage: __dirname + '/../../database.sqlite',
       define: {
         syncOnAssociation: true
-      }
+      },
+      logging: false
     });
   }
   return new Sequelize(process.env.DATABASE_URL, {

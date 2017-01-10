@@ -1,45 +1,46 @@
 var _ = require('lodash');
-var User = require('../models/user.js');
+var userService = require('../services/user_service.js');
 var logger = require('winston');
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
+const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
+const USER_NOT_AUTHORISED = "User not authorised";
 /**
  * @param {String} permission User must be associated to a role with the given permission
  * to have authorization for the operation.
  *
  * For the moment if undefined, the check is skipped.
  */
-var permission = function (permission) {
+module.exports = function (permission) {
 
   return function (req, res, next) {
+    let foundUser = {};
+    let username = _.get(req.user, 'username');
+    let correlationId = req.headers[CORRELATION_HEADER] || '';
 
-    var username = _.get(req.user, 'username');
-    var correlationId = req.headers[CORRELATION_HEADER] || '';
-
-    if (permission) {
-      User.findByUsername(username, correlationId)
-        .then((user)=> {
-            user.hasPermission(permission)
-              .then((hasPermission)=> {
-                  if (hasPermission) {
-                    next();
-                  } else {
-                    res.render('error', {'message': 'You are not Authorized to do this operation'});
-                  }
-                },
-                (e)=> {
-                  logger.error(`[${correlationId}] Error checking user role -`, {userId: user.id, error: e});
-                  throw new Error("Could not check user permission");
-                })
-          },
-          (e)=> {
-            logger.error(`[${correlationId}] Error retrieving user -`, {error: e});
-            throw new Error("Could not get user");
-          });
-    } else {
-      next();
+    if (!permission) {
+      return next();
     }
+
+    return userService.findByUsername(username, correlationId)
+      .then((user) => {
+        foundUser = user;
+        return userService.hasPermission(foundUser, permission)
+      })
+      .then((hasPermission)=> {
+        if (hasPermission) {
+          next();
+        } else {
+          throw new Error(USER_NOT_AUTHORISED);
+        }
+      })
+      .catch((e) => {
+        let userId;
+        if (e.message !== USER_NOT_AUTHORISED) {
+          userId = foundUser.id || null;
+          logger.error(`[${correlationId}] Error checking user permissons for user -`, {userId: userId, error: e});
+        }
+
+        res.render('error', {'message': 'You are not authorised to do this operation'});
+      });
   }
 };
-
-module.exports = permission;
