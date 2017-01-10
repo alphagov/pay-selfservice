@@ -3,6 +3,7 @@ var renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').
 var paths = require(__dirname + '/../../app/paths.js');
 
 describe('The credentials view in normal mode', function () {
+
   it('should display credentials view for a worldpay account', function () {
     var templateData = {
       currentGatewayAccount: {
@@ -40,6 +41,7 @@ describe('The credentials view in normal mode', function () {
   });
 
   it('should not display notification credentials for worldpay', function() {
+
     var templateData = {
       currentGatewayAccount: {
         "payment_provider": "Worldpay",
@@ -135,6 +137,56 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('dd#notification-password-value').withExactText('****');
   });
 
+  it('should display credentials view for a ePDQ account', function () {
+
+    let templateData = {
+      "payment_provider": "ePDQ",
+      "credentials": {
+        'username': 'a-username',
+        'psp_id': 'a-psp-id'
+      }
+    };
+
+    let body = renderTemplate('provider_credentials/epdq', templateData);
+
+    body.should.containSelector('h4#view-title').withExactText('Your ePDQ Credentials');
+
+    body.should.containSelector('a#edit-credentials-link')
+      .withAttribute("class", "button")
+      .withAttribute("href", paths.credentials.edit)
+      .withText("Edit credentials");
+
+    body.should.containSelector('dl#credentials');
+
+    body.should.containSelector('dt#psp-id-key').withExactText('PSP ID');
+    body.should.containSelector('dd#psp-id-value').withExactText('a-psp-id');
+
+    body.should.containSelector('dt#username-key').withExactText('Username');
+    body.should.containSelector('dd#username-value').withExactText('a-username');
+
+    body.should.containSelector('dt#password-key').withExactText('Password');
+    body.should.containSelector('dd#password-value').withExactText('****');
+
+    body.should.containSelector('dt#passphrase-key').withExactText('Passphrase');
+    body.should.containSelector('dd#passphrase-value').withExactText('****');
+  });
+
+  it('should not display notification credentials for ePDQ', function() {
+
+    let templateData = {
+      "payment_provider": "ePDQ",
+      "credentials": {
+        'username': 'a-username',
+        'psp_id': 'a-psp-id'
+      }
+    };
+
+    let body = renderTemplate('provider_credentials/epdq', templateData);
+
+    body.should.not.containSelector('h4#view-notification-title').withExactText('Your ePDQ Notification Credentials');
+    body.should.not.containSelector('dt#notification-username-key').withExactText('Username');
+  });
+
   it('should display credentials view for a sandbox account', function () {
     var templateData = {
       currentGatewayAccount: {
@@ -165,6 +217,7 @@ describe('The credentials view in normal mode', function () {
 
 
 describe('The credentials view in edit mode', function () {
+
   it('should display credentials view for a worldpay account', function () {
     var templateData = {
       currentGatewayAccount: {
@@ -241,6 +294,46 @@ describe('The credentials view in edit mode', function () {
     body.should.containInputField('password', 'password')
       .withAttribute('value', '')
       .withLabel('Password');
+
+    body.should.containInputField('submitCredentials', 'submit');
+  });
+
+  it('should display credentials view for a ePDQ account', function () {
+
+    let templateData = {
+      "payment_provider": "ePDQ",
+      "credentials": {
+        'username': 'a-username',
+        'psp_id': 'a-psp-id'
+      },
+      'editMode': 'true'
+    };
+
+    let body = renderTemplate('provider_credentials/epdq', templateData);
+
+    body.should.containSelector('h4#view-title').withExactText('Your ePDQ Credentials');
+
+    body.should.containSelector('form#credentials-form')
+      .withAttribute('method', 'post')
+      .withAttribute('action', paths.credentials.create);
+
+    body.should.not.containSelector('a#edit-credentials-link');
+
+    body.should.containInputField('pspId', 'text')
+      .withAttribute('value', 'a-psp-id')
+      .withLabel('PSP ID');
+
+    body.should.containInputField('username', 'text')
+      .withAttribute('value', 'a-username')
+      .withLabel('Username');
+
+    body.should.containInputField('password', 'password')
+      .withAttribute('value', '')
+      .withLabel('Password');
+
+    body.should.containInputField('passphrase', 'password')
+      .withAttribute('value', '')
+      .withLabel('Passphrase');
 
     body.should.containInputField('submitCredentials', 'submit');
   });
