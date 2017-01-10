@@ -41,6 +41,25 @@ function loadIndex(req, res, viewMode) {
   }
 }
 
+function credentialsPatchRequestValueOf(req) {
+
+  let requestPayload = {
+    credentials: {
+      username: req.body.username,
+      password: req.body.password
+    }
+  };
+
+  if ('merchantId' in req.body) {
+    requestPayload.credentials.merchant_id = req.body.merchantId;
+
+  } else if ('pspId' in req.body) {
+    requestPayload.credentials.psp_id = req.body.pspId;
+    requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase;
+  }
+
+  return requestPayload;
+}
 
 module.exports = {
   index: function (req, res) {
@@ -115,16 +134,6 @@ module.exports = {
     });
     var accountId = auth.getCurrentGatewayAccountId(req);
     var connectorUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}/credentials";
-    var requestPayload = {
-        credentials: {
-          username: req.body.username,
-          password: req.body.password
-        }
-    };
-
-    if ('merchantId' in req.body) {
-      requestPayload.credentials.merchant_id = req.body.merchantId;
-    }
 
     logger.info('Calling connector to update provider credentials -', {
       service: 'connector',
@@ -136,7 +145,7 @@ module.exports = {
 
     var startTime = new Date();
     connectorClient().patchAccountCredentials({
-      payload: requestPayload,
+      payload: credentialsPatchRequestValueOf(req),
       correlationId: correlationId,
       gatewayAccountId: accountId
     }, function (connectorData, connectorResponse) {

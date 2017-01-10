@@ -623,6 +623,27 @@ describe('The provider update credentials endpoint', function () {
       .end(done);
   });
 
+  it('should send new username, password, passphrase and psp_id credentials to connector', function (done) {
+
+    connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
+      "credentials": {
+        "username": "a-username",
+        "password": "a-password",
+        "sha_in_passphrase": "a-passphrase",
+        "psp_id": "a-psp-id"
+      }
+    }).reply(200, {});
+
+//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
+    var sendData = {'username': 'a-username', 'password': 'a-password', 'shaInPassphrase': 'a-passphrase', 'pspId': 'a-psp-id'};
+    var expectedLocation = paths.credentials.index;
+    var path = paths.credentials.index;
+    build_form_post_request(path, sendData, true, app)
+      .expect(303, {})
+      .expect('Location', expectedLocation)
+      .end(done);
+  });
+
   it('should send any arbitrary credentials together with username and password to connector', function (done) {
     connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
       "credentials": {

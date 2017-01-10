@@ -3,39 +3,42 @@
 {{$providerContent}}
 
 <p>
-<h4 class="heading-small" id="view-title">Your {{payment_provider}} Credentials</h4>
+<h4 class="heading-small" id="view-title">Your {{currentGatewayAccount.payment_provider}} Credentials</h4>
 </p>
 
+{{#permissions.gateway_credentials_read}}
 {{^editMode}}
 <dl id="credentials">
     <dt id="psp-id-key" class="font-xsmall"><p>PSP ID</p></dt>
-    <dd id="psp-id-value"><b>{{credentials.psp_id}}</b></dd>
+    <dd id="psp-id-value"><b>{{currentGatewayAccount.credentials.psp_id}}</b></dd>
 
     <dt id="username-key" class="font-xsmall"><p>Username</p></dt>
-    <dd id="username-value"><b>{{credentials.username}}</b></dd>
+    <dd id="username-value"><b>{{currentGatewayAccount.credentials.username}}</b></dd>
 
     <dt id="password-key" class="font-xsmall"><p>Password</p></dt>
-    <dd id="password-value"><b>{{#credentials.username}}****{{/credentials.username}}</b></dd>
+    <dd id="password-value"><b>{{#currentGatewayAccount.credentials.username}}****{{/currentGatewayAccount.credentials.username}}</b></dd>
 
-    <dt id="passphrase-key" class="font-xsmall"><p>Passphrase</p></dt>
-    <dd id="passphrase-value"><b>{{#credentials.username}}****{{/credentials.username}}</b></dd>
+    <dt id="sha-in-passphrase-key" class="font-xsmall"><p>SHA in passphrase</p></dt>
+    <dd id="sha-in-passphrase-value"><b>{{#currentGatewayAccount.credentials.username}}****{{/currentGatewayAccount.credentials.username}}</b></dd>
 </dl>
 <a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">
     Edit credentials
 </a>
 {{/editMode}}
+{{/permissions.gateway_credentials_read}}
 
+{{#permissions.gateway_credentials_update}}
 {{#editMode}}
 <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
         <label class="form-label" for="pspId">PSP ID</label>
-        <input class="form-control" id="pspId" name="pspId" type="text" value="{{credentials.psp_id}}">
+        <input class="form-control" id="pspId" name="pspId" type="text" value="{{currentGatewayAccount.credentials.psp_id}}">
     </div>
 
     <div class="form-group">
         <label class="form-label" for="username">Username</label>
-        <input class="form-control" id="username" name="username" type="text" value="{{credentials.username}}">
+        <input class="form-control" id="username" name="username" type="text" value="{{currentGatewayAccount.credentials.username}}">
     </div>
 
     <div class="form-group">
@@ -44,15 +47,15 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label" for="passphrase">Passphrase</label>
-        <input class="form-control" id="passphrase" name="passphrase" type="password" value="">
+        <label class="form-label" for="shaInPassphrase">SHA in passphrase</label>
+        <input class="form-control" id="shaInPassphrase" name="shaInPassphrase" type="password" value="">
     </div>
 
     <input id="submitCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
 
 </form>
 {{/editMode}}
-
+{{/permissions.gateway_credentials_update}}
 {{/providerContent}}
 
 {{/credentials}}

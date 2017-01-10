@@ -139,11 +139,17 @@ describe('The credentials view in normal mode', function () {
 
   it('should display credentials view for a ePDQ account', function () {
 
-    let templateData = {
-      "payment_provider": "ePDQ",
-      "credentials": {
-        'username': 'a-username',
-        'psp_id': 'a-psp-id'
+    var templateData = {
+      currentGatewayAccount: {
+        "payment_provider": "ePDQ",
+        "credentials": {
+          'username': 'a-username',
+          'psp_id': 'a-psp-id'
+        }
+      },
+
+      permissions: {
+        gateway_credentials_read: true
       }
     };
 
@@ -167,17 +173,23 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('dt#password-key').withExactText('Password');
     body.should.containSelector('dd#password-value').withExactText('****');
 
-    body.should.containSelector('dt#passphrase-key').withExactText('Passphrase');
-    body.should.containSelector('dd#passphrase-value').withExactText('****');
+    body.should.containSelector('dt#sha-in-passphrase-key').withExactText('SHA in passphrase');
+    body.should.containSelector('dd#sha-in-passphrase-value').withExactText('****');
   });
 
   it('should not display notification credentials for ePDQ', function() {
 
-    let templateData = {
-      "payment_provider": "ePDQ",
-      "credentials": {
-        'username': 'a-username',
-        'psp_id': 'a-psp-id'
+    var templateData = {
+      currentGatewayAccount: {
+        "payment_provider": "ePDQ",
+        "credentials": {
+          'username': 'a-username',
+          'psp_id': 'a-psp-id'
+        }
+      },
+
+      permissions: {
+        gateway_credentials_read: true
       }
     };
 
@@ -300,13 +312,18 @@ describe('The credentials view in edit mode', function () {
 
   it('should display credentials view for a ePDQ account', function () {
 
-    let templateData = {
-      "payment_provider": "ePDQ",
-      "credentials": {
-        'username': 'a-username',
-        'psp_id': 'a-psp-id'
+    var templateData = {
+      currentGatewayAccount: {
+        "payment_provider": "ePDQ",
+        "credentials": {
+          'username': 'a-username',
+          'psp_id': 'a-psp-id'
+        }
       },
-      'editMode': 'true'
+      'editMode': 'true',
+      permissions: {
+        gateway_credentials_update: true
+      }
     };
 
     let body = renderTemplate('provider_credentials/epdq', templateData);
@@ -331,9 +348,9 @@ describe('The credentials view in edit mode', function () {
       .withAttribute('value', '')
       .withLabel('Password');
 
-    body.should.containInputField('passphrase', 'password')
+    body.should.containInputField('shaInPassphrase', 'password')
       .withAttribute('value', '')
-      .withLabel('Passphrase');
+      .withLabel('SHA in passphrase');
 
     body.should.containInputField('submitCredentials', 'submit');
   });
