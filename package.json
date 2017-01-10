@@ -95,6 +95,7 @@
     "yargs": "4.7.x"
   },
   "devDependencies": {
+    "@pact-foundation/pact-node": "^4.6.0",
     "chai": "^3.2.0",
     "chai-string": "^1.1.2",
     "cheerio": "^0.19.0",
@@ -104,12 +105,15 @@
     "express-writer": "0.0.4",
     "fresh-require": "^1.0.3",
     "grunt-mocha-test": "^0.12.7",
+    "grunt-pact": "^1.3.5",
     "jshint": "latest",
     "jsonwebtoken": "5.5.4",
     "mocha": "^2.2.5",
     "mockserver-client": "^1.0.6",
     "mockserver-grunt": "^1.0.26",
     "nock": "^8.0.0",
+    "pact": "^1.0.0-rc.5",
+    "path": "^0.12.7",
     "portfinder": "^0.4.0",
     "proxyquire": "~1.7.4",
     "sequelize-mocking": "^0.2.0",

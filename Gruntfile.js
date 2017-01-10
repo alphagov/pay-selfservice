@@ -131,6 +131,15 @@ module.exports = function(grunt){
           reporter: 'spec',
           captureFile: 'mocha-test-results.txt'
         }
+      },
+      pact: {
+        options: {
+          reporter: 'spec',
+          captureFile: 'pact-test-results.txt'
+        },
+        src: [
+          'test/contract/*.js'
+        ]
       }
     },
     env: {
@@ -144,8 +153,6 @@ module.exports = function(grunt){
 
   });
 
-
-
   [
     'grunt-contrib-copy',
     'grunt-contrib-watch',
@@ -155,7 +162,8 @@ module.exports = function(grunt){
     'grunt-text-replace',
     'grunt-concurrent',
     'grunt-mocha-test',
-    'grunt-env'
+    'grunt-env',
+    'grunt-pact'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task);
   });
@@ -167,7 +175,8 @@ module.exports = function(grunt){
     'sass'
   ]);
 
-  grunt.registerTask('test', ['env:test', 'mochaTest']);
+  grunt.registerTask('test', ['env:test', 'mochaTest:test']);
+  grunt.registerTask('pact-test', ['env:test', 'mochaTest:pact']);
 
   var defaultTasks = [
       'generate-assets',
