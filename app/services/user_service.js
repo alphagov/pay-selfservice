@@ -267,6 +267,10 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user) {
-    return user.incrementSessionVersion();
+    return user.incrementSessionVersion()
+      .then((u) => u.reload())
+      .catch((e) => {
+        logger.info('user could not be reloaded');
+      });
   }
 };

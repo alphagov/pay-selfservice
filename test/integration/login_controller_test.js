@@ -88,6 +88,12 @@ describe('The postlogin endpoint', function () {
           var defer = q.defer();
           defer.resolve();
           return defer.promise;
+        },
+
+        reload: () => {
+          var defer = q.defer();
+          defer.resolve();
+          return defer.promise;
         }
       }
     },

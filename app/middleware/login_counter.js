@@ -18,10 +18,8 @@ module.exports = {
    var username = _.get(req.body, 'username') || _.get(req.user, 'username');
     var correlationId = req.headers[CORRELATION_HEADER] ||'';
     return userService.findByUsername(username, correlationId)
-      .then((user)=> {
-        user.incrementLoginCount();
-        return user;
-      })
+      .then((user)=> user.incrementLoginCount())
+      .then((u) => u.reload())
       .then(
         (user) => {
           var attempts  = user.login_counter,

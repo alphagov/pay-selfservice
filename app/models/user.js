@@ -143,16 +143,14 @@ User.Instance.prototype.updatePassword = function(password) {
  * @returns {Promise}
  */
 User.Instance.prototype.incrementLoginCount = function(){
-  this.login_counter = this.login_counter + 1;
-  return this.save();
+  return this.increment('login_counter');
 };
 
 /**
  * @returns {Promise}
  */
 User.Instance.prototype.incrementSessionVersion = function(){
-  this.session_version = this.session_version + 1;
-  return this.save();
+  return this.increment('session_version');
 };
 
 /**
@@ -160,7 +158,7 @@ User.Instance.prototype.incrementSessionVersion = function(){
  */
 User.Instance.prototype.resetLoginCount = function(){
   this.login_counter = 0;
-  return this.save();
+  return this.update({login_counter: 0});
 };
 
 /**

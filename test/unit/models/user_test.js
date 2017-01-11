@@ -505,8 +505,11 @@ describe('user model', function () {
         .then((user)=> userSetup = user)
         .then(() => {
           expect(userSetup.session_version).to.equal(0);
-          userSetup.incrementSessionVersion();
-          expect(userSetup.session_version).to.equal(1);
+          return userSetup.incrementSessionVersion()
+        })
+        .then((user) => user.reload())
+        .then((user) => {
+          expect(user.session_version).to.equal(1);
           done();
         });
     })

@@ -94,12 +94,12 @@ module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
   var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
   delete req.session.last_url;
-  req.user.resetLoginCount().then(
-    ()=>{
+  req.user.resetLoginCount()
+    .then(()=>{
       logLoginAction(req, 'successfully entered a valid 2fa token');
       res.redirect(redirect_url);
     },
-    (err) => error(req,res,error)
+    (err) => error(req, res, error)
   )
 };
 
