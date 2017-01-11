@@ -17,7 +17,7 @@ function sync_db() {
 function createUserWithPermission(user, permissionName, cb) {
   var roleDef;
   var permissionDef;
-  sync_db()
+  return sync_db()
     .then(()=> Permission.sequelize.create({name: permissionName, description: 'Permission Desc'}))
     .then((permission)=> permissionDef = permission)
     .then(()=> Role.sequelize.create({name: 'Role', description: "Role Desc"}))

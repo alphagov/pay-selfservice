@@ -36,22 +36,25 @@ describe('login counter test', function () {
   });
 
   var login = (userServiceMock)=> {
-    return proxyquire(__dirname + '/../../app/middleware/login_counter.js',
+    return proxyquire(__dirname + '/../../../app/middleware/login_counter.js',
     {'../services/user_service.js': userServiceMock});
   };
 
-  it('should call increment login count',function(done){
+  it('should call increment login count', function(done){
     var user = {
-      login_counter: 0,
       incrementLoginCount: () => {
-        var defer = q.defer();
-        defer.resolve();
-        return defer.promise;
+        return {
+          reload: () => {
+            return {
+              login_counter: 0
+            }
+          }
+        };
       }
     };
     var incrementLoginCountSpy = sinon.spy(user, 'incrementLoginCount');
     var mockedUserService = {
-      findByUsername: ()=> {
+      findByUsername: () => {
         var defer = q.defer();
         defer.resolve(user);
         return defer.promise;
@@ -59,30 +62,36 @@ describe('login counter test', function () {
     };
     var loginMiddleware = login(mockedUserService);
 
-    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{
-    },() => {
-      assert(incrementLoginCountSpy.calledOnce);
-      done();
-    });
+    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{}, () => {})
+      .then(() => {
+        assert(incrementLoginCountSpy.calledOnce);
+        done();
+      });
   });
 
   it('should call disable user and render noacess when over limit',function(done){
+    var toggleDisabled = () => {
+      var defer = q.defer();
+      defer.resolve();
+      return defer.promise;
+    };
+
+    var toggleDisabledSpy = sinon.spy(toggleDisabled);
+
     var user = {
-      login_counter: 2,
       incrementLoginCount: () => {
-        var defer = q.defer();
-        defer.resolve();
-        return defer.promise;
-      },
-      toggleDisabled: () => {
-        var defer = q.defer();
-        defer.resolve();
-        return defer.promise;
+        return {
+          reload: () => {
+            return {
+              login_counter: 2,
+              toggleDisabled: toggleDisabledSpy
+            }
+          }
+        };
       }
     };
 
     var incrementLoginCountSpy = sinon.spy(user, 'incrementLoginCount');
-    var toggleDisabledSpy = sinon.spy(user, 'toggleDisabled');
 
     var mockedUserService = {
       findByUsername: () => {
@@ -93,7 +102,7 @@ describe('login counter test', function () {
     };
 
     var loginMiddleware = login(mockedUserService);
-    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{}).then(() => {
+    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{}, () => {}).then(() => {
       assert(incrementLoginCountSpy.calledOnce);
       assert(toggleDisabledSpy.calledWith(true));
       done();

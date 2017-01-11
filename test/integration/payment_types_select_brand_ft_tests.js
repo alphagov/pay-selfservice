@@ -17,7 +17,7 @@ var aCorrelationHeader = {
 };
 var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
 var ACCOUNT_ID = 182364;
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
 var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID + "/card-types";

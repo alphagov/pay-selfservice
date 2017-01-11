@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
   return;
 }
 
-var User     = require('./app/models/user.js');
+var userService = require('./app/services/user_service.js');
 
 var argv = require('yargs')
   .usage('Usage: $0 -u [username]')
@@ -16,7 +16,7 @@ var argv = require('yargs')
 
 var username = argv.u;
 
-User.findByUsername(username)
+userService.findByUsername(username)
   .then(
     (user)=>{
       console.log(user.generateOTP());

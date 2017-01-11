@@ -6,6 +6,7 @@ var q                     = require('q');
 var _                     = require('lodash');
 var notp                  = require('notp');
 var logger                = require('winston');
+
 var forgottenPassword     = require('./forgotten_password.js').sequelize;
 var Role                  = require('./role.js').sequelize;
 var UserRole              = require('./user_role.js').sequelize;
@@ -79,6 +80,11 @@ var User = sequelizeConnection.define('user', {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
+  },
+  session_version: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   }
 });
 
@@ -93,8 +99,6 @@ var hashPasswordHook = function(instance) {
 
 User.beforeCreate(hashPasswordHook);
 User.beforeUpdate(hashPasswordHook);
-
-
 
 /**
  * @param {boolean} toggle
@@ -139,8 +143,14 @@ User.Instance.prototype.updatePassword = function(password) {
  * @returns {Promise}
  */
 User.Instance.prototype.incrementLoginCount = function(){
-  this.login_counter = this.login_counter + 1;
-  return this.save();
+  return this.increment('login_counter');
+};
+
+/**
+ * @returns {Promise}
+ */
+User.Instance.prototype.incrementSessionVersion = function(){
+  return this.increment('session_version');
 };
 
 /**
@@ -148,7 +158,7 @@ User.Instance.prototype.incrementLoginCount = function(){
  */
 User.Instance.prototype.resetLoginCount = function(){
   this.login_counter = 0;
-  return this.save();
+  return this.update({login_counter: 0});
 };
 
 /**
@@ -163,7 +173,6 @@ User.Instance.prototype.updateUserNameAndEmail = function(newEmail, newUserName)
   if (newUserName || newUserName != '') {
     this.username = newUserName;
   }
-
   return this.save();
 };
 

@@ -1,17 +1,18 @@
 "use strict";
 var logger = require('winston');
+var _ = require('lodash');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var TotpStrategy = require('passport-totp').Strategy;
-var paths = require(__dirname + '/../paths.js');
 var csrf = require('csrf');
-var userService = require('../services/user_service.js');
 var _ = require('lodash');
+var sessionValidator = require(__dirname + '/session_validator.js');
+var paths = require(__dirname + '/../paths.js');
+var userService = require('../services/user_service.js');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {
-  return userService.findByUsername(username)
-    .then((user) => userService.authenticate(user.username, password))
+  return userService.authenticate(username, password)
     .then((user) => done(null, user))
     .catch(() => done(null, false, { message: 'Invalid username or password' }));
 };
@@ -20,29 +21,21 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  logger.info(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
 
-  req.session.save(function(err) {
-    if (err) {
-      logger.error(`[${correlationId}] Error saving csrf secret `, err);
-    } else {
-      logger.info(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret} for session ID: ${req.session.id}`);
-    }
-    next();
-  });
+  return next();
+};
+
+var ensureSessionHasVersion = function(req) {
+  if(!_.get(req, 'session.version', false) !== false) {
+    req.session.version = _.get(req, 'user.session_version', 0);
+  }
 };
 
 var redirectToLogin = function (req,res) {
   req.session.last_url = req.originalUrl;
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
-
-  req.session.save(function (err) {
-    if(err) {
-      logger.error(`[${correlationId}] Error saving session on redirectToLogin `, err);
-    } else {
-      logger.info(`[${correlationId}] Saved session ID on redirectToLogin: ${req.session.id} with last url ${req.session.last_url}`);
-    }
-    res.redirect(paths.user.logIn);
-  });
+  res.redirect(paths.user.logIn);
 };
 
 var get_gateway_account_id = function (req) {
@@ -55,6 +48,7 @@ var enforceUserFirstFactor = function (req, res, next) {
   var hasUser     = _.get(req, "user"),
   hasAccount      = get_gateway_account_id(req),
   disabled        = _.get(hasUser, "disabled");
+
   if (!hasUser) return redirectToLogin(req, res);
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
@@ -71,14 +65,30 @@ var no_access = function (req, res, next) {
 };
 
 var enforceUserBothFactors = function (req, res, next) {
-  req.session.reload(function (err) {
-    var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
 
-    enforceUserFirstFactor(req, res, function(){
-      if (!hasLoggedInOtp) return res.redirect(paths.user.otpLogIn);
-      next();
-    });
+  enforceUserFirstFactor(req, res, () => {
+
+    var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
+    if (!hasLoggedInOtp) {
+      return res.redirect(paths.user.otpLogIn);
+    }
+
+    next();
   });
+};
+
+var enforceUserAuthenticated = function(req, res, next) {
+  ensureSessionHasVersion(req);
+
+  if (!hasValidSession(req)) {
+    return res.redirect(paths.user.logIn);
+  }
+
+  enforceUserBothFactors(req, res, next);
+};
+
+var hasValidSession = function (req) {
+  return sessionValidator.validate(req.user, req.session);
 };
 
 var initialise = function (app, override_strategy) {
@@ -94,7 +104,6 @@ var initialise = function (app, override_strategy) {
   passport.serializeUser(this.serializeUser);
 
   passport.deserializeUser(this.deserializeUser);
-
 };
 
 var deserializeUser = function (username, done) {
@@ -110,7 +119,7 @@ var serializeUser = function (user, done) {
 
 module.exports = {
   enforceUserFirstFactor: enforceUserFirstFactor,
-  enforceUserBothFactors: enforceUserBothFactors,
+  enforceUserAuthenticated: enforceUserAuthenticated,
   ensureSessionHasCsrfSecret: ensureSessionHasCsrfSecret,
   initialise: initialise,
   deserializeUser: deserializeUser,

@@ -1,5 +1,5 @@
 'use strict'
-var User 	= require('./app/models/user.js');
+var userService = require('./app/services/user_service.js');
 var logger  = require('winston');
 var argv    = require('yargs')
   .usage('Usage: $0 -u [username]')
@@ -11,7 +11,7 @@ var username = argv.u;
 
 logger.debug('Preparing to logout');
 
-User.findByUsername(username).then(
+userService.findByUsername(username).then(
 	(user)=>{
 		user.logOut().then(
 			()=> {logger.debug('USER LOGGED OUT')},

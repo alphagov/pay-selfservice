@@ -1,7 +1,7 @@
-require(__dirname + '/../test_helpers/html_assertions.js');
+require(__dirname + '/../../test_helpers/html_assertions.js');
 var should    = require('chai').should();
 var assert    = require('assert');
-var Transaction = require(__dirname + '/../../app/models/transaction.js');
+var Transaction = require(__dirname + '/../../../app/models/transaction.js');
 var nock      = require('nock');
 var wrongPromise = function(data){
   throw new Error('Promise was unexpectedly fulfilled.');

@@ -3,9 +3,8 @@ var realApp     = require(__dirname + '/../../server.js').getApp;
 var request     = require('supertest');
 var auth        = require(__dirname + '/../../app/services/auth_service.js');
 var login       = require(__dirname + '/../../app/controllers/login_controller.js');
-var session     = require('express-session');
 var express     = require('express');
-var mockSession = require(__dirname + '/../test_helpers/mock_session.js').mockSession;
+var mockSession = require(__dirname + '/../test_helpers/mock_session.js').getAppWithLoggedOutSession;
 var paths       = require(__dirname + '/../../app/paths.js');
 var sequelize   = require(__dirname + '/../../app/utils/sequelize_config.js');
 var path = require('path');
@@ -69,7 +68,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   auth.initialise(app);
   var withNoSession = mockSession(app);
 
-  app.get('/protected', auth.enforceUserBothFactors, function (req, res) {
+  app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
     res.send('Hello, World!');
   });
 

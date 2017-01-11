@@ -60,10 +60,9 @@ e.newPasswordPost = (req, res)=> {
   .then(function(){
     userService.logOut(reqUser).then(
       ()=>{
-        req.session.regenerate(()=>{
-          req.flash('generic', 'Password has been updated');
-          res.redirect('/login');
-        });
+        req.session.destroy();
+        req.flash('generic', 'Password has been updated');
+        res.redirect('/login');
       },
       ()=>{
         errorView(req, res);

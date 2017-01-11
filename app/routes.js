@@ -37,33 +37,33 @@ module.exports.bind = function (app) {
 
   //  TRANSACTIONS
   var tr = paths.transactions;
-  app.get(tr.index, auth.enforceUserBothFactors, csrf, permission('transactions:read'), transactions.index);
-  app.get(tr.download, auth.enforceUserBothFactors, csrf, permission('transactions-download:read'), transactions.download);
-  app.get(tr.show, auth.enforceUserBothFactors, csrf, permission('transactions-details:read'), transactions.show);
-  app.post(tr.refund, auth.enforceUserBothFactors, csrf, permission('refunds:create'), transactions.refund);
+  app.get(tr.index, auth.enforceUserAuthenticated, csrf, permission('transactions:read'), transactions.index);
+  app.get(tr.download, auth.enforceUserAuthenticated, csrf, permission('transactions-download:read'), transactions.download);
+  app.get(tr.show, auth.enforceUserAuthenticated, csrf, permission('transactions-details:read'), transactions.show);
+  app.post(tr.refund, auth.enforceUserAuthenticated, csrf, permission('refunds:create'), transactions.refund);
 
   // CREDENTIALS
   var cred = paths.credentials;
-  app.get(cred.index, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:read'), credentials.index);
-  app.get(cred.edit, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.editCredentials);
-  app.post(cred.index, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.update);
+  app.get(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), credentials.index);
+  app.get(cred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.editCredentials);
+  app.post(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.update);
 
   var notCred = paths.notificationCredentials;
-  app.get(notCred.index, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:read'), credentials.index);
-  app.get(notCred.edit, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.editNotificationCredentials);
-  app.post(notCred.update, auth.enforceUserBothFactors, csrf, permission('gateway-credentials:update'), credentials.updateNotificationCredentials);
+  app.get(notCred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), credentials.index);
+  app.get(notCred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.editNotificationCredentials);
+  app.post(notCred.update, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.updateNotificationCredentials);
 
   // LOGIN
   var user = paths.user;
   app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
   app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin(), login.postLogin);
-  app.get(user.loggedIn, auth.enforceUserBothFactors, csrf, login.loggedIn);
+  app.get(user.loggedIn, auth.enforceUserAuthenticated, csrf, login.loggedIn);
   app.get(user.noAccess, login.noAccess);
   app.get(user.logOut, login.logOut);
   app.get(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainGet);
   app.post(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainPost);
   app.get(user.otpLogIn, auth.enforceUserFirstFactor, csrf,  login.otpLogIn);
-  app.post(user.otpLogIn, csrf, loginCounter.enforce, login.logUserinOTP(), login.afterOTPLogin);
+  app.post(user.otpLogIn, csrf, loginCounter.enforce, login.logUserinOTP, login.afterOTPLogin);
 
   // FORGOTTEN PASSWORD
   app.get(user.forgottenPassword, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.emailGet);
@@ -74,35 +74,35 @@ module.exports.bind = function (app) {
 
   // DEV TOKENS
   var dt = paths.devTokens;
-  app.get(dt.index, auth.enforceUserBothFactors, csrf, permission('tokens-active:read'), devTokens.index);
-  app.get(dt.revoked, auth.enforceUserBothFactors, csrf, permission('tokens-revoked:read'), devTokens.revoked);
-  app.get(dt.show, auth.enforceUserBothFactors, csrf, permission('tokens:create'), devTokens.show);
-  app.post(dt.create, auth.enforceUserBothFactors, csrf, permission('tokens:create'), devTokens.create);
-  app.put(dt.update, auth.enforceUserBothFactors, csrf, permission('tokens:update'), devTokens.update);
-  app.delete(dt.delete, auth.enforceUserBothFactors, csrf, permission('tokens:delete'), devTokens.destroy);
+  app.get(dt.index, auth.enforceUserAuthenticated, csrf, permission('tokens-active:read'), devTokens.index);
+  app.get(dt.revoked, auth.enforceUserAuthenticated, csrf, permission('tokens-revoked:read'), devTokens.revoked);
+  app.get(dt.show, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), devTokens.show);
+  app.post(dt.create, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), devTokens.create);
+  app.put(dt.update, auth.enforceUserAuthenticated, csrf, permission('tokens:update'), devTokens.update);
+  app.delete(dt.delete, auth.enforceUserAuthenticated, csrf, permission('tokens:delete'), devTokens.destroy);
 
   // SERVICE NAME
   var sn = paths.serviceName;
-  app.get(sn.index, auth.enforceUserBothFactors, csrf, permission('service-name:read'), serviceName.index);
-  app.post(sn.index, auth.enforceUserBothFactors, csrf, permission('service-name:update'), serviceName.update);
+  app.get(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:read'), serviceName.index);
+  app.post(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), serviceName.update);
 
   // PAYMENT TYPES
   var pt = paths.paymentTypes;
-  app.get(pt.selectType, auth.enforceUserBothFactors, csrf, permission('payment-types:read'), paymentTypesSelectType.selectType);
-  app.post(pt.selectType, auth.enforceUserBothFactors, csrf, permission('payment-types:update'), paymentTypesSelectType.updateType);
-  app.get(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission('payment-types:read'), paymentTypesSelectBrand.showBrands);
-  app.post(pt.selectBrand, auth.enforceUserBothFactors, csrf, permission('payment-types:update'), paymentTypesSelectBrand.updateBrands);
-  app.get(pt.summary, auth.enforceUserBothFactors, csrf, permission('payment-types:read'), paymentTypesSummary.showSummary);
+  app.get(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), paymentTypesSelectType.selectType);
+  app.post(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), paymentTypesSelectType.updateType);
+  app.get(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), paymentTypesSelectBrand.showBrands);
+  app.post(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), paymentTypesSelectBrand.updateBrands);
+  app.get(pt.summary, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), paymentTypesSummary.showSummary);
 
   // EMAIL
   var en = paths.emailNotifications;
-  app.get(en.index, auth.enforceUserBothFactors, csrf, permission('email-notification-template:read'), retrieveAccount, emailNotifications.index);
-  app.get(en.edit, auth.enforceUserBothFactors, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.edit);
-  app.post(en.confirm, auth.enforceUserBothFactors, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.confirm);
-  app.post(en.update, auth.enforceUserBothFactors, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.update);
-  app.post(en.off, auth.enforceUserBothFactors, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
-  app.get(en.offConfirm, auth.enforceUserBothFactors, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
-  app.post(en.on, auth.enforceUserBothFactors, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
+  app.get(en.index, auth.enforceUserAuthenticated, csrf, permission('email-notification-template:read'), retrieveAccount, emailNotifications.index);
+  app.get(en.edit, auth.enforceUserAuthenticated, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.edit);
+  app.post(en.confirm, auth.enforceUserAuthenticated, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.confirm);
+  app.post(en.update, auth.enforceUserAuthenticated, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.update);
+  app.post(en.off, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
+  app.get(en.offConfirm, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
+  app.post(en.on, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

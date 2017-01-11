@@ -16,7 +16,7 @@ var notp        = require('notp');
 createGovukNotifyToken = require('../test_helpers/jwt');
 
 
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
 
 describe('The logged in endpoint', function () {
@@ -30,7 +30,7 @@ describe('The logged in endpoint', function () {
 
 
   it('should redirecect to login if not logged in',function(done){
-    var app2 = session.mockAccount(_app, {});
+    var app2 = session.getAppWithLoggedOutSession(_app, {});
     request(app2)
       .get("/")
       .expect(302)
@@ -39,7 +39,7 @@ describe('The logged in endpoint', function () {
   });
 
   it('should redirecect to otp login if no otp',function(done){
-    var app2 = session.mockAccount(_app, {
+    var app2 = session.getAppWithLoggedOutSession(_app, {
       passport: {
         user: {
           gateway_account_id: 123,
@@ -76,15 +76,24 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it('should redirect to root ',function(done){
+  it('should redirect to root and clean session of all but passport and last_url',function(done){
     // happens after the passort middleware, so cant test through supertest
     var passes = false,
     expectedUrl = paths.user.otpLogIn,
     req = {
-      session: { save: (cb)=> cb()},
-      headers: {'x-request-id': 'some-unique-id' },
-      user: { resetLoginCount: ()=> {
-        return { then: (cb,failCb)=> cb()  }
+      session: {passport: 'abc', last_url: 'last_url', spurious_session_data: 'foo'},
+      headers: {'x-request-id': 'some-unique-id'},
+      user: {
+        resetLoginCount: ()=> {
+          var defer = q.defer();
+          defer.resolve();
+          return defer.promise;
+        },
+
+        reload: () => {
+          var defer = q.defer();
+          defer.resolve();
+          return defer.promise;
         }
       }
     },
@@ -92,9 +101,16 @@ describe('The postlogin endpoint', function () {
       redirect: function(redirect){
         if (redirect == expectedUrl) passes = true;
     }};
-    login_controller.postLogin(req, res);
-    assert(passes);
-    done();
+    login_controller.postLogin(req, res)
+      .then(() => {
+        assert(passes);
+        assert(req.session.passport === 'abc');
+        assert(req.session.last_url === 'last_url');
+        assert(typeof req.session.spurious_session_data === 'undefined');
+        done();
+      });
+
+
   });
 });
 
@@ -104,8 +120,9 @@ describe('The otplogin endpoint', function () {
     nock.cleanAll();
   });
 
+
   it('should render and send key on first time',function(done){
-    var ses =  session.mockAccountObj(ACCOUNT_ID);
+    var ses =  session.getMockAccount(ACCOUNT_ID);
     var notify = nock(process.env.NOTIFY_BASE_URL, {
       reqheaders: {
         'Authorization': 'Bearer ' +
@@ -116,7 +133,7 @@ describe('The otplogin endpoint', function () {
       .reply(200);
 
 
-    var app2 = session.mockAccount(_app,ses);
+    var app2 = session.getAppWithLoggedOutSession(_app,ses);
      request(app2)
       .get("/otp-login")
       .expect(200)
@@ -128,7 +145,7 @@ describe('The otplogin endpoint', function () {
   });
 
   it('should render and not send key on seccond time',function(done){
-    var ses =  session.mockAccountObj(ACCOUNT_ID);
+    var ses =  session.getMockAccount(ACCOUNT_ID);
     doesNotcallSendOTP = true;
     ses.sentCode = true;
 
@@ -142,7 +159,7 @@ describe('The otplogin endpoint', function () {
       .reply(200);
 
 
-    var app2 = session.mockAccount(_app,ses);
+    var app2 = session.getAppWithLoggedOutSession(_app,ses);
      request(app2)
       .get("/otp-login")
       .expect(200)
@@ -212,7 +229,7 @@ describe('login post enpoint',function(){
 
 describe('otp login post enpoint',function(){
   it('should display an error if csrf token does not exist for the login post', function (done) {
-  var app2 = session.mockAccount(_app, {
+  var app2 = session.getAppWithLoggedOutSession(_app, {
     secondFactor: "totp",
     passport: {
       user: {
@@ -236,7 +253,7 @@ describe('otp login post enpoint',function(){
 
 describe('otp send again post enpoint',function(){
   it('should display an error if csrf token does not exist for the send again post', function (done) {
-  var app2 = session.mockAccount(_app, {
+  var app2 = session.getAppWithLoggedOutSession(_app, {
     secondFactor: "totp",
     passport: {
       user: {

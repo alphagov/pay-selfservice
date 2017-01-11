@@ -5,8 +5,8 @@ var q = require('q');
 var _ = require('lodash');
 var expect = require('chai').expect;
 var nock = require('nock');
-var auth = require(__dirname + '/../../app/services/auth_service.js');
-var paths = require(__dirname + '/../../app/paths.js');
+var auth = require(__dirname + '/../../../app/services/auth_service.js');
+var paths = require(__dirname + '/../../../app/paths.js');
 var proxyquire = require('proxyquire');
 
 describe('auth service', function () {
@@ -79,7 +79,7 @@ describe('auth service', function () {
     it("should find user by username", function (done) {
 
       let authService = (userMock)=> {
-        return proxyquire(__dirname + '/../../app/services/auth_service.js',
+        return proxyquire(__dirname + '/../../../app/services/auth_service.js',
           {'../services/user_service.js': userMock});
       };
 
@@ -104,7 +104,7 @@ describe('auth service', function () {
 
   describe('enforceUserAndSecondFactor', function () {
     it("should call next if has valid user", function (done) {
-      auth.enforceUserBothFactors(validRequest, response, next);
+      auth.enforceUserAuthenticated(validRequest, response, next);
       expect(next.calledOnce).to.be.true;
       done();
     });
@@ -112,7 +112,7 @@ describe('auth service', function () {
     it("should not call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
       delete invalid.user.gateway_account_id;
-      auth.enforceUserBothFactors(invalid, response, next);
+      auth.enforceUserAuthenticated(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
       done();
@@ -121,7 +121,7 @@ describe('auth service', function () {
     it("should not call next if has a disabled user", function (done) {
       var invalid = _.cloneDeep(validRequest);
       invalid.user.disabled = true;
-      auth.enforceUserBothFactors(invalid, response, next);
+      auth.enforceUserAuthenticated(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
       done();
@@ -166,5 +166,4 @@ describe('auth service', function () {
     });
 
   });
-
 });

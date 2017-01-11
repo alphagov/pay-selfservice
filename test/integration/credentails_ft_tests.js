@@ -7,6 +7,8 @@ var nock = require('nock');
 var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
+var userService = require(__dirname + '/../../app/services/user_service.js');
+
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 
 var ACCOUNT_ID = 182364;
@@ -14,7 +16,7 @@ var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
 var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = "/v1/api/accounts/" + ACCOUNT_ID + "/notification-credentials";
 
-var app = session.mockValidAccount(_app, ACCOUNT_ID);
+var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var requestId = 'some-unique-id';
 var user = session.user;
 var defaultCorrelationHeader = {
@@ -57,7 +59,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       password: 'password10',
       gateway_account_id: user.gateway_account_id,
       email: user.email,
-      telephone_number: "1"
+      telephone_number: user.telephone_number,
+      session_version: 0
     };
     userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
   });
