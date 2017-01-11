@@ -13,6 +13,7 @@ var notify                = require('../services/notification_client.js');
 var random                = require('../utils/random.js');
 var forgottenPassword     = require('../models/forgotten_password.js').sequelize;
 var paths                 = require(__dirname + '/../paths.js');
+var applicationMetrics    = require('./../utils/metrics.js').metrics;
 
 var sequelizeConnection   = sequelizeConfig.sequelize;
 
@@ -65,11 +66,16 @@ var sendForgottenPasswordEmail = function(user, code, correlationId, defer) {
   var startTime = new Date();
   notify.sendEmail(template, user.email, { code: url })
     .then(()=>{
-      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      var elapsed = new Date() - startTime;
+      applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
+      logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
       logger.info(`[${correlationId}] FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ` + user.id);
       defer.resolve();
     }, (e)=> {
-      logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
+      var elapsed = new Date() - startTime;
+      applicationMetrics.increment('notify-operations.email.failures');
+      applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
+      logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
       logger.error(`[${correlationId}] PROBLEM SENDING FORGOTTEN PASSWORD EMAIL `,e);
       defer.reject();
     });
@@ -87,16 +93,34 @@ var checkUser = function(user, defer) {
 module.exports = {
   /**
    * @param {User} user
+   * @param correlationId
    * @returns {Promise}
    */
-  sendOTP: function (user) {
+  sendOTP: function (user, correlationId) {
     var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
+    var defer = q.defer();
     if (user.otp_key && user.telephone_number && template) {
       var code = user.generateOTP();
-      return notify.sendSms(template, user.telephone_number, {code: code});
+      var startTime = new Date();
+      notify.sendSms(template, user.telephone_number, {code: code})
+        .then(() => {
+          var elapsed = new Date() - startTime;
+          applicationMetrics.histogram('notify-operations.sms.response_time', elapsed);
+          logger.info(`[${correlationId}] - Sending sms ended - elapsed time: %s ms`, elapsed);
+          defer.resolve();
+        }, (e) => {
+          var elapsed = new Date() - startTime;
+          applicationMetrics.increment('notify-operations.sms.failures');
+          applicationMetrics.histogram('notify-operations.sms.response_time', elapsed);
+          logger.info(`[${correlationId}] - Sending sms ended - elapsed time: %s ms`, elapsed);
+          logger.error(`[${correlationId}] error while sending sms`, e);
+          defer.reject(e);
+        });
     } else {
-      throw new Error('missing required field to send text');
+      logger.error(`[${correlationId}] missing required field to send sms`);
+      defer.reject('missing required field to send sms');
     }
+    return defer.promise;
   },
 
   generateOtp: function (user) {
