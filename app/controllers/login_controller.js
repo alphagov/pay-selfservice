@@ -80,7 +80,8 @@ module.exports.logUserinOTP = function(req, res, next) {
 
 module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
-    userService.sendOTP(req.user).then(function(){
+    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+    userService.sendOTP(req.user, correlationId).then(function(){
       req.session.sentCode = true;
       res.render('login/otp-login');
     },function(err) { error(req,res,err); }
@@ -108,7 +109,8 @@ module.exports.sendAgainGet = function(req, res){
 };
 
 module.exports.sendAgainPost = function(req, res){
-  userService.sendOTP(req.user).then(
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  userService.sendOTP(req.user, correlationId).then(
     () => { res.redirect(paths.user.otpLogIn); },
     (err) => { error(req,res,err); }
   );
