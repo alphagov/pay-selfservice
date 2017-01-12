@@ -5,7 +5,6 @@ var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var TotpStrategy = require('passport-totp').Strategy;
 var csrf = require('csrf');
-var _ = require('lodash');
 var sessionValidator = require(__dirname + '/session_validator.js');
 var paths = require(__dirname + '/../paths.js');
 var userService = require('../services/user_service.js');
@@ -88,7 +87,14 @@ var enforceUserAuthenticated = function(req, res, next) {
 };
 
 var hasValidSession = function (req) {
-  return sessionValidator.validate(req.user, req.session);
+  var isValid = sessionValidator.validate(req.user, req.session);
+  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  var userSessionVersion = _.get(req, 'user.session_version', 0);
+  var sessionVersion = _.get(req, 'session.version', 0);
+  if (!isValid) {
+    logger.info(`[${correlationId}] Invalid session version for user. User session_version: ${userSessionVersion}, session version ${sessionVersion}`);
+  }
+  return isValid;
 };
 
 var initialise = function (app, override_strategy) {
