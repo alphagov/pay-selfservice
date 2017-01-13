@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     gatewayAccountId: accountId
   };
   var init = function () {
-    client.withGetAccount(params, function(data){
+    client.getAccount(params, function(data){
       req.account = data;
 
       var emailModel = Email(req.headers[CORRELATION_HEADER]);

@@ -24,7 +24,7 @@ module.exports.selectType = function (req, res) {
     };
 
     connectorClient()
-      .withGetAccountAcceptedCards(params, onSuccessGetAccountAcceptedCards)
+      .getAcceptedCardsForAccount(params, onSuccessGetAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'));
   };
 

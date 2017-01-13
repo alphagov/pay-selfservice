@@ -22,7 +22,7 @@ module.exports.showBrands = function (req, res) {
     };
 
     connectorClient()
-      .withGetAllCardTypes(params, onSuccessGetAllCards)
+      .getAllCardTypes(params, onSuccessGetAllCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'));
   };
 
@@ -48,7 +48,7 @@ module.exports.showBrands = function (req, res) {
     };
 
     connectorClient()
-      .withGetAccountAcceptedCards(params, onSuccessGetAccountAcceptedCards)
+      .getAcceptedCardsForAccount(params, onSuccessGetAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'));
   };
 
@@ -74,7 +74,7 @@ module.exports.updateBrands = function (req, res) {
     };
 
     connectorClient()
-      .withGetAllCardTypes(params, onSuccessGetAllCards)
+      .getAllCardTypes(params, onSuccessGetAllCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'));
   };
 
@@ -108,7 +108,7 @@ module.exports.updateBrands = function (req, res) {
       correlationId: correlationId
     };
     connectorClient()
-      .withPostAccountAcceptedCards(params, onSuccessPostAccountAcceptedCards)
+      .postAcceptedCardsForAccount(params, onSuccessPostAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to save accepted card types.'));
   };
 

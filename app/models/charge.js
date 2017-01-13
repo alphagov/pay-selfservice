@@ -22,8 +22,8 @@ module.exports = function (correlationId) {
       correlationId : correlationId
     };
 
-    connector.withGetCharge(params, function (charge) {
-      connector.withChargeEvents(params, function (events) {
+    connector.getCharge(params, function (charge) {
+      connector.getChargeEvents(params, function (events) {
         defer.resolve(transactionView.buildPaymentView(charge, events));
       }).on('connectorError', (err, response)=> {
         findWithEventsError(err, response, defer);
@@ -55,7 +55,7 @@ module.exports = function (correlationId) {
       correlationId : correlationId
     };
 
-    connector.withPostChargeRefund(params, function () {
+    connector.postChargeRefund(params, function () {
       defer.resolve();
     }).on('connectorError', (err, response)=> {
       var err = 'REFUND_FAILED';

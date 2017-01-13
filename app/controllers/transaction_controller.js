@@ -43,7 +43,7 @@ module.exports = {
       };
 
       client
-        .withGetAllCardTypes(params, onSuccessGetAllCards)
+        .getAllCardTypes(params, onSuccessGetAllCards)
         .on('connectorError', () => error("Unable to retrieve card types."));
     };
 

@@ -20,7 +20,7 @@ module.exports.showSummary = function (req, res) {
     };
 
     connectorClient()
-      .withGetAllCardTypes(params, onSuccessGetAllCards)
+      .getAllCardTypes(params, onSuccessGetAllCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'));
   };
 
@@ -45,7 +45,7 @@ module.exports.showSummary = function (req, res) {
     };
 
     connectorClient()
-      .withGetAccountAcceptedCards(params, onSuccessGetAccountAcceptedCards)
+      .getAcceptedCardsForAccount(params, onSuccessGetAccountAcceptedCards)
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'));
   };
 

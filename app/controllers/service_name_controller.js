@@ -20,7 +20,7 @@ module.exports.index = function (req, res) {
     };
 
     connectorClient()
-      .withGetAccount(params, onSuccess)
+      .getAccount(params, onSuccess)
       .on('connectorError', onError);
   };
 
@@ -63,7 +63,7 @@ module.exports.update = function (req, res) {
     };
 
     connectorClient()
-      .withPatchServiceName(params, onSuccess)
+      .patchServiceName(params, onSuccess)
       .on('connectorError', onError);
   };
 

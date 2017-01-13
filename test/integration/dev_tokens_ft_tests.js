@@ -13,7 +13,7 @@ var session      = require(__dirname + '/../test_helpers/mock_session.js');
 var ACCOUNT_ID = 98344;
 var TOKEN = '00112233';
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth';
-var CONNECTOR_PATH = '/v1/api/accounts/{accountId}';
+var CONNECTOR_PATH = '/v1/frontend/accounts/{accountId}';
 
 var app     = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var user = session.user;
@@ -64,7 +64,7 @@ portfinder.getPort(function(err, freePort) {
         .send(data);
   }
 
-  describe('Dev Tokens Endpoints', function() {
+  describe.only('Dev Tokens Endpoints', function() {
 
       beforeEach(function() {
         process.env.PUBLIC_AUTH_URL = localServer + PUBLIC_AUTH_PATH;
