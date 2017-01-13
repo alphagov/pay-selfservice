@@ -4,7 +4,7 @@ var q = require('q');
 var _ = require('lodash');
 var logger = require('winston');
 var paths = require('../paths.js');
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
+var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient;
 var connector = new ConnectorClient(process.env.CONNECTOR_URL);
 
 var transactionView = require('../utils/transaction_view.js');

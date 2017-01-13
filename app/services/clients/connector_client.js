@@ -3,9 +3,9 @@ var util                  = require('util');
 var EventEmitter          = require('events').EventEmitter;
 var logger                = require('winston');
 var request               = require('request');
-var dates                 = require('../utils/dates.js');
+var dates                 = require('../../utils/dates.js');
 var querystring           = require('querystring');
-var withCorrelationHeader = require('../utils/correlation_header.js').withCorrelationHeader;
+var withCorrelationHeader = require('../../utils/correlation_header.js').withCorrelationHeader;
 
 var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
 var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';

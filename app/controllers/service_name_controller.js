@@ -1,7 +1,7 @@
 var response              = require('../utils/response.js').response;
 var auth                  = require('../services/auth_service.js');
 var router                = require('../routes.js');
-var ConnectorClient       = require('../services/connector_client.js').ConnectorClient;
+var ConnectorClient       = require('../services/clients/connector_client.js').ConnectorClient;
 var renderErrorView       = require('../utils/response.js').renderErrorView;
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 

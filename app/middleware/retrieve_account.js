@@ -1,7 +1,7 @@
 "use strict";
 var auth                = require('../services/auth_service.js'),
 errorView               = require('../utils/response.js').renderErrorView,
-Connector               = require('../services/connector_client.js').ConnectorClient,
+Connector               = require('../services/clients/connector_client.js').ConnectorClient,
 client                  = new Connector(process.env.CONNECTOR_URL),
 Email                   = require('../models/email.js'),
 _                       = require('lodash');
