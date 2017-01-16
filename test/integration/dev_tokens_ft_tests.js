@@ -64,7 +64,7 @@ portfinder.getPort(function(err, freePort) {
         .send(data);
   }
 
-  describe.only('Dev Tokens Endpoints', function() {
+  describe('Dev Tokens Endpoints', function() {
 
       beforeEach(function() {
         process.env.PUBLIC_AUTH_URL = localServer + PUBLIC_AUTH_PATH;
