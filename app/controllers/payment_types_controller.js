@@ -1,4 +1,4 @@
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
+var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient;
 var renderErrorView = require('../utils/response.js').renderErrorView;
 var querystring = require('querystring');
 var _ = require('lodash');

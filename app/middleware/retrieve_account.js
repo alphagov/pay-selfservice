@@ -1,7 +1,7 @@
 "use strict";
 var auth                = require('../services/auth_service.js'),
 errorView               = require('../utils/response.js').renderErrorView,
-Connector               = require('../services/connector_client.js').ConnectorClient,
+Connector               = require('../services/clients/connector_client.js').ConnectorClient,
 client                  = new Connector(process.env.CONNECTOR_URL),
 Email                   = require('../models/email.js'),
 _                       = require('lodash');
@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     gatewayAccountId: accountId
   };
   var init = function () {
-    client.withGetAccount(params, function(data){
+    client.getAccount(params, function(data){
       req.account = data;
 
       var emailModel = Email(req.headers[CORRELATION_HEADER]);

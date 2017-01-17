@@ -9,7 +9,7 @@ var logger                = require('winston');
 
 var sequelizeConfig       = require('./../utils/sequelize_config.js');
 var User                  = require('../models/user.js').User;
-var notify                = require('../services/notification_client.js');
+var notify                = require('../services/clients/notification_client.js');
 var random                = require('../utils/random.js');
 var forgottenPassword     = require('../models/forgotten_password.js').sequelize;
 var paths                 = require(__dirname + '/../paths.js');
@@ -18,16 +18,6 @@ var applicationMetrics    = require('./../utils/metrics.js').metrics;
 var sequelizeConnection   = sequelizeConfig.sequelize;
 
 /**
-<<<<<<< d8f5c6f23f6c4a4983e7518b97c070018301606d
-=======
- * @returns {String}
- */
-var generateOTP = function(user) {
-  return notp.totp.gen(user.otp_key);
-};
-
-/**
->>>>>>> wip trying to fix ss accounts compatibility
  * @param email
  * @param extraFields
  * @param where

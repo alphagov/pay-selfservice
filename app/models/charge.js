@@ -4,7 +4,7 @@ var q = require('q');
 var _ = require('lodash');
 var logger = require('winston');
 var paths = require('../paths.js');
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
+var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient;
 var connector = new ConnectorClient(process.env.CONNECTOR_URL);
 
 var transactionView = require('../utils/transaction_view.js');
@@ -22,8 +22,8 @@ module.exports = function (correlationId) {
       correlationId : correlationId
     };
 
-    connector.withGetCharge(params, function (charge) {
-      connector.withChargeEvents(params, function (events) {
+    connector.getCharge(params, function (charge) {
+      connector.getChargeEvents(params, function (events) {
         defer.resolve(transactionView.buildPaymentView(charge, events));
       }).on('connectorError', (err, response)=> {
         findWithEventsError(err, response, defer);
@@ -55,7 +55,7 @@ module.exports = function (correlationId) {
       correlationId : correlationId
     };
 
-    connector.withPostChargeRefund(params, function () {
+    connector.postChargeRefund(params, function () {
       defer.resolve();
     }).on('connectorError', (err, response)=> {
       var err = 'REFUND_FAILED';

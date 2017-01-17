@@ -8,6 +8,11 @@ var client          = new Client();
 var auth            = require('../services/auth_service.js');
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 var withCorrelationHeader = require('../utils/correlation_header.js').withCorrelationHeader;
+var ConnectorClient         = require('../services/clients/connector_client.js').ConnectorClient;
+
+var connectorClient = function(){
+  return new ConnectorClient(process.env.CONNECTOR_URL);
+};
 
 // TODO remove these and make them proper i.e. show update destroy etc
 var TOKEN_VIEW = 'token';
@@ -270,7 +275,11 @@ function withValidAccountId(req, res, accountId, callback) {
     url: url
   });
   var startTime = new Date();
-  client.get(url, withCorrelationHeader(args, correlationId), function (connectorData, connectorResponse) {
+
+  connectorClient().getAccount({
+    correlationId: correlationId,
+    gatewayAccountId: accountId
+  }, function (connectorData, connectorResponse) {
     var duration = new Date() - startTime;
     logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
     if (connectorResponse.statusCode != 200) {
@@ -278,7 +287,7 @@ function withValidAccountId(req, res, accountId, callback) {
       return;
     }
     callback(accountId, req, res);
-  }).on('error', function (err) {
+  }).on('connectorError', function (err) {
     var duration = new Date() - startTime;
     logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
     logger.debug('[%s] Calling connector threw exception -', correlationId, {

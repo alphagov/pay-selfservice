@@ -53,7 +53,7 @@ var User = proxyquire(__dirname + '/../../../app/models/user.js', {
   './forgotten_password.js': ForgottenPassword,
   './role.js': Role,
   './user_role.js': UserRole,
-  '../services/notification_client.js': mockedNotificationClient
+  '../services/clients/notification_client.js': mockedNotificationClient
 });
 
 var userService = proxyquire(__dirname + '/../../../app/services/user_service.js', {
@@ -61,7 +61,7 @@ var userService = proxyquire(__dirname + '/../../../app/services/user_service.js
   './../utils/sequelize_config.js': testSequelizeConfig,
   './../models/user.js': User,
   './forgotten_password.js': ForgottenPassword,
-  '../services/notification_client.js': mockedNotificationClient
+  '../services/clients/notification_client.js': mockedNotificationClient
 });
 
 var wrongPromise = function (done) {

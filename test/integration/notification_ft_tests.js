@@ -15,7 +15,7 @@ describe('notification client', function() {
         to: email,
         personalisation: personalisation
       },
-      notifyClient = fresh('../../app/services/notification_client', require);
+      notifyClient = fresh('../../app/services/clients/notification_client', require);
 
     nock(process.env.NOTIFY_BASE_URL, {
       reqheaders: {
@@ -44,7 +44,7 @@ describe('notification client', function() {
       },
       clientId = 123,
       secret = 'SECRET',
-      notifyClient = fresh('../../app/services/notification_client', require);
+      notifyClient = fresh('../../app/services/clients/notification_client', require);
 
     nock(process.env.NOTIFY_BASE_URL, {
       reqheaders: {
@@ -67,7 +67,7 @@ describe('notification client', function() {
       notifyClient, notificationsEnabled = process.env.NOTIFICATIONS_ENABLED;
 
     delete process.env.NOTIFICATIONS_ENABLED;
-    notifyClient = fresh('../../app/services/notification_client', require);
+    notifyClient = fresh('../../app/services/clients/notification_client', require);
 
     notifyClient.sendEmail(process.env.NOTIFY_RESET_PASSWORD_EMAIL_TEMPLATE_ID, email, personalisation)
       .catch(function (response) {
@@ -86,7 +86,7 @@ describe('notification client', function() {
     delete process.env.NOTIFICATIONS_ENABLED;
     delete process.env.NOTIFY_SECRET;
 
-    notifyClient = fresh('../../app/services/notification_client', require);
+    notifyClient = fresh('../../app/services/clients/notification_client', require);
 
     notifyClient.sendEmail(process.env.NOTIFY_RESET_PASSWORD_EMAIL_TEMPLATE_ID, email, personalisation)
       .catch(function (response) {

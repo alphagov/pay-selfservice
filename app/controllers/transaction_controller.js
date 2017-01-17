@@ -11,7 +11,7 @@ var Transaction = require('../models/transaction.js');
 var Charge = require('../models/charge.js');
 var getFilters = require('../utils/filters.js').getFilters;
 var url = require('url');
-var ConnectorClient = require('../services/connector_client.js').ConnectorClient;
+var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient;
 var client = new ConnectorClient(process.env.CONNECTOR_URL);
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
@@ -43,7 +43,7 @@ module.exports = {
       };
 
       client
-        .withGetAllCardTypes(params, onSuccessGetAllCards)
+        .getAllCardTypes(params, onSuccessGetAllCards)
         .on('connectorError', () => error("Unable to retrieve card types."));
     };
 

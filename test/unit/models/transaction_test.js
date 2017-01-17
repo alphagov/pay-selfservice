@@ -106,7 +106,7 @@ describe('transaction model', function() {
 
       it('should return GET_FAILED', function () {
         var transactionModel = Transaction("some-unique-id");
-        return transactionModel.searchAll(123,{pageSize: 1, page: 100}).then(wrongPromise,
+        return transactionModel.searchAll(123,{pageSize: 100, page: 1}).then(wrongPromise,
           function rejected(error){
             assert.equal(error.message,"GET_FAILED")
           });
@@ -124,7 +124,7 @@ describe('transaction model', function() {
 
       it('should return into the correct promise', function () {
         var transactionModel = Transaction("some-unique-id");
-        return transactionModel.searchAll(123,{pageSize: 1, page: 100}).then(function(data){
+        return transactionModel.searchAll(123,{pageSize: 100, page: 1}).then(function(data){
           assert.equal(1,1);
         },wrongPromise);
       });
