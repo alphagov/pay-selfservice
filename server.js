@@ -86,7 +86,7 @@ function initialiseRoutes(app) {
 
 function initialiseTLS() {
   if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
-    customCertificate.use();
+    customCertificate.getCertOptions();
   }
   else {
     logger.warn('DISABLE_INTERNAL_HTTPS is set.');

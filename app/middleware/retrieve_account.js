@@ -2,7 +2,7 @@
 var auth                = require('../services/auth_service.js'),
 errorView               = require('../utils/response.js').renderErrorView,
 Connector               = require('../services/clients/connector_client.js').ConnectorClient,
-client                  = new Connector(process.env.CONNECTOR_URL),
+connectorClient                  = new Connector(process.env.CONNECTOR_URL),
 Email                   = require('../models/email.js'),
 _                       = require('lodash');
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     gatewayAccountId: accountId
   };
   var init = function () {
-    client.getAccount(params, function(data){
+      connectorClient.getAccount(params, function(data){
       req.account = data;
 
       var emailModel = Email(req.headers[CORRELATION_HEADER]);

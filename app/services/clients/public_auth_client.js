@@ -4,7 +4,7 @@ const request    = require('request');
 
 const withCorrelationHeader = require('../../utils/correlation_header.js').withCorrelationHeader;
 
-const baseClient = request.defaults({json: true});
+const baseClient = require('./base_client');
 
 /**
  * @param {string} accountId
@@ -83,7 +83,7 @@ module.exports = {
 
     logRequestStart(context);
 
-    baseClient.get(url, withCorrelationHeader({}, params.correlationId), callbackToPromiseConverter)
+    baseClient.get(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
@@ -116,7 +116,7 @@ module.exports = {
 
     logRequestStart(context);
 
-    baseClient.get(url, withCorrelationHeader({}, params.correlationId), callbackToPromiseConverter)
+    baseClient.get(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
@@ -153,7 +153,7 @@ module.exports = {
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
     logRequestStart(context);
-    baseClient.post(url, withCorrelationHeader({body: params.payload}, params.correlationId), callbackToPromiseConverter)
+    baseClient.post(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
@@ -190,7 +190,7 @@ module.exports = {
 
     logRequestStart(context);
 
-    baseClient.put(url, withCorrelationHeader({body: params.payload}, params.correlationId), callbackToPromiseConverter)
+    baseClient.put(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
@@ -226,7 +226,7 @@ module.exports = {
 
     logRequestStart(context);
 
-    baseClient.delete(url, withCorrelationHeader({body: params.payload}, params.correlationId), callbackToPromiseConverter)
+    baseClient.delete(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
