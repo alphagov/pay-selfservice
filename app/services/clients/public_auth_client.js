@@ -1,8 +1,5 @@
 const logger     = require('winston');
 const q          = require('q');
-const request    = require('request');
-
-const withCorrelationHeader = require('../../utils/correlation_header.js').withCorrelationHeader;
 
 const baseClient = require('./base_client');
 
@@ -12,6 +9,9 @@ const baseClient = require('./base_client');
 const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accountId}`;
 
 /**
+ * Creates a callback that can be used to log the stuff we're interested
+ * in and converts the response/error into a promise.
+ *
  * @private
  * @param {Object} context
  * @returns {function}
@@ -24,20 +24,24 @@ const createCallbackToPromiseConverter = context => {
     logger.info(`[${context.correlationId}] - GET to ${context.url} ended - elapsed time: ${duration} ms`);
 
     if (response && response.statusCode !== 200) {
-      logger.error(`[${context.correlationId}] Calling publicAuth to ${context.description} threw exception -`, {
+      logger.error(`[${context.correlationId}] Calling publicAuth to ${context.description} failed -`, {
         service: 'publicAuth',
         method: context.method,
         url: context.url,
-        message: error
+        status: response.statusCode
       });
-
       defer.reject({response: response});
     }
 
     if (error) {
+      logger.error(`[${context.correlationId}] Calling publicAuth to ${context.description} threw exception -`, {
+        service: 'publicAuth',
+        method: context.method,
+        url: context.url,
+        error: error
+      });
       defer.reject({error: error});
     }
-
 
     defer.resolve(body);
   };

@@ -57,16 +57,16 @@ module.exports = function (correlationId) {
 
     connector.postChargeRefund(params, function () {
       defer.resolve();
-    }).on('connectorError', (err, response)=> {
+    }).on('connectorError', (err, response, body)=> {
       var err = 'REFUND_FAILED';
       if (response && response.statusCode === 400) {
-        if (response.body.reason) {
-          err = response.body.reason;
+        if (body.reason) {
+          err = body.reason;
         }
       }
       if (response && response.statusCode === 412) {
-        if (response.body.reason) {
-          err = response.body.reason;
+        if (body.reason) {
+          err = body.reason;
         } else {
           err = "refund_amount_available_mismatch";
         }

@@ -1,12 +1,13 @@
 'use strict';
-var _ = require('lodash');
+var _                     = require('lodash');
 var util                  = require('util');
 var EventEmitter          = require('events').EventEmitter;
 var logger                = require('winston');
 var request               = require('request');
-var dates                 = require('../../utils/dates.js');
 var querystring           = require('querystring');
-var withCorrelationHeader = require('../../utils/correlation_header.js').withCorrelationHeader;
+
+var dates                 = require('../../utils/dates.js');
+const baseClient          = require('./base_client');
 
 var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
 var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';
@@ -25,7 +26,7 @@ var EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 
 /**
  * @private
- * @param  {object}
+ * @param  {object} self
  */
 function _createResponseHandler(self) {
   return function (callback) {
@@ -134,7 +135,6 @@ function searchUrl(baseUrl, params) {
  */
 function ConnectorClient(connectorUrl) {
   this.connectorUrl = connectorUrl;
-  this.client = request.defaults({json: true});
   this.responseHandler = _createResponseHandler(this);
 
   EventEmitter.call(this);
@@ -160,7 +160,8 @@ ConnectorClient.prototype = {
     //allow url to be overridden to allow recursion using next url
     var url = params.url || searchUrl(this.connectorUrl, params);
     var responseHandler = this.responseHandler(successCallback);
-    this.client.get(withCorrelationHeader(_options(url), params.correlationId), function(error, response, body) {
+
+    baseClient.get(url, params, function(error, response, body) {
       logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
       responseHandler(error, response, body);
     });
@@ -213,7 +214,7 @@ ConnectorClient.prototype = {
       url: url,
       chargeId: params.chargeId
     });
-    this.client.get(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
+    baseClient.get(url, {correlationId: params.correlationId}, this.responseHandler(successCallback));
     return this;
   },
 
@@ -235,7 +236,7 @@ ConnectorClient.prototype = {
       url: url,
       chargeId: params.chargeId
     });
-    this.client(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
+    baseClient.get(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -256,7 +257,7 @@ ConnectorClient.prototype = {
       method: 'GET',
       url: url
     });
-    this.client.get(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
+    baseClient.get(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -275,10 +276,7 @@ ConnectorClient.prototype = {
       url: url
     });
 
-    var options = _options(url);
-    options.body = params.payload;
-
-    this.client.patch(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.patch(url, params, this.responseHandler(successCallback));
     return this;
   },
   
@@ -297,10 +295,7 @@ ConnectorClient.prototype = {
       url: url
     });
 
-    var options = _options(url);
-    options.body = params.payload;
-
-    this.client.post(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.post(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -320,7 +315,7 @@ ConnectorClient.prototype = {
       method: 'GET',
       url: url
     });
-    this.client.get(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
+    baseClient.get(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -341,10 +336,8 @@ ConnectorClient.prototype = {
       method: 'POST',
       url: url
     });
-    var options = _options(url);
-    options.body = params.payload;
 
-    this.client.post(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.post(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -370,7 +363,7 @@ ConnectorClient.prototype = {
       method: 'GET',
       url: url
     });
-    this.client.get(withCorrelationHeader(_options(url), correlationParams.correlationId), this.responseHandler(successCallback));
+    baseClient.get(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -392,9 +385,7 @@ ConnectorClient.prototype = {
       url: url
     });
 
-    var options = _options(url);
-    options.body = params.payload;
-    this.client.patch(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.patch(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -419,10 +410,7 @@ ConnectorClient.prototype = {
       payload: params.payload
     });
 
-    var options = _options(url);
-    options.body = params.payload;
-
-    this.client.post(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.post(url, params, this.responseHandler(successCallback));
     return this;
   },
 
@@ -433,7 +421,7 @@ ConnectorClient.prototype = {
    */
   getNotificationEmail: function(params, successCallback) {
     var url = _getNotificationEmailUrlFor(params.gatewayAccountId);
-    this.client.get(withCorrelationHeader(_options(url), params.correlationId), this.responseHandler(successCallback));
+    baseClient.get(url, params, this.responseHandler(successCallback));
 
     return this;
   },
@@ -445,10 +433,7 @@ ConnectorClient.prototype = {
    */
   updateNotificationEmail: function(params, successCallback) {
     var url = _getNotificationEmailUrlFor(params.gatewayAccountId);
-
-    var options = _options(url);
-    options.body = params.payload;
-    this.client.post(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.post(url, params, this.responseHandler(successCallback));
 
     return this;
   },
@@ -460,10 +445,7 @@ ConnectorClient.prototype = {
    */
   updateNotificationEmailEnabled: function(params, successCallback) {
     var url = _getNotificationEmailUrlFor(params.gatewayAccountId);
-
-    var options = _options(url);
-    options.body = params.payload;
-    this.client.patch(withCorrelationHeader(options, params.correlationId), this.responseHandler(successCallback));
+    baseClient.patch(url, params, this.responseHandler(successCallback));
 
     return this;
   }

@@ -37,7 +37,7 @@ var _request = function request(methodName, url, args, callback) {
   const parsedUrl = urlParse.parse(url);
   let headers = {};
 
-  headers[CORRELATION_HEADER_NAME] = args.correlationId;
+  headers[CORRELATION_HEADER_NAME] = args.correlationId || '';
 
   const httpsOptions = {
     hostname: parsedUrl.hostname,
@@ -77,6 +77,8 @@ var _request = function request(methodName, url, args, callback) {
       response.read();
     });
   });
+
+  req.on('error', callback);
 
   req.end();
 
