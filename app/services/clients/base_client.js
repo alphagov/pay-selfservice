@@ -1,9 +1,9 @@
 const urlParse = require('url');
-const https = require('https');
+const https    = require('https');
 
 const logger = require('winston');
 
-const customCertificate = require(__dirname + '/../../utils/custom_certificate');
+const customCertificate       = require(__dirname + '/../../utils/custom_certificate');
 const CORRELATION_HEADER_NAME = require(__dirname + '/../../utils/correlation_header').CORRELATION_HEADER;
 
 var agentOptions = {
@@ -22,6 +22,23 @@ if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
   logger.warn('DISABLE_INTERNAL_HTTPS is set.');
 }
 
+const getHeaders = function getHeaders(args) {
+  let headers = {};
+
+  headers["Content-Type"] = "application/json";
+  headers[CORRELATION_HEADER_NAME] = args.correlationId || '';
+
+  if (args.payload) {
+    try {
+      headers["Content-Length"] = JSON.stringify(args.payload).length;
+    } catch (e) {
+      logger.warn(`[${args.correlationId}] Setting content length header failed: ${e}`);
+    }
+  }
+
+  return headers;
+};
+
 /**
  *
  * @param {string} methodName
@@ -35,21 +52,16 @@ if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
  */
 var _request = function request(methodName, url, args, callback) {
   const parsedUrl = urlParse.parse(url);
-  let headers = {};
-
-  headers["Content-Type"] = "application/json";
-  headers[CORRELATION_HEADER_NAME] = args.correlationId || '';
-
   const httpsOptions = {
     hostname: parsedUrl.hostname,
     port: parsedUrl.port,
     path: parsedUrl.path,
     method: methodName,
     agent: agent,
-    headers: headers
+    headers: getHeaders(args)
   };
 
-  let req = https.request(httpsOptions, (res) => {
+  var req = https.request(httpsOptions, res => {
     let data = '';
     res.on('data', (chunk) => {
       data += chunk;
@@ -65,7 +77,7 @@ var _request = function request(methodName, url, args, callback) {
         }
         data = null;
       }
-      callback(null, {statusCode: res.statusCode}, data);
+      callback(null, res, data);
     });
   });
 
