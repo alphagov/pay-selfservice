@@ -2,12 +2,11 @@ const EDIT_CREDENTIALS_MODE = 'editCredentials';
 const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials';
 
 var logger                = require('winston');
-var changeCase            = require('change-case')
+var changeCase            = require('change-case');
+
 var response              = require('../utils/response.js').response;
 var ERROR_MESSAGE         = require('../utils/response.js').ERROR_MESSAGE;
 var errorView             = require('../utils/response.js').renderErrorView;
-var Client                = require('node-rest-client').Client;
-var client                = new Client();
 var ConnectorClient       = require('../services/clients/connector_client').ConnectorClient;
 var auth                  = require('../services/auth_service.js');
 var router                = require('../routes.js');
