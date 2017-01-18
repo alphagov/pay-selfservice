@@ -4,7 +4,7 @@ var fs   = require('fs');
 var logger = require('winston');
 
 module.exports = {
-  getCertOptions: function () {
+  addCertsToAgent: function (agent) {
     var certsPath = process.env.CERTS_PATH || __dirname + '/../../certs';
 
     try {
@@ -22,13 +22,11 @@ module.exports = {
       return;
     }
 
-    var ca = [];
+    agent.options.ca = agent.options.ca || [];
     var certs = fs.readdirSync(certsPath).forEach(
-      (certPath) => ca.push(
+      (certPath) => agent.options.ca.push(
         fs.readFileSync(path.join(certsPath, certPath))
       )
     );
-
-    return ca;
   }
 };

@@ -1,6 +1,7 @@
 if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
 var express           = require('express');
 var path              = require('path');
+var httpsAgent        = require('https').globalAgent;
 var favicon           = require('serve-favicon');
 var router            = require(__dirname + '/app/routes.js');
 var bodyParser        = require('body-parser');
@@ -86,7 +87,7 @@ function initialiseRoutes(app) {
 
 function initialiseTLS() {
   if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
-    customCertificate.getCertOptions();
+    customCertificate.addCertsToAgent(httpsAgent);
   }
   else {
     logger.warn('DISABLE_INTERNAL_HTTPS is set.');

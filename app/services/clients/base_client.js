@@ -11,16 +11,16 @@ var agentOptions = {
   maxSockets: process.env.MAX_SOCKETS || 100
 };
 
-if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
-  agentOptions.ca = customCertificate.getCertOptions();
-} else {
-  logger.warn('DISABLE_INTERNAL_HTTPS is set.');
-}
-
 /**
  * @type {https.Agent}
  */
 const agent = new https.Agent(agentOptions);
+
+if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
+  customCertificate.addCertsToAgent(agent);
+} else {
+  logger.warn('DISABLE_INTERNAL_HTTPS is set.');
+}
 
 /**
  *
