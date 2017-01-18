@@ -22,6 +22,9 @@ var trimUsername = require('./middleware/trim_username.js');
 var loginCounter = require('./middleware/login_counter.js');
 var permission = require('./middleware/permission.js');
 
+var CORRELATION_HEADER    = require('./utils/correlation_header.js').CORRELATION_HEADER;
+
+
 var _ = require('lodash');
 var passport  = require('passport');
 
@@ -33,6 +36,11 @@ module.exports.bind = function (app) {
 
   app.get('/style-guide', function (req, res) {
     response(req.headers.accept, res, 'style_guide');
+  });
+
+  app.all('*', (req,res,next) => {
+    req.correlationId = req.headers[CORRELATION_HEADER] || '';
+    next();
   });
 
   //  TRANSACTIONS
