@@ -37,6 +37,7 @@ var _request = function request(methodName, url, args, callback) {
   const parsedUrl = urlParse.parse(url);
   let headers = {};
 
+  headers["Content-Type"] = "application/json";
   headers[CORRELATION_HEADER_NAME] = args.correlationId || '';
 
   const httpsOptions = {
