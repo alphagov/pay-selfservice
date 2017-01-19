@@ -1,6 +1,6 @@
-const urlParse = require('url');
 const https    = require('https');
 
+var request = require('request');
 const logger = require('winston');
 
 const customCertificate       = require(__dirname + '/../../utils/custom_certificate');
@@ -22,23 +22,17 @@ if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
   logger.warn('DISABLE_INTERNAL_HTTPS is set.');
 }
 
+var client = request
+  .defaults({json: true});
+
 const getHeaders = function getHeaders(args) {
   let headers = {};
 
   headers["Content-Type"] = "application/json";
   headers[CORRELATION_HEADER_NAME] = args.correlationId || '';
-
-  if (args.payload) {
-    try {
-      headers["Content-Length"] = JSON.stringify(args.payload).length;
-    } catch (e) {
-      logger.warn(`[${args.correlationId}] Setting content length header failed: ${e}`);
-    }
-  }
-
+  
   return headers;
 };
-
 /**
  *
  * @param {string} methodName
@@ -51,51 +45,18 @@ const getHeaders = function getHeaders(args) {
  * @private
  */
 var _request = function request(methodName, url, args, callback) {
-  const parsedUrl = urlParse.parse(url);
-  const httpsOptions = {
-    hostname: parsedUrl.hostname,
-    port: parsedUrl.port,
-    path: parsedUrl.path,
+  const requestOptions = {
+    uri: url,
     method: methodName,
     agent: agent,
     headers: getHeaders(args)
   };
 
-  var req = https.request(httpsOptions, res => {
-    let data = '';
-    res.on('data', (chunk) => {
-      data += chunk;
-    });
-
-    res.on('end', () => {
-      try {
-        data = JSON.parse(data);
-      } catch(e) {
-        //if response exists but is not parsable, log it and carry on
-        if (data) {
-          logger.info('Response from %s in unexpected format: %s', url, data);
-        }
-        data = null;
-      }
-      callback(null, res, data);
-    });
-  });
-
   if (args.payload) {
-    req.write(JSON.stringify(args.payload));
+    requestOptions.body = args.payload;
   }
 
-  req.on('response', (response) => {
-    response.on('readable', () => {
-      response.read();
-    });
-  });
-
-  req.on('error', callback);
-
-  req.end();
-
-  return req;
+  return client(requestOptions, callback);
 };
 
 
