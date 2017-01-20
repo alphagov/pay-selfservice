@@ -17,11 +17,7 @@ var app = session.getAppWithLoggedInSession(_app, gatewayAccountId);
 var user = session.user;
 
 var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-var connectorMock = nock(process.env.CONNECTOR_URL, {
-  reqheaders: {
-    'Accept': 'application/json'
-  }
-});
+var connectorMock = nock(process.env.CONNECTOR_URL);
 
 function connectorMock_responds(code, data, searchParameters) {
   var queryStr = '?';
@@ -120,15 +116,11 @@ describe('Transaction download endpoints', function () {
       mockJson = {
         results: results,
         _links: {
-          next_page: {href: 'http://foo/bar'}
+          next_page: {href: 'http://localhost:8000/bar'}
         }
       };
 
-      var secondPageMock = nock("http://foo", {
-        reqheaders: {
-          'Accept': 'application/json'
-        }
-      });
+      var secondPageMock = nock("http://localhost:8000");
       var secondResults = _.cloneDeep(results);
       secondResults[0].amount = 1234;
       secondResults[1].amount = 123;
