@@ -17,11 +17,11 @@ const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accoun
  * @returns {function}
  */
 const createCallbackToPromiseConverter = context => {
-  let duration = new Date() - context.startTime;
   let defer = context.defer;
 
   return (error, response, body) => {
-    logger.info(`[${context.correlationId}] - GET to ${context.url} ended - elapsed time: ${duration} ms`);
+    let duration = new Date() - context.startTime;
+    logger.info(`[${context.correlationId}] - ${context.method} to ${context.url} ended - elapsed time: ${duration} ms`);
 
     if (response && response.statusCode !== 200) {
       logger.error(`[${context.correlationId}] Calling publicAuth to ${context.description} failed -`, {
