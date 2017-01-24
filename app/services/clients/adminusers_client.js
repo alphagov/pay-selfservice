@@ -1,4 +1,4 @@
-const q          = require('q');
+const q = require('q');
 const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
 const baseClient = require('./base_client');
@@ -66,7 +66,7 @@ module.exports = {
       description: 'create a user',
     };
 
-    let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
 
     requestLogger.logRequestStart(context);
 
@@ -74,5 +74,36 @@ module.exports = {
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
+  },
+
+  /**
+   * find a user by username
+   *  Expects {
+   *    username: accountId,
+   *    correlationId: correlationId,
+   *  }
+   */
+  getUser: (params) => {
+    let url = `${BASE_USER_URL}/${params.username}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'GET',
+      description: 'find a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
   }
+
 };
