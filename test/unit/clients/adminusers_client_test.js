@@ -1,7 +1,11 @@
 var Pact = require('pact');
 var helpersPath = __dirname + '/../../test_helpers/';
 var pactProxy = require(helpersPath + '/pact_proxy.js');
-var expect = require('chai').expect;
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
 
 const USER_PATH = '/v1/api/users';
 const mockPort = Math.floor(Math.random() * 65535);
@@ -32,16 +36,16 @@ describe('adminusers client', function () {
     })
   });
 
-  describe('create user API', () => {
+  context('create user API - success', () => {
 
     let params = {
       payload: {
         username: "new-user",
-          email: "new-user@example.com",
+        email: "new-user@example.com",
         gateway_account_id: 1,
         telephone_number: "123456789"
-    }
-  };
+      }
+    };
 
     let createUserResponse = {
       username: params.payload.username,
@@ -101,4 +105,95 @@ describe('adminusers client', function () {
     });
   });
 
+
+  context('create user API - bad request', () => {
+
+    let params = {
+      payload: {
+        gateway_account_id: 1
+      }
+    };
+
+    let errorResponse = {
+      errors: ["Field [username] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
+    };
+
+    beforeEach((done) => {
+      adminUsersMock.addInteraction({
+        state: 'healthy',
+        uponReceiving: 'an invalid user create request with required parameters missing',
+        withRequest: {
+          method: 'POST',
+          path: USER_PATH,
+          headers: {'Accept': 'application/json'},
+          body: params.payload
+        },
+        willRespondWith: {
+          status: 400,
+          headers: {'Content-Type': 'application/json'},
+          body: errorResponse
+        }
+      }).then(() => done())
+    });
+
+    afterEach((done) => {
+      adminUsersMock.finalize().then(() => done())
+    });
+
+    it('should respond 400 when required fields missing', function (done) {
+
+      adminusersClient.createUser(params).should.be.rejected.then(function (response) {
+        expect(response.response.statusCode).to.equal(400);
+        expect(response.response.body.errors.length).to.equal(4);
+        expect(response.response.body.errors).to.deep.equal(errorResponse.errors);
+      }).should.notify(done);
+    });
+  });
+
+  context('create user API - conflicting username', () => {
+
+    let params = {
+      payload: {
+        username: "existing-username",
+        email: "existing-username@example.com",
+        gateway_account_id: 1,
+        telephone_number: "123456789"
+      }
+    };
+
+    let errorResponse = {
+      errors: ["username [existing-username] already exists"]
+    };
+
+    beforeEach((done) => {
+      adminUsersMock.addInteraction({
+        state: 'healthy',
+        uponReceiving: 'a user create request with conflicting username',
+        withRequest: {
+          method: 'POST',
+          path: USER_PATH,
+          headers: {'Accept': 'application/json'},
+          body: params.payload
+        },
+        willRespondWith: {
+          status: 409,
+          headers: {'Content-Type': 'application/json'},
+          body: errorResponse
+        }
+      }).then(() => done())
+    });
+
+    afterEach((done) => {
+      adminUsersMock.finalize().then(() => done())
+    });
+
+    it('should respond 409 when the username is already taken', function (done) {
+
+      adminusersClient.createUser(params).should.be.rejected.then(function (response) {
+        expect(response.response.statusCode).to.equal(409);
+        expect(response.response.body.errors.length).to.equal(1);
+        expect(response.response.body.errors).to.deep.equal(errorResponse.errors);
+      }).should.notify(done);
+    });
+  });
 });
