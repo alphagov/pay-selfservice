@@ -30,6 +30,7 @@
     "grunt-test": "node ./node_modules/.bin/grunt test"
   },
   "dependencies": {
+    "@pact-foundation/pact-node": "^4.6.0",
     "appmetrics": "1.1.2",
     "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
@@ -72,6 +73,7 @@
     "node-sass": "3.8.x",
     "notifications-node-client": "2.1.x",
     "notp": "^2.0.3",
+    "pact": "^1.0.0",
     "passport": "0.3.x",
     "passport-local": "^1.0.0",
     "passport-totp": "0.0.2",

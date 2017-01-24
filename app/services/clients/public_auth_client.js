@@ -1,7 +1,9 @@
-const logger     = require('winston');
 const q          = require('q');
 
+const requestLogger = require('../../utils/request_logger');
 const baseClient = require('./base_client');
+
+const SERVICE_NAME = 'publicauth';
 
 /**
  * @param {string} accountId
@@ -18,45 +20,23 @@ const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accoun
  */
 const createCallbackToPromiseConverter = context => {
   let defer = context.defer;
+  context.service = SERVICE_NAME;
 
   return (error, response, body) => {
-    let duration = new Date() - context.startTime;
-    logger.info(`[${context.correlationId}] - ${context.method} to ${context.url} ended - elapsed time: ${duration} ms`);
+    requestLogger.logRequestEnd(context);
 
     if (response && response.statusCode !== 200) {
-      logger.error(`[${context.correlationId}] Calling publicAuth to ${context.description} failed -`, {
-        service: 'publicAuth',
-        method: context.method,
-        url: context.url,
-        status: response.statusCode
-      });
+      requestLogger.logRequestFailure(context, response);
       defer.reject({response: response});
     }
 
     if (error) {
-      logger.error(`[${context.correlationId}] Calling publicAuth to ${context.description} threw exception -`, {
-        service: 'publicAuth',
-        method: context.method,
-        url: context.url,
-        error: error
-      });
+      requestLogger.logRequestError(context, error);
       defer.reject({error: error});
     }
 
     defer.resolve(body);
   };
-};
-
-/**
- * @private
- * @param {Object} context
- */
-const logRequestStart = context => {
-  logger.debug(`Calling publicAuth  ${context.description}-`, {
-    service: 'publicAuth',
-    method: context.method,
-    url: context.url
-  });
 };
 
 module.exports = {
@@ -85,7 +65,7 @@ module.exports = {
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
-    logRequestStart(context);
+    requestLogger.logRequestStart(context);
 
     baseClient.get(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
@@ -118,7 +98,7 @@ module.exports = {
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
-    logRequestStart(context);
+    requestLogger.logRequestStart(context);
 
     baseClient.get(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
@@ -156,7 +136,8 @@ module.exports = {
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
-    logRequestStart(context);
+    requestLogger.logRequestStart(context);
+
     baseClient.post(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
@@ -192,7 +173,7 @@ module.exports = {
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
-    logRequestStart(context);
+    requestLogger.logRequestStart(context);
 
     baseClient.put(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
@@ -228,7 +209,7 @@ module.exports = {
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
-    logRequestStart(context);
+    requestLogger.logRequestStart(context);
 
     baseClient.delete(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
