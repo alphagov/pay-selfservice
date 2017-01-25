@@ -5,12 +5,6 @@ const baseClient = require('./base_client');
 
 const SERVICE_NAME = 'adminusers';
 const SUCCESS_CODES = [200, 201, 202, 204, 206];
-
-/**
- * @param {string} accountId
- */
-const BASE_USER_URL = `${process.env.ADMINUSERS_URL}/v1/api/users`;
-
 /**
  * Creates a callback that can be used to log the stuff we're interested
  * in and converts the response/error into a promise.
@@ -28,7 +22,10 @@ const createCallbackToPromiseConverter = context => {
 
     if (response && SUCCESS_CODES.indexOf(response.statusCode) === -1) {
       requestLogger.logRequestFailure(context, response);
-      defer.reject({response: response});
+      defer.reject({
+        errorCode: response.statusCode,
+        message: response.body
+      });
     }
 
     if (error) {
@@ -40,7 +37,10 @@ const createCallbackToPromiseConverter = context => {
   };
 };
 
-module.exports = {
+module.exports = function (baseUrl) {
+
+  var userResource = `${baseUrl}/v1/api/users`;
+
   /**
    * Create user
    *
@@ -53,8 +53,8 @@ module.exports = {
    * @param {Object} params
    * @returns {Promise}
    */
-  createUser: (params) => {
-    let url = BASE_USER_URL;
+  let createUser = (params) => {
+    let url = userResource;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -74,7 +74,7 @@ module.exports = {
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
-  },
+  };
 
   /**
    * find a user by username
@@ -83,8 +83,8 @@ module.exports = {
    *    correlationId: correlationId,
    *  }
    */
-  getUser: (params) => {
-    let url = `${BASE_USER_URL}/${params.username}`;
+  let getUser = (params) => {
+    let url = `${userResource}/${params.username}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -104,6 +104,10 @@ module.exports = {
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
-  }
+  };
 
+  return {
+    getUser: getUser,
+    createUser: createUser
+  };
 };
