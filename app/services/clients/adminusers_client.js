@@ -106,8 +106,34 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
+  let authenticateUser = (params) => {
+
+    let url = `${userResource}/authenticate`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'POST',
+      description: 'authenticate a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+
+  };
+
   return {
     getUser: getUser,
-    createUser: createUser
+    createUser: createUser,
+    authenticateUser: authenticateUser
   };
 };

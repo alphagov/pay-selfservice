@@ -114,6 +114,17 @@ module.exports = {
       getPlain: () => response,
       getPactified: () => pactify(response)
     };
-  }
+  },
 
+  validAuthenticateRequest: (options) => {
+    let request = {
+      username: options.username || 'username',
+      password: options.password || 'password'
+    };
+
+    return {
+      getPlain: () => request,
+      getPactified: () => pactify(request)
+    }
+  }
 };
