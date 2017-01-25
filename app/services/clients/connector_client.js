@@ -148,23 +148,23 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   searchTransactions (params, successCallback) {
-    var query = getQueryStringForParams(params);
+    
+    let startTime = new Date();
+    //allow url to be overridden to allow recursion using next url
+    let url = params.url || searchUrl(this.connectorUrl, params);
+    let responseHandler = this.responseHandler(successCallback);
+
     logger.debug('Calling connector to search account transactions -', {
       service: 'connector',
       method: 'GET',
-      url: this.connectorUrl + CHARGES_API_PATH,
-      queryParams: query
+      url: url
     });
-    var startTime = new Date();
 
-    //allow url to be overridden to allow recursion using next url
-    var url = params.url || searchUrl(this.connectorUrl, params);
-    var responseHandler = this.responseHandler(successCallback);
-
-    baseClient.get(url, params, function(error, response, body) {
+    baseClient.get(url, {correlationId: params.correlationId}, function(error, response, body) {
       logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
       responseHandler(error, response, body);
     });
+
     return this;
   },
 
