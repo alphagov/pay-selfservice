@@ -148,6 +148,32 @@ module.exports = {
       getPlain: () => response,
       getPactified: () => pactify(response)
     };
-  }
+  },
+
+  validIncrementSessionVersionRequest: () => {
+    let request = {
+      op: 'replace',
+      path: 'sessionVersion',
+      value: 1
+    };
+
+    return {
+      getPlain: () => request,
+      getPactified: () => pactify(request)
+    }
+
+  },
+
+  badIncrementSessionVersionResponse: () => {
+    let response = {
+      errors: ["Field [op] is required", "Field [path] is required", "Field [value] is required"]
+    };
+
+    return {
+      getPlain: () => response,
+      getPactified: () => pactify(response)
+    }
+
+  },
 
 };

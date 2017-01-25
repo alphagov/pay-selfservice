@@ -198,7 +198,7 @@ describe('adminusers client', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it.only('should return not found if user not exist', function (done) {
+      it('should return not found if user not exist', function (done) {
 
         adminusersClient.incrementLoginAttemptsForUser(params).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);

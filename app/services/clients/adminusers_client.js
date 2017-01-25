@@ -177,7 +177,31 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
+  let incrementSessionVersionForUser = params => {
+    let url = `${userResource}/${params.username}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'PATCH',
+      description: 'increment session version for a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.patch(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
+    incrementSessionVersionForUser: incrementSessionVersionForUser,
     resetLoginAttemptsForUser: resetLoginAttemptsForUser,
     incrementLoginAttemptsForUser: incrementLoginAttemptsForUser,
     getUser: getUser,
