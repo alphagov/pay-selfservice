@@ -92,7 +92,7 @@ describe('adminusers client', function () {
         payload: request.getPlain()
       };
 
-      let unauthorizedResponse = userFixtures.unauthorizedUserResponse(request.getPlain());
+      let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction({

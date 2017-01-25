@@ -131,7 +131,55 @@ module.exports = function (baseUrl) {
 
   };
 
+  let incrementLoginAttemptsForUser = params => {
+    let url = `${userResource}/${params.username}/attempt-login`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'POST',
+      description: 'increment login attempts for a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
+  let resetLoginAttemptsForUser = params => {
+    let url = `${userResource}/${params.username}/attempt-login?action=reset`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'POST',
+      description: 'reset login attempts for a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
+    resetLoginAttemptsForUser: resetLoginAttemptsForUser,
+    incrementLoginAttemptsForUser: incrementLoginAttemptsForUser,
     getUser: getUser,
     createUser: createUser,
     authenticateUser: authenticateUser
