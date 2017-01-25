@@ -126,5 +126,28 @@ module.exports = {
       getPlain: () => request,
       getPactified: () => pactify(request)
     }
+  },
+
+  unauthorizedUserResponse: () => {
+    let response = {
+      errors: ["invalid username and/or password"]
+    };
+
+    return {
+      getPlain: () => response,
+      getPactified: () => pactify(response)
+    };
+  },
+
+  badAuthenticateResponse: () => {
+    let response = {
+      errors: ["Field [username] is required", "Field [password] is required"]
+    };
+
+    return {
+      getPlain: () => response,
+      getPactified: () => pactify(response)
+    };
   }
+
 };

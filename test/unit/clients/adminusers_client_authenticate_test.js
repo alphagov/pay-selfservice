@@ -86,6 +86,86 @@ describe('adminusers client', function () {
       });
     });
 
+    context('authenticate user API - unauthorized', () => {
+      let request = userFixtures.validAuthenticateRequest({});
+      let params = {
+        payload: request.getPlain()
+      };
+
+      let unauthorizedResponse = userFixtures.unauthorizedUserResponse(request.getPlain());
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction({
+          state: 'a user not exists with a given username password',
+          uponReceiving: 'a user authenticate request with no matching user',
+          withRequest: {
+            method: 'POST',
+            path: `${USER_PATH}/authenticate`,
+            headers: {'Accept': 'application/json'},
+            body: request.getPactified()
+          },
+          willRespondWith: {
+            status: 401,
+            headers: {'Content-Type': 'application/json'},
+            body: unauthorizedResponse.getPactified()
+          }
+        }).then(() => done())
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should fail authentication if invalid username / password', function (done) {
+
+        adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(401);
+          expect(response.message.errors.length).to.equal(1);
+          expect(response.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors);
+        }).should.notify(done);
+      });
+    });
+
+    context('authenticate user API - bas request', () => {
+      let request = {};
+      let params = {
+        payload: request
+      };
+
+      let badAuthenticateResponse = userFixtures.badAuthenticateResponse();
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction({
+          state: 'a user not exists with a given username password',
+          uponReceiving: 'a user authenticate request with no matching user',
+          withRequest: {
+            method: 'POST',
+            path: `${USER_PATH}/authenticate`,
+            headers: {'Accept': 'application/json'},
+            body: request
+          },
+          willRespondWith: {
+            status: 400,
+            headers: {'Content-Type': 'application/json'},
+            body: badAuthenticateResponse.getPactified()
+          }
+        }).then(() => done())
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it.only('should error bad request if mandatory fields are missing', function (done) {
+
+        adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(400);
+          expect(response.message.errors.length).to.equal(2);
+          expect(response.message.errors).to.deep.equal(badAuthenticateResponse.getPlain().errors);
+        }).should.notify(done);
+      });
+    });
+
   });
 
 });
