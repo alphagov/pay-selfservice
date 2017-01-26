@@ -22,7 +22,7 @@ describe('adminusers client', function () {
   /**
    * Start the server and set up Pact
    */
-  beforeEach(function (done) {
+  before(function (done) {
     mockServer.start().then(function () {
       adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
       done()
@@ -32,7 +32,7 @@ describe('adminusers client', function () {
   /**
    * Remove the server and publish pacts to broker
    */
-  afterEach(function (done) {
+  after(function (done) {
     mockServer.delete().then(() => {
       done();
     })
