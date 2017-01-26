@@ -2,7 +2,7 @@ const _ = require('lodash');
 var Pact = require('pact');
 var matchers = Pact.Matchers;
 
-function randomString(){
+function randomString() {
   return Math.random().toString(36).substring(7);
 }
 
@@ -19,7 +19,7 @@ function randomAccountId() {
 }
 
 function randomTelephoneNumber() {
- return String(Math.floor(Math.random() * 1000000));
+  return String(Math.floor(Math.random() * 1000000));
 }
 
 function pactify(request) {
@@ -195,8 +195,8 @@ module.exports = {
   validForgottenPasswordResponse: (request) => {
     let code = randomString();
     let response = {
-      username: request.username,
-      code: code,
+      username: request.username || "username",
+      code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
       "_links": [{
         "href": `http://localhost:8080/v1/api/forgotten-passwords/${code}`,

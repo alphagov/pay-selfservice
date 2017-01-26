@@ -224,7 +224,31 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
+  let getForgottenPassword = params => {
+    let url = `${forgottenPasswordResource}/${params.code}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'GET',
+      description: 'get a forgotten password',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
+    getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
     incrementSessionVersionForUser: incrementSessionVersionForUser,
     resetLoginAttemptsForUser: resetLoginAttemptsForUser,

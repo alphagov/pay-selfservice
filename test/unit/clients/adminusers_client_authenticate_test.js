@@ -126,7 +126,7 @@ describe('adminusers client', function () {
       });
     });
 
-    context('authenticate user API - bas request', () => {
+    context('authenticate user API - bad request', () => {
       let request = {};
       let params = {
         payload: request
@@ -156,7 +156,7 @@ describe('adminusers client', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it.only('should error bad request if mandatory fields are missing', function (done) {
+      it('should error bad request if mandatory fields are missing', function (done) {
 
         adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
