@@ -2,8 +2,12 @@ const _ = require('lodash');
 var Pact = require('pact');
 var matchers = Pact.Matchers;
 
-function randomUsername() {
+function randomString(){
   return Math.random().toString(36).substring(7);
+}
+
+function randomUsername() {
+  return randomString();
 }
 
 function randomOtpKey() {
@@ -174,6 +178,48 @@ module.exports = {
       getPactified: () => pactify(response)
     }
 
+  },
+
+  validForgottenPasswordCreateRequest: (username) => {
+    let request = {
+      username: username || 'username'
+    };
+
+    return {
+      getPlain: () => request,
+      getPactified: () => pactify(request)
+    }
+
+  },
+
+  validForgottenPasswordResponse: (request) => {
+    let code = randomString();
+    let response = {
+      username: request.username,
+      code: code,
+      date: '2010-12-31T22:59:59.132Z',
+      "_links": [{
+        "href": `http://localhost:8080/v1/api/forgotten-passwords/${code}`,
+        "rel": "self",
+        "method": "GET"
+      }]
+    };
+
+    return {
+      getPlain: () => response,
+      getPactified: () => pactify(response)
+    }
+  },
+
+  badForgottenPasswordResponse: () => {
+    let response = {
+      errors: ["Field [username] is required"]
+    };
+
+    return {
+      getPlain: () => response,
+      getPactified: () => pactify(response)
+    }
   },
 
 };

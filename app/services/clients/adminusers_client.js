@@ -40,6 +40,7 @@ const createCallbackToPromiseConverter = context => {
 module.exports = function (baseUrl) {
 
   var userResource = `${baseUrl}/v1/api/users`;
+  var forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
 
   /**
    * Create user
@@ -200,7 +201,31 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
+  let createForgottenPassword = params => {
+    let url = `${forgottenPasswordResource}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'POST',
+      description: 'create a forgotten password for a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
+    createForgottenPassword: createForgottenPassword,
     incrementSessionVersionForUser: incrementSessionVersionForUser,
     resetLoginAttemptsForUser: resetLoginAttemptsForUser,
     incrementLoginAttemptsForUser: incrementLoginAttemptsForUser,

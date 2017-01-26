@@ -1,0 +1,163 @@
+var Pact = require('pact');
+var helpersPath = __dirname + '/../../test_helpers/';
+var pactProxy = require(helpersPath + '/pact_proxy.js');
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
+var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
+const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords';
+var mockPort = Math.floor(Math.random() * 65535);
+var mockServer = pactProxy.create('localhost', mockPort);
+
+var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+
+describe('adminusers client', function () {
+
+  var adminUsersMock;
+  /**
+   * Start the server and set up Pact
+   */
+  beforeEach(function (done) {
+    mockServer.start().then(function () {
+      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      done()
+    });
+  });
+
+  /**
+   * Remove the server and publish pacts to broker
+   */
+  afterEach(function (done) {
+    mockServer.delete().then(() => {
+      done();
+    })
+  });
+
+  describe('Forgotten Password API', function () {
+
+    context('create forgotten password API - success', () => {
+      let request = userFixtures.validForgottenPasswordCreateRequest();
+      let params = {
+        payload: request.getPlain()
+      };
+
+      let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse(request.getPlain());
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction({
+          state: 'a user exist',
+          uponReceiving: 'a valid forgotten password request',
+          withRequest: {
+            method: 'POST',
+            path: FORGOTTEN_PASSWORD_PATH,
+            headers: {'Accept': 'application/json'},
+            body: request.getPactified()
+          },
+          willRespondWith: {
+            status: 201,
+            headers: {'Content-Type': 'application/json'},
+            body: validForgottenPasswordResponse.getPactified()
+          }
+        }).then(() => done())
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should create a forgotten password entry successfully', function (done) {
+
+        adminusersClient.createForgottenPassword(params).should.be.fulfilled.then(function (forgottenPassword) {
+
+          var expectedResponse = validForgottenPasswordResponse.getPlain();
+          expect(forgottenPassword.code).to.be.equal(expectedResponse.code);
+          expect(forgottenPassword.date).to.be.equal(expectedResponse.date);
+          expect(forgottenPassword.username).to.be.equal(expectedResponse.username);
+          expect(forgottenPassword._links.length).to.be.equal(expectedResponse._links.length);
+
+        }).should.notify(done);
+      });
+    });
+
+    context('create forgotten password API - bad request', () => {
+      let request = {};
+      let params = {
+        payload: request
+      };
+
+      let badForgottenPasswordResponse = userFixtures.badForgottenPasswordResponse();
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction({
+          state: 'healthy',
+          uponReceiving: 'an invalid forgotten password request',
+          withRequest: {
+            method: 'POST',
+            path: FORGOTTEN_PASSWORD_PATH,
+            headers: {'Accept': 'application/json'},
+            body: request
+          },
+          willRespondWith: {
+            status: 400,
+            headers: {'Content-Type': 'application/json'},
+            body: badForgottenPasswordResponse.getPactified()
+          }
+        }).then(() => done())
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should error when forgotten password creation if mandatory fields are missing', function (done) {
+
+        adminusersClient.createForgottenPassword(params).should.be.rejected.then(function (response){
+          expect(response.errorCode).to.equal(400);
+          expect(response.message.errors.length).to.equal(1);
+          expect(response.message.errors).to.deep.equal(badForgottenPasswordResponse.getPlain().errors);
+        }).should.notify(done);
+      });
+    });
+
+    context('create forgotten password API - not found', () => {
+      let request = userFixtures.validForgottenPasswordCreateRequest();
+      let params = {
+        payload: request.getPlain()
+      };
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction({
+          state: 'a user does not exist',
+          uponReceiving: 'a forgotten password request for non existent user',
+          withRequest: {
+            method: 'POST',
+            path: FORGOTTEN_PASSWORD_PATH,
+            headers: {'Accept': 'application/json'},
+            body: request.getPactified()
+          },
+          willRespondWith: {
+            status: 404,
+            headers: {'Content-Type': 'application/json'},
+          }
+        }).then(() => done())
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should error when forgotten password creation if no user found', function (done) {
+
+        adminusersClient.createForgottenPassword(params).should.be.rejected.then(function (response){
+          expect(response.errorCode).to.equal(404);
+        }).should.notify(done);
+      });
+    });
+
+  });
+
+});
