@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -45,19 +46,13 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists',
-          uponReceiving: 'a valid login attempts update request',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/${params.username}/attempt-login`,
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+            .withState('a user exists')
+            .withUponReceiving('a valid login attempts update request')
+            .withMethod('POST')
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -76,27 +71,21 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists',
-          uponReceiving: 'a valid login attempts reset request',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/${params.username}/attempt-login`,
-            query: { action: 'reset' },
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+            .withState('a user exists')
+            .withUponReceiving('a valid login attempts reset request')
+            .withMethod('POST')
+            .withQuery({ action: 'reset' })
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should update login attempts successfully', function (done) {
+      it('should reset login attempts successfully', function (done) {
 
         adminusersClient.resetLoginAttemptsForUser(params).should.be.fulfilled.notify(done);
       });
@@ -110,20 +99,15 @@ describe('adminusers client', function () {
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists with max login attempts',
-          uponReceiving: 'a valid login attempts update request',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/${params.username}/attempt-login`,
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 401,
-            headers: {'Content-Type': 'application/json'},
-            body: unauthorizedResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+            .withState('a user exists with max login attempts')
+            .withUponReceiving('a valid login attempts update request')
+            .withMethod('POST')
+            .withStatusCode(401)
+            .withResponseBody(unauthorizedResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -140,58 +124,20 @@ describe('adminusers client', function () {
       });
     });
 
-
-    context('reset login attempts API - success', () => {
-      let params = {
-        username: 'username'
-      };
-
-      beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists',
-          uponReceiving: 'a valid login attempts reset request',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/${params.username}/attempt-login`,
-            query: { action: 'reset' },
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
-      });
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      });
-
-      it('should update login attempts successfully', function (done) {
-
-        adminusersClient.resetLoginAttemptsForUser(params).should.be.fulfilled.notify(done);
-      });
-    });
-
     context('increment login attempts API - user not found', () => {
       let params = {
         username: 'non-existent-username'
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user does not exist',
-          uponReceiving: 'a valid login attempts update request',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/${params.username}/attempt-login`,
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 404,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+            .withState('a user does not exist')
+            .withUponReceiving('a valid login attempts update request')
+            .withMethod('POST')
+            .withStatusCode(404)
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {

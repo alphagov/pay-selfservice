@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -48,21 +49,16 @@ describe('adminusers client', function () {
       let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse(request.getPlain());
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exist',
-          uponReceiving: 'a valid forgotten password request',
-          withRequest: {
-            method: 'POST',
-            path: FORGOTTEN_PASSWORD_PATH,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 201,
-            headers: {'Content-Type': 'application/json'},
-            body: validForgottenPasswordResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+            .withState('a user exist')
+            .withUponReceiving('a valid forgotten password request')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(201)
+            .withResponseBody(validForgottenPasswordResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -92,21 +88,15 @@ describe('adminusers client', function () {
       let badForgottenPasswordResponse = userFixtures.badForgottenPasswordResponse();
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'healthy',
-          uponReceiving: 'an invalid forgotten password request',
-          withRequest: {
-            method: 'POST',
-            path: FORGOTTEN_PASSWORD_PATH,
-            headers: {'Accept': 'application/json'},
-            body: request
-          },
-          willRespondWith: {
-            status: 400,
-            headers: {'Content-Type': 'application/json'},
-            body: badForgottenPasswordResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+            .withUponReceiving('an invalid forgotten password request')
+            .withMethod('POST')
+            .withRequestBody(request)
+            .withStatusCode(400)
+            .withResponseBody(badForgottenPasswordResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -130,20 +120,15 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user does not exist',
-          uponReceiving: 'a forgotten password request for non existent user',
-          withRequest: {
-            method: 'POST',
-            path: FORGOTTEN_PASSWORD_PATH,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 404,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+            .withState('a user does not exist')
+            .withUponReceiving('a forgotten password request for non existent user')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(404)
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {

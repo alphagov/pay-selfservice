@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -48,20 +49,14 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists',
-          uponReceiving: 'a valid increment session version update request',
-          withRequest: {
-            method: 'PATCH',
-            path: `${USER_PATH}/${params.username}`,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+            .withState('a user exists')
+            .withUponReceiving('a valid increment session version update request')
+            .withMethod('PATCH')
+            .withRequestBody(request.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -86,21 +81,16 @@ describe('adminusers client', function () {
       let badIncrementSessionVersionResponse = userFixtures.badIncrementSessionVersionResponse(params);
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists',
-          uponReceiving: 'a bad increment session version update request',
-          withRequest: {
-            method: 'PATCH',
-            path: `${USER_PATH}/${params.username}`,
-            headers: {'Accept': 'application/json'},
-            body: request
-          },
-          willRespondWith: {
-            status: 400,
-            headers: {'Content-Type': 'application/json'},
-            body: badIncrementSessionVersionResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+            .withState('a user exists')
+            .withUponReceiving('a bad increment session version update request')
+            .withMethod('PATCH')
+            .withRequestBody(request)
+            .withStatusCode(400)
+            .withResponseBody(badIncrementSessionVersionResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -124,19 +114,14 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user does not exist',
-          uponReceiving: 'a valid increment session version request',
-          withRequest: {
-            method: 'PATCH',
-            path: `${USER_PATH}/${params.username}`,
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 404,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+            .withState('a user does not exist')
+            .withUponReceiving('a valid increment session version request')
+            .withMethod('PATCH')
+            .withStatusCode(404)
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {

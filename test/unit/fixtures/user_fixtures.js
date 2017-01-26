@@ -165,7 +165,8 @@ module.exports = {
     return withPactified(request);
   },
 
-  validForgottenPasswordResponse: (request) => {
+  validForgottenPasswordResponse: (payload) => {
+    let request = payload || {};
     let code = randomString();
     let response = {
       username: request.username || "username",

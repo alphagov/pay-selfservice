@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -48,20 +49,13 @@ describe('adminusers client', function () {
       let getUserResponse = userFixtures.validUserResponse(params);
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exits with the given name',
-          uponReceiving: 'a valid get user request',
-          withRequest: {
-            method: 'GET',
-            path: `${USER_PATH}/${params.username}`,
-            headers: {'Accept': 'application/json'}
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {'Content-Type': 'application/json'},
-            body: getUserResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+            .withState('a user exits with the given name')
+            .withUponReceiving('a valid get user request')
+            .withResponseBody(getUserResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -92,18 +86,13 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'no user exits with the given name',
-          uponReceiving: 'a valid get user request',
-          withRequest: {
-            method: 'GET',
-            path: `${USER_PATH}/${params.username}`,
-            headers: {'Accept': 'application/json'}
-          },
-          willRespondWith: {
-            status: 404
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+            .withState('no user exits with the given name')
+            .withUponReceiving('a valid get user request')
+            .withStatusCode(404)
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {

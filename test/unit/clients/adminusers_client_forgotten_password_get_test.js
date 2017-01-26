@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -48,20 +49,13 @@ describe('adminusers client', function () {
       let expectedForgottenPassword = validForgottenPasswordResponse.getPlain();
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a forgotten password entry exist',
-          uponReceiving: 'forgotten password get request',
-          withRequest: {
-            method: 'GET',
-            path: `${FORGOTTEN_PASSWORD_PATH}/${expectedForgottenPassword.code}`,
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {'Content-Type': 'application/json'},
-            body: validForgottenPasswordResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${expectedForgottenPassword.code}`)
+          .withState('a forgotten password entry exist')
+          .withUponReceiving('forgotten password get request')
+          .withResponseBody(validForgottenPasswordResponse.getPactified())
+          .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -71,7 +65,6 @@ describe('adminusers client', function () {
       it('should GET a forgotten password entry', function (done) {
 
         adminusersClient.getForgottenPassword(params).should.be.fulfilled.then(function (forgottenPassword) {
-
           expect(forgottenPassword.code).to.be.equal(expectedForgottenPassword.code);
           expect(forgottenPassword.date).to.be.equal(expectedForgottenPassword.date);
           expect(forgottenPassword.username).to.be.equal(expectedForgottenPassword.username);
@@ -89,19 +82,13 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a valid (non-expired) forgotten password entry does not exist',
-          uponReceiving: 'a forgotten password request for non existent code',
-          withRequest: {
-            method: 'GET',
-            path: `${FORGOTTEN_PASSWORD_PATH}/${params.code}`,
-            headers: {'Accept': 'application/json'},
-          },
-          willRespondWith: {
-            status: 404,
-            headers: {'Content-Type': 'application/json'},
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${params.code}`)
+            .withState('a valid (non-expired) forgotten password entry does not exist')
+            .withUponReceiving('a forgotten password request for non existent code')
+            .withStatusCode(404)
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {

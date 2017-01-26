@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -46,21 +47,16 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'healthy',
-          uponReceiving: 'a valid user create request',
-          withRequest: {
-            method: 'POST',
-            path: USER_PATH,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 201,
-            headers: {'Content-Type': 'application/json'},
-            body: userFixtures.validUserResponse(request.getPlain()).getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(USER_PATH)
+            .withUponReceiving('a valid user create request')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(201)
+            .withResponseBody(userFixtures.validUserResponse(request.getPlain()).getPactified())
+            .build()
+        ).then(() => done());
+
       });
 
       afterEach((done) => {
@@ -93,21 +89,15 @@ describe('adminusers client', function () {
       };
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'healthy',
-          uponReceiving: 'an invalid user create request with required parameters missing',
-          withRequest: {
-            method: 'POST',
-            path: USER_PATH,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 400,
-            headers: {'Content-Type': 'application/json'},
-            body: errorResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(USER_PATH)
+            .withUponReceiving('an invalid user create request with required parameters missing')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(400)
+            .withResponseBody(errorResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -134,21 +124,16 @@ describe('adminusers client', function () {
       let errorResponse = userFixtures.invalidCreateresponseWhenUsernameExists();
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'user exists with the same username',
-          uponReceiving: 'a user create request with conflicting username',
-          withRequest: {
-            method: 'POST',
-            path: USER_PATH,
-            headers: {'Accept': 'application/json'},
-            body: params.payload
-          },
-          willRespondWith: {
-            status: 409,
-            headers: {'Content-Type': 'application/json'},
-            body: errorResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(USER_PATH)
+            .withState('user exists with the same username')
+            .withUponReceiving('a user create request with conflicting username')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(409)
+            .withResponseBody(errorResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {

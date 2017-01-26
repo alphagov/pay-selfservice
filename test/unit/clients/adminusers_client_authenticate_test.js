@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
@@ -48,21 +49,17 @@ describe('adminusers client', function () {
       let validUserResponse = userFixtures.validUserResponse(request.getPlain());
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user exists',
-          uponReceiving: 'a valid user authenticate request',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/authenticate`,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 201,
-            headers: {'Content-Type': 'application/json'},
-            body: validUserResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/authenticate`)
+            .withState('a user exists')
+            .withUponReceiving('a valid user authenticate request')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(201)
+            .withResponseBody(validUserResponse.getPactified())
+            .build()
+        ).then(() => done());
+
       });
 
       afterEach((done) => {
@@ -95,21 +92,17 @@ describe('adminusers client', function () {
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user not exists with a given username password',
-          uponReceiving: 'a user authenticate request with no matching user',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/authenticate`,
-            headers: {'Accept': 'application/json'},
-            body: request.getPactified()
-          },
-          willRespondWith: {
-            status: 401,
-            headers: {'Content-Type': 'application/json'},
-            body: unauthorizedResponse.getPactified()
-          }
-        }).then(() => done())
+
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/authenticate`)
+            .withState('a user not exists with a given username password')
+            .withUponReceiving('a user authenticate request with no matching user')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(401)
+            .withResponseBody(unauthorizedResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
@@ -135,21 +128,16 @@ describe('adminusers client', function () {
       let badAuthenticateResponse = userFixtures.badAuthenticateResponse();
 
       beforeEach((done) => {
-        adminUsersMock.addInteraction({
-          state: 'a user not exists with a given username password',
-          uponReceiving: 'a user authenticate request with no matching user',
-          withRequest: {
-            method: 'POST',
-            path: `${USER_PATH}/authenticate`,
-            headers: {'Accept': 'application/json'},
-            body: request
-          },
-          willRespondWith: {
-            status: 400,
-            headers: {'Content-Type': 'application/json'},
-            body: badAuthenticateResponse.getPactified()
-          }
-        }).then(() => done())
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/authenticate`)
+            .withState('a user not exists with a given username password')
+            .withUponReceiving('a user authenticate request with no matching user')
+            .withMethod('POST')
+            .withRequestBody(request)
+            .withStatusCode(400)
+            .withResponseBody(badAuthenticateResponse.getPactified())
+            .build()
+        ).then(() => done());
       });
 
       afterEach((done) => {
