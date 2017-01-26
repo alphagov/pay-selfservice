@@ -31,6 +31,13 @@ function pactify(request) {
   return pactified;
 }
 
+function withPactified(payload) {
+  return {
+    getPlain: () => payload,
+    getPactified: () => pactify(payload)
+  };
+}
+
 module.exports = {
 
   validMinimalUserCreateRequest: () => {
@@ -44,16 +51,13 @@ module.exports = {
       telephone_number: String(Math.floor(Math.random() * 1000000))
     };
 
-    return {
-      getPlain: () => request,
-      getPactified: () => pactify(request)
-    };
+    return withPactified(request);
   },
 
   validCompleteUserCreateRequest: () => {
 
     let newUsername = randomUsername();
-    return {
+    let request = {
       username: newUsername,
       password: "arandompassword",
       otp_key: randomOtpKey(),
@@ -61,6 +65,7 @@ module.exports = {
       gateway_account_id: randomAccountId(),
       telephone_number: String(Math.floor(Math.random() * 1000000))
     };
+    return withPactified(request);
   },
 
   validUserResponse: (request) => {
@@ -81,10 +86,7 @@ module.exports = {
       }]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    };
+    return withPactified(response);
   },
 
   invalidUserCreateRequestWithFieldsMissing: () => {
@@ -92,10 +94,7 @@ module.exports = {
       gateway_account_id: randomAccountId()
     };
 
-    return {
-      getPlain: () => request,
-      getPactified: () => pactify(request)
-    };
+    return withPactified(request);
   },
 
   invalidUserCreateResponseWhenFieldsMissing: () => {
@@ -103,10 +102,7 @@ module.exports = {
       errors: ["Field [username] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    };
+    return withPactified(response);
   },
 
   invalidCreateresponseWhenUsernameExists: () => {
@@ -114,10 +110,7 @@ module.exports = {
       errors: ["username [existing-username] already exists"]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    };
+    return withPactified(response);
   },
 
   validAuthenticateRequest: (options) => {
@@ -126,10 +119,7 @@ module.exports = {
       password: options.password || 'password'
     };
 
-    return {
-      getPlain: () => request,
-      getPactified: () => pactify(request)
-    }
+    return withPactified(request);
   },
 
   unauthorizedUserResponse: () => {
@@ -137,10 +127,7 @@ module.exports = {
       errors: ["invalid username and/or password"]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    };
+    return withPactified(response);
   },
 
   badAuthenticateResponse: () => {
@@ -148,10 +135,7 @@ module.exports = {
       errors: ["Field [username] is required", "Field [password] is required"]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    };
+    return withPactified(response);
   },
 
   validIncrementSessionVersionRequest: () => {
@@ -161,10 +145,7 @@ module.exports = {
       value: 1
     };
 
-    return {
-      getPlain: () => request,
-      getPactified: () => pactify(request)
-    }
+    return withPactified(request);
 
   },
 
@@ -173,11 +154,7 @@ module.exports = {
       errors: ["Field [op] is required", "Field [path] is required", "Field [value] is required"]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    }
-
+    return withPactified(response);
   },
 
   validForgottenPasswordCreateRequest: (username) => {
@@ -185,11 +162,7 @@ module.exports = {
       username: username || 'username'
     };
 
-    return {
-      getPlain: () => request,
-      getPactified: () => pactify(request)
-    }
-
+    return withPactified(request);
   },
 
   validForgottenPasswordResponse: (request) => {
@@ -205,10 +178,7 @@ module.exports = {
       }]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    }
+    return withPactified(response);
   },
 
   badForgottenPasswordResponse: () => {
@@ -216,10 +186,7 @@ module.exports = {
       errors: ["Field [username] is required"]
     };
 
-    return {
-      getPlain: () => response,
-      getPactified: () => pactify(response)
-    }
+    return withPactified(response);
   },
 
 };
