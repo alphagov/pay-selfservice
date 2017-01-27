@@ -216,7 +216,13 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  let createForgottenPassword = params => {
+  let createForgottenPassword = username => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        username: username
+      }
+    };
     let url = `${forgottenPasswordResource}`;
     let defer = q.defer();
     let startTime = new Date();
