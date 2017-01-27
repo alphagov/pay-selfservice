@@ -1,4 +1,6 @@
 const https    = require('https');
+const httpAgent    = require('http').globalAgent;
+const urlParse = require('url').parse;
 
 var request = require('request');
 const logger = require('winston');
@@ -14,10 +16,10 @@ var agentOptions = {
 /**
  * @type {https.Agent}
  */
-const agent = new https.Agent(agentOptions);
+const httpsAgent = new https.Agent(agentOptions);
 
 if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
-  customCertificate.addCertsToAgent(agent);
+  customCertificate.addCertsToAgent(httpsAgent);
 } else {
   logger.warn('DISABLE_INTERNAL_HTTPS is set.');
 }
@@ -45,6 +47,8 @@ const getHeaders = function getHeaders(args) {
  * @private
  */
 var _request = function request(methodName, url, args, callback) {
+  let agent = urlParse(url).protocol === 'http:' ? httpAgent : httpsAgent;
+
   const requestOptions = {
     uri: url,
     method: methodName,

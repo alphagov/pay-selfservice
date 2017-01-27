@@ -1,5 +1,4 @@
 var moment                = require('moment');
-var Sequelize             = require('sequelize');
 var bcrypt                = require('bcrypt');
 var q                     = require('q');
 var _                     = require('lodash');
@@ -7,7 +6,6 @@ var _                     = require('lodash');
 var notp                  = require('notp');
 var logger                = require('winston');
 
-var sequelizeConfig       = require('./../utils/sequelize_config.js');
 var User                  = require('../models/user.js').User;
 var notify                = require('../services/clients/notification_client.js');
 var random                = require('../utils/random.js');
@@ -15,7 +13,6 @@ var forgottenPassword     = require('../models/forgotten_password.js').sequelize
 var paths                 = require(__dirname + '/../paths.js');
 var applicationMetrics    = require('./../utils/metrics.js').metrics;
 
-var sequelizeConnection   = sequelizeConfig.sequelize;
 
 /**
  * @param email
