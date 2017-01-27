@@ -51,6 +51,10 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   let createUser = (user) => {
+    let params = {
+      payload: user.toMinimalJson(),
+      correlationId: correlationId
+    };
     let url = userResource;
     let defer = q.defer();
     let startTime = new Date();
@@ -67,8 +71,6 @@ module.exports = function (clientOptions = {}) {
 
     requestLogger.logRequestStart(context);
 
-    var params = {payload: user.toMinimalJson()};
-
     baseClient.post(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
@@ -76,14 +78,15 @@ module.exports = function (clientOptions = {}) {
   };
 
   /**
-   * find a user by username
-   *  Expects {
-   *    username: accountId,
-   *    correlationId: correlationId,
-   *  }
+   *
+   * @param {string} username
+   * @return {Promise<User>} A promise of a User
    */
-  let getUser = (params) => {
-    let url = `${userResource}/${params.username}`;
+  let getUser = username => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${userResource}/${username}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {

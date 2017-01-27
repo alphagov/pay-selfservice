@@ -65,7 +65,7 @@ describe('adminusers client', function () {
       it('should find a user successfully', function (done) {
         let expectedUserData = getUserResponse.getPlain();
 
-        adminusersClient.getUser(params).should.be.fulfilled.then(function (user) {
+        adminusersClient.getUser(params.username).should.be.fulfilled.then(function (user) {
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
           expect(user.password).to.be.equal(expectedUserData.password);
@@ -101,7 +101,7 @@ describe('adminusers client', function () {
 
       it('should respond 404 if user not found', function (done) {
 
-        adminusersClient.getUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.getUser(params.username).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });
