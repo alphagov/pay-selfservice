@@ -141,8 +141,11 @@ module.exports = function (clientOptions = {}) {
 
   };
 
-  let incrementLoginAttemptsForUser = params => {
-    let url = `${userResource}/${params.username}/attempt-login`;
+  let incrementLoginAttemptsForUser = username => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${userResource}/${username}/attempt-login`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -164,8 +167,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  let resetLoginAttemptsForUser = params => {
-    let url = `${userResource}/${params.username}/attempt-login?action=reset`;
+  let resetLoginAttemptsForUser = username => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${userResource}/${username}/attempt-login?action=reset`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
