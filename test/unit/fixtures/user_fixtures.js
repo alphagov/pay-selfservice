@@ -153,14 +153,6 @@ module.exports = {
 
   },
 
-  badIncrementSessionVersionResponse: () => {
-    let response = {
-      errors: ["Field [op] is required", "Field [path] is required", "Field [value] is required"]
-    };
-
-    return withPactified(response);
-  },
-
   validForgottenPasswordCreateRequest: (username) => {
     let request = {
       username: username || 'username'

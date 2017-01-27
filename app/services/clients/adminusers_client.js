@@ -193,8 +193,17 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  let incrementSessionVersionForUser = params => {
-    let url = `${userResource}/${params.username}`;
+  let incrementSessionVersionForUser = username => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        op: 'replace',
+        path: 'sessionVersion',
+        value: 1
+      }
+    };
+
+    let url = `${userResource}/${username}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {

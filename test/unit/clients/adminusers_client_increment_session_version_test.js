@@ -42,15 +42,11 @@ describe('adminusers client', function () {
 
     context('increment session version  API - success', () => {
       let request = userFixtures.validIncrementSessionVersionRequest();
-
-      let params = {
-        username: 'username',
-        payload: request.getPlain()
-      };
+      let username = 'username';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+          new PactInteractionBuilder(`${USER_PATH}/${username}`)
             .withState('a user exists')
             .withUponReceiving('a valid increment session version update request')
             .withMethod('PATCH')
@@ -65,57 +61,16 @@ describe('adminusers client', function () {
 
       it('should increment session version successfully', function (done) {
 
-        adminusersClient.incrementSessionVersionForUser(params).should.be.fulfilled.notify(done);
+        adminusersClient.incrementSessionVersionForUser(username).should.be.fulfilled.notify(done);
       });
     });
-
-
-    context('increment session version  API - bad request', () => {
-      let request = {};
-
-      let params = {
-        username: 'username',
-        payload: request
-      };
-
-      let badIncrementSessionVersionResponse = userFixtures.badIncrementSessionVersionResponse(params);
-
-      beforeEach((done) => {
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
-            .withState('a user exists')
-            .withUponReceiving('a bad increment session version update request')
-            .withMethod('PATCH')
-            .withRequestBody(request)
-            .withStatusCode(400)
-            .withResponseBody(badIncrementSessionVersionResponse.getPactified())
-            .build()
-        ).then(() => done());
-      });
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      });
-
-      it('should error if mandatory fields are missing', function (done) {
-
-        adminusersClient.incrementSessionVersionForUser(params).should.be.rejected.then(function (response){
-          expect(response.errorCode).to.equal(400);
-          expect(response.message.errors.length).to.equal(3);
-          expect(response.message.errors).to.deep.equal(badIncrementSessionVersionResponse.getPlain().errors);
-        }).should.notify(done);
-      });
-    });
-
 
     context('increment session version API - user not found', () => {
-      let params = {
-        username: 'non-existent-username'
-      };
+      let username = 'non-existent-username';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+          new PactInteractionBuilder(`${USER_PATH}/${username}`)
             .withState('a user does not exist')
             .withUponReceiving('a valid increment session version request')
             .withMethod('PATCH')
@@ -130,7 +85,7 @@ describe('adminusers client', function () {
 
       it('should return not found if user not exist', function (done) {
 
-        adminusersClient.incrementSessionVersionForUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.incrementSessionVersionForUser(username).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });
