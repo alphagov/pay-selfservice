@@ -68,13 +68,11 @@ describe('adminusers client', function () {
         adminusersClient.getUser(params.username).should.be.fulfilled.then(function (user) {
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
-          expect(user.password).to.be.equal(expectedUserData.password);
-          expect(user.gateway_account_id).to.be.equal(expectedUserData.gateway_account_id);
-          expect(user.telephone_number).to.be.equal(expectedUserData.telephone_number);
-          expect(user.otp_key).to.be.equal(expectedUserData.otp_key);
+          expect(user.gatewayAccountId).to.be.equal(expectedUserData.gateway_account_id);
+          expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);
+          expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
           expect(user.role.name).to.be.equal(expectedUserData.role.name);
           expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length);
-          expect(user._links.length).to.be.equal(user._links.length);
         }).should.notify(done);
       });
     });

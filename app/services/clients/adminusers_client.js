@@ -2,6 +2,7 @@ const q = require('q');
 const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
 const baseClient = require('./base_client');
+var User = require('../../models/user2').User;
 
 const SERVICE_NAME = 'adminusers';
 const SUCCESS_CODES = [200, 201, 202, 204, 206];
@@ -13,7 +14,7 @@ const SUCCESS_CODES = [200, 201, 202, 204, 206];
  * @param {Object} context
  * @returns {function}
  */
-const createCallbackToPromiseConverter = context => {
+const createCallbackToPromiseConverter = (context, transformer) => {
   let defer = context.defer;
   context.service = SERVICE_NAME;
 
@@ -33,9 +34,19 @@ const createCallbackToPromiseConverter = context => {
       defer.reject({error: error});
     }
 
-    defer.resolve(body);
+    if (body && transformer && typeof transformer === 'function') {
+      defer.resolve(transformer(body));
+    } else {
+      defer.resolve(body);
+    }
   };
 };
+
+/**
+ * @private
+ * @param body
+ */
+const responseBodyToUserTransformer = body => new User(body);
 
 module.exports = function (clientOptions = {}) {
 
@@ -67,7 +78,7 @@ module.exports = function (clientOptions = {}) {
       description: 'create a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -98,7 +109,7 @@ module.exports = function (clientOptions = {}) {
       description: 'find a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -130,7 +141,7 @@ module.exports = function (clientOptions = {}) {
       description: 'authenticate a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 

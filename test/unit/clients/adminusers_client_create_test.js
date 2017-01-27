@@ -63,16 +63,14 @@ describe('adminusers client', function () {
 
       it('should create a user successfully', function (done) {
         let user = minimalUser.getAsObject();
-        adminusersClient.createUser(user).should.be.fulfilled.then(function (user) {
-          expect(user.username).to.be.equal(user.username);
-          expect(user.email).to.be.equal(user.email);
-          expect(user.password).to.be.equal('random-password');
-          expect(user.gateway_account_id).to.be.equal(user.gateway_account_id);
-          expect(user.telephone_number).to.be.equal(user.telephone_number);
-          expect(user.otp_key).to.be.equal('43c3c4t');
-          expect(user.role.name).to.be.equal('admin');
-          expect(user.permissions.length).to.be.equal(3);
-          expect(user._links.length).to.be.equal(1);
+        adminusersClient.createUser(user).should.be.fulfilled.then(function (createdUser) {
+          expect(createdUser.username).to.be.equal(user.username);
+          expect(createdUser.email).to.be.equal(user.email);
+          expect(createdUser.gatewayAccountId).to.be.equal(user.gatewayAccountId);
+          expect(createdUser.telephoneNumber).to.be.equal(user.telephoneNumber);
+          expect(createdUser.otpKey).to.be.equal('43c3c4t');
+          expect(createdUser.role.name).to.be.equal('admin');
+          expect(createdUser.permissions.length).to.be.equal(3);
         }).should.notify(done);
       });
     });

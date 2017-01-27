@@ -16,7 +16,7 @@ class User {
     this._disabled = userData._disabled ? userData._disabled : false;
     this._loginCounter = userData.login_counter || 0;
     this._sessionVersion = userData.session_version || 0;
-    this._permissions = userData.session_version || [];
+    this._permissions = userData.permissions || [];
     this._role = userData.role || {};
   }
 
