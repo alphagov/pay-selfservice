@@ -42,9 +42,6 @@ describe('adminusers client', function () {
 
     context('authenticate user API - success', () => {
       let request = userFixtures.validAuthenticateRequest({});
-      let params = {
-        payload: request.getPlain()
-      };
 
       let validUserResponse = userFixtures.validUserResponse(request.getPlain());
 
@@ -68,7 +65,10 @@ describe('adminusers client', function () {
 
       it('should authenticate a user successfully', function (done) {
 
-        adminusersClient.authenticateUser(params).should.be.fulfilled.then(function (user) {
+        let requestData = request.getPlain();
+
+        adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.fulfilled.then(function (user) {
+
           let expectedUser = validUserResponse.getPlain();
           expect(user.username).to.be.equal(expectedUser.username);
           expect(user.email).to.be.equal(expectedUser.email);
@@ -85,9 +85,6 @@ describe('adminusers client', function () {
 
     context('authenticate user API - unauthorized', () => {
       let request = userFixtures.validAuthenticateRequest({});
-      let params = {
-        payload: request.getPlain()
-      };
 
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
@@ -111,7 +108,8 @@ describe('adminusers client', function () {
 
       it('should fail authentication if invalid username / password', function (done) {
 
-        adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
+        let requestData = request.getPlain();
+        adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(401);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors);
@@ -120,10 +118,7 @@ describe('adminusers client', function () {
     });
 
     context('authenticate user API - bad request', () => {
-      let request = {};
-      let params = {
-        payload: request
-      };
+      let request = {username: '', password: ''};
 
       let badAuthenticateResponse = userFixtures.badAuthenticateResponse();
 
@@ -146,7 +141,7 @@ describe('adminusers client', function () {
 
       it('should error bad request if mandatory fields are missing', function (done) {
 
-        adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
           expect(response.message.errors.length).to.equal(2);
           expect(response.message.errors).to.deep.equal(badAuthenticateResponse.getPlain().errors);

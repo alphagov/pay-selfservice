@@ -108,7 +108,15 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  let authenticateUser = (params) => {
+  let authenticateUser = (username, password) => {
+
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        username: username,
+        password: password
+      }
+    };
 
     let url = `${userResource}/authenticate`;
     let defer = q.defer();
