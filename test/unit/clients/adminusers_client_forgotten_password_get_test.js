@@ -14,7 +14,7 @@ const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
-var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client', function () {
 

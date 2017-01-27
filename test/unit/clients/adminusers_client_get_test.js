@@ -14,7 +14,7 @@ const expect = chai.expect;
 const USER_PATH = '/v1/api/users';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
-var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client', function () {
 

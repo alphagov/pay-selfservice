@@ -30,7 +30,6 @@
     "grunt-test": "node ./node_modules/.bin/grunt test"
   },
   "dependencies": {
-    "@pact-foundation/pact-node": "^4.6.0",
     "appmetrics": "1.1.2",
     "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
@@ -94,6 +93,7 @@
     "yargs": "4.7.x"
   },
   "devDependencies": {
+    "@pact-foundation/pact-node": "^4.6.0",
     "chai": "^3.2.0",
     "chai-as-promised": "^6.0.0",
     "chai-string": "^1.1.2",

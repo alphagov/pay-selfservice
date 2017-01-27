@@ -6,6 +6,7 @@ var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
 var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
+var User = require(__dirname + '/../../../app/models/user2').User;
 
 chai.use(chaiAsPromised);
 
@@ -14,7 +15,7 @@ const USER_PATH = '/v1/api/users';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
-var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client', function () {
 
@@ -41,19 +42,16 @@ describe('adminusers client', function () {
   describe('create user API', function () {
 
     context('create user API - success', () => {
-      let request = userFixtures.validMinimalUserCreateRequest();
-      let params = {
-        payload: request.getPlain()
-      };
+      let minimalUser = userFixtures.validMinimalUser();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(USER_PATH)
             .withUponReceiving('a valid user create request')
             .withMethod('POST')
-            .withRequestBody(request.getPactified())
+            .withRequestBody(minimalUser.getPactified())
             .withStatusCode(201)
-            .withResponseBody(userFixtures.validUserResponse(request.getPlain()).getPactified())
+            .withResponseBody(userFixtures.validUserResponse(minimalUser.getPlain()).getPactified())
             .build()
         ).then(() => done());
 
@@ -64,13 +62,13 @@ describe('adminusers client', function () {
       });
 
       it('should create a user successfully', function (done) {
-
-        adminusersClient.createUser(params).should.be.fulfilled.then(function (user) {
-          expect(user.username).to.be.equal(params.payload.username);
-          expect(user.email).to.be.equal(params.payload.email);
+        let user = minimalUser.getAsObject();
+        adminusersClient.createUser(user).should.be.fulfilled.then(function (user) {
+          expect(user.username).to.be.equal(user.username);
+          expect(user.email).to.be.equal(user.email);
           expect(user.password).to.be.equal('random-password');
-          expect(user.gateway_account_id).to.be.equal(params.payload.gateway_account_id);
-          expect(user.telephone_number).to.be.equal(params.payload.telephone_number);
+          expect(user.gateway_account_id).to.be.equal(user.gateway_account_id);
+          expect(user.telephone_number).to.be.equal(user.telephone_number);
           expect(user.otp_key).to.be.equal('43c3c4t');
           expect(user.role.name).to.be.equal('admin');
           expect(user.permissions.length).to.be.equal(3);
@@ -84,9 +82,7 @@ describe('adminusers client', function () {
       let request = userFixtures.invalidUserCreateRequestWithFieldsMissing();
       let errorResponse = userFixtures.invalidUserCreateResponseWhenFieldsMissing();
 
-      let params = {
-        payload: request.getPlain()
-      };
+      let user = new User(request.getPlain());
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -106,7 +102,7 @@ describe('adminusers client', function () {
 
       it('should respond 400 when required fields missing', function (done) {
 
-        adminusersClient.createUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.createUser(user).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
           expect(response.message.errors.length).to.equal(4);
           expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);
@@ -115,11 +111,7 @@ describe('adminusers client', function () {
     });
 
     context('create user API - conflicting username', () => {
-      let request = userFixtures.validMinimalUserCreateRequest();
-
-      let params = {
-        payload: request.getPlain()
-      };
+      let minimalUser = userFixtures.validMinimalUser();
 
       let errorResponse = userFixtures.invalidCreateresponseWhenUsernameExists();
 
@@ -129,7 +121,7 @@ describe('adminusers client', function () {
             .withState('user exists with the same username')
             .withUponReceiving('a user create request with conflicting username')
             .withMethod('POST')
-            .withRequestBody(request.getPactified())
+            .withRequestBody(minimalUser.getPactified())
             .withStatusCode(409)
             .withResponseBody(errorResponse.getPactified())
             .build()
@@ -142,7 +134,7 @@ describe('adminusers client', function () {
 
       it('should respond 409 when the username is already taken', function (done) {
 
-        adminusersClient.createUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.createUser(minimalUser.getAsObject()).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(409);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);

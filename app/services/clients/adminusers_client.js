@@ -37,24 +37,20 @@ const createCallbackToPromiseConverter = context => {
   };
 };
 
-module.exports = function (baseUrl) {
+module.exports = function (clientOptions = {}) {
 
+  var baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL;
+  var correlationId = clientOptions.correlationId || '';
   var userResource = `${baseUrl}/v1/api/users`;
   var forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
 
   /**
-   * Create user
+   * Create a new user
    *
-   * Expects {
-   *  accountId: accountId,
-   *  correlationId: correlationId,
-   *  payload: user
-   * }
-   *
-   * @param {Object} params
+   * @param {User} user
    * @returns {Promise}
    */
-  let createUser = (params) => {
+  let createUser = (user) => {
     let url = userResource;
     let defer = q.defer();
     let startTime = new Date();
@@ -62,7 +58,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'create a user',
     };
@@ -70,6 +66,8 @@ module.exports = function (baseUrl) {
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
 
     requestLogger.logRequestStart(context);
+
+    var params = {payload: user.toMinimalJson()};
 
     baseClient.post(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
@@ -92,7 +90,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'GET',
       description: 'find a user',
     };
@@ -116,7 +114,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'authenticate a user',
     };
@@ -140,7 +138,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'increment login attempts for a user',
     };
@@ -163,7 +161,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'reset login attempts for a user',
     };
@@ -186,7 +184,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'PATCH',
       description: 'increment session version for a user',
     };
@@ -209,7 +207,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'create a forgotten password for a user',
     };
@@ -232,7 +230,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'GET',
       description: 'get a forgotten password',
     };
