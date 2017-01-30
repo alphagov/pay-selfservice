@@ -2,6 +2,7 @@ const q = require('q');
 const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
 const baseClient = require('./base_client');
+var User = require('../../models/user2').User;
 
 const SERVICE_NAME = 'adminusers';
 const SUCCESS_CODES = [200, 201, 202, 204, 206];
@@ -13,7 +14,7 @@ const SUCCESS_CODES = [200, 201, 202, 204, 206];
  * @param {Object} context
  * @returns {function}
  */
-const createCallbackToPromiseConverter = context => {
+const createCallbackToPromiseConverter = (context, transformer) => {
   let defer = context.defer;
   context.service = SERVICE_NAME;
 
@@ -33,28 +34,38 @@ const createCallbackToPromiseConverter = context => {
       defer.reject({error: error});
     }
 
-    defer.resolve(body);
+    if (body && transformer && typeof transformer === 'function') {
+      defer.resolve(transformer(body));
+    } else {
+      defer.resolve(body);
+    }
   };
 };
 
-module.exports = function (baseUrl) {
+/**
+ * @private
+ * @param body
+ */
+const responseBodyToUserTransformer = body => new User(body);
 
+module.exports = function (clientOptions = {}) {
+
+  var baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL;
+  var correlationId = clientOptions.correlationId || '';
   var userResource = `${baseUrl}/v1/api/users`;
   var forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
 
   /**
-   * Create user
+   * Create a new user
    *
-   * Expects {
-   *  accountId: accountId,
-   *  correlationId: correlationId,
-   *  payload: user
-   * }
-   *
-   * @param {Object} params
+   * @param {User} user
    * @returns {Promise}
    */
-  let createUser = (params) => {
+  let createUser = (user) => {
+    let params = {
+      payload: user.toMinimalJson(),
+      correlationId: correlationId
+    };
     let url = userResource;
     let defer = q.defer();
     let startTime = new Date();
@@ -62,12 +73,12 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'create a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -78,26 +89,27 @@ module.exports = function (baseUrl) {
   };
 
   /**
-   * find a user by username
-   *  Expects {
-   *    username: accountId,
-   *    correlationId: correlationId,
-   *  }
+   *
+   * @param {string} username
+   * @return {Promise<User>} A promise of a User
    */
-  let getUser = (params) => {
-    let url = `${userResource}/${params.username}`;
+  let getUser = username => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${userResource}/${username}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'GET',
       description: 'find a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -107,7 +119,15 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
-  let authenticateUser = (params) => {
+  let authenticateUser = (username, password) => {
+
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        username: username,
+        password: password
+      }
+    };
 
     let url = `${userResource}/authenticate`;
     let defer = q.defer();
@@ -116,12 +136,12 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'authenticate a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -132,15 +152,18 @@ module.exports = function (baseUrl) {
 
   };
 
-  let incrementLoginAttemptsForUser = params => {
-    let url = `${userResource}/${params.username}/attempt-login`;
+  let incrementLoginAttemptsForUser = username => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${userResource}/${username}/attempt-login`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'increment login attempts for a user',
     };
@@ -155,15 +178,18 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
-  let resetLoginAttemptsForUser = params => {
-    let url = `${userResource}/${params.username}/attempt-login?action=reset`;
+  let resetLoginAttemptsForUser = username => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${userResource}/${username}/attempt-login?action=reset`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'reset login attempts for a user',
     };
@@ -178,15 +204,24 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
-  let incrementSessionVersionForUser = params => {
-    let url = `${userResource}/${params.username}`;
+  let incrementSessionVersionForUser = username => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        op: 'replace',
+        path: 'sessionVersion',
+        value: 1
+      }
+    };
+
+    let url = `${userResource}/${username}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'PATCH',
       description: 'increment session version for a user',
     };
@@ -201,7 +236,13 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
-  let createForgottenPassword = params => {
+  let createForgottenPassword = username => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        username: username
+      }
+    };
     let url = `${forgottenPasswordResource}`;
     let defer = q.defer();
     let startTime = new Date();
@@ -209,7 +250,7 @@ module.exports = function (baseUrl) {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'POST',
       description: 'create a forgotten password for a user',
     };
@@ -224,15 +265,18 @@ module.exports = function (baseUrl) {
     return defer.promise;
   };
 
-  let getForgottenPassword = params => {
-    let url = `${forgottenPasswordResource}/${params.code}`;
+  let getForgottenPassword = code => {
+    let params = {
+      correlationId: correlationId,
+    };
+    let url = `${forgottenPasswordResource}/${code}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
       url: url,
       defer: defer,
       startTime: startTime,
-      correlationId: params.correlationId,
+      correlationId: correlationId,
       method: 'GET',
       description: 'get a forgotten password',
     };

@@ -14,7 +14,7 @@ const expect = chai.expect;
 const USER_PATH = '/v1/api/users';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
-var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client', function () {
 
@@ -65,16 +65,14 @@ describe('adminusers client', function () {
       it('should find a user successfully', function (done) {
         let expectedUserData = getUserResponse.getPlain();
 
-        adminusersClient.getUser(params).should.be.fulfilled.then(function (user) {
+        adminusersClient.getUser(params.username).should.be.fulfilled.then(function (user) {
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
-          expect(user.password).to.be.equal(expectedUserData.password);
-          expect(user.gateway_account_id).to.be.equal(expectedUserData.gateway_account_id);
-          expect(user.telephone_number).to.be.equal(expectedUserData.telephone_number);
-          expect(user.otp_key).to.be.equal(expectedUserData.otp_key);
+          expect(user.gatewayAccountId).to.be.equal(expectedUserData.gateway_account_id);
+          expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);
+          expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
           expect(user.role.name).to.be.equal(expectedUserData.role.name);
           expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length);
-          expect(user._links.length).to.be.equal(user._links.length);
         }).should.notify(done);
       });
     });
@@ -101,7 +99,7 @@ describe('adminusers client', function () {
 
       it('should respond 404 if user not found', function (done) {
 
-        adminusersClient.getUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.getUser(params.username).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });

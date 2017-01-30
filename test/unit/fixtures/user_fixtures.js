@@ -1,5 +1,6 @@
 const _ = require('lodash');
 var Pact = require('pact');
+var User = require(__dirname + '/../../../app/models/user2').User;
 var matchers = Pact.Matchers;
 
 function randomString() {
@@ -40,32 +41,32 @@ function withPactified(payload) {
 
 module.exports = {
 
-  validMinimalUserCreateRequest: () => {
+  validMinimalUser: () => {
 
     let newUsername = randomUsername();
+    let role =  {name: "admin"};
 
-    let request = {
+    let data = {
       username: newUsername,
       email: `${newUsername}@example.com`,
       gateway_account_id: String(Math.floor(Math.random() * 10)),
-      telephone_number: String(Math.floor(Math.random() * 1000000))
+      telephone_number: String(Math.floor(Math.random() * 1000000)),
     };
 
-    return withPactified(request);
-  },
-
-  validCompleteUserCreateRequest: () => {
-
-    let newUsername = randomUsername();
-    let request = {
-      username: newUsername,
-      password: "arandompassword",
-      otp_key: randomOtpKey(),
-      email: `${newUsername}@example.com`,
-      gateway_account_id: randomAccountId(),
-      telephone_number: String(Math.floor(Math.random() * 1000000))
+    return {
+      getPactified: () => {
+        data.role_name = role.name;
+        return pactify(data);
+      },
+      getAsObject: () => {
+        data.role = role;
+        return new User(data);
+      },
+      getPlain: () => {
+        data.role_name = role.name;
+        return data;
+      }
     };
-    return withPactified(request);
   },
 
   validUserResponse: (request) => {
@@ -91,7 +92,10 @@ module.exports = {
 
   invalidUserCreateRequestWithFieldsMissing: () => {
     let request = {
-      gateway_account_id: randomAccountId()
+      username: randomUsername(),
+      gateway_account_id: '',
+      email: '',
+      telephone_number: ''
     };
 
     return withPactified(request);
@@ -99,7 +103,7 @@ module.exports = {
 
   invalidUserCreateResponseWhenFieldsMissing: () => {
     let response = {
-      errors: ["Field [username] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
+      errors: ["Field [gateway_account_id] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
     };
 
     return withPactified(response);
@@ -147,14 +151,6 @@ module.exports = {
 
     return withPactified(request);
 
-  },
-
-  badIncrementSessionVersionResponse: () => {
-    let response = {
-      errors: ["Field [op] is required", "Field [path] is required", "Field [value] is required"]
-    };
-
-    return withPactified(response);
   },
 
   validForgottenPasswordCreateRequest: (username) => {

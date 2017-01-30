@@ -14,7 +14,7 @@ const USER_PATH = '/v1/api/users';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
-var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client', function () {
 
@@ -42,9 +42,6 @@ describe('adminusers client', function () {
 
     context('authenticate user API - success', () => {
       let request = userFixtures.validAuthenticateRequest({});
-      let params = {
-        payload: request.getPlain()
-      };
 
       let validUserResponse = userFixtures.validUserResponse(request.getPlain());
 
@@ -68,26 +65,24 @@ describe('adminusers client', function () {
 
       it('should authenticate a user successfully', function (done) {
 
-        adminusersClient.authenticateUser(params).should.be.fulfilled.then(function (user) {
+        let requestData = request.getPlain();
+
+        adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.fulfilled.then(function (user) {
+
           let expectedUser = validUserResponse.getPlain();
           expect(user.username).to.be.equal(expectedUser.username);
           expect(user.email).to.be.equal(expectedUser.email);
-          expect(user.password).to.be.equal(expectedUser.password);
-          expect(user.gateway_account_id).to.be.equal(expectedUser.gateway_account_id);
-          expect(user.telephone_number).to.be.equal(expectedUser.telephone_number);
-          expect(user.otp_key).to.be.equal(expectedUser.otp_key);
+          expect(user.gatewayAccountId).to.be.equal(expectedUser.gateway_account_id);
+          expect(user.telephoneNumber).to.be.equal(expectedUser.telephone_number);
+          expect(user.otpKey).to.be.equal(expectedUser.otp_key);
           expect(user.role.name).to.be.equal(expectedUser.role.name);
           expect(user.permissions.length).to.be.equal(expectedUser.permissions.length);
-          expect(user._links.length).to.be.equal(expectedUser._links.length);
         }).should.notify(done);
       });
     });
 
     context('authenticate user API - unauthorized', () => {
       let request = userFixtures.validAuthenticateRequest({});
-      let params = {
-        payload: request.getPlain()
-      };
 
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
@@ -111,7 +106,8 @@ describe('adminusers client', function () {
 
       it('should fail authentication if invalid username / password', function (done) {
 
-        adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
+        let requestData = request.getPlain();
+        adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(401);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors);
@@ -120,10 +116,7 @@ describe('adminusers client', function () {
     });
 
     context('authenticate user API - bad request', () => {
-      let request = {};
-      let params = {
-        payload: request
-      };
+      let request = {username: '', password: ''};
 
       let badAuthenticateResponse = userFixtures.badAuthenticateResponse();
 
@@ -146,7 +139,7 @@ describe('adminusers client', function () {
 
       it('should error bad request if mandatory fields are missing', function (done) {
 
-        adminusersClient.authenticateUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
           expect(response.message.errors.length).to.equal(2);
           expect(response.message.errors).to.deep.equal(badAuthenticateResponse.getPlain().errors);

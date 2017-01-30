@@ -14,7 +14,7 @@ const USER_PATH = '/v1/api/users';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
-var adminusersClient = getAdminUsersClient(`http://localhost:${mockPort}`);
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client', function () {
 
@@ -41,13 +41,11 @@ describe('adminusers client', function () {
   describe('update login attempts API', function () {
 
     context('update login attempts  API - success', () => {
-      let params = {
-        username: 'username'
-      };
+      let username = 'username';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+          new PactInteractionBuilder(`${USER_PATH}/${username}/attempt-login`)
             .withState('a user exists')
             .withUponReceiving('a valid login attempts update request')
             .withMethod('POST')
@@ -61,18 +59,16 @@ describe('adminusers client', function () {
 
       it('should update login attempts successfully', function (done) {
 
-        adminusersClient.incrementLoginAttemptsForUser(params).should.be.fulfilled.notify(done);
+        adminusersClient.incrementLoginAttemptsForUser(username).should.be.fulfilled.notify(done);
       });
     });
 
     context('reset login attempts API - success', () => {
-      let params = {
-        username: 'username'
-      };
+      let username = 'username';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+          new PactInteractionBuilder(`${USER_PATH}/${username}/attempt-login`)
             .withState('a user exists')
             .withUponReceiving('a valid login attempts reset request')
             .withMethod('POST')
@@ -87,20 +83,18 @@ describe('adminusers client', function () {
 
       it('should reset login attempts successfully', function (done) {
 
-        adminusersClient.resetLoginAttemptsForUser(params).should.be.fulfilled.notify(done);
+        adminusersClient.resetLoginAttemptsForUser(username).should.be.fulfilled.notify(done);
       });
     });
 
     context('increment login attempts API - too many logins', () => {
-      let params = {
-        username: 'username'
-      };
+      let username = 'username';
 
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+          new PactInteractionBuilder(`${USER_PATH}/${username}/attempt-login`)
             .withState('a user exists with max login attempts')
             .withUponReceiving('a valid login attempts update request')
             .withMethod('POST')
@@ -116,7 +110,7 @@ describe('adminusers client', function () {
 
       it('should return unauthorised if too many login attempts', function (done) {
 
-        adminusersClient.incrementLoginAttemptsForUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.incrementLoginAttemptsForUser(username).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(401);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(unauthorizedResponse.getPlain().errors);
@@ -125,13 +119,11 @@ describe('adminusers client', function () {
     });
 
     context('increment login attempts API - user not found', () => {
-      let params = {
-        username: 'non-existent-username'
-      };
+      let username = 'non-existent-username';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}/attempt-login`)
+          new PactInteractionBuilder(`${USER_PATH}/${username}/attempt-login`)
             .withState('a user does not exist')
             .withUponReceiving('a valid login attempts update request')
             .withMethod('POST')
@@ -146,7 +138,7 @@ describe('adminusers client', function () {
 
       it('should return not found if user not exist', function (done) {
 
-        adminusersClient.incrementLoginAttemptsForUser(params).should.be.rejected.then(function (response) {
+        adminusersClient.incrementLoginAttemptsForUser(username).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });
