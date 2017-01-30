@@ -71,7 +71,7 @@ module.exports = {
 
   validUserResponse: (request) => {
 
-    var response = {
+    var data = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
       password: request.password || "random-password",
@@ -87,7 +87,17 @@ module.exports = {
       }]
     };
 
-    return withPactified(response);
+    return {
+      getPactified: () => {
+        return pactify(data);
+      },
+      getAsObject: () => {
+        return new User(data);
+      },
+      getPlain: () => {
+        return data;
+      }
+    };
   },
 
   invalidUserCreateRequestWithFieldsMissing: () => {
@@ -151,6 +161,15 @@ module.exports = {
 
     return withPactified(request);
 
+  },
+
+  validUpdatePasswordRequest: (token, newPassword) => {
+    let request = {
+      forgotten_password_code: token || randomString(),
+      new_password: newPassword || randomString()
+    };
+
+    return withPactified(request);
   },
 
   validForgottenPasswordCreateRequest: (username) => {

@@ -54,12 +54,13 @@ module.exports = function (clientOptions = {}) {
   var correlationId = clientOptions.correlationId || '';
   var userResource = `${baseUrl}/v1/api/users`;
   var forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
+  var resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
 
   /**
    * Create a new user
    *
    * @param {User} user
-   * @returns {Promise}
+   * @returns {Promise<User>}
    */
   let createUser = (user) => {
     let params = {
@@ -119,6 +120,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * @param username
+   * @param password
+   * @returns {Promise<User>}
+   */
   let authenticateUser = (username, password) => {
 
     let params = {
@@ -152,6 +158,11 @@ module.exports = function (clientOptions = {}) {
 
   };
 
+  /**
+   *
+   * @param username
+   * @returns {Promise}
+   */
   let incrementLoginAttemptsForUser = username => {
     let params = {
       correlationId: correlationId
@@ -178,6 +189,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param username
+   * @returns {Promise}
+   */
   let resetLoginAttemptsForUser = username => {
     let params = {
       correlationId: correlationId
@@ -204,6 +220,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param username
+   * @returns {Promise}
+   */
   let incrementSessionVersionForUser = username => {
     let params = {
       correlationId: correlationId,
@@ -236,6 +257,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param username
+   * @returns {Promise<ForgottenPassword>}
+   */
   let createForgottenPassword = username => {
     let params = {
       correlationId: correlationId,
@@ -265,6 +291,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param username
+   * @returns {Promise<ForgottenPassword>}
+   */
   let getForgottenPassword = code => {
     let params = {
       correlationId: correlationId,
@@ -291,6 +322,42 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param token
+   * @param newPassword
+   * @returns {Promise}
+   */
+  let updatePasswordForUser = (token, newPassword) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        forgotten_password_code: token,
+        new_password: newPassword
+      }
+    };
+    let url = resetPasswordResource;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'update a password for a user',
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -299,6 +366,7 @@ module.exports = function (clientOptions = {}) {
     incrementLoginAttemptsForUser: incrementLoginAttemptsForUser,
     getUser: getUser,
     createUser: createUser,
-    authenticateUser: authenticateUser
+    authenticateUser: authenticateUser,
+    updatePasswordForUser: updatePasswordForUser
   };
 };

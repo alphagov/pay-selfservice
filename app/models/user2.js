@@ -1,5 +1,5 @@
 const _ = require('lodash');
-
+var notp = require('notp');
 /**
  * @type User
  */
@@ -49,6 +49,20 @@ class User {
       json.otp_key = this._otpKey;
     }
     return json;
+  }
+
+  /**
+   * @returns {String}
+   */
+  generateOTP() {
+    return notp.totp.gen(this._otpKey);
+  }
+
+  /**
+   * @param {String} permissionName name of permission
+   */
+  hasPermission(permissionName) {
+    return this._permissions.indexOf(permissionName) !== -1;
   }
 
   get username() {
