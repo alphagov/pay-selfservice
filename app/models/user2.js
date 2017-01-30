@@ -65,6 +65,11 @@ class User {
     return this._permissions.indexOf(permissionName) !== -1;
   }
 
+  addPermission(permission) {
+    this._permissions.push(permission);
+    return this;
+  }
+
   get username() {
     return this._username;
   }
@@ -91,6 +96,10 @@ class User {
 
   get gatewayAccountId() {
     return this._gatewayAccountId;
+  }
+
+  set gatewayAccountId(value) {
+    this._gatewayAccountId = value;
   }
 
   get otpKey() {

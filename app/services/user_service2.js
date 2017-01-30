@@ -145,6 +145,20 @@ module.exports = {
    */
   updatePassword: function(token, newPassword) {
     return getAdminUsersClient().updatePasswordForUser(token, newPassword);
+  },
+
+  /**
+   *
+   * @param username
+   * @returns {Promise}
+   */
+  resetLoginCount: function (username) {
+    return getAdminUsersClient().resetLoginAttemptsForUser(username);
+  },
+
+  incrementLoginCount: function (username) {
+    return getAdminUsersClient().incrementLoginAttemptsForUser(username);
+
   }
 
 };

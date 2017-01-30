@@ -179,7 +179,7 @@ module.exports = function (clientOptions = {}) {
       description: 'increment login attempts for a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context,responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 

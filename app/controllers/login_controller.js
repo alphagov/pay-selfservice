@@ -2,7 +2,7 @@
 var logger    = require('winston');
 var _ = require('lodash');
 var response  = require('../utils/response.js').response;
-var userService  = require('../services/user_service.js');
+var userService  = require('../services/user_service2.js');
 var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
@@ -55,7 +55,7 @@ module.exports.logInGet = function (req, res) {
  * @param res
  */
 module.exports.postLogin = function (req, res) {
- return req.user.resetLoginCount()
+  return userService.resetLoginCount(req.user.username)
    .then(() => req.session = _.pick(req.session, ['passport', 'last_url']))
    .then(
     ()=>{
@@ -95,7 +95,7 @@ module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
   var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
   delete req.session.last_url;
-  req.user.resetLoginCount()
+  return userService.resetLoginCount(req.user.username)
     .then(()=>{
       logLoginAction(req, 'successfully entered a valid 2fa token');
       res.redirect(redirect_url);

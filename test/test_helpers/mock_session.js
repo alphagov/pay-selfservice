@@ -1,14 +1,11 @@
 'use strict';
 var express = require('express');
-var User = require('../../app/models/user').User;
-var _       = require('lodash');
-var user = User.build({
-    username: Math.random().toString(36).substring(7),
-    email: Math.random().toString(36).substring(7) + "@email.com",
-    telephone_number: Math.random().toString(36).substring(7),
-    otp_key: "foo",
-    password: 'passworddwfew'
-  }),
+var User = require('../../app/models/user2').User;
+var _ = require('lodash');
+var userFixture = require('../unit/fixtures/user_fixtures');
+var getUser = (opts) => {
+    return userFixture.validUser(opts).getAsObject();
+  },
   mockSession = function (app, sessionData, noCSRF) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
@@ -20,8 +17,8 @@ var user = User.build({
     return proxyApp;
   },
 
-  getAppWithLoggedInSession = function (app, accountId) {
-    var validSession = getMockAccount(accountId);
+  getAppWithLoggedInSession = function (app, user) {
+    var validSession = getMockAccount(user);
     return mockSession(app, validSession);
   },
 
@@ -29,8 +26,7 @@ var user = User.build({
     return mockSession(app, account);
   },
 
-  getMockAccount = function (accountId) {
-    user.gateway_account_id = accountId;
+  getMockAccount = function (user) {
     return _.cloneDeep({
       csrfSecret: "123",
       12345: {refunded_amount: 5},
@@ -46,7 +42,7 @@ module.exports = {
   getAppWithLoggedInSession: getAppWithLoggedInSession,
   getAppWithLoggedOutSession: getAppWithLoggedOutSession,
   getMockAccount: getMockAccount,
-  user: user
+  getUser: getUser
 };
 
 

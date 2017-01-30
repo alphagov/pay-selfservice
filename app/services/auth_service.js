@@ -7,7 +7,7 @@ var TotpStrategy = require('passport-totp').Strategy;
 var csrf = require('csrf');
 var sessionValidator = require(__dirname + '/session_validator.js');
 var paths = require(__dirname + '/../paths.js');
-var userService = require('../services/user_service.js');
+var userService = require('../services/user_service2.js');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {
@@ -38,7 +38,7 @@ var redirectToLogin = function (req,res) {
 };
 
 var get_gateway_account_id = function (req) {
-  var id = _.get(req,"user.gateway_account_id");
+  var id = _.get(req,"user.gatewayAccountId");
   if (!id) return null;
   return parseInt(id);
 };
@@ -51,6 +51,7 @@ var enforceUserFirstFactor = function (req, res, next) {
   if (!hasUser) return redirectToLogin(req, res);
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
+
   ensureSessionHasCsrfSecret(req, res, next);
 };
 

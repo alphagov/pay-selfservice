@@ -71,7 +71,7 @@ module.exports.bind = function (app) {
   app.get(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainGet);
   app.post(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainPost);
   app.get(user.otpLogIn, auth.enforceUserFirstFactor, csrf,  login.otpLogIn);
-  app.post(user.otpLogIn, csrf, loginCounter.enforce, login.logUserinOTP, login.afterOTPLogin);
+  app.post(user.otpLogIn, csrf, loginCounter.enforceOtp, login.logUserinOTP, login.afterOTPLogin);
 
   // FORGOTTEN PASSWORD
   app.get(user.forgottenPassword, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.emailGet);
