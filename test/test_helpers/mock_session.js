@@ -6,7 +6,7 @@ var userFixture = require('../unit/fixtures/user_fixtures');
 var getUser = (opts) => {
     return userFixture.validUser(opts).getAsObject();
   },
-  mockSession = function (app, sessionData, noCSRF) {
+  createAppWithSession = function (app, sessionData, noCSRF) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       req.session = sessionData || {};
@@ -17,16 +17,22 @@ var getUser = (opts) => {
     return proxyApp;
   },
 
-  getAppWithLoggedInSession = function (app, user) {
-    var validSession = getMockAccount(user);
-    return mockSession(app, validSession);
+  getAppWithLoggedInUser = function (app, user) {
+    var validSession = getMockSession(user);
+    return createAppWithSession(app, validSession);
   },
 
-  getAppWithLoggedOutSession = function (app, account) {
-    return mockSession(app, account);
+  getAppWithSession = function (app, sessionData) {
+    return createAppWithSession(app, sessionData);
   },
 
-  getMockAccount = function (user) {
+  getAppWithSessionWithoutSecondFactor = function (app, user) {
+    var session = getMockSession(user);
+    delete session.secondFactor;
+    return createAppWithSession(app, session);
+  },
+
+  getMockSession = function (user) {
     return _.cloneDeep({
       csrfSecret: "123",
       12345: {refunded_amount: 5},
@@ -37,12 +43,12 @@ var getUser = (opts) => {
     });
   };
 
-
 module.exports = {
-  getAppWithLoggedInSession: getAppWithLoggedInSession,
-  getAppWithLoggedOutSession: getAppWithLoggedOutSession,
-  getMockAccount: getMockAccount,
-  getUser: getUser
+  getAppWithLoggedInUser: getAppWithLoggedInUser,
+  getAppWithSession: getAppWithSession,
+  getMockSession: getMockSession,
+  getUser: getUser,
+  getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor
 };
 
 
