@@ -1,5 +1,5 @@
 // TODO #FLAKY LOCALLY
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var dbMock = require(__dirname + '/../test_helpers/serialize_mock.js');
 var request = require('supertest');
 var should = require('should');
 var app = require(__dirname + '/../../server.js').getApp;

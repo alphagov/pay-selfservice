@@ -43,7 +43,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
     .send(sendData);
 }
 
-describe.only ('The ' + paths.credentials.index + ' endpoint', function () {
+describe ('The ' + paths.credentials.index + ' endpoint', function () {
 
   afterEach(function () {
     nock.cleanAll();
