@@ -29,6 +29,7 @@ var getUser = (opts) => {
   getAppWithSessionWithoutSecondFactor = function (app, user) {
     var session = getMockSession(user);
     delete session.secondFactor;
+
     return createAppWithSession(app, session);
   },
 
@@ -39,7 +40,8 @@ var getUser = (opts) => {
       passport: {
         user: user,
       },
-      secondFactor: 'totp'
+      secondFactor: 'totp',
+      last_url:'last_url'
     });
   };
 
