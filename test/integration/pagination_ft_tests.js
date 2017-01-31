@@ -1,20 +1,16 @@
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
-var csrf = require('csrf');
 var nock = require('nock');
 var _app = require(__dirname + '/../../server.js').getApp;
 var dates = require('../../app/utils/dates.js');
 var paths = require(__dirname + '/../../app/paths.js');
-var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 var assert = require('assert');
 var querystring = require('querystring');
+var app;
 
 var gatewayAccountId = 452345;
-
-var app = session.getAppWithLoggedInSession(_app, gatewayAccountId);
-var user = session.user;
 
 var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
@@ -53,23 +49,24 @@ function search_transactions(data) {
 
 describe('Pagination', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
+  });
+
+  beforeEach(function (done) {
+    let permissions = 'transactions:read';
+    var user = session.getUser({
+      gateway_account_id: gatewayAccountId, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(_app, user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
 
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES);
   });
 
-  before(function (done) {
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'transactions:read', done);
-  });
 
   describe('Pagination', function () {
 
