@@ -1,4 +1,4 @@
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+var dbMock = require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
@@ -17,8 +17,7 @@ var aCorrelationHeader = {
 };
 var {TYPES} = require(__dirname + '/../../app/controllers/payment_types_controller.js');
 var ACCOUNT_ID = 182364;
-var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
-var user = session.user;
+var app;
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
 var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID + "/card-types";
 
@@ -42,14 +41,14 @@ var ALL_CARD_TYPES = {
     {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
 };
 
-function build_get_request(path) {
+function build_get_request(path, app) {
   return request(app)
     .get(path)
     .set('Accept', 'application/json')
     .set('x-request-id',requestId);
 }
 
-function build_form_post_request(path, sendData, sendCSRF) {
+function build_form_post_request(path, sendData, sendCSRF, app) {
   sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
   if (sendCSRF) {
     sendData.csrfToken = csrf().create('123');
@@ -64,20 +63,19 @@ function build_form_post_request(path, sendData, sendCSRF) {
 
 describe('The payment types endpoint,', function () {
   describe('render select brand view,', function () {
-
-    before(function (done) {
-      var userAttributes = {
-        username: user.username,
-        password: 'password10',
-        gateway_account_id: user.gateway_account_id,
-        email: user.email,
-        telephone_number: "1"
-      };
-      userCreator.createUserWithPermission(userAttributes, 'payment-types:read', done);
+    afterEach(function () {
+      nock.cleanAll();
+      app = null;
     });
 
-    beforeEach(function () {
-      nock.cleanAll();
+    beforeEach(function (done) {
+      let permissions = 'payment-types:read';
+      var user = session.getUser({
+        gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      });
+      app = session.getAppWithLoggedInUser(_app, user);
+
+      userCreator.mockUserResponse(user.toJson(), done);
     });
 
     it('should show all debit and credit card options if accepted type is debit and credit cards', function (done) {
@@ -99,7 +97,7 @@ describe('The payment types endpoint,', function () {
         ]
       };
 
-      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL")
+      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
         .expect(200, expectedData)
         .end(done);
     });
@@ -123,7 +121,7 @@ describe('The payment types endpoint,', function () {
         ]
       };
 
-      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=DEBIT")
+      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=DEBIT", app)
         .expect(200, expectedData)
         .end(done);
     });
@@ -147,7 +145,7 @@ describe('The payment types endpoint,', function () {
         ]
       };
 
-      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL")
+      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
         .expect(200, expectedData)
         .end(done);
     });
@@ -171,7 +169,7 @@ describe('The payment types endpoint,', function () {
         ]
       };
 
-      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL")
+      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
         .expect(200, expectedData)
         .end(done);
     });
@@ -196,7 +194,7 @@ describe('The payment types endpoint,', function () {
         ]
       };
 
-      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL&error=Error")
+      build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL&error=Error", app)
         .expect(200, expectedData)
         .end(done);
     });
@@ -210,7 +208,7 @@ describe('The payment types endpoint,', function () {
           "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
         });
 
-      build_get_request(paths.paymentTypes.selectBrand)
+      build_get_request(paths.paymentTypes.selectBrand, app)
         .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
         .end(done);
     });
@@ -223,7 +221,7 @@ describe('The payment types endpoint,', function () {
           "message": "Some error in Connector"
         });
 
-      build_get_request(paths.paymentTypes.selectBrand)
+      build_get_request(paths.paymentTypes.selectBrand, app)
         .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
         .end(done);
     });
@@ -236,7 +234,7 @@ describe('The payment types endpoint,', function () {
       connectorMock.post(CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH, {"card_types": []})
         .reply(200, {});
 
-      build_get_request(paths.paymentTypes.selectBrand)
+      build_get_request(paths.paymentTypes.selectBrand, app)
         .expect(200, {"message": "Unable to retrieve card types."})
         .end(done);
     });
@@ -244,26 +242,26 @@ describe('The payment types endpoint,', function () {
     it('should display an error if the connection to connector fails', function (done) {
       // No connectorMock defined on purpose to mock a network failure
 
-      build_get_request(paths.paymentTypes.selectBrand)
+      build_get_request(paths.paymentTypes.selectBrand, app)
         .expect(200, {"message": "Internal server error"})
         .end(done);
     });
   });
 
   describe('submit select brand view,', function () {
-    beforeEach(function () {
+    afterEach(function () {
       nock.cleanAll();
+      app = null;
     });
 
-    before(function (done) {
-      var userAttributes = {
-        username: user.username,
-        password: 'password10',
-        gateway_account_id: user.gateway_account_id,
-        email: user.email,
-        telephone_number: "1"
-      };
-      userCreator.createUserWithPermission(userAttributes, 'payment-types:update', done);
+    beforeEach(function (done) {
+      let permissions = 'payment-types:update';
+      var user = session.getUser({
+        gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      });
+      app = session.getAppWithLoggedInUser(_app, user);
+
+      userCreator.mockUserResponse(user.toJson(), done);
     });
 
     it('should post debit and credit card options if accepted type is debit and credit cards', function (done) {
@@ -277,7 +275,7 @@ describe('The payment types endpoint,', function () {
       build_form_post_request(paths.paymentTypes.selectBrand, {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": ["mastercard", "discover", "maestro"]
-      })
+      }, true, app)
         .expect(303)
         .end(function (err, res) {
           expect(res.headers.location).to.deep.equal(paths.paymentTypes.summary + "?acceptedType=ALL");
@@ -296,7 +294,7 @@ describe('The payment types endpoint,', function () {
       build_form_post_request(paths.paymentTypes.selectBrand, {
         "acceptedType": TYPES.DEBIT,
         "acceptedBrands": ["mastercard", "discover", "maestro"]
-      })
+      }, true, app)
         .expect(303)
         .end(function (err, res) {
           expect(res.headers.location).to.deep.equal(paths.paymentTypes.summary + "?acceptedType=DEBIT");
@@ -315,7 +313,7 @@ describe('The payment types endpoint,', function () {
       build_form_post_request(paths.paymentTypes.selectBrand, {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": ["discover", "unknown"]
-      })
+      }, true, app)
         .expect(303)
         .end(function (err, res) {
           expect(res.headers.location).to.deep.equal(paths.paymentTypes.summary + "?acceptedType=ALL");
@@ -330,7 +328,7 @@ describe('The payment types endpoint,', function () {
       build_form_post_request(paths.paymentTypes.selectBrand, {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": []
-      })
+      }, true, app)
         .expect(303)
         .end(function (err, res) {
           expect(res.headers.location).to.deep.equal(paths.paymentTypes.selectBrand + "?acceptedType=ALL&error=You%20must%20choose%20to%20accept%20at%20least%20one%20card%20brand%20to%20continue");
@@ -347,7 +345,7 @@ describe('The payment types endpoint,', function () {
       build_form_post_request(paths.paymentTypes.selectBrand, {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": ["discover", "unknown"]
-      })
+      }, true, app)
         .expect(200, {"message": "Unable to retrieve card types."})
         .end(done);
     });
@@ -365,7 +363,7 @@ describe('The payment types endpoint,', function () {
       build_form_post_request(paths.paymentTypes.selectBrand, {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": ["discover", "unknown"]
-      })
+      }, true, app)
         .expect(200, {"message": "Unable to save accepted card types."})
         .end(done);
     });
