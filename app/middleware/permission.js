@@ -7,9 +7,7 @@ var _ = require('lodash');
  */
 module.exports = function (permission) {
   return function (req, res, next) {
-    let foundUser = {};
     let username = _.get(req.user, 'username');
-    let correlationId = req.headers[CORRELATION_HEADER] || '';
 
     if (!permission) {
       return next();

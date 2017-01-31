@@ -1,4 +1,4 @@
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
@@ -7,7 +7,6 @@ var nock = require('nock');
 var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
-var userService = require(__dirname + '/../../app/services/user_service.js');
 var app;
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 
@@ -44,7 +43,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
     .send(sendData);
 }
 
-describe('The ' + paths.credentials.index + ' endpoint', function () {
+describe.only ('The ' + paths.credentials.index + ' endpoint', function () {
 
   afterEach(function () {
     nock.cleanAll();
@@ -56,7 +55,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInSession(_app, user);
+    app = session.getAppWithLoggedInUser(_app, user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
@@ -193,7 +192,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInSession(_app, user);
+    app = session.getAppWithLoggedInUser(_app, user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
@@ -330,7 +329,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInSession(_app, user);
+    app = session.getAppWithLoggedInUser(_app, user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
@@ -466,7 +465,7 @@ describe('The notification credentials', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInSession(_app, user);
+    app = session.getAppWithLoggedInUser(_app, user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
@@ -513,7 +512,7 @@ describe('The provider update credentials endpoint', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInSession(_app, user);
+    app = session.getAppWithLoggedInUser(_app, user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
@@ -612,7 +611,7 @@ describe('The provider update notification credentials endpoint', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInSession(_app, user);
+    app = session.getAppWithLoggedInUser(_app, user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
