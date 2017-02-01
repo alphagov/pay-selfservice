@@ -9,18 +9,33 @@ var getAppWithLoggedInUser = mockSession.getAppWithLoggedInUser;
 
 var paths = require(__dirname + '/../../app/paths.js');
 var path = require('path');
+var server = require(__dirname + '/../../server.js');
 
-describe('An endpoint not protected', function () {
-  var app = express();
-  auth.initialise(app);
-  var withNoSession = getAppWithSession(app, {});
+var app;
 
+function addUnprotectedEndpointToApp(app) {
   app.get('/unprotected', function (req, res) {
     res.send('Hello, World!');
   });
+}
+
+function addProtectedEndpointToApp(app) {
+  app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
+    res.send('Hello, World!');
+  });
+}
+
+describe('An endpoint not protected', function () {
+
+  afterEach(function () {
+    app = null;
+  });
+
 
   it('allows access if not authenticated', function (done) {
-    request(withNoSession)
+    app = getAppWithSession(server.getApp, {});
+    addUnprotectedEndpointToApp(app);
+    request(app)
       .get('/unprotected')
       .expect(200)
       .expect('Hello, World!')
@@ -29,8 +44,9 @@ describe('An endpoint not protected', function () {
 
   it('allows access if authenticated', function (done) {
     let user = mockSession.getUser();
-
-    request(getAppWithLoggedInUser(app, user))
+    app = getAppWithLoggedInUser(server.getApp, user);
+    addUnprotectedEndpointToApp(app);
+    request(app)
       .get('/unprotected')
       .expect(200)
       .expect('Hello, World!')
@@ -39,16 +55,17 @@ describe('An endpoint not protected', function () {
 });
 
 describe('An endpoint protected by auth.enforceUserBothFactors', function () {
-  var app = express();
-  auth.initialise(app);
-  var withNoSession = getAppWithSession(app,{});
 
-  app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
-    res.send('Hello, World!');
+  afterEach(function () {
+    app = null;
   });
 
   it('redirects to /login if not authenticated', function (done) {
-    request(withNoSession)
+    app = getAppWithSession(server.getApp, {});
+    addProtectedEndpointToApp(app);
+
+
+    request(app)
       .get('/protected')
       .expect(302)
       .expect('Location', paths.user.logIn)
@@ -57,7 +74,11 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
 
   it('allows access if authenticated', function (done) {
     let user = mockSession.getUser();
-    request(getAppWithLoggedInUser(app, user))
+
+    app = getAppWithLoggedInUser(server.getApp, user);
+    addProtectedEndpointToApp(app);
+
+    request(app)
       .get('/protected')
       .expect(200)
       .expect('Hello, World!')
@@ -67,7 +88,10 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   it('redirects if not second factor loggedin', function (done) {
     let user = mockSession.getUser();
 
-    request(mockSession.getAppWithSessionWithoutSecondFactor(app, user))
+    app = mockSession.getAppWithSessionWithoutSecondFactor(server.getApp, user);
+    addProtectedEndpointToApp(app);
+
+    request(app)
       .get('/protected')
       .expect(302)
       .expect('Location', paths.user.otpLogIn)
@@ -78,7 +102,14 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   it('redirects to noaccess if no account_id', function (done) {
     let user = mockSession.getUser();
     user.gatewayAccountId = null;
-    request(getAppWithLoggedInUser(app, user))
+
+    app = getAppWithLoggedInUser(server.getApp, user);
+
+    app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
+      res.send('Hello, World!');
+    });
+
+    request(app)
       .get('/protected')
       .expect(302)
       .expect('Location', paths.user.noAccess)
