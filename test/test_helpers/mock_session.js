@@ -7,7 +7,7 @@ var userFixture = require('../unit/fixtures/user_fixtures');
 var getUser = (opts) => {
     return userFixture.validUser(opts).getAsObject();
   },
-  createAppWithSession = function (app, sessionData, noCSRF) {
+  createAppWithSession = function (app, sessionData) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       sessionData.destroy = sinon.stub();
