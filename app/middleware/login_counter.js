@@ -7,8 +7,8 @@ var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_
 
 var lockOut = (req, res, user) => {
     var correlationId = req.headers[CORRELATION_HEADER] ||'';
-    logger.info(`[${correlationId}] user id: ${user.id} locked out due to many password attempts`);
-    res.render("login/noaccess");
+    logger.info(`[${correlationId}] user: ${user.username} locked out due to many password attempts`);
+    return res.render("login/noaccess");
 };
 
 module.exports = {
@@ -30,17 +30,19 @@ module.exports = {
         next();
     })
   },
+
   enforceOtp: function (req, res, next) {
     var username = _.get(req.body, 'username') || _.get(req.user, 'username');
     var correlationId = req.headers[CORRELATION_HEADER] ||'';
+
     return userService.findByUsername(username, correlationId)
-      .then((user)=> userService(user.username).incrementLoginCount())
-      .then(
-        (user) => {
-          if (user.disabled) {
+      .then((user)=> userService.incrementLoginCount(user.username))
+      .then((user) => {
+           console.log(user.disabled)
+           if (user.disabled) {
             return lockOut(req, res, user);
           } else {
-            next();
+            return next();
           }
         },
         () => {

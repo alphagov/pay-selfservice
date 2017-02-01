@@ -1,111 +1,76 @@
 var should = require('chai').should();
 var assert = require('assert');
-var sinon  = require('sinon');
-var _      = require('lodash');
-var expect = require('chai').expect;
-var nock   = require('nock');
+var sinon = require('sinon');
+var nock = require('nock');
 var proxyquire = require('proxyquire');
-var q                     = require('q');
+var q = require('q');
+var mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
+
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
 
 describe('login counter test', function () {
 
-  var response = {
-    status: function(){},
-    render: function(){}
-  },
-  status = undefined,
-  render = undefined,
-  next   = undefined,
-  validRequest =  {
-    headers: {
-      accept: ""
-    }
-  };
-
-
-  beforeEach(function(){
-    status = sinon.stub(response,"status");
-    render = sinon.stub(response,"render");
-    next   = sinon.spy();
-    nock.cleanAll();
-  });
-
-  afterEach(function(){
-    status.restore();
-    render.restore();
-  });
-
-  var login = (userServiceMock)=> {
+  var login = (userServiceMock) => {
     return proxyquire(__dirname + '/../../../app/middleware/login_counter.js',
-    {'../services/user_service.js': userServiceMock});
+      {'../services/user_service2.js': userServiceMock});
   };
 
-  it('should call increment login count', function(done){
-    var user = {
-      incrementLoginCount: () => {
-        return {
-          reload: () => {
-            return {
-              login_counter: 0
-            }
-          }
-        };
-      }
-    };
-    var incrementLoginCountSpy = sinon.spy(user, 'incrementLoginCount');
+  it('should call increment login count during otp login', function (done) {
+    var user = mockSession.getUser();
+    var incrementLoginCountSpy = sinon.spy();
+    var nextSpy = sinon.spy();
     var mockedUserService = {
       findByUsername: () => {
         var defer = q.defer();
         defer.resolve(user);
         return defer.promise;
+      },
+      incrementLoginCount: () => {
+        var defer = q.defer();
+        defer.resolve(user);
+        incrementLoginCountSpy();
+        return defer.promise;
       }
     };
+
     var loginMiddleware = login(mockedUserService);
 
-    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{}, () => {})
+    loginMiddleware.enforceOtp({user: user, headers: {}}, {}, nextSpy)
       .then(() => {
         assert(incrementLoginCountSpy.calledOnce);
+        assert(nextSpy.called);
         done();
       });
   });
 
-  it('should call disable user and render noacess when over limit',function(done){
-    var toggleDisabled = () => {
-      var defer = q.defer();
-      defer.resolve();
-      return defer.promise;
-    };
-
-    var toggleDisabledSpy = sinon.spy(toggleDisabled);
-
-    var user = {
-      incrementLoginCount: () => {
-        return {
-          reload: () => {
-            return {
-              login_counter: 2,
-              toggleDisabled: toggleDisabledSpy
-            }
-          }
-        };
-      }
-    };
-
-    var incrementLoginCountSpy = sinon.spy(user, 'incrementLoginCount');
-
+  it('should call lockout user when user disabled in otplogin', function (done) {
+    var user = mockSession.getUser();
+    var incrementLoginCountSpy = sinon.spy();
+    var nextSpy = sinon.spy();
     var mockedUserService = {
       findByUsername: () => {
         var defer = q.defer();
         defer.resolve(user);
         return defer.promise;
+      },
+      incrementLoginCount: () => {
+        var defer = q.defer();
+        user.disabled = true;
+        defer.resolve(user);
+        incrementLoginCountSpy();
+        return defer.promise;
       }
     };
 
     var loginMiddleware = login(mockedUserService);
-    loginMiddleware.enforce({body: {email: "foo"}, headers:{}},{}, () => {}).then(() => {
-      assert(incrementLoginCountSpy.calledOnce);
-      assert(toggleDisabledSpy.calledWith(true));
-      done();
-    });
+    var res = {render: sinon.stub()};
+
+    loginMiddleware.enforceOtp({user: user, headers: {}}, res, nextSpy).should.be.fulfilled.then(() => {
+        assert(incrementLoginCountSpy.calledOnce);
+        assert(nextSpy.notCalled);
+        assert(res.render.calledWithExactly("login/noaccess"));
+      }).should.notify(done);
   });
 });
