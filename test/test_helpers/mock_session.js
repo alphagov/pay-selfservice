@@ -2,6 +2,7 @@
 var express = require('express');
 var User = require('../../app/models/user2').User;
 var _ = require('lodash');
+var sinon = require('sinon');
 var userFixture = require('../unit/fixtures/user_fixtures');
 var getUser = (opts) => {
     return userFixture.validUser(opts).getAsObject();
@@ -9,8 +10,8 @@ var getUser = (opts) => {
   createAppWithSession = function (app, sessionData, noCSRF) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
+      sessionData.destroy = sinon.stub();
       req.session = sessionData || {};
-      req.session.destroy = () => {};
       next();
     });
     proxyApp.use(app);
