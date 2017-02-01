@@ -7,7 +7,6 @@ var _ = require('lodash');
  */
 module.exports = function (permission) {
   return function (req, res, next) {
-    let username = _.get(req.user, 'username');
 
     if (!permission) {
       return next();
