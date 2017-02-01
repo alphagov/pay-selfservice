@@ -29,7 +29,7 @@ function connectorChargePathFor(chargeId) {
   return CONNECTOR_CHARGE_PATH.replace('{chargeId}', chargeId);
 }
 
-describe.only('The transaction view scenarios', function () {
+describe('The transaction view scenarios', function () {
 
   afterEach(function () {
     nock.cleanAll();
