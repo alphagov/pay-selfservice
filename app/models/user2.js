@@ -114,6 +114,10 @@ class User {
     return this._disabled;
   }
 
+  set disabled(value){
+    this._disabled = value;
+  }
+
   get role() {
     return this._role;
   }

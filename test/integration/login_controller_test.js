@@ -1,4 +1,4 @@
-var dbMock = require(__dirname + '/../test_helpers/serialize_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var request = require('supertest');
 var _app = require(__dirname + '/../../server.js').getApp;
 var nock = require('nock');
