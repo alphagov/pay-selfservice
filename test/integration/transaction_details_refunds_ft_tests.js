@@ -8,25 +8,24 @@ var session = require(__dirname + '/../test_helpers/mock_session.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 
 var ACCOUNT_ID = 15486734;
-var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
-var user = session.user;
+var app;
 var connectorMock = nock(process.env.CONNECTOR_URL);
 
 describe('The transaction view - refund scenarios', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'refunds:create', done);
+  beforeEach(function (done) {
+    let permissions = 'refunds:create';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(_app, user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   // known FP issue with node, it cannot mulitply 19.90 by 100 accurately
