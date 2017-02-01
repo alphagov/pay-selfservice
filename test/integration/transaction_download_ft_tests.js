@@ -57,7 +57,7 @@ describe('Transaction download endpoints', function () {
 
 
 
-  describe.only('The /transactions/download endpoint', function () {
+  describe('The /transactions/download endpoint', function () {
 
     it('should download a csv file comprising a list of transactions for the gateway account', function (done) {
       var results = [{
