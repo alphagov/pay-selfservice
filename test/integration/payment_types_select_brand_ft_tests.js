@@ -1,7 +1,7 @@
 var dbMock = require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
 var nock = require('nock');
 var csrf = require('csrf');
@@ -73,7 +73,7 @@ describe('The payment types endpoint,', function () {
       var user = session.getUser({
         gateway_account_id: ACCOUNT_ID, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
     });
@@ -259,7 +259,7 @@ describe('The payment types endpoint,', function () {
       var user = session.getUser({
         gateway_account_id: ACCOUNT_ID, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
     });

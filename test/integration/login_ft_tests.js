@@ -1,7 +1,7 @@
 require(__dirname + '/../test_helpers/serialize_mock.js');
 var request     = require('supertest');
 var nock = require('nock');
-var _app         = require(__dirname + '/../../server.js').getApp;
+var getApp         = require(__dirname + '/../../server.js').getApp;
 var should      = require('chai').should();
 var paths       = require(__dirname + '/../../app/paths.js');
 var mock_session     = require(__dirname + '/../test_helpers/mock_session.js');
@@ -12,7 +12,7 @@ const USER_RESOURCE = '/v1/api/users';
 var user = mock_session.getUser();
 var session = mock_session.getMockSession(user);
 
-var app = mock_session.getAppWithSession(_app, session);
+var app = mock_session.getAppWithSession(getApp(), session);
 
 function build_get_request(path) {
   return request(app)

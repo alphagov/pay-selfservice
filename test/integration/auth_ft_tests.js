@@ -33,7 +33,7 @@ describe('An endpoint not protected', function () {
 
 
   it('allows access if not authenticated', function (done) {
-    app = getAppWithSession(server.getApp, {});
+    app = getAppWithSession(server.getApp(), {});
     addUnprotectedEndpointToApp(app);
     request(app)
       .get('/unprotected')
@@ -44,7 +44,7 @@ describe('An endpoint not protected', function () {
 
   it('allows access if authenticated', function (done) {
     let user = mockSession.getUser();
-    app = getAppWithLoggedInUser(server.getApp, user);
+    app = getAppWithLoggedInUser(server.getApp(), user);
     addUnprotectedEndpointToApp(app);
     request(app)
       .get('/unprotected')
@@ -61,7 +61,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   });
 
   it('redirects to /login if not authenticated', function (done) {
-    app = getAppWithSession(server.getApp, {});
+    app = getAppWithSession(server.getApp(), {});
     addProtectedEndpointToApp(app);
 
 
@@ -75,7 +75,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   it('allows access if authenticated', function (done) {
     let user = mockSession.getUser();
 
-    app = getAppWithLoggedInUser(server.getApp, user);
+    app = getAppWithLoggedInUser(server.getApp(), user);
     addProtectedEndpointToApp(app);
 
     request(app)
@@ -88,7 +88,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   it('redirects if not second factor loggedin', function (done) {
     let user = mockSession.getUser();
 
-    app = mockSession.getAppWithSessionWithoutSecondFactor(server.getApp, user);
+    app = mockSession.getAppWithSessionWithoutSecondFactor(server.getApp(), user);
     addProtectedEndpointToApp(app);
 
     request(app)
@@ -103,11 +103,8 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
     let user = mockSession.getUser();
     user.gatewayAccountId = null;
 
-    app = getAppWithLoggedInUser(server.getApp, user);
-
-    app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
-      res.send('Hello, World!');
-    });
+    app = getAppWithLoggedInUser(server.getApp(), user);
+    addProtectedEndpointToApp(app);
 
     request(app)
       .get('/protected')

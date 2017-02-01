@@ -1,7 +1,7 @@
 require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request      = require('supertest');
-var _app         = require(__dirname + '/../../server.js').getApp;
+var getApp         = require(__dirname + '/../../server.js').getApp;
 var nock         = require('nock');
 var csrf         = require('csrf');
 var should       = require('chai').should();
@@ -73,7 +73,7 @@ describe('Dev Tokens Endpoints', function() {
       var user = session.getUser({
         gateway_account_id: gatewayAccountId, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
 
@@ -164,7 +164,7 @@ describe('Dev Tokens Endpoints', function() {
       var user = session.getUser({
         gateway_account_id: gatewayAccountId, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
 
@@ -255,7 +255,7 @@ describe('Dev Tokens Endpoints', function() {
       var user = session.getUser({
         gateway_account_id: gatewayAccountId, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
 
@@ -336,7 +336,7 @@ describe('Dev Tokens Endpoints', function() {
       var user = session.getUser({
         gateway_account_id: gatewayAccountId, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
 
@@ -413,7 +413,7 @@ describe('Dev Tokens Endpoints', function() {
       user = session.getUser({
         gateway_account_id: gatewayAccountId, permissions: [permissions]
       });
-      app = session.getAppWithLoggedInUser(_app, user);
+      app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
 

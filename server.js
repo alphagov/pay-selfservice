@@ -152,5 +152,6 @@ if (!!argv.i) {
 
 module.exports = {
   start: start,
-  getApp: initialise()
+  getApp: initialise
+
 };

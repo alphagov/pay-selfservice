@@ -3,7 +3,7 @@ var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var csrf = require('csrf');
 var nock = require('nock');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var dates = require('../../app/utils/dates.js');
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
@@ -64,7 +64,7 @@ describe('The search transactions endpoint', function () {
     var user = session.getUser({
       gateway_account_id: gatewayAccountId, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInUser(_app, user);
+    app = session.getAppWithLoggedInUser(getApp(), user);
 
     userCreator.mockUserResponse(user.toJson(), done);
 

@@ -1,6 +1,6 @@
 require(__dirname + '/../test_helpers/serialize_mock.js');
 var request = require('supertest');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var nock = require('nock');
 var assert = require('assert');
 var notp = require('notp');
@@ -27,7 +27,7 @@ var user = mock_session.getUser({gateway_account_id: ACCOUNT_ID});
 describe('The logged in endpoint', function () {
 
   it('should render ok when logged in', function (done) {
-    var app = mock_session.getAppWithLoggedInUser(_app, user);
+    var app = mock_session.getAppWithLoggedInUser(getApp(), user);
     request(app)
       .get("/")
       .expect(200)
@@ -39,7 +39,7 @@ describe('The logged in endpoint', function () {
 
 
   it('should redirecect to login if not logged in', function (done) {
-    var app = mock_session.getAppWithSession(_app, {});
+    var app = mock_session.getAppWithSession(getApp(), {});
     request(app)
       .get("/")
       .expect(302)
@@ -48,7 +48,7 @@ describe('The logged in endpoint', function () {
   });
 
   it('should redirecect to otp login if no otp', function (done) {
-    var app = mock_session.getAppWithSessionWithoutSecondFactor(_app, mock_session.getUser({gateway_account_id: ACCOUNT_ID}));
+    var app = mock_session.getAppWithSessionWithoutSecondFactor(getApp(), mock_session.getUser({gateway_account_id: ACCOUNT_ID}));
     request(app)
       .get("/")
       .expect(302)
@@ -61,7 +61,7 @@ describe('The logged in endpoint', function () {
 describe('The logout endpoint', function () {
 
   it('should redirect to login', function (done) {
-    var app = mock_session.getAppWithSession(_app, {});
+    var app = mock_session.getAppWithSession(getApp(), {});
     request(app)
       .get("/logout")
       .expect(302)
@@ -70,7 +70,7 @@ describe('The logout endpoint', function () {
   });
 
   it("should handle case where mock_session expired", (done) => {
-    request(_app)
+    request(getApp())
       .get("/logout")
       .expect(302)
       .expect('Location', "/login")
@@ -125,7 +125,7 @@ describe('The otplogin endpoint', function () {
       }
     };
 
-    var app = mock_session.getAppWithSession(_app, sessionData);
+    var app = mock_session.getAppWithSession(getApp(), sessionData);
     request(app)
       .get("/otp-login")
       .expect(200)
@@ -149,7 +149,7 @@ describe('The otplogin endpoint', function () {
       sentCode: true
     };
 
-    var app = mock_session.getAppWithSession(_app, sessionData);
+    var app = mock_session.getAppWithSession(getApp(), sessionData);
 
     request(app)
       .get("/otp-login")
@@ -209,7 +209,7 @@ describe('The afterOtpLogin endpoint', function () {
 
 describe('login post endpoint', function () {
   it('should display an error if csrf token does not exist for the login post', function (done) {
-    request(_app)
+    request(getApp())
       .post(paths.user.logIn)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -226,7 +226,7 @@ describe('otp login post enpoint', function () {
     var session = mock_session.getMockSession(user);
     delete session.csrfSecret;
 
-    var app2 = mock_session.getAppWithSession(_app, session);
+    var app2 = mock_session.getAppWithSession(getApp(), session);
 
     request(app2)
       .post(paths.user.otpLogIn)
@@ -246,7 +246,7 @@ describe('otp send again post enpoint', function () {
     var session = mock_session.getMockSession(user);
     delete session.csrfSecret;
 
-    var app2 = mock_session.getAppWithSession(_app, session);
+    var app2 = mock_session.getAppWithSession(getApp(), session);
 
     request(app2)
       .post(paths.user.otpSendAgain)

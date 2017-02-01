@@ -1,7 +1,7 @@
 var request = require('supertest');
 var nock = require('nock');
 var csrf = require('csrf');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
 var paths = require(__dirname + '/../../app/paths.js');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
@@ -23,7 +23,7 @@ describe('The transaction view - refund scenarios', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInUser(_app, user);
+    app = session.getAppWithLoggedInUser(getApp(), user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });

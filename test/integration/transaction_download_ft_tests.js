@@ -1,13 +1,12 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-var dbMock = require(__dirname + '/../test_helpers/serialize_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var nock = require('nock');
 var _ = require('lodash');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var querystring = require('querystring');
 var paths = require(__dirname + '/../../app/paths.js');
-var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
@@ -50,7 +49,7 @@ describe('Transaction download endpoints', function () {
     var user = session.getUser({
       gateway_account_id: gatewayAccountId, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInUser(_app, user);
+    app = session.getAppWithLoggedInUser(getApp(), user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });

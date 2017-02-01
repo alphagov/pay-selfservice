@@ -1,7 +1,7 @@
 require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var nock = require('nock');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
@@ -63,7 +63,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
         var user = session.getUser({
           gateway_account_id: ACCOUNT_ID, permissions: [permissions]
         });
-        app = session.getAppWithLoggedInUser(_app, user);
+        app = session.getAppWithLoggedInUser(getApp(), user);
 
         userCreator.mockUserResponse(user.toJson(), done);
       });
@@ -128,7 +128,7 @@ describe('The provider update service name endpoint', function () {
     var user = session.getUser({
       gateway_account_id: ACCOUNT_ID, permissions: [permissions]
     });
-    app = session.getAppWithLoggedInUser(_app, user);
+    app = session.getAppWithLoggedInUser(getApp(), user);
 
     userCreator.mockUserResponse(user.toJson(), done);
   });
