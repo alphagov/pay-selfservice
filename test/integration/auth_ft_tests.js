@@ -13,7 +13,7 @@ var path = require('path');
 describe('An endpoint not protected', function () {
   var app = express();
   auth.initialise(app);
-  var withNoSession = getAppWithSession(app);
+  var withNoSession = getAppWithSession(app, {});
 
   app.get('/unprotected', function (req, res) {
     res.send('Hello, World!');
@@ -41,7 +41,7 @@ describe('An endpoint not protected', function () {
 describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   var app = express();
   auth.initialise(app);
-  var withNoSession = getAppWithSession(app);
+  var withNoSession = getAppWithSession(app,{});
 
   app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
     res.send('Hello, World!');
