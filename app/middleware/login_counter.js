@@ -38,7 +38,6 @@ module.exports = {
     return userService.findByUsername(username, correlationId)
       .then((user)=> userService.incrementLoginCount(user.username))
       .then((user) => {
-           console.log(user.disabled)
            if (user.disabled) {
             return lockOut(req, res, user);
           } else {
