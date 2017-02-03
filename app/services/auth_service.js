@@ -27,7 +27,7 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
 
 var ensureSessionHasVersion = function(req) {
   if(!_.get(req, 'session.version', false) !== false) {
-    req.session.version = _.get(req, 'user.session_version', 0);
+    req.session.version = _.get(req, 'user.sessionVersion', 0);
   }
 };
 
@@ -90,7 +90,7 @@ var enforceUserAuthenticated = function(req, res, next) {
 var hasValidSession = function (req) {
   var isValid = sessionValidator.validate(req.user, req.session);
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
-  var userSessionVersion = _.get(req, 'user.session_version', 0);
+  var userSessionVersion = _.get(req, 'user.sessionVersion', 0);
   var sessionVersion = _.get(req, 'session.version', 0);
   if (!isValid) {
     logger.info(`[${correlationId}] Invalid session version for user. User session_version: ${userSessionVersion}, session version ${sessionVersion}`);

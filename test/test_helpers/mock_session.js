@@ -42,7 +42,8 @@ var getUser = (opts) => {
         user: user,
       },
       secondFactor: 'totp',
-      last_url:'last_url'
+      last_url:'last_url',
+      version: user.sessionVersion
     });
   };
 

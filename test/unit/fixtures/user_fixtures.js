@@ -77,7 +77,7 @@ module.exports = {
     let data = {
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
-      gateway_account_id: opts.gateway_account_id || String(Math.floor(Math.random() * 10)),
+      gateway_account_id: opts.gateway_account_id || String(Math.floor(Math.random() * 10) + 1),
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
       otp_key: opts.otp_key || randomOtpKey(),
       disabled: opts.disabled || false,
