@@ -229,7 +229,7 @@ module.exports = function (clientOptions = {}) {
     let params = {
       correlationId: correlationId,
       payload: {
-        op: 'replace',
+        op: 'append',
         path: 'sessionVersion',
         value: 1
       }

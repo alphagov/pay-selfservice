@@ -188,7 +188,7 @@ module.exports = {
 
   validIncrementSessionVersionRequest: () => {
     let request = {
-      op: 'replace',
+      op: 'append',
       path: 'sessionVersion',
       value: 1
     };
