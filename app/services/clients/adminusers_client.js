@@ -27,6 +27,12 @@ const createCallbackToPromiseConverter = (context, transformer) => {
         errorCode: response.statusCode,
         message: response.body
       });
+    } else {
+      if (body && transformer && typeof transformer === 'function') {
+        defer.resolve(transformer(body));
+      } else {
+        defer.resolve(body);
+      }
     }
 
     if (error) {
@@ -34,11 +40,6 @@ const createCallbackToPromiseConverter = (context, transformer) => {
       defer.reject({error: error});
     }
 
-    if (body && transformer && typeof transformer === 'function') {
-      defer.resolve(transformer(body));
-    } else {
-      defer.resolve(body);
-    }
   };
 };
 
@@ -179,7 +180,7 @@ module.exports = function (clientOptions = {}) {
       description: 'increment login attempts for a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context,responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -210,7 +211,7 @@ module.exports = function (clientOptions = {}) {
       description: 'reset login attempts for a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 
@@ -247,7 +248,7 @@ module.exports = function (clientOptions = {}) {
       description: 'increment session version for a user',
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
 
     requestLogger.logRequestStart(context);
 

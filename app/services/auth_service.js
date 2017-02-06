@@ -104,7 +104,7 @@ var initialise = function (app, override_strategy) {
   passport.use('local',new localStrategy({ usernameField: 'username' }, localStrategyAuth));
   passport.use(new TotpStrategy(
     function(user, done) {
-      return done(null, user.otp_key, 30);
+      return done(null, user.otpKey, 30);
     }
   ));
 

@@ -55,15 +55,10 @@ module.exports.logInGet = function (req, res) {
  * @param res
  */
 module.exports.postLogin = function (req, res) {
-  return userService.resetLoginCount(req.user.username)
-   .then(() => req.session = _.pick(req.session, ['passport', 'last_url']))
-   .then(
-    ()=>{
-      logLoginAction(req, 'successfully attempted username/password combination');
-      res.redirect(paths.user.otpLogIn);
-    },
-    (err) => error(req,res,error)
-  )
+  req.session = _.pick(req.session, ['passport', 'last_url']);
+  logLoginAction(req, 'successfully attempted username/password combination');
+  res.redirect(paths.user.otpLogIn);
+
 };
 
 module.exports.logUserin = function() {
@@ -95,7 +90,7 @@ module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
   var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
   delete req.session.last_url;
-  return userService.resetLoginCount(req.user.username)
+  userService.resetLoginCount(req.user.username)
     .then(()=>{
       logLoginAction(req, 'successfully entered a valid 2fa token');
       res.redirect(redirect_url);

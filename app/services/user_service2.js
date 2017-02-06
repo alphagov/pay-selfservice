@@ -158,7 +158,6 @@ module.exports = {
 
   incrementLoginCount: function (username) {
     return getAdminUsersClient().incrementLoginAttemptsForUser(username);
-
   }
 
 };
