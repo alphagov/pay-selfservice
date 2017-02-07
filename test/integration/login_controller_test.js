@@ -92,17 +92,16 @@ describe('The postlogin endpoint', function () {
       },
       res = mockRes.getStubbedRes();
 
-
     adminusersMock.post(`${USER_RESOURCE}/${user.username}/attempt-login?action=reset`)
       .reply(200);
 
-    login_controller.postLogin(req, res).should.be.fulfilled.then(() => {
-      expect(res.redirect.calledWith(expectedUrl)).to.equal(true);
-      expect(req.session).to.deep.equal({
-        passport: session.passport,
-        last_url: session.last_url
-      });
-    }).should.notify(done);
+    login_controller.postLogin(req, res);
+    expect(res.redirect.calledWith(expectedUrl)).to.equal(true);
+    expect(req.session).to.deep.equal({
+      passport: session.passport,
+      last_url: session.last_url
+    });
+    done();
   });
 });
 
