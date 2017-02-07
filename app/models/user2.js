@@ -13,7 +13,7 @@ class User {
     this._gatewayAccountId = userData.gateway_account_id ? String(userData.gateway_account_id) : '';
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
-    this._disabled = userData._disabled ? userData._disabled : false;
+    this._disabled = userData.disabled ? userData.disabled : false;
     this._loginCounter = userData.login_counter || 0;
     this._sessionVersion = userData.session_version || 0;
     this._permissions = userData.permissions || [];

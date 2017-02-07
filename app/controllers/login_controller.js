@@ -16,7 +16,7 @@ var error = function(req,res,err) {
 
 var logLoginAction = function(req, message) {
   var correlationId = _.get('req.headers.' + CORRELATION_HEADER, '');
-  logger.info(`[${correlationId}] user id: ${_.get(req, 'user.id')} ${message}`);
+  logger.info(`[${correlationId}] user : ${_.get(req, 'user.username')} ${message}`);
 };
 
 module.exports.loggedIn = function (req, res) {
