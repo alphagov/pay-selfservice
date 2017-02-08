@@ -5,6 +5,10 @@ function randomString() {
   return Math.random().toString(36).substring(7);
 }
 
+function validPassword() {
+  return "G0VUkPay2017Rocks";
+}
+
 function randomUsername() {
   return randomString();
 }
@@ -55,7 +59,7 @@ module.exports = {
         id: token || randomString()
       },
       body: {
-        password: password || randomString(),
+        password: password || validPassword(),
         username: username || randomUsername()
       }
     };

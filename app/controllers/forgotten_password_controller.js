@@ -1,7 +1,6 @@
 var logger = require('winston');
 var paths = require('../paths.js');
 var errorView = require('../utils/response.js').renderErrorView;
-var forgottenPassword = require('../models/forgotten_password.js');
 var userService = require('../services/user_service2.js');
 var e = module.exports;
 
@@ -44,7 +43,7 @@ e.newPasswordGet = (req, res) => {
 };
 
 e.newPasswordPost = (req, res) => {
-  var reqUser;
+  let reqUser;
   return userService
     .findByResetToken(req.params.id)
     .then(function (forgottenPassword) {
@@ -67,6 +66,9 @@ e.newPasswordPost = (req, res) => {
           logger.error('PROBLEM LOGGIN OUT LOGGED IN USERS')
         }
       );
+    }, (error) => {
+      req.flash('genericError', error.message);
+      res.redirect('/reset-password/' + req.params.id);
     })
     .catch(function (error) {
       req.flash('genericError', error.message);

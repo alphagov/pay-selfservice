@@ -3,9 +3,11 @@ const logger = require('winston');
 
 var getAdminUsersClient = require('./clients/adminusers_client');
 var User = require('../models/user2').User;
-var notify                = require('../services/clients/notification_client.js');
+var notify = require('../services/clients/notification_client.js');
 var paths = require(__dirname + '/../paths.js');
-var applicationMetrics    = require('./../utils/metrics.js').metrics;
+var applicationMetrics = require('./../utils/metrics.js').metrics;
+var commonPassword = require('common-password');
+const MIN_PASSWORD_LENGTH = 10;
 
 /**
  * @param user
@@ -138,13 +140,25 @@ module.exports = {
   },
 
   /**
-   *
+   * @param token
    * @param username
    * @param newPassword
    * @returns {Promise}
    */
-  updatePassword: function(token, newPassword) {
-    return getAdminUsersClient().updatePasswordForUser(token, newPassword);
+  updatePassword: function (token, newPassword) {
+    let defer = q.defer();
+
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      defer.reject({message: "Your password must be at least 10 characters."});
+    } else if (commonPassword(newPassword)) {
+      defer.reject({message: "Your password is too simple. Choose a password that is harder for people to guess."});
+    } else {
+      getAdminUsersClient().updatePasswordForUser(token, newPassword)
+        .then(
+          () => defer.resolve(),
+          () => defer.reject({message: 'There has been a problem updating password.'}));
+    }
+    return defer.promise;
   },
 
   /**

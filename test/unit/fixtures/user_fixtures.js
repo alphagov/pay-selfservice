@@ -7,6 +7,10 @@ function randomString() {
   return Math.random().toString(36).substring(7);
 }
 
+function validPassword() {
+  return "G0VUkPay2017Rocks";
+}
+
 function randomUsername() {
   return randomString();
 }
@@ -200,7 +204,7 @@ module.exports = {
   validUpdatePasswordRequest: (token, newPassword) => {
     let request = {
       forgotten_password_code: token || randomString(),
-      new_password: newPassword || randomString()
+      new_password: newPassword || validPassword()
     };
 
     return withPactified(request);
