@@ -1,6 +1,6 @@
 var nock        = require('nock');
 
-createGovukNotifyToken = require('../../test_helpers/jwt');
+createGovukNotifyToken = require('../test_helpers/jwt');
 
 
 var notifyMock = nock(process.env.NOTIFY_BASE_URL);

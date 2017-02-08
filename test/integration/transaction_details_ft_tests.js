@@ -230,7 +230,10 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
-        ]
+        ],
+        "permissions": {
+          "transactions_details_read": true
+        }
       };
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
@@ -346,7 +349,10 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
-        ]
+        ],
+        "permissions": {
+          "transactions_details_read": true
+        }
       };
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
@@ -470,7 +476,10 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
-        ]
+        ],
+        "permissions": {
+          "transactions_details_read": true
+        }
       };
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
@@ -663,7 +672,10 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
-        ]
+        ],
+        "permissions": {
+          "transactions_details_read": true
+        }
       };
 
       var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events';

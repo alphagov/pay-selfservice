@@ -3,7 +3,7 @@ var express = require('express');
 var User = require('../../app/models/user').User;
 var _ = require('lodash');
 var sinon = require('sinon');
-var userFixture = require('../unit/fixtures/user_fixtures');
+var userFixture = require('../fixtures/user_fixtures');
 var getUser = (opts) => {
     return userFixture.validUser(opts).getAsObject();
   },

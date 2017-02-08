@@ -94,7 +94,10 @@ describe('The payment types endpoint,', function () {
           buildAcceptedCardType("mastercard", true, selected = "checked"),
           buildAcceptedCardType("discover", true),
           buildAcceptedCardType("maestro", true)
-        ]
+        ],
+        permissions: {
+          "payment_types_read": true
+        }
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
@@ -118,7 +121,10 @@ describe('The payment types endpoint,', function () {
           buildAcceptedCardType("mastercard", true, selected = "checked"),
           buildAcceptedCardType("maestro", true),
           buildAcceptedCardType("discover", false)
-        ]
+        ],
+        permissions: {
+          "payment_types_read": true
+        }
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=DEBIT", app)
@@ -142,7 +148,10 @@ describe('The payment types endpoint,', function () {
           buildAcceptedCardType("mastercard", true, 'checked'),
           buildAcceptedCardType("discover", true, 'checked'),
           buildAcceptedCardType("maestro", true, 'checked')
-        ]
+        ],
+        permissions: {
+          "payment_types_read": true
+        }
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
@@ -166,7 +175,10 @@ describe('The payment types endpoint,', function () {
           buildAcceptedCardType("mastercard", true, 'checked'),
           buildAcceptedCardType("discover", true, 'checked'),
           buildAcceptedCardType("maestro", true, 'checked')
-        ]
+        ],
+        permissions: {
+          "payment_types_read": true
+        }
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
@@ -191,7 +203,10 @@ describe('The payment types endpoint,', function () {
           buildAcceptedCardType("mastercard", true, selected = "checked"),
           buildAcceptedCardType("discover", true),
           buildAcceptedCardType("maestro", true)
-        ]
+        ],
+        permissions: {
+          "payment_types_read": true
+        }
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL&error=Error", app)

@@ -93,7 +93,10 @@ describe('Dev Tokens Endpoints', function() {
           "header": 'revoked-tokens',
           "token_state": 'revoked',
           "tokens": [],
-          "tokens_singular": false
+          "tokens_singular": false,
+          'permissions': {
+            'tokens_revoked_read': true
+          }
         })
         .end(done);
     });
@@ -119,6 +122,9 @@ describe('Dev Tokens Endpoints', function() {
           "token_state": 'revoked',
           "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1", 'revoked': "18 Oct 2015"}],
           "tokens_singular": true,
+          'permissions': {
+            'tokens_revoked_read': true
+          }
         })
         .end(done);
     });
@@ -147,6 +153,9 @@ describe('Dev Tokens Endpoints', function() {
           "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1", 'revoked': "18 Oct 2015"},
             {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2", 'revoked': "19 Oct 2015"}],
           "tokens_singular": false,
+          'permissions': {
+            'tokens_revoked_read': true
+          }
         })
         .end(done);
     });
@@ -184,7 +193,10 @@ describe('Dev Tokens Endpoints', function() {
           "header": 'available-tokens',
           "token_state": 'active',
           "tokens": [],
-          "tokens_singular": false
+          "tokens_singular": false,
+          'permissions': {
+            'tokens_active_read': true
+          }
         })
         .end(done);
     });
@@ -210,6 +222,9 @@ describe('Dev Tokens Endpoints', function() {
           "token_state": 'active',
           "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"token 1"}],
           "tokens_singular": true,
+          'permissions': {
+            'tokens_active_read': true
+          }
         })
         .end(done);
     });
@@ -238,6 +253,9 @@ describe('Dev Tokens Endpoints', function() {
           "tokens": [{"token_link":"550e8400-e29b-41d4-a716-446655440000", "description":"description token 1"},
             {"token_link":"550e8400-e29b-41d4-a716-446655441234", "description":"description token 2"}],
           "tokens_singular": false,
+          'permissions': {
+            'tokens_active_read': true
+          }
         })
         .end(done);
     });
@@ -284,7 +302,10 @@ describe('Dev Tokens Endpoints', function() {
           'description': "token description",
           'created_by': "test-user",
           'issued_date': "18 Feb 2016 - 12:44",
-          'last_used': "23 Feb 2016 - 19:44"
+          'last_used': "23 Feb 2016 - 19:44",
+          'permissions': {
+            'tokens_update': true
+          }
         })
         .end(done);
     });
@@ -432,7 +453,10 @@ describe('Dev Tokens Endpoints', function() {
       build_form_post_request(paths.devTokens.create, {"description":'description'}, true)
         .expect(200, {
           'token': TOKEN,
-          'description': 'description'
+          'description': 'description',
+          'permissions': {
+            'tokens_create': true
+          }
         })
         .end(done);
 
@@ -454,7 +478,10 @@ describe('Dev Tokens Endpoints', function() {
 
       build_get_request(paths.devTokens.show)
         .expect(200, {
-          'account_id': gatewayAccountId
+          'account_id': gatewayAccountId,
+          'permissions': {
+            'tokens_create': true
+          }
         })
         .end(done);
     });
@@ -465,7 +492,9 @@ describe('Dev Tokens Endpoints', function() {
       publicauthMock.post(PUBLIC_AUTH_PATH, {
         "account_id": gatewayAccountId,
         "description": "description"
-      }).reply(200, {"token": TOKEN });
+      }).reply(200, {
+        "token": TOKEN
+      });
 
       build_form_post_request(paths.devTokens.create,{})
         .expect(200, {
@@ -481,7 +510,10 @@ describe('Dev Tokens Endpoints', function() {
 
       build_get_request(paths.devTokens.show)
         .expect(200, {
-          'account_id': gatewayAccountId
+          'account_id': gatewayAccountId,
+          'permissions': {
+            'tokens_create': true
+          }
         })
         .end(done);
     });

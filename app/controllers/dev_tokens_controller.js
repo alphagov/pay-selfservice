@@ -33,13 +33,13 @@ module.exports.index = function (req, res) {
           view: 'token'
         });
 
-        response(req.headers.accept, res, TOKEN_VIEW, {
+        response(req, res, TOKEN_VIEW, {
           'active': true,
           'header': "available-tokens",
           'token_state': "active",
           'tokens': activeTokens,
           'tokens_singular': activeTokens.length == 1
-        });
+        }, true);
       })
       .catch(() => {
         renderErrorView(req, res, ERROR_MESSAGE);
@@ -62,13 +62,13 @@ module.exports.revoked = function (req, res) {
         logger.info('Showing tokens view -', {
           view: TOKEN_VIEW
         });
-        response(req.headers.accept, res, TOKEN_VIEW, {
+        response(req, res, TOKEN_VIEW, {
           'active': false,
           'header': "revoked-tokens",
           'token_state': "revoked",
           'tokens': revokedTokens,
           'tokens_singular': revokedTokens.length == 1
-        });
+        }, true);
       })
       .catch((err) => {
         renderErrorView(req, res, ERROR_MESSAGE);
@@ -79,7 +79,7 @@ module.exports.revoked = function (req, res) {
 module.exports.show = function (req, res) {
   var accountId = auth.get_gateway_account_id(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
-    response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
+    response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId}, true);
   });
 };
 
@@ -100,10 +100,10 @@ module.exports.create = function (req, res) {
         accountId: accountId,
         correlationId: correlationId
       })
-      .then(publicAuthData => response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {
+      .then(publicAuthData => response(req, res, TOKEN_GENERATE_VIEW, {
         token: publicAuthData.token,
         description: description
-      }))
+      }, true))
       .catch((reason) => renderErrorView(req, res, ERROR_MESSAGE));
   });
 };
@@ -122,14 +122,14 @@ module.exports.update = function (req, res) {
       correlationId: req.correlationId
     })
     .then(publicAuthData => {
-      response(req.headers.accept, res, "includes/_token", {
+      response(req, res, "includes/_token", {
         'token_link': publicAuthData.token_link,
         'created_by': publicAuthData.created_by,
         'issued_date': publicAuthData.issued_date,
         'last_used': publicAuthData.last_used,
         'description': publicAuthData.description,
         'csrfToken': csrf().create(req.session.csrfSecret)
-      });
+      }, true);
     })
     .catch((rejection) => {
       let responseCode = 500;

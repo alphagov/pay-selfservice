@@ -1,5 +1,5 @@
 var nock = require('nock');
-const userFixtures = require(__dirname + '/../unit/fixtures/user_fixtures');
+const userFixtures = require(__dirname + '/../fixtures/user_fixtures');
 
 var adminusersMock = nock(process.env.ADMINUSERS_URL);
 const USER_RESOURCE = '/v1/api/users';

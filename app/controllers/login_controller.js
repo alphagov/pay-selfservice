@@ -1,4 +1,3 @@
-
 var logger    = require('winston');
 var _ = require('lodash');
 var response  = require('../utils/response.js').response;

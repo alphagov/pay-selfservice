@@ -10,8 +10,8 @@ var paths = require(__dirname + '/../../app/paths.js');
 var mock_session = require(__dirname + '/../test_helpers/mock_session.js');
 var login_controller = require(__dirname + '/../../app/controllers/login_controller.js');
 createGovukNotifyToken = require('../test_helpers/jwt');
-var mockRes = require('../unit/fixtures/response');
-var mockNotify = require('../unit/fixtures/notify');
+var mockRes = require('../fixtures/response');
+var mockNotify = require('../fixtures/notify');
 
 var should = chai.should();
 var chaiAsPromised = require('chai-as-promised');

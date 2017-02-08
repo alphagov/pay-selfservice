@@ -43,7 +43,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
     .send(sendData);
 }
 
-describe ('The ' + paths.credentials.index + ' endpoint', function () {
+describe('The ' + paths.credentials.index + ' endpoint', function () {
 
   afterEach(function () {
     nock.cleanAll();
@@ -73,7 +73,10 @@ describe ('The ' + paths.credentials.index + ' endpoint', function () {
       "payment_provider": "Sandbox",
       "editMode": false,
       "editNotificationCredentialsMode": false,
-      "credentials": {}
+      "credentials": {},
+      "permissions": {
+        gateway_credentials_read: true
+      }
     };
 
     build_get_request(paths.credentials.index, app)
@@ -94,7 +97,10 @@ describe ('The ' + paths.credentials.index + ' endpoint', function () {
       "payment_provider": "Sandbox",
       "editMode": false,
       "editNotificationCredentialsMode": false,
-      "credentials": {}
+      "credentials": {},
+      "permissions": {
+        gateway_credentials_read: true
+      }
     };
 
     build_get_request(paths.credentials.index, app)
@@ -116,6 +122,9 @@ describe ('The ' + paths.credentials.index + ' endpoint', function () {
       "editMode": false,
       "credentials": {
         'username': 'a-username'
+      },
+      "permissions": {
+        gateway_credentials_read: true
       }
     };
 
@@ -140,6 +149,9 @@ describe ('The ' + paths.credentials.index + ' endpoint', function () {
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
+      },
+      "permissions": {
+        gateway_credentials_read: true
       }
     };
 
@@ -210,7 +222,10 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "payment_provider": "Sandbox",
       "editMode": true,
       "editNotificationCredentialsMode": false,
-      "credentials": {}
+      "credentials": {},
+      "permissions": {
+        gateway_credentials_update: true
+      }
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -231,7 +246,10 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "payment_provider": "Sandbox",
       "editMode": true,
       "editNotificationCredentialsMode": false,
-      "credentials": {}
+      "credentials": {},
+      "permissions": {
+        gateway_credentials_update: true
+      }
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -253,6 +271,9 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "editMode": true,
       "credentials": {
         'username': 'a-username'
+      },
+      "permissions": {
+        gateway_credentials_update: true
       }
     };
 
@@ -267,7 +288,10 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       .reply(200, {
         "payment_provider": "sandbox",
         "gateway_account_id": "1",
-        "credentials": {username: "a-username", merchant_id: 'a-merchant-id'}
+        "credentials": {username: "a-username", merchant_id: 'a-merchant-id'},
+        "permissions": {
+          gateway_credentials_update: true
+        }
       });
 
     var expectedData = {
@@ -277,6 +301,9 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
+      },
+      "permissions": {
+        gateway_credentials_update: true
       }
     };
 
@@ -347,7 +374,10 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "payment_provider": "Sandbox",
       "editMode": false,
       "editNotificationCredentialsMode": true,
-      "credentials": {}
+      "credentials": {},
+      "permissions": {
+        gateway_credentials_update: true
+      }
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -361,14 +391,20 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       .reply(200, {
         "payment_provider": "sandbox",
         "gateway_account_id": "1",
-        "credentials": {}
+        "credentials": {},
+        "permissions": {
+          gateway_credentials_update: true
+        }
       });
 
     var expectedData = {
       "payment_provider": "Sandbox",
       "editMode": false,
       "editNotificationCredentialsMode": true,
-      "credentials": {}
+      "credentials": {},
+      "permissions": {
+        gateway_credentials_update: true
+      }
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -390,6 +426,9 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "editMode": false,
       "credentials": {
         'username': 'a-username'
+      },
+      "permissions": {
+        gateway_credentials_update: true
       }
     };
 
@@ -404,7 +443,10 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       .reply(200, {
         "payment_provider": "sandbox",
         "gateway_account_id": "1",
-        "credentials": {username: "a-username", merchant_id: 'a-merchant-id'}
+        "credentials": {username: "a-username", merchant_id: 'a-merchant-id'},
+        "permissions": {
+          gateway_credentials_update: true
+        }
       });
 
     var expectedData = {
@@ -414,6 +456,9 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
+      },
+      "permissions": {
+        gateway_credentials_update: true
       }
     };
 
@@ -491,7 +536,10 @@ describe('The notification credentials', function () {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
       },
-      "notification_credentials": {username: "a-notification-username"}
+      "notification_credentials": {username: "a-notification-username"},
+      "permissions": {
+        gateway_credentials_read: true
+      }
     };
 
     build_get_request(paths.credentials.index, app)
