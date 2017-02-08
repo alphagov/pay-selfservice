@@ -19,5 +19,9 @@ module.exports = {
       pactBroker: pactBrokerUrl,
       consumerVersion: "1"
     })
+  },
+
+  removeAll: function () {
+    return wrapper.removeAllServers();
   }
 };

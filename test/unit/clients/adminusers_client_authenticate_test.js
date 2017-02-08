@@ -22,20 +22,21 @@ describe('adminusers client', function () {
   /**
    * Start the server and set up Pact
    */
-  beforeEach(function (done) {
+  before(function (done) {
+    this.timeout(5000);
     mockServer.start().then(function () {
       adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
-      done()
+      done();
     });
   });
 
   /**
    * Remove the server and publish pacts to broker
    */
-  afterEach(function (done) {
-    mockServer.delete().then(() => {
-      done();
-    })
+  after(function (done) {
+    mockServer.delete()
+      .then(() => pactProxy.removeAll())
+      .then(() => done());
   });
 
   describe('authenticate user API', function () {
@@ -123,8 +124,8 @@ describe('adminusers client', function () {
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/authenticate`)
-            .withState('a user not exists with a given username password')
-            .withUponReceiving('a user authenticate request with no matching user')
+            .withState('a user exists with a given username password')
+            .withUponReceiving('a user authenticate request with malformed request')
             .withMethod('POST')
             .withRequestBody(request)
             .withStatusCode(400)

@@ -23,9 +23,10 @@ describe('adminusers client', function () {
    * Start the server and set up Pact
    */
   before(function (done) {
+    this.timeout(5000);
     mockServer.start().then(function () {
       adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
-      done()
+      done();
     });
   });
 
@@ -33,9 +34,9 @@ describe('adminusers client', function () {
    * Remove the server and publish pacts to broker
    */
   after(function (done) {
-    mockServer.delete().then(() => {
-      done();
-    })
+    mockServer.delete()
+      .then(() => pactProxy.removeAll())
+      .then(() => done());
   });
 
   describe('Forgotten Password API', function () {
@@ -49,10 +50,10 @@ describe('adminusers client', function () {
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${code}`)
-          .withState('a forgotten password entry exist')
-          .withUponReceiving('forgotten password get request')
-          .withResponseBody(validForgottenPasswordResponse.getPactified())
-          .build()
+            .withState('a forgotten password entry exist')
+            .withUponReceiving('forgotten password get request')
+            .withResponseBody(validForgottenPasswordResponse.getPactified())
+            .build()
         ).then(() => done());
       });
 
@@ -71,7 +72,6 @@ describe('adminusers client', function () {
         }).should.notify(done);
       });
     });
-
 
 
     context('GET forgotten password API - not found', () => {
