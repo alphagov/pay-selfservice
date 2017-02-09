@@ -1,6 +1,6 @@
 const _ = require('lodash');
 var Pact = require('pact');
-var User = require(__dirname + '/../../../app/models/user2').User;
+var User = require(__dirname + '/../../../app/models/user').User;
 var matchers = Pact.Matchers;
 
 function randomString() {

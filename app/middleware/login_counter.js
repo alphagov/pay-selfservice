@@ -1,5 +1,5 @@
 "use strict";
-var userService = require('../services/user_service2.js');
+var userService = require('../services/user_service.js');
 var paths = require('../paths.js');
 var _ = require('lodash');
 var logger = require('winston');

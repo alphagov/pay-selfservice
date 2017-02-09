@@ -1,206 +1,127 @@
-var sequelizeConfig       = require('./../utils/sequelize_config.js');
-var sequelizeConnection   = sequelizeConfig.sequelize;
-var Sequelize             = require('sequelize');
-var bcrypt                = require('bcrypt');
-var q                     = require('q');
-var _                     = require('lodash');
-var notp                  = require('notp');
-var logger                = require('winston');
-
-var forgottenPassword     = require('./forgotten_password.js').sequelize;
-var Role                  = require('./role.js').sequelize;
-var UserRole              = require('./user_role.js').sequelize;
-var moment                = require('moment');
-var paths                 = require(__dirname + '/../paths.js');
-var commonPassword        = require('common-password');
-
-const MIN_PASSWORD_LENGTH       = 10;
-const HASH_PASSWORD_SALT_ROUNDS = 10;
-
-var User = sequelizeConnection.define('user', {
-  username: {
-    unique: true,
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
+const _ = require('lodash');
+var notp = require('notp');
+/**
+ * @type User
+ */
+class User {
+  constructor(userData) {
+    if (!userData) {
+      throw Error('Must provide username');
     }
-  },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-      isValid: function(value, next){
-        if (commonPassword(value)) {
-          return next('Your password is too simple. Choose a password that is harder for people to guess.');
-        }
-
-        if ( value.length < MIN_PASSWORD_LENGTH) {
-          return next("Your password must be at least 10 characters.")
-        }
-        next();
-      }
-    },
-  },
-  email: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    },
-  },
-  gateway_account_id: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    },
-  },
-  otp_key: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    },
-  },
-  telephone_number: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    },
-  },
-  disabled: {
-    type: Sequelize.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  },
-  login_counter: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    defaultValue: 0
-  },
-  session_version: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    defaultValue: 0
+    this._username = userData.username;
+    this._email = userData.email || '';
+    this._gatewayAccountId = userData.gateway_account_id ? String(userData.gateway_account_id) : '';
+    this._otpKey = userData.otp_key || '';
+    this._telephoneNumber = userData.telephone_number || '';
+    this._disabled = userData.disabled ? userData.disabled : false;
+    this._loginCounter = userData.login_counter || 0;
+    this._sessionVersion = userData.session_version || 0;
+    this._permissions = userData.permissions || [];
+    this._role = userData.role || {};
   }
-});
 
-User.hasMany(forgottenPassword, {as: 'forgotten'});
-User.belongsToMany(Role, { as: 'roles', through: UserRole, foreignKey:'user_id', otherKey:'role_id'});
+  toJson() {
+    let json = this.toMinimalJson();
 
-var hashPasswordHook = function(instance) {
-  if (!instance.changed('password')) return;
-  var hash = bcrypt.hashSync(instance.get('password'), HASH_PASSWORD_SALT_ROUNDS);
-  instance.set('password', hash);
-};
-
-User.beforeCreate(hashPasswordHook);
-User.beforeUpdate(hashPasswordHook);
-
-/**
- * @param {boolean} toggle
- * @returns {Promise}
- */
-User.Instance.prototype.toJSON = function(toggle) {
-  var values = Object.assign({}, this.get());
-
-  delete values.password;
-  return values;
-};
-
-/**
- * @param {boolean} toggle
- * @returns {Promise}
- */
-User.Instance.prototype.toggleDisabled = function(toggle) {
-  var defer = q.defer(),
-  log = ()=> logger.info(this.id + " disabled status is now " + toggle);
-  var update = { disabled: toggle };
-  if (toggle == false) update.login_counter = 0;
-  User.update(
-    update,
-    { where: { id : this.id } }
-  )
-  .then(
-    ()=>{ log(); defer.resolve();},
-    ()=>{ log(); defer.reject();});
-  return defer.promise;
-};
-
-/**
- * @param {string} password
- * @returns {Promise}
- */
-User.Instance.prototype.updatePassword = function(password) {
-  this.password = password;
-  return this.save();
-};
-
-/**
- * @returns {Promise}
- */
-User.Instance.prototype.incrementLoginCount = function(){
-  return this.increment('login_counter');
-};
-
-/**
- * @returns {Promise}
- */
-User.Instance.prototype.incrementSessionVersion = function(){
-  return this.increment('session_version');
-};
-
-/**
- * @returns {Promise}
- */
-User.Instance.prototype.resetLoginCount = function(){
-  this.login_counter = 0;
-  return this.update({login_counter: 0});
-};
-
-/**
- * @param {string} newEmail
- * @param {string} newUserName
- * @returns {Promise}
- */
-User.Instance.prototype.updateUserNameAndEmail = function(newEmail, newUserName) {
-  if(newEmail && newEmail !='') {
-    this.email    = newEmail;
+    return _.merge(json, {
+      disabled: this._disabled,
+      login_counter: this._loginCounter,
+      session_version: this._sessionVersion,
+      permissions: this._permissions,
+    });
   }
-  if (newUserName || newUserName != '') {
-    this.username = newUserName;
+
+  toMinimalJson() {
+    let json = {
+      username: this._username,
+      email: this._email,
+      gateway_account_id: this._gatewayAccountId,
+      telephone_number: this._telephoneNumber,
+      /**
+       * As of now, we expect these JSON representations are only used for data transfer between AdminUsers.
+       * AdminUsers does not require the "role.description" (ever) as it is set directly from migration scripts.
+       * Hence we are flattening the role object just to "role_name" here.
+       */
+      role_name: this._role.name
+    };
+
+    if (this._otpKey) {
+      json.otp_key = this._otpKey;
+    }
+    return json;
   }
-  return this.save();
-};
 
-/**
- * @returns {String}
- */
-User.Instance.prototype.generateOTP = function() {
-  return notp.totp.gen(this.otp_key);
-};
-
-/**
- * @param {Role} role instance and also accept {Integer} primary key of a Role
- * @param {User} user to set the given role
- *
- * Set given role to a user overriding its current one
- */
-User.Instance.prototype.setRole = function(role) {
-  let roleId;
-  if (typeof role === 'number' || typeof role === 'string') {
-    roleId = role;
-  } else {
-    roleId = role.id;
+  /**
+   * @returns {String}
+   */
+  generateOTP() {
+    return notp.totp.gen(this._otpKey);
   }
-  return this.setRoles([roleId]);
-};
 
-User.sequelize.sync();
+  /**
+   * @param {String} permissionName name of permission
+   */
+  hasPermission(permissionName) {
+    return this._permissions.indexOf(permissionName) !== -1;
+  }
 
-module.exports = {
-  User: User
-};
+  addPermission(permission) {
+    this._permissions.push(permission);
+    return this;
+  }
+
+  get username() {
+    return this._username;
+  }
+
+  get loginCounter() {
+    return this._loginCounter;
+  }
+
+  get sessionVersion() {
+    return this._sessionVersion;
+  }
+
+  set sessionVersion(value) {
+    this._sessionVersion = value;
+  }
+
+  get permissions() {
+    return this._permissions;
+  }
+
+  get email() {
+    return this._email;
+  }
+
+  get gatewayAccountId() {
+    return this._gatewayAccountId;
+  }
+
+  set gatewayAccountId(value) {
+    this._gatewayAccountId = value;
+  }
+
+  get otpKey() {
+    return this._otpKey;
+  }
+
+  get telephoneNumber() {
+    return this._telephoneNumber;
+  }
+
+  get disabled() {
+    return this._disabled;
+  }
+
+  set disabled(value){
+    this._disabled = value;
+  }
+
+  get role() {
+    return this._role;
+  }
+
+}
+
+module.exports.User = User;

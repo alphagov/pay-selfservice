@@ -11,7 +11,6 @@ govuk_modules
 node_modules/*
 */node_modules/*
 pacts/
-database.sqlite
 
 *.txt
 *.log
@@ -21,5 +20,3 @@ database.sqlite
 *.iml
 *.ipr
 *.iws
-
-create_user.js$

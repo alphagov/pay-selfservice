@@ -7,7 +7,7 @@ var TotpStrategy = require('passport-totp').Strategy;
 var csrf = require('csrf');
 var sessionValidator = require(__dirname + '/session_validator.js');
 var paths = require(__dirname + '/../paths.js');
-var userService = require('../services/user_service2.js');
+var userService = require('./user_service.js');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {

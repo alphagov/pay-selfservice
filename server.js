@@ -10,7 +10,6 @@ var selfServiceSession= require(__dirname + '/app/utils/session.js').selfService
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
-var dependenciesCheck = require(__dirname + '/app/utils/dependent_resource_checker.js');
 var logger            = require('winston');
 var loggingMiddleware = require('morgan');
 var argv              = require('minimist')(process.argv.slice(2));
@@ -136,13 +135,7 @@ function initialise() {
  * Starts app after ensuring DB is up
  */
 function start() {
-  if (!environment.isProduction()) {
-    // startup application immediately on a non-production environment
-    listen();
-  } else {
-    logger.info("Checking Dependent resources before startup....");
-    dependenciesCheck.checkDependentResources(listen, 5);
-  }
+  listen();
 }
 
 //immediately invoke start if -i flag set. Allows script to be run by task runner

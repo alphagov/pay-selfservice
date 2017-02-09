@@ -79,10 +79,9 @@ describe('auth service', function () {
   describe('deserialize user', function(){
 
     it("should find user by username", function (done) {
-
       let authService = (userMock)=> {
         return proxyquire(__dirname + '/../../../app/services/auth_service.js',
-          {'../services/user_service2.js': userMock});
+          {'./user_service.js': userMock});
       };
 
       let user = mockUser();

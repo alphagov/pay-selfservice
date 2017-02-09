@@ -8,8 +8,6 @@ ENV NEW_RELIC_HOME /app/newrelic
 
 EXPOSE 9000
 
-RUN apt-get update && apt-get install -y postgresql-client-9.4
-
 # add package.json before source for node_module cache
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
