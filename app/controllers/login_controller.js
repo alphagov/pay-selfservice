@@ -5,6 +5,7 @@ var userService  = require('../services/user_service.js');
 var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
+var response = require('../utils/response.js').response;
 var errorView = require('../utils/response.js').renderErrorView;
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
@@ -20,9 +21,9 @@ var logLoginAction = function(req, message) {
 
 module.exports.loggedIn = function (req, res) {
   logLoginAction(req, 'successfully logged in');
-  res.render('login/logged_in', {
+  response(req, res, 'login/logged_in', {
     name: req.user.username
-  });
+  }, true);
 };
 
 module.exports.logOut = function (req, res) {
