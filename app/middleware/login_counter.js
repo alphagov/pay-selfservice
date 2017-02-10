@@ -7,7 +7,7 @@ var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_H
 
 var lockOut = (req, res, user) => {
   var correlationId = req.headers[CORRELATION_HEADER] || '';
-  logger.info(`[${correlationId}] user: ${user.username} locked out due to many password attempts`);
+  logger.info(`[${correlationId}] user: ${_.get(req, 'user.id')} locked out due to many password attempts`);
   return res.render("login/noaccess");
 };
 
@@ -32,26 +32,24 @@ module.exports = {
   },
 
   enforceOtp: function (req, res, next) {
-    var username = _.get(req.user, 'username');
-    var correlationId = req.headers[CORRELATION_HEADER] || '';
+    let correlationId = req.headers[CORRELATION_HEADER] || '';
+    let user = req.user;
 
-    return userService.incrementLoginCount(req.user.username)
-      .then((user) => {
-          if (user.disabled) {
-            return lockOut(req, res, user);
-          } else {
-            return next();
-          }
-        },
-        () => {
-          throw new Error("couldn't save user login counter");
-        }
-      )
-      .catch(function (err) {
-        var correlationId = req.headers[CORRELATION_HEADER] || '';
-        logger.info(`[${correlationId}] Unsuccessful user login due to invalid username.` +
-          `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}] Error = ${err}` );
-        next();
-      })
+    if (user.disabled) {
+      return lockOut(req, res, user);
+    } else {
+      return userService.incrementLoginCount(user.username)
+        .then((updatedUser) => {
+          req.user = updatedUser;
+          next();
+        })
+        .catch(function (err) {
+          let adminuserStatus = err.statusCode || '';
+          logger.info(`[${correlationId}] incrementLoginCount failed. Status code from admin users ? [${adminuserStatus}] ` +
+            `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}] Error = ${err}`);
+          next();
+        });
+    }
   }
+
 };

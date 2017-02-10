@@ -46,17 +46,12 @@ describe('login counter test', function () {
   });
 
   it('should call lockout user when user disabled in otplogin', function (done) {
-    var user = mockSession.getUser();
-    var incrementLoginCountSpy = sinon.spy();
-    var nextSpy = sinon.spy();
-    var mockedUserService = {
-      findByUsername: () => {
-        var defer = q.defer();
-        defer.resolve(user);
-        return defer.promise;
-      },
+    let user = mockSession.getUser({disabled: true});
+    let incrementLoginCountSpy = sinon.spy();
+    let nextSpy = sinon.spy();
+    let mockedUserService = {
       incrementLoginCount: () => {
-        var defer = q.defer();
+        let defer = q.defer();
         user.disabled = true;
         defer.resolve(user);
         incrementLoginCountSpy();
@@ -64,13 +59,13 @@ describe('login counter test', function () {
       }
     };
 
-    var loginMiddleware = login(mockedUserService);
-    var res = {render: sinon.stub()};
+    let loginMiddleware = login(mockedUserService);
+    let res = {render: sinon.stub()};
 
-    loginMiddleware.enforceOtp({user: user, headers: {}}, res, nextSpy).should.be.fulfilled.then(() => {
-        assert(incrementLoginCountSpy.calledOnce);
-        assert(nextSpy.notCalled);
-        assert(res.render.calledWithExactly("login/noaccess"));
-      }).should.notify(done);
+    loginMiddleware.enforceOtp({user: user, headers: {}}, res, nextSpy);
+    assert(incrementLoginCountSpy.notCalled);
+    assert(nextSpy.notCalled);
+    assert(res.render.calledWithExactly("login/noaccess"));
+    done();
   });
 });
