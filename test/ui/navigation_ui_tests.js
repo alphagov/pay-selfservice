@@ -2,7 +2,7 @@ let should = require('chai').should();
 let renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
 let paths = require(__dirname + '/../../app/paths.js');
 
-describe.only('navigation menu', function () {
+describe('navigation menu', function () {
 
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
 

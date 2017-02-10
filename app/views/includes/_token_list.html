@@ -12,12 +12,13 @@
         There are no {{token_state}} API keys
         {{/tokens.length}}
     </h2>
-
+    {{#permissions.tokens_create}}
     {{#active}}
         <a class="button generate-key" href="/tokens/generate">
             Generate a new key
         </a>
     {{/active}}
+    {{/permissions.tokens_create}}
 
     {{#tokens.length}}
     <ul class="key-list">
