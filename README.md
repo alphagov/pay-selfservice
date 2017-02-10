@@ -37,10 +37,6 @@ LOCAL_ENV=true msl run
 | SESSION_ENCRYPTION_KEY      | X |      | key to be used by the cookie encryption algorithm. Should be a large unguessable string ([More Info](https://www.npmjs.com/package/client-sessions)).  |
 | PUBLIC_AUTH_URL             | X |      | The publicauth endpoint to use when API Tokens. |
 | PUBLIC_AUTH_URL             | X |      | The endpoint to connector base URL. |
-| AUTH0_URL                   | X |      | The auth0 endpoint to use during single sign-on  |
-| AUTH0_CLIENT_ID             | X |      | auth0 client-id to use during single sign-on verifications |
-| AUTH0_CLIENT_SECRET         | X |      | auth0 password to use during single sign-on verifications |
-| NODE_TLS_REJECT_UNAUTHORIZED| X |   1  | indicating whether a server should automatically reject clients with invalid certificates. Only applies to servers with requestCert enabled |
 | SECURE_COOKIE_OFF           |   | false/undefined | To switch off generating secure cookies. Set this to `true` only if you are running self service in a `non HTTPS` environment. |
 | HTTP_PROXY_ENABLED          |   | false/undefined | To enable proxying outbound traffic of HTTP(S) requests. If set to `true` make sure to set the following 3 variables |
 | HTTP_PROXY                  |   |      | HTTP proxy url |
