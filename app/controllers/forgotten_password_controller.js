@@ -66,9 +66,6 @@ e.newPasswordPost = (req, res) => {
           logger.error('PROBLEM LOGGIN OUT LOGGED IN USERS')
         }
       );
-    }, (error) => {
-      req.flash('genericError', error.message);
-      res.redirect('/reset-password/' + req.params.id);
     })
     .catch(function (error) {
       req.flash('genericError', error.message);
