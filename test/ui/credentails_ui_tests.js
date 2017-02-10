@@ -9,6 +9,9 @@ describe('The credentials view in normal mode', function () {
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
+      },
+      permissions: {
+        gateway_credentials_read: true
       }
     };
 
@@ -39,6 +42,9 @@ describe('The credentials view in normal mode', function () {
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
+      },
+      permissions: {
+        gateway_credentials_read: true
       }
     };
 
@@ -55,6 +61,9 @@ describe('The credentials view in normal mode', function () {
       "credentials": {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
+      },
+      permissions: {
+        gateway_credentials_read: true
       }
     };
 
@@ -88,6 +97,9 @@ describe('The credentials view in normal mode', function () {
       },
       "notification_credentials": {
         'userName': 'a-notification-username'
+      },
+      permissions: {
+        gateway_credentials_read: true
       }
     };
 
@@ -147,7 +159,10 @@ describe('The credentials view in edit mode', function () {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
       },
-      'editMode': 'true'
+      'editMode': 'true',
+      permissions: {
+        gateway_credentials_update: true
+      }
     };
 
     var body = renderTemplate('provider_credentials/worldpay', templateData);
@@ -182,7 +197,10 @@ describe('The credentials view in edit mode', function () {
         'username': 'a-username',
         'merchant_id': 'a-merchant-id'
       },
-      'editMode': 'true'
+      'editMode': 'true',
+      permissions: {
+        gateway_credentials_update: true
+      }
     };
 
     var body = renderTemplate('provider_credentials/smartpay', templateData);
@@ -214,7 +232,10 @@ describe('The credentials view in edit mode', function () {
     var templateData = {
       "payment_provider": "Sandbox",
       "credentials": {},
-      'editMode': 'true'
+      'editMode': 'true',
+      permissions: {
+        gateway_credentials_update: true
+      }
     };
 
     var body = renderTemplate('provider_credentials/sandbox', templateData);

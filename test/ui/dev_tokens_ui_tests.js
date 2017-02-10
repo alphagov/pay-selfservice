@@ -11,7 +11,10 @@ describe('The token view', function() {
       "header": 'available-tokens',
       "token_state": 'active',
       "tokens": [],
-      "tokens_singular": false
+      "tokens_singular": false,
+      permissions: {
+        tokens_create: true
+      }
     };
     let body = renderTemplate('token', templateData);
 

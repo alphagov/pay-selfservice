@@ -6,7 +6,7 @@
 <h4 class="heading-small" id="view-title">Your {{payment_provider}} Credentials</h4>
 </p>
 
-
+{{#permissions.gateway_credentials_read}}
 {{^editMode}}
 <dl id="credentials">
     <dt id="merchant-id-key" class="font-xsmall"><p>Merchant ID</p></dt>
@@ -22,7 +22,9 @@
     Edit credentials
 </a>
 {{/editMode}}
+{{/permissions.gateway_credentials_read}}
 
+{{#permissions.gateway_credentials_update}}
 {{#editMode}}
 <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -45,7 +47,7 @@
 
 </form>
 {{/editMode}}
-
+{{/permissions.gateway_credentials_update}}
 {{/providerContent}}
 
 {{/credentials}}
