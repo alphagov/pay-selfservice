@@ -16,6 +16,9 @@ var templateData = {
     "label": 'Visa',
     "available": true,
     "selected": true
+  },
+  permissions: {
+    'payment_types_read': true
   }
 };
 

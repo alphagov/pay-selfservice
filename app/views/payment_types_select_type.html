@@ -1,6 +1,7 @@
 {{< payment_types}}
 
 {{$page_content}}
+{{#permissions.payment_types_update}}
 
 <form id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -21,7 +22,7 @@
     </div>
     <input id="payment-types-continue-button" name="payment-types-continue-button" type="submit" class="button" value="Continue">
 </form>
-
+{{/permissions.payment_types_update}}
 {{/page_content}}
 
 {{/payment_types}}

@@ -1,7 +1,7 @@
 {{< payment_types}}
 
 {{$page_content}}
-
+{{#permissions.payment_types_update}}
 <form id="payment-types-card-brand-selection-form" method="post" action="{{routes.paymentTypes.selectBrand}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input id="accepted-card-type" name="acceptedType" type="hidden" value="{{acceptedType}}"/>
@@ -74,7 +74,7 @@
         Cancel
     </a>
 </form>
-
+{{/permissions.payment_types_update}}
 {{/page_content}}
 
 {{/payment_types}}

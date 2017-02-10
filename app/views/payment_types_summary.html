@@ -1,7 +1,7 @@
 {{< payment_types}}
 
 {{$page_content}}
-
+{{#permissions.payment_types_read}}
 <div id="payment-types-card-summary" class="form-group">
     <div class="panel panel-border-wide">
         {{#isAcceptedTypeAll}}
@@ -65,7 +65,7 @@
     Manage
 </a>
 
-
+{{/permissions.payment_types_read}}
 {{/page_content}}
 
 {{/payment_types}}
