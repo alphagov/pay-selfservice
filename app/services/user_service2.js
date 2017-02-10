@@ -116,7 +116,7 @@ module.exports = {
     getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(user.username)
       .then((forgottenPassword) => sendForgottenPasswordEmail(user, forgottenPassword.code, correlationId, defer),
         () => {
-          logger.warn(`[${correlationId}] PROBLEM CREATING FORGOTTEN PASSWORD. User: `, user.username);
+          logger.warn(`[${correlationId}] PROBLEM CREATING FORGOTTEN PASSWORD. User: ${_.get(user, 'id')}`);
           defer.reject();
         });
 

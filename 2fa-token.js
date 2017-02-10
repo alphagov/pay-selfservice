@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
   return;
 }
 
-var userService = require('./app/services/user_service2.js');
+var userService = require('./app/services/user_service.js');
 
 var argv = require('yargs')
   .usage('Usage: $0 -u [username]')
