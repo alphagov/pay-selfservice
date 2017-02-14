@@ -1,14 +1,13 @@
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
 var nock = require('nock');
 var csrf = require('csrf');
 var should = require('chai').should();
 var paths = require(__dirname + '/../../app/paths.js');
-var userService = require(__dirname + '/../../app/services/user_service.js');
-
+var app;
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 
 var ACCOUNT_ID = 182364;
@@ -16,23 +15,21 @@ var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
 var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + "/credentials";
 var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = "/v1/api/accounts/" + ACCOUNT_ID + "/notification-credentials";
 
-var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
 var requestId = 'some-unique-id';
-var user = session.user;
 var defaultCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
 };
 
 var connectorMock = nock(process.env.CONNECTOR_URL, defaultCorrelationHeader);
 
-function build_get_request(path) {
+function build_get_request(path, app) {
   return request(app)
     .get(path)
     .set('Accept', 'application/json')
     .set('x-request-id', requestId);
 }
 
-function build_form_post_request(path, sendData, sendCSRF) {
+function build_form_post_request(path, sendData, sendCSRF, app) {
   sendCSRF = (sendCSRF === undefined) ? true : sendCSRF;
   if (sendCSRF) {
     sendData.csrfToken = csrf().create('123');
@@ -46,23 +43,21 @@ function build_form_post_request(path, sendData, sendCSRF) {
     .send(sendData);
 }
 
-describe('The ' + paths.credentials.index + ' endpoint', function () {
+describe ('The ' + paths.credentials.index + ' endpoint', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    winston.level = 'none';
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: user.telephone_number,
-      session_version: 0
-    };
-    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
+  beforeEach(function (done) {
+    let permissions = 'gateway-credentials:read';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -81,7 +76,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "credentials": {}
     };
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -102,7 +97,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "credentials": {}
     };
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -124,7 +119,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       }
     };
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -148,7 +143,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       }
     };
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -159,7 +154,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
         "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
       });
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -171,7 +166,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
         "message": "Some error in Connector"
       });
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -179,7 +174,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
   it('should display an error if the connection to connector fails', function (done) {
     // No connectorMock defined on purpose to mock a network failure
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -187,20 +182,19 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
 
 describe('The ' + paths.credentials.edit + ' endpoint', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    winston.level = 'none';
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
+  beforeEach(function (done) {
+    let permissions = 'gateway-credentials:update';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -219,7 +213,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "credentials": {}
     };
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -240,7 +234,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "credentials": {}
     };
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -262,7 +256,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       }
     };
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -286,7 +280,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       }
     };
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -297,7 +291,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
         "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
       });
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -309,7 +303,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
         "message": "Some error in Connector"
       });
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -317,7 +311,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
   it('should display an error if the connection to connector fails', function (done) {
     // No connectorMock defined on purpose to mock a network failure
 
-    build_get_request(paths.credentials.edit)
+    build_get_request(paths.credentials.edit, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -325,20 +319,19 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
 
 describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    winston.level = 'none';
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
+  beforeEach(function (done) {
+    let permissions = 'gateway-credentials:update';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   it('should display payment provider name in title case', function (done) {
@@ -357,7 +350,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "credentials": {}
     };
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -378,7 +371,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "credentials": {}
     };
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -400,7 +393,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       }
     };
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -424,7 +417,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       }
     };
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -435,7 +428,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
         "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
       });
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -447,7 +440,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
         "message": "Some error in Connector"
       });
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
@@ -455,28 +448,26 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
   it('should display an error if the connection to connector fails', function (done) {
     // No connectorMock defined on purpose to mock a network failure
 
-    build_get_request(paths.notificationCredentials.edit)
+    build_get_request(paths.notificationCredentials.edit, app)
       .expect(200, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 });
 
 describe('The notification credentials', function () {
-
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    winston.level = 'none';
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:read', done);
+  beforeEach(function (done) {
+    let permissions = 'gateway-credentials:read';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   it('should pass through the notification credentials', function (done) {
@@ -503,7 +494,7 @@ describe('The notification credentials', function () {
       "notification_credentials": {username: "a-notification-username"}
     };
 
-    build_get_request(paths.credentials.index)
+    build_get_request(paths.credentials.index, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -511,20 +502,19 @@ describe('The notification credentials', function () {
 
 describe('The provider update credentials endpoint', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    winston.level = 'none';
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
+  beforeEach(function (done) {
+    let permissions = 'gateway-credentials:update';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   it('should send new username, password and merchant_id credentials to connector', function (done) {
@@ -537,11 +527,10 @@ describe('The provider update credentials endpoint', function () {
       }
     }).reply(200, {});
 
-//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
     var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData)
+    build_form_post_request(path, sendData, true, app)
       .expect(303, {})
       .expect('Location', expectedLocation)
       .end(done);
@@ -559,7 +548,7 @@ describe('The provider update credentials endpoint', function () {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData)
+    build_form_post_request(path, sendData, true, app)
       .expect(303, {})
       .expect('Location', expectedLocation)
       .end(done);
@@ -577,7 +566,7 @@ describe('The provider update credentials endpoint', function () {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var expectedData = {"message": "There is a problem with the payments platform"};
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData)
+    build_form_post_request(path, sendData, true, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -588,7 +577,7 @@ describe('The provider update credentials endpoint', function () {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var expectedData = {"message": "There is a problem with the payments platform"};
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData)
+    build_form_post_request(path, sendData, true, app)
       .expect(200, expectedData)
       .end(done);
   });
@@ -604,7 +593,7 @@ describe('The provider update credentials endpoint', function () {
 //    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var path = paths.credentials.index;
-    build_form_post_request(path, sendData, false)
+    build_form_post_request(path, sendData, false, app)
       .expect(200, {message: "There is a problem with the payments platform"})
       .end(done);
   });
@@ -612,21 +601,19 @@ describe('The provider update credentials endpoint', function () {
 
 describe('The provider update notification credentials endpoint', function () {
 
-  beforeEach(function (done) {
+  afterEach(function () {
     nock.cleanAll();
-    done();
+    app = null;
   });
 
-  before(function (done) {
-    winston.level = 'none';
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'gateway-credentials:update', done);
+  beforeEach(function (done) {
+    let permissions = 'gateway-credentials:update';
+    var user = session.getUser({
+      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
 
   it('should send new username and password notification credentials to connector', function (done) {
@@ -636,12 +623,10 @@ describe('The provider update notification credentials endpoint', function () {
     })
       .reply(200, {});
 
-
-//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
     var sendData = {'username': 'a-notification-username', 'password': 'a-notification-password'};
     var expectedLocation = paths.credentials.index;
     var path = paths.notificationCredentials.update;
-    build_form_post_request(path, sendData)
+    build_form_post_request(path, sendData, true, app)
       .expect(303, {})
       .expect('Location', expectedLocation)
       .end(done);

@@ -8,13 +8,7 @@ module.exports = {
    * @returns {boolean}
    */
   validate: function(user, session) {
-    return _.get(user, 'session_version', 0) === session.version;
+    return _.get(user, 'sessionVersion', 0) === session.version;
   },
 
-  /**
-   * @param {bobby.User} user
-   */
-  incrementSessionVersion: function(user) {
-    user.incrementSessionVersion();
-  }
 };

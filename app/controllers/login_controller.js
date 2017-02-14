@@ -2,7 +2,7 @@
 var logger    = require('winston');
 var _ = require('lodash');
 var response  = require('../utils/response.js').response;
-var userService  = require('../services/user_service.js');
+var userService  = require('../services/user_service2.js');
 var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
@@ -16,7 +16,7 @@ var error = function(req,res,err) {
 
 var logLoginAction = function(req, message) {
   var correlationId = _.get('req.headers.' + CORRELATION_HEADER, '');
-  logger.info(`[${correlationId}] user id: ${_.get(req, 'user.id')} ${message}`);
+  logger.info(`[${correlationId}] user : ${_.get(req, 'user.id')} ${message}`);
 };
 
 module.exports.loggedIn = function (req, res) {
@@ -55,15 +55,9 @@ module.exports.logInGet = function (req, res) {
  * @param res
  */
 module.exports.postLogin = function (req, res) {
- return req.user.resetLoginCount()
-   .then(() => req.session = _.pick(req.session, ['passport', 'last_url']))
-   .then(
-    ()=>{
-      logLoginAction(req, 'successfully attempted username/password combination');
-      res.redirect(paths.user.otpLogIn);
-    },
-    (err) => error(req,res,error)
-  )
+  req.session = _.pick(req.session, ['passport', 'last_url']);
+  logLoginAction(req, 'successfully attempted username/password combination');
+  res.redirect(paths.user.otpLogIn);
 };
 
 module.exports.logUserin = function() {
@@ -95,7 +89,7 @@ module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
   var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
   delete req.session.last_url;
-  req.user.resetLoginCount()
+  return userService.resetLoginCount(req.user.username)
     .then(()=>{
       logLoginAction(req, 'successfully entered a valid 2fa token');
       res.redirect(redirect_url);

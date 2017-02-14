@@ -1,7 +1,7 @@
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var winston = require('winston');
 var nock = require('nock');
 var csrf = require('csrf');
@@ -11,8 +11,7 @@ var session = require(__dirname + '/../test_helpers/mock_session.js');
 var _ = require('lodash');
 
 var ACCOUNT_ID = 182364;
-var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
-var user = session.user;
+var app;
 var requestId = 'unique-request-id';
 var aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
@@ -41,8 +40,8 @@ var ALL_CARD_TYPES = {
     {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
 };
 
-function build_get_request(path) {
-  return request(app)
+function build_get_request(path, baseApp) {
+  return request(baseApp)
     .get(path)
     .set('Accept', 'application/json')
     .set('x-request-id',requestId);
@@ -50,19 +49,19 @@ function build_get_request(path) {
 
 describe('The payment types endpoint,', function () {
   describe('render summary view,', function () {
-    beforeEach(function () {
+    afterEach(function () {
       nock.cleanAll();
+      app = null;
     });
 
-    before(function (done) {
-      var userAttributes = {
-        username: user.username,
-        password: 'password10',
-        gateway_account_id: user.gateway_account_id,
-        email: user.email,
-        telephone_number: "1"
-      };
-      userCreator.createUserWithPermission(userAttributes, 'payment-types:read', done);
+    beforeEach(function (done) {
+      let permissions = 'payment-types:read';
+      var user = session.getUser({
+        gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      });
+      app = session.getAppWithLoggedInUser(getApp(), user);
+
+      userCreator.mockUserResponse(user.toJson(), done);
     });
 
     it('should show all the card type options that have been previously accepted', function (done) {
@@ -83,7 +82,7 @@ describe('The payment types endpoint,', function () {
         ]
       };
 
-      build_get_request(paths.paymentTypes.summary)
+      build_get_request(paths.paymentTypes.summary, app)
         .expect(200, expectedData)
         .end(done);
     });
@@ -96,7 +95,7 @@ describe('The payment types endpoint,', function () {
           "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
         });
 
-      build_get_request(paths.paymentTypes.summary)
+      build_get_request(paths.paymentTypes.summary, app)
         .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
         .end(done);
     });
@@ -109,7 +108,7 @@ describe('The payment types endpoint,', function () {
           "message": "Some error in Connector"
         });
 
-      build_get_request(paths.paymentTypes.summary)
+      build_get_request(paths.paymentTypes.summary, app)
         .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
         .end(done);
     });
@@ -122,7 +121,7 @@ describe('The payment types endpoint,', function () {
       connectorMock.post(CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH, {"card_types": []})
         .reply(200, {});
 
-      build_get_request(paths.paymentTypes.summary)
+      build_get_request(paths.paymentTypes.summary, app)
         .expect(200, {"message": "Unable to retrieve card types."})
         .end(done);
     });
@@ -130,7 +129,7 @@ describe('The payment types endpoint,', function () {
     it('should display an error if the connection to connector fails', function (done) {
       // No connectorMock defined on purpose to mock a network failure
 
-      build_get_request(paths.paymentTypes.summary)
+      build_get_request(paths.paymentTypes.summary, app)
         .expect(200, {"message": "Internal server error"})
         .end(done);
     });

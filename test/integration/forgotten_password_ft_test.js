@@ -1,162 +1,204 @@
-var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
-var request     = require('supertest');
-var _app        = require(__dirname + '/../../server.js').getApp;
-var winston     = require('winston');
-var nock        = require('nock');
-var csrf        = require('csrf');
-var assert      = require('assert');
-var should      = require('chai').should();
-var paths       = require(__dirname + '/../../app/paths.js');
-var session     = require(__dirname + '/../test_helpers/mock_session.js');
-var proxyquire  = require('proxyquire');
-var q           = require('q');
-var ACCOUNT_ID  = 182364;
+let nock = require('nock');
+var proxyquire = require('proxyquire');
+const reqFixtures = require(__dirname + '/../unit/fixtures/browser/forgotten_password_fixtures');
+const resFixtures = require(__dirname + '/../unit/fixtures/response');
+const userFixtures = require(__dirname + '/../unit/fixtures/user_fixtures');
+const notifyFixture = require(__dirname + '/../unit/fixtures/notify');
 
-var forgotten = function(user = function(){}, forgottenPass = function(){}){
-  return proxyquire(__dirname + '/../../app/controllers/forgotten_password_controller.js',{
-  '../models/user.js': user,
-  '../models/forgotten_password.js': forgottenPass
-});
+let chai = require('chai');
+let chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+const expect = chai.expect;
+
+let alwaysValidPassword = function (password) {
+  return false; // common-password returns false if password is not one of the common passwords (which would be invalid)
 };
 
-var app = session.getAppWithLoggedInSession(_app, ACCOUNT_ID);
+let userService = function (commonPasswordMock) {
+  return proxyquire(__dirname + '/../../app/services/user_service2.js', {
+    'common-password': commonPasswordMock || alwaysValidPassword
+  });
+};
+
+let forgottenPassword = function (commonPasswordMock) {
+  return proxyquire(__dirname + '/../../app/controllers/forgotten_password_controller.js', {
+    '../services/user_service2.js': userService(commonPasswordMock)
+  });
+};
+
+
+let adminusersMock = nock(process.env.ADMINUSERS_URL);
+const USER_RESOURCE = '/v1/api/users';
+const FORGOTTEN_PASSWORD_RESOURCE = '/v1/api/forgotten-passwords';
+const RESET_PASSWORD_RESOURCE = '/v1/api/reset-password';
 
 describe('forgotten_password_controller', function () {
-  describe('usernameGet', function () {
-    it('should render the view',function(){
-      forgotten().emailGet({},{render: function(name){
-        assert.equal(name,"forgotten_password/username_get");
-      }});
-    });
+
+  let forgottenPasswordController = forgottenPassword();
+
+  afterEach((done) => {
+    nock.cleanAll();
+    done();
   });
 
-  describe('emailPost', function () {
-    it('should display an error if csrf token does not exist for the forgotten password', function (done) {
-      request(app)
-      .post(paths.user.forgottenPassword)
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .send({})
-      .expect(200, { message: "There is a problem with the payments platform"})
-      .end(done);
-    });
+  it('send email upon valid forgotten password reset request', function (done) {
+    let req = reqFixtures.validForgottenPasswordPost();
+    let res = resFixtures.getStubbedRes();
+    let username = req.body.username;
+    let userResponse = userFixtures.validUserResponse({username: username});
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username});
+
+    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+      .reply(200, userResponse.getPlain());
+
+    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
+      .validForgottenPasswordCreateRequest(username)
+      .getPlain())
+      .reply(200, forgottenPasswordResponse.getPlain());
+
+    notifyFixture.mockSendForgottenPasswordEmail(
+      userResponse.getPlain().email,
+      forgottenPasswordResponse.getPlain().code);
+
+    forgottenPasswordController.emailPost(req, res).should.be.fulfilled
+      .then((user) => {
+        expect(user).to.deep.equal(userResponse.getAsObject());
+        expect(res.redirect.called).to.equal(true);
+      }).should.notify(done);
   });
 
-  describe('newPasswordGet', function () {
-    it('should render on success',function(){
-      forgotten({
-        findByResetToken: function(id){
-          return {
-            then: function(suc,fail){
-              suc(id);
-            }
-          };
-        }
-      }).newPasswordGet({params: {id:2}},{render: function(template, params){
-        assert.equal(template,"forgotten_password/new_password");
-        assert.equal(JSON.stringify(params),JSON.stringify({ id: 2 }));
+  it('display new password capture form', function (done) {
+    let req = reqFixtures.validForgottenPasswordGet();
+    let res = resFixtures.getStubbedRes();
+    let token = req.params.id;
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: token});
 
-      }});
-    });
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain());
 
-    it('should should show error view on failure of getting user',function(){
-      forgotten({
-        findByResetToken: function(id){
-          return {
-            then: function(suc,fail){
-              fail();
-            }
-          };
-        }
-      }).newPasswordGet({params: {id:2},flash: ()=>{}},{redirect: function(url){
-        assert.equal(url,"/login");
-      }});
-    });
+    forgottenPasswordController.newPasswordGet(req, res).should.be.fulfilled
+      .then(() => {
+        expect(res.render.calledWith('forgotten_password/new_password', {id: token})).to.equal(true);
+      }).should.notify(done);
   });
 
-  describe('newPasswordPost', function () {
+  it('display error view if token not found/expired', function (done) {
+    let req = reqFixtures.validForgottenPasswordGet();
+    let res = resFixtures.getStubbedRes();
+    let token = req.params.id;
 
-    it('should render error view on no user',function(){
-      forgotten({
-        findByResetToken: function(id){
-          return {
-            then: function(suc){
-              suc();
-              return {
-                then: function(){
-                  return {
-                    then: function(){
-                      return {
-                        catch: function(){}
-                      };
-                    }
-                  };
-                }
-              };
-            }
-          };
-        },
-      },
-      {
-        destroy: function(){ }
-      }
-      ).newPasswordPost({params: {id:2}, body: {password:'foo'}, headers:{}},{render: function(template, params){
-        assert.equal(template,"error");
-      }});
-    });
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(404);
 
-    it('should call everything needed to update user',function(){
-      updatePasswordCalled = false;
-      logoutCalled = false
-      forgotten({
-        findByResetToken: function(id){
-          return {
-            then: function(suc){
-              suc({
-                updatePassword: function(password){
-                  assert.equal(password,'foo');
-                  updatePasswordCalled = true;
-                },
-                logOut: function(){
-                  logoutCalled = true;
-                  return { then: (cb)=> cb()}
-                },
-              });
-              return {
-                then: function(suc){
-                  suc();
-                  return {
-                    then: function(suc){
-                      suc();
-                      return {
-                        catch: function(){}
-                      };
-                    }
-                  };
-                }
-              };
-            }
-          };
-        }
-      },
-      {
-        destroy: function(id){ assert.equal(id,2); }
-      }
-      ).newPasswordPost({params: {id:2}, body: {password:'foo'}, session: { regenerate : function(){}}, flash: ()=>{}},{redirect: function(path){
-        assert.equal(updatePasswordCalled,true);
-        assert.equal(logoutCalled,true);
-        assert.equal(path,"/login");
-      }});
-    });
-
-   it('should display an error if csrf token does not exist for the reset password', function (done) {
-      request(app)
-      .post(paths.user.forgottenPasswordReset)
-      .set('Accept', 'application/json')
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .send({})
-      .expect(200, { message: "There is a problem with the payments platform"})
-      .end(done);
-    });
+    forgottenPasswordController.newPasswordGet(req, res).should.be.fulfilled
+      .then(() => {
+        expect(req.flash.calledWith('genericError', 'Invalid password reset link')).to.equal(true);
+        expect(res.redirect.calledWith('/login')).to.equal(true);
+      }).should.notify(done);
   });
+
+  it('reset users password upon valid reset password request', function (done) {
+    let req = reqFixtures.validUpdatePasswordPost();
+    let res = resFixtures.getStubbedRes();
+    let username = req.body.username;
+    let userResponse = userFixtures.validUserResponse({username: username});
+    let token = req.params.id;
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain());
+
+    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+      .reply(200, userResponse.getPlain());
+
+    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
+      .validUpdatePasswordRequest(token, req.body.password)
+      .getPlain())
+      .reply(204);
+
+    adminusersMock.patch(`${USER_RESOURCE}/${username}`, userFixtures
+      .validIncrementSessionVersionRequest()
+      .getPlain())
+      .reply(200);
+
+    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
+      .then(() => {
+        expect(req.session.destroy.called).to.equal(true);
+        expect(req.flash.calledWith('generic', 'Password has been updated')).to.equal(true);
+        expect(res.redirect.calledWith('/login')).to.equal(true);
+      }).should.notify(done);
+  });
+
+  it('error if password is too short', function (done) {
+    let req = reqFixtures.validUpdatePasswordPost();
+    let res = resFixtures.getStubbedRes();
+    let username = req.body.username;
+    req.body.password = 'short';
+    let userResponse = userFixtures.validUserResponse({username: username});
+    let token = req.params.id;
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain());
+
+    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+      .reply(200, userResponse.getPlain());
+
+    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
+      .then(() => {
+        expect(req.flash.calledWith('genericError', 'Your password must be at least 10 characters.')).to.equal(true);
+        expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true);
+      }).should.notify(done);
+  });
+
+  it('error if password is one of the common passwords', function (done) {
+
+    let aForgottenPasswordController = forgottenPassword(() => true);
+    let req = reqFixtures.validUpdatePasswordPost();
+    let res = resFixtures.getStubbedRes();
+    let username = req.body.username;
+    req.body.password = "common password";
+    let userResponse = userFixtures.validUserResponse({username: username});
+    let token = req.params.id;
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain());
+
+    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+      .reply(200, userResponse.getPlain());
+
+    aForgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
+      .then(() => {
+        expect(req.flash.calledWith('genericError', 'Your password is too simple. Choose a password that is harder for people to guess.')).to.equal(true);
+        expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true);
+      }).should.notify(done);
+  });
+
+  it('error if unknown error returns from adminusers', function (done) {
+    let req = reqFixtures.validUpdatePasswordPost();
+    let res = resFixtures.getStubbedRes();
+    let username = req.body.username;
+    let userResponse = userFixtures.validUserResponse({username: username});
+    let token = req.params.id;
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain());
+
+    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+      .reply(200, userResponse.getPlain());
+
+    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
+      .validUpdatePasswordRequest(token, req.body.password)
+      .getPlain())
+      .reply(500);
+
+    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
+      .then(() => {
+        expect(req.flash.calledWith('genericError', 'There has been a problem updating password.')).to.equal(true);
+        expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true);
+      }).should.notify(done);
+  });
+
 });

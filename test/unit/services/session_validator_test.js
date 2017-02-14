@@ -1,38 +1,19 @@
-var should = require('chai').should();
 var assert = require('assert');
-var sinon = require('sinon');
+var mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
 const sessionValidator = require(__dirname + '/../../../app/services/session_validator.js');
 
 describe('session validator', () => {
   it('should allow a user with a current session', () => {
-    var getSessionVersion = sinon.stub().returns(0);
-    var user = {
-      getSessionVersion: getSessionVersion
-    };
-
-    var validSession = {version: 0};
+    var user = mockSession.getUser({session_version: 1});
+    var validSession = {version: 1};
 
     assert(sessionValidator.validate(user, validSession));
   });
 
   it('should deny a user with a terminated session', () => {
-    var user = {
-      session_version: 1
-    };
+    let loggedOutUser = mockSession.getUser({session_version: 2});
+    let currentSession = {version: 1};
 
-    var inValidSession = {version: 0};
-
-    assert(sessionValidator.validate(user, inValidSession) === false);
-  });
-
-  it('should increment user session version', () => {
-    var incrementSessionVersion = sinon.spy();
-    var user = {
-      incrementSessionVersion: incrementSessionVersion
-    };
-
-    sessionValidator.incrementSessionVersion(user);
-
-    assert(incrementSessionVersion.calledOnce);
+    assert(sessionValidator.validate(loggedOutUser, currentSession) === false);
   });
 });

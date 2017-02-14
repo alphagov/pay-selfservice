@@ -8,6 +8,11 @@ var nock = require('nock');
 var auth = require(__dirname + '/../../../app/services/auth_service.js');
 var paths = require(__dirname + '/../../../app/paths.js');
 var proxyquire = require('proxyquire');
+var mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
+
+function mockUser(opts){
+  return mockSession.getUser(opts);
+}
 
 describe('auth service', function () {
 
@@ -38,10 +43,7 @@ describe('auth service', function () {
         reload : mockByPass,
         save: mockByPass
       },
-      user: {
-        name: 'Michael',
-        gateway_account_id: 123
-      },
+      user: mockUser(),
       headers: {
       }
     };
@@ -80,10 +82,10 @@ describe('auth service', function () {
 
       let authService = (userMock)=> {
         return proxyquire(__dirname + '/../../../app/services/auth_service.js',
-          {'../services/user_service.js': userMock});
+          {'../services/user_service2.js': userMock});
       };
 
-      let user = {id: 'unimportantid'};
+      let user = mockUser();
       let doneSpy = sinon.spy(() => {});
       let userServiceMock = {
         findByUsername: (username) => {
@@ -111,7 +113,7 @@ describe('auth service', function () {
 
     it("should not call next if has invalid user", function (done) {
       var invalid = _.cloneDeep(validRequest);
-      delete invalid.user.gateway_account_id;
+      invalid.user.gatewayAccountId = null;
       auth.enforceUserAuthenticated(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
@@ -148,7 +150,7 @@ describe('auth service', function () {
 
   describe('get_gateway_account_id', function () {
     it("should return gateway_account_id", function (done) {
-      var test = auth.get_gateway_account_id({user: { gateway_account_id: 1}});
+      var test = auth.get_gateway_account_id({user: mockUser({gateway_account_id: 1})});
       assert.equal(test,1);
       done();
     });

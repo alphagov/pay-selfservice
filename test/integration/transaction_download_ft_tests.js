@@ -1,20 +1,18 @@
 process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
-var dbMock = require(__dirname + '/../test_helpers/db_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var request = require('supertest');
 var nock = require('nock');
 var _ = require('lodash');
-var _app = require(__dirname + '/../../server.js').getApp;
+var getApp = require(__dirname + '/../../server.js').getApp;
 var querystring = require('querystring');
 var paths = require(__dirname + '/../../app/paths.js');
-var winston = require('winston');
 var session = require(__dirname + '/../test_helpers/mock_session.js');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 
 var gatewayAccountId = 651342;
-var app = session.getAppWithLoggedInSession(_app, gatewayAccountId);
-var user = session.user;
+var app;
 
 var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
 var connectorMock = nock(process.env.CONNECTOR_URL);
@@ -41,20 +39,22 @@ function download_transaction_list(query) {
 
 describe('Transaction download endpoints', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'transactions-download:read', done);
+  beforeEach(function (done) {
+    let permissions = 'transactions-download:read';
+    var user = session.getUser({
+      gateway_account_id: gatewayAccountId, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
+
+
 
   describe('The /transactions/download endpoint', function () {
 

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-
+var notp = require('notp');
 /**
  * @type User
  */
@@ -13,7 +13,7 @@ class User {
     this._gatewayAccountId = userData.gateway_account_id ? String(userData.gateway_account_id) : '';
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
-    this._disabled = userData._disabled ? userData._disabled : false;
+    this._disabled = userData.disabled ? userData.disabled : false;
     this._loginCounter = userData.login_counter || 0;
     this._sessionVersion = userData.session_version || 0;
     this._permissions = userData.permissions || [];
@@ -51,6 +51,25 @@ class User {
     return json;
   }
 
+  /**
+   * @returns {String}
+   */
+  generateOTP() {
+    return notp.totp.gen(this._otpKey);
+  }
+
+  /**
+   * @param {String} permissionName name of permission
+   */
+  hasPermission(permissionName) {
+    return this._permissions.indexOf(permissionName) !== -1;
+  }
+
+  addPermission(permission) {
+    this._permissions.push(permission);
+    return this;
+  }
+
   get username() {
     return this._username;
   }
@@ -79,6 +98,10 @@ class User {
     return this._gatewayAccountId;
   }
 
+  set gatewayAccountId(value) {
+    this._gatewayAccountId = value;
+  }
+
   get otpKey() {
     return this._otpKey;
   }
@@ -89,6 +112,10 @@ class User {
 
   get disabled() {
     return this._disabled;
+  }
+
+  set disabled(value){
+    this._disabled = value;
   }
 
   get role() {

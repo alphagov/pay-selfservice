@@ -1,4 +1,4 @@
-var userService = require('../services/user_service.js');
+var userService = require('../services/user_service2.js');
 
 module.exports.create = function (user, role) {
   return userService.create(user, role)

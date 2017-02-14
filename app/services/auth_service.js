@@ -7,7 +7,7 @@ var TotpStrategy = require('passport-totp').Strategy;
 var csrf = require('csrf');
 var sessionValidator = require(__dirname + '/session_validator.js');
 var paths = require(__dirname + '/../paths.js');
-var userService = require('../services/user_service.js');
+var userService = require('../services/user_service2.js');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var localStrategyAuth = function (username, password, done) {
@@ -27,7 +27,7 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
 
 var ensureSessionHasVersion = function(req) {
   if(!_.get(req, 'session.version', false) !== false) {
-    req.session.version = _.get(req, 'user.session_version', 0);
+    req.session.version = _.get(req, 'user.sessionVersion', 0);
   }
 };
 
@@ -38,7 +38,7 @@ var redirectToLogin = function (req,res) {
 };
 
 var get_gateway_account_id = function (req) {
-  var id = _.get(req,"user.gateway_account_id");
+  var id = _.get(req,"user.gatewayAccountId");
   if (!id) return null;
   return parseInt(id);
 };
@@ -51,6 +51,7 @@ var enforceUserFirstFactor = function (req, res, next) {
   if (!hasUser) return redirectToLogin(req, res);
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
+
   ensureSessionHasCsrfSecret(req, res, next);
 };
 
@@ -89,7 +90,7 @@ var enforceUserAuthenticated = function(req, res, next) {
 var hasValidSession = function (req) {
   var isValid = sessionValidator.validate(req.user, req.session);
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
-  var userSessionVersion = _.get(req, 'user.session_version', 0);
+  var userSessionVersion = _.get(req, 'user.sessionVersion', 0);
   var sessionVersion = _.get(req, 'session.version', 0);
   if (!isValid) {
     logger.info(`[${correlationId}] Invalid session version for user. User session_version: ${userSessionVersion}, session version ${sessionVersion}`);
@@ -103,7 +104,7 @@ var initialise = function (app, override_strategy) {
   passport.use('local',new localStrategy({ usernameField: 'username' }, localStrategyAuth));
   passport.use(new TotpStrategy(
     function(user, done) {
-      return done(null, user.otp_key, 30);
+      return done(null, user.otpKey, 30);
     }
   ));
 

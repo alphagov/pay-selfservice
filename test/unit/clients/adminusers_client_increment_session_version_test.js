@@ -23,9 +23,10 @@ describe('adminusers client', function () {
    * Start the server and set up Pact
    */
   before(function (done) {
+    this.timeout(5000);
     mockServer.start().then(function () {
       adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
-      done()
+      done();
     });
   });
 
@@ -33,9 +34,9 @@ describe('adminusers client', function () {
    * Remove the server and publish pacts to broker
    */
   after(function (done) {
-    mockServer.delete().then(() => {
-      done();
-    })
+    mockServer.delete()
+      .then(() => pactProxy.removeAll())
+      .then(() => done());
   });
 
   describe('increment session version API', function () {

@@ -1,19 +1,17 @@
 var request     = require('supertest');
 var nock        = require('nock');
-var dbMock      = require(__dirname + '/../test_helpers/db_mock.js');
+require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
-var _app        = require(__dirname + '/../../server.js').getApp;
-var winston     = require('winston');
+var getApp        = require(__dirname + '/../../server.js').getApp;
 var paths       = require(__dirname + '/../../app/paths.js');
 var session     = require(__dirname + '/../test_helpers/mock_session.js');
 
-var gatewayAccountId = ACCOUNT_ID = 15486734;
+var gatewayAccountId = 15486734;
 
-var app = session.getAppWithLoggedInSession(_app,gatewayAccountId);
-var user = session.user;
+var app;
 var chargeId = 452345;
 
-var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/charges/{chargeId}';
+var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
 var connectorMock = nock(process.env.CONNECTOR_URL);
 
 function connectorMock_responds(path, data) {
@@ -21,8 +19,8 @@ function connectorMock_responds(path, data) {
     .reply(200, data);
 }
 
-function when_getTransactionHistory(chargeId) {
-  return request(app)
+function when_getTransactionHistory(chargeId, baseApp) {
+  return request(baseApp)
     .get(paths.generateRoute(paths.transactions.show, {chargeId: chargeId}))
     .set('Accept', 'application/json');
 }
@@ -33,20 +31,21 @@ function connectorChargePathFor(chargeId) {
 
 describe('The transaction view scenarios', function () {
 
-  beforeEach(function () {
+  afterEach(function () {
     nock.cleanAll();
+    app = null;
   });
 
-  before(function (done) {
-    var userAttributes = {
-      username: user.username,
-      password: 'password10',
-      gateway_account_id: user.gateway_account_id,
-      email: user.email,
-      telephone_number: "1"
-    };
-    userCreator.createUserWithPermission(userAttributes, 'transactions-details:read', done);
+  beforeEach(function (done) {
+    let permissions = 'transactions-details:read';
+    var user = session.getUser({
+      gateway_account_id: gatewayAccountId, permissions: [permissions]
+    });
+    app = session.getAppWithLoggedInUser(getApp(), user);
+
+    userCreator.mockUserResponse(user.toJson(), done);
   });
+
 
   describe('The transaction history endpoint', function () {
 
@@ -103,7 +102,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'amount': 5000,
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'payment_provider': 'sandbox',
         'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
         'state': {
@@ -154,7 +153,7 @@ describe('The transaction view scenarios', function () {
         'refunded_amount': '£0.00',
         'refunded': false,
         'amount': '£50.00',
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'updated': '24 Dec 2015 — 13:21:05',
         'state': {
           'status': 'success',
@@ -235,9 +234,9 @@ describe('The transaction view scenarios', function () {
       };
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
-      connectorMock_responds('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/events', mockEventsResponse);
+      connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
 
-      when_getTransactionHistory(chargeId)
+      when_getTransactionHistory(chargeId, app)
         .expect(200, expectedEventsView)
         .end(done);
     });
@@ -270,7 +269,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'amount': 5000,
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'payment_provider': 'sandbox',
         'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
         'state': {
@@ -308,7 +307,7 @@ describe('The transaction view scenarios', function () {
         'refunded_amount': '£0.00',
         'refunded': false,
         'amount': '£50.00',
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'updated': '24 Dec 2015 — 13:21:05',
         'state': {
           'status': 'started',
@@ -351,9 +350,9 @@ describe('The transaction view scenarios', function () {
       };
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
-      connectorMock_responds('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/events', mockEventsResponse);
+      connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
 
-      when_getTransactionHistory(chargeId)
+      when_getTransactionHistory(chargeId, app)
         .expect(200, expectedEventsView)
         .end(done);
     });
@@ -386,7 +385,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'amount': 5000,
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'payment_provider': 'sandbox',
         'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
         'state': {
@@ -431,7 +430,7 @@ describe('The transaction view scenarios', function () {
         'refunded_amount': '£0.00',
         'refunded': false,
         'amount': '£50.00',
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'updated': '24 Dec 2015 — 13:21:05',
         'state': {
           'status': 'started',
@@ -475,9 +474,9 @@ describe('The transaction view scenarios', function () {
       };
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
-      connectorMock_responds('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/events', mockEventsResponse);
+      connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
 
-      when_getTransactionHistory(chargeId)
+      when_getTransactionHistory(chargeId, app)
         .expect(200, expectedEventsView)
         .end(done);
     });
@@ -536,7 +535,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'amount': 5000,
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'payment_provider': 'sandbox',
         'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
         'state': {
@@ -582,7 +581,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'amount': '£50.00',
-        'gateway_account_id': ACCOUNT_ID,
+        'gateway_account_id': gatewayAccountId,
         'updated': '24 Dec 2015 — 13:21:05',
         'state': {
           'status': 'success',
@@ -667,11 +666,11 @@ describe('The transaction view scenarios', function () {
         ]
       };
 
-      var events = '/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeWithRefund + '/events';
+      var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events';
       connectorMock_responds(connectorChargePathFor(chargeWithRefund), mockChargeResponse);
       connectorMock_responds(events, mockEventsResponse);
 
-      when_getTransactionHistory(chargeWithRefund)
+      when_getTransactionHistory(chargeWithRefund, app)
         .expect(200, expectedEventsView)
         .end(done);
     });
@@ -682,7 +681,7 @@ describe('The transaction view scenarios', function () {
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
         .reply(404, connectorError);
 
-      when_getTransactionHistory(nonExistentChargeId)
+      when_getTransactionHistory(nonExistentChargeId, app)
         .expect(200, connectorError)
         .end(done);
     });
@@ -693,14 +692,14 @@ describe('The transaction view scenarios', function () {
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
         .reply(500, connectorError);
 
-      when_getTransactionHistory(nonExistentChargeId)
+      when_getTransactionHistory(nonExistentChargeId, app)
         .expect(200, {'message': 'Error processing transaction view'})
         .end(done);
     });
 
     it('should return a generic if unable to communicate with connector', function (done) {
       var chargeId = 452345;
-      when_getTransactionHistory(chargeId)
+      when_getTransactionHistory(chargeId, app)
         .expect(200, {'message': 'Error processing transaction view'})
         .end(done);
     });

@@ -1,52 +1,58 @@
 'use strict';
 var express = require('express');
-var User = require('../../app/models/user').User;
-var _       = require('lodash');
-var user = User.build({
-    username: Math.random().toString(36).substring(7),
-    email: Math.random().toString(36).substring(7) + "@email.com",
-    telephone_number: Math.random().toString(36).substring(7),
-    otp_key: "foo",
-    password: 'passworddwfew'
-  }),
-  mockSession = function (app, sessionData, noCSRF) {
+var User = require('../../app/models/user2').User;
+var _ = require('lodash');
+var sinon = require('sinon');
+var userFixture = require('../unit/fixtures/user_fixtures');
+var getUser = (opts) => {
+    return userFixture.validUser(opts).getAsObject();
+  },
+  createAppWithSession = function (app, sessionData) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
+      sessionData.destroy = sinon.stub();
       req.session = sessionData || {};
-      req.session.destroy = () => {};
       next();
     });
     proxyApp.use(app);
     return proxyApp;
   },
 
-  getAppWithLoggedInSession = function (app, accountId) {
-    var validSession = getMockAccount(accountId);
-    return mockSession(app, validSession);
+  getAppWithLoggedInUser = function (app, user) {
+    var validSession = getMockSession(user);
+    return createAppWithSession(app, validSession);
   },
 
-  getAppWithLoggedOutSession = function (app, account) {
-    return mockSession(app, account);
+  getAppWithSession = function (app, sessionData) {
+    return createAppWithSession(app, sessionData);
   },
 
-  getMockAccount = function (accountId) {
-    user.gateway_account_id = accountId;
+  getAppWithSessionWithoutSecondFactor = function (app, user) {
+    var session = getMockSession(user);
+    delete session.secondFactor;
+
+    return createAppWithSession(app, session);
+  },
+
+  getMockSession = function (user) {
     return _.cloneDeep({
       csrfSecret: "123",
       12345: {refunded_amount: 5},
       passport: {
         user: user,
       },
-      secondFactor: 'totp'
+      secondFactor: 'totp',
+      last_url:'last_url',
+      version: user.sessionVersion
     });
   };
 
-
 module.exports = {
-  getAppWithLoggedInSession: getAppWithLoggedInSession,
-  getAppWithLoggedOutSession: getAppWithLoggedOutSession,
-  getMockAccount: getMockAccount,
-  user: user
+  getAppWithLoggedInUser: getAppWithLoggedInUser,
+  getAppWithSession: getAppWithSession,
+  getMockSession: getMockSession,
+  getUser: getUser,
+  getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor
 };
 
 

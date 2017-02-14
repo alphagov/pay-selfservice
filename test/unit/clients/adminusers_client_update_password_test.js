@@ -10,7 +10,7 @@ var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
-const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords';
+const RESET_PASSWORD_PATH = '/v1/api/reset-password';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
@@ -39,20 +39,19 @@ describe('adminusers client', function () {
       .then(() => done());
   });
 
-  describe('Forgotten Password API', function () {
+  describe('update password API', function () {
 
-    context('GET forgotten password - success', () => {
-      let code = "existing-code";
-
-      let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: code});
-      let expectedForgottenPassword = validForgottenPasswordResponse.getPlain();
+    context('update password for user API - success', () => {
+      let request = userFixtures.validUpdatePasswordRequest();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${code}`)
-            .withState('a forgotten password entry exist')
-            .withUponReceiving('forgotten password get request')
-            .withResponseBody(validForgottenPasswordResponse.getPactified())
+          new PactInteractionBuilder(RESET_PASSWORD_PATH)
+            .withState('a valid forgotten password entry and a related user exists')
+            .withUponReceiving('a valid update password request')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
+            .withStatusCode(204)
             .build()
         ).then(() => done());
       });
@@ -61,27 +60,23 @@ describe('adminusers client', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should GET a forgotten password entry', function (done) {
+      it('should update password successfully', function (done) {
 
-        adminusersClient.getForgottenPassword(code).should.be.fulfilled.then(function (forgottenPassword) {
-          expect(forgottenPassword.code).to.be.equal(expectedForgottenPassword.code);
-          expect(forgottenPassword.date).to.be.equal(expectedForgottenPassword.date);
-          expect(forgottenPassword.username).to.be.equal(expectedForgottenPassword.username);
-          expect(forgottenPassword._links.length).to.be.equal(expectedForgottenPassword._links.length);
-
-        }).should.notify(done);
+        let requestData = request.getPlain();
+        adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done);
       });
     });
 
-
-    context('GET forgotten password API - not found', () => {
-      let code = "non-existent-code";
+    context('update password for user API - not found', () => {
+      let request = userFixtures.validUpdatePasswordRequest();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${FORGOTTEN_PASSWORD_PATH}/${code}`)
-            .withState('a valid (non-expired) forgotten password entry does not exist')
-            .withUponReceiving('a forgotten password request for non existent code')
+          new PactInteractionBuilder(RESET_PASSWORD_PATH)
+            .withState('a forgotten password does not exists')
+            .withUponReceiving('a valid update password request')
+            .withMethod('POST')
+            .withRequestBody(request.getPactified())
             .withStatusCode(404)
             .build()
         ).then(() => done());
@@ -91,14 +86,14 @@ describe('adminusers client', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should error if no valid forgotten password entry', function (done) {
+      it('should error if forgotten password code is not found/expired', function (done) {
 
-        adminusersClient.getForgottenPassword(code).should.be.rejected.then(function (response) {
+        let requestData = request.getPlain();
+        adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });
     });
 
   });
-
 });

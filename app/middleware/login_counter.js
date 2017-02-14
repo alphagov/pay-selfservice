@@ -1,46 +1,55 @@
 "use strict";
-var userService      = require('../services/user_service.js');
-var paths     = require('../paths.js');
-var _         = require('lodash');
-var logger    = require('winston');
-var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
+var userService = require('../services/user_service2.js');
+var paths = require('../paths.js');
+var _ = require('lodash');
+var logger = require('winston');
+var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 var lockOut = (req, res, user) => {
-  user.toggleDisabled(true).then(()=>{
-    var correlationId = req.headers[CORRELATION_HEADER] ||'';
-    logger.info(`[${correlationId}] user id: ${user.id} locked out due to many password attempts`);
-    res.render("login/noaccess");
-  })
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
+  logger.info(`[${correlationId}] user: ${_.get(req, 'user.id')} locked out due to many password attempts`);
+  return res.render("login/noaccess");
 };
 
 module.exports = {
   enforce: function (req, res, next) {
-   var username = _.get(req.body, 'username') || _.get(req.user, 'username');
-    var correlationId = req.headers[CORRELATION_HEADER] ||'';
+    var username = _.get(req.body, 'username');
+    var correlationId = req.headers[CORRELATION_HEADER] || '';
     return userService.findByUsername(username, correlationId)
-      .then((user)=> user.incrementLoginCount())
-      .then((u) => u.reload())
-      .then(
-        (user) => {
-          var attempts  = user.login_counter,
-          cap           = (process.env.LOGIN_ATTEMPT_CAP) ? process.env.LOGIN_ATTEMPT_CAP : 10,
-          overLimit     = (attempts + 1) > cap;
-          if (overLimit) {
-            return lockOut(req, res, user);
-          } else {
-            next();
-          }
-        },
-        () => {
-          throw new Error("couldn't save user login counter");
+      .then((user) => {
+        if (user.disabled) {
+          lockOut(req, res, user);
+        } else {
+          next();
         }
-      )
-      .catch(function() {
-
-        var correlationId = req.headers[CORRELATION_HEADER] ||'';
+      })
+      .catch(function () {
+        var correlationId = req.headers[CORRELATION_HEADER] || '';
         logger.info(`[${correlationId}] Unsuccessful user login due to invalid username.` +
-            `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}]`);
+          `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}]`);
         next();
-    })
+      })
+  },
+
+  enforceOtp: function (req, res, next) {
+    let correlationId = req.headers[CORRELATION_HEADER] || '';
+    let user = req.user;
+
+    if (user.disabled) {
+      return lockOut(req, res, user);
+    } else {
+      return userService.incrementLoginCount(user.username)
+        .then((updatedUser) => {
+          req.user = updatedUser;
+          next();
+        })
+        .catch(function (err) {
+          let adminuserStatus = err.statusCode || '';
+          logger.info(`[${correlationId}] incrementLoginCount failed. Status code from admin users ? [${adminuserStatus}] ` +
+            `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}] Error = ${err}`);
+          next();
+        });
+    }
   }
+
 };

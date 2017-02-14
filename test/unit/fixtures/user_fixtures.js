@@ -7,6 +7,10 @@ function randomString() {
   return Math.random().toString(36).substring(7);
 }
 
+function validPassword() {
+  return "G0VUkPay2017Rocks";
+}
+
 function randomUsername() {
   return randomString();
 }
@@ -69,9 +73,43 @@ module.exports = {
     };
   },
 
+  validUser: (opts = {}) => {
+
+    let newUsername = randomUsername();
+    let role =  {name: "admin"};
+
+    let data = {
+      username: opts.username || newUsername,
+      email: opts.email || `${newUsername}@example.com`,
+      gateway_account_id: opts.gateway_account_id || String(Math.floor(Math.random() * 10) + 1),
+      telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
+      otp_key: opts.otp_key || randomOtpKey(),
+      disabled: opts.disabled || false,
+      login_counter: opts.login_counter || 0,
+      session_version: opts.session_version || 0,
+      permissions: opts.permissions || [],
+      role: opts.role || {}
+    };
+
+    return {
+      getPactified: () => {
+        data.role_name = role.name;
+        return pactify(data);
+      },
+      getAsObject: () => {
+        data.role = role;
+        return new User(data);
+      },
+      getPlain: () => {
+        data.role_name = role.name;
+        return data;
+      }
+    };
+  },
+
   validUserResponse: (request) => {
 
-    var response = {
+    var data = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
       password: request.password || "random-password",
@@ -79,7 +117,7 @@ module.exports = {
       telephone_number: request.telephone_number || randomTelephoneNumber(),
       otp_key: request.otp_key || "43c3c4t",
       role: {"name": "admin", "description": "Administrator"},
-      permissions: ["perm-1", "perm-2", "perm-3"],
+      permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{
         "href": `http://adminusers.service/v1/api/users/${request.username}`,
         "rel": "self",
@@ -87,7 +125,17 @@ module.exports = {
       }]
     };
 
-    return withPactified(response);
+    return {
+      getPactified: () => {
+        return pactify(data);
+      },
+      getAsObject: () => {
+        return new User(data);
+      },
+      getPlain: () => {
+        return data;
+      }
+    };
   },
 
   invalidUserCreateRequestWithFieldsMissing: () => {
@@ -144,13 +192,22 @@ module.exports = {
 
   validIncrementSessionVersionRequest: () => {
     let request = {
-      op: 'replace',
+      op: 'append',
       path: 'sessionVersion',
       value: 1
     };
 
     return withPactified(request);
 
+  },
+
+  validUpdatePasswordRequest: (token, newPassword) => {
+    let request = {
+      forgotten_password_code: token || randomString(),
+      new_password: newPassword || validPassword()
+    };
+
+    return withPactified(request);
   },
 
   validForgottenPasswordCreateRequest: (username) => {
