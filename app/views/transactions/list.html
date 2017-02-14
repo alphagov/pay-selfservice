@@ -2,9 +2,15 @@
   <thead>
     <tr>
       <th id="reference-header">Reference number</th>
+      {{#permissions.transactions_email_read}}
       <th id="email-header">Email</th>
+      {{/permissions.transactions_email_read}}
+      {{#permissions.transactions_amount_read}}
       <th id="amount-header">Amount</th>
+      {{/permissions.transactions_amount_read}}
+      {{#permissions.transactions_card_type_read}}
       <th id="brand-header">Card brand</th>
+      {{/permissions.transactions_card_type_read}}
       <th id="state-header">State</th>
       <th id="time-header">Date Created</th>
     </tr>
@@ -17,9 +23,15 @@
           {{reference}}
         </a>
       </td>
+      {{#permissions.transactions_email_read}}
       <td class="email">{{email}}</td>
+      {{/permissions.transactions_email_read}}
+      {{#permissions.transactions_amount_read}}
       <td class="amount">£{{amount}}</td>
+      {{/permissions.transactions_amount_read}}
+      {{#permissions.transactions_card_type_read}}
       <td class="brand">{{card_details.card_brand}}</td>
+      {{/permissions.transactions_card_type_read}}
       <td class="state">{{state_friendly}}</td>
       <td class="time">{{created}}</td>
     </tr>

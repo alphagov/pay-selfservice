@@ -24,8 +24,10 @@ GOV.UK Pay - Transaction Details
 <h3 class="heading-small pull-top push-bottom-sml">Payment method</h3>
 {{>transactions/_payment}}
 
+{{#permissions.transactions_events_read}}
 <h3 class="heading-small pull-top push-bottom-sml">Transaction Events</h3>
 {{>transactions/_events}}
+{{/permissions.transactions_events_read}}
 
 {{/content}}
 
