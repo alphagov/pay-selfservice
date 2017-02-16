@@ -1,4 +1,4 @@
-FROM node:6.7.0
+FROM node:6.9.5-slim
 
 ADD docker/upgrade-base.sh /upgrade-base.sh
 
