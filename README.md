@@ -93,36 +93,3 @@ Generate, edit and revoke tokens for a given account id.
 ```
     /tokens
 ```
-
-## migrations
-to run migrations
-```
-./env.sh node_modules/sequelize-cli/bin/sequelize db:migrate
-```
-
-## to create your user for local testing
-copy create_user.js.example to create_user.js
-edit with your details
-` ./env.sh node create_user.js`
-
-## to get a 2fa token
-` ./env.sh node 2fa-token.js -u exampleUser1`
-
-## to disable a user
-` ./env.sh node disable-user.js -u exampleUser2`
-
-
-## to enable a user
-` ./env.sh node enable-user.js -u exampleUser3`
-
-## to update username or user email 
-
-Use the change_user.js command line script 
-```
-Usage:  `node change-user.js`
-```
-#### to change user email
-` node change-user.js -u username1 -e emailNew@example.com`
-
-#### to change user name
-` node change-user.js -u username1 -n updatedUserName`

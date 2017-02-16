@@ -1,7 +1,7 @@
 var logger = require('winston');
 var paths = require('../paths.js');
 var errorView = require('../utils/response.js').renderErrorView;
-var userService = require('../services/user_service2.js');
+var userService = require('../services/user_service.js');
 var e = module.exports;
 
 e.emailGet = (req, res) => {

@@ -2,7 +2,7 @@ const q = require('q');
 const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
 const baseClient = require('./base_client');
-var User = require('../../models/user2').User;
+var User = require('../../models/user').User;
 
 const SERVICE_NAME = 'adminusers';
 const SUCCESS_CODES = [200, 201, 202, 204, 206];

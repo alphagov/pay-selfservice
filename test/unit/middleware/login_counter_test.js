@@ -14,7 +14,7 @@ describe('login counter test', function () {
 
   var login = (userServiceMock) => {
     return proxyquire(__dirname + '/../../../app/middleware/login_counter.js',
-      {'../services/user_service2.js': userServiceMock});
+      {'../services/user_service.js': userServiceMock});
   };
 
   it('should call increment login count during otp login', function (done) {

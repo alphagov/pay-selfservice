@@ -15,14 +15,14 @@ let alwaysValidPassword = function (password) {
 };
 
 let userService = function (commonPasswordMock) {
-  return proxyquire(__dirname + '/../../app/services/user_service2.js', {
+  return proxyquire(__dirname + '/../../app/services/user_service.js', {
     'common-password': commonPasswordMock || alwaysValidPassword
   });
 };
 
 let forgottenPassword = function (commonPasswordMock) {
   return proxyquire(__dirname + '/../../app/controllers/forgotten_password_controller.js', {
-    '../services/user_service2.js': userService(commonPasswordMock)
+    '../services/user_service.js': userService(commonPasswordMock)
   });
 };
 

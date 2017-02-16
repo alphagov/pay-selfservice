@@ -1,6 +1,6 @@
 'use strict';
 var express = require('express');
-var User = require('../../app/models/user2').User;
+var User = require('../../app/models/user').User;
 var _ = require('lodash');
 var sinon = require('sinon');
 var userFixture = require('../unit/fixtures/user_fixtures');

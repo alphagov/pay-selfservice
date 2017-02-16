@@ -1,44 +1,13 @@
-var moment                = require('moment');
-var bcrypt                = require('bcrypt');
-var q                     = require('q');
-var _                     = require('lodash');
+const q = require('q');
+const logger = require('winston');
 
-var notp                  = require('notp');
-var logger                = require('winston');
-
-var User                  = require('../models/user.js').User;
-var notify                = require('../services/clients/notification_client.js');
-var random                = require('../utils/random.js');
-var forgottenPassword     = require('../models/forgotten_password.js').sequelize;
-var paths                 = require(__dirname + '/../paths.js');
-var applicationMetrics    = require('./../utils/metrics.js').metrics;
-
-
-/**
- * @param email
- * @param extraFields
- * @param where
- * @returns {*}
- * @private
- */
-var _find = function(email, extraFields = [], where) {
-  if (!where) where = { email: email };
-  if (where.email) where.email = where.email.toLowerCase();
-  return User.findOne({
-    where: where,
-    attributes:[
-      'username',
-      'email',
-      'gateway_account_id',
-      'otp_key',
-      'id',
-      'telephone_number',
-      'disabled',
-      'login_counter',
-      'session_version'
-    ].concat(extraFields)
-  });
-};
+var getAdminUsersClient = require('./clients/adminusers_client');
+var User = require('../models/user').User;
+var notify = require('../services/clients/notification_client.js');
+var paths = require(__dirname + '/../paths.js');
+var applicationMetrics = require('./../utils/metrics.js').metrics;
+var commonPassword = require('common-password');
+const MIN_PASSWORD_LENGTH = 10;
 
 /**
  * @param user
@@ -46,38 +15,65 @@ var _find = function(email, extraFields = [], where) {
  * @param correlationId
  * @param defer
  */
-var sendForgottenPasswordEmail = function(user, code, correlationId, defer) {
-  template  = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID;
-  var uri = paths.generateRoute(paths.user.forgottenPasswordReset,{id: code});
+var sendForgottenPasswordEmail = function (user, code, correlationId, defer) {
+  template = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID;
+  var uri = paths.generateRoute(paths.user.forgottenPasswordReset, {id: code});
   var url = process.env.SELFSERVICE_BASE + uri;
   var startTime = new Date();
-  notify.sendEmail(template, user.email, { code: url })
-    .then(()=>{
+  notify.sendEmail(template, user.email, {code: url})
+    .then(() => {
       var elapsed = new Date() - startTime;
       applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
       logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
       logger.info(`[${correlationId}] FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ` + user.id);
-      defer.resolve();
-    }, (e)=> {
+      defer.resolve(user);
+    }, (e) => {
       var elapsed = new Date() - startTime;
       applicationMetrics.increment('notify-operations.email.failures');
       applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
       logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
-      logger.error(`[${correlationId}] PROBLEM SENDING FORGOTTEN PASSWORD EMAIL `,e);
+      logger.error(`[${correlationId}] PROBLEM SENDING FORGOTTEN PASSWORD EMAIL `, e);
       defer.reject();
     });
 };
 
-var checkUser = function(user, defer) {
-  if (user === null) {
-    logger.debug('USER NOT FOUND');
-    return defer.reject();
-  }
-
-  return defer.resolve(user);
-};
 
 module.exports = {
+  /**
+   * @param userData
+   * @param role
+   * @returns {Promise<User>}
+   */
+  create: function (userData, role) {
+    userData.role = role;
+    let user = new User(userData);
+    return getAdminUsersClient().createUser(user);
+  },
+
+  /**
+   * @param username
+   * @param submittedPassword
+   * @returns {Promise<User>}
+   */
+  authenticate: function (username, submittedPassword) {
+    var defer = q.defer();
+
+    if (!username || !submittedPassword) {
+      return defer.reject();
+    }
+
+    return getAdminUsersClient().authenticateUser(username, submittedPassword);
+  },
+
+  /**
+   * @param username
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  findByUsername: function (username, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getUser(username);
+  },
+
   /**
    * @param {User} user
    * @param correlationId
@@ -86,10 +82,10 @@ module.exports = {
   sendOTP: function (user, correlationId) {
     var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
     var defer = q.defer();
-    if (user.otp_key && user.telephone_number && template) {
+    if (user.otpKey && user.telephoneNumber && template) {
       var code = user.generateOTP();
       var startTime = new Date();
-      notify.sendSms(template, user.telephone_number, {code: code})
+      notify.sendSms(template, user.telephoneNumber, {code: code})
         .then(() => {
           var elapsed = new Date() - startTime;
           applicationMetrics.histogram('notify-operations.sms.response_time', elapsed);
@@ -110,86 +106,19 @@ module.exports = {
     return defer.promise;
   },
 
-  generateOtp: function (user) {
-    return generateOTP(user);
-  },
-
   /**
    * @param user
    * @param correlationId
    * @returns {Promise}
    */
-  sendPasswordResetToken: function(user, correlationId){
-    var defer = q.defer(),
-      code      = random.key(20),
-      data      = { date: Date.now(), code: code, userId: user.id };
-
-
-    forgottenPassword.create(data).then(
-      () => sendForgottenPasswordEmail(user, code, correlationId, defer),
-      () => {
-      logger.warn(`[${correlationId}] PROBLEM CREATING FORGOTTEN PASSWORD. User: `, data.userId);
-      defer.reject();
-    });
-
-    return defer.promise;
-  },
-
-  /**
-   * @param username
-   * @param correlationId
-   * @returns {Promise}
-   */
-  findByUsername: function (username, correlationId) {
-    var defer = q.defer();
-
-    correlationId = correlationId || '';
-
-    _find(undefined, ['password'], {username: username})
-      .then((user) => {
-        checkUser(user, defer);
-      })
-      .catch((e)=> {
-        logger.debug(`[${correlationId}] find user by email - not found`);
-        defer.reject();
-      });
-
-    return defer.promise;
-  },
-
-
-  /**
-   * @param {String} permissionName name of permission
-   * @param {User} user instance to check if is associated to a role with the given permissionName
-   *
-   * User is associated to a single role and this role must be populated, it cannot happen to exist any
-   * user not belonging to a single role (at least for now).
-   */
-  hasPermission: function (user, permissionName) {
-    return user.getRoles()
-      .then((roles)=> roles[0]
-          .getPermissions({where: {name: permissionName}}).then((permissions)=>
-          permissions.length !== 0,
-          (e)=> logger.error('Error retrieving permissions of an user', e)),
-        (e)=> logger.error('Error retrieving role of user', e)
-      );
-  },
-
-  /**
-   *
-   * @param user
-   * @param otpKey
-   * @returns {Promise}
-   */
-  updateOtpKey: function (user, otpKey) {
-    var defer = q.defer();
-
-    if (!user) return defer.reject();
-    user.updateAttributes({otp_key: otpKey})
-      .then(defer.resolve, (err)=> {
-        defer.reject();
-        logger.error('OTP UPDATE ERROR', err);
-      });
+  sendPasswordResetToken: function (user, correlationId) {
+    let defer = q.defer();
+    getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(user.username)
+      .then((forgottenPassword) => sendForgottenPasswordEmail(user, forgottenPassword.code, correlationId, defer),
+        () => {
+          logger.warn(`[${correlationId}] PROBLEM CREATING FORGOTTEN PASSWORD. User: `, user.username);
+          defer.reject();
+        });
 
     return defer.promise;
   },
@@ -199,78 +128,7 @@ module.exports = {
    * @returns {Promise}
    */
   findByResetToken: function (token) {
-    var defer = q.defer(),
-      params = {where: {code: token}};
-
-    forgottenPassword.findOne(params)
-      .then((forgotten)=> {
-        if (forgotten === null) return defer.reject();
-        var current = moment(Date.now()),
-          created = moment(forgotten.date),
-          duration = Math.ceil(moment.duration(current.diff(created)).asMinutes()),
-          timedOut = duration > parseInt(process.env.FORGOTTEN_PASSWORD_EXPIRY_MINUTES),
-          notfound = forgotten === null;
-        if (notfound || timedOut) return defer.reject();
-        return _find(undefined, [], {id: forgotten.userId})
-      })
-      .then((user)=> checkUser(user, defer))
-      .catch(defer.reject);
-
-    return defer.promise;
-  },
-
-  /**
-   * @param userData
-   * @param role
-   * @returns {Promise}
-   */
-  create: function (userData, role) {
-
-    var defer = q.defer(),
-      savedUser,
-      _user = {
-        username: userData.username,
-        password: userData.password,
-        gateway_account_id: userData.gateway_account_id,
-        email: userData.email.toLowerCase(),
-        telephone_number: userData.telephone_number,
-        otp_key: userData.otp_key ? userData.otp_key : random.key(10)
-      };
-    if (!role) defer.reject();
-
-    User.create(_user)
-      .then((user)=> savedUser = user)
-      .then(()=> {
-        savedUser.setRole(role)
-      })
-      .then(() => checkUser(savedUser, defer));
-
-    return defer.promise;
-  },
-
-  /**
-   * @param username
-   * @param submittedPassword
-   * @returns {Promise}
-   */
-  authenticate: function (username, submittedPassword) {
-    var defer = q.defer();
-
-    if (!username) {
-      return defer.reject();
-    }
-
-    _find(undefined, ['password'], {username: username})
-      .then((user) => {
-        if (!bcrypt.compareSync(submittedPassword, user.password)) {
-          defer.reject();
-        } else {
-          checkUser(user, defer);
-        }
-      })
-      .catch((e) => defer.reject(e));
-
-    return defer.promise;
+    return getAdminUsersClient().getForgottenPassword(token);
   },
 
   /**
@@ -278,10 +136,42 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user) {
-    return user.incrementSessionVersion()
-      .then((u) => u.reload())
-      .catch((e) => {
-        logger.info('user could not be reloaded');
-      });
+    return getAdminUsersClient().incrementSessionVersionForUser(user.username);
+  },
+
+  /**
+   * @param token
+   * @param username
+   * @param newPassword
+   * @returns {Promise}
+   */
+  updatePassword: function (token, newPassword) {
+    let defer = q.defer();
+
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      defer.reject({message: "Your password must be at least 10 characters."});
+    } else if (commonPassword(newPassword)) {
+      defer.reject({message: "Your password is too simple. Choose a password that is harder for people to guess."});
+    } else {
+      getAdminUsersClient().updatePasswordForUser(token, newPassword)
+        .then(
+          () => defer.resolve(),
+          () => defer.reject({message: 'There has been a problem updating password.'}));
+    }
+    return defer.promise;
+  },
+
+  /**
+   *
+   * @param username
+   * @returns {Promise}
+   */
+  resetLoginCount: function (username) {
+    return getAdminUsersClient().resetLoginAttemptsForUser(username);
+  },
+
+  incrementLoginCount: function (username) {
+    return getAdminUsersClient().incrementLoginAttemptsForUser(username);
   }
+
 };
