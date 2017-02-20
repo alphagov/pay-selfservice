@@ -5,7 +5,6 @@ var logger                = require('winston');
 var changeCase            = require('change-case');
 
 var response              = require('../utils/response.js').response;
-var ERROR_MESSAGE         = require('../utils/response.js').ERROR_MESSAGE;
 var errorView             = require('../utils/response.js').renderErrorView;
 var ConnectorClient       = require('../services/clients/connector_client').ConnectorClient;
 var auth                  = require('../services/auth_service.js');
@@ -87,7 +86,7 @@ function loadIndex(req, res, viewMode) {
       });
     }
 
-    errorView(req, res, ERROR_MESSAGE);
+    errorView(req, res);
   });
 }
 
@@ -152,7 +151,7 @@ module.exports = {
         });
       }
 
-      errorView(req, res, ERROR_MESSAGE);
+      errorView(req, res);
     });
 
   },
@@ -212,7 +211,7 @@ module.exports = {
           error: err
         });
       }
-      errorView(req, res, ERROR_MESSAGE);
+      errorView(req, res);
     });
   }
 };

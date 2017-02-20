@@ -1,8 +1,7 @@
 var logger          = require('winston');
 var csrf            = require('csrf');
 var response        = require('../utils/response.js').response;
-var ERROR_MESSAGE   = require('../utils/response.js').ERROR_MESSAGE;
-var renderErrorView = require('../utils/response.js').renderErrorView;
+var errorView = require('../utils/response.js').renderErrorView;
 var auth            = require('../services/auth_service.js');
 var ConnectorClient         = require('../services/clients/connector_client.js').ConnectorClient;
 
@@ -42,7 +41,7 @@ module.exports.index = function (req, res) {
         });
       })
       .catch(() => {
-        renderErrorView(req, res, ERROR_MESSAGE);
+        errorView(req, res);
       });
   });
 };
@@ -71,7 +70,7 @@ module.exports.revoked = function (req, res) {
         });
       })
       .catch((err) => {
-        renderErrorView(req, res, ERROR_MESSAGE);
+        errorView(req, res);
       });
   });
 };
@@ -104,7 +103,7 @@ module.exports.create = function (req, res) {
         token: publicAuthData.token,
         description: description
       }))
-      .catch((reason) => renderErrorView(req, res, ERROR_MESSAGE));
+      .catch((reason) => errorView(req, res));
   });
 };
 
@@ -185,7 +184,7 @@ function withValidAccountId(req, res, accountId, callback) {
     var duration = new Date() - startTime;
     logger.info(`[${req.correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
     if (connectorResponse.statusCode != 200) {
-      renderErrorView(req, res, ERROR_MESSAGE);
+      errorView(req, res);
       return;
     }
     callback(accountId, req, res);
@@ -197,6 +196,6 @@ function withValidAccountId(req, res, accountId, callback) {
       method: 'GET',
       url: connectorUrl
     });
-    renderErrorView(req, res, ERROR_MESSAGE);
+    errorView(req, res);
   });
 }

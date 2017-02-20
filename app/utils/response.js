@@ -1,8 +1,8 @@
-var logger = require('winston');
-var _ = require('lodash');
+let logger = require('winston');
+let _ = require('lodash');
 
 const ERROR_MESSAGE = 'There is a problem with the payments platform';
-const NOT_FOUND = 'Page cannot be found';
+const ERROR_VIEW = 'error';
 
 /**
  * converts users permission array of form
@@ -38,6 +38,18 @@ const getPermissionsForView = (user) => {
 
 function response(req, res, template, data) {
   data.permissions = getPermissionsForView(req.user);
+  render(req, res, template, data);
+}
+
+function errorResponse (req, res, msg) {
+  if (!msg) msg = ERROR_MESSAGE;
+  let correlationId = req.correlationId;
+  let data = { 'message': msg };
+  logger.error(`[${correlationId}] An error has occurred. Rendering error view -`, {errorMessage: msg});
+  render(req, res, ERROR_VIEW, data);
+}
+
+function render(req, res, template, data){
   if (_.get(req, 'headers.accept') === "application/json") {
     res.setHeader('Content-Type', 'application/json');
     res.json(data);
@@ -52,23 +64,7 @@ function healthCheckResponse(accept, res, data) {
 }
 
 module.exports = {
-  ERROR_MESSAGE: ERROR_MESSAGE,
-  ERROR_VIEW: 'error',
-  PAGE_NOT_FOUND_ERROR_MESSAGE: NOT_FOUND,
-
   response: response,
   healthCheckResponse: healthCheckResponse,
-
-  renderErrorView: function (req, res, msg) {
-    if (!msg) msg = ERROR_MESSAGE;
-    let correlationId = req.correlationId;
-    let data = { 'message': msg };
-    logger.error(`[${correlationId}] An error has occurred. Rendering error view -`, {errorMessage: msg});
-    if (_.get(req, 'headers.accept') === "application/json") {
-      res.setHeader('Content-Type', 'application/json');
-      res.json(data);
-    } else {
-      res.render('error', data);
-    }
-  }
+  renderErrorView: errorResponse
 };
