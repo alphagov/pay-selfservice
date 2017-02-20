@@ -1,8 +1,7 @@
 var logger          = require('winston');
 var csrf            = require('csrf');
 var response        = require('../utils/response.js').response;
-var ERROR_MESSAGE   = require('../utils/response.js').ERROR_MESSAGE;
-var renderErrorView = require('../utils/response.js').renderErrorView;
+var errorView = require('../utils/response.js').renderErrorView;
 var auth            = require('../services/auth_service.js');
 var ConnectorClient         = require('../services/clients/connector_client.js').ConnectorClient;
 
@@ -33,7 +32,7 @@ module.exports.index = function (req, res) {
           view: 'token'
         });
 
-        response(req.headers.accept, res, TOKEN_VIEW, {
+        response(req, res, TOKEN_VIEW, {
           'active': true,
           'header': "available-tokens",
           'token_state': "active",
@@ -42,7 +41,7 @@ module.exports.index = function (req, res) {
         });
       })
       .catch(() => {
-        renderErrorView(req, res, ERROR_MESSAGE);
+        errorView(req, res);
       });
   });
 };
@@ -62,7 +61,7 @@ module.exports.revoked = function (req, res) {
         logger.info('Showing tokens view -', {
           view: TOKEN_VIEW
         });
-        response(req.headers.accept, res, TOKEN_VIEW, {
+        response(req, res, TOKEN_VIEW, {
           'active': false,
           'header': "revoked-tokens",
           'token_state': "revoked",
@@ -71,7 +70,7 @@ module.exports.revoked = function (req, res) {
         });
       })
       .catch((err) => {
-        renderErrorView(req, res, ERROR_MESSAGE);
+        errorView(req, res);
       });
   });
 };
@@ -79,7 +78,7 @@ module.exports.revoked = function (req, res) {
 module.exports.show = function (req, res) {
   var accountId = auth.get_gateway_account_id(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
-    response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
+    response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
   });
 };
 
@@ -100,11 +99,11 @@ module.exports.create = function (req, res) {
         accountId: accountId,
         correlationId: correlationId
       })
-      .then(publicAuthData => response(req.headers.accept, res, TOKEN_GENERATE_VIEW, {
+      .then(publicAuthData => response(req, res, TOKEN_GENERATE_VIEW, {
         token: publicAuthData.token,
         description: description
       }))
-      .catch((reason) => renderErrorView(req, res, ERROR_MESSAGE));
+      .catch((reason) => errorView(req, res));
   });
 };
 
@@ -122,7 +121,7 @@ module.exports.update = function (req, res) {
       correlationId: req.correlationId
     })
     .then(publicAuthData => {
-      response(req.headers.accept, res, "includes/_token", {
+      response(req, res, "includes/_token", {
         'token_link': publicAuthData.token_link,
         'created_by': publicAuthData.created_by,
         'issued_date': publicAuthData.issued_date,
@@ -185,7 +184,7 @@ function withValidAccountId(req, res, accountId, callback) {
     var duration = new Date() - startTime;
     logger.info(`[${req.correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
     if (connectorResponse.statusCode != 200) {
-      renderErrorView(req, res, ERROR_MESSAGE);
+      errorView(req, res);
       return;
     }
     callback(accountId, req, res);
@@ -197,6 +196,6 @@ function withValidAccountId(req, res, accountId, callback) {
       method: 'GET',
       url: connectorUrl
     });
-    renderErrorView(req, res, ERROR_MESSAGE);
+    errorView(req, res);
   });
 }

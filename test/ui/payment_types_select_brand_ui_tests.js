@@ -16,6 +16,10 @@ var templateData = {
     "label": 'Visa',
     "available": true,
     "selected": true
+  },
+  permissions: {
+    'payment_types_read': true,
+    'payment_types_update': true
   }
 };
 
@@ -108,5 +112,27 @@ describe('The payment select brand view', function () {
 
     body.should.containSelector('#payment-types-error-message')
       .withText('You must choose to accept at least one card brand to continue')
+  });
+
+  it('should not display select brand form without correct permission', function () {
+    var templateData = {
+      acceptedType: TYPES.ALL,
+      isAcceptedTypeAll: true,
+      isAcceptedTypeDebit: false,
+      error: '',
+      brands: {
+        "id": "payment-types-visa-brand",
+        "value": 'visa',
+        "label": 'Visa',
+        "available": true,
+        "selected": true
+      }
+    };
+    var model = _.extend({}, templateData);
+
+
+    var body = renderTemplate('payment_types_select_brand', model);
+
+    body.should.not.containSelector('form#payment-types-card-brand-selection-form');
   });
 });

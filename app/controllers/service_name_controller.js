@@ -30,7 +30,7 @@ module.exports.index = function (req, res) {
       editMode: !(req.query.edit === undefined)
     };
 
-    response(req.headers.accept, res, 'service_name', model);
+    response(req, res, 'service_name', model);
   };
 
   var onError = function (connectorError) {

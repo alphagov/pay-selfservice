@@ -15,6 +15,10 @@ describe('The payment select type view', function () {
       debitCardOption: {
         type: TYPES.DEBIT,
         selected: 'checked'
+      },
+      permissions: {
+        'payment_types_read': true,
+        'payment_types_update': true
       }
     };
 
@@ -37,5 +41,22 @@ describe('The payment select type view', function () {
       .withAttribute("class", "button")
       .withAttribute("type", "submit")
       .withAttribute("value", "Continue");
+  });
+
+  it('should not display select type form without correct permission', function () {
+    var templateData = {
+      allCardOption: {
+        type: TYPES.ALL,
+        selected: 'checked'
+      },
+      debitCardOption: {
+        type: TYPES.DEBIT,
+        selected: 'checked'
+      }
+    };
+
+    var body = renderTemplate('payment_types_select_type', templateData);
+
+    body.should.not.containSelector('form#payment-types-card-type-selection-form');
   });
 });

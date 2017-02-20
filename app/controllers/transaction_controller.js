@@ -35,7 +35,7 @@ module.exports = {
       var onSuccessGetAllCards = function (allCards) {
         transactions.search_path = router.paths.transactions.index;
         var model = transactionView.buildPaymentList(transactions, allCards, accountId, filters.result);
-        response(req.headers.accept, res, 'transactions/index', model)
+        response(req, res, 'transactions/index', model);
       };
 
       var params = {
@@ -100,7 +100,7 @@ module.exports = {
 
       render = function (data) {
         data.indexFilters = req.session.filters;
-        response(req.headers.accept, res, 'transactions/show', data);
+        response(req, res, 'transactions/show', data);
       },
 
       error = function (err) {

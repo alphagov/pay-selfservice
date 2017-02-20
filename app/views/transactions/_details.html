@@ -4,14 +4,18 @@
       <td>Reference number:</td>
       <td id="reference">{{reference}}</td>
     </tr>
+    {{#permissions.transactions_description_read}}
     <tr>
       <td>Description:</td>
       <td id="description">{{description}}</td>
     </tr>
+    {{/permissions.transactions_description_read}}
+    {{#permissions.transactions_amount_read}}
     <tr>
       <td>Amount:</td>
       <td id="amount">{{amount}}</td>
     </tr>
+    {{/permissions.transactions_amount_read}}
     <tr>
       <td>State:</td>
       <td id="state">{{state_friendly}}{{#state.message}} ({{state.code}} - {{state.message}}){{/state.message}}</td>

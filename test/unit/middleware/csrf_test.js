@@ -57,7 +57,7 @@ describe('CSRF', function () {
 
     csrf(req, res, next);
 
-    sinon.assert.calledWith(renderErrorView, req, res, sinon.match.string);
+    sinon.assert.calledWith(renderErrorView, req, res);
   });
 
   it('should error if session has no CSRF secret', function () {
@@ -80,7 +80,7 @@ describe('CSRF', function () {
 
     csrf(req, res, next);
 
-    sinon.assert.calledWith(renderErrorView, req, res, sinon.match.string);
+    sinon.assert.calledWith(renderErrorView, req, res);
   });
 
   it('should error if CSFR token is not valid', function () {
@@ -111,7 +111,7 @@ describe('CSRF', function () {
 
     csrf(req, res, next);
 
-    sinon.assert.calledWith(renderErrorView, req, res, sinon.match.string);
+    sinon.assert.calledWith(renderErrorView, req, res);
   });
 
   it('should not error if CSFR token is not valid but method is GET', function () {

@@ -9,6 +9,7 @@ GOV.UK Pay - Change service name
 <h1 class="page-title">GOV.UK Pay - Change service name</h1>
 
 {{^editMode}}
+{{#permissions.service_name_read}}
 <h2 class="heading-medium remove-top-margin">Current service name</h2>
 
 <p>As it appears on the user facing payment screens</p>
@@ -16,11 +17,15 @@ GOV.UK Pay - Change service name
 <div class="panel panel-border-wide">
     <p class="lede" id="service-name">{{serviceName}}</p>
 </div>
+{{/permissions.service_name_read}}
+{{#permissions.service_name_update}}
 <a id="service-name-change-link" class="button" href="{{routes.serviceName.edit}}">
 Change service name
 </a>
+{{/permissions.service_name_update}}
 {{/editMode}}
 
+{{#permissions.service_name_update}}
 {{#editMode}}
 <form id="service-name-form" method="post" action="{{routes.serviceName.save}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -40,6 +45,7 @@ Change service name
     </a>
 </form>
 {{/editMode}}
+{{/permissions.service_name_update}}
 
 {{/content}}
 

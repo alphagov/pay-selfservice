@@ -73,6 +73,9 @@ describe('The payment types endpoint,', function () {
         debitCardOption: {
           type: TYPES.DEBIT,
           selected: ''
+        },
+        permissions: {
+          "payment_types_read": true
         }
       };
 
@@ -95,6 +98,9 @@ describe('The payment types endpoint,', function () {
         debitCardOption: {
           type: TYPES.DEBIT,
           selected: ''
+        },
+        permissions: {
+          "payment_types_read": true
         }
       };
 
@@ -117,6 +123,9 @@ describe('The payment types endpoint,', function () {
         debitCardOption: {
           type: TYPES.DEBIT,
           selected: 'checked'
+        },
+        permissions: {
+          "payment_types_read": true
         }
       };
 

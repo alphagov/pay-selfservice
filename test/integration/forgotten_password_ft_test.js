@@ -1,9 +1,9 @@
 let nock = require('nock');
 var proxyquire = require('proxyquire');
-const reqFixtures = require(__dirname + '/../unit/fixtures/browser/forgotten_password_fixtures');
-const resFixtures = require(__dirname + '/../unit/fixtures/response');
-const userFixtures = require(__dirname + '/../unit/fixtures/user_fixtures');
-const notifyFixture = require(__dirname + '/../unit/fixtures/notify');
+const reqFixtures = require(__dirname + '/../fixtures/browser/forgotten_password_fixtures');
+const resFixtures = require(__dirname + '/../fixtures/response');
+const userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+const notifyFixture = require(__dirname + '/../fixtures/notify');
 
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');

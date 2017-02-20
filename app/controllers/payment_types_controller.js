@@ -1,5 +1,5 @@
 var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient;
-var renderErrorView = require('../utils/response.js').renderErrorView;
+var errorView = require('../utils/response.js').renderErrorView;
 var querystring = require('querystring');
 var _ = require('lodash');
 
@@ -44,11 +44,11 @@ module.exports.redirectTo = function (response, path, query) {
 module.exports.renderConnectorError = function (request, response, errorMessage) {
   return function (connectorError) {
     if (connectorError) {
-      renderErrorView(request, response, 'Internal server error');
+      errorView(request, response, 'Internal server error');
       return;
     }
 
-    renderErrorView(request, response, errorMessage);
+    errorView(request, response, errorMessage);
   }
 };
 

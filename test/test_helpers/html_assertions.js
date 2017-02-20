@@ -43,6 +43,16 @@ chai.use(function (_chai, utils) {
     );
   });
 
+  chai.Assertion.addMethod('containNoSelectorWithText', function (selector, text) {
+    utils.flag(this,"rawHtml", this._obj);
+    var $ = cheerio.load(this._obj);
+    var result = $(selector);
+    this.assert(result.text().indexOf(text) == -1,
+      "Expected #{result} to not contain '" + text + "'",
+      "Expect #{result} to contain '" + text + "'"
+    );
+  });
+
   chai.Assertion.addMethod('withText', function (msg) {
     var actual = this._obj.text();
     this.assert(actual.indexOf(msg) > -1,

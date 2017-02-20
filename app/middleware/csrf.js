@@ -1,7 +1,6 @@
 "use strict";
 var csrf = require('csrf'),
   logger = require('winston'),
-  errorMsg = require(__dirname + '/../utils/response.js').ERROR_MESSAGE,
   errorView = require('../utils/response.js').renderErrorView,
 
   csrfValid = function (req) {
@@ -13,17 +12,17 @@ module.exports = function (req, res, next) {
 
   if (!session) {
     logger.warn('Session is not defined');
-    return errorView(req, res, errorMsg);
+    return errorView(req, res);
   }
 
   if (!session.csrfSecret) {
     logger.warn('CSRF secret is not defined for session');
-    return errorView(req, res, errorMsg);
+    return errorView(req, res);
   }
 
   if (!req.route.methods.get && !csrfValid(req)) {
     logger.warn('CSRF secret provided is invalid');
-    return errorView(req, res, errorMsg);
+    return errorView(req, res);
   }
 
   res.locals.csrf = csrf().create(session.csrfSecret);

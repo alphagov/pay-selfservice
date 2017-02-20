@@ -79,7 +79,10 @@ describe('The payment types endpoint,', function () {
           buildAcceptedCardType("mastercard", true, 'checked'),
           buildAcceptedCardType("discover", true, 'checked'),
           buildAcceptedCardType("maestro", true, 'checked')
-        ]
+        ],
+        "permissions": {
+          "payment_types_read": true
+        }
       };
 
       build_get_request(paths.paymentTypes.summary, app)

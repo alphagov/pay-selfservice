@@ -76,7 +76,10 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
 
         var expectedData = {
           "serviceName": "Service name",
-          "editMode": testSetup.edit
+          "editMode": testSetup.edit,
+          permissions: {
+            'service_name_read': true
+          }
         };
 
         build_get_request(testSetup.path, app)

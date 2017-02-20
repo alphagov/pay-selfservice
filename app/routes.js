@@ -35,7 +35,7 @@ module.exports.paths = paths;
 module.exports.bind = function (app) {
 
   app.get('/style-guide', function (req, res) {
-    response(req.headers.accept, res, 'style_guide');
+    response(req, res, 'style_guide');
   });
 
   app.all('*', (req,res,next) => {

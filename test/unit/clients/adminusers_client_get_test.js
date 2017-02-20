@@ -3,9 +3,9 @@ var helpersPath = __dirname + '/../../test_helpers/';
 var pactProxy = require(helpersPath + '/pact_proxy.js');
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-var userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+var userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-var PactInteractionBuilder = require(__dirname + '/../fixtures/pact_interaction_builder').PactInteractionBuilder;
+var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 

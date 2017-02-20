@@ -1,17 +1,22 @@
-var should = require('chai').should();
-var renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
-var paths = require(__dirname + '/../../app/paths.js');
+let should = require('chai').should();
+let renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
+let paths = require(__dirname + '/../../app/paths.js');
 
 describe('The token view', function() {
+
   it('should render the number of active API keys for the account (for no keys)', function () {
-    var templateData = {
+
+    let templateData = {
       "active": true,
       "header": 'available-tokens',
       "token_state": 'active',
       "tokens": [],
-      "tokens_singular": false
+      "tokens_singular": false,
+      permissions: {
+        tokens_create: true
+      }
     };
-    var body = renderTemplate('token', templateData);
+    let body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("API Keys");
     body.should.containSelector('#available-tokens').withText("There are no active API keys");
@@ -20,14 +25,16 @@ describe('The token view', function() {
   });
 
   it('should render the number of revoked API keys for the account (for no keys)', function () {
-    var templateData = {
+
+    let templateData = {
       "active": false,
       "header": 'revoked-tokens',
       "token_state": 'revoked',
       "tokens": [],
       "tokens_singular": false
     };
-    var body = renderTemplate('token', templateData);
+
+    let body = renderTemplate('token', templateData);
 
     body.should.containSelector('h1').withText("API Keys");
     body.should.containSelector('#revoked-tokens').withText("There are no revoked API keys");
@@ -35,7 +42,8 @@ describe('The token view', function() {
   });
 
   it('should render the active API keys for the account (for 1 key)', function () {
-    var tokenLink = '550e8400-e29b-41d4-a716-446655440000',
+
+    let tokenLink = '550e8400-e29b-41d4-a716-446655440000',
       templateData = {
         "active": true,
         "header": 'available-tokens',
@@ -49,20 +57,54 @@ describe('The token view', function() {
         ],
         'tokens_singular': true
       };
-    var body = renderTemplate('token', templateData);
+    let body = renderTemplate('token', templateData);
 
     body.should.containSelector('#available-tokens').withText("There is 1 active API key");
 
-    var tokenContainerSelector = '#' + tokenLink;
+    let tokenContainerSelector = '#' + tokenLink;
     body.should.containSelector(tokenContainerSelector);
+    body.should.containNoSelector('.js-toggle-description');
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
     body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user@email.com");
     body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
     body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
   });
 
+  it('should render the active API keys for the account (for 1 key) and not ab', function () {
+
+    let tokenLink = '550e8400-e29b-41d4-a716-446655440000',
+      templateData = {
+        "active": true,
+        "header": 'available-tokens',
+        "token_state": 'active',
+        'tokens' : [{
+          "token_link": tokenLink,
+          "description":"description token 1",
+          "created_by":"user@email.com",
+          "issued_date":"05 Sep 2016 - 11:30",
+          "last_used":"05 Sep 2016 - 14:35"}
+        ],
+        'tokens_singular': true,
+        permissions: {
+          tokens_update: true
+        }
+      };
+    
+    let body = renderTemplate('token', templateData);
+
+    body.should.containSelector('#available-tokens').withText("There is 1 active API key");
+
+    let tokenContainerSelector = '#' + tokenLink;
+    body.should.containSelector('.js-toggle-description');
+    body.should.containSelector(tokenContainerSelector);
+    body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user@email.com");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
+    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
+  });
+  
   it('should render the revoked API keys for the account (for 1 key)', function () {
-    var tokenLink = '550e8400-e29b-41d4-a716-446655440000',
+    let tokenLink = '550e8400-e29b-41d4-a716-446655440000',
       templateData = {
         "active": false,
         "header": 'revoked-tokens',
@@ -77,18 +119,18 @@ describe('The token view', function() {
           "last_used":"05 Sep 2016 - 14:35"}
         ]
       };
-    var body = renderTemplate('token', templateData);
+    let body = renderTemplate('token', templateData);
 
     body.should.containSelector('#revoked-tokens').withText("There is 1 revoked API key");
 
-    var tokenContainerSelector = '#' + tokenLink;
+    let tokenContainerSelector = '#' + tokenLink;
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
     body.should.containSelector(tokenContainerSelector + ' div').withText("Key was revoked on 05 Sep 2016");
   });
 
   it('should render the number of active API keys for the account (for 2 keys)', function () {
-    var templateData = {
+    let templateData = {
       "active": true,
       "header": 'available-tokens',
       "token_state": 'active',
@@ -109,11 +151,11 @@ describe('The token view', function() {
         }
       ]
     };
-    var body = renderTemplate('token', templateData);
+    let body = renderTemplate('token', templateData);
 
     body.should.containSelector('#available-tokens').withText("There are 2 active API keys");
 
-    var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
+    let tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
     body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user1@email.com");
@@ -129,7 +171,7 @@ describe('The token view', function() {
   });
 
   it('should render the number of revoked API keys for the account (for 2 keys)', function () {
-    var templateData = {
+    let templateData = {
       "active": false,
       "header": 'revoked-tokens',
       "token_state": 'revoked',
@@ -153,11 +195,11 @@ describe('The token view', function() {
         }
       ]
     };
-    var body = renderTemplate('token', templateData);
+    let body = renderTemplate('token', templateData);
 
     body.should.containSelector('#revoked-tokens').withText("There are 2 revoked API keys");
 
-    var tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
+    let tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('revoked token');
     body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user1@email.com");
@@ -177,8 +219,8 @@ describe('The token view', function() {
 describe('The generate token view', function() {
   describe('After a GET request', function() {
     it('should render a form to request a new token via a post request', function () {
-      var templateData = {};
-      var body = renderTemplate('token_generate', templateData);
+      let templateData = {};
+      let body = renderTemplate('token_generate', templateData);
 
       body.should.containSelector('.page-title').withText("API keys");
 
@@ -206,36 +248,36 @@ describe('The generate token view', function() {
 
   describe('After a POST request', function() {
     it('should render the account for which the token will be generated', function () {
-      var templateData = {
+      let templateData = {
         'token' : "550e8400-e29b-41d4-a716-446655440000",
         'description' : 'Test token'
       };
 
-      var body = renderTemplate('token_generate', templateData);
+      let body = renderTemplate('token_generate', templateData);
       body.should.containSelector('.page-title').withText("API keys");
       body.should.containSelector('.heading-medium').withText("New key generated");
       body.should.containSelector('p').withText("Please copy this key now as it won’t be shown again");
     });
 
     it('should render the new generated token', function () {
-      var templateData = {
+      let templateData = {
         'token' : "550e8400-e29b-41d4-a716-446655440000",
         'description' : 'Test token'
       };
 
-      var body = renderTemplate('token_generate', templateData);
+      let body = renderTemplate('token_generate', templateData);
       body.should.containTextarea('token')
         .withText("550e8400-e29b-41d4-a716-446655440000")
         .withLabel("Test token");
     });
 
     it('should render a Finish button', function () {
-      var templateData = {
+      let templateData = {
         'token' : "550e8400-e29b-41d4-a716-446655440000",
         'description' : 'Test token'
       };
 
-      var body = renderTemplate('token_generate', templateData);
+      let body = renderTemplate('token_generate', templateData);
       body.should.containSelector('.button')
         .withAttribute("href", paths.devTokens.index)
         .withText("Finish");

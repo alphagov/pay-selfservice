@@ -5,7 +5,7 @@
 <p>
 <h4 class="heading-small" id="view-title">Your {{payment_provider}} Credentials</h4>
 </p>
-
+{{#permissions.gateway_credentials_read}}
 {{^editMode}}
 <dl id="credentials">
     <dt id="merchant-id-key" class="font-xsmall"><p>Merchant ID</p></dt>
@@ -21,7 +21,9 @@
     Edit credentials
 </a>
 {{/editMode}}
+{{/permissions.gateway_credentials_read}}
 
+{{#permissions.gateway_credentials_update}}
 {{#editMode}}
 <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -44,11 +46,12 @@
 
 </form>
 {{/editMode}}
+{{/permissions.gateway_credentials_update}}
 
 <p>
 <h4 class="heading-small" id="view-notification-title">Your {{payment_provider}} Notification Credentials</h4>
 </p>
-
+{{#permissions.gateway_credentials_read}}
 {{^editNotificationCredentialsMode}}
     {{^notification_credentials.userName}}
     <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
@@ -73,7 +76,9 @@
         Edit notification credentials
     </a>
 {{/editNotificationCredentialsMode}}
+{{/permissions.gateway_credentials_read}}
 
+{{#permissions.gateway_credentials_update}}
 {{#editNotificationCredentialsMode}}
 <form id="notification_credentials_form" method="post" action="{{routes.notificationCredentials.update}}">
     <input id="notification-csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -91,6 +96,7 @@
 
 </form>
 {{/editNotificationCredentialsMode}}
+{{/permissions.gateway_credentials_update}}
 
 {{/providerContent}}
 
