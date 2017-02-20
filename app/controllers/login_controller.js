@@ -23,7 +23,7 @@ module.exports.loggedIn = function (req, res) {
   logLoginAction(req, 'successfully logged in');
   response(req, res, 'login/logged_in', {
     name: req.user.username
-  }, true);
+  });
 };
 
 module.exports.logOut = function (req, res) {

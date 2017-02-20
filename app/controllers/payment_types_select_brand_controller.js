@@ -37,7 +37,7 @@ module.exports.showBrands = function (req, res) {
         brands: reconcileCardsByBrand(acceptedType, acceptedCards['card_types'], allCards['card_types'])
       };
 
-      response(req, res, "payment_types_select_brand", model, true);
+      response(req, res, "payment_types_select_brand", model);
     };
 
     var accountId = auth.get_gateway_account_id(req);

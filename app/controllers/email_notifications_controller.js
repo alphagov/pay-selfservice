@@ -6,7 +6,7 @@ var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATIO
 
 var showEmail = function(req, res, resource, locals){
   var template =  "email_notifications/" + resource;
-  response(req, res, template, locals, true);
+  response(req, res, template, locals);
 };
 
 module.exports.index = (req, res) => {

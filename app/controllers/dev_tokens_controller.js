@@ -39,7 +39,7 @@ module.exports.index = function (req, res) {
           'token_state': "active",
           'tokens': activeTokens,
           'tokens_singular': activeTokens.length == 1
-        }, true);
+        });
       })
       .catch(() => {
         renderErrorView(req, res, ERROR_MESSAGE);
@@ -68,7 +68,7 @@ module.exports.revoked = function (req, res) {
           'token_state': "revoked",
           'tokens': revokedTokens,
           'tokens_singular': revokedTokens.length == 1
-        }, true);
+        });
       })
       .catch((err) => {
         renderErrorView(req, res, ERROR_MESSAGE);
@@ -79,7 +79,7 @@ module.exports.revoked = function (req, res) {
 module.exports.show = function (req, res) {
   var accountId = auth.get_gateway_account_id(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
-    response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId}, true);
+    response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
   });
 };
 
@@ -103,7 +103,7 @@ module.exports.create = function (req, res) {
       .then(publicAuthData => response(req, res, TOKEN_GENERATE_VIEW, {
         token: publicAuthData.token,
         description: description
-      }, true))
+      }))
       .catch((reason) => renderErrorView(req, res, ERROR_MESSAGE));
   });
 };
@@ -129,7 +129,7 @@ module.exports.update = function (req, res) {
         'last_used': publicAuthData.last_used,
         'description': publicAuthData.description,
         'csrfToken': csrf().create(req.session.csrfSecret)
-      }, true);
+      });
     })
     .catch((rejection) => {
       let responseCode = 500;

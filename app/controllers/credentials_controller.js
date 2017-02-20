@@ -42,7 +42,7 @@ function showSuccessView(connectorData, viewMode, req, res) {
     provider: paymentProvider
   });
 
-  response(req, res, 'provider_credentials/' + paymentProvider, responsePayload, true);
+  response(req, res, 'provider_credentials/' + paymentProvider, responsePayload);
 }
 
 function loadIndex(req, res, viewMode) {

@@ -42,7 +42,7 @@ module.exports.selectType = function (req, res) {
       }
     };
 
-    response(req, res, "payment_types_select_type", model, true);
+    response(req, res, "payment_types_select_type", model);
   };
 
   init();
