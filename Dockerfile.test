@@ -1,0 +1,19 @@
+FROM govukpay/selfservice
+
+# add package.json before source for node_module cache
+ADD package.json /tmp/package.json
+
+RUN apk add --update \
+    ruby
+
+RUN cd /tmp && npm install --silent --only=dev
+
+# copy cached node_modules to /app/node_modules
+RUN mkdir -p /app && cp -a /tmp/node_modules /app/
+
+ADD test /app/test
+WORKDIR /app
+
+COPY config ./config
+
+CMD  npm  test

@@ -1,23 +1,34 @@
-FROM node:6.7.0
+FROM mhart/alpine-node:6.7
 
 ADD docker/upgrade-base.sh /upgrade-base.sh
 
 ENV PORT 9000
-ENV ENABLE_NEWRELIC no
-ENV NEW_RELIC_HOME /app/newrelic
 
 EXPOSE 9000
+RUN apk add --update \
+  libc6-compat \
+  bash \
+  python \
+  make \
+  gcc \
+  g++
 
 # add package.json before source for node_module cache
 ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
 
-ADD . /app
+RUN cd /tmp && npm install  --production --silent && \
+    mkdir -p /app && mv /tmp/node_modules /app/
+
 WORKDIR /app
 
-# copy cached node_modules to /app/node_modules
-RUN mkdir -p /app && cp -a /tmp/node_modules /app/
-
-RUN npm install && npm run compile && npm test && npm prune --production
+COPY Gruntfile.js .
+COPY app ./app
+COPY docker-startup.sh .
+COPY docker-startup.sh .
+COPY package.json .
+COPY server.js .
+COPY start.js .
+COPY lib/ lib/
+RUN npm run compile
 
 CMD bash ./docker-startup.sh
