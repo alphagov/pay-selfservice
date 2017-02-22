@@ -10,7 +10,12 @@ class User {
     }
     this._username = userData.username;
     this._email = userData.email || '';
-    this._gatewayAccountId = userData.gateway_account_id ? String(userData.gateway_account_id) : '';
+    if(userData.gateway_account_ids) {
+      this._gatewayAccountId = String(userData.gateway_account_ids[0]);
+    } else {
+      // Backwards compatibility PP-1598 (will be removed in next PR)
+      this._gatewayAccountId = userData.gateway_account_id ? String(userData.gateway_account_id) : '';
+    }
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
     this._disabled = userData.disabled ? userData.disabled : false;

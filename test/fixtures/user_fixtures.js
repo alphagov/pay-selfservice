@@ -32,7 +32,6 @@ function pactify(request) {
   _.forIn(request, (value, key) => {
     pactified[key] = matchers.somethingLike(value);
   });
-
   return pactified;
 }
 
@@ -107,13 +106,18 @@ module.exports = {
     };
   },
 
+  /**
+   * @param request Params override response
+   * @param gatewayAccountIdFromList Temporary field to support backward compatibility PP-1598 (will be deleted in next PR)
+   * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
+   */
   validUserResponse: (request) => {
 
     var data = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
       password: request.password || "random-password",
-      gateway_account_id: request.gateway_account_id || randomAccountId(),
+      gateway_account_id: request.gateway_account_id || randomAccountId(), // Backwards compatibility PP-1598
       telephone_number: request.telephone_number || randomTelephoneNumber(),
       otp_key: request.otp_key || "43c3c4t",
       role: {"name": "admin", "description": "Administrator"},
@@ -124,6 +128,11 @@ module.exports = {
         "method": "GET"
       }]
     };
+
+
+    if(request.gateway_account_ids) {
+      data.gateway_account_ids = request.gateway_account_ids;
+    }
 
     return {
       getPactified: () => {

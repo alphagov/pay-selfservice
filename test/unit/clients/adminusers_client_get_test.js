@@ -78,6 +78,49 @@ describe('adminusers client', function () {
       });
     });
 
+    context('GET user api - The first gateway account id from the array if exists should take precedence over the single field', () => {
+
+      let legacyGatewayAccountId = "10";
+      let newGatewayAccountArray = ["666", "7"];
+
+      let params = {
+        username: "existing-user",
+        gateway_account_id: legacyGatewayAccountId,
+        gateway_account_ids: newGatewayAccountArray
+      };
+
+      let getUserResponse = userFixtures.validUserResponse(params);
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+            .withState('a user exits with a list of gateways')
+            .withUponReceiving('a valid get user request')
+            .withResponseBody(getUserResponse.getPactified())
+            .build()
+        ).then(() => done());
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should find a user successfully', function (done) {
+
+        let expectedUserData = getUserResponse.getPlain();
+
+        adminusersClient.getUser(params.username).should.be.fulfilled.then(function (user) {
+          expect(user.username).to.be.equal(expectedUserData.username);
+          expect(user.email).to.be.equal(expectedUserData.email);
+          expect(user.gatewayAccountId).to.be.equal("666");
+          expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);
+          expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
+          expect(user.role.name).to.be.equal(expectedUserData.role.name);
+          expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length);
+        }).should.notify(done);
+      });
+    });
+
     context('GET user api - not found', () => {
 
       let params = {
