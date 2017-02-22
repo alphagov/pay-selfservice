@@ -20,7 +20,7 @@ var ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
-  logger.info(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
+  logger.debug(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
 
   return next();
 };
