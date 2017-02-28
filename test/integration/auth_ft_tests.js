@@ -101,7 +101,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
 
   it('redirects to noaccess if no account_id', function (done) {
     let user = mockSession.getUser();
-    user.gatewayAccountId = null;
+    user.gatewayAccountIds = [];
 
     app = getAppWithLoggedInUser(server.getApp(), user);
     addProtectedEndpointToApp(app);

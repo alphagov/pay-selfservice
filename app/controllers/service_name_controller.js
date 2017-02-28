@@ -13,7 +13,7 @@ module.exports.index = function (req, res) {
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
   var init = function () {
-    var accountId = auth.get_gateway_account_id(req);
+    var accountId = auth.getCurrentGatewayAccountId(req);
     var params = {
       gatewayAccountId: accountId,
       correlationId: correlationId
@@ -50,7 +50,7 @@ module.exports.update = function (req, res) {
   var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
   var init = function () {
-    var accountId = auth.get_gateway_account_id(req);
+    var accountId = auth.getCurrentGatewayAccountId(req);
 
     var payload = {
       service_name: req.body['service-name-input']

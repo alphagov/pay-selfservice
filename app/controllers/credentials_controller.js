@@ -45,7 +45,7 @@ function showSuccessView(connectorData, viewMode, req, res) {
 }
 
 function loadIndex(req, res, viewMode) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.getCurrentGatewayAccountId(req);
   var accountUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}";
 
   logger.debug('Calling connector to get account information -', {
@@ -105,7 +105,7 @@ module.exports = {
   },
 
   updateNotificationCredentials: function (req, res) {
-    var accountId = auth.get_gateway_account_id((req));
+    var accountId = auth.getCurrentGatewayAccountId((req));
     var connectorUrl = process.env.CONNECTOR_URL + "/v1/api/accounts/{accountId}/notification-credentials";
 
     var requestPayLoad = {
@@ -162,7 +162,7 @@ module.exports = {
       method: 'PATCH',
       url: '/frontend/accounts/{id}/credentials'
     });
-    var accountId = auth.get_gateway_account_id(req);
+    var accountId = auth.getCurrentGatewayAccountId(req);
     var connectorUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}/credentials";
     var requestPayload = {
         credentials: {

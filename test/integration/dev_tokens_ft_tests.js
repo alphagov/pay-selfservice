@@ -71,7 +71,7 @@ describe('Dev Tokens Endpoints', function() {
     beforeEach(function (done) {
       let permissions = 'tokens-revoked:read';
       var user = session.getUser({
-        gateway_account_id: gatewayAccountId, permissions: [permissions]
+        gateway_account_ids: [gatewayAccountId], permissions: [permissions]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -171,7 +171,7 @@ describe('Dev Tokens Endpoints', function() {
     beforeEach(function (done) {
       let permissions = 'tokens-active:read';
       var user = session.getUser({
-        gateway_account_id: gatewayAccountId, permissions: [permissions]
+        gateway_account_ids: [gatewayAccountId], permissions: [permissions]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -355,7 +355,7 @@ describe('Dev Tokens Endpoints', function() {
     beforeEach(function (done) {
       let permissions = 'tokens:delete';
       var user = session.getUser({
-        gateway_account_id: gatewayAccountId, permissions: [permissions]
+        gateway_account_ids: [gatewayAccountId], permissions: [permissions]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -432,7 +432,7 @@ describe('Dev Tokens Endpoints', function() {
     beforeEach(function (done) {
       let permissions = 'tokens:create';
       user = session.getUser({
-        gateway_account_id: gatewayAccountId, permissions: [permissions]
+        gateway_account_ids: [gatewayAccountId], permissions: [permissions]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 

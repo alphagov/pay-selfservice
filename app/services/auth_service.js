@@ -13,40 +13,46 @@ var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_H
 var localStrategyAuth = function (username, password, done) {
   return userService.authenticate(username, password)
     .then((user) => done(null, user))
-    .catch(() => done(null, false, { message: 'Invalid username or password' }));
+    .catch(() => done(null, false, {message: 'Invalid username or password'}));
 };
 
 var ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
   logger.debug(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
 
   return next();
 };
 
-var ensureSessionHasVersion = function(req) {
-  if(!_.get(req, 'session.version', false) !== false) {
+var ensureSessionHasVersion = function (req) {
+  if (!_.get(req, 'session.version', false) !== false) {
     req.session.version = _.get(req, 'user.sessionVersion', 0);
   }
 };
 
-var redirectToLogin = function (req,res) {
+var redirectToLogin = function (req, res) {
   req.session.last_url = req.originalUrl;
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
   res.redirect(paths.user.logIn);
 };
 
-var get_gateway_account_id = function (req) {
-  var id = _.get(req,"user.gatewayAccountId");
-  if (!id) return null;
-  return parseInt(id);
+let getCurrentGatewayAccountId = function (req) {
+  let id = _.get(req, "session.currentGatewayAccountId");
+  if (!id) {
+    id = _.get(req, "user.gatewayAccountIds[0]");
+    if(!id) {
+      logger.error(`Could not resolve the gatewayAccountId for user `); //TODO log the user.id when we have one
+      return null;
+    }
+    req.session.currentGatewayAccountId = id;
+  }
+  return parseInt(req.session.currentGatewayAccountId);
 };
 
 var enforceUserFirstFactor = function (req, res, next) {
-  var hasUser     = _.get(req, "user"),
-  hasAccount      = get_gateway_account_id(req),
-  disabled        = _.get(hasUser, "disabled");
+  var hasUser = _.get(req, "user"),
+    hasAccount = getCurrentGatewayAccountId(req),
+    disabled = _.get(hasUser, "disabled");
 
   if (!hasUser) return redirectToLogin(req, res);
   if (!hasAccount) return no_access(req, res, next);
@@ -68,7 +74,7 @@ var enforceUserBothFactors = function (req, res, next) {
 
   enforceUserFirstFactor(req, res, () => {
 
-    var hasLoggedInOtp  = _.get(req,"session.secondFactor") == 'totp';
+    var hasLoggedInOtp = _.get(req, "session.secondFactor") == 'totp';
     if (!hasLoggedInOtp) {
       return res.redirect(paths.user.otpLogIn);
     }
@@ -77,7 +83,7 @@ var enforceUserBothFactors = function (req, res, next) {
   });
 };
 
-var enforceUserAuthenticated = function(req, res, next) {
+var enforceUserAuthenticated = function (req, res, next) {
   ensureSessionHasVersion(req);
 
   if (!hasValidSession(req)) {
@@ -89,7 +95,7 @@ var enforceUserAuthenticated = function(req, res, next) {
 
 var hasValidSession = function (req) {
   var isValid = sessionValidator.validate(req.user, req.session);
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
   var userSessionVersion = _.get(req, 'user.sessionVersion', 0);
   var sessionVersion = _.get(req, 'session.version', 0);
   if (!isValid) {
@@ -101,9 +107,9 @@ var hasValidSession = function (req) {
 var initialise = function (app, override_strategy) {
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.use('local',new localStrategy({ usernameField: 'username' }, localStrategyAuth));
+  passport.use('local', new localStrategy({usernameField: 'username'}, localStrategyAuth));
   passport.use(new TotpStrategy(
-    function(user, done) {
+    function (user, done) {
       return done(null, user.otpKey, 30);
     }
   ));
@@ -133,5 +139,5 @@ module.exports = {
   serializeUser: serializeUser,
   localStrategyAuth: localStrategyAuth,
   no_access: no_access,
-  get_gateway_account_id: get_gateway_account_id
+  getCurrentGatewayAccountId: getCurrentGatewayAccountId
 };

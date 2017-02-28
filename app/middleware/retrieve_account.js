@@ -9,7 +9,7 @@ var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_
 
 
 module.exports = function (req, res, next) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.getCurrentGatewayAccountId(req);
   var params = {
     gatewayAccountId: accountId
   };

@@ -40,7 +40,7 @@ module.exports.showBrands = function (req, res) {
       response(req, res, "payment_types_select_brand", model);
     };
 
-    var accountId = auth.get_gateway_account_id(req);
+    var accountId = auth.getCurrentGatewayAccountId(req);
 
     var params = {
       gatewayAccountId: accountId,
@@ -100,7 +100,7 @@ module.exports.updateBrands = function (req, res) {
       card_types: acceptedCardTypeIds
     };
 
-    var accountId = auth.get_gateway_account_id(req);
+    var accountId = auth.getCurrentGatewayAccountId(req);
 
     var params = {
       gatewayAccountId: accountId,
