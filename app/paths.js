@@ -61,6 +61,12 @@ module.exports = {
     on: '/email-notifications/on'
 
   },
+  toggle3ds: {
+    index: '/3ds',
+    onConfirm: '/3ds/confirm',
+    on: '/3ds/on',
+    off: '/3ds/off'
+  },
   healthcheck: {
     path: '/healthcheck'
   },
