@@ -30,7 +30,14 @@ function randomTelephoneNumber() {
 function pactify(request) {
   let pactified = {};
   _.forIn(request, (value, key) => {
-    pactified[key] = matchers.somethingLike(value);
+    if(value.constructor === Array) {
+      pactified[key] = matchers.term({
+        matcher: /.*/,
+        generate: 'bob'//String(JSON.stringify(value))
+      });
+    } else {
+      pactified[key] = matchers.somethingLike(value);
+    }
   });
   return pactified;
 }
@@ -116,7 +123,6 @@ module.exports = {
     var data = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
-      password: request.password || "random-password",
       gateway_account_id: request.gateway_account_id || randomAccountId(), // Backwards compatibility PP-1598
       telephone_number: request.telephone_number || randomTelephoneNumber(),
       otp_key: request.otp_key || "43c3c4t",

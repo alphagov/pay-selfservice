@@ -17,7 +17,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe.only('adminusers client', function () {
 
   var adminUsersMock;
   /**
@@ -26,7 +26,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-create', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
