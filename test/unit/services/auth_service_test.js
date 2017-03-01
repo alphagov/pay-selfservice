@@ -10,7 +10,7 @@ var paths = require(__dirname + '/../../../app/paths.js');
 var proxyquire = require('proxyquire');
 var mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
 
-function mockUser(opts){
+function mockUser(opts) {
   return mockSession.getUser(opts);
 }
 
@@ -31,20 +31,22 @@ describe('auth service', function () {
     status = undefined,
     render = undefined,
     next = undefined,
-    validRequest = {
-      session: {
-        secondFactor: 'totp',
-        passport: {
-          user: {
-            name: 'Michael',
-            gateway_account_id: 123
-          }
+
+    validRequest = () => {
+      return {
+        session: {
+          secondFactor: 'totp',
+          passport: {
+            user: {
+              name: 'Michael',
+              gateway_account_ids: [123]
+            }
+          },
+          reload: mockByPass,
+          save: mockByPass
         },
-        reload : mockByPass,
-        save: mockByPass
-      },
-      user: mockUser(),
-      headers: {
+        user: mockUser(),
+        headers: {}
       }
     };
 
@@ -64,7 +66,7 @@ describe('auth service', function () {
     redirect.restore();
   });
 
-  describe('serialize user', function() {
+  describe('serialize user', function () {
 
     it("should call done function with username", function (done) {
       let user = {username: 'foo'};
@@ -76,16 +78,17 @@ describe('auth service', function () {
     });
   });
 
-  describe('deserialize user', function(){
+  describe('deserialize user', function () {
 
     it("should find user by username", function (done) {
-      let authService = (userMock)=> {
+      let authService = (userMock) => {
         return proxyquire(__dirname + '/../../../app/services/auth_service.js',
           {'./user_service.js': userMock});
       };
 
       let user = mockUser();
-      let doneSpy = sinon.spy(() => {});
+      let doneSpy = sinon.spy(() => {
+      });
       let userServiceMock = {
         findByUsername: (username) => {
           expect(username).to.be.equal('foo');
@@ -104,15 +107,16 @@ describe('auth service', function () {
   });
 
   describe('enforceUserAndSecondFactor', function () {
+
     it("should call next if has valid user", function (done) {
-      auth.enforceUserAuthenticated(validRequest, response, next);
+      auth.enforceUserAuthenticated(validRequest(), response, next);
       expect(next.calledOnce).to.be.true;
       done();
     });
 
     it("should not call next if has invalid user", function (done) {
-      var invalid = _.cloneDeep(validRequest);
-      invalid.user.gatewayAccountId = null;
+      let invalid = _.cloneDeep(validRequest());
+      invalid.user.gatewayAccountIds = null;
       auth.enforceUserAuthenticated(invalid, response, next);
       expect(next.called).to.be.false;
       assert(redirect.calledWith(paths.user.noAccess));
@@ -120,7 +124,7 @@ describe('auth service', function () {
     });
 
     it("should not call next if has a disabled user", function (done) {
-      var invalid = _.cloneDeep(validRequest);
+      let invalid = _.cloneDeep(validRequest());
       invalid.user.disabled = true;
       auth.enforceUserAuthenticated(invalid, response, next);
       expect(next.called).to.be.false;
@@ -132,8 +136,9 @@ describe('auth service', function () {
   });
 
   describe('no_access', function () {
+
     it("call next when on no access", function (done) {
-      var invalid = _.cloneDeep(validRequest);
+      var invalid = _.cloneDeep(validRequest());
       invalid.url = paths.user.noAccess;
       auth.no_access(invalid, response, next);
       expect(next.calledOnce).to.be.true;
@@ -141,28 +146,41 @@ describe('auth service', function () {
     });
 
     it("call redirect to no access", function (done) {
-      auth.no_access(validRequest, response, next);
+      auth.no_access(validRequest(), response, next);
       assert(redirect.calledWith(paths.user.noAccess));
       done();
     });
   });
 
-  describe('get_gateway_account_id', function () {
-    it("should return gateway_account_id", function (done) {
-      var test = auth.get_gateway_account_id({user: mockUser({gateway_account_id: 1})});
-      assert.equal(test,1);
+  describe('getCurrentGatewayAccountId', function () {
+
+    it("should return first gateway_account_id if user has multiple gateway accounts if its not available in session", function (done) {
+      let req = {session: {}, user: mockUser({gateway_account_ids: ["1", "2"]})};
+      let test = auth.getCurrentGatewayAccountId(req);
+      assert.equal(test, 1);
+      assert.equal(req.session.currentGatewayAccountId, 1);
       done();
     });
-   it("should not return gateway_account_id", function (done) {
-      var test1 = auth.get_gateway_account_id({session: {passport: {user: { }}}});
-      var test2 = auth.get_gateway_account_id({session: {passport: {}}});
-      var test3 = auth.get_gateway_account_id({session: {}});
-      var test4 = auth.get_gateway_account_id({});
 
-      assert.equal(test1,null);
-      assert.equal(test2,null);
-      assert.equal(test3,null);
-      assert.equal(test4,null);
+    it("should return gateway_account_id from session", function (done) {
+      let test = auth.getCurrentGatewayAccountId({
+        session: {currentGatewayAccountId: "3"},
+        user: mockUser({gateway_account_ids: ["1", "2","3"]})
+      });
+      assert.equal(test, 3);
+      done();
+    });
+
+    it("should not return gateway_account_id", function (done) {
+      var test1 = auth.getCurrentGatewayAccountId({session: {passport: {user: {}}}});
+      var test2 = auth.getCurrentGatewayAccountId({session: {passport: {}}});
+      var test3 = auth.getCurrentGatewayAccountId({session: {}});
+      var test4 = auth.getCurrentGatewayAccountId({});
+
+      assert.equal(test1, null);
+      assert.equal(test2, null);
+      assert.equal(test3, null);
+      assert.equal(test4, null);
       done();
     });
 

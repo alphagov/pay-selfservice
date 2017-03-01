@@ -53,7 +53,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'gateway-credentials:read';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -202,7 +202,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'gateway-credentials:update';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -354,7 +354,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
   beforeEach(function (done) {
     let permissions = 'gateway-credentials:update';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -508,7 +508,7 @@ describe('The notification credentials', function () {
   beforeEach(function (done) {
     let permissions = 'gateway-credentials:read';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -558,7 +558,7 @@ describe('The provider update credentials endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'gateway-credentials:update';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -657,7 +657,7 @@ describe('The provider update notification credentials endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'gateway-credentials:update';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 

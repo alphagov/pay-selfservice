@@ -21,7 +21,7 @@ describe('The transaction view - refund scenarios', function () {
   beforeEach(function (done) {
     let permissions = 'refunds:create';
     var user = session.getUser({
-      gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 

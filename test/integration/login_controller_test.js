@@ -48,7 +48,7 @@ describe('The logged in endpoint', function () {
   });
 
   it('should redirecect to otp login if no otp', function (done) {
-    var app = mock_session.getAppWithSessionWithoutSecondFactor(getApp(), mock_session.getUser({gateway_account_id: ACCOUNT_ID}));
+    var app = mock_session.getAppWithSessionWithoutSecondFactor(getApp(), mock_session.getUser({gateway_account_ids: [ACCOUNT_ID]}));
     request(app)
       .get("/")
       .expect(302)

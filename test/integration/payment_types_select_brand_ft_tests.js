@@ -71,7 +71,7 @@ describe('The payment types endpoint,', function () {
     beforeEach(function (done) {
       let permissions = 'payment-types:read';
       var user = session.getUser({
-        gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -272,7 +272,7 @@ describe('The payment types endpoint,', function () {
     beforeEach(function (done) {
       let permissions = 'payment-types:update';
       var user = session.getUser({
-        gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 

@@ -2,6 +2,7 @@ var Pact = require('pact');
 var helpersPath = __dirname + '/../../test_helpers/';
 var pactProxy = require(helpersPath + '/pact_proxy.js');
 var chai = require('chai');
+var _ = require('lodash');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
 var userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
@@ -67,7 +68,7 @@ describe('adminusers client', function () {
         adminusersClient.createUser(user).should.be.fulfilled.then(function (createdUser) {
           expect(createdUser.username).to.be.equal(user.username);
           expect(createdUser.email).to.be.equal(user.email);
-          expect(createdUser.gatewayAccountId).to.be.equal(user.gatewayAccountId);
+          expect(_.isEqual(createdUser.gatewayAccountIds, user.gatewayAccountIds)).to.be.equal(true);
           expect(createdUser.telephoneNumber).to.be.equal(user.telephoneNumber);
           expect(createdUser.otpKey).to.be.equal('43c3c4t');
           expect(createdUser.role.name).to.be.equal('admin');

@@ -10,12 +10,7 @@ class User {
     }
     this._username = userData.username;
     this._email = userData.email || '';
-    if(userData.gateway_account_ids) {
-      this._gatewayAccountId = String(userData.gateway_account_ids[0]);
-    } else {
-      // Backwards compatibility PP-1598 (will be removed in next PR)
-      this._gatewayAccountId = userData.gateway_account_id ? String(userData.gateway_account_id) : '';
-    }
+    this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
     this._disabled = userData.disabled ? userData.disabled : false;
@@ -40,7 +35,7 @@ class User {
     let json = {
       username: this._username,
       email: this._email,
-      gateway_account_id: this._gatewayAccountId,
+      gateway_account_ids: this._gatewayAccountIds,
       telephone_number: this._telephoneNumber,
       /**
        * As of now, we expect these JSON representations are only used for data transfer between AdminUsers.
@@ -99,12 +94,12 @@ class User {
     return this._email;
   }
 
-  get gatewayAccountId() {
-    return this._gatewayAccountId;
+  get gatewayAccountIds() {
+    return this._gatewayAccountIds;
   }
 
-  set gatewayAccountId(value) {
-    this._gatewayAccountId = value;
+  set gatewayAccountIds(value) {
+    this._gatewayAccountIds = value;
   }
 
   get otpKey() {
@@ -119,7 +114,7 @@ class User {
     return this._disabled;
   }
 
-  set disabled(value){
+  set disabled(value) {
     this._disabled = value;
   }
 

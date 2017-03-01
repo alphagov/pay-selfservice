@@ -16,7 +16,7 @@ const TOKEN_VIEW = 'token';
 const TOKEN_GENERATE_VIEW = 'token_generate';
 
 module.exports.index = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.getCurrentGatewayAccountId(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     publicAuthClient.getActiveTokensForAccount({
         correlationId: req.correlationId,
@@ -47,7 +47,7 @@ module.exports.index = function (req, res) {
 };
 
 module.exports.revoked = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.getCurrentGatewayAccountId(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     publicAuthClient.getRevokedTokensForAccount({
         correlationId: req.correlationId,
@@ -76,14 +76,14 @@ module.exports.revoked = function (req, res) {
 };
 
 module.exports.show = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.getCurrentGatewayAccountId(req);
   withValidAccountId(req, res, accountId, function (accountId, req, res) {
     response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
   });
 };
 
 module.exports.create = function (req, res) {
-  let accountId = auth.get_gateway_account_id(req);
+  let accountId = auth.getCurrentGatewayAccountId(req);
   let correlationId = req.correlationId;
   let description = req.body.description;
 
@@ -140,7 +140,7 @@ module.exports.update = function (req, res) {
 };
 
 module.exports.destroy = function (req, res) {
-  var accountId = auth.get_gateway_account_id(req);
+  var accountId = auth.getCurrentGatewayAccountId(req);
 
   var payload = {
     token_link: req.query.token_link

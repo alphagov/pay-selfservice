@@ -52,7 +52,7 @@ module.exports = {
     let data = {
       username: newUsername,
       email: `${newUsername}@example.com`,
-      gateway_account_id: String(Math.floor(Math.random() * 10)),
+      gateway_account_ids: [String(Math.floor(Math.random() * 10))],
       telephone_number: String(Math.floor(Math.random() * 1000000)),
     };
 
@@ -80,7 +80,7 @@ module.exports = {
     let data = {
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
-      gateway_account_id: opts.gateway_account_id || String(Math.floor(Math.random() * 10) + 1),
+      gateway_account_ids: opts.gateway_account_ids || [String(Math.floor(Math.random() * 10) + 1)],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
       otp_key: opts.otp_key || randomOtpKey(),
       disabled: opts.disabled || false,
@@ -108,7 +108,6 @@ module.exports = {
 
   /**
    * @param request Params override response
-   * @param gatewayAccountIdFromList Temporary field to support backward compatibility PP-1598 (will be deleted in next PR)
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request) => {
@@ -117,7 +116,7 @@ module.exports = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
       password: request.password || "random-password",
-      gateway_account_id: request.gateway_account_id || randomAccountId(), // Backwards compatibility PP-1598
+      gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
       telephone_number: request.telephone_number || randomTelephoneNumber(),
       otp_key: request.otp_key || "43c3c4t",
       role: {"name": "admin", "description": "Administrator"},
@@ -128,11 +127,6 @@ module.exports = {
         "method": "GET"
       }]
     };
-
-
-    if(request.gateway_account_ids) {
-      data.gateway_account_ids = request.gateway_account_ids;
-    }
 
     return {
       getPactified: () => {
@@ -150,7 +144,7 @@ module.exports = {
   invalidUserCreateRequestWithFieldsMissing: () => {
     let request = {
       username: randomUsername(),
-      gateway_account_id: '',
+      gateway_account_ids: [''],
       email: '',
       telephone_number: ''
     };
@@ -160,7 +154,7 @@ module.exports = {
 
   invalidUserCreateResponseWhenFieldsMissing: () => {
     let response = {
-      errors: ["Field [gateway_account_id] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
+      errors: ["Field [gateway_account_ids] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
     };
 
     return withPactified(response);
