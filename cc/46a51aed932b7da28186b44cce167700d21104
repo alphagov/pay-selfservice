@@ -7,3 +7,5 @@ alpha_release-133.approver=F04F02A1
 alpha_release-133.approve-date=2017-03-01:15:44:47
 
 staging-1.tag=alpha_staging-1-133
+
+staging-1.alpha_staging-1-133.date=2017-03-01:16:45:00
