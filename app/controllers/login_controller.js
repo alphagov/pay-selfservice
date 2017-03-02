@@ -55,7 +55,7 @@ module.exports.logInGet = function (req, res) {
  * @param res
  */
 module.exports.postLogin = function (req, res) {
-  req.session = _.pick(req.session, ['passport', 'last_url']);
+  req.session = _.pick(req.session, ['passport', 'last_url', 'currentGatewayAccountId']);
   logLoginAction(req, 'successfully attempted username/password combination');
   res.redirect(paths.user.otpLogIn);
 };
