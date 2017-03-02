@@ -81,7 +81,7 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it.only('should redirect to root and clean mock_session of all but passport,currentGatewayAccountId  and last_url', function (done) {
+  it('should redirect to root and clean mock_session of all but passport,currentGatewayAccountId  and last_url', function (done) {
     // happens after the passort middleware, so cant test through supertest
     var user = mock_session.getUser();
     var session = mock_session.getMockSession(user),

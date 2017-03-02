@@ -61,6 +61,11 @@ module.exports = {
     on: '/email-notifications/on'
 
   },
+  serviceSwitcher: {
+    index: '/my-services',
+    switch: '/my-services/switch'
+
+  },
   healthcheck: {
     path: '/healthcheck'
   },
