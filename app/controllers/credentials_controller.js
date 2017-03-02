@@ -45,49 +45,12 @@ function showSuccessView(connectorData, viewMode, req, res) {
 }
 
 function loadIndex(req, res, viewMode) {
-  var accountId = auth.getCurrentGatewayAccountId(req);
-  var accountUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}";
-
-  logger.debug('Calling connector to get account information -', {
-    service:'connector',
-    method: 'GET',
-    url: accountUrl
-  });
-
-  var startTime = new Date();
-  var url = accountUrl.replace("{accountId}", accountId);
-  var correlationId = req.headers[CORRELATION_HEADER] || '';
-
-  connectorClient().getAccount({
-    gatewayAccountId: accountId,
-    correlationId: correlationId
-  }, function (connectorData, connectorResponse) {
-    var duration = new Date() - startTime;
-    logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
-    if (connectorResponse.statusCode === 200) showSuccessView(connectorData, viewMode, req, res);
+  connectorClient().getAccount2({
+    gatewayAccountId: auth.getCurrentGatewayAccountId(req),
+    correlationId: req.correlationId
   })
-  .on('connectorError', function (err, connectorResponse) {
-    var duration = new Date() - startTime;
-    logger.info(`[${correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
-
-    if (connectorResponse && connectorResponse.statusCode) {
-      logger.error(`[${correlationId}] Calling connector to get account information failed -`, {
-        service: 'connector',
-        method: 'GET',
-        url: accountUrl,
-        status: connectorResponse.statusCode
-      });
-    } else {
-      logger.error(`[${correlationId}] Calling connector to get account information threw exception -`, {
-        service: 'connector',
-        method: 'GET',
-        url: accountUrl,
-        error: err
-      });
-    }
-
-    errorView(req, res);
-  });
+  .then((connectorData, connectorResponse) => showSuccessView(connectorData, viewMode, req, res))
+  .catch(() => errorView(req, res));
 }
 
 
