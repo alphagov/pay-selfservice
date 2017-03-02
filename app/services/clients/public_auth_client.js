@@ -1,6 +1,7 @@
 const q          = require('q');
 
 const requestLogger = require('../../utils/request_logger');
+const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
 const baseClient = require('./base_client');
 
 const SERVICE_NAME = 'publicauth';
@@ -10,34 +11,6 @@ const SERVICE_NAME = 'publicauth';
  */
 const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accountId}`;
 
-/**
- * Creates a callback that can be used to log the stuff we're interested
- * in and converts the response/error into a promise.
- *
- * @private
- * @param {Object} context
- * @returns {function}
- */
-const createCallbackToPromiseConverter = context => {
-  let defer = context.defer;
-  context.service = SERVICE_NAME;
-
-  return (error, response, body) => {
-    requestLogger.logRequestEnd(context);
-
-    if (response && response.statusCode !== 200) {
-      requestLogger.logRequestFailure(context, response);
-      defer.reject({response: response});
-    }
-
-    if (error) {
-      requestLogger.logRequestError(context, error);
-      defer.reject({error: error});
-    }
-
-    defer.resolve(body);
-  };
-};
 
 module.exports = {
   /**
@@ -61,7 +34,8 @@ module.exports = {
       startTime: startTime,
       correlationId: params.correlationId,
       method: 'GET',
-      description: 'get active tokens'
+      description: 'get active tokens',
+      service: SERVICE_NAME
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
@@ -94,7 +68,8 @@ module.exports = {
       startTime: startTime,
       correlationId: params.correlationId,
       method: 'GET',
-      description: 'get revoked tokens'
+      description: 'get revoked tokens',
+      service: SERVICE_NAME
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
@@ -132,7 +107,8 @@ module.exports = {
       startTime: startTime,
       correlationId: params.correlationId,
       method: 'POST',
-      description: 'create new token'
+      description: 'create new token',
+      service: SERVICE_NAME
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
@@ -169,7 +145,8 @@ module.exports = {
       startTime: startTime,
       correlationId: params.correlationId,
       method: 'PUT',
-      description: 'update token'
+      description: 'update token',
+      service: SERVICE_NAME
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 
@@ -205,7 +182,8 @@ module.exports = {
       startTime: startTime,
       correlationId: params.correlationId,
       method: 'DELETE',
-      description: 'delete token'
+      description: 'delete token',
+      service: SERVICE_NAME
     };
     let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
 

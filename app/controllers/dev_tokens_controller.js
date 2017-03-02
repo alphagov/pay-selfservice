@@ -132,8 +132,8 @@ module.exports.update = function (req, res) {
     })
     .catch((rejection) => {
       let responseCode = 500;
-      if (rejection && rejection.response) {
-        responseCode = rejection.response.statusCode;
+      if (rejection && rejection.errorCode) {
+        responseCode = rejection.errorCode;
       }
       res.sendStatus(responseCode)
     });
@@ -159,8 +159,8 @@ module.exports.destroy = function (req, res) {
     })
     .catch(rejection => {
       let responseCode = 500;
-      if (rejection && rejection.response) {
-        responseCode = rejection.response.statusCode;
+      if (rejection && rejection.errorCode) {
+        responseCode = rejection.errorCode;
       }
       res.sendStatus(responseCode)
     });
