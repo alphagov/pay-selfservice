@@ -27,7 +27,8 @@ header {
   a,
   a:visited,
   a:active,
-  a:hover {
+  a:hover,
+  a:link {
     color: $white;
   }
 
