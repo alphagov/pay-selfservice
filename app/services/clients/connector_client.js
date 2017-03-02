@@ -5,10 +5,13 @@ var EventEmitter          = require('events').EventEmitter;
 var logger                = require('winston');
 var request               = require('request');
 var querystring           = require('querystring');
+const q = require('q');
 
 var dates                 = require('../../utils/dates.js');
 const baseClient          = require('./base_client');
+const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
 
+const SERVICE_NAME = 'connector';
 var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
 var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';
 var CHARGES_API_PATH                  = ACCOUNT_API_PATH + '/charges';
@@ -259,6 +262,38 @@ ConnectorClient.prototype = {
     });
     baseClient.get(url, params, this.responseHandler(successCallback));
     return this;
+  },
+
+  /**
+   * Retrieves the given gateway account
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            correlationId (optional)
+   * @param successCallback
+   *          Callback function for successful refunds
+   */
+  getAccount2: function (params) {
+    var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl);
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'GET',
+      description: 'get an account',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
   },
 
   /**
