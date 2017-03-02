@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     gatewayAccountId: accountId
   };
 
-  return connectorClient.getAccount2(params)
+  return connectorClient.getAccount(params)
     .then(data => {
       req.account = data;
 

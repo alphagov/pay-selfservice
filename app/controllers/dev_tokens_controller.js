@@ -167,7 +167,7 @@ module.exports.destroy = function (req, res) {
 };
 
 function withValidAccountId(req, res, accountId, callback) {
-  connectorClient().getAccount2({
+  connectorClient().getAccount({
     correlationId: req.correlationId,
     gatewayAccountId: accountId
   })

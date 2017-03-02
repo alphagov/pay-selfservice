@@ -45,7 +45,7 @@ function showSuccessView(connectorData, viewMode, req, res) {
 }
 
 function loadIndex(req, res, viewMode) {
-  connectorClient().getAccount2({
+  connectorClient().getAccount({
     gatewayAccountId: auth.getCurrentGatewayAccountId(req),
     correlationId: req.correlationId
   })

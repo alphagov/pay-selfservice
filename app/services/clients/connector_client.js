@@ -249,31 +249,9 @@ ConnectorClient.prototype = {
    *          An object with the following elements;
    *            gatewayAccountId (required)
    *            correlationId (optional)
-   * @param successCallback
-   *          Callback function for successful refunds
+   *@return {Promise}
    */
-  getAccount: function (params, successCallback) {
-    var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl);
-
-    logger.debug('Calling connector to get account -', {
-      service: 'connector',
-      method: 'GET',
-      url: url
-    });
-    baseClient.get(url, params, this.responseHandler(successCallback));
-    return this;
-  },
-
-  /**
-   * Retrieves the given gateway account
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function for successful refunds
-   */
-  getAccount2: function (params) {
+  getAccount: function (params) {
     var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl);
     let defer = q.defer();
     let startTime = new Date();
@@ -288,7 +266,6 @@ ConnectorClient.prototype = {
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
-
 
     baseClient.get(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);

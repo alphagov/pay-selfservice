@@ -20,7 +20,7 @@ module.exports.index = function (req, res) {
     };
 
     connectorClient()
-      .getAccount2(params)
+      .getAccount(params)
       .then(onSuccess)
       .catch(onError);
   };
