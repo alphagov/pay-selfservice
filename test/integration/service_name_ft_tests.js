@@ -113,7 +113,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
         // No connectorMock defined on purpose to mock a network failure
 
         build_get_request(testSetup.path, app)
-          .expect(200, {"message": "Internal server error"})
+          .expect(200, {"message": "Unable to retrieve the service name."})
           .end(done);
       });
     });
