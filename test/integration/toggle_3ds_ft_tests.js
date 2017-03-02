@@ -68,7 +68,8 @@ describe('The 3D Secure index endpoint', function () {
       justToggled: false,
       permissions: {
         'toggle_3ds_read': true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.toggle3ds.index, app)
@@ -87,7 +88,8 @@ describe('The 3D Secure index endpoint', function () {
       justToggled: true,
       permissions: {
         'toggle_3ds_read': true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.toggle3ds.index + '?toggled', app)
@@ -106,7 +108,8 @@ describe('The 3D Secure index endpoint', function () {
        justToggled: false,
        permissions: {
          'toggle_3ds_read': true
-       }
+       },
+       navigation: true
      };
 
      build_get_request(paths.toggle3ds.index, app)
@@ -125,7 +128,8 @@ describe('The 3D Secure index endpoint', function () {
        justToggled: true,
        permissions: {
          'toggle_3ds_read': true
-       }
+       },
+       navigation: true
      };
 
      build_get_request(paths.toggle3ds.index + '?toggled', app)

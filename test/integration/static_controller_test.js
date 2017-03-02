@@ -14,3 +14,6 @@ describe('static controller', function () {
     });
   });
 });
+
+
+

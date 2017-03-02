@@ -96,7 +96,8 @@ describe('Dev Tokens Endpoints', function() {
           "tokens_singular": false,
           'permissions': {
             'tokens_revoked_read': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -124,7 +125,8 @@ describe('Dev Tokens Endpoints', function() {
           "tokens_singular": true,
           'permissions': {
             'tokens_revoked_read': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -155,7 +157,8 @@ describe('Dev Tokens Endpoints', function() {
           "tokens_singular": false,
           'permissions': {
             'tokens_revoked_read': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -196,7 +199,8 @@ describe('Dev Tokens Endpoints', function() {
           "tokens_singular": false,
           'permissions': {
             'tokens_active_read': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -224,7 +228,8 @@ describe('Dev Tokens Endpoints', function() {
           "tokens_singular": true,
           'permissions': {
             'tokens_active_read': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -255,7 +260,8 @@ describe('Dev Tokens Endpoints', function() {
           "tokens_singular": false,
           'permissions': {
             'tokens_active_read': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -305,7 +311,8 @@ describe('Dev Tokens Endpoints', function() {
           'last_used': "23 Feb 2016 - 19:44",
           'permissions': {
             'tokens_update': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -456,7 +463,8 @@ describe('Dev Tokens Endpoints', function() {
           'description': 'description',
           'permissions': {
             'tokens_create': true
-          }
+          },
+          navigation: true
         })
         .end(done);
 
@@ -481,7 +489,8 @@ describe('Dev Tokens Endpoints', function() {
           'account_id': gatewayAccountId,
           'permissions': {
             'tokens_create': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -493,7 +502,8 @@ describe('Dev Tokens Endpoints', function() {
         "account_id": gatewayAccountId,
         "description": "description"
       }).reply(200, {
-        "token": TOKEN
+        "token": TOKEN,
+        navigation: true
       });
 
       build_form_post_request(paths.devTokens.create,{})
@@ -513,7 +523,8 @@ describe('Dev Tokens Endpoints', function() {
           'account_id': gatewayAccountId,
           'permissions': {
             'tokens_create': true
-          }
+          },
+          navigation: true
         })
         .end(done);
     });
@@ -524,7 +535,8 @@ describe('Dev Tokens Endpoints', function() {
       publicauthMock.post(PUBLIC_AUTH_PATH, {
         "account_id": gatewayAccountId,
         "description": "description"
-      }).reply(200, {"token": TOKEN });
+      }).reply(200, {"token": TOKEN,
+        navigation: true});
 
       build_form_post_request(paths.devTokens.create,{},true)
         .expect(200, {

@@ -47,7 +47,7 @@ function response(req, res, template, data) {
     data.multipleGatewayAccounts = true;
   }
   data.permissions = getPermissionsForView(req.user);
-
+  data.navigation = data.navigation !== undefined ? data.navigation : true;
   render(req, res, template, data);
 }
 
