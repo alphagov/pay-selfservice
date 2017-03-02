@@ -76,7 +76,8 @@ describe('The payment types endpoint,', function () {
         },
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectType, app)
@@ -101,7 +102,8 @@ describe('The payment types endpoint,', function () {
         },
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectType, app)
@@ -126,7 +128,8 @@ describe('The payment types endpoint,', function () {
         },
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectType, app)

@@ -97,7 +97,8 @@ describe('The payment types endpoint,', function () {
         ],
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
@@ -124,7 +125,8 @@ describe('The payment types endpoint,', function () {
         ],
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=DEBIT", app)
@@ -151,7 +153,8 @@ describe('The payment types endpoint,', function () {
         ],
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
@@ -178,7 +181,8 @@ describe('The payment types endpoint,', function () {
         ],
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL", app)
@@ -206,7 +210,8 @@ describe('The payment types endpoint,', function () {
         ],
         permissions: {
           "payment_types_read": true
-        }
+        },
+        navigation: true
       };
 
       build_get_request(paths.paymentTypes.selectBrand + "?acceptedType=ALL&error=Error", app)

@@ -7,7 +7,8 @@ describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
 
     let templateData = {
-      permissions: {}
+      permissions: {},
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);
@@ -26,7 +27,8 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: {
         tokens_read: true
-      }
+      },
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);
@@ -40,7 +42,8 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: {
         transactions_read: true
-      }
+      },
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);
@@ -54,7 +57,8 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: {
         gateway_credentials_read: true
-      }
+      },
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);
@@ -68,7 +72,8 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: {
         service_name_read: true
-      }
+      },
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);
@@ -82,7 +87,8 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: {
         payment_types_read: true
-      }
+      },
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);
@@ -96,7 +102,8 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: {
         email_notification_template_read: true
-      }
+      },
+      navigation: true
     };
 
     let body = renderTemplate('transactions/index', templateData);

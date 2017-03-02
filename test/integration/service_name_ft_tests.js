@@ -79,7 +79,8 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
           "editMode": testSetup.edit,
           permissions: {
             'service_name_read': true
-          }
+          },
+          navigation: true
         };
 
         build_get_request(testSetup.path, app)

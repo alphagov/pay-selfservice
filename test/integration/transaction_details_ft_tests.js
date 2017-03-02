@@ -1,5 +1,7 @@
 var request     = require('supertest');
 var nock        = require('nock');
+var _        = require('lodash');
+
 require(__dirname + '/../test_helpers/serialize_mock.js');
 var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
 var getApp        = require(__dirname + '/../../server.js').getApp;
@@ -27,6 +29,10 @@ function when_getTransactionHistory(chargeId, baseApp) {
 
 function connectorChargePathFor(chargeId) {
   return CONNECTOR_CHARGE_PATH.replace('{chargeId}', chargeId);
+}
+
+function asTemplate(data) {
+  return _.merge(data, {navigation: true});
 }
 
 describe('The transaction view scenarios', function () {
@@ -142,7 +148,7 @@ describe('The transaction view scenarios', function () {
         ],
       };
 
-      var expectedEventsView = {
+      var expectedEventsView = asTemplate({
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -234,7 +240,7 @@ describe('The transaction view scenarios', function () {
         "permissions": {
           "transactions_details_read": true
         }
-      };
+      });
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
       connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
@@ -299,7 +305,7 @@ describe('The transaction view scenarios', function () {
         ]
       };
 
-      var expectedEventsView = {
+      var expectedEventsView = asTemplate({
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -353,7 +359,7 @@ describe('The transaction view scenarios', function () {
         "permissions": {
           "transactions_details_read": true
         }
-      };
+      });
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
       connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
@@ -425,7 +431,7 @@ describe('The transaction view scenarios', function () {
         ]
       };
 
-      var expectedEventsView = {
+      var expectedEventsView = asTemplate({
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -480,7 +486,7 @@ describe('The transaction view scenarios', function () {
         "permissions": {
           "transactions_details_read": true
         }
-      };
+      });
 
       connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
       connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
@@ -584,7 +590,7 @@ describe('The transaction view scenarios', function () {
         ],
       };
 
-      var expectedEventsView = {
+      var expectedEventsView = asTemplate({
         'charge_id': chargeWithRefund,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -676,7 +682,7 @@ describe('The transaction view scenarios', function () {
         "permissions": {
           "transactions_details_read": true
         }
-      };
+      });
 
       var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events';
       connectorMock_responds(connectorChargePathFor(chargeWithRefund), mockChargeResponse);
