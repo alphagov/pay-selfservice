@@ -36,8 +36,18 @@ const getPermissionsForView = (user) => {
   return permissionMap;
 };
 
+const hasMultipleGatewayAccounts = user => {
+  let gatewayAccountIds = _.get(user, 'gatewayAccountIds', false);
+  return gatewayAccountIds && gatewayAccountIds.length > 1;
+};
+
 function response(req, res, template, data) {
+  let user = _.get(req, 'user', null);
+  if (hasMultipleGatewayAccounts(req.user)) {
+    data.multipleGatewayAccounts = true;
+  }
   data.permissions = getPermissionsForView(req.user);
+
   render(req, res, template, data);
 }
 

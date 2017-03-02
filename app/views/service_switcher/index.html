@@ -1,0 +1,16 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - My Services
+{{/pageTitle}}
+{{$content}}
+    <p>Choose the environment you want to enter</p>
+
+    {{#gatewayAccounts}}
+    <p>
+        <a href="/my-services/switch?accountId={{gateway_account_id}}"><em>{{ payment_provider }}</em> {{ type }} account</a>
+    </p>
+    {{/gatewayAccounts}}
+{{/content}}
+
+{{/layout}}

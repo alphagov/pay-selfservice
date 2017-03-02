@@ -27,7 +27,10 @@
           <a href="{{$homepageUrl}}/{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
             <img src="/public/images/crown.png" width="35" alt=""> {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
           </a>
-          <a href="/logout" title="Log me out" id="logout" class="content logout">Log Out</a>
+            <a href="/logout" title="Log me out" id="logout" class="content logout">Log Out</a>
+            {{#multipleGatewayAccounts}}
+            <a href="{{ routes.serviceSwitcher.index }}" title="My Services" id="my-services" class="content logout">My Services</a>
+            {{/multipleGatewayAccounts}}
         </div>
       </div>
     </header>
@@ -37,7 +40,7 @@
     <p class="generic-error"> {{flash.genericError}} </p>
     {{/flash.genericError}}
     <main id="content" role="main">
-      <div class="navigation">
+        <div class="navigation">
         <div class="inner">
             <nav role="navigation">
                 <ul>
@@ -64,7 +67,7 @@
             </nav>
         </div>
       </div>
-      <div class="main-content">
+        <div class="main-content">
         <div class="inner">
           {{$content}}{{/content}}
         </div>
