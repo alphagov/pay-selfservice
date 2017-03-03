@@ -20,8 +20,9 @@ module.exports.index = function (req, res) {
     };
 
     connectorClient()
-      .getAccount(params, onSuccess)
-      .on('connectorError', onError);
+      .getAccount(params)
+      .then(onSuccess)
+      .catch(onError);
   };
 
   var onSuccess = function (data) {
@@ -33,12 +34,7 @@ module.exports.index = function (req, res) {
     response(req, res, 'service_name', model);
   };
 
-  var onError = function (connectorError) {
-    if (connectorError) {
-      renderErrorView(req, res, 'Internal server error');
-      return;
-    }
-
+  var onError = function () {
     renderErrorView(req, res, 'Unable to retrieve the service name.');
   };
 

@@ -3,45 +3,11 @@ const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
 const baseClient = require('./base_client');
 var User = require('../../models/user').User;
+const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
+
 
 const SERVICE_NAME = 'adminusers';
-const SUCCESS_CODES = [200, 201, 202, 204, 206];
-/**
- * Creates a callback that can be used to log the stuff we're interested
- * in and converts the response/error into a promise.
- *
- * @private
- * @param {Object} context
- * @returns {function}
- */
-const createCallbackToPromiseConverter = (context, transformer) => {
-  let defer = context.defer;
-  context.service = SERVICE_NAME;
 
-  return (error, response, body) => {
-    requestLogger.logRequestEnd(context);
-
-    if (response && SUCCESS_CODES.indexOf(response.statusCode) === -1) {
-      requestLogger.logRequestFailure(context, response);
-      defer.reject({
-        errorCode: response.statusCode,
-        message: response.body
-      });
-    } else {
-      if (body && transformer && typeof transformer === 'function') {
-        defer.resolve(transformer(body));
-      } else {
-        defer.resolve(body);
-      }
-    }
-
-    if (error) {
-      requestLogger.logRequestError(context, error);
-      defer.reject({error: error});
-    }
-
-  };
-};
 
 /**
  * @private
@@ -78,6 +44,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'create a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
@@ -109,6 +76,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'GET',
       description: 'find a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
@@ -146,6 +114,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'authenticate a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
@@ -178,6 +147,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'increment login attempts for a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
@@ -209,6 +179,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'reset login attempts for a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
@@ -246,6 +217,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'PATCH',
       description: 'increment session version for a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
@@ -280,6 +252,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'create a forgotten password for a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
@@ -311,6 +284,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'GET',
       description: 'get a forgotten password',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
@@ -347,6 +321,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'update a password for a user',
+      service: SERVICE_NAME
     };
 
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);

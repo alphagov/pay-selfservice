@@ -2,9 +2,13 @@ var should = require('chai').should();
 var assert = require('assert');
 var sinon  = require('sinon');
 var _      = require('lodash');
-var expect = require('chai').expect;
 var nock   = require('nock');
 var proxyquire = require('proxyquire');
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
 var paths  = require(__dirname + '/../../../app/paths.js');
 
 var authServiceMock = function(){
@@ -76,32 +80,17 @@ describe('retrieve param test', function () {
           }
         }
       };
+
       var req =  { params: {}, body: {}, headers: {}, session: valid_session};
-      retrieveAccount(req, response, next);
 
-
-      var testPromise = new Promise((resolve, reject) => {
-          setTimeout(() => { resolve(); }, 100);
-      });
-
-      testPromise.then((result) => {
-        try {
-          expect(status.calledWith(200));
-          expect(next.called).to.be.true;
-          expect(req.account).to.deep.equal({
-            foo: 'bar',
-            customEmailText: "hello",
-            "gateway_account_id": 1,
-            "emailEnabled": true
-          });
-          done();
-        }
-        catch(err) { done(err); }
-      }, done);
+      retrieveAccount(req, response, next).should.be.fulfilled.then(function () {
+            expect(next.called).to.be.true;
+            expect(req.account).to.deep.equal({
+              foo: 'bar',
+              customEmailText: "hello",
+              "gateway_account_id": 1,
+              "emailEnabled": true
+            });
+      }).should.notify(done);
   });
-
-
-
-
-
-})
+});

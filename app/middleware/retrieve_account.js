@@ -13,20 +13,17 @@ module.exports = function (req, res, next) {
   var params = {
     gatewayAccountId: accountId
   };
-  var init = function () {
-      connectorClient.getAccount(params, function(data){
+
+  return connectorClient.getAccount(params)
+    .then(data => {
       req.account = data;
 
       var emailModel = Email(req.headers[CORRELATION_HEADER]);
-      emailModel.get(req.account.gateway_account_id).then(function(data){
-        req.account = _.merge(req.account, data);
-        next();
-      },connectorError);
-    }).on('connectorError', connectorError);
-  },
-  connectorError = function(){
-    errorView(req, res);
-  };
-
-  init();
+      return emailModel.get(req.account.gateway_account_id)
+    })
+    .then(emailData => {
+      req.account = _.merge(req.account, emailData);
+      next();
+    })
+    .catch(() => errorView(req, res));
 };

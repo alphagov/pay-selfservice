@@ -132,8 +132,8 @@ module.exports.update = function (req, res) {
     })
     .catch((rejection) => {
       let responseCode = 500;
-      if (rejection && rejection.response) {
-        responseCode = rejection.response.statusCode;
+      if (rejection && rejection.errorCode) {
+        responseCode = rejection.errorCode;
       }
       res.sendStatus(responseCode)
     });
@@ -159,43 +159,18 @@ module.exports.destroy = function (req, res) {
     })
     .catch(rejection => {
       let responseCode = 500;
-      if (rejection && rejection.response) {
-        responseCode = rejection.response.statusCode;
+      if (rejection && rejection.errorCode) {
+        responseCode = rejection.errorCode;
       }
       res.sendStatus(responseCode)
     });
 };
 
 function withValidAccountId(req, res, accountId, callback) {
-  var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}';
-  var url = connectorUrl.replace("{accountId}", accountId);
-
-  logger.debug('Calling connector -', {
-    service:'publicAuth',
-    method: 'GET',
-    url: url
-  });
-  var startTime = new Date();
-
   connectorClient().getAccount({
     correlationId: req.correlationId,
     gatewayAccountId: accountId
-  }, function (connectorData, connectorResponse) {
-    var duration = new Date() - startTime;
-    logger.info(`[${req.correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
-    if (connectorResponse.statusCode != 200) {
-      errorView(req, res);
-      return;
-    }
-    callback(accountId, req, res);
-  }).on('connectorError', function (err) {
-    var duration = new Date() - startTime;
-    logger.info(`[${req.correlationId}] - GET to ${url} ended - elapsed time: ${duration} ms`);
-    logger.debug('[%s] Calling connector threw exception -', req.correlationId, {
-      service:'connector',
-      method: 'GET',
-      url: connectorUrl
-    });
-    errorView(req, res);
-  });
+  })
+  .then(() => callback(accountId, req, res))
+  .catch(() => errorView(req, res));
 }
