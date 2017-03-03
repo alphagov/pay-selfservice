@@ -10,6 +10,7 @@ var paymentTypesSelectType = require('./controllers/payment_types_select_type_co
 var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
 var emailNotifications = require('./controllers/email_notifications_controller.js');
+var toggle3ds = require('./controllers/toggle_3ds_controller.js');
 var forgotPassword = require('./controllers/forgotten_password_controller.js');
 
 var static = require('./controllers/static_controller.js');
@@ -111,6 +112,13 @@ module.exports.bind = function (app) {
   app.post(en.off, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
   app.get(en.offConfirm, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
   app.post(en.on, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
+
+  // 3D SECURE TOGGLE
+  var t3ds = paths.toggle3ds;
+  app.get(t3ds.index, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:read'), toggle3ds.index);
+  app.post(t3ds.onConfirm, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), toggle3ds.onConfirm);
+  app.post(t3ds.on, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), toggle3ds.on);
+  app.post(t3ds.off, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), toggle3ds.off);
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

@@ -57,6 +57,9 @@
                     {{#permissions.payment_types_read}}
                     <li><a href="{{ routes.paymentTypes.summary }}">Payment types</a></li>
                     {{/permissions.payment_types_read}}
+                    {{#permissions.toggle_3ds_read}}
+                    <li><a href="{{ routes.toggle3ds.index }}">3D Secure</a></li>
+                    {{/permissions.toggle_3ds_read}}
                     {{#permissions.email_notification_template_read}}
                     <li><a href="{{ routes.emailNotifications.index }}">Email notifications</a></li>
                     {{/permissions.email_notification_template_read}}

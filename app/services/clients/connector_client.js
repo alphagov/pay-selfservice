@@ -26,6 +26,7 @@ var ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types';
 var ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials';
 var ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials';
 var EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification';
+var TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle';
 
 /**
  * @private
@@ -106,6 +107,11 @@ function _chargeRefundsUrlFor(gatewayAccountId, chargeId, url) {
 /** @private */
 var _getNotificationEmailUrlFor = function(accountID){
   return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION__PATH.replace("{accountId}", accountID);
+};
+
+/** @private */
+var _getToggle3dsUrlFor = function(accountID){
+  return process.env.CONNECTOR_URL + TOGGLE_3DS_PATH.replace("{accountId}", accountID);
 };
 
 function _options(url) {
@@ -460,7 +466,18 @@ ConnectorClient.prototype = {
     baseClient.patch(url, params, this.responseHandler(successCallback));
 
     return this;
-  }
+  },
+
+    /**
+     *
+     * @param {Object} params
+     * @param {Function} successCallback
+     */
+    update3dsEnabled: function(params, successCallback) {
+      var url = _getToggle3dsUrlFor(params.gatewayAccountId);
+      baseClient.patch(url, params, this.responseHandler(successCallback));
+      return this;
+    }
 };
 
 util.inherits(ConnectorClient, EventEmitter);

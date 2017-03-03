@@ -1,0 +1,75 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - 3D Secure
+{{/pageTitle}}
+
+{{$content}}
+
+<div class="column-two-thirds">
+
+{{#permissions.toggle_3ds_read}}
+{{#justToggled}}
+<div id="3ds-toggled" class="govuk-box-highlight">
+{{#requires3ds}}
+    <p>3D Secure is turned on for this service</p>
+{{/requires3ds}}
+{{^requires3ds}}
+    <p>3D Secure is turned off for this service</p>
+{{/requires3ds}}
+</div>
+{{/justToggled}}
+{{/permissions.toggle_3ds_read}}
+
+<h1 class="page-title">3D Secure</h1>
+
+<p>3D Secure (3DS) adds an extra layer of authentication to user payments. This can help reduce fraud, but also makes it <strong class="bold-small">harder for your service users to complete payments.</strong></p>
+<p><strong class="bold-small">Verified by Visa</strong> and <strong class="bold-small">MasterCard SecureCode</strong> are common examples of 3D Secure.</p>
+
+{{^requires3ds}}
+{{#permissions.toggle_3ds_read}}
+<h2 id="3ds-status" class="heading-medium remove-top-margin">3D Secure is off</h2>
+{{/permissions.toggle_3ds_read}}
+
+{{#permissions.toggle_3ds_update}}
+<div class="panel panel-border-wide">
+    <h2 class="heading-small">Activating 3D Secure</h2>
+    <p>Check with your Worldpay account manager that your merchant code has been configured to support 3D Secure. Read more about this in our <a href="https://gds-payments.gelato.io/docs/versions/1.0.0/switching-to-production">technical documentation</a>.</p>
+</div>
+
+<p>Once that’s done, you can turn on 3D Secure for all payments to your service.</p>
+
+<form class="permission-main" method="post" action="{{routes.toggle3ds.onConfirm}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+        <input id="3ds-on-button" class="button" type="submit" value="Turn on 3D Secure">
+    </div>
+</form>
+{{/permissions.toggle_3ds_update}}
+{{/requires3ds}}
+
+{{#requires3ds}}
+{{#permissions.toggle_3ds_read}}
+<h2 id="3ds-status" class="heading-medium remove-top-margin">3D Secure is activated</h2>
+
+<div class="panel panel-border-wide">
+    <h2 class="heading-small">Having problems with 3D Secure?</h2>
+    <p>If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Worldpay account manager that your merchant code has been configured to support 3D Secure.</p>
+</div>
+{{/permissions.toggle_3ds_read}}
+
+{{#permissions.toggle_3ds_update}}
+<form class="permission-main" method="post" action="{{routes.toggle3ds.off}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+        <input id="3ds-off-button" class="button" type="submit" value="Turn off 3D Secure">
+    </div>
+</form>
+{{/permissions.toggle_3ds_update}}
+{{/requires3ds}}
+
+</div>
+
+{{/content}}
+
+{{/layout}}
