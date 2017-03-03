@@ -18,9 +18,10 @@ module.exports.index = function (req, res) {
       correlationId: correlationId
     };
 
-    connectorClient()
-      .getAccount(params, onSuccess)
-      .on('connectorError', onError);
+     connectorClient()
+       .getAccount(params)
+       .then(onSuccess)
+       .catch(onError);
   };
 
   var onSuccess = function (data) {
