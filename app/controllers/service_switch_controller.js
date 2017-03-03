@@ -7,10 +7,13 @@ const paths = require('../paths');
 const responses = require('../utils/response');
 const ConnectorClient = require('../services/clients/connector_client').ConnectorClient;
 
-var connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL);
-const validAccountId = (accountId, user) => accountId && user.gatewayAccountIds.indexOf(accountId) !== -1;
 var successResponse = responses.response;
 var errorResponse = responses.renderErrorView;
+
+var connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL);
+
+const validAccountId = (accountId, user) => accountId && user.gatewayAccountIds.indexOf(accountId) !== -1;
+
 module.exports = {
   /**
    *
@@ -25,11 +28,14 @@ module.exports = {
       return errorResponse(req, res, 'No accounts found for user');
     }
 
-    return q.all(gatewayAccountIds
+    return q.allSettled(gatewayAccountIds
       .map(gatewayAccountId => connectorClient().getAccount({
         gatewayAccountId: gatewayAccountId,
         correlationId: req.correlationId
       })))
+      .then(gatewayAccountPromises => gatewayAccountPromises
+        .filter(promise => promise.state === 'fulfilled')
+        .map(promise => promise.value))
       .then(gatewayAccounts => {
         successResponse(req, res, 'service_switcher/index', {
           navigation: false,

@@ -69,9 +69,7 @@ describe('service switch controller: list of accounts', function () {
     }).should.notify(done);
   });
 
-  it('should render error if fetching one of list of gateway accounts fails', function (done) {
-    let renderSpy = sinon.spy();
-
+  it('should render remaining list if fetching one of list of gateway accounts fails', function (done) {
     connectorMock.get(ACCOUNTS_FRONTEND_PATH + '/2')
       .reply(200, {
         gateway_account_id: '2',
@@ -97,7 +95,14 @@ describe('service switch controller: list of accounts', function () {
     };
 
     serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
-      expect(renderSpy.calledWith('error', {message: 'Unable to display accounts'})).to.be.equal(true);
+      expect(renderSpy.calledWith('service_switcher/index', sinon.match({gatewayAccounts: [
+        {
+          gateway_account_id: '2',
+          description: 'account 2',
+          type: 'test'
+        }
+      ]
+      }))).to.be.equal(true);
     }).should.notify(done);
   });
 
