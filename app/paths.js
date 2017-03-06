@@ -61,12 +61,18 @@ module.exports = {
     on: '/email-notifications/on'
 
   },
+  serviceSwitcher: {
+    index: '/my-services',
+    switch: '/my-services/switch'
+
+  },
   toggle3ds: {
     index: '/3ds',
     onConfirm: '/3ds/confirm',
     on: '/3ds/on',
     off: '/3ds/off'
   },
+
   healthcheck: {
     path: '/healthcheck'
   },

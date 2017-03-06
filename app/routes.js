@@ -10,8 +10,9 @@ var paymentTypesSelectType = require('./controllers/payment_types_select_type_co
 var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
 var emailNotifications = require('./controllers/email_notifications_controller.js');
-var toggle3ds = require('./controllers/toggle_3ds_controller.js');
 var forgotPassword = require('./controllers/forgotten_password_controller.js');
+var serviceSwitchController = require('./controllers/service_switch_controller.js');
+var toggle3ds = require('./controllers/toggle_3ds_controller.js');
 
 var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
@@ -112,6 +113,11 @@ module.exports.bind = function (app) {
   app.post(en.off, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
   app.get(en.offConfirm, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
   app.post(en.on, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
+
+  //SERVICE SWITCHER
+  var serviceSwitcher = paths.serviceSwitcher;
+  app.get(serviceSwitcher.index, auth.enforceUserAuthenticated, csrf, serviceSwitchController.index);
+  app.get(serviceSwitcher.switch, auth.enforceUserAuthenticated, csrf, serviceSwitchController.switch);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;

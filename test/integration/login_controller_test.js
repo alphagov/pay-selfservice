@@ -5,6 +5,7 @@ var nock = require('nock');
 var assert = require('assert');
 var notp = require('notp');
 var chai = require('chai');
+var _ = require('lodash');
 
 var paths = require(__dirname + '/../../app/paths.js');
 var mock_session = require(__dirname + '/../test_helpers/mock_session.js');
@@ -80,13 +81,13 @@ describe('The logout endpoint', function () {
 
 
 describe('The postlogin endpoint', function () {
-  it('should redirect to root and clean mock_session of all but passport and last_url', function (done) {
+  it('should redirect to root and clean mock_session of all but passport,currentGatewayAccountId  and last_url', function (done) {
     // happens after the passort middleware, so cant test through supertest
     var user = mock_session.getUser();
     var session = mock_session.getMockSession(user),
       expectedUrl = paths.user.otpLogIn,
       req = {
-        session: session,
+        session: _.merge(session, {currentGatewayAccountId: '13'}),
         headers: {'x-request-id': 'some-unique-id'},
         user: user
       },
@@ -99,7 +100,8 @@ describe('The postlogin endpoint', function () {
     expect(res.redirect.calledWith(expectedUrl)).to.equal(true);
     expect(req.session).to.deep.equal({
       passport: session.passport,
-      last_url: session.last_url
+      last_url: session.last_url,
+      currentGatewayAccountId: '13'
     });
     done();
   });
