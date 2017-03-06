@@ -7,9 +7,14 @@ GOV.UK Pay - My Services
     <p>Choose the environment you want to enter</p>
 
     {{#gatewayAccounts}}
-    <p>
-        <a href="/my-services/switch?accountId={{gateway_account_id}}">{{ payment_provider }} {{ type }} account</a>
-    </p>
+    <form method="post" action="{{routes.serviceSwitcher.switch}}">
+        <div style="display:none">
+            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+            <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}">
+
+        </div>
+        <input class="service_switcher" type="submit" value="{{ payment_provider_display_name }} {{ type }} account">
+    </form>
     {{/gatewayAccounts}}
 {{/content}}
 

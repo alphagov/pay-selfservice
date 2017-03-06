@@ -1,0 +1,23 @@
+input.service_switcher {
+  /* Remove all decorations to look like normal text */
+  background: none;
+  display: inline-block;
+  font: inherit;
+  margin: 0;
+  border: none;
+  outline: none;
+  outline-offset: 0;
+  /* Additional styles to look like a link */
+  color: $link-colour;
+  cursor: pointer;
+  padding: 0 $gutter-half;
+  line-height: 30px;
+}
+
+input.service_switcher.active {
+  background-color: $highlight-colour;
+}
+
+input.service_switcher::first-letter {
+  text-transform: capitalize;
+}

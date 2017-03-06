@@ -1,25 +1,5 @@
 div.pagination {
 	margin-bottom: $gutter-half;
-	input.pagination {
-		/* Remove all decorations to look like normal text */
-		background: none;
-		display: inline-block;
-		font: inherit;
-		margin: 0;
-		border: none;
-		outline: none;
-		outline-offset: 0;
-		/* Additional styles to look like a link */
-		color: $link-colour;
-		cursor: pointer;
-		text-transform: capitalize;
-		padding: 0 $gutter-half;
-		line-height: 30px;
-	}
-
-	input.pagination.active {
-		background-color: $highlight-colour;
-	}
 
 	.paginationForm {
 		display: inline;

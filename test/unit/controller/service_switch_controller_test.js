@@ -30,7 +30,8 @@ describe('service switch controller: list of accounts', function () {
       .reply(200, {
         gateway_account_id: '2',
         description: 'account 2',
-        type: 'test'
+        type: 'test',
+        payment_provider: 'sandbox'
       });
 
     connectorMock.get(ACCOUNTS_FRONTEND_PATH + '/5')
@@ -57,6 +58,8 @@ describe('service switch controller: list of accounts', function () {
         {
           gateway_account_id: '2',
           description: 'account 2',
+          payment_provider: 'sandbox',
+          payment_provider_display_name: 'Sandbox',
           type: 'test'
         },
         {
@@ -142,7 +145,10 @@ describe('service switch controller: switching', function () {
         username: 'bob',
         gateway_account_ids: ['6', '5']
       }).getAsObject(),
-      session: session
+      session: session,
+      body: {
+        gatewayAccountId: '6'
+      }
     };
 
     let res = {
