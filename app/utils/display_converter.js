@@ -60,16 +60,17 @@ const addGatewayAccountProviderDisplayNames = data => {
 
 };
 
-module.exports = function(user, data, template) {
+module.exports = function(user, data, template, account) {
   let convertedData = _.clone(data);
 
   convertedData.permissions = getPermissionsForView(user);
-
   let hasMultipleGatewayAccounts = testHasMultipleGatewayAccounts(user);
   if (hasMultipleGatewayAccounts) {
     convertedData.multipleGatewayAccounts = true;
   }
   convertedData.navigation = showNavigationBar(template);
   addGatewayAccountProviderDisplayNames(convertedData);
+  convertedData.currentGatewayAccount = account;
+
   return convertedData;
 };

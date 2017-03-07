@@ -20,6 +20,7 @@ var querystring = require('querystring');
 var paths = require(__dirname + '/paths.js');
 var csrf = require('./middleware/csrf.js');
 var retrieveAccount = require('./middleware/retrieve_account.js');
+var getAccount = require('./middleware/get_gateway_account');
 var trimUsername = require('./middleware/trim_username.js');
 var loginCounter = require('./middleware/login_counter.js');
 var permission = require('./middleware/permission.js');
@@ -47,27 +48,27 @@ module.exports.bind = function (app) {
 
   //  TRANSACTIONS
   var tr = paths.transactions;
-  app.get(tr.index, auth.enforceUserAuthenticated, csrf, permission('transactions:read'), transactions.index);
-  app.get(tr.download, auth.enforceUserAuthenticated, csrf, permission('transactions-download:read'), transactions.download);
-  app.get(tr.show, auth.enforceUserAuthenticated, csrf, permission('transactions-details:read'), transactions.show);
-  app.post(tr.refund, auth.enforceUserAuthenticated, csrf, permission('refunds:create'), transactions.refund);
+  app.get(tr.index, auth.enforceUserAuthenticated, csrf, permission('transactions:read'), getAccount,transactions.index);
+  app.get(tr.download, auth.enforceUserAuthenticated, csrf, permission('transactions-download:read'), getAccount,transactions.download);
+  app.get(tr.show, auth.enforceUserAuthenticated, csrf, permission('transactions-details:read'), getAccount,transactions.show);
+  app.post(tr.refund, auth.enforceUserAuthenticated, csrf, permission('refunds:create'), getAccount,transactions.refund);
 
   // CREDENTIALS
   var cred = paths.credentials;
-  app.get(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), credentials.index);
-  app.get(cred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.editCredentials);
-  app.post(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.update);
+  app.get(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), getAccount, credentials.index);
+  app.get(cred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.editCredentials);
+  app.post(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.update);
 
   var notCred = paths.notificationCredentials;
-  app.get(notCred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), credentials.index);
-  app.get(notCred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.editNotificationCredentials);
-  app.post(notCred.update, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), credentials.updateNotificationCredentials);
+  app.get(notCred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), getAccount,credentials.index);
+  app.get(notCred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.editNotificationCredentials);
+  app.post(notCred.update, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.updateNotificationCredentials);
 
   // LOGIN
   var user = paths.user;
   app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
-  app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin(), login.postLogin);
-  app.get(user.loggedIn, auth.enforceUserAuthenticated, csrf, login.loggedIn);
+  app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin(), getAccount, login.postLogin);
+  app.get(user.loggedIn, auth.enforceUserAuthenticated, csrf, getAccount, login.loggedIn);
   app.get(user.noAccess, login.noAccess);
   app.get(user.logOut, login.logOut);
   app.get(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainGet);
@@ -84,25 +85,25 @@ module.exports.bind = function (app) {
 
   // DEV TOKENS
   var dt = paths.devTokens;
-  app.get(dt.index, auth.enforceUserAuthenticated, csrf, permission('tokens-active:read'), devTokens.index);
-  app.get(dt.revoked, auth.enforceUserAuthenticated, csrf, permission('tokens-revoked:read'), devTokens.revoked);
-  app.get(dt.show, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), devTokens.show);
-  app.post(dt.create, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), devTokens.create);
-  app.put(dt.update, auth.enforceUserAuthenticated, csrf, permission('tokens:update'), devTokens.update);
-  app.delete(dt.delete, auth.enforceUserAuthenticated, csrf, permission('tokens:delete'), devTokens.destroy);
+  app.get(dt.index, auth.enforceUserAuthenticated, csrf, permission('tokens-active:read'), getAccount,devTokens.index);
+  app.get(dt.revoked, auth.enforceUserAuthenticated, csrf, permission('tokens-revoked:read'), getAccount,devTokens.revoked);
+  app.get(dt.show, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), getAccount,devTokens.show);
+  app.post(dt.create, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), getAccount,devTokens.create);
+  app.put(dt.update, auth.enforceUserAuthenticated, csrf, permission('tokens:update'), getAccount,devTokens.update);
+  app.delete(dt.delete, auth.enforceUserAuthenticated, csrf, permission('tokens:delete'), getAccount,devTokens.destroy);
 
   // SERVICE NAME
   var sn = paths.serviceName;
-  app.get(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:read'), serviceName.index);
-  app.post(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), serviceName.update);
+  app.get(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:read'), getAccount,serviceName.index);
+  app.post(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), getAccount,serviceName.update);
 
   // PAYMENT TYPES
   var pt = paths.paymentTypes;
-  app.get(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), paymentTypesSelectType.selectType);
-  app.post(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), paymentTypesSelectType.updateType);
-  app.get(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), paymentTypesSelectBrand.showBrands);
-  app.post(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), paymentTypesSelectBrand.updateBrands);
-  app.get(pt.summary, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), paymentTypesSummary.showSummary);
+  app.get(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), getAccount,paymentTypesSelectType.selectType);
+  app.post(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), getAccount,paymentTypesSelectType.updateType);
+  app.get(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), getAccount,paymentTypesSelectBrand.showBrands);
+  app.post(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), getAccount,paymentTypesSelectBrand.updateBrands);
+  app.get(pt.summary, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), getAccount,paymentTypesSummary.showSummary);
 
   // EMAIL
   var en = paths.emailNotifications;
@@ -121,10 +122,10 @@ module.exports.bind = function (app) {
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;
-  app.get(t3ds.index, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:read'), toggle3ds.index);
-  app.post(t3ds.onConfirm, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), toggle3ds.onConfirm);
-  app.post(t3ds.on, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), toggle3ds.on);
-  app.post(t3ds.off, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), toggle3ds.off);
+  app.get(t3ds.index, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:read'), getAccount, toggle3ds.index);
+  app.post(t3ds.onConfirm, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm);
+  app.post(t3ds.on, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), getAccount, toggle3ds.on);
+  app.post(t3ds.off, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), getAccount, toggle3ds.off);
 
   // HEALTHCHECK
   var hc = paths.healthcheck;

@@ -1,0 +1,21 @@
+.environment-tag {
+  border-bottom: 1px solid #BFC1C3;
+  margin: 0 0 $gutter 0;
+  & span {
+    font-weight: 700;
+    font-size: 16px;
+    color: $white;
+    background-color: $govuk-blue;
+    padding: 3px 10px;
+    text-align: center;
+    display: inline-block;
+    margin-bottom: $gutter-one-quarter;
+    &::first-letter {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.environment-tag.test span {
+  background-color: $yellow;
+}
