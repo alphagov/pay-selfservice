@@ -76,7 +76,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "credentials": {},
       "permissions": {
         gateway_credentials_read: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.index, app)
@@ -100,7 +101,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "credentials": {},
       "permissions": {
         gateway_credentials_read: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.index, app)
@@ -125,7 +127,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       },
       "permissions": {
         gateway_credentials_read: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.index, app)
@@ -152,7 +155,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       },
       "permissions": {
         gateway_credentials_read: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.index, app)
@@ -225,7 +229,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "credentials": {},
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -249,7 +254,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "credentials": {},
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -274,7 +280,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       },
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -291,7 +298,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
         "credentials": {username: "a-username", merchant_id: 'a-merchant-id'},
         "permissions": {
           gateway_credentials_update: true
-        }
+        },
+        navigation: true
       });
 
     var expectedData = {
@@ -304,7 +312,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       },
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -377,7 +386,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "credentials": {},
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -394,7 +404,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
         "credentials": {},
         "permissions": {
           gateway_credentials_update: true
-        }
+        },
+        navigation: true
       });
 
     var expectedData = {
@@ -404,7 +415,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "credentials": {},
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -429,7 +441,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       },
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -446,7 +459,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
         "credentials": {username: "a-username", merchant_id: 'a-merchant-id'},
         "permissions": {
           gateway_credentials_update: true
-        }
+        },
+        navigation: true
       });
 
     var expectedData = {
@@ -459,7 +473,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       },
       "permissions": {
         gateway_credentials_update: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -539,7 +554,8 @@ describe('The notification credentials', function () {
       "notification_credentials": {username: "a-notification-username"},
       "permissions": {
         gateway_credentials_read: true
-      }
+      },
+      navigation: true
     };
 
     build_get_request(paths.credentials.index, app)

@@ -50,8 +50,7 @@ module.exports = {
    * @param res
    */
   switch: (req, res) => {
-    let parsedUrl = urlParse(req.originalUrl, /**parse query params*/true);
-    let newAccountId = _.get(parsedUrl, 'query.accountId');
+    let newAccountId = _.get(req, 'body.gatewayAccountId');
 
     if (validAccountId(newAccountId, req.user)) {
       req.session.currentGatewayAccountId = newAccountId;

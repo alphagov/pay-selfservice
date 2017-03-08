@@ -117,7 +117,7 @@ module.exports.bind = function (app) {
   //SERVICE SWITCHER
   var serviceSwitcher = paths.serviceSwitcher;
   app.get(serviceSwitcher.index, auth.enforceUserAuthenticated, csrf, serviceSwitchController.index);
-  app.get(serviceSwitcher.switch, auth.enforceUserAuthenticated, csrf, serviceSwitchController.switch);
+  app.post(serviceSwitcher.switch, auth.enforceUserAuthenticated, csrf, serviceSwitchController.switch);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;
