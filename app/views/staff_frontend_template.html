@@ -27,9 +27,9 @@
           <a href="{{$homepageUrl}}/{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
             <img src="/public/images/crown.png" width="35" alt=""> {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
           </a>
-            <a href="/logout" title="Log me out" id="logout" class="content logout">Log Out</a>
+            <a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a>
             {{#multipleGatewayAccounts}}
-            <a href="{{ routes.serviceSwitcher.index }}" title="My Services" id="my-services" class="content logout">My Services</a>
+            <a href="{{ routes.serviceSwitcher.index }}" title="My accounts" id="my-services" class="content logout">My accounts</a>
             {{/multipleGatewayAccounts}}
         </div>
       </div>

@@ -5,8 +5,7 @@ const hideNavBarTemplates = [
 ];
 
 const testHasMultipleGatewayAccounts = user => {
-  let gatewayAccountIds = _.get(user, 'gatewayAccountIds', false);
-  return gatewayAccountIds && gatewayAccountIds.length > 1;
+  return user.gatewayAccountIds && user.gatewayAccountIds.length > 1;
 };
 
 /**
@@ -68,7 +67,7 @@ module.exports = function(user, data, template) {
 
   let hasMultipleGatewayAccounts = testHasMultipleGatewayAccounts(user);
   if (hasMultipleGatewayAccounts) {
-    convertedData.hasMultipleGatewayAccounts = hasMultipleGatewayAccounts;
+    convertedData.multipleGatewayAccounts = true;
   }
   convertedData.navigation = showNavigationBar(template);
   addGatewayAccountProviderDisplayNames(convertedData);

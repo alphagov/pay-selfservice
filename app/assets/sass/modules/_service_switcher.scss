@@ -3,15 +3,16 @@ input.service_switcher {
   background: none;
   display: inline-block;
   font: inherit;
-  margin: 0;
+  margin: $gutter-one-quarter 0;
   border: none;
   outline: none;
   outline-offset: 0;
   /* Additional styles to look like a link */
   color: $link-colour;
   cursor: pointer;
-  padding: 0 $gutter-half;
-  line-height: 30px;
+  text-decoration: underline;
+  padding:0;
+
 }
 
 input.service_switcher.active {
