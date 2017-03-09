@@ -5,7 +5,7 @@ const hideNavBarTemplates = [
 ];
 
 const testHasMultipleGatewayAccounts = user => {
-  return user.gatewayAccountIds && user.gatewayAccountIds.length > 1;
+  return user && user.gatewayAccountIds && user.gatewayAccountIds.length > 1;
 };
 
 /**
@@ -28,7 +28,7 @@ const testHasMultipleGatewayAccounts = user => {
  * @param user
  * @returns {object}
  */
-const getPermissionsForView = user => {
+const getPermissions = user => {
   let permissionMap = {};
   let userPermissions;
   if (user && user.permissions) {
@@ -60,17 +60,27 @@ const addGatewayAccountProviderDisplayNames = data => {
 
 };
 
+const getAccount = account => {
+  if(account) {
+    account.full_type = account.type === 'test' ?
+      [account.payment_provider, account.type].join(' ') :
+      account.type;
+  }
+
+  return account;
+};
+
 module.exports = function(user, data, template, account) {
   let convertedData = _.clone(data);
 
-  convertedData.permissions = getPermissionsForView(user);
+  convertedData.permissions = getPermissions(user);
   let hasMultipleGatewayAccounts = testHasMultipleGatewayAccounts(user);
   if (hasMultipleGatewayAccounts) {
     convertedData.multipleGatewayAccounts = true;
   }
   convertedData.navigation = showNavigationBar(template);
   addGatewayAccountProviderDisplayNames(convertedData);
-  convertedData.currentGatewayAccount = account;
+  convertedData.currentGatewayAccount = getAccount(account);
 
   return convertedData;
 };

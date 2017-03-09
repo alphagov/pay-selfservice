@@ -40,7 +40,7 @@
             </a>
             <a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a>
             {{#multipleGatewayAccounts}}
-            <a href="{{ routes.serviceSwitcher.index }}" title="My accounts" id="my-services" class="content logout">My accounts</a>
+            <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services" class="content logout">My services</a>
             {{/multipleGatewayAccounts}}
         </div>
     </div>
@@ -56,7 +56,7 @@
 <main id="content" role="main">
     {{#navigation}}
     <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
-        <span>{{currentGatewayAccount.type}}</span>
+        <span>{{currentGatewayAccount.full_type}}</span>
     </div>
     <div class="navigation">
         <div class="inner">

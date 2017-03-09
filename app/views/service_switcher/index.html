@@ -1,12 +1,11 @@
 {{< layout}}
 
 {{$pageTitle}}
-GOV.UK Pay - My accounts
+GOV.UK Pay - My services
 {{/pageTitle}}
 {{$content}}
-    <h2 class="heading-large">My accounts</h2>
+    <h2 class="heading-large">My services</h2>
     <p>Choose the environment you want to enter</p>
-
     {{#gatewayAccounts}}
     <form method="post" action="{{routes.serviceSwitcher.switch}}">
         <div style="display:none">

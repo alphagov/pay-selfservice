@@ -21,7 +21,7 @@ describe('get account', function () {
     done();
   });
 
-  it('should get account', function (done) {
+  it.only('should get account', function (done) {
     var user = session.getUser({
       gateway_account_ids: ['1','2','5'],
       permissions: ['service-name:read']
@@ -32,7 +32,9 @@ describe('get account', function () {
     var connectorMock = nock(process.env.CONNECTOR_URL);
 
     connectorMock.get('/v1/frontend/accounts/1').times(2).reply(200, {
-      bob: 'bob'
+      bob: 'bob',
+      type: 'test',
+      payment_provider: 'sandbox'
     });
 
     return supertest(app)
@@ -41,7 +43,10 @@ describe('get account', function () {
       .expect(200)
       .expect(data => {
         expect(data.body.currentGatewayAccount).to.deep.equal({
-          bob: 'bob'
+          bob: 'bob',
+          type: 'test',
+          payment_provider: 'sandbox',
+          full_type: 'sandbox test'
         });
       })
       .end(done);
