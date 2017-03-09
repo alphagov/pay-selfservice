@@ -334,6 +334,76 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param username
+   * @returns {Promise}
+   */
+  let sendSecondFactor = username => {
+    let params = {
+      correlationId: correlationId,
+    };
+
+    let url = `${userResource}/${username}/second-factor/`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'post a second factor auth token to the user',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
+  /**
+   *
+   * @param username
+   * @param code
+   * @returns {Promise}
+   */
+  let verifySecondFactor = (username, code) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        code:code
+      }
+    };
+
+    let url = `${userResource}/${username}/second-factor/authenticate`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'verify a second factor auth token entered by user',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -343,6 +413,8 @@ module.exports = function (clientOptions = {}) {
     getUser: getUser,
     createUser: createUser,
     authenticateUser: authenticateUser,
-    updatePasswordForUser: updatePasswordForUser
+    updatePasswordForUser: updatePasswordForUser,
+    sendSecondFactor:sendSecondFactor,
+    verifySecondFactor:verifySecondFactor
   };
 };

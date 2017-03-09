@@ -220,6 +220,15 @@ module.exports = {
 
   },
 
+  validVerifySecondFactorRequest: (code) => {
+    let request = {
+      code: code || '123456'
+    };
+
+    return withPactified(request);
+
+  },
+
   validUpdatePasswordRequest: (token, newPassword) => {
     let request = {
       forgotten_password_code: token || randomString(),
