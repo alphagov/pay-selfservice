@@ -117,8 +117,6 @@ describe('The otplogin endpoint', function () {
   it('should render and send key on first time', function (done) {
     var user = mock_session.getUser();
 
-    var notify = mockNotify.mockSendTotpSms();
-
     var sessionData = {
       csrfSecret: "123",
       passport: {
@@ -131,7 +129,6 @@ describe('The otplogin endpoint', function () {
       .get("/otp-login")
       .expect(200)
       .end(function () {
-        assert(notify.isDone());
         assert(sessionData.sentCode === true);
         done();
       });

@@ -67,6 +67,21 @@ module.exports = {
 
   /**
    * @param username
+   * @param code
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  authenticateSecondFactor: function (username, code, correlationId) {
+    let defer = q.defer();
+    if (!username || !code) {
+      return defer.reject();
+    }
+
+    return getAdminUsersClient({correlationId: correlationId}).verifySecondFactor(username, code);
+  },
+
+  /**
+   * @param username
    * @param correlationId
    * @returns {Promise<User>}
    */
@@ -80,30 +95,7 @@ module.exports = {
    * @returns {Promise}
    */
   sendOTP: function (user, correlationId) {
-    var template = process.env.NOTIFY_2FA_TEMPLATE_ID;
-    var defer = q.defer();
-    if (user.otpKey && user.telephoneNumber && template) {
-      var code = user.generateOTP();
-      var startTime = new Date();
-      notify.sendSms(template, user.telephoneNumber, {code: code})
-        .then(() => {
-          var elapsed = new Date() - startTime;
-          applicationMetrics.histogram('notify-operations.sms.response_time', elapsed);
-          logger.info(`[${correlationId}] - Sending sms ended - elapsed time: %s ms`, elapsed);
-          defer.resolve();
-        }, (e) => {
-          var elapsed = new Date() - startTime;
-          applicationMetrics.increment('notify-operations.sms.failures');
-          applicationMetrics.histogram('notify-operations.sms.response_time', elapsed);
-          logger.info(`[${correlationId}] - Sending sms ended - elapsed time: %s ms`, elapsed);
-          logger.error(`[${correlationId}] error while sending sms`, e);
-          defer.reject(e);
-        });
-    } else {
-      logger.error(`[${correlationId}] missing required field to send sms`);
-      defer.reject('missing required field to send sms');
-    }
-    return defer.promise;
+    return getAdminUsersClient({correlationId: correlationId}).sendSecondFactor(user.username)
   },
 
   /**

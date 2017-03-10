@@ -3,7 +3,6 @@ var logger = require('winston');
 var _ = require('lodash');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
-var TotpStrategy = require('passport-totp').Strategy;
 var csrf = require('csrf');
 var sessionValidator = require(__dirname + '/session_validator.js');
 var paths = require(__dirname + '/../paths.js');
@@ -14,6 +13,12 @@ var localStrategyAuth = function (req, username, password, done) {
   return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
     .catch(() => done(null, false, {message: 'Invalid username or password'}));
+};
+
+let localStrategy2Fa = function (username, code, done) {
+  return userService.authenticateSecondFactor(username, code)
+    .then((user) => done(null, user))
+    .catch(() => done(null, false, {message: 'Invalid second factor code'}));
 };
 
 var ensureSessionHasCsrfSecret = function (req, res, next) {
@@ -119,12 +124,8 @@ var hasValidSession = function (req) {
 var initialise = function (app, override_strategy) {
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.use('local', new localStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth));
-  passport.use(new TotpStrategy(
-    function (user, done) {
-      return done(null, user.otpKey, 30);
-    }
-  ));
+  passport.use('local', new localStrategy({usernameField: 'username'}, localStrategyAuth));
+  passport.use('local2Fa', new localStrategy({usernameField: 'username'}, localStrategy2Fa));
 
   passport.serializeUser(this.serializeUser);
 
