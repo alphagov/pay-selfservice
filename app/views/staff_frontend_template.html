@@ -1,47 +1,68 @@
 <!DOCTYPE html>
-<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
-  <head>
-    <meta charset="UTF-8" />
+<!--[if lt IE 9]>
+<html class="lte-ie8" lang="en"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en"><!--<![endif]-->
+<head>
+    <meta charset="UTF-8"/>
     <title>{{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}</title>
     <script>
-      (function(){if(navigator.userAgent.match(/IEMobile\/10\.0/)){var d=document,c="appendChild",a=d.createElement("style");a[c](d.createTextNode("@-ms-viewport{width:auto!important}"));d.getElementsByTagName("head")[0][c](a);}})();
+        (function () {
+            if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+                var d = document, c = "appendChild", a = d.createElement("style");
+                a[c](d.createTextNode("@-ms-viewport{width:auto!important}"));
+                d.getElementsByTagName("head")[0][c](a);
+            }
+        })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--[if lt IE 9]><script src="/public/vendor/html5shiv.min.js"></script><![endif]-->
+    <!--[if lt IE 9]>
+    <script src="/public/vendor/html5shiv.min.js"></script><![endif]-->
 
     {{$head}}{{/head}}
-  </head>
+</head>
 
-  <body class="{{$bodyClasses}}{{/bodyClasses}}">
-    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-    <div id="skiplink-container">
-      <div>
+<body class="{{$bodyClasses}}{{/bodyClasses}}">
+<script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+<div id="skiplink-container">
+    <div>
         <a href="#content" class="skiplink">Skip to main content</a>
-      </div>
     </div>
+</div>
 
-    <header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
-      <div class="header-wrapper">
+<header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
+    <div class="header-wrapper">
         <div class="header-logo">
-          <a href="{{$homepageUrl}}/{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo" class="content">
-            <img src="/public/images/crown.png" width="35" alt=""> {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
-          </a>
+            <a href="{{$homepageUrl}}/{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo"
+               class="content">
+                <img src="/public/images/crown.png" width="35" alt=""> {{$globalHeaderText}}GOV.UK
+                Pay{{/globalHeaderText}}
+            </a>
             <a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a>
             {{#multipleGatewayAccounts}}
-            <a href="{{ routes.serviceSwitcher.index }}" title="My accounts" id="my-services" class="content logout">My accounts</a>
+            <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services" class="content logout">My services</a>
             {{/multipleGatewayAccounts}}
         </div>
-      </div>
-    </header>
+    </div>
+</header>
+<div id="global-header-bar-wrapper">
+    <div id="global-header-bar" class="{{currentGatewayAccount.type}}"></div>
+    {{#navigation}}
+    <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
+        <span>{{currentGatewayAccount.full_type}}</span>
+    </div>
+    {{/navigation}}
+</div>
 
-    {{$afterHeader}}{{/afterHeader}}
-    {{#flash.genericError}}
-    <p class="generic-error"> {{flash.genericError}} </p>
-    {{/flash.genericError}}
-    <main id="content" role="main">
-        {{#navigation}}
-        <div class="navigation">
+
+{{$afterHeader}}{{/afterHeader}}
+{{#flash.genericError}}
+<p class="generic-error"> {{flash.genericError}} </p>
+{{/flash.genericError}}
+<main id="content" role="main">
+    {{$full_width_content}}{{/full_width_content}}
+    {{#navigation}}
+    <div class="navigation">
         <div class="inner">
             <nav role="navigation">
                 <ul>
@@ -70,14 +91,14 @@
                 </ul>
             </nav>
         </div>
-      </div>
-        {{/navigation}}
-        <div class="main-content">
+    </div>
+    {{/navigation}}
+    <div class="main-content">
         <div class="inner">
-          {{$content}}{{/content}}
+            {{$content}}{{/content}}
         </div>
-      </div>
-    </main>
-    {{$bodyEnd}}{{/bodyEnd}}
-  </body>
+    </div>
+</main>
+{{$bodyEnd}}{{/bodyEnd}}
+</body>
 </html>
