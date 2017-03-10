@@ -21,7 +21,7 @@ describe('get account', function () {
     done();
   });
 
-  it.only('should get account', function (done) {
+  it('should get account', function (done) {
     var user = session.getUser({
       gateway_account_ids: ['1','2','5'],
       permissions: ['service-name:read']

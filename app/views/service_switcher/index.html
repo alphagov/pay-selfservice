@@ -10,10 +10,10 @@ GOV.UK Pay - My services
     <form method="post" action="{{routes.serviceSwitcher.switch}}">
         <div style="display:none">
             <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-            <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}">
+            <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}"/>
 
         </div>
-        <input class="service_switcher" type="submit" value="{{ payment_provider_display_name }} {{ type }} account">
+        <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
     </form>
     {{/gatewayAccounts}}
 {{/content}}

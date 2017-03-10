@@ -12,7 +12,7 @@ describe('The account switcher link', function () {
 
     let body = renderTemplate('staff_frontend_template', templateData);
 
-    body.should.containSelector('#my-services').withExactText('My accounts');
+    body.should.containSelector('#my-services').withExactText('My services');
   });
 
   it('should not display if user has one or fewer gateway accounts', function () {

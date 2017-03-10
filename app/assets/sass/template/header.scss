@@ -56,7 +56,6 @@ header {
   width: 100%;
   max-width:1200px;
   margin: 0 auto;
-  height: 10px;
   @include media(desktop) {
     padding: 0 0 0;
   }

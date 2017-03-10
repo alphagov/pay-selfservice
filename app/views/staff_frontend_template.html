@@ -47,7 +47,13 @@
 </header>
 <div id="global-header-bar-wrapper">
     <div id="global-header-bar" class="{{currentGatewayAccount.type}}"></div>
+    {{#navigation}}
+    <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
+        <span>{{currentGatewayAccount.full_type}}</span>
+    </div>
+    {{/navigation}}
 </div>
+
 
 {{$afterHeader}}{{/afterHeader}}
 {{#flash.genericError}}
@@ -55,9 +61,6 @@
 {{/flash.genericError}}
 <main id="content" role="main">
     {{#navigation}}
-    <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
-        <span>{{currentGatewayAccount.full_type}}</span>
-    </div>
     <div class="navigation">
         <div class="inner">
             <nav role="navigation">
