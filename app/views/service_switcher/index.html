@@ -3,7 +3,7 @@
 {{$pageTitle}}
 GOV.UK Pay - My services
 {{/pageTitle}}
-{{$content}}
+{{$full_width_content}}
     <h2 class="heading-large">My services</h2>
     <p>Choose the environment you want to enter</p>
     {{#gatewayAccounts}}
@@ -16,6 +16,6 @@ GOV.UK Pay - My services
         <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
     </form>
     {{/gatewayAccounts}}
-{{/content}}
+{{/full_width_content}}
 
 {{/layout}}
