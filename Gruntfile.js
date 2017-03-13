@@ -41,8 +41,13 @@ module.exports = function(grunt){
           cwd: 'node_modules/govuk-elements-sass',
           src: '**',
           dest: 'govuk_modules/govuk-elements-sass/'
-        }
-        ]
+        },
+        {
+          expand: true,
+          cwd: 'node_modules/govuk_template_mustache/',
+          src: '**',
+          dest: 'govuk_modules/govuk_template/'
+        }]
       },
       html5shiv: {
         files: [{
@@ -160,9 +165,21 @@ module.exports = function(grunt){
     grunt.loadNpmTasks(task);
   });
 
+  grunt.registerTask(
+    'convert_template',
+    'Converts the govuk_template to use mustache inheritance',
+    function () {
+      var script = require(__dirname + '/lib/template-conversion.js');
+
+      script.convert();
+      grunt.log.writeln('govuk_template converted');
+    }
+  );
+
   grunt.registerTask('generate-assets', [
     'clean',
     'copy',
+    'convert_template',
     'replace',
     'sass'
   ]);
