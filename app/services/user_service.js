@@ -55,14 +55,14 @@ module.exports = {
    * @param submittedPassword
    * @returns {Promise<User>}
    */
-  authenticate: function (username, submittedPassword) {
+  authenticate: function (username, submittedPassword, correlationId) {
     var defer = q.defer();
 
     if (!username || !submittedPassword) {
       return defer.reject();
     }
 
-    return getAdminUsersClient().authenticateUser(username, submittedPassword);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword);
   },
 
   /**
@@ -135,8 +135,8 @@ module.exports = {
    * @param user
    * @returns {Promise}
    */
-  logOut: function (user) {
-    return getAdminUsersClient().incrementSessionVersionForUser(user.username);
+  logOut: function (user, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.username);
   },
 
   /**
@@ -166,12 +166,11 @@ module.exports = {
    * @param username
    * @returns {Promise}
    */
-  resetLoginCount: function (username) {
-    return getAdminUsersClient().resetLoginAttemptsForUser(username);
+  resetLoginCount: function (username, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).resetLoginAttemptsForUser(username);
   },
 
-  incrementLoginCount: function (username) {
-    return getAdminUsersClient().incrementLoginAttemptsForUser(username);
+  incrementLoginCount: function (username, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).incrementLoginAttemptsForUser(username);
   }
-
 };
