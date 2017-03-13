@@ -67,7 +67,7 @@ module.exports.bind = function (app) {
   // LOGIN
   var user = paths.user;
   app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
-  app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin(), getAccount, login.postLogin);
+  app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin, getAccount, login.postLogin);
   app.get(user.loggedIn, auth.enforceUserAuthenticated, csrf, getAccount, login.loggedIn);
   app.get(user.noAccess, login.noAccess);
   app.get(user.logOut, login.logOut);
