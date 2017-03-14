@@ -6,6 +6,7 @@
   "DISABLE_INTERNAL_HTTPS": "true",
   "SECURE_COOKIE_OFF": "true",
   "COOKIE_MAX_AGE": "10800000",
+  "COOKIE_MAX_AGE_GATEWAY_ACCOUNT": "2592000000",
   "SESSION_ENCRYPTION_KEY": "naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk",
   "SESSION_IN_MEMORY":"true",
   "NOTIFY_BASE_URL": "http://notify.mock.api",

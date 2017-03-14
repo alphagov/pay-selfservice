@@ -4,7 +4,7 @@ var auth = require(__dirname + '/../../app/services/auth_service.js');
 var login = require(__dirname + '/../../app/controllers/login_controller.js');
 var express = require('express');
 var mockSession = require(__dirname + '/../test_helpers/mock_session.js');
-var getAppWithSession = mockSession.getAppWithSession;
+var getAppWithSessionAndGatewayAccountCookies = mockSession.getAppWithSessionAndGatewayAccountCookies;
 var getAppWithLoggedInUser = mockSession.getAppWithLoggedInUser;
 
 var paths = require(__dirname + '/../../app/paths.js');
@@ -33,7 +33,7 @@ describe('An endpoint not protected', function () {
 
 
   it('allows access if not authenticated', function (done) {
-    app = getAppWithSession(server.getApp(), {});
+    app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {});
     addUnprotectedEndpointToApp(app);
     request(app)
       .get('/unprotected')
@@ -61,9 +61,8 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   });
 
   it('redirects to /login if not authenticated', function (done) {
-    app = getAppWithSession(server.getApp(), {});
+    app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {});
     addProtectedEndpointToApp(app);
-
 
     request(app)
       .get('/protected')

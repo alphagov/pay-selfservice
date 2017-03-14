@@ -37,16 +37,28 @@ var redirectToLogin = function (req, res) {
 };
 
 let getCurrentGatewayAccountId = function (req) {
-  let id = _.get(req, "session.currentGatewayAccountId");
-  if (!id) {
-    id = _.get(req, "user.gatewayAccountIds[0]");
-    if(!id) {
-      logger.error(`Could not resolve the gatewayAccountId for user `); //TODO log the user.id when we have one
-      return null;
-    }
-    req.session.currentGatewayAccountId = id;
+  // retrieve currentGatewayAccountId from Cookie
+  let currentGatewayAccountId = null;
+  if (_.get(req, "gateway_account")) {
+    currentGatewayAccountId = _.get(req, "gateway_account.currentGatewayAccountId");
+  } else {
+    req.gateway_account = {};
   }
-  return parseInt(req.session.currentGatewayAccountId);
+  // retrieve user's gatewayAccountIds
+  let userGatewayAccountIds = _.get(req, "user.gatewayAccountIds");
+  if((!userGatewayAccountIds) || (userGatewayAccountIds.length === 0)) {
+    logger.error('Could not resolve the gatewayAccountId for user '); //TODO log the user.id when we have one
+    return null;
+  }
+  // check if we don't have Cookie value
+  // or if it's different user  / different userGatewayAccountIds
+  if ((!currentGatewayAccountId) ||
+      (userGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
+    currentGatewayAccountId = userGatewayAccountIds[0];
+  }
+  // save currentGatewayAccountId and return it
+  req.gateway_account.currentGatewayAccountId = currentGatewayAccountId;
+  return parseInt(req.gateway_account.currentGatewayAccountId);
 };
 
 var enforceUserFirstFactor = function (req, res, next) {

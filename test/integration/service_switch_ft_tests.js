@@ -21,11 +21,14 @@ describe('service switch controller', function () {
   });
 
   it('should post request for new account id', function (done) {
-    var user = session.getUser({
+    let user = session.getUser({
       gateway_account_ids: ['1','2','5']
     });
-    var mockSession = session.getMockSession(user);
-    app = session.getAppWithSession(getApp(), mockSession);
+    let mockGatewayAccountCookie = {
+      currentGatewayAccountId: 1
+    };
+    let mockSession = session.getMockSession(user);
+    app = session.getAppWithSessionAndGatewayAccountCookies(getApp(), mockSession, mockGatewayAccountCookie);
 
     return supertest(app)
       .post('/my-services/switch')
@@ -38,7 +41,7 @@ describe('service switch controller', function () {
       })
       .expect(302)
       .expect(() => {
-        expect(mockSession.currentGatewayAccountId).to.equal('5');
+        expect(mockGatewayAccountCookie.currentGatewayAccountId).to.equal('5');
       })
       .end(done);
   });

@@ -6,7 +6,7 @@ var favicon           = require('serve-favicon');
 var router            = require(__dirname + '/app/routes.js');
 var bodyParser        = require('body-parser');
 var cookieParser      = require('cookie-parser');
-var selfServiceSession= require(__dirname + '/app/utils/session.js').selfServiceSession;
+var cookieUtil        = require(__dirname + '/app/utils/cookie.js');
 var noCache           = require(__dirname + '/app/utils/no_cache.js');
 var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
 var proxy             = require(__dirname + '/app/utils/proxy.js');
@@ -97,6 +97,10 @@ function initialiseAuth(app) {
   auth.initialise(app);
 }
 
+function initialiseCookies(app) {
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()));
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.gatewayAccountCookie()));
+}
 
 function listen() {
   var app = initialise();
@@ -114,12 +118,8 @@ function initialise() {
   app.use(flash());
   initialiseTLS(app);
   initialiseProxy(app);
-  
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'],
-      selfServiceSession()
-    )
-  );
 
+  initialiseCookies(app);
   initialiseAuth(app);
   initialiseGlobalMiddleware(app);
   initialiseAppVariables(app);
@@ -127,7 +127,7 @@ function initialise() {
   initialiseRoutes(app);
   initialiseErrorHandling(app);
   initialisePublic(app);
-  
+
   return app;
 }
 

@@ -1,7 +1,6 @@
 var _ = require('lodash');
 var sinon  = require('sinon');
 var loginController = require(__dirname + '/../../../app/controllers/login_controller.js');
-var sessionUtil = require(__dirname + '/../../../app/utils/session.js');
 
 var assert = require('assert');
 var req, res, destroy, redirect;
