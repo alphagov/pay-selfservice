@@ -1,102 +1,64 @@
-<!DOCTYPE html>
-<!--[if lt IE 9]>
-<html class="lte-ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!-->
-<html lang="en"><!--<![endif]-->
-<head>
-    <meta charset="UTF-8"/>
-    <title>{{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}</title>
-    <script>
-        (function () {
-            if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-                var d = document, c = "appendChild", a = d.createElement("style");
-                a[c](d.createTextNode("@-ms-viewport{width:auto!important}"));
-                d.getElementsByTagName("head")[0][c](a);
-            }
-        })();
-    </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--[if lt IE 9]>
-    <script src="/public/vendor/html5shiv.min.js"></script><![endif]-->
+{{< govuk_template}}
+    {{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}
+    {{$homepageUrl}}/{{/homepageUrl}}
+    {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
 
-    {{$head}}{{/head}}
-</head>
+    {{$insideHeader}}
+      <a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a>
+      <a href="{{ routes.serviceSwitcher.index }}" title="My Services" id="my-services" class="content logout">My Services</a>
+    {{/insideHeader}}
 
-<body class="{{$bodyClasses}}{{/bodyClasses}}">
-<script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-<div id="skiplink-container">
-    <div>
-        <a href="#content" class="skiplink">Skip to main content</a>
-    </div>
-</div>
-
-<header role="banner" id="global-header" class="{{$headerClass}}{{/headerClass}}">
-    <div class="header-wrapper">
-        <div class="header-logo">
-            <a href="{{$homepageUrl}}/{{/homepageUrl}}" title="Go to the GOV.UK Pay Self Service homepage" id="logo"
-               class="content">
-                <img src="/public/images/crown.png" width="35" alt=""> {{$globalHeaderText}}GOV.UK
-                Pay{{/globalHeaderText}}
-            </a>
-            <a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a>
-            <a href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services" class="content logout">My services</a>
+    {{$content}}
+        <div id="global-header-bar-wrapper">
+            <div id="global-header-bar" class="{{currentGatewayAccount.type}}"></div>
+            {{#navigation}}
+            <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
+              <span>{{currentGatewayAccount.full_type}}</span>
+            </div>
+            {{/navigation}}
         </div>
-    </div>
-</header>
-<div id="global-header-bar-wrapper">
-    <div id="global-header-bar" class="{{currentGatewayAccount.type}}"></div>
-    {{#navigation}}
-    <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
-        <span>{{currentGatewayAccount.full_type}}</span>
-    </div>
-    {{/navigation}}
-</div>
-
-
-{{$afterHeader}}{{/afterHeader}}
-{{#flash.genericError}}
-<p class="generic-error"> {{flash.genericError}} </p>
-{{/flash.genericError}}
-<main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
-    {{$full_width_content}}{{/full_width_content}}
-    {{#navigation}}
-    <div class="navigation">
-        <div class="inner">
-            <nav role="navigation">
-                <ul>
-                    <li><a href="/">Homepage</a></li>
-                    {{#permissions.tokens_read}}
-                    <li><a href="{{ routes.devTokens.index }}">API keys</a></li>
-                    {{/permissions.tokens_read}}
-                    {{#permissions.transactions_read}}
-                    <li><a href="{{ routes.transactions.index }}" data-qa-transaction-link>Transactions</a></li>
-                    {{/permissions.transactions_read}}
-                    {{#permissions.gateway_credentials_read}}
-                    <li><a href="{{ routes.credentials.index }}">Account credentials</a></li>
-                    {{/permissions.gateway_credentials_read}}
-                    {{#permissions.service_name_read}}
-                    <li><a href="{{ routes.serviceName.index }}">Change service name</a></li>
-                    {{/permissions.service_name_read}}
-                    {{#permissions.payment_types_read}}
-                    <li><a href="{{ routes.paymentTypes.summary }}">Payment types</a></li>
-                    {{/permissions.payment_types_read}}
-                    {{#permissions.toggle_3ds_read}}
-                    <li><a href="{{ routes.toggle3ds.index }}">3D Secure</a></li>
-                    {{/permissions.toggle_3ds_read}}
-                    {{#permissions.email_notification_template_read}}
-                    <li><a href="{{ routes.emailNotifications.index }}">Email notifications</a></li>
-                    {{/permissions.email_notification_template_read}}
-                </ul>
-            </nav>
+        {{#flash.genericError}}
+        <p class="generic-error"> {{flash.genericError}} </p>
+        {{/flash.genericError}}
+        <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
+          {{$full_width_content}}{{/full_width_content}}
+          {{#navigation}}
+              <div class="navigation">
+                  <div class="inner">
+                      <nav role="navigation">
+                          <ul>
+                              <li><a href="/">Homepage</a></li>
+                              {{#permissions.tokens_read}}
+                              <li><a href="{{ routes.devTokens.index }}">API keys</a></li>
+                              {{/permissions.tokens_read}}
+                              {{#permissions.transactions_read}}
+                              <li><a href="{{ routes.transactions.index }}" data-qa-transaction-link>Transactions</a></li>
+                              {{/permissions.transactions_read}}
+                              {{#permissions.gateway_credentials_read}}
+                              <li><a href="{{ routes.credentials.index }}">Account credentials</a></li>
+                              {{/permissions.gateway_credentials_read}}
+                              {{#permissions.service_name_read}}
+                              <li><a href="{{ routes.serviceName.index }}">Change service name</a></li>
+                              {{/permissions.service_name_read}}
+                              {{#permissions.payment_types_read}}
+                              <li><a href="{{ routes.paymentTypes.summary }}">Payment types</a></li>
+                              {{/permissions.payment_types_read}}
+                              {{#permissions.toggle_3ds_read}}
+                              <li><a href="{{ routes.toggle3ds.index }}">3D Secure</a></li>
+                              {{/permissions.toggle_3ds_read}}
+                              {{#permissions.email_notification_template_read}}
+                              <li><a href="{{ routes.emailNotifications.index }}">Email notifications</a></li>
+                              {{/permissions.email_notification_template_read}}
+                          </ul>
+                      </nav>
+                </div>
+            </div>
+          {{/navigation}}
+          <div class="main-content">
+          <div class="inner">
+            {{$mainContent}}{{/mainContent}}
+          </div>
         </div>
-    </div>
-    {{/navigation}}
-    <div class="main-content">
-        <div class="inner">
-            {{$content}}{{/content}}
-        </div>
-    </div>
-</main>
-{{$bodyEnd}}{{/bodyEnd}}
-</body>
-</html>
+      </main>
+      {{/content}}
+{{/govuk_template}}

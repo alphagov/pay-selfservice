@@ -7,7 +7,7 @@ GOV.UK Pay - Transaction Details
 <script src="/public/js/components/refund.js"></script>
 {{/pageSpecificJS}}
 
-{{$content}}
+{{$mainContent}}
 <h1 class="page-title pull-bottom">Transactions</h1>
 <div class="actions">
   <a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="arrowed"> &#9664; Back to transactions list </a>
@@ -29,6 +29,6 @@ GOV.UK Pay - Transaction Details
 {{>transactions/_events}}
 {{/permissions.transactions_events_read}}
 
-{{/content}}
+{{/mainContent}}
 
 {{/layout}}
