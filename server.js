@@ -59,7 +59,7 @@ function initialiseProxy(app) {
 
 function initialiseAppVariables(app) {
   app.set('view engine', 'html');
-  app.set('vendorViews', __dirname + '/app/views');
+  app.set('vendorViews', __dirname + '/govuk_modules/govuk_template/views/layouts');
   app.set('views', __dirname + '/app/views');
 }
 
@@ -78,6 +78,7 @@ function initialiseErrorHandling(app) {
 function initialisePublic(app) {
   app.use('/public', express.static(__dirname + '/public'));
   app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
+  app.use('/public', express.static(__dirname + '/govuk_modules/govuk_template/assets'));
 }
 
 function initialiseRoutes(app) {
