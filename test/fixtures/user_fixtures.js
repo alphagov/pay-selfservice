@@ -1,7 +1,7 @@
 const _ = require('lodash');
-var Pact = require('pact');
-var User = require(__dirname + '/../../app/models/user').User;
-var matchers = Pact.Matchers;
+let Pact = require('pact');
+let User = require(__dirname + '/../../app/models/user').User;
+let matchers = Pact.Matchers;
 
 function randomString() {
   return Math.random().toString(36).substring(7);
@@ -20,17 +20,33 @@ function randomOtpKey() {
 }
 
 function randomAccountId() {
-  return String(Math.floor(Math.random() * 10));
+  return String(Math.floor(Math.random() * 1000));
 }
 
 function randomTelephoneNumber() {
   return String(Math.floor(Math.random() * 1000000));
 }
 
-function pactify(request) {
+function pactifyArray(arr) {
+   let pactified =[];
+   arr.forEach( (val) => {
+      pactified.push(matchers.somethingLike(val));
+   });
+   return pactified;
+}
+
+function pactify(object) {
   let pactified = {};
-  _.forIn(request, (value, key) => {
-    pactified[key] = matchers.somethingLike(value);
+  _.forIn(object, (value, key) => {
+      if ( ["permissions","gateway_account_ids"].indexOf(key) != -1) {
+         pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]),{min:value.length})
+      } else if(value.constructor === Array) {
+        pactified[key] = pactifyArray( value );
+      } else if (value.constructor === Object)  {
+        pactified[key] = pactify(value);
+      } else {
+        pactified[key] = matchers.somethingLike(value);
+      }
   });
   return pactified;
 }
@@ -52,8 +68,8 @@ module.exports = {
     let data = {
       username: newUsername,
       email: `${newUsername}@example.com`,
-      gateway_account_ids: [String(Math.floor(Math.random() * 10))],
-      telephone_number: String(Math.floor(Math.random() * 1000000)),
+      gateway_account_ids: [randomAccountId()],
+      telephone_number: randomTelephoneNumber()
     };
 
     return {
@@ -115,11 +131,10 @@ module.exports = {
     var data = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
-      password: request.password || "random-password",
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
-      telephone_number: request.telephone_number || randomTelephoneNumber(),
       otp_key: request.otp_key || "43c3c4t",
       role: {"name": "admin", "description": "Administrator"},
+      telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{
         "href": `http://adminusers.service/v1/api/users/${request.username}`,
@@ -154,7 +169,8 @@ module.exports = {
 
   invalidUserCreateResponseWhenFieldsMissing: () => {
     let response = {
-      errors: ["Field [gateway_account_ids] is required", "Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
+      // At the moment to discuss Failfast approach to the API rather than error collection
+      errors: ["Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
     };
 
     return withPactified(response);

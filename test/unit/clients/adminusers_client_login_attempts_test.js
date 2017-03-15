@@ -16,7 +16,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - login attempts', function () {
 
   var adminUsersMock;
   /**
@@ -25,7 +25,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-login-attempts', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -42,7 +42,8 @@ describe('adminusers client', function () {
   describe('update login attempts API', function () {
 
     context('update login attempts  API - success', () => {
-      let username = 'username';
+
+      let username = 'existing-user';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -65,7 +66,8 @@ describe('adminusers client', function () {
     });
 
     context('reset login attempts API - success', () => {
-      let username = 'username';
+
+      let username = 'existing-user';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -89,8 +91,8 @@ describe('adminusers client', function () {
     });
 
     context('increment login attempts API - too many logins', () => {
-      let username = 'username';
 
+      let username = 'user-login-attempts-max';
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 
       beforeEach((done) => {
@@ -129,6 +131,7 @@ describe('adminusers client', function () {
             .withUponReceiving('a valid login attempts update request')
             .withMethod('POST')
             .withStatusCode(404)
+            .withResponseHeaders({})
             .build()
         ).then(() => done());
       });

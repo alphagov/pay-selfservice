@@ -16,7 +16,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - update password', function () {
 
   var adminUsersMock;
   /**
@@ -25,7 +25,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-update-password', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -42,7 +42,7 @@ describe('adminusers client', function () {
   describe('update password API', function () {
 
     context('update password for user API - success', () => {
-      let request = userFixtures.validUpdatePasswordRequest();
+      let request = userFixtures.validUpdatePasswordRequest("avalidforgottenpasswordtoken");
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -52,6 +52,7 @@ describe('adminusers client', function () {
             .withMethod('POST')
             .withRequestBody(request.getPactified())
             .withStatusCode(204)
+            .withResponseHeaders({})
             .build()
         ).then(() => done());
       });

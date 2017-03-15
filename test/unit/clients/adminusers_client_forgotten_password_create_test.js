@@ -16,7 +16,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - create forgotten password', function () {
 
   var adminUsersMock;
   /**
@@ -25,7 +25,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-create-forgotten-password', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -42,8 +42,8 @@ describe('adminusers client', function () {
   describe('Forgotten Password API', function () {
 
     context('create forgotten password API - success', () => {
-      let request = userFixtures.validForgottenPasswordCreateRequest();
 
+      let request = userFixtures.validForgottenPasswordCreateRequest('existing-user');
       let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse(request.getPlain());
 
       beforeEach((done) => {
@@ -110,7 +110,7 @@ describe('adminusers client', function () {
     });
 
     context('create forgotten password API - not found', () => {
-      let request = userFixtures.validForgottenPasswordCreateRequest();
+      let request = userFixtures.validForgottenPasswordCreateRequest('nonexisting');
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -120,6 +120,7 @@ describe('adminusers client', function () {
             .withMethod('POST')
             .withRequestBody(request.getPactified())
             .withStatusCode(404)
+            .withResponseHeaders({})
             .build()
         ).then(() => done());
       });
