@@ -61,7 +61,6 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
   });
 
   it('should display payment provider name in title case', function (done) {
-
     connectorMock.get(CONNECTOR_ACCOUNT_PATH)
       .reply(200, {
         "payment_provider": "sandbox",
@@ -70,10 +69,13 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {}
+      },
       "editMode": false,
       "editNotificationCredentialsMode": false,
-      "credentials": {},
       "permissions": {
         gateway_credentials_read: true
       },
@@ -95,10 +97,13 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "payment_provider": "sandbox",
+        "credentials": {},
+        "gateway_account_id": "1",
+      },
       "editMode": false,
       "editNotificationCredentialsMode": false,
-      "credentials": {},
       "permissions": {
         gateway_credentials_read: true
       },
@@ -119,12 +124,15 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "payment_provider": "sandbox",
+        "credentials": {
+          'username': 'a-username'
+        },
+        "gateway_account_id": "1",
+      },
       "editNotificationCredentialsMode": false,
       "editMode": false,
-      "credentials": {
-        'username': 'a-username'
-      },
       "permissions": {
         gateway_credentials_read: true
       },
@@ -146,13 +154,16 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "payment_provider": "sandbox",
+        "credentials": {
+          'username': 'a-username',
+          merchant_id: 'a-merchant-id'
+        },
+        "gateway_account_id": "1",
+      },
       "editMode": false,
       "editNotificationCredentialsMode": false,
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
-      },
       "permissions": {
         gateway_credentials_read: true
       },
@@ -223,10 +234,13 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {}
+      },
       "editMode": true,
       "editNotificationCredentialsMode": false,
-      "credentials": {},
       "permissions": {
         gateway_credentials_update: true
       },
@@ -248,10 +262,13 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {}
+      },
       "editMode": true,
       "editNotificationCredentialsMode": false,
-      "credentials": {},
       "permissions": {
         gateway_credentials_update: true
       },
@@ -272,12 +289,13 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {"username": "a-username"}
+      },
       "editNotificationCredentialsMode": false,
       "editMode": true,
-      "credentials": {
-        'username': 'a-username'
-      },
       "permissions": {
         gateway_credentials_update: true
       },
@@ -295,21 +313,17 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       .reply(200, {
         "payment_provider": "sandbox",
         "gateway_account_id": "1",
-        "credentials": {username: "a-username", merchant_id: 'a-merchant-id'},
-        "permissions": {
-          gateway_credentials_update: true
-        },
-        navigation: true
+        "credentials": {username: "a-username"},
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {"username": "a-username"}
+      },
       "editMode": true,
       "editNotificationCredentialsMode": false,
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
-      },
       "permissions": {
         gateway_credentials_update: true
       },
@@ -380,10 +394,13 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {},
+      },
       "editMode": false,
       "editNotificationCredentialsMode": true,
-      "credentials": {},
       "permissions": {
         gateway_credentials_update: true
       },
@@ -401,18 +418,17 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       .reply(200, {
         "payment_provider": "sandbox",
         "gateway_account_id": "1",
-        "credentials": {},
-        "permissions": {
-          gateway_credentials_update: true
-        },
-        navigation: true
+        "credentials": {}
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {},
+      },
       "editMode": false,
       "editNotificationCredentialsMode": true,
-      "credentials": {},
       "permissions": {
         gateway_credentials_update: true
       },
@@ -433,12 +449,15 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {
+          'username': 'a-username'
+        },
+      },
       "editNotificationCredentialsMode": true,
       "editMode": false,
-      "credentials": {
-        'username': 'a-username'
-      },
       "permissions": {
         gateway_credentials_update: true
       },
@@ -457,20 +476,19 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
         "payment_provider": "sandbox",
         "gateway_account_id": "1",
         "credentials": {username: "a-username", merchant_id: 'a-merchant-id'},
-        "permissions": {
-          gateway_credentials_update: true
-        },
-        navigation: true
       });
 
     var expectedData = {
-      "payment_provider": "Sandbox",
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "sandbox",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        },
+      },
       "editMode": false,
       "editNotificationCredentialsMode": true,
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
-      },
       "permissions": {
         gateway_credentials_update: true
       },
@@ -540,18 +558,23 @@ describe('The notification credentials', function () {
           'username': "a-username",
           'merchant_id': 'a-merchant-id'
         },
-        "notificationCredentials": {username: "a-notification-username"}
+        "notification_credentials": {username: "a-notification-username"}
       });
 
     var expectedData = {
-      "payment_provider": "Smartpay",
-      "editMode": false,
-      "editNotificationCredentialsMode": false,
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "gateway_account_id": "1",
+        "payment_provider": "smartpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        },
+        "notification_credentials": {username: "a-notification-username"}
       },
-      "notification_credentials": {username: "a-notification-username"},
+      "editNotificationCredentialsMode": false,
+
+      "editMode": false,
+
       "permissions": {
         gateway_credentials_read: true
       },

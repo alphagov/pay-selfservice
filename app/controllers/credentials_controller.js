@@ -13,13 +13,8 @@ var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATIO
 
 var connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL);
 
-function showSuccessView(connectorData, viewMode, req, res) {
-  var paymentProvider = connectorData.payment_provider;
-  var responsePayload = {
-    'payment_provider': changeCase.titleCase(paymentProvider),
-    'credentials': connectorData.credentials,
-    'notification_credentials': connectorData.notificationCredentials
-  };
+function showSuccessView(viewMode, req, res) {
+  let responsePayload = {};
 
   switch(viewMode) {
     case EDIT_CREDENTIALS_MODE:
@@ -35,22 +30,15 @@ function showSuccessView(connectorData, viewMode, req, res) {
       responsePayload.editNotificationCredentialsMode = false;
   }
 
-  logger.debug('Showing provider credentials view -', {
-    view: 'credentials',
-    viewMode: viewMode,
-    provider: paymentProvider
-  });
-
-  response(req, res, 'provider_credentials/' + paymentProvider, responsePayload);
+  response(req, res, 'provider_credentials/' + req.account.payment_provider, responsePayload);
 }
 
 function loadIndex(req, res, viewMode) {
-  connectorClient().getAccount({
-    gatewayAccountId: auth.getCurrentGatewayAccountId(req),
-    correlationId: req.correlationId
-  })
-  .then((connectorData, connectorResponse) => showSuccessView(connectorData, viewMode, req, res))
-  .catch(() => errorView(req, res));
+  if (req.account) {
+    showSuccessView(viewMode, req, res);
+  } else {
+    errorView(req, res);
+  }
 }
 
 

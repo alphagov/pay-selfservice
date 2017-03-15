@@ -80,8 +80,6 @@ describe('Dev Tokens Endpoints', function() {
     });
 
     it('should return an empty list of tokens if no tokens have been revoked yet', function (done) {
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}", gatewayAccountId)).reply(200);
-
       publicauthMock.get(PUBLIC_AUTH_PATH + "/" + gatewayAccountId + "?state=revoked")
         .reply(200, {
           "account_id": gatewayAccountId
@@ -103,9 +101,6 @@ describe('Dev Tokens Endpoints', function() {
     });
 
     it('should return the account_id and the token list for the only revoked token', function (done) {
-
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200);
-
       publicauthMock.get(PUBLIC_AUTH_PATH + "/" + gatewayAccountId + "?state=revoked")
         .reply(200, {
           "account_id": gatewayAccountId,
@@ -132,8 +127,6 @@ describe('Dev Tokens Endpoints', function() {
     });
 
     it('should return the account_id and the token list for multiple revoked tokens', function (done){
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200);
-
       publicauthMock.get(PUBLIC_AUTH_PATH + "/" + gatewayAccountId + "?state=revoked")
         .reply(200, {
           "account_id": gatewayAccountId,
@@ -183,8 +176,6 @@ describe('Dev Tokens Endpoints', function() {
     });
     
     it('should return an empty list of tokens if no tokens have been issued yet', function (done){
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}", gatewayAccountId)).reply(200);
-
       publicauthMock.get(PUBLIC_AUTH_PATH + "/" + gatewayAccountId)
         .reply(200, {
           "account_id": gatewayAccountId
@@ -206,9 +197,6 @@ describe('Dev Tokens Endpoints', function() {
     });
 
     it('should return the account_id and the token list for the only already-issued token', function (done){
-
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200);
-
       publicauthMock.get(PUBLIC_AUTH_PATH + "/" + gatewayAccountId)
         .reply(200, {
           "account_id": gatewayAccountId,
@@ -235,8 +223,6 @@ describe('Dev Tokens Endpoints', function() {
     });
 
     it('should return the account_id and the token list for already-issued tokens', function (done){
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200);
-
       publicauthMock.get(PUBLIC_AUTH_PATH + "/" + gatewayAccountId)
         .reply(200, {
           "account_id": gatewayAccountId,
@@ -449,8 +435,6 @@ describe('Dev Tokens Endpoints', function() {
 
     it('should create a token successfully', function (done){
 
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200);
-
       publicauthMock.post(PUBLIC_AUTH_PATH, {
         "account_id": gatewayAccountId,
         "description": "description",
@@ -465,17 +449,6 @@ describe('Dev Tokens Endpoints', function() {
             'tokens_create': true
           },
           navigation: true
-        })
-        .end(done);
-
-    });
-
-    it('should fail if the account does not exist for a GET', function (done){
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(400);
-
-      build_get_request(paths.devTokens.show)
-        .expect(200, {
-          'message' : 'There is a problem with the payments platform'
         })
         .end(done);
 

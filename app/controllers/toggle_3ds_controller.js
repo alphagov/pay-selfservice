@@ -8,36 +8,16 @@ var ConnectorClient       = require('../services/clients/connector_client.js').C
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 module.exports.index = function (req, res) {
-  var correlationId = req.headers[CORRELATION_HEADER] || '';
+  if (!req.account) {
+    return renderErrorView(req, res, 'Unable to retrieve the 3D Secure setting.');
+  }
 
-  var init = function () {
-    var accountId = auth.getCurrentGatewayAccountId(req);
-
-    var params = {
-      gatewayAccountId: accountId,
-      correlationId: correlationId
-    };
-
-     connectorClient()
-       .getAccount(params)
-       .then(onSuccess)
-       .catch(onError);
+  var model = {
+    requires3ds: req.account.requires3ds,
+    justToggled: typeof req.query.toggled !== 'undefined'
   };
 
-  var onSuccess = function (data) {
-    var model = {
-      requires3ds: data.requires3ds,
-      justToggled: typeof req.query.toggled !== 'undefined'
-    };
-
-    show(req, res, 'index', model);
-  };
-
-  var onError = function (connectorError) {
-    renderErrorView(req, res, 'Unable to retrieve the 3D Secure setting.');
-  };
-
-  init();
+  show(req, res, 'index', model);
 };
 
 module.exports.onConfirm = (req, res) => {
