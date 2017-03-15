@@ -17,7 +17,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - authenticate', function () {
 
   var adminUsersMock;
   /**
@@ -26,7 +26,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-authenticate', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -43,8 +43,8 @@ describe('adminusers client', function () {
   describe('authenticate user API', function () {
 
     context('authenticate user API - success', () => {
-      let request = userFixtures.validAuthenticateRequest({});
 
+      let request = userFixtures.validAuthenticateRequest({username: 'existing-user'});
       let validUserResponse = userFixtures.validUserResponse(request.getPlain());
 
       beforeEach((done) => {
@@ -54,7 +54,7 @@ describe('adminusers client', function () {
             .withUponReceiving('a valid user authenticate request')
             .withMethod('POST')
             .withRequestBody(request.getPactified())
-            .withStatusCode(201)
+            .withStatusCode(200)
             .withResponseBody(validUserResponse.getPactified())
             .build()
         ).then(() => done());
@@ -84,7 +84,7 @@ describe('adminusers client', function () {
     });
 
     context('authenticate user API - unauthorized', () => {
-      let request = userFixtures.validAuthenticateRequest({});
+      let request = userFixtures.validAuthenticateRequest({username: "nonexisting"});
 
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse();
 

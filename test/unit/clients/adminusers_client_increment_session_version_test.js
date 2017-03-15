@@ -16,7 +16,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - session', function () {
 
   var adminUsersMock;
   /**
@@ -25,7 +25,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-session', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -43,7 +43,7 @@ describe('adminusers client', function () {
 
     context('increment session version  API - success', () => {
       let request = userFixtures.validIncrementSessionVersionRequest();
-      let username = 'username';
+      let username = 'existing-user';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -68,6 +68,7 @@ describe('adminusers client', function () {
 
     context('increment session version API - user not found', () => {
       let username = 'non-existent-username';
+      let request = userFixtures.validIncrementSessionVersionRequest();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -75,6 +76,8 @@ describe('adminusers client', function () {
             .withState('a user does not exist')
             .withUponReceiving('a valid increment session version request')
             .withMethod('PATCH')
+            .withRequestBody(request.getPactified())
+            .withResponseHeaders({})
             .withStatusCode(404)
             .build()
         ).then(() => done());

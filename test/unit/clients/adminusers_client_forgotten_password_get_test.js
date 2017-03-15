@@ -16,7 +16,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - get forgotten password', function () {
 
   var adminUsersMock;
   /**
@@ -25,7 +25,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-get-forgotten-password', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -42,8 +42,8 @@ describe('adminusers client', function () {
   describe('Forgotten Password API', function () {
 
     context('GET forgotten password - success', () => {
-      let code = "existing-code";
 
+      let code = "existing-code";
       let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: code});
       let expectedForgottenPassword = validForgottenPasswordResponse.getPlain();
 
@@ -83,6 +83,7 @@ describe('adminusers client', function () {
             .withState('a valid (non-expired) forgotten password entry does not exist')
             .withUponReceiving('a forgotten password request for non existent code')
             .withStatusCode(404)
+            .withResponseHeaders({})
             .build()
         ).then(() => done());
       });

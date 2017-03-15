@@ -17,7 +17,7 @@ var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client', function () {
+describe('adminusers client - get user', function () {
 
   var adminUsersMock;
   /**
@@ -26,7 +26,7 @@ describe('adminusers client', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-get-user', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -71,7 +71,7 @@ describe('adminusers client', function () {
         adminusersClient.getUser(params.username).should.be.fulfilled.then(function (user) {
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
-          expect(_.isEqual(user.gatewayAccountIds, expectedUserData.gateway_account_ids)).to.be.equal(true);
+          expect(expectedUserData.gateway_account_ids.length).to.be.equal(2);
           expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);
           expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
           expect(user.role.name).to.be.equal(expectedUserData.role.name);
@@ -90,8 +90,9 @@ describe('adminusers client', function () {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
             .withState('no user exits with the given name')
-            .withUponReceiving('a valid get user request')
+            .withUponReceiving('a valid get user request of an non existing user')
             .withStatusCode(404)
+            .withResponseHeaders({})
             .build()
         ).then(() => done());
       });

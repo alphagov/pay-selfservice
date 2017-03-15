@@ -17,6 +17,11 @@ class PactInteractionBuilder {
     return this;
   }
 
+  withResponseHeaders(headers) {
+    this.responseHeaders = headers;
+    return this;
+  }
+
   withStatusCode(statusCode) {
     this.statusCode = statusCode;
     return this;
@@ -67,6 +72,10 @@ class PactInteractionBuilder {
 
     if (this.responseBody) {
       pact.willRespondWith.body = this.responseBody;
+    }
+
+    if (this.responseHeaders) {
+      pact.willRespondWith.headers = this.responseHeaders;
     }
 
     return pact;
