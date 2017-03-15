@@ -22,14 +22,14 @@ describe('get account', function () {
   });
 
   it('should get account', function (done) {
-    var user = session.getUser({
+    let user = session.getUser({
       gateway_account_ids: ['1','2','5'],
       permissions: ['service-name:read']
     });
-    var mockSession = session.getMockSession(user);
+    let mockSession = session.getMockSession(user);
     session.currentGatewayAccountId = '2';
-    app = session.getAppWithSession(getApp(), mockSession);
-    var connectorMock = nock(process.env.CONNECTOR_URL);
+    app = session.getAppWithSessionAndGatewayAccountCookies(getApp(), mockSession);
+    let connectorMock = nock(process.env.CONNECTOR_URL);
 
     connectorMock.get('/v1/frontend/accounts/1').times(2).reply(200, {
       bob: 'bob',

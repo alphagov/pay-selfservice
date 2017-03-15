@@ -40,7 +40,7 @@ describe('The logged in endpoint', function () {
 
 
   it('should redirecect to login if not logged in', function (done) {
-    var app = mock_session.getAppWithSession(getApp(), {});
+    var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), {});
     request(app)
       .get("/")
       .expect(302)
@@ -62,7 +62,7 @@ describe('The logged in endpoint', function () {
 describe('The logout endpoint', function () {
 
   it('should redirect to login', function (done) {
-    var app = mock_session.getAppWithSession(getApp(), {});
+    var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), {});
     request(app)
       .get("/logout")
       .expect(302)
@@ -126,7 +126,7 @@ describe('The otplogin endpoint', function () {
       }
     };
 
-    var app = mock_session.getAppWithSession(getApp(), sessionData);
+    var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData);
     request(app)
       .get("/otp-login")
       .expect(200)
@@ -150,7 +150,7 @@ describe('The otplogin endpoint', function () {
       sentCode: true
     };
 
-    var app = mock_session.getAppWithSession(getApp(), sessionData);
+    var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData);
 
     request(app)
       .get("/otp-login")
@@ -227,7 +227,7 @@ describe('otp login post enpoint', function () {
     var session = mock_session.getMockSession(user);
     delete session.csrfSecret;
 
-    var app2 = mock_session.getAppWithSession(getApp(), session);
+    var app2 = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), session);
 
     request(app2)
       .post(paths.user.otpLogIn)
@@ -247,7 +247,7 @@ describe('otp send again post enpoint', function () {
     var session = mock_session.getMockSession(user);
     delete session.csrfSecret;
 
-    var app2 = mock_session.getAppWithSession(getApp(), session);
+    var app2 = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), session);
 
     request(app2)
       .post(paths.user.otpSendAgain)

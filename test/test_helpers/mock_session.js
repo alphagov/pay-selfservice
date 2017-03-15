@@ -1,17 +1,18 @@
 'use strict';
 var express = require('express');
-var User = require('../../app/models/user').User;
 var _ = require('lodash');
 var sinon = require('sinon');
 var userFixture = require('../fixtures/user_fixtures');
 var getUser = (opts) => {
     return userFixture.validUser(opts).getAsObject();
   },
-  createAppWithSession = function (app, sessionData) {
+
+  createAppWithSession = function (app, sessionData, gatewayAccountData) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       sessionData.destroy = sinon.stub();
       req.session = sessionData || {};
+      req.gateway_account = gatewayAccountData || {};
       next();
     });
     proxyApp.use(app);
@@ -23,8 +24,8 @@ var getUser = (opts) => {
     return createAppWithSession(app, validSession);
   },
 
-  getAppWithSession = function (app, sessionData) {
-    return createAppWithSession(app, sessionData);
+  getAppWithSessionAndGatewayAccountCookies = function (app, sessionData, gatewayAccountData) {
+    return createAppWithSession(app, sessionData, gatewayAccountData);
   },
 
   getAppWithSessionWithoutSecondFactor = function (app, user) {
@@ -49,13 +50,8 @@ var getUser = (opts) => {
 
 module.exports = {
   getAppWithLoggedInUser: getAppWithLoggedInUser,
-  getAppWithSession: getAppWithSession,
+  getAppWithSessionAndGatewayAccountCookies: getAppWithSessionAndGatewayAccountCookies,
   getMockSession: getMockSession,
   getUser: getUser,
   getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor
 };
-
-
-
-
-

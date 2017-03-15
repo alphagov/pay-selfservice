@@ -53,7 +53,7 @@ module.exports = {
     let newAccountId = _.get(req, 'body.gatewayAccountId');
 
     if (validAccountId(newAccountId, req.user)) {
-      req.session.currentGatewayAccountId = newAccountId;
+      req.gateway_account.currentGatewayAccountId = newAccountId;
       res.redirect(302, '/');
     } else {
       logger.warn(`Attempted to switch to invalid account ${newAccountId}`);

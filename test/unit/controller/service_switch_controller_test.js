@@ -138,6 +138,7 @@ describe('service switch controller: switching', function () {
   it('should redirect to / with correct account id set', function () {
     redirectSpy = sinon.spy();
     let session = {};
+    let gateway_account = {};
 
     let req = {
       originalUrl: 'http://bob.com?accountId=6',
@@ -146,6 +147,7 @@ describe('service switch controller: switching', function () {
         gateway_account_ids: ['6', '5']
       }).getAsObject(),
       session: session,
+      gateway_account: gateway_account,
       body: {
         gatewayAccountId: '6'
       }
@@ -157,7 +159,7 @@ describe('service switch controller: switching', function () {
 
     serviceSwitchController.switch(req, res);
 
-    expect(session.currentGatewayAccountId).to.be.equal('6');
+    expect(gateway_account.currentGatewayAccountId).to.be.equal('6');
     expect(redirectSpy.calledWith(302, '/')).to.be.equal(true);
   });
 

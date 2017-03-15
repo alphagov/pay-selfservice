@@ -12,7 +12,7 @@ const USER_RESOURCE = '/v1/api/users';
 var user = mock_session.getUser();
 var session = mock_session.getMockSession(user);
 
-var app = mock_session.getAppWithSession(getApp(), session);
+var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), session);
 
 function build_get_request(path) {
   return request(app)
