@@ -13,13 +13,13 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('ul > li > a').withExactText('Homepage');
-    body.should.containNoSelectorWithText('ul > li > a', 'API keys');
-    body.should.containNoSelectorWithText('ul > li > a', 'Transactions');
-    body.should.containNoSelectorWithText('ul > li > a', 'Account credentials');
-    body.should.containNoSelectorWithText('ul > li > a', 'Change service name');
-    body.should.containNoSelectorWithText('ul > li > a', 'Payment types');
-    body.should.containNoSelectorWithText('ul > li > a', 'Email notifications');
+    body.should.containSelector('.navigation ul > li > a').withExactText('Homepage');
+    body.should.containNoSelectorWithText('.navigation ul > li > a', 'API keys');
+    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Transactions');
+    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Account credentials');
+    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Change service name');
+    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Payment types');
+    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Email notifications');
   });
 
   it('should render API keys navigation link when user have tokens read permission', function () {
@@ -33,8 +33,8 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('nav > ul > li:nth-child(1) > a').withExactText('Homepage');
-    body.should.containSelector('nav > ul > li:nth-child(2) > a').withExactText('API keys');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('API keys');
   });
 
   it('should render Transactions navigation link when user have transactions read permission', function () {
@@ -48,8 +48,8 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('nav > ul > li:nth-child(1) > a').withExactText('Homepage');
-    body.should.containSelector('nav > ul > li:nth-child(2) > a').withExactText('Transactions');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Transactions');
   });
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission', function () {
@@ -63,8 +63,8 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('nav > ul > li:nth-child(1) > a').withExactText('Homepage');
-    body.should.containSelector('nav > ul > li:nth-child(2) > a').withExactText('Account credentials');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Account credentials');
   });
 
   it('should render Change service name navigation link when user have service name read permission', function () {
@@ -78,8 +78,8 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('nav > ul > li:nth-child(1) > a').withExactText('Homepage');
-    body.should.containSelector('nav > ul > li:nth-child(2) > a').withExactText('Change service name');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Change service name');
   });
 
   it('should render Payment types navigation link when user have payment types read permission', function () {
@@ -93,8 +93,8 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('nav > ul > li:nth-child(1) > a').withExactText('Homepage');
-    body.should.containSelector('nav > ul > li:nth-child(2) > a').withExactText('Payment types');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Payment types');
   });
 
   it('should render Email notifications navigation link when user have email notification template read permission', function () {
@@ -108,7 +108,7 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('transactions/index', templateData);
 
-    body.should.containSelector('nav > ul > li:nth-child(1) > a').withExactText('Homepage');
-    body.should.containSelector('nav > ul > li:nth-child(2) > a').withExactText('Email notifications');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage');
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Email notifications');
   });
 });

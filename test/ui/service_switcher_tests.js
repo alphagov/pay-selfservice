@@ -6,9 +6,20 @@ describe('The account switcher link', function () {
 
   it('should display My Services link', function () {
 
-    let body = renderTemplate('staff_frontend_template', {});
+    let body = renderTemplate('layout', {});
 
-    body.should.containSelector('#my-services');
+    body.should.containSelector('#my-services').withExactText('My Services');
+  });
+
+  it('should not display if user has one or fewer gateway accounts', function () {
+
+    let templateData = {
+      multipleGatewayAccounts: false
+    };
+
+    let body = renderTemplate('layout', templateData);
+
+    body.should.containNoSelector('#my-services');
   });
 
   it('should display View Team Members link in switcher page', function () {
