@@ -77,7 +77,7 @@ module.exports = {
       return defer.reject();
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).verifySecondFactor(username, code);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(username, code);
   },
 
   /**

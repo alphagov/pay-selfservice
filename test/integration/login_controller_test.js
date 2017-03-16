@@ -12,7 +12,6 @@ var mock_session = require(__dirname + '/../test_helpers/mock_session.js');
 var login_controller = require(__dirname + '/../../app/controllers/login_controller.js');
 createGovukNotifyToken = require('../test_helpers/jwt');
 var mockRes = require('../fixtures/response');
-var mockNotify = require('../fixtures/notify');
 
 var should = chai.should();
 var chaiAsPromised = require('chai-as-promised');
@@ -124,6 +123,9 @@ describe('The otplogin endpoint', function () {
       }
     };
 
+    adminusersMock.post(`${USER_RESOURCE}/${user.username}/second-factor/`)
+      .reply(200);
+
     var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData);
     request(app)
       .get("/otp-login")
@@ -136,8 +138,6 @@ describe('The otplogin endpoint', function () {
 
   it('should render and not send key on seccond time', function (done) {
     var user = mock_session.getUser();
-
-    var notify = mockNotify.mockSendTotpSms();
 
     var sessionData = {
       csrfSecret: "123",
@@ -153,10 +153,14 @@ describe('The otplogin endpoint', function () {
       .get("/otp-login")
       .expect(200)
       .end(function () {
-        assert(!notify.isDone());
         done();
       });
   });
+
+});
+
+
+describe('The afterOtpLogin endpoint', function () {
 
   it('should redirect to login to the last url', function (done) {
     var user = mock_session.getUser();
@@ -169,18 +173,11 @@ describe('The otplogin endpoint', function () {
       lastUrl = session.last_url,
       res = mockRes.getStubbedRes();
 
-
-    adminusersMock.post(`${USER_RESOURCE}/${user.username}/attempt-login?action=reset`)
-      .reply(200);
-
-    login_controller.afterOTPLogin(req, res).should.be.fulfilled.then(() => {
-      expect(res.redirect.calledWith(lastUrl)).to.equal(true);
-    }).should.notify(done);
+    login_controller.afterOTPLogin(req, res);
+    expect(res.redirect.calledWith(lastUrl)).to.equal(true);
+    done();
   });
-});
 
-
-describe('The afterOtpLogin endpoint', function () {
   it('should redirect to root if lasturl is not defined', function (done) {
     var user = mock_session.getUser();
     var session = mock_session.getMockSession(user);
@@ -193,13 +190,10 @@ describe('The afterOtpLogin endpoint', function () {
       },
       res = mockRes.getStubbedRes();
 
-    adminusersMock.post(`${USER_RESOURCE}/${user.username}/attempt-login?action=reset`)
-      .reply(200);
-
-    login_controller.afterOTPLogin(req, res).should.be.fulfilled.then(() => {
-      expect(res.redirect.calledWith('/')).to.equal(true);
-      expect(req.session.secondFactor == 'totp');
-    }).should.notify(done);
+    login_controller.afterOTPLogin(req, res);
+    expect(res.redirect.calledWith('/')).to.equal(true);
+    expect(req.session.secondFactor == 'totp');
+    done();
 
   });
 });

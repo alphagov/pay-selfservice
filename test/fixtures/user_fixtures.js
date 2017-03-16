@@ -220,7 +220,7 @@ module.exports = {
 
   },
 
-  validVerifySecondFactorRequest: (code) => {
+  validAuthenticateSecondFactorRequest: (code) => {
     let request = {
       code: code || '123456'
     };

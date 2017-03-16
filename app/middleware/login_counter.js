@@ -32,23 +32,12 @@ module.exports = {
   },
 
   enforceOtp: function (req, res, next) {
-    let correlationId = req.headers[CORRELATION_HEADER] || '';
     let user = req.user;
 
     if (user.disabled) {
       return lockOut(req, res, user);
     } else {
-      return userService.incrementLoginCount(user.username, correlationId)
-        .then((updatedUser) => {
-          req.user = updatedUser;
-          next();
-        })
-        .catch(function (err) {
-          let adminuserStatus = err.statusCode || '';
-          logger.info(`[${correlationId}] incrementLoginCount failed. Status code from admin users ? [${adminuserStatus}] ` +
-            `IP Address [${req.connection.remoteAddress}], User-Agent [${req.get('User-Agent')}] Error = ${err}`);
-          next();
-        });
+      return next();
     }
   }
 

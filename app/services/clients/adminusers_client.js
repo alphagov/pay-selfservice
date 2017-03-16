@@ -373,7 +373,7 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise}
    */
-  let verifySecondFactor = (username, code) => {
+  let authenticateSecondFactor = (username, code) => {
     let params = {
       correlationId: correlationId,
       payload: {
@@ -390,7 +390,7 @@ module.exports = function (clientOptions = {}) {
       startTime: startTime,
       correlationId: correlationId,
       method: 'POST',
-      description: 'verify a second factor auth token entered by user',
+      description: 'authenticate a second factor auth token entered by user',
       service: SERVICE_NAME
     };
 
@@ -415,6 +415,6 @@ module.exports = function (clientOptions = {}) {
     authenticateUser: authenticateUser,
     updatePasswordForUser: updatePasswordForUser,
     sendSecondFactor:sendSecondFactor,
-    verifySecondFactor:verifySecondFactor
+    authenticateSecondFactor:authenticateSecondFactor
   };
 };

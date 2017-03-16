@@ -93,11 +93,11 @@ describe('adminusers client', function () {
   });
 
 
-  describe('verify second factor API', function () {
+  describe('authenticate second factor API', function () {
 
-    context('verify a second factor API - success', () => {
+    context('authenticate a second factor API - success', () => {
       let token = '121212';
-      let request = userFixtures.validVerifySecondFactorRequest(token);
+      let request = userFixtures.validAuthenticateSecondFactorRequest(token);
       let minimalUser = userFixtures.validMinimalUser();
       let username = minimalUser.getPlain().username;
 
@@ -105,7 +105,7 @@ describe('adminusers client', function () {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/${username}/second-factor/authenticate`)
             .withState('a user exists')
-            .withUponReceiving('a valid verify second factor token request')
+            .withUponReceiving('a valid authenticate second factor token request')
             .withRequestBody(request.getPactified())
             .withResponseBody(userFixtures.validUserResponse(minimalUser.getPlain()).getPactified())
             .withMethod('POST')
@@ -119,23 +119,23 @@ describe('adminusers client', function () {
 
       it('authenticate a valid 2FA token successfully', function (done) {
 
-        adminusersClient.verifySecondFactor(username, token).should.be.fulfilled.then(function (createdUser) {
+        adminusersClient.authenticateSecondFactor(username, token).should.be.fulfilled.then(function (createdUser) {
           expect(createdUser.username).to.be.equal(username);
         }).should.notify(done);
 
       });
     });
 
-    context('verify second factor API - bad request', () => {
+    context('authenticate second factor API - bad request', () => {
       let token = 'non-numeric-code';
-      let request = userFixtures.validVerifySecondFactorRequest(token);
+      let request = userFixtures.validAuthenticateSecondFactorRequest(token);
       let username = 'username';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/${username}/second-factor/authenticate`)
             .withState('a user exists')
-            .withUponReceiving('a invalid verify second factor token request')
+            .withUponReceiving('a invalid authenticate second factor token request')
             .withRequestBody(request.getPactified())
             .withMethod('POST')
             .withStatusCode(400)
@@ -149,16 +149,16 @@ describe('adminusers client', function () {
 
       it('error bad request an invalid 2FA token', function (done) {
 
-        adminusersClient.verifySecondFactor(username, token).should.be.rejected.then(function (response) {
+        adminusersClient.authenticateSecondFactor(username, token).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
         }).should.notify(done);
 
       });
     });
 
-    context('verify second factor API - unauthorized', () => {
+    context('authenticate second factor API - unauthorized', () => {
       let token = '654321';
-      let request = userFixtures.validVerifySecondFactorRequest(token);
+      let request = userFixtures.validAuthenticateSecondFactorRequest(token);
       let username = 'username';
 
       beforeEach((done) => {
@@ -179,7 +179,7 @@ describe('adminusers client', function () {
 
       it('error unauthorized an expired/unauthorized 2FA token', function (done) {
 
-        adminusersClient.verifySecondFactor(username, token).should.be.rejected.then(function (response) {
+        adminusersClient.authenticateSecondFactor(username, token).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(401);
         }).should.notify(done);
 
