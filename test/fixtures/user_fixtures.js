@@ -23,6 +23,10 @@ function randomAccountId() {
   return String(Math.floor(Math.random() * 1000));
 }
 
+function randomServiceId() {
+  return String(Math.floor(Math.random() * 1000));
+}
+
 function randomTelephoneNumber() {
   return String(Math.floor(Math.random() * 1000000));
 }
@@ -38,7 +42,7 @@ function pactifyArray(arr) {
 function pactify(object) {
   let pactified = {};
   _.forIn(object, (value, key) => {
-      if ( ["permissions","gateway_account_ids"].indexOf(key) != -1) {
+      if ( ["permissions","gateway_account_ids", "service_ids"].indexOf(key) != -1) {
          pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]),{min:value.length})
       } else if(value.constructor === Array) {
         pactified[key] = pactifyArray( value );
@@ -69,6 +73,7 @@ module.exports = {
       username: newUsername,
       email: `${newUsername}@example.com`,
       gateway_account_ids: [randomAccountId()],
+      service_ids: [randomServiceId()],
       telephone_number: randomTelephoneNumber()
     };
 
@@ -97,6 +102,7 @@ module.exports = {
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
       gateway_account_ids: opts.gateway_account_ids || [String(Math.floor(Math.random() * 10) + 1)],
+      service_ids: opts.service_ids || [String(Math.floor(Math.random() * 10) + 1)],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
       otp_key: opts.otp_key || randomOtpKey(),
       disabled: opts.disabled || false,
@@ -128,10 +134,11 @@ module.exports = {
    */
   validUserResponse: (request) => {
 
-    var data = {
+    let data = {
       username: request.username,
       email: request.email || `${request.username}@example.com`,
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
+      service_ids: request.service_ids || [randomAccountId()],
       otp_key: request.otp_key || "43c3c4t",
       role: {"name": "admin", "description": "Administrator"},
       telephone_number: request.telephone_number || "0123441",

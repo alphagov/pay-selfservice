@@ -1,0 +1,57 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - Team members
+{{/pageTitle}}
+{{$full_width_content}}
+<h2 class="heading-large">Team members</h2>
+<p id="active-team-members-heading">Active ({{number_active_members}})</p>
+
+<table id="team-members-admin-list">
+    <thead>
+    <tr>
+        <th id="admin-role-header">Administrators ({{number_admin_members}})</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#team_members.admin}}
+    <tr>
+        <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
+    </tr>
+    {{/team_members.admin}}
+    </tbody>
+</table>
+
+<table id="team-members-view-and-refund-list">
+    <thead>
+    <tr>
+        <th id="view-and-refund-role-header">View and refund ({{number_view-and-refund_members}})</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#team_members.view-and-refund}}
+    <tr>
+        <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
+    </tr>
+    {{/team_members.view-and-refund}}
+    </tbody>
+</table>
+
+<table id="team-members-view-only-list">
+    <thead>
+    <tr>
+        <th id="view-only-role-header">View only ({{number_view-only_members}})</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#team_members.view-only}}
+    <tr>
+        <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
+    </tr>
+    {{/team_members.view-only}}
+    </tbody>
+</table>
+
+{{/full_width_content}}
+
+{{/layout}}

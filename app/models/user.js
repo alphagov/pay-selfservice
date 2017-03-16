@@ -11,6 +11,7 @@ class User {
     this._username = userData.username;
     this._email = userData.email || '';
     this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
+    this._serviceIds = userData.service_ids;
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
     this._disabled = userData.disabled ? userData.disabled : false;
@@ -36,6 +37,7 @@ class User {
       username: this._username,
       email: this._email,
       gateway_account_ids: this._gatewayAccountIds,
+      service_ids: this._serviceIds,
       telephone_number: this._telephoneNumber,
       /**
        * As of now, we expect these JSON representations are only used for data transfer between AdminUsers.
@@ -96,6 +98,10 @@ class User {
 
   get gatewayAccountIds() {
     return this._gatewayAccountIds;
+  }
+
+  get serviceIds() {
+   return this._serviceIds;
   }
 
   set gatewayAccountIds(value) {
