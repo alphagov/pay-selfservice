@@ -5,11 +5,14 @@ var paths = require(__dirname + '/../../app/paths.js');
 describe('The credentials view in normal mode', function () {
   it('should display credentials view for a worldpay account', function () {
     var templateData = {
-      "payment_provider": "Worldpay",
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "payment_provider": "Worldpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        }
       },
+
       permissions: {
         gateway_credentials_read: true
       }
@@ -38,10 +41,12 @@ describe('The credentials view in normal mode', function () {
 
   it('should not display notification credentials for worldpay', function() {
     var templateData = {
-      "payment_provider": "Worldpay",
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "payment_provider": "Worldpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        }
       },
       permissions: {
         gateway_credentials_read: true
@@ -57,10 +62,12 @@ describe('The credentials view in normal mode', function () {
 
   it('should display credentials view for a smartpay account', function () {
     var templateData = {
-      "payment_provider": "Smartpay",
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "payment_provider": "Smartpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        }
       },
       permissions: {
         gateway_credentials_read: true
@@ -90,14 +97,18 @@ describe('The credentials view in normal mode', function () {
 
   it('should display notification credentials view for a smartpay account', function () {
     var templateData = {
-      "payment_provider": "Smartpay",
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "payment_provider": "Smartpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        },
+        "notificationCredentials": {
+          'userName': 'a-notification-username'
+        }
       },
-      "notification_credentials": {
-        'userName': 'a-notification-username'
-      },
+
+
       permissions: {
         gateway_credentials_read: true
       }
@@ -126,8 +137,10 @@ describe('The credentials view in normal mode', function () {
 
   it('should display credentials view for a sandbox account', function () {
     var templateData = {
-      "payment_provider": "Sandbox",
-      "credentials": {}
+      currentGatewayAccount: {
+        "payment_provider": "Sandbox",
+        "credentials": {}
+      }
     };
 
     var body = renderTemplate('provider_credentials/sandbox', templateData);
@@ -154,10 +167,12 @@ describe('The credentials view in normal mode', function () {
 describe('The credentials view in edit mode', function () {
   it('should display credentials view for a worldpay account', function () {
     var templateData = {
-      "payment_provider": "Worldpay",
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "payment_provider": "Worldpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        }
       },
       'editMode': 'true',
       permissions: {
@@ -192,10 +207,12 @@ describe('The credentials view in edit mode', function () {
 
   it('should display credentials view for a smartpay account', function () {
     var templateData = {
-      "payment_provider": "Smartpay",
-      "credentials": {
-        'username': 'a-username',
-        'merchant_id': 'a-merchant-id'
+      currentGatewayAccount: {
+        "payment_provider": "Smartpay",
+        "credentials": {
+          'username': 'a-username',
+          'merchant_id': 'a-merchant-id'
+        }
       },
       'editMode': 'true',
       permissions: {
@@ -230,8 +247,10 @@ describe('The credentials view in edit mode', function () {
 
   it('should display credentials view for a sandbox account', function () {
     var templateData = {
-      "payment_provider": "Sandbox",
-      "credentials": {},
+      currentGatewayAccount: {
+        "payment_provider": "Sandbox",
+        "credentials": {}
+      },
       'editMode': 'true',
       permissions: {
         gateway_credentials_update: true

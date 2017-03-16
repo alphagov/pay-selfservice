@@ -38,7 +38,7 @@ module.exports = {
     if (user.disabled) {
       return lockOut(req, res, user);
     } else {
-      return userService.incrementLoginCount(user.username)
+      return userService.incrementLoginCount(user.username, correlationId)
         .then((updatedUser) => {
           req.user = updatedUser;
           next();

@@ -17,8 +17,8 @@ const TOKEN_GENERATE_VIEW = 'token_generate';
 
 module.exports.index = function (req, res) {
   var accountId = auth.getCurrentGatewayAccountId(req);
-  withValidAccountId(req, res, accountId, function (accountId, req, res) {
-    publicAuthClient.getActiveTokensForAccount({
+
+  publicAuthClient.getActiveTokensForAccount({
         correlationId: req.correlationId,
         accountId: accountId
       })
@@ -43,12 +43,10 @@ module.exports.index = function (req, res) {
       .catch(() => {
         errorView(req, res);
       });
-  });
 };
 
 module.exports.revoked = function (req, res) {
   var accountId = auth.getCurrentGatewayAccountId(req);
-  withValidAccountId(req, res, accountId, function (accountId, req, res) {
     publicAuthClient.getRevokedTokensForAccount({
         correlationId: req.correlationId,
         accountId: accountId
@@ -72,14 +70,11 @@ module.exports.revoked = function (req, res) {
       .catch((err) => {
         errorView(req, res);
       });
-  });
 };
 
 module.exports.show = function (req, res) {
   var accountId = auth.getCurrentGatewayAccountId(req);
-  withValidAccountId(req, res, accountId, function (accountId, req, res) {
-    response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
-  });
+  response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId});
 };
 
 module.exports.create = function (req, res) {
@@ -87,24 +82,22 @@ module.exports.create = function (req, res) {
   let correlationId = req.correlationId;
   let description = req.body.description;
 
-  withValidAccountId(req, res, accountId, function (accountId, req, res) {
-    let payload =  {
-      'account_id': accountId,
-      'description': description,
-      'created_by': req.user.email
-    };
+  let payload =  {
+    'account_id': accountId,
+    'description': description,
+    'created_by': req.user.email
+  };
 
-    publicAuthClient.createTokenForAccount({
-        payload: payload,
-        accountId: accountId,
-        correlationId: correlationId
-      })
-      .then(publicAuthData => response(req, res, TOKEN_GENERATE_VIEW, {
-        token: publicAuthData.token,
-        description: description
-      }))
-      .catch((reason) => errorView(req, res));
-  });
+  publicAuthClient.createTokenForAccount({
+      payload: payload,
+      accountId: accountId,
+      correlationId: correlationId
+    })
+    .then(publicAuthData => response(req, res, TOKEN_GENERATE_VIEW, {
+      token: publicAuthData.token,
+      description: description
+    }))
+    .catch((reason) => errorView(req, res));
 };
 
 module.exports.update = function (req, res) {
@@ -165,12 +158,3 @@ module.exports.destroy = function (req, res) {
       res.sendStatus(responseCode)
     });
 };
-
-function withValidAccountId(req, res, accountId, callback) {
-  connectorClient().getAccount({
-    correlationId: req.correlationId,
-    gatewayAccountId: accountId
-  })
-  .then(() => callback(accountId, req, res))
-  .catch(() => errorView(req, res));
-}

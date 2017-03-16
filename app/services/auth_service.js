@@ -10,8 +10,8 @@ var paths = require(__dirname + '/../paths.js');
 var userService = require('./user_service.js');
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
-var localStrategyAuth = function (username, password, done) {
-  return userService.authenticate(username, password)
+var localStrategyAuth = function (req, username, password, done) {
+  return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
     .catch(() => done(null, false, {message: 'Invalid username or password'}));
 };
@@ -119,7 +119,7 @@ var hasValidSession = function (req) {
 var initialise = function (app, override_strategy) {
   app.use(passport.initialize());
   app.use(passport.session());
-  passport.use('local', new localStrategy({usernameField: 'username'}, localStrategyAuth));
+  passport.use('local', new localStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth));
   passport.use(new TotpStrategy(
     function (user, done) {
       return done(null, user.otpKey, 30);
@@ -131,8 +131,8 @@ var initialise = function (app, override_strategy) {
   passport.deserializeUser(this.deserializeUser);
 };
 
-var deserializeUser = function (username, done) {
-  return userService.findByUsername(username)
+var deserializeUser = function (req, username, done) {
+  return userService.findByUsername(username, req.headers[CORRELATION_HEADER] || '')
     .then((user) => {
       done(null, user);
     });

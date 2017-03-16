@@ -10,35 +10,17 @@ var connectorClient = function () {
 };
 
 module.exports.index = function (req, res) {
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
 
-  var init = function () {
-    var accountId = auth.getCurrentGatewayAccountId(req);
-    var params = {
-      gatewayAccountId: accountId,
-      correlationId: correlationId
-    };
+  if(!req.account) {
+    return renderErrorView(req, res, 'Unable to retrieve the service name.');
+  }
 
-    connectorClient()
-      .getAccount(params)
-      .then(onSuccess)
-      .catch(onError);
+  var model = {
+    serviceName: req.account.service_name,
+    editMode: !(req.query.edit === undefined)
   };
 
-  var onSuccess = function (data) {
-    var model = {
-      serviceName: data.service_name,
-      editMode: !(req.query.edit === undefined)
-    };
-
-    response(req, res, 'service_name', model);
-  };
-
-  var onError = function () {
-    renderErrorView(req, res, 'Unable to retrieve the service name.');
-  };
-
-  init();
+  return response(req, res, 'service_name', model);
 };
 
 module.exports.update = function (req, res) {

@@ -98,7 +98,7 @@ describe('auth service', function () {
         }
       };
 
-      authService(userServiceMock).deserializeUser('foo', doneSpy)
+      authService(userServiceMock).deserializeUser({headers:{'x-request-id': 'bar'}},'foo', doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, user));
           done();

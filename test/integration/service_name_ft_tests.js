@@ -80,7 +80,10 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
           permissions: {
             'service_name_read': true
           },
-          navigation: true
+          navigation: true,
+          currentGatewayAccount: {
+            "service_name": "Service name"
+          }
         };
 
         build_get_request(testSetup.path, app)

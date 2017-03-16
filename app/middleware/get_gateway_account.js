@@ -5,7 +5,8 @@ var auth                = require('../services/auth_service.js'),
 module.exports = function (req, res, next) {
   var accountId = auth.getCurrentGatewayAccountId(req);
   var params = {
-    gatewayAccountId: accountId
+    gatewayAccountId: accountId,
+    correlationId: req.correlationId
   };
 
   return connectorClient.getAccount(params)

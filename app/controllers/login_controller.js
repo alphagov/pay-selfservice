@@ -15,8 +15,8 @@ var error = function(req,res,err) {
 };
 
 var logLoginAction = function(req, message) {
-  var correlationId = _.get('req.headers.' + CORRELATION_HEADER, '');
-  logger.info(`[${correlationId}] user : ${_.get(req, 'user.id')} ${message}`);
+  var correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '');
+  logger.info(`[${correlationId}] ${message}`);
 };
 
 module.exports.loggedIn = function (req, res) {
@@ -28,7 +28,7 @@ module.exports.loggedIn = function (req, res) {
 
 module.exports.logOut = function (req, res) {
   if (req.user) {
-    userService.logOut(req.user);
+    userService.logOut(req.user, req.correlationId);
   }
 
   if (req.session) {
@@ -60,12 +60,12 @@ module.exports.postLogin = function (req, res) {
   res.redirect(paths.user.otpLogIn);
 };
 
-module.exports.logUserin = function() {
+module.exports.logUserin = function(req,res, next) {
   return passport.authenticate('local', {
     failureRedirect: '/login',
     badRequestMessage : 'Invalid username or password.',
     failureFlash: true
-  });
+  })(req, res, next);
 };
 
 module.exports.logUserinOTP = function(req, res, next) {
@@ -89,7 +89,7 @@ module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
   var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
   delete req.session.last_url;
-  return userService.resetLoginCount(req.user.username)
+  return userService.resetLoginCount(req.user.username, req.headers[CORRELATION_HEADER] ||'')
     .then(()=>{
       logLoginAction(req, 'successfully entered a valid 2fa token');
       res.redirect(redirect_url);
