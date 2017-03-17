@@ -3,16 +3,16 @@ FROM node:6.10.0-alpine
 RUN apk update && apk upgrade
 
 # Install packages needed for production
-RUN apk add --update python make g++
+RUN apk add --update bash python make g++
 
 # Install packages needed for testing
-RUN apk add --update bash ruby openssl
+RUN apk add --update ruby openssl
 
 # Install glibc (https://github.com/sgerrand/alpine-pkg-glibc), needed to run pact-mock_service
 # (https://github.com/bethesque/pact-mock_service) which ships with a binary dependency (@pact-foundation/pact-mock-service-linux-x64)
 # linked against glibc.
+ADD docker/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 RUN apk --no-cache add ca-certificates
-RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
 RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk
 RUN apk add glibc-2.25-r0.apk
 
@@ -34,4 +34,12 @@ RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
 RUN npm install && npm run compile && npm test && npm prune --production
 
-CMD sh
+# Uninstall packages that were only needed for test
+RUN apk del ruby openssl
+
+# Swap glibc for libc6-compat which is a safer package to use for production as it is officially supported by
+# alpine base image distribution.
+# Note: glibc is only required to run pact-mock_service.
+RUN apk del glibc && apk add libc6-compat
+
+CMD bash ./docker-startup.sh
