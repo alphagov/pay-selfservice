@@ -5,7 +5,6 @@ var userService  = require('../services/user_service.js');
 var router    = require('../routes.js');
 var passport  = require('passport');
 var paths     = require('../paths.js');
-var response = require('../utils/response.js').response;
 var errorView = require('../utils/response.js').renderErrorView;
 var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
@@ -69,7 +68,7 @@ module.exports.logUserin = function(req,res, next) {
 };
 
 module.exports.logUserinOTP = function(req, res, next) {
-  return passport.authenticate('totp', { failureRedirect: '/otp-login' })(req, res, next);
+  return passport.authenticate('local2Fa', { failureRedirect: '/otp-login' })(req, res, next);
 };
 
 module.exports.otpLogIn = function (req, res) {
@@ -89,13 +88,8 @@ module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
   var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
   delete req.session.last_url;
-  return userService.resetLoginCount(req.user.username, req.headers[CORRELATION_HEADER] ||'')
-    .then(()=>{
-      logLoginAction(req, 'successfully entered a valid 2fa token');
-      res.redirect(redirect_url);
-    },
-    (err) => error(req, res, error)
-  )
+  logLoginAction(req, 'successfully entered a valid 2fa token');
+  res.redirect(redirect_url);
 };
 
 module.exports.sendAgainGet = function(req, res){
