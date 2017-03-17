@@ -1,25 +1,16 @@
 {{< govuk_template}}
     {{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}
+    {{$bodyClasses}}env-{{currentGatewayAccount.type}}{{/bodyClasses}}
     {{$homepageUrl}}/{{/homepageUrl}}
     {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
 
-    {{$insideHeader}}
-      <a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a>
-      <a href="{{ routes.serviceSwitcher.index }}" title="My Services" id="my-services" class="content logout">My Services</a>
-    {{/insideHeader}}
-
     {{$content}}
-        <div id="global-header-bar-wrapper">
-            <div id="global-header-bar" class="{{currentGatewayAccount.type}}"></div>
-            {{#navigation}}
-            <div class="environment-tag grid-row {{currentGatewayAccount.type}}">
-              <span>{{currentGatewayAccount.full_type}}</span>
-            </div>
-            {{/navigation}}
-        </div>
         {{#flash.genericError}}
         <p class="generic-error"> {{flash.genericError}} </p>
         {{/flash.genericError}}
+        {{#navigation}}
+            {{> includes/phase_banner }}
+        {{/navigation}}
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
           {{$full_width_content}}{{/full_width_content}}
           {{#navigation}}
