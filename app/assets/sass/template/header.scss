@@ -1,54 +1,98 @@
-header {
-  background-color: $black;
+/* All our users are from government departments so don't need to see the cookie consent bar */
+#global-cookie-message {
+  padding: 0;
+  height: 0;
+}
+
+#global-header .header-wrapper {
+  max-width:1260px;
+}
+
+/* Allow the menu link to sit on the same line as the logo */
+#global-header.with-proposition {
   .header-wrapper {
-    max-width:1200px;
-    margin: 0 auto;
-    @include respond-to-max(1260px) {
-      margin: 0 30px;
-    }
-  }
-  a {
-    color: $white;
-    text-decoration: none;
-    position: relative;
-    padding-left: 45px;
+    /* Allow the header contents to dictate their own padding-bottom when the proposition menu can be toggled */
+    padding-bottom: 0;
 
-    &:focus {
-      background: none;
-    }
-
-    img {
-      position: absolute;
-      left: 0;
-      top: -2px;
+    @include media(desktop) {
+      padding-bottom: 8px;
     }
   }
 
-  a,
-  a:visited,
-  a:active,
-  a:hover,
-  a:link {
-    color: $white;
+  .header-global {
+    float: left;
+  }
+}
+
+#global-header .header-proposition {
+  /* Trick to align the proposition menu to the right of the header */
+  @include media(desktop) {
+    text-align: right;
   }
 
-  a:focus,
-  a:hover {
-    text-decoration: underline;
+  /* Styles below make the header style match the product page */
+  a.menu {
+    @include bold-14;
+    line-height: 1.25;
+    border: solid $grey-1 1px;
+    border-radius: 3px;
+    padding: 2px 6px 1px;
+    margin-bottom: 12px;
+
+    &:focus { background: transparent; }
   }
 
-  .header-logo {
-    @include bold-24;
-    padding: $gutter-half 0 $gutter-half 0;
+  #proposition-menu {
+    clear: left;
 
-    @include media(tablet) {
-     padding: $gutter-half 0 $gutter-half 0;
+    @include media(desktop) {
+      clear: none;
     }
   }
-  .logout {
-    float: right;
-    @include copy-16();
-    font-weight: bold;
+
+  #proposition-links {
+    border-top: solid $grey-1 1px;
+    padding: 8px 0;
+    margin-bottom: 0;
+
+    @include media(desktop) {
+      margin: ($gutter-half - 2px) 0 2px;
+      border: none;
+      padding: 0;
+    }
+
+    li {
+      border: none;
+      padding: 8px 0;
+      line-height: 1.25;
+      float: none;
+      width: 100%;
+
+      /* Reset for `text-align: right` trick */
+      text-align: left;
+
+      @include media(desktop) {
+        display: inline;
+      }
+
+      a {
+        // We want the same font size on mobile as tablet, so we can't use bold-16.
+        @include _core-font-generator(
+          $font-size: 16px,
+          $font-size-640: 16px,
+          $font-size-print: 12pt,
+          $line-height: (20 / 16),
+          $line-height-640: (20 / 16),
+          $font-weight: 700
+        );
+
+        margin: 0;
+
+        @include media(desktop) {
+          margin-left: $gutter-half;
+        }
+      }
+    }
   }
 }
 
@@ -90,11 +134,20 @@ header {
   }
 }
 
-.env-live #global-header-bar {
-  background: $govuk-blue;
-}
+#global-header-bar {
+  /* Corrections to header-bar styles to allow 1200px width */
+  max-width: 1200px;
 
-.env-test #global-header-bar {
-  background: $yellow;
+  @include ie-lte(8) {
+    width: 1200px;
+  }
+
+  .env-live & {
+    background: $govuk-blue;
+  }
+
+  .env-test & {
+    background: $yellow;
+  }
 }
 
