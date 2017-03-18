@@ -151,18 +151,6 @@ module.exports = {
           () => defer.reject({message: 'There has been a problem updating password.'}));
     }
     return defer.promise;
-  },
-
-  /**
-   *
-   * @param username
-   * @returns {Promise}
-   */
-  resetLoginCount: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).resetLoginAttemptsForUser(username);
-  },
-
-  incrementLoginCount: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).incrementLoginAttemptsForUser(username);
   }
+
 };
