@@ -17,7 +17,8 @@ module.exports = {
     return wrapper.publishPacts({
       pactUrls: [path.resolve(process.cwd(), 'pacts')],
       pactBroker: pactBrokerUrl,
-      consumerVersion: "1"
+      consumerVersion: "1",
+      tags: ['expecting_bob']
     })
   },
 

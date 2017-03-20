@@ -40,7 +40,7 @@ describe('adminusers client - get user', function () {
       .then(() => done());
   });
 
-  describe('GET user api', () => {
+  describe.only('GET user api', () => {
 
     context('GET user api - success', () => {
 
