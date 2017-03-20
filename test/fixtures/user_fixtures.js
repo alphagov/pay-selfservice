@@ -129,6 +129,7 @@ module.exports = {
   validUserResponse: (request) => {
 
     var data = {
+      bob: 'bob',
       username: request.username,
       email: request.email || `${request.username}@example.com`,
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
