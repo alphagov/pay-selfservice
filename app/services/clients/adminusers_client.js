@@ -133,70 +133,6 @@ module.exports = function (clientOptions = {}) {
    * @param username
    * @returns {Promise}
    */
-  let incrementLoginAttemptsForUser = username => {
-    let params = {
-      correlationId: correlationId
-    };
-    let url = `${userResource}/${username}/attempt-login`;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'POST',
-      description: 'increment login attempts for a user',
-      service: SERVICE_NAME
-    };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
-
-    requestLogger.logRequestStart(context);
-
-    baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
-
-    return defer.promise;
-  };
-
-  /**
-   *
-   * @param username
-   * @returns {Promise}
-   */
-  let resetLoginAttemptsForUser = username => {
-    let params = {
-      correlationId: correlationId
-    };
-    let url = `${userResource}/${username}/attempt-login?action=reset`;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'POST',
-      description: 'reset login attempts for a user',
-      service: SERVICE_NAME
-    };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
-
-    requestLogger.logRequestStart(context);
-
-    baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
-
-    return defer.promise;
-  };
-
-  /**
-   *
-   * @param username
-   * @returns {Promise}
-   */
   let incrementSessionVersionForUser = username => {
     let params = {
       correlationId: correlationId,
@@ -408,8 +344,6 @@ module.exports = function (clientOptions = {}) {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
     incrementSessionVersionForUser: incrementSessionVersionForUser,
-    resetLoginAttemptsForUser: resetLoginAttemptsForUser,
-    incrementLoginAttemptsForUser: incrementLoginAttemptsForUser,
     getUser: getUser,
     createUser: createUser,
     authenticateUser: authenticateUser,
