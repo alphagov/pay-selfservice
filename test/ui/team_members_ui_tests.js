@@ -27,7 +27,7 @@ describe('The team members view', function () {
       }
     };
 
-    let body = renderTemplate('service_switcher/team_members', templateData);
+    let body = renderTemplate('services/team_members', templateData);
 
     body.should.containSelector('p#active-team-members-heading').withExactText('Active (6)');
     body.should.containSelector('th#admin-role-header').withExactText('Administrators (2)');
@@ -65,7 +65,7 @@ describe('The team members view', function () {
       }
     };
 
-    let body = renderTemplate('service_switcher/team_members', templateData);
+    let body = renderTemplate('services/team_members', templateData);
 
     body.should.containSelector('p#active-team-members-heading').withExactText('Active (2)');
     body.should.containSelector('th#admin-role-header').withExactText('Administrators (1)');

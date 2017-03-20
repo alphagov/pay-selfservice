@@ -18,7 +18,12 @@ var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPor
 
 describe('adminusers client - service users', function () {
 
-  var adminUsersMock;
+  let adminUsersMock;
+  let service_id = 12345;
+  let non_existing_service_id = 500;
+  let response_params = { service_ids : [service_id]};
+  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse(response_params);
+
   /**
    * Start the server and set up Pact
    */
@@ -39,16 +44,6 @@ describe('adminusers client - service users', function () {
       .then(() => done());
   });
 
-  let service_id = 12345;
-  let non_existing_service_id = 500;
-
-
-  let response_params = { service_ids : [service_id]}
-
-
-  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse(response_params);
-
-
   describe('service user API', function () {
 
     context('service user - success', () => {
@@ -64,7 +59,6 @@ describe('adminusers client - service users', function () {
         ).then(() => done());
       });
 
-
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
       });
@@ -73,14 +67,11 @@ describe('adminusers client - service users', function () {
 
         adminusersClient.getServiceUsers(service_id).should.be.fulfilled.then (
            function (users) {
-             var expectedResponse = getServiceUsersResponse.getPlain();
+             let expectedResponse = getServiceUsersResponse.getPlain();
              expect(users[0].service_ids[0]).to.be.equal(expectedResponse[0].service_ids[0]);
            }
         ).should.notify(done);
       });
-
-
-
     });
 
     context('service user - failure', () => {
@@ -96,12 +87,11 @@ describe('adminusers client - service users', function () {
         ).then(() => done());
       });
 
-
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should return service users not found', function (done) {
+      it('should return service not found', function (done) {
 
          adminusersClient.getServiceUsers(non_existing_service_id).should.be.rejected.then (
             function (err) {
@@ -109,7 +99,6 @@ describe('adminusers client - service users', function () {
             }
          ).should.notify(done);
        });
-
     });
    });
 });

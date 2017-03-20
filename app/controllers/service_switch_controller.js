@@ -37,7 +37,7 @@ module.exports = {
         .filter(promise => promise.state === 'fulfilled')
         .map(promise => promise.value))
       .then(gatewayAccounts => {
-        successResponse(req, res, 'service_switcher/index', {
+        successResponse(req, res, 'services/index', {
           navigation: false,
           gatewayAccounts: gatewayAccounts});
       })

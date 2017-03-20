@@ -362,7 +362,6 @@ module.exports = function (clientOptions = {}) {
        .on('error', callbackToPromiseConverter);
 
      return defer.promise;
-
   };
 
   return {

@@ -1,29 +1,19 @@
 let nock = require('nock');
-//var proxyquire = require('proxyquire');
-let serviceUsers = require(__dirname + '/../../app/controllers/service_users_controller');
-
-var session = require(__dirname + '/../test_helpers/mock_session.js');
-var getApp = require(__dirname + '/../../server.js').getApp;
-
-const serviceFixtures = require(__dirname + '/../fixtures/service_fixtures');
-const userFixtures = require(__dirname + '/../fixtures/user_fixtures');
-const resFixtures = require(__dirname + '/../fixtures/response');
-var supertest = require('supertest');
-
+let session = require(__dirname + '/../test_helpers/mock_session.js');
+let getApp = require(__dirname + '/../../server.js').getApp;
+let supertest = require('supertest');
+let serviceFixtures = require(__dirname + '/../fixtures/service_fixtures');
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
+let app;
+
 chai.use(chaiAsPromised);
-const expect = chai.expect;
-
-var app;
-
-
+let expect = chai.expect;
 let adminusersMock = nock(process.env.ADMINUSERS_URL);
+
 const SERVICE_RESOURCE = '/v1/api/services';
 
 describe('service users resource', function () {
-
-//  let serviceUsersController = serviceUsers();
 
   afterEach((done) => {
     nock.cleanAll();
@@ -40,6 +30,7 @@ describe('service users resource', function () {
     });
 
     let serviceUsersRes = serviceFixtures.validServiceUsersResponse({});
+
     adminusersMock.get(`${SERVICE_RESOURCE}/${service_id}/users`)
       .reply(200, serviceUsersRes.getPlain());
 
@@ -59,7 +50,6 @@ describe('service users resource', function () {
         expect(res.body.team_members.admin[0].is_current).to.equal(true);
         expect(res.body.team_members['view-only'].length).to.equal(0);
         expect(res.body.team_members['view-and-refund'].length).to.equal(0);
-
       })
       .end(done);
   });

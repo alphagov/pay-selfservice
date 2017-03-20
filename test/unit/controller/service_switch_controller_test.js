@@ -1,7 +1,6 @@
 var sinon = require('sinon');
 var chai = require('chai');
 var nock = require('nock');
-var proxyquire = require('proxyquire');
 
 var serviceSwitchController = require(__dirname + '/../../../app/controllers/service_switch_controller');
 var userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
@@ -54,7 +53,7 @@ describe('service switch controller: list of accounts', function () {
     };
 
     serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
-      expect(renderSpy.calledWith('service_switcher/index', sinon.match({gatewayAccounts: [
+      expect(renderSpy.calledWith('services/index', sinon.match({gatewayAccounts: [
         {
           gateway_account_id: '2',
           description: 'account 2',
@@ -98,7 +97,7 @@ describe('service switch controller: list of accounts', function () {
     };
 
     serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
-      expect(renderSpy.calledWith('service_switcher/index', sinon.match({gatewayAccounts: [
+      expect(renderSpy.calledWith('services/index', sinon.match({gatewayAccounts: [
         {
           gateway_account_id: '2',
           description: 'account 2',
