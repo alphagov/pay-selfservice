@@ -22,7 +22,7 @@ describe('adminusers client - service users', function () {
   let service_id = "12345";
   let non_existing_service_id = "500";
   let response_params = { service_ids : [service_id]};
-  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse(response_params);
+  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([response_params]);
 
   /**
    * Start the server and set up Pact

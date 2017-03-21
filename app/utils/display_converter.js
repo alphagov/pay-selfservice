@@ -73,7 +73,6 @@ const getAccount = account => {
 
 module.exports = function(user, data, template, account) {
   let convertedData = _.clone(data);
-
   convertedData.permissions = getPermissions(user);
   let hasMultipleGatewayAccounts = testHasMultipleGatewayAccounts(user);
   if (hasMultipleGatewayAccounts) {
