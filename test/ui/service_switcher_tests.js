@@ -25,4 +25,26 @@ describe('The account switcher link', function () {
 
     body.should.containNoSelector('#my-services');
   });
+
+  it('should display Manage Team Members link in switcher page when user has permission to create users', function () {
+
+    let templateData = {
+      permissions: {
+        users_service_create: true
+      }
+    };
+
+    let body = renderTemplate('services/index', templateData);
+
+    body.should.containSelector('a#manage-team-members').withExactText('Manage team members');
+  });
+
+  it('should display View Team Members link in switcher page when user has no permission to create users', function () {
+
+    let templateData = {};
+
+    let body = renderTemplate('services/index', templateData);
+
+    body.should.containSelector('a#view-team-members').withExactText('View team members');
+  });
 });

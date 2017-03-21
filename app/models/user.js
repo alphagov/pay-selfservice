@@ -109,7 +109,6 @@ class User {
   get role() {
     return this._role;
   }
-
 }
 
 module.exports.User = User;

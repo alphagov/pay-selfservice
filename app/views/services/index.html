@@ -16,6 +16,14 @@ GOV.UK Pay - My services
         <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
     </form>
     {{/gatewayAccounts}}
+    <div id="team-members">
+        {{#permissions.users_service_create}}
+        <span><a href="/team-members" id="manage-team-members">Manage team members</a></span>
+        {{/permissions.users_service_create}}
+        {{^permissions.users_service_create}}
+        <span><a href="/team-members" id="view-team-members">View team members</a></span>
+        {{/permissions.users_service_create}}
+    </div>
 {{/full_width_content}}
 
 {{/layout}}

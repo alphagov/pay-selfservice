@@ -78,6 +78,6 @@ describe('The team members view', function () {
     body.should.containSelector('table#team-members-view-only-list').havingNumberOfRows(0);
 
     body.should.containSelector('table#team-members-view-and-refund-list').havingNumberOfRows(1);
-    body.should.containSelector('table#team-members-view-and-refund-list').havingRowAt(1).withTableDataAt(1, 'username2 (you)')
+    body.should.containSelector('table#team-members-view-and-refund-list').havingRowAt(1).withTableDataAt(1, 'username2 (you)');
   });
 });

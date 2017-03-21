@@ -19,8 +19,8 @@ var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPor
 describe('adminusers client - service users', function () {
 
   let adminUsersMock;
-  let service_id = 12345;
-  let non_existing_service_id = 500;
+  let service_id = "12345";
+  let non_existing_service_id = "500";
   let response_params = { service_ids : [service_id]};
   let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse(response_params);
 
