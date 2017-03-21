@@ -8,10 +8,6 @@ const hideNavBarTemplates = [
   'services/team_member_permissions'
 ];
 
-const testHasMultipleGatewayAccounts = user => {
-  return user && user.gatewayAccountIds && user.gatewayAccountIds.length > 1;
-};
-
 /**
  * converts users permission array of form
  *
@@ -76,15 +72,9 @@ const getAccount = account => {
 
 module.exports = function(user, data, template, account) {
   let convertedData = _.clone(data);
-
   convertedData.permissions = getPermissions(user);
-  let hasMultipleGatewayAccounts = testHasMultipleGatewayAccounts(user);
-  if (hasMultipleGatewayAccounts) {
-    convertedData.multipleGatewayAccounts = true;
-  }
   convertedData.navigation = showNavigationBar(template);
   addGatewayAccountProviderDisplayNames(convertedData);
   convertedData.currentGatewayAccount = getAccount(account);
-
   return convertedData;
 };
