@@ -67,17 +67,7 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData);
 
-    body.should.containSelector('p#active-team-members-heading').withExactText('Active (2)');
-    body.should.containSelector('th#admin-role-header').withExactText('Administrators (1)');
     body.should.containSelector('th#view-only-role-header').withExactText('View only (0)');
-    body.should.containSelector('th#view-and-refund-role-header').withExactText('View and refund (1)');
-
-    body.should.containSelector('table#team-members-admin-list').havingNumberOfRows(1);
-    body.should.containSelector('table#team-members-admin-list').havingRowAt(1).withTableDataAt(1, 'username1');
-
     body.should.containSelector('table#team-members-view-only-list').havingNumberOfRows(0);
-
-    body.should.containSelector('table#team-members-view-and-refund-list').havingNumberOfRows(1);
-    body.should.containSelector('table#team-members-view-and-refund-list').havingRowAt(1).withTableDataAt(1, 'username2 (you)');
   });
 });

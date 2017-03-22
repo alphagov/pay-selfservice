@@ -1,7 +1,6 @@
-const _ = require('lodash');
-let Pact = require('pact');
-let User = require(__dirname + '/../../app/models/user').User;
-let matchers = Pact.Matchers;
+let User      = require(__dirname + '/../../app/models/user').User;
+let pactBase  = require(__dirname + '/pact_base');
+let pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]});
 
 function randomString() {
   return Math.random().toString(36).substring(7);
@@ -16,50 +15,19 @@ function randomUsername() {
 }
 
 function randomOtpKey() {
-  return String(Math.floor(Math.random() * 100000)+1)
+  return String(Math.floor(Math.random() * 100000) + 1)
 }
 
 function randomAccountId() {
-  return String(Math.floor(Math.random() * 1000)+1);
+  return String(Math.floor(Math.random() * 1000) + 1);
 }
 
 function randomServiceId() {
-  return String(Math.floor(Math.random() * 1000)+1);
+  return String(Math.floor(Math.random() * 1000) + 1);
 }
 
 function randomTelephoneNumber() {
-  return String(Math.floor(Math.random() * 1000000)+1);
-}
-
-function pactifyArray(arr) {
-   let pactified =[];
-   arr.forEach( (val) => {
-      pactified.push(matchers.somethingLike(val));
-   });
-   return pactified;
-}
-
-function pactify(object) {
-  let pactified = {};
-  _.forIn(object, (value, key) => {
-      if ( ["permissions","gateway_account_ids", "service_ids"].indexOf(key) != -1) {
-         pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]),{min:value.length})
-      } else if(value.constructor === Array) {
-        pactified[key] = pactifyArray( value );
-      } else if (value.constructor === Object)  {
-        pactified[key] = pactify(value);
-      } else {
-        pactified[key] = matchers.somethingLike(value);
-      }
-  });
-  return pactified;
-}
-
-function withPactified(payload) {
-  return {
-    getPlain: () => payload,
-    getPactified: () => pactify(payload)
-  };
+  return String(Math.floor(Math.random() * 1000000) + 1);
 }
 
 module.exports = {
@@ -67,7 +35,7 @@ module.exports = {
   validMinimalUser: () => {
 
     let newUsername = randomUsername();
-    let role =  {name: "admin"};
+    let role = {name: "admin"};
 
     let data = {
       username: newUsername,
@@ -80,7 +48,7 @@ module.exports = {
     return {
       getPactified: () => {
         data.role_name = role.name;
-        return pactify(data);
+        return pactUsers.pactify(data);
       },
       getAsObject: () => {
         data.role = role;
@@ -96,7 +64,7 @@ module.exports = {
   validUser: (opts = {}) => {
 
     let newUsername = randomUsername();
-    let role =  {name: "admin"};
+    let role = {name: "admin"};
 
     let data = {
       username: opts.username || newUsername,
@@ -115,7 +83,7 @@ module.exports = {
     return {
       getPactified: () => {
         data.role_name = role.name;
-        return pactify(data);
+        return pactUsers.pactify(data);
       },
       getAsObject: () => {
         data.role = role;
@@ -152,7 +120,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactify(data);
+        return pactUsers.pactify(data);
       },
       getAsObject: () => {
         return new User(data);
@@ -171,7 +139,7 @@ module.exports = {
       telephone_number: ''
     };
 
-    return withPactified(request);
+    return pactUsers.withPactified(request);
   },
 
   invalidUserCreateResponseWhenFieldsMissing: () => {
@@ -180,15 +148,7 @@ module.exports = {
       errors: ["Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
     };
 
-    return withPactified(response);
-  },
-
-  invalidCreateresponseWhenUsernameExists: () => {
-    let response = {
-      errors: ["username [existing-username] already exists"]
-    };
-
-    return withPactified(response);
+    return pactUsers.withPactified(response);
   },
 
   validAuthenticateRequest: (options) => {
@@ -197,7 +157,7 @@ module.exports = {
       password: options.password || 'password'
     };
 
-    return withPactified(request);
+    return pactUsers.withPactified(request);
   },
 
   unauthorizedUserResponse: () => {
@@ -205,7 +165,7 @@ module.exports = {
       errors: ["invalid username and/or password"]
     };
 
-    return withPactified(response);
+    return pactUsers.withPactified(response);
   },
 
   badAuthenticateResponse: () => {
@@ -213,7 +173,7 @@ module.exports = {
       errors: ["Field [username] is required", "Field [password] is required"]
     };
 
-    return withPactified(response);
+    return pactUsers.withPactified(response);
   },
 
   validIncrementSessionVersionRequest: () => {
@@ -223,7 +183,7 @@ module.exports = {
       value: 1
     };
 
-    return withPactified(request);
+    return pactUsers.withPactified(request);
 
   },
 
@@ -232,7 +192,7 @@ module.exports = {
       code: code || '123456'
     };
 
-    return withPactified(request);
+    return pactUsers.withPactified(request);
 
   },
 
@@ -242,7 +202,7 @@ module.exports = {
       new_password: newPassword || validPassword()
     };
 
-    return withPactified(request);
+    return pactUsers.withPactified(request);
   },
 
   validForgottenPasswordCreateRequest: (username) => {
@@ -250,7 +210,7 @@ module.exports = {
       username: username || 'username'
     };
 
-    return withPactified(request);
+    return pactUsers.withPactified(request);
   },
 
   validForgottenPasswordResponse: (payload) => {
@@ -267,7 +227,7 @@ module.exports = {
       }]
     };
 
-    return withPactified(response);
+    return pactUsers.withPactified(response);
   },
 
   badForgottenPasswordResponse: () => {
@@ -275,7 +235,7 @@ module.exports = {
       errors: ["Field [username] is required"]
     };
 
-    return withPactified(response);
+    return pactUsers.withPactified(response);
   },
 
 };
