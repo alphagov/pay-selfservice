@@ -1,7 +1,8 @@
 let _ = require('lodash');
 
 const hideNavBarTemplates = [
-  'service_switcher/index'
+  'services/index',
+  'services/team_members'
 ];
 
 const testHasMultipleGatewayAccounts = user => {

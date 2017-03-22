@@ -22,29 +22,29 @@ chai.use(function (_chai, utils) {
   // selectorId: The id of the last selection
 
   chai.Assertion.addMethod('containSelector', function (selector) {
-    utils.flag(this,"rawHtml", this._obj);
+    utils.flag(this, "rawHtml", this._obj);
     var $ = cheerio.load(this._obj);
     var result = $(selector);
     this.assert(result.length > 0,
-        "Expected #{this} to contain '" + selector + "'",
-        "Did not expect #{this} to contain '" + selector + "'"
+      "Expected #{this} to contain '" + selector + "'",
+      "Did not expect #{this} to contain '" + selector + "'"
     );
     utils.flag(this, 'selectorId', result.attr("id"));
     this._obj = result;
   });
 
   chai.Assertion.addMethod('containNoSelector', function (selector) {
-    utils.flag(this,"rawHtml", this._obj);
+    utils.flag(this, "rawHtml", this._obj);
     var $ = cheerio.load(this._obj);
     var result = $(selector);
     this.assert(result.length == 0,
-        "Expected #{this} to not contain '" + selector + "'",
-        "Expect #{this} to contain '" + selector + "'"
+      "Expected #{this} to not contain '" + selector + "'",
+      "Expect #{this} to contain '" + selector + "'"
     );
   });
 
   chai.Assertion.addMethod('containNoSelectorWithText', function (selector, text) {
-    utils.flag(this,"rawHtml", this._obj);
+    utils.flag(this, "rawHtml", this._obj);
     var $ = cheerio.load(this._obj);
     var result = $(selector);
     this.assert(result.text().indexOf(text) == -1,
@@ -56,10 +56,10 @@ chai.use(function (_chai, utils) {
   chai.Assertion.addMethod('withText', function (msg) {
     var actual = this._obj.text();
     this.assert(actual.indexOf(msg) > -1,
-        "Expected #{act} to contain '" + msg + "'.",
-        "Did not expect #{act} to contain '" + msg + "'.",
-        msg,
-        actual
+      "Expected #{act} to contain '" + msg + "'.",
+      "Did not expect #{act} to contain '" + msg + "'.",
+      msg,
+      actual
     );
   });
 
@@ -75,18 +75,18 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('withAttribute', function (expectedAttr, expectedValue) {
     this.assert(this._obj.attr(expectedAttr) !== undefined,
-        "Expected #{act} to contain '" + expectedAttr + "'",
-        "Did not expect #{act} to contain '" + expectedAttr + "'",
-        expectedAttr,
-        JSON.stringify(this._obj['0'].attribs)
+      "Expected #{act} to contain '" + expectedAttr + "'",
+      "Did not expect #{act} to contain '" + expectedAttr + "'",
+      expectedAttr,
+      JSON.stringify(this._obj['0'].attribs)
     );
 
     if (arguments.length == 2) {
       this.assert(this._obj.attr(expectedAttr) === expectedValue,
-          "Expected #{act} to contain '" + expectedAttr + "' with value '" + expectedValue + "'",
-          "Did not expect #{act} to contain '" + expectedAttr + "' with value '" + expectedValue + "'",
-          expectedAttr,
-          JSON.stringify(this._obj['0'].attribs)
+        "Expected #{act} to contain '" + expectedAttr + "' with value '" + expectedValue + "'",
+        "Did not expect #{act} to contain '" + expectedAttr + "' with value '" + expectedValue + "'",
+        expectedAttr,
+        JSON.stringify(this._obj['0'].attribs)
       );
     }
   });
@@ -99,17 +99,17 @@ chai.use(function (_chai, utils) {
     }
   });
 
-  chai.Assertion.addMethod('containInputField', function(idAndName, type) {
+  chai.Assertion.addMethod('containInputField', function (idAndName, type) {
     this.containSelector('input#' + idAndName).withAttributes({name: idAndName, type: type});
     utils.flag(this, 'inputId', idAndName);
   });
 
-  chai.Assertion.addMethod('containTextarea', function(idAndName) {
+  chai.Assertion.addMethod('containTextarea', function (idAndName) {
     this.containSelector('textarea#' + idAndName).withAttributes({name: idAndName});
     utils.flag(this, 'inputId', idAndName);
   });
 
-  chai.Assertion.addMethod('withLabel', function(labelText) {
+  chai.Assertion.addMethod('withLabel', function (labelText) {
     var inputId = utils.flag(this, 'inputId');
     var subAssertion = new chai.Assertion(utils.flag(this, "rawHtml"));
     subAssertion.containSelector('label[for=' + inputId + ']').withText(labelText);
@@ -117,8 +117,13 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('havingRowAt', function (rowIndex) {
     var actualRow = this._obj.find('tr:nth-child(' + rowIndex + ')');
-     this.assert(actualRow.length > 0, "Expected a row at index '" + rowIndex + "'");
+    this.assert(actualRow.length > 0, "Expected a row at index '" + rowIndex + "'");
     this._obj = actualRow;
+  });
+
+  chai.Assertion.addMethod('havingNumberOfRows', function (expectedNumberOfRows) {
+    let rows = this._obj.find('tbody tr');
+    this.assert(rows.length == expectedNumberOfRows, "Expected number of rows to be '" + expectedNumberOfRows + "' but found '" + rows.length + "'");
   });
 
   chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {

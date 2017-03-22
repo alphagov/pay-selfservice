@@ -25,4 +25,13 @@ describe('The account switcher link', function () {
 
     body.should.containNoSelector('#my-services');
   });
+
+  it('should display View Team Members link in switcher page', function () {
+
+    let templateData = {};
+
+    let body = renderTemplate('services/index', templateData);
+
+    body.should.containSelector('a#view-team-members').withExactText('View team members');
+  });
 });

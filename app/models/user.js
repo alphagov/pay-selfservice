@@ -11,10 +11,10 @@ class User {
     this._username = userData.username;
     this._email = userData.email || '';
     this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
+    this._serviceIds = userData.service_ids;
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
     this._disabled = userData.disabled ? userData.disabled : false;
-    this._loginCounter = userData.login_counter || 0;
     this._sessionVersion = userData.session_version || 0;
     this._permissions = userData.permissions || [];
     this._role = userData.role || {};
@@ -25,7 +25,6 @@ class User {
 
     return _.merge(json, {
       disabled: this._disabled,
-      login_counter: this._loginCounter,
       session_version: this._sessionVersion,
       permissions: this._permissions,
     });
@@ -36,6 +35,7 @@ class User {
       username: this._username,
       email: this._email,
       gateway_account_ids: this._gatewayAccountIds,
+      service_ids: this._serviceIds,
       telephone_number: this._telephoneNumber,
       /**
        * As of now, we expect these JSON representations are only used for data transfer between AdminUsers.
@@ -52,30 +52,14 @@ class User {
   }
 
   /**
-   * @returns {String}
-   */
-  generateOTP() {
-    return notp.totp.gen(this._otpKey);
-  }
-
-  /**
    * @param {String} permissionName name of permission
    */
   hasPermission(permissionName) {
     return this._permissions.indexOf(permissionName) !== -1;
   }
 
-  addPermission(permission) {
-    this._permissions.push(permission);
-    return this;
-  }
-
   get username() {
     return this._username;
-  }
-
-  get loginCounter() {
-    return this._loginCounter;
   }
 
   get sessionVersion() {
@@ -96,6 +80,10 @@ class User {
 
   get gatewayAccountIds() {
     return this._gatewayAccountIds;
+  }
+
+  get serviceIds() {
+   return this._serviceIds;
   }
 
   set gatewayAccountIds(value) {
@@ -121,7 +109,6 @@ class User {
   get role() {
     return this._role;
   }
-
 }
 
 module.exports.User = User;

@@ -46,11 +46,12 @@ describe('adminusers client - create user', function () {
     context('create user API - success', () => {
       let minimalUser = userFixtures.validMinimalUser();
       beforeEach((done) => {
+        let pactified = minimalUser.getPactified();
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(USER_PATH)
             .withUponReceiving('a valid user create request')
             .withMethod('POST')
-            .withRequestBody(minimalUser.getPactified())
+            .withRequestBody(pactified)
             .withStatusCode(201)
             .withResponseBody(userFixtures.validUserResponse(minimalUser.getPlain()).getPactified())
             .build()

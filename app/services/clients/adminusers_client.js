@@ -22,6 +22,7 @@ module.exports = function (clientOptions = {}) {
   var userResource = `${baseUrl}/v1/api/users`;
   var forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
   var resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
+  var serviceUserResource = `${baseUrl}/v1/api/services`;
 
   /**
    * Create a new user
@@ -340,6 +341,29 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  let getServiceUsers = (service_id) => {
+    let url = `${serviceUserResource}/${service_id}/users`;
+     let defer = q.defer();
+     let startTime = new Date();
+     let context = {
+        url: url,
+        defer: defer,
+        startTime: startTime,
+        correlationId: correlationId,
+        method: 'GET',
+        description: 'get a services users',
+        service: SERVICE_NAME
+     };
+
+     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+     requestLogger.logRequestStart(context);
+
+     baseClient.get(url, { correlationId: correlationId }, callbackToPromiseConverter)
+       .on('error', callbackToPromiseConverter);
+
+     return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -349,6 +373,7 @@ module.exports = function (clientOptions = {}) {
     authenticateUser: authenticateUser,
     updatePasswordForUser: updatePasswordForUser,
     sendSecondFactor:sendSecondFactor,
-    authenticateSecondFactor:authenticateSecondFactor
+    authenticateSecondFactor:authenticateSecondFactor,
+    getServiceUsers: getServiceUsers
   };
 };

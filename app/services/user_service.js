@@ -132,6 +132,15 @@ module.exports = {
   },
 
   /**
+   * @param service_id
+   * @returns {Promise}
+   */
+  getServiceUsers: function (service_id, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(service_id);
+  },
+
+
+  /**
    * @param token
    * @param username
    * @param newPassword
