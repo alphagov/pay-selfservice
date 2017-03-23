@@ -60,6 +60,11 @@ module.exports = {
       .catch(() => errorResponse(req, res, 'Unable to retrieve the services users'));
   },
 
+  /**
+   * Show Team member details
+   * @param req
+   * @param res
+   */
   show: (req, res) => {
 
     let username = req.params.username;
@@ -68,13 +73,13 @@ module.exports = {
     }
 
     let onSuccess = (user) => {
-      let hasSameService = user.serviceIds[0] == req.user._serviceIds[0];
+      let hasSameService = user.serviceIds[0] == req.user.serviceIds[0];
       let roleInList = roles[user._role.name];
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
           username: user.username,
           email: user.email,
-          role: roles[user._role.name].description
+          role: roles[user.role.name].description
         });
       } else {
         errorResponse(req, res, 'Error displaying this user of the current service');
@@ -86,6 +91,11 @@ module.exports = {
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   },
 
+  /**
+   * Show 'My profile'
+   * @param req
+   * @param res
+   */
   profile: (req, res) => {
 
     let onSuccess = (user) => {

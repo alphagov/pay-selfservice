@@ -23,6 +23,9 @@ describe('The team members view', function () {
         'view-and-refund': [
           {username: 'username6', link:'view-username6-link'}
         ]
+      },
+      permissions: {
+        'users_service_read': true
       }
     };
 
@@ -53,9 +56,30 @@ describe('The team members view', function () {
 
   });
 
-  it('should render number of users of a role as 0 if no users are grouped in that role', function () {
+  it('should render all team members without links if user does not have read permissions', function () {
 
-    //Ignoring links for this test
+    let templateData = {
+      'number_active_members': 2,
+      'number_admin_members': 1,
+      'number_view-and-refund_members': 0,
+      'number_view-only_members': 1,
+      'team_members': {
+        'admin': [
+          {username: 'username2', link:'view-username2-my-profile-link', is_current: true}
+        ],
+        'view-only': [
+          {username: 'username5', link:'view-username5-link'},
+        ],
+        'view-and-refund': []
+      }
+    };
+
+    let body = renderTemplate('services/team_members', templateData);
+
+    body.should.containSelector('table#team-members-view-only-list').havingRowAt(1).withNoAttribute('data-link');
+  });
+
+  it('should render number of users of a role as 0 if no users are grouped in that role', function () {
 
     let templateData = {
       'number_active_members': 2,

@@ -91,6 +91,15 @@ chai.use(function (_chai, utils) {
     }
   });
 
+  chai.Assertion.addMethod('withNoAttribute', function (expectedNoAttr) {
+    this.assert(this._obj.attr(expectedNoAttr) == undefined,
+      "Expected #{act} to no contain '" + expectedNoAttr + "'",
+      "Did not expect #{act} to contain '" + expectedNoAttr + "'",
+      expectedNoAttr,
+      JSON.stringify(this._obj['0'].attribs)
+    );
+  });
+
   chai.Assertion.addMethod('withAttributes', function (attributes) {
     for (let attr in attributes) {
       if (attributes.hasOwnProperty(attr)) {

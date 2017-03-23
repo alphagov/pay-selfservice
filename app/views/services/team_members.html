@@ -20,7 +20,7 @@ GOV.UK Pay - Team members
     </thead>
     <tbody>
     {{#team_members.admin}}
-    <tr data-follow-link data-link="{{link}}">
+    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
         <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
     </tr>
     {{/team_members.admin}}
@@ -35,7 +35,7 @@ GOV.UK Pay - Team members
     </thead>
     <tbody>
     {{#team_members.view-and-refund}}
-    <tr data-follow-link data-link="{{link}}">
+    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
         <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
     </tr>
     {{/team_members.view-and-refund}}
@@ -50,7 +50,7 @@ GOV.UK Pay - Team members
     </thead>
     <tbody>
     {{#team_members.view-only}}
-    <tr data-follow-link data-link="{{link}}">
+    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
         <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
     </tr>
     {{/team_members.view-only}}

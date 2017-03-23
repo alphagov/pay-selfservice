@@ -124,7 +124,7 @@ module.exports.bind = function (app) {
   // TEAM MEMBERS - USER PROFILE
   var teamMembers = paths.teamMembers;
   app.get(teamMembers.index, auth.enforceUserAuthenticated, csrf, serviceUsersController.index);
-  app.get(teamMembers.show, auth.enforceUserAuthenticated, csrf, serviceUsersController.show);
+  app.get(teamMembers.show, auth.enforceUserAuthenticated, csrf, permission('users-service:read'), serviceUsersController.show);
   app.get(user.profile, auth.enforceUserAuthenticated, csrf, serviceUsersController.profile);
 
   // 3D SECURE TOGGLE

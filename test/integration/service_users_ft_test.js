@@ -64,7 +64,8 @@ describe('service users resource', function () {
     let user = session.getUser({
       service_ids: [service_id],
       username: 'existing-user',
-      email: 'existing-user@example.com'
+      email: 'existing-user@example.com',
+      permissions: ['users-service:read']
     });
 
     let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {username: 'other-user'}]);
@@ -92,7 +93,8 @@ describe('service users resource', function () {
     let user_in_session = session.getUser({
       username: 'existing-user',
       email: 'existing-user@example.com',
-      service_ids: [service_id]
+      service_ids: [service_id],
+      permissions: ['users-service:read']
     });
 
     let user_to_view = {
@@ -119,6 +121,7 @@ describe('service users resource', function () {
       })
       .end(done);
   });
+
 
   it('should show my profile', function (done) {
 
@@ -155,7 +158,8 @@ describe('service users resource', function () {
     let user_in_session = session.getUser({
       service_ids: ['1'],
       username: 'existing-user',
-      email: 'existing-user@example.com'
+      email: 'existing-user@example.com',
+      permissions: ['users-service:read']
     });
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
@@ -176,7 +180,8 @@ describe('service users resource', function () {
     let user = session.getUser({
       service_ids: [service_id],
       username: 'existing-user',
-      email: 'existing-user@example.com'
+      email: 'existing-user@example.com',
+      permissions: ['users-service:read']
     });
 
     let getUserResponse = userFixtures.validUserResponse({username: username_to_view, service_ids: ['2']});
