@@ -1,25 +1,26 @@
-var Pact = require('pact');
-var helpersPath = __dirname + '/../../test_helpers/';
-var pactProxy = require(helpersPath + '/pact_proxy.js');
-var chai = require('chai');
-var _ = require('lodash');
-var chaiAsPromised = require('chai-as-promised');
-var userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
-var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+let Pact = require('pact');
+let helpersPath = __dirname + '/../../test_helpers/';
+let pactProxy = require(helpersPath + '/pact_proxy.js');
+let chai = require('chai');
+let _ = require('lodash');
+let chaiAsPromised = require('chai-as-promised');
+let userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
+let getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
+let PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
 
 const USER_PATH = '/v1/api/users';
-var mockPort = Math.floor(Math.random() * 65535);
-var mockServer = pactProxy.create('localhost', mockPort);
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+let mockPort = Math.floor(Math.random() * 65535);
+let mockServer = pactProxy.create('localhost', mockPort);
+let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client - get user', function () {
 
-  var adminUsersMock;
+  let adminUsersMock;
+
   /**
    * Start the server and set up Pact
    */
@@ -68,7 +69,7 @@ describe('adminusers client - get user', function () {
       it('should find a user successfully', function (done) {
         let expectedUserData = getUserResponse.getPlain();
 
-        adminusersClient.getUser(params.username).should.be.fulfilled.then(function (user) {
+        adminusersClient.getUserByUsername(params.username).should.be.fulfilled.then(function (user) {
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
           expect(expectedUserData.gateway_account_ids.length).to.be.equal(2);
@@ -103,7 +104,7 @@ describe('adminusers client - get user', function () {
 
       it('should respond 404 if user not found', function (done) {
 
-        adminusersClient.getUser(params.username).should.be.rejected.then(function (response) {
+        adminusersClient.getUserByUsername(params.username).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });

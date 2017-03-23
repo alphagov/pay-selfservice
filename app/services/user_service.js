@@ -1,12 +1,12 @@
 const q = require('q');
 const logger = require('winston');
 
-var getAdminUsersClient = require('./clients/adminusers_client');
-var User = require('../models/user').User;
-var notify = require('../services/clients/notification_client.js');
-var paths = require(__dirname + '/../paths.js');
-var applicationMetrics = require('./../utils/metrics.js').metrics;
-var commonPassword = require('common-password');
+let getAdminUsersClient = require('./clients/adminusers_client');
+let User = require('../models/user').User;
+let notify = require('../services/clients/notification_client.js');
+let paths = require(__dirname + '/../paths.js');
+let applicationMetrics = require('./../utils/metrics.js').metrics;
+let commonPassword = require('common-password');
 const MIN_PASSWORD_LENGTH = 10;
 
 /**
@@ -15,20 +15,20 @@ const MIN_PASSWORD_LENGTH = 10;
  * @param correlationId
  * @param defer
  */
-var sendForgottenPasswordEmail = function (user, code, correlationId, defer) {
+let sendForgottenPasswordEmail = function (user, code, correlationId, defer) {
   template = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID;
-  var uri = paths.generateRoute(paths.user.forgottenPasswordReset, {id: code});
-  var url = process.env.SELFSERVICE_BASE + uri;
-  var startTime = new Date();
+  let uri = paths.generateRoute(paths.user.forgottenPasswordReset, {id: code});
+  let url = process.env.SELFSERVICE_BASE + uri;
+  let startTime = new Date();
   notify.sendEmail(template, user.email, {code: url})
     .then(() => {
-      var elapsed = new Date() - startTime;
+      let elapsed = new Date() - startTime;
       applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
       logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
       logger.info(`[${correlationId}] FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ` + user.id);
       defer.resolve(user);
     }, (e) => {
-      var elapsed = new Date() - startTime;
+      let elapsed = new Date() - startTime;
       applicationMetrics.increment('notify-operations.email.failures');
       applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
       logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
@@ -56,7 +56,7 @@ module.exports = {
    * @returns {Promise<User>}
    */
   authenticate: function (username, submittedPassword, correlationId) {
-    var defer = q.defer();
+    let defer = q.defer();
 
     if (!username || !submittedPassword) {
       return defer.reject();
@@ -86,7 +86,7 @@ module.exports = {
    * @returns {Promise<User>}
    */
   findByUsername: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getUser(username);
+    return getAdminUsersClient({correlationId: correlationId}).getUserByUsername(username);
   },
 
   /**
