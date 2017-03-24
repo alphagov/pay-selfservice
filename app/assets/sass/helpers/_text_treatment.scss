@@ -5,3 +5,7 @@
 .small {
   @include core-16();
 }
+
+.admin-lede {
+  margin: $gutter 0;
+}

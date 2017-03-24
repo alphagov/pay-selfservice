@@ -1,0 +1,47 @@
+.admin-list-group {
+  .admin-list-group-heading:first-of-type {
+    @include bold-24;
+    margin: 0 0 $gutter;
+  }
+}
+
+.admin-list {
+  .admin-list-heading {
+    @include bold-16;
+    margin-top: $gutter;
+    margin-bottom: 0.5625em;
+  }
+
+  ul {
+    list-style: none;
+    border-bottom: 1px solid $grey-2;
+
+    li {
+      @include core-16;
+      line-height: 1;
+      border-top: 1px solid $grey-2;
+
+      a {
+        text-decoration: none;
+        display: block;
+        padding: 0.75em 1.25em 0.5625em 0;
+
+        &,
+        &:link,
+        &:active,
+        &:hover {
+          color: $text-colour;
+        }
+
+        &:hover {
+          background-color: $grey-4;
+        }
+
+        /* the :hover pseudo-class overrides the :focus styles when both happen so re-apply */
+        &:focus {
+          background-color: $focus-colour;
+        }
+      }
+    }
+  }
+}
