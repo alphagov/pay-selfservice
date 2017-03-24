@@ -12,14 +12,14 @@ let mapByRoles = function (users, currentUser) {
   }
   users.map((user) => {
     if (roles[user.role.name]) {
-      let mappedUsername = {username: user.username};
-      if (currentUser.email == user.email) {
-        mappedUsername.is_current = true;
-        mappedUsername.link = paths.user.profile;
+      let mappedUser = {username: user.username};
+      if (currentUser.externalId == user.external_id) {
+        mappedUser.is_current = true;
+        mappedUser.link = paths.user.profile;
       } else {
-        mappedUsername.link = paths.teamMembers.show.replace(':username', user.username);
+        mappedUser.link = paths.teamMembers.show.replace(':externalId', user.external_id);
       }
-      userRolesMap[user.role.name].push(mappedUsername);
+      userRolesMap[user.role.name].push(mappedUser);
     }
   });
   return userRolesMap;
@@ -62,15 +62,15 @@ module.exports = {
    */
   show: (req, res) => {
 
-    let username = req.params.username;
-    if (username == req.user.username) {
+    let externalId = req.params.externalId;
+    if (externalId == req.user.externalId) {
       res.redirect(paths.user.profile);
     }
 
     let onSuccess = (user) => {
       let hasSameService = user.serviceIds[0] == req.user.serviceIds[0];
       let roleInList = roles[user._role.name];
-      let editPermissionsLink = paths.teamMembers.permissions.replace(':username', user.username);
+      let editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
 
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
@@ -84,7 +84,7 @@ module.exports = {
       }
     };
 
-    return userService.findByUsername(username)
+    return userService.findByExternalId(externalId)
       .then(onSuccess)
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   },
@@ -104,7 +104,7 @@ module.exports = {
       });
     };
 
-    return userService.findByUsername(req.user.username)
+    return userService.findByExternalId(req.user.externalId)
       .then(onSuccess)
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   }

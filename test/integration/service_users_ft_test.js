@@ -11,6 +11,7 @@ let chaiAsPromised = require('chai-as-promised');
 let app;
 
 chai.use(chaiAsPromised);
+
 let expect = chai.expect;
 let adminusersMock = nock(process.env.ADMINUSERS_URL);
 
@@ -18,6 +19,11 @@ const SERVICE_RESOURCE = '/v1/api/services';
 const USER_RESOURCE = '/v1/api/users';
 
 describe('service users resource', function () {
+
+  let externalIdLoggedIn = '7d19aff33f8948deb97ed16b2912dcd3';
+
+  let externalIdToView = '393266e872594f1593558549caad95ec';
+  let usernameToView = 'other-user';
 
   afterEach((done) => {
     nock.cleanAll();
@@ -29,9 +35,10 @@ describe('service users resource', function () {
 
     let service_id = '1';
     let user = session.getUser({
-      service_ids: [service_id],
+      external_id: externalIdLoggedIn,
       username: 'existing-user',
-      email: 'existing-user@example.com'
+      email: 'existing-user@example.com',
+      service_ids: [service_id]
     });
 
     let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}]);
@@ -63,14 +70,16 @@ describe('service users resource', function () {
   it('get list of service users should link to a users view details for other users', function (done) {
 
     let service_id = '1';
+
     let user = session.getUser({
-      service_ids: [service_id],
+      external_id: externalIdLoggedIn,
       username: 'existing-user',
       email: 'existing-user@example.com',
+      service_ids: [service_id],
       permissions: ['users-service:read']
     });
 
-    let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {username: 'other-user'}]);
+    let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {external_id: externalIdToView}]);
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${service_id}/users`)
       .reply(200, serviceUsersRes.getPlain());
@@ -82,7 +91,7 @@ describe('service users resource', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.team_members.admin[1].link).to.equal('/team-members/other-user');
+        expect(res.body.team_members.admin[1].link).to.equal(`/team-members/${externalIdToView}`);
       })
       .end(done);
   });
@@ -90,9 +99,9 @@ describe('service users resource', function () {
   it('view team member details', function (done) {
 
     let service_id = '1';
-    let username_to_view = 'other-user';
 
     let user_in_session = session.getUser({
+      external_id: externalIdLoggedIn,
       username: 'existing-user',
       email: 'existing-user@example.com',
       service_ids: [service_id],
@@ -100,27 +109,28 @@ describe('service users resource', function () {
     });
 
     let user_to_view = {
-      username: username_to_view,
+      external_id: externalIdToView,
+      username: usernameToView,
       service_ids: [service_id],
       role: {"name": "view-only"}
     };
 
     let getUserResponse = userFixtures.validUserResponse(user_to_view);
 
-    adminusersMock.get(`${USER_RESOURCE}/${username_to_view}`)
+    adminusersMock.get(`${USER_RESOURCE}/${externalIdToView}?is_new_api_request=y`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     return supertest(app)
-      .get(`/team-members/${username_to_view}`)
+      .get(`/team-members/${externalIdToView}`)
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.username).to.equal('other-user');
+        expect(res.body.username).to.equal(usernameToView);
         expect(res.body.email).to.equal('other-user@example.com');
         expect(res.body.role).to.equal('View only');
-        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', 'other-user'));
+        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':externalId', externalIdToView));
       })
       .end(done);
   });
@@ -129,17 +139,18 @@ describe('service users resource', function () {
   it('should show my profile', function (done) {
 
     let user = {
+      external_id: externalIdLoggedIn,
       username: 'existing-user',
-      service_ids: ['1'],
       email: 'existing-user@example.com',
-      telephone_number: '+447876548778'
+      telephone_number: '+447876548778',
+      service_ids: ['1']
     };
 
     let user_in_session = session.getUser(user);
 
     let getUserResponse = userFixtures.validUserResponse(user);
 
-    adminusersMock.get(`${USER_RESOURCE}/existing-user`)
+    adminusersMock.get(`${USER_RESOURCE}/${user.external_id}?is_new_api_request=y`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
@@ -149,9 +160,9 @@ describe('service users resource', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.username).to.equal('existing-user');
-        expect(res.body.email).to.equal('existing-user@example.com');
-        expect(res.body['telephone_number']).to.equal('+447876548778');
+        expect(res.body.username).to.equal(user.username);
+        expect(res.body.email).to.equal(user.email);
+        expect(res.body['telephone_number']).to.equal(user.telephone_number);
       })
       .end(done);
   });
@@ -159,16 +170,17 @@ describe('service users resource', function () {
   it('should redirect to my profile when trying to access my user through team members path', function (done) {
 
     let user_in_session = session.getUser({
-      service_ids: ['1'],
+      external_id: externalIdLoggedIn,
       username: 'existing-user',
       email: 'existing-user@example.com',
+      service_ids: ['1'],
       permissions: ['users-service:read']
     });
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     return supertest(app)
-      .get('/team-members/existing-user')
+      .get(`/team-members/${externalIdLoggedIn}`)
       .set('Accept', 'application/json')
       .expect(302)
       .expect('Location', "/my-profile")
@@ -178,24 +190,28 @@ describe('service users resource', function () {
   it('error when accessing an user from other service profile (cheeky!)', function (done) {
 
     let service_id = '1';
-    let username_to_view = 'other-user';
 
     let user = session.getUser({
-      service_ids: [service_id],
+      external_id: externalIdLoggedIn,
       username: 'existing-user',
       email: 'existing-user@example.com',
+      service_ids: [service_id],
       permissions: ['users-service:read']
     });
 
-    let getUserResponse = userFixtures.validUserResponse({username: username_to_view, service_ids: ['2']});
+    let getUserResponse = userFixtures.validUserResponse({
+      external_id: externalIdToView,
+      username: usernameToView,
+      service_ids: ['2']
+    });
 
-    adminusersMock.get(`${USER_RESOURCE}/${username_to_view}`)
+    adminusersMock.get(`${USER_RESOURCE}/${externalIdToView}?is_new_api_request=y`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     return supertest(app)
-      .get('/team-members/other-user')
+      .get(`/team-members/${externalIdToView}`)
       .set('Accept', 'application/json')
       .expect(500)
       .expect((res) => {

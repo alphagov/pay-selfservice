@@ -37,7 +37,6 @@ let sendForgottenPasswordEmail = function (user, code, correlationId, defer) {
     });
 };
 
-
 module.exports = {
   /**
    * @param userData
@@ -53,6 +52,7 @@ module.exports = {
   /**
    * @param username
    * @param submittedPassword
+   * @param correlationId
    * @returns {Promise<User>}
    */
   authenticate: function (username, submittedPassword, correlationId) {
@@ -66,18 +66,27 @@ module.exports = {
   },
 
   /**
-   * @param username
+   * @param externalId
    * @param code
    * @param correlationId
    * @returns {Promise<User>}
    */
-  authenticateSecondFactor: function (username, code, correlationId) {
+  authenticateSecondFactor: function (externalId, code, correlationId) {
     let defer = q.defer();
-    if (!username || !code) {
+    if (!externalId || !code) {
       return defer.reject();
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(username, code);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code);
+  },
+
+  /**
+   * @param externalId
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  findByExternalId: function (externalId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId);
   },
 
   /**
@@ -95,7 +104,7 @@ module.exports = {
    * @returns {Promise}
    */
   sendOTP: function (user, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).sendSecondFactor(user.username)
+    return getAdminUsersClient({correlationId: correlationId}).sendSecondFactor(user.externalId)
   },
 
   /**
@@ -125,24 +134,24 @@ module.exports = {
 
   /**
    * @param user
+   * @param correlationId
    * @returns {Promise}
    */
   logOut: function (user, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.username);
+    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.externalId);
   },
 
   /**
    * @param service_id
+   * @param correlationId
    * @returns {Promise}
    */
   getServiceUsers: function (service_id, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(service_id);
   },
 
-
   /**
    * @param token
-   * @param username
    * @param newPassword
    * @returns {Promise}
    */
@@ -163,13 +172,14 @@ module.exports = {
   },
 
   /**
-   * @param username
+   * @param externalId
    * @param roleName
    * @param serviceId
+   * @param correlationId
    * @returns {Promise<User>}
    */
-  updateServiceRole: function (username, roleName, serviceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(username, serviceId, roleName);
+  updateServiceRole: function (externalId, roleName, serviceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, serviceId, roleName);
   }
 
 };

@@ -62,12 +62,11 @@ module.exports = function (clientOptions = {}) {
    * @param {string} externalId
    * @return {Promise<User>} A promise of a User
    */
-  let getUserByExternalId = externalId => {
+  let getUserByExternalId = (externalId) => {
     let params = {
-      correlationId: correlationId,
-      is_new_api_request: "y"
+      correlationId: correlationId
     };
-    let url = `${userResource}/${externalId}`;
+    let url = `${userResource}/${externalId}?is_new_api_request=y`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -96,7 +95,7 @@ module.exports = function (clientOptions = {}) {
    * @param {string} username
    * @return {Promise<User>} A promise of a User
    */
-  let getUserByUsername = username => {
+  let getUserByUsername = (username) => {
     let params = {
       correlationId: correlationId
     };
@@ -129,7 +128,6 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise<User>}
    */
   let authenticateUser = (username, password) => {
-
     let params = {
       correlationId: correlationId,
       payload: {
@@ -159,15 +157,14 @@ module.exports = function (clientOptions = {}) {
       .on('error', callbackToPromiseConverter);
 
     return defer.promise;
-
   };
 
   /**
    *
-   * @param username
+   * @param externalId
    * @returns {Promise}
    */
-  let incrementSessionVersionForUser = username => {
+  let incrementSessionVersionForUser = (externalId) => {
     let params = {
       correlationId: correlationId,
       payload: {
@@ -177,7 +174,7 @@ module.exports = function (clientOptions = {}) {
       }
     };
 
-    let url = `${userResource}/${username}`;
+    let url = `${userResource}/${externalId}?is_new_api_request=y`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -205,14 +202,14 @@ module.exports = function (clientOptions = {}) {
    * @param username
    * @returns {Promise<ForgottenPassword>}
    */
-  let createForgottenPassword = username => {
+  let createForgottenPassword = (username) => {
     let params = {
       correlationId: correlationId,
       payload: {
         username: username
       }
     };
-    let url = `${forgottenPasswordResource}`;
+    let url = forgottenPasswordResource;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -240,7 +237,7 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise<ForgottenPassword>}
    */
-  let getForgottenPassword = code => {
+  let getForgottenPassword = (code) => {
     let params = {
       correlationId: correlationId,
     };
@@ -306,15 +303,15 @@ module.exports = function (clientOptions = {}) {
 
   /**
    *
-   * @param username
+   * @param externalId
    * @returns {Promise}
    */
-  let sendSecondFactor = username => {
+  let sendSecondFactor = (externalId) => {
     let params = {
       correlationId: correlationId,
     };
 
-    let url = `${userResource}/${username}/second-factor/`;
+    let url = `${userResource}/${externalId}/second-factor/`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -339,19 +336,19 @@ module.exports = function (clientOptions = {}) {
 
   /**
    *
-   * @param username
+   * @param externalId
    * @param code
    * @returns {Promise}
    */
-  let authenticateSecondFactor = (username, code) => {
+  let authenticateSecondFactor = (externalId, code) => {
     let params = {
       correlationId: correlationId,
       payload: {
-        code:code
+        code: code
       }
     };
 
-    let url = `${userResource}/${username}/second-factor/authenticate`;
+    let url = `${userResource}/${externalId}/second-factor/authenticate`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -374,8 +371,8 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  let getServiceUsers = (service_id) => {
-    let url = `${serviceUserResource}/${service_id}/users`;
+  let getServiceUsers = (serviceId) => {
+    let url = `${serviceUserResource}/${serviceId}/users`;
      let defer = q.defer();
      let startTime = new Date();
      let context = {
@@ -399,20 +396,20 @@ module.exports = function (clientOptions = {}) {
 
   /**
    *
-   * @param username
+   * @param externalId
    * @param serviceId
    * @param roleName
    * @returns {Promise<User>}
    */
-  let updateServiceRole = (username, serviceId, roleName) => {
+  let updateServiceRole = (externalId, serviceId, roleName) => {
     let params = {
       correlationId: correlationId,
       payload: {
-        role_name:roleName
+        role_name: roleName
       }
     };
 
-    let url = `${userResource}/${username}/services/${serviceId}`;
+    let url = `${userResource}/${externalId}/services/${serviceId}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {

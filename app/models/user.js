@@ -1,5 +1,5 @@
 const _ = require('lodash');
-var notp = require('notp');
+let notp = require('notp');
 /**
  * @type User
  */
@@ -8,6 +8,7 @@ class User {
     if (!userData) {
       throw Error('Must provide username');
     }
+    this._externalId = userData.external_id;
     this._username = userData.username;
     this._email = userData.email || '';
     this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
@@ -32,6 +33,7 @@ class User {
 
   toMinimalJson() {
     let json = {
+      external_id: this._externalId,
       username: this._username,
       email: this._email,
       gateway_account_ids: this._gatewayAccountIds,
@@ -56,6 +58,10 @@ class User {
    */
   hasPermission(permissionName) {
     return this._permissions.indexOf(permissionName) !== -1;
+  }
+
+  get externalId() {
+    return this._externalId;
   }
 
   get username() {

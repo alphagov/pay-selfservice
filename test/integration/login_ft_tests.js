@@ -1,18 +1,18 @@
 require(__dirname + '/../test_helpers/serialize_mock.js');
-var request     = require('supertest');
-var nock = require('nock');
-var getApp         = require(__dirname + '/../../server.js').getApp;
-var should      = require('chai').should();
-var paths       = require(__dirname + '/../../app/paths.js');
-var mock_session     = require(__dirname + '/../test_helpers/mock_session.js');
-var assert = require('assert');
-var adminusersMock = nock(process.env.ADMINUSERS_URL);
+let request     = require('supertest');
+let nock = require('nock');
+let getApp         = require(__dirname + '/../../server.js').getApp;
+let should      = require('chai').should();
+let paths       = require(__dirname + '/../../app/paths.js');
+let mock_session     = require(__dirname + '/../test_helpers/mock_session.js');
+let assert = require('assert');
+let adminusersMock = nock(process.env.ADMINUSERS_URL);
 const USER_RESOURCE = '/v1/api/users';
 
-var user = mock_session.getUser();
-var session = mock_session.getMockSession(user);
+let user = mock_session.getUser();
+let session = mock_session.getMockSession(user);
 
-var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), session);
+let app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), session);
 
 function build_get_request(path) {
   return request(app)
@@ -23,7 +23,7 @@ describe('User clicks on Logout', function() {
   it('should get redirected to login page', function(done) {
 
     let incrementMock = adminusersMock
-      .patch(`${USER_RESOURCE}/${user.username}`)
+      .patch(`${USER_RESOURCE}/${user.externalId}?is_new_api_request=y`)
       .reply(200);
 
     build_get_request(paths.user.logOut)

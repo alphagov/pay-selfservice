@@ -46,15 +46,15 @@ describe('adminusers client - get user', function () {
     context('GET user api - success', () => {
 
       let params = {
-        username: "existing-user",
-        gateway_account_ids: ["666", "7"]
+        external_id: '7d19aff33f8948deb97ed16b2912dcd3', // existing external id
+        gateway_account_ids: ['666', '7']
       };
 
       let getUserResponse = userFixtures.validUserResponse(params);
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+          new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
             .withState('a user exits with the given name')
             .withUponReceiving('a valid get user request')
             .withResponseBody(getUserResponse.getPactified())
@@ -69,7 +69,8 @@ describe('adminusers client - get user', function () {
       it('should find a user successfully', function (done) {
         let expectedUserData = getUserResponse.getPlain();
 
-        adminusersClient.getUserByUsername(params.username).should.be.fulfilled.then(function (user) {
+        adminusersClient.getUserByExternalId(params.external_id).should.be.fulfilled.then(function(user) {
+          expect(user.externalId).to.be.equal(expectedUserData.external_id);
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
           expect(expectedUserData.gateway_account_ids.length).to.be.equal(2);
@@ -84,12 +85,12 @@ describe('adminusers client - get user', function () {
     context('GET user api - not found', () => {
 
       let params = {
-        username: "non-existent-user"
+        external_id: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
       };
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.username}`)
+          new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
             .withState('no user exits with the given name')
             .withUponReceiving('a valid get user request of an non existing user')
             .withStatusCode(404)
@@ -104,7 +105,7 @@ describe('adminusers client - get user', function () {
 
       it('should respond 404 if user not found', function (done) {
 
-        adminusersClient.getUserByUsername(params.username).should.be.rejected.then(function (response) {
+        adminusersClient.getUserByExternalId(params.external_id).should.be.rejected.then(function(response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });
