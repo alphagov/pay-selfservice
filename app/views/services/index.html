@@ -4,21 +4,25 @@
 GOV.UK Pay - My services
 {{/pageTitle}}
 {{$full_width_content}}
-    <h2 class="heading-large">My services</h2>
-    <p>Choose the environment you want to enter</p>
-    {{#gatewayAccounts}}
-    <form method="post" action="{{routes.serviceSwitcher.switch}}">
-        <div style="display:none">
-            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-            <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}"/>
+<h2 class="heading-large">My services</h2>
+<p>Choose the environment you want to enter</p>
+<div class="grid-row">
+    <div class="column-half">
+        {{#gatewayAccounts}}
+        <form method="post" action="{{routes.serviceSwitcher.switch}}">
+            <div style="display:none">
+                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}"/>
 
-        </div>
-        <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
-    </form>
-    {{/gatewayAccounts}}
-    <div id="team-members">
+            </div>
+            <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
+        </form>
+        {{/gatewayAccounts}}
+    </div>
+    <div id="team-members" class="column-half">
         <span><a href="/team-members" id="view-team-members">View team members</a></span>
     </div>
+</div>
 {{/full_width_content}}
 
 {{/layout}}
