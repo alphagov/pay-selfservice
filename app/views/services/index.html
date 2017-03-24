@@ -4,28 +4,44 @@
 GOV.UK Pay - My services
 {{/pageTitle}}
 {{$full_width_content}}
-<h2 class="heading-large">My services</h2>
-<p>Choose the environment you want to enter</p>
-<div class="grid-row">
-    <div class="column-half">
-        {{#gatewayAccounts}}
-        <form method="post" action="{{routes.serviceSwitcher.switch}}">
-            <div style="display:none">
-                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-                <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}"/>
-
-            </div>
-            <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
-        </form>
-        {{/gatewayAccounts}}
+    <h1 class="heading-large">My services</h1>
+    <div class="grid-row grid-row-align-to-edges">
+        <div class="column-two-thirds">
+            <p class="lede">You have 2 services</p>
+        </div>
+        <div class="column-one-third">
+            <a class="lede" href="">Add a new service</a>
+        </div>
     </div>
-    <div id="team-members" class="column-half">
-        {{#permissions.users_service_create}}
-        <span><a href="/team-members" id="manage-team-members">Manage team members</a></span>
-        {{/permissions.users_service_create}}
-        {{^permissions.users_service_create}}
-        <span><a href="/team-members" id="view-team-members">View team members</a></span>
-        {{/permissions.users_service_create}}
+    <div class="marked-grid">
+        <div class="grid-row">
+            <div class="heading-group">
+                <h2 class="heading-medium">Service name</h2>
+                <a class="edit" href="">Edit <span class="visually-hidden">service</span> name</a>
+            </div>
+            <div class="column-half">
+                {{#gatewayAccounts}}
+                <form method="post" action="{{routes.serviceSwitcher.switch}}">
+                    <div style="display:none">
+                        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+                        <input name="gatewayAccountId" type="text" value="{{gateway_account_id}}"/>
+
+                    </div>
+                    <input class="service_switcher" type="submit" value="{{payment_provider_display_name}} {{type}}">
+                </form>
+                {{/gatewayAccounts}}
+            </div>
+            <div id="team-members" class="column-half">
+                <p>
+                    {{#permissions.users_service_create}}
+                    <a href="/team-members" id="manage-team-members">Manage team members</a>
+                    {{/permissions.users_service_create}}
+                    {{^permissions.users_service_create}}
+                    <a href="/team-members" id="view-team-members">View team members</a>
+                    {{/permissions.users_service_create}}
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 {{/full_width_content}}

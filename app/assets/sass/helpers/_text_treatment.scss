@@ -9,3 +9,22 @@
 .admin-lede {
   margin: $gutter 0;
 }
+
+a.lede {
+  @include core-19;
+  display: block;
+  line-height: 1.5789em;
+  margin: 0.3157em 0 1.3157em;
+}
+
+@include media(tablet) {
+  .grid-row-align-to-edges {
+    > :first-child {
+      text-align: left;
+    }
+
+    > :last-child {
+      text-align: right;
+    }
+  }
+}

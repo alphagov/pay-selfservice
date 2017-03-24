@@ -58,6 +58,9 @@
 .column-two-thirds {
   @include grid-column( 2/3 );
 }
+.column-one-whole {
+  @include grid-column( 1 );
+}
 
 .column-quarter,
 .column-half,
