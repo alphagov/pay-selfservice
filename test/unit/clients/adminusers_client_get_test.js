@@ -36,8 +36,10 @@ describe('adminusers client - get user', function () {
    */
   after(function (done) {
     mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done());
+      .then(pactProxy.publish(() => {
+        pactProxy.removeAll();
+        done();
+      }));
   });
 
   describe.only('GET user api', () => {
