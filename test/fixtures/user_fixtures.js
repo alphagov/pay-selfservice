@@ -76,7 +76,7 @@ module.exports = {
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
-      permissions: opts.permissions || [],
+      permissions: opts.permissions || ["perm-1"],
       role: opts.role || {}
     };
 
@@ -200,6 +200,14 @@ module.exports = {
     let request = {
       forgotten_password_code: token || randomString(),
       new_password: newPassword || validPassword()
+    };
+
+    return pactUsers.withPactified(request);
+  },
+
+  validUpdateServiceRoleRequest: (role) => {
+    let request = {
+      role_name: role || 'admin'
     };
 
     return pactUsers.withPactified(request);

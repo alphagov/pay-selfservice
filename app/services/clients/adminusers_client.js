@@ -364,6 +364,44 @@ module.exports = function (clientOptions = {}) {
      return defer.promise;
   };
 
+  /**
+   *
+   * @param username
+   * @param serviceId
+   * @param roleName
+   * @returns {Promise<User>}
+   */
+  let updateServiceRole = (username, serviceId, roleName) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        role_name:roleName
+      }
+    };
+
+    let url = `${userResource}/${username}/services/${serviceId}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'PUT',
+      description: 'authenticate a second factor auth token entered by user',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.put(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -374,6 +412,7 @@ module.exports = function (clientOptions = {}) {
     updatePasswordForUser: updatePasswordForUser,
     sendSecondFactor:sendSecondFactor,
     authenticateSecondFactor:authenticateSecondFactor,
-    getServiceUsers: getServiceUsers
+    getServiceUsers: getServiceUsers,
+    updateServiceRole: updateServiceRole
   };
 };
