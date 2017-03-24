@@ -101,18 +101,18 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request) => {
-
+    let req_username =  request.username || 'existing-user';
     let data = {
-      username: request.username,
-      email: request.email || `${request.username}@example.com`,
+      username: req_username,
+      email: request.email || `${req_username}@example.com`,
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
       service_ids: request.service_ids || [randomServiceId()],
       otp_key: request.otp_key || "43c3c4t",
-      role: {"name": "admin", "description": "Administrator"},
+      role: request.role || {"name": "admin", "description": "Administrator"},
       telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{
-        "href": `http://adminusers.service/v1/api/users/${request.username}`,
+        "href": `http://adminusers.service/v1/api/users/${req_username}`,
         "rel": "self",
         "method": "GET"
       }]

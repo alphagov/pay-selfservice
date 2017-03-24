@@ -5,12 +5,14 @@ let pactServices = pactBase({array: ["service_ids", "gateway_account_ids"]});
 module.exports = {
 
   /**
-   * @param request Params override response
+   * @param users Array params override get users response
    * @return {{getPactified: (function()) Pact response, getPlain: (function()) request with overrides applied}}
    */
-  validServiceUsersResponse: (request) => {
-    request['username'] = "existing-user";
-    let data = [request.user || userFixtures.validUserResponse(request).getPlain()];
+  validServiceUsersResponse: (users) => {
+    let data = [];
+    for (let user of users) {
+      data.push(userFixtures.validUserResponse(user).getPlain());
+    }
     return {
       getPactified: () => {
         return pactServices.pactifyNestedArray(data);

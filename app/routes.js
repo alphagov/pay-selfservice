@@ -121,9 +121,11 @@ module.exports.bind = function (app) {
   app.get(serviceSwitcher.index, auth.enforceUserAuthenticated, csrf, serviceSwitchController.index);
   app.post(serviceSwitcher.switch, auth.enforceUserAuthenticated, csrf, serviceSwitchController.switch);
 
-  // TEAM MEMBERS
+  // TEAM MEMBERS - USER PROFILE
   var teamMembers = paths.teamMembers;
   app.get(teamMembers.index, auth.enforceUserAuthenticated, csrf, serviceUsersController.index);
+  app.get(teamMembers.show, auth.enforceUserAuthenticated, csrf, permission('users-service:read'), serviceUsersController.show);
+  app.get(user.profile, auth.enforceUserAuthenticated, csrf, serviceUsersController.profile);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;

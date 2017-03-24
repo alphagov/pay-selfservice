@@ -20,6 +20,7 @@ module.exports = {
 
   user: {
     logIn: '/login',
+    profile: '/my-profile',
     otpLogIn: '/otp-login',
     otpSendAgain: '/otp-send-again',
     otpSetup: '/otp-setup',
@@ -65,7 +66,8 @@ module.exports = {
     switch: '/my-services/switch'
   },
   teamMembers: {
-    index: '/team-members'
+    index: '/team-members',
+    show: '/team-members/:username'
   },
   toggle3ds: {
     index: '/3ds',

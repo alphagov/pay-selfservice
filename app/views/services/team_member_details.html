@@ -1,0 +1,29 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - Team members
+{{/pageTitle}}
+
+{{$full_width_content}}
+<h3 class="heading-medium">Team members</h3>
+<h2 id="details-for" class="heading-large">Details for {{username}}</h2>
+
+<table class="team-member-details">
+    <tbody>
+    <tr>
+        <td>Name:</td>
+        <td id="name">{{username}}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td id="email">{{email}}</td>
+    </tr>
+    <tr>
+        <td>Permission level:</td>
+        <td id="role">{{role}}</td>
+    </tr>
+    </tbody>
+</table>
+{{/full_width_content}}
+
+{{/layout}}

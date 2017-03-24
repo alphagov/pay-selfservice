@@ -3,6 +3,11 @@
 {{$pageTitle}}
 GOV.UK Pay - Team members
 {{/pageTitle}}
+
+{{$pageSpecificJS}}
+<script src="/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
 {{$full_width_content}}
 <h2 class="heading-large">Team members</h2>
 <p id="active-team-members-heading">Active ({{number_active_members}})</p>
@@ -15,7 +20,7 @@ GOV.UK Pay - Team members
     </thead>
     <tbody>
     {{#team_members.admin}}
-    <tr>
+    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
         <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
     </tr>
     {{/team_members.admin}}
@@ -30,7 +35,7 @@ GOV.UK Pay - Team members
     </thead>
     <tbody>
     {{#team_members.view-and-refund}}
-    <tr>
+    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
         <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
     </tr>
     {{/team_members.view-and-refund}}
@@ -45,7 +50,7 @@ GOV.UK Pay - Team members
     </thead>
     <tbody>
     {{#team_members.view-only}}
-    <tr>
+    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
         <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
     </tr>
     {{/team_members.view-only}}

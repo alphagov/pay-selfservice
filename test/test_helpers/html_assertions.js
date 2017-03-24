@@ -1,10 +1,10 @@
-var TemplateEngine = require(__dirname + '/../../lib/template-engine.js');
-var cheerio = require('cheerio');
-var chai = require('chai');
-var router = require('../../app/routes.js');
+let TemplateEngine = require(__dirname + '/../../lib/template-engine.js');
+let cheerio = require('cheerio');
+let chai = require('chai');
+let router = require('../../app/routes.js');
 
 function render(templateName, templateData) {
-  var templates = TemplateEngine._getTemplates([__dirname + '/../../app/views']);
+  let templates = TemplateEngine._getTemplates([__dirname + '/../../app/views']);
   templateData.routes = router.paths;
   return templates[templateName].render(templateData, templates);
 }
@@ -23,8 +23,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('containSelector', function (selector) {
     utils.flag(this, "rawHtml", this._obj);
-    var $ = cheerio.load(this._obj);
-    var result = $(selector);
+    let $ = cheerio.load(this._obj);
+    let result = $(selector);
     this.assert(result.length > 0,
       "Expected #{this} to contain '" + selector + "'",
       "Did not expect #{this} to contain '" + selector + "'"
@@ -35,8 +35,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('containNoSelector', function (selector) {
     utils.flag(this, "rawHtml", this._obj);
-    var $ = cheerio.load(this._obj);
-    var result = $(selector);
+    let $ = cheerio.load(this._obj);
+    let result = $(selector);
     this.assert(result.length == 0,
       "Expected #{this} to not contain '" + selector + "'",
       "Expect #{this} to contain '" + selector + "'"
@@ -45,8 +45,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('containNoSelectorWithText', function (selector, text) {
     utils.flag(this, "rawHtml", this._obj);
-    var $ = cheerio.load(this._obj);
-    var result = $(selector);
+    let $ = cheerio.load(this._obj);
+    let result = $(selector);
     this.assert(result.text().indexOf(text) == -1,
       "Expected #{result} to not contain '" + text + "'",
       "Expect #{result} to contain '" + text + "'"
@@ -54,7 +54,7 @@ chai.use(function (_chai, utils) {
   });
 
   chai.Assertion.addMethod('withText', function (msg) {
-    var actual = this._obj.text();
+    let actual = this._obj.text();
     this.assert(actual.indexOf(msg) > -1,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
@@ -64,7 +64,7 @@ chai.use(function (_chai, utils) {
   });
 
   chai.Assertion.addMethod('withExactText', function (msg) {
-    var actual = this._obj.text();
+    let actual = this._obj.text();
     this.assert(actual == msg,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
@@ -91,8 +91,17 @@ chai.use(function (_chai, utils) {
     }
   });
 
+  chai.Assertion.addMethod('withNoAttribute', function (expectedNoAttr) {
+    this.assert(this._obj.attr(expectedNoAttr) == undefined,
+      "Expected #{act} to no contain '" + expectedNoAttr + "'",
+      "Did not expect #{act} to contain '" + expectedNoAttr + "'",
+      expectedNoAttr,
+      JSON.stringify(this._obj['0'].attribs)
+    );
+  });
+
   chai.Assertion.addMethod('withAttributes', function (attributes) {
-    for (var attr in attributes) {
+    for (let attr in attributes) {
       if (attributes.hasOwnProperty(attr)) {
         this.withAttribute(attr, attributes[attr]);
       }
@@ -110,13 +119,13 @@ chai.use(function (_chai, utils) {
   });
 
   chai.Assertion.addMethod('withLabel', function (labelText) {
-    var inputId = utils.flag(this, 'inputId');
-    var subAssertion = new chai.Assertion(utils.flag(this, "rawHtml"));
+    let inputId = utils.flag(this, 'inputId');
+    let subAssertion = new chai.Assertion(utils.flag(this, "rawHtml"));
     subAssertion.containSelector('label[for=' + inputId + ']').withText(labelText);
   });
 
   chai.Assertion.addMethod('havingRowAt', function (rowIndex) {
-    var actualRow = this._obj.find('tr:nth-child(' + rowIndex + ')');
+    let actualRow = this._obj.find('tbody > tr:nth-child(' + rowIndex + ')');
     this.assert(actualRow.length > 0, "Expected a row at index '" + rowIndex + "'");
     this._obj = actualRow;
   });
@@ -127,11 +136,10 @@ chai.use(function (_chai, utils) {
   });
 
   chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {
-    var actualValue = this._obj.find('td:nth-child(' + colIndex + ')').text().trim();
+    let actualValue = this._obj.find('td:nth-child(' + colIndex + ')').text().trim();
     this.assert(actualValue === expectedValue.toString(),
       "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
       expectedValue, actualValue
     );
   });
-
 });
