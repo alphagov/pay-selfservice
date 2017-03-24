@@ -13,13 +13,14 @@ module.exports = {
     });
   },
 
-  publish: function () {
+  publish: function (cb) {
     return wrapper.publishPacts({
       pactUrls: [path.resolve(process.cwd(), 'pacts')],
       pactBroker: pactBrokerUrl,
       consumerVersion: "1",
       tags: ['expecting_bob']
     })
+      .then(cb);
   },
 
   removeAll: function () {
