@@ -16,6 +16,10 @@
   @include respond-to-max(1260px) {
     padding: 30px;
   }
+
+  &.full-width {
+    padding-top: 0;
+  }
 }
 
 .content-wrapper {
