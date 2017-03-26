@@ -67,7 +67,8 @@ module.exports = {
   },
   teamMembers: {
     index: '/team-members',
-    show: '/team-members/:username'
+    show: '/team-members/:username',
+    permissions: '/team-members/:username/permissions'
   },
   toggle3ds: {
     index: '/3ds',

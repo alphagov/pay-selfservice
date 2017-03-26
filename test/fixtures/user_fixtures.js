@@ -1,5 +1,5 @@
-let User      = require(__dirname + '/../../app/models/user').User;
-let pactBase  = require(__dirname + '/pact_base');
+let User = require(__dirname + '/../../app/models/user').User;
+let pactBase = require(__dirname + '/pact_base');
 let pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]});
 
 function randomString() {
@@ -101,14 +101,14 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request) => {
-    let req_username =  request.username || 'existing-user';
+    let req_username = request.username || 'existing-user';
     let data = {
       username: req_username,
       email: request.email || `${req_username}@example.com`,
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
       service_ids: request.service_ids || [randomServiceId()],
       otp_key: request.otp_key || "43c3c4t",
-      role: request.role || {"name": "admin", "description": "Administrator"},
+      role: request.role || {id: 2, "name": "admin", "description": "Administrator"},
       telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{

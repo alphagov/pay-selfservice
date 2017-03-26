@@ -3,12 +3,7 @@ let userService = require('../services/user_service.js');
 var paths = require('../paths.js');
 let successResponse = response.response;
 let errorResponse = response.renderErrorView;
-
-const roles = {
-  'admin': {name: 'admin', description: 'Administrator'},
-  'view-only': {name: 'view-only', description: 'View only'},
-  'view-and-refund': {name: 'view-and-refund', description: 'View and refund'}
-};
+let roles = require('../utils/roles').roles;
 
 let mapByRoles = function (users, currentUser) {
   let userRolesMap = {};

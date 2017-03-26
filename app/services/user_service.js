@@ -160,6 +160,16 @@ module.exports = {
           () => defer.reject({message: 'There has been a problem updating password.'}));
     }
     return defer.promise;
+  },
+
+  /**
+   * @param username
+   * @param roleName
+   * @param serviceId
+   * @returns {Promise<User>}
+   */
+  updateServiceRole: function (username, roleName, serviceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(username, serviceId, roleName);
   }
 
 };

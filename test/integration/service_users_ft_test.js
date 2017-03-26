@@ -4,6 +4,7 @@ let getApp = require(__dirname + '/../../server.js').getApp;
 let supertest = require('supertest');
 let serviceFixtures = require(__dirname + '/../fixtures/service_fixtures');
 let userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+let roles = require('../../app/utils/roles').roles;
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
 let app;
