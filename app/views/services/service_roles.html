@@ -9,7 +9,7 @@ GOV.UK Pay - Edit user permissions
 
 <div id="email-address">
     <h2 class="heading-small">Email address</h2>
-    <span>{{email}}</span>
+    <span id="email">{{email}}</span>
 </div>
 
 <div id="permission-level">
@@ -23,7 +23,7 @@ GOV.UK Pay - Edit user permissions
                 <span>Edit data. e.g. refund a payment</span>
                 <span>View data. e.g. transactions</span>
             </label>
-            <input id="role-admin-input" class="form-control" name="role-input" type="radio" value="{{admin.id}} {{admin.checked}}">
+            <input id="role-admin-input" class="form-control" name="role-input" type="radio" value="{{admin.id}}" {{admin.checked}}>
         </div>
 
         <div class="form-group">
@@ -33,7 +33,7 @@ GOV.UK Pay - Edit user permissions
                 <span>View data. e.g. transactions</span>
                 <span>Cannot view or edit settings</span>
             </label>
-            <input id="role-view-and-refund-input" class="form-control" name="role-input" type="radio" value="{{viewAndRefund.id}} {{viewAndRefund.checked}}">
+            <input id="role-view-and-refund-input" class="form-control" name="role-input" type="radio" value="{{viewAndRefund.id}}" {{viewAndRefund.checked}}>
         </div>
 
         <div class="form-group">
@@ -43,7 +43,7 @@ GOV.UK Pay - Edit user permissions
                 <span>Cannot edit data</span>
                 <span>Cannot view or edit settings</span>
             </label>
-            <input id="role-view-input" class="form-control" name="role-input" type="radio" value="{{view.id}} {{view.checked}}">
+            <input id="role-view-input" class="form-control" name="role-input" type="radio" value="{{view.id}}" {{view.checked}}>
         </div>
 
         <div class="form-group">
