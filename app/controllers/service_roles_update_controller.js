@@ -5,7 +5,7 @@ const responses = require('../utils/response');
 
 let rolesModule = require('../utils/roles');
 const roles = rolesModule.roles;
-let getRole = rolesModule.getRole;
+let getRole = rolesModule.getRoleByExtId;
 
 let userService = require('../services/user_service.js');
 
@@ -23,8 +23,8 @@ module.exports = {
 
     let correlationId = req.correlationId;
     let username = req.params.username;
-    let roleChecked = (roleId, currentRoleId) => {
-      if (roleId == currentRoleId) {
+    let roleChecked = (roleName, currentRoleName) => {
+      if (roleName == currentRoleName) {
         return 'checked';
       }
       return '';
@@ -37,16 +37,16 @@ module.exports = {
         email: user.email,
         editPermissionsLink: editPermissionsLink,
         admin: {
-          id: roles['admin'].id,
-          checked: roleChecked(roles['admin'].id, user.role.id)
+          id: roles['admin'].extId,
+          checked: roleChecked(roles['admin'].name, user.role.name)
         },
         viewAndRefund: {
-          id: roles['view-and-refund'].id,
-          checked: roleChecked(roles['view-and-refund'].id, user.role.id)
+          id: roles['view-and-refund'].extId,
+          checked: roleChecked(roles['view-and-refund'].name, user.role.name)
         },
         view: {
-          id: roles['view-only'].id,
-          checked: roleChecked(roles['view-only'].id, user.role.id)
+          id: roles['view-only'].extId,
+          checked: roleChecked(roles['view-only'].name, user.role.name)
         }
       }
     };
@@ -72,8 +72,8 @@ module.exports = {
   update: (req, res) => {
 
     let username = req.params.username;
-    let targetRoleId = req.body['role-input'];
-    let targetRole = getRole(targetRoleId);
+    let targetRoleExtId = req.body['role-input'];
+    let targetRole = getRole(targetRoleExtId);
     let correlationId = req.correlationId;
     let onSuccess = (user) => {
       req.flash('generic', 'Permissions have been updated');
@@ -86,7 +86,7 @@ module.exports = {
     }
 
     if (!targetRole) {
-      logger.error(`[requestId=${correlationId}] cannot identify role-id from user input ${targetRoleId}`);
+      logger.error(`[requestId=${correlationId}] cannot identify role from user input ${targetRoleExtId}. possible hack`);
       errorResponse(req, res, 'Unable to update user permission');
       return;
     }

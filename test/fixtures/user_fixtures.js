@@ -108,7 +108,7 @@ module.exports = {
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
       service_ids: request.service_ids || [randomServiceId()],
       otp_key: request.otp_key || "43c3c4t",
-      role: request.role || {id: 2, "name": "admin", "description": "Administrator"},
+      role: request.role || {"name": "admin", "description": "Administrator"},
       telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{

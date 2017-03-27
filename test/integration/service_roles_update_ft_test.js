@@ -36,7 +36,7 @@ describe('user permissions update controller', function () {
     username: usernameToView,
     email: `${usernameToView}@example.com`,
     service_ids: [serviceId],
-    role: roles['view-only']
+    role: {name: 'view-only', description: 'View only'}
   };
 
   afterEach((done) => {
@@ -63,11 +63,11 @@ describe('user permissions update controller', function () {
         .expect((res) => {
           expect(res.body.email).to.equal(userToView.email);
           expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', usernameToView));
-          expect(res.body.admin.id).to.equal(roles['admin'].id);
+          expect(res.body.admin.id).to.equal(roles['admin'].extId);
           expect(res.body.admin.checked).to.equal('');
-          expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].id);
+          expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId);
           expect(res.body.viewAndRefund.checked).to.equal('');
-          expect(res.body.view.id).to.equal(roles['view-only'].id);
+          expect(res.body.view.id).to.equal(roles['view-only'].extId);
           expect(res.body.view.checked).to.equal('checked');
         })
         .end(done);
@@ -126,7 +126,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': '2',
+          'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
@@ -149,7 +149,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': '4', //same as existing
+          'role-input': roles['view-only'].extId, //same as existing
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
@@ -167,7 +167,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': '2',
+          'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
         .expect(200)
@@ -190,7 +190,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': '2',
+          'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
         .expect(200)
@@ -238,7 +238,7 @@ describe('user permissions update controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'role-input': '2',
+          'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
         .expect(200)
