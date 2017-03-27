@@ -249,21 +249,21 @@ describe('Pagination', function () {
       var data = {'page': -1};
 
       search_transactions(data)
-        .expect(200, {'message': "Invalid search"}).end(done);
+        .expect(500, {'message': "Invalid search"}).end(done);
     });
 
     it('should return return error if pageSize out of bounds 1', function (done) {
       var data = {'pageSize': 600};
 
       search_transactions(data)
-        .expect(200, {'message': "Invalid search"}).end(done);
+        .expect(500, {'message': "Invalid search"}).end(done);
     });
 
     it('should return return error if pageSize out of bounds 2', function (done) {
       var data = {'pageSize': 0};
 
       search_transactions(data)
-        .expect(200, {'message': "Invalid search"}).end(done);
+        .expect(500, {'message': "Invalid search"}).end(done);
     });
   });
 });

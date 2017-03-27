@@ -110,6 +110,8 @@ describe('service switch controller: list of accounts', function () {
 
   it('should show error if no gateway accounts', function () {
     let renderSpy = sinon.spy();
+    let setHeaderSpy = sinon.spy();
+    let statusSpy = sinon.spy();
 
     let req = {
       user: userFixtures.validUserResponse({
@@ -120,12 +122,16 @@ describe('service switch controller: list of accounts', function () {
     };
 
     let res = {
-      render: renderSpy
+      render: renderSpy,
+      setHeader: setHeaderSpy,
+      status: statusSpy
     };
 
     serviceSwitchController.index(req, res);
 
     expect(renderSpy.calledWith('error', { message: 'No accounts found for user'})).to.be.equal(true);
+    expect(setHeaderSpy.calledWith('Content-Type', 'text/html')).to.be.equal(true);
+    expect(statusSpy.calledWith(500)).to.be.equal(true);
   });
 });
 

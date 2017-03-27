@@ -229,7 +229,7 @@ describe('The payment types endpoint,', function () {
         });
 
       build_get_request(paths.paymentTypes.selectBrand, app)
-        .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
+        .expect(500, {"message": "Unable to retrieve accepted card types for the account."})
         .end(done);
     });
 
@@ -242,7 +242,7 @@ describe('The payment types endpoint,', function () {
         });
 
       build_get_request(paths.paymentTypes.selectBrand, app)
-        .expect(200, {"message": "Unable to retrieve accepted card types for the account."})
+        .expect(500, {"message": "Unable to retrieve accepted card types for the account."})
         .end(done);
     });
 
@@ -255,7 +255,7 @@ describe('The payment types endpoint,', function () {
         .reply(200, {});
 
       build_get_request(paths.paymentTypes.selectBrand, app)
-        .expect(200, {"message": "Unable to retrieve card types."})
+        .expect(500, {"message": "Unable to retrieve card types."})
         .end(done);
     });
 
@@ -263,7 +263,7 @@ describe('The payment types endpoint,', function () {
       // No connectorMock defined on purpose to mock a network failure
 
       build_get_request(paths.paymentTypes.selectBrand, app)
-        .expect(200, {"message": "Internal server error"})
+        .expect(500, {"message": "Internal server error"})
         .end(done);
     });
   });
@@ -366,7 +366,7 @@ describe('The payment types endpoint,', function () {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": ["discover", "unknown"]
       }, true, app)
-        .expect(200, {"message": "Unable to retrieve card types."})
+        .expect(500, {"message": "Unable to retrieve card types."})
         .end(done);
     });
 
@@ -384,7 +384,7 @@ describe('The payment types endpoint,', function () {
         "acceptedType": TYPES.ALL,
         "acceptedBrands": ["discover", "unknown"]
       }, true, app)
-        .expect(200, {"message": "Unable to save accepted card types."})
+        .expect(500, {"message": "Unable to save accepted card types."})
         .end(done);
     });
   });

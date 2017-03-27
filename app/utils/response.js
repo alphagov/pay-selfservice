@@ -16,6 +16,8 @@ function errorResponse (req, res, msg) {
   let correlationId = req.correlationId;
   let data = { 'message': msg };
   logger.error(`[${correlationId}] An error has occurred. Rendering error view -`, {errorMessage: msg});
+  res.setHeader('Content-Type', 'text/html');
+  res.status(500);
   render(req, res, ERROR_VIEW, data);
 }
 

@@ -25,7 +25,8 @@ describe('retrieve param test', function () {
 
   var response = {
     status: function(){},
-    render: function(){}
+    render: function(){},
+    setHeader: function() {}
   },
   status = undefined,
   render = undefined,
@@ -48,9 +49,6 @@ describe('retrieve param test', function () {
     status.restore();
     render.restore();
   });
-
-
-
 
   it('should call the error view if the connector fails', function (done) {
     retrieveAccount( { params: {}, body: {}, headers: {} }, response, next);

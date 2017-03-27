@@ -324,7 +324,7 @@ describe('The /transactions endpoint', function () {
     connectorMock_responds(400, {'message': errorMessage}, searchParameters);
 
     get_transaction_list()
-      .expect(200, {'message': errorMessage})
+      .expect(500, {'message': errorMessage})
       .end(done);
   });
 
@@ -333,7 +333,7 @@ describe('The /transactions endpoint', function () {
     connectorMock_responds(500, {'message': 'some error from connector'}, searchParameters);
 
     get_transaction_list()
-      .expect(200, {'message': 'Unable to retrieve list of transactions.'})
+      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
       .end(done);
   });
 
@@ -341,7 +341,7 @@ describe('The /transactions endpoint', function () {
     // No connectorMock defined on purpose to mock a network failure
 
     get_transaction_list()
-      .expect(200, {'message': 'Unable to retrieve list of transactions.'})
+      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
       .end(done);
   });
 
@@ -370,7 +370,7 @@ describe('The /transactions endpoint', function () {
   //    .reply(400, {'message': errorMessage});
   //
   //  get_transaction_list()
-  //    .expect(200, {'message': errorMessage})
+  //    .expect(500, {'message': errorMessage})
   //    .end(done);
   //});
 
@@ -385,7 +385,7 @@ describe('The /transactions endpoint', function () {
   //    .reply(500, {'message': 'some error from connector'});
   //
   //  get_transaction_list()
-  //    .expect(200, {'message': 'Unable to retrieve list of transactions.'})
+  //    .expect(500, {'message': 'Unable to retrieve list of transactions.'})
   //    .end(done);
   //});
 
@@ -397,7 +397,7 @@ describe('The /transactions endpoint', function () {
   //  connectorMock_responds(200, connectorData, searchParameters);
   //
   //  get_transaction_list()
-  //    .expect(200, {'message': 'Unable to retrieve list of transactions.'})
+  //    .expect(500, {'message': 'Unable to retrieve list of transactions.'})
   //    .end(done);
   //});
 
