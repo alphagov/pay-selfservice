@@ -13,6 +13,7 @@ var emailNotifications = require('./controllers/email_notifications_controller.j
 var forgotPassword = require('./controllers/forgotten_password_controller.js');
 var serviceSwitchController = require('./controllers/service_switch_controller.js');
 var serviceUsersController = require('./controllers/service_users_controller.js');
+var permissionController = require('./controllers/service_roles_update_controller.js');
 var toggle3ds = require('./controllers/toggle_3ds_controller.js');
 
 var static = require('./controllers/static_controller.js');
@@ -125,6 +126,8 @@ module.exports.bind = function (app) {
   var teamMembers = paths.teamMembers;
   app.get(teamMembers.index, auth.enforceUserAuthenticated, csrf, serviceUsersController.index);
   app.get(teamMembers.show, auth.enforceUserAuthenticated, csrf, permission('users-service:read'), serviceUsersController.show);
+  app.get(teamMembers.permissions, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), permissionController.index);
+  app.post(teamMembers.permissions, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), permissionController.update);
   app.get(user.profile, auth.enforceUserAuthenticated, csrf, serviceUsersController.profile);
 
   // 3D SECURE TOGGLE

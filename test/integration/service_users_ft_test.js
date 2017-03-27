@@ -4,6 +4,8 @@ let getApp = require(__dirname + '/../../server.js').getApp;
 let supertest = require('supertest');
 let serviceFixtures = require(__dirname + '/../fixtures/service_fixtures');
 let userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+let paths = require(__dirname + '/../../app/paths.js');
+let roles = require('../../app/utils/roles').roles;
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
 let app;
@@ -118,6 +120,7 @@ describe('service users resource', function () {
         expect(res.body.username).to.equal('other-user');
         expect(res.body.email).to.equal('other-user@example.com');
         expect(res.body.role).to.equal('View only');
+        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', 'other-user'));
       })
       .end(done);
   });

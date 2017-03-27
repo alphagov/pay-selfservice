@@ -20,7 +20,12 @@ GOV.UK Pay - My services
         {{/gatewayAccounts}}
     </div>
     <div id="team-members" class="column-half">
+        {{#permissions.users_service_create}}
+        <span><a href="/team-members" id="manage-team-members">Manage team members</a></span>
+        {{/permissions.users_service_create}}
+        {{^permissions.users_service_create}}
         <span><a href="/team-members" id="view-team-members">View team members</a></span>
+        {{/permissions.users_service_create}}
     </div>
 </div>
 {{/full_width_content}}

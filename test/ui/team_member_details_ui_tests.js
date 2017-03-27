@@ -8,7 +8,8 @@ describe('The team member details view', function () {
     let templateData = {
       username: 'Oscar Smith',
       email: 'oscar.smith@example.com',
-      role: 'View only'
+      role: 'View only',
+      editPermissionsLink:'some-link'
     };
 
     let body = renderTemplate('services/team_member_details', templateData);
@@ -17,6 +18,7 @@ describe('The team member details view', function () {
     body.should.containSelector('td#name').withExactText('Oscar Smith');
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com');
     body.should.containSelector('td#role').withExactText('View only');
+    body.should.containSelector('td#edit-permissions-link > a').withAttribute('href','some-link');
   });
 
   it('should render team member My profile view', function () {
