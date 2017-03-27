@@ -31,8 +31,11 @@ module.exports = {
     };
 
     let viewData = user => {
+      let editPermissionsLink = paths.teamMembers.permissions.replace(':username', user.username);
+
       return {
         email: user.email,
+        editPermissionsLink: editPermissionsLink,
         admin: {
           id: roles['admin'].id,
           checked: roleChecked(roles['admin'].id, user.role.id)

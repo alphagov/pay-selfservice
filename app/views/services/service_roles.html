@@ -13,7 +13,7 @@ GOV.UK Pay - Edit user permissions
 </div>
 
 <div id="permission-level">
-    <form id="role-update-form" method="post" action="{{routes.teamMembers.permissions}}">
+    <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
         <div class="form-group">

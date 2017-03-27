@@ -62,6 +62,7 @@ describe('user permissions update controller', function () {
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal(userToView.email);
+          expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', usernameToView));
           expect(res.body.admin.id).to.equal(roles['admin'].id);
           expect(res.body.admin.checked).to.equal('');
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].id);

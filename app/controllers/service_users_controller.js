@@ -70,11 +70,14 @@ module.exports = {
     let onSuccess = (user) => {
       let hasSameService = user.serviceIds[0] == req.user.serviceIds[0];
       let roleInList = roles[user._role.name];
+      let editPermissionsLink = paths.teamMembers.permissions.replace(':username', user.username);
+
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
           username: user.username,
           email: user.email,
-          role: roles[user.role.name].description
+          role: roles[user.role.name].description,
+          editPermissionsLink: editPermissionsLink
         });
       } else {
         errorResponse(req, res, 'Error displaying this user of the current service');

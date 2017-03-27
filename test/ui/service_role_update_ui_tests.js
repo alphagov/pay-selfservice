@@ -9,12 +9,14 @@ describe('The service role update view', function () {
       email: 'oscar.smith@example.com',
       admin: {id: 2, checked: ''},
       viewAndRefund: {id: 3, checked: ''},
-      view: {id: 4, checked: 'checked'}
+      view: {id: 4, checked: 'checked'},
+      editPermissionsLink: 'some-link'
     };
 
     let body = renderTemplate('services/service_roles', templateData);
 
     body.should.containSelector('span#email').withExactText('oscar.smith@example.com');
+    body.should.containSelector('form#role-update-form').withAttribute('action', 'some-link');
     body.should.containSelector('input#role-admin-input')
       .withAttribute('type', 'radio')
       .withAttribute('value', '2')
