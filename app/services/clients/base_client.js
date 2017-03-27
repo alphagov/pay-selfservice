@@ -1,9 +1,10 @@
 const https    = require('https');
 const httpAgent    = require('http').globalAgent;
 const urlParse = require('url').parse;
+var _ = require('lodash');
 
-var request = require('request');
 const logger = require('winston');
+var request = require('requestretry');
 
 const customCertificate       = require(__dirname + '/../../utils/custom_certificate');
 const CORRELATION_HEADER_NAME = require(__dirname + '/../../utils/correlation_header').CORRELATION_HEADER;
@@ -12,6 +13,12 @@ var agentOptions = {
   keepAlive: true,
   maxSockets: process.env.MAX_SOCKETS || 100
 };
+
+var RETRIABLE_ERRORS = ['ECONNRESET'];
+
+function retryOnEconnreset(err) {
+  return err && _.includes(RETRIABLE_ERRORS, err.code);
+}
 
 /**
  * @type {https.Agent}
@@ -25,7 +32,13 @@ if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
 }
 
 var client = request
-  .defaults({json: true});
+  .defaults({
+    json: true,
+    // Adding retry on ECONNRESET as a temporary fix for PP-1727
+    maxAttempts: 3,
+    retryDelay: 5000,  
+    retryStrategy: retryOnEconnreset
+  });
 
 const getHeaders = function getHeaders(args) {
   let headers = {};
