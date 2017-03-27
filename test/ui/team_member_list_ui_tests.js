@@ -31,28 +31,28 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData);
 
-    body.should.containSelector('p#active-team-members-heading').withExactText('Active (6)');
-    body.should.containSelector('th#admin-role-header').withExactText('Administrators (2)');
-    body.should.containSelector('th#view-only-role-header').withExactText('View only (3)');
-    body.should.containSelector('th#view-and-refund-role-header').withExactText('View and refund (1)');
+    body.should.containSelector('h2#active-team-members-heading').withExactText('Active (6)');
+    body.should.containSelector('h3#admin-role-header').withExactText('Administrators (2)');
+    body.should.containSelector('h3#view-only-role-header').withExactText('View only (3)');
+    body.should.containSelector('h3#view-and-refund-role-header').withExactText('View and refund (1)');
 
-    body.should.containSelector('table#team-members-admin-list').havingNumberOfRows(2);
-    body.should.containSelector('table#team-members-admin-list').havingRowAt(1).withTableDataAt(1, 'username1');
-    body.should.containSelector('table#team-members-admin-list').havingRowAt(1).withAttribute('data-link', 'view-username1-link');
-    body.should.containSelector('table#team-members-admin-list').havingRowAt(2).withTableDataAt(1, 'username2 (you)');
-    body.should.containSelector('table#team-members-admin-list').havingRowAt(2).withAttribute('data-link', 'view-username2-my-profile-link');
+    body.should.containSelector('div#team-members-admin-list ul').havingNumberOfItems(2);
+    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(1).withText('username1');
+    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(1).withALinkTo('view-username1-link');
+    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(2).withText('username2 (you)');
+    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(2).withALinkTo('view-username2-my-profile-link');
 
-    body.should.containSelector('table#team-members-view-only-list').havingNumberOfRows(3);
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(1).withTableDataAt(1, 'username3');
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(1).withAttribute('data-link', 'view-username3-link');
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(2).withTableDataAt(1, 'username4');
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(2).withAttribute('data-link', 'view-username4-link');
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(3).withTableDataAt(1, 'username5');
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(3).withAttribute('data-link', 'view-username5-link');
+    body.should.containSelector('div#team-members-view-only-list ul').havingNumberOfItems(3);
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(1).withText('username3');
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(1).withALinkTo('view-username3-link');
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(2).withText('username4');
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(2).withALinkTo('view-username4-link');
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(3).withText('username5');
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(3).withALinkTo('view-username5-link');
 
-    body.should.containSelector('table#team-members-view-and-refund-list').havingNumberOfRows(1);
-    body.should.containSelector('table#team-members-view-and-refund-list').havingRowAt(1).withTableDataAt(1, 'username6');
-    body.should.containSelector('table#team-members-view-and-refund-list').havingRowAt(1).withAttribute('data-link', 'view-username6-link');
+    body.should.containSelector('div#team-members-view-and-refund-list ul').havingNumberOfItems(1);
+    body.should.containSelector('div#team-members-view-and-refund-list ul').havingItemAt(1).withText('username6');
+    body.should.containSelector('div#team-members-view-and-refund-list ul').havingItemAt(1).withALinkTo('view-username6-link');
 
   });
 
@@ -76,7 +76,7 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData);
 
-    body.should.containSelector('table#team-members-view-only-list').havingRowAt(1).withNoAttribute('data-link');
+    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(1).withNoLink();
   });
 
   it('should render number of users of a role as 0 if no users are grouped in that role', function () {
@@ -99,7 +99,7 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData);
 
-    body.should.containSelector('th#view-only-role-header').withExactText('View only (0)');
-    body.should.containSelector('table#team-members-view-only-list').havingNumberOfRows(0);
+    body.should.containSelector('h3#view-only-role-header').withExactText('View only (0)');
+    body.should.containSelector('div#team-members-view-only-list').havingNumberOfRows(0);
   });
 });

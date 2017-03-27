@@ -73,6 +73,16 @@ chai.use(function (_chai, utils) {
     );
   });
 
+  chai.Assertion.addMethod('withOnlyText', function (msg) {
+    let actual = this._obj.contents().filter(function () { return this.nodeType === 3 }).text()
+    this.assert(actual.trim() == msg,
+      "Expected #{act} to contain '" + msg + "'.",
+      "Did not expect #{act} to contain '" + msg + "'.",
+      msg,
+      actual
+    );
+  });
+
   chai.Assertion.addMethod('withAttribute', function (expectedAttr, expectedValue) {
     this.assert(this._obj.attr(expectedAttr) !== undefined,
       "Expected #{act} to contain '" + expectedAttr + "'",
@@ -108,6 +118,17 @@ chai.use(function (_chai, utils) {
     }
   });
 
+  chai.Assertion.addMethod('withALinkTo', function (url) {
+    let link = this._obj.find('a');
+    this.assert(link.length > 0, "Expected #{act} to contain a link")
+    this.assert(link.attr('href') === url, "Expected " + link.attr('href') + " to match " + url);
+  });
+
+  chai.Assertion.addMethod('withNoLink', function () {
+    let link = this._obj.find('a');
+    this.assert(link.length === 0, "Expected #{act} to not contain a link")
+  });
+
   chai.Assertion.addMethod('containInputField', function (idAndName, type) {
     this.containSelector('input#' + idAndName).withAttributes({name: idAndName, type: type});
     utils.flag(this, 'inputId', idAndName);
@@ -130,9 +151,20 @@ chai.use(function (_chai, utils) {
     this._obj = actualRow;
   });
 
+  chai.Assertion.addMethod('havingItemAt', function (itemIndex) {
+    let actualItem = this._obj.find('ul li:nth-child(' + itemIndex + ')');
+    this.assert(actualItem.length > 0, "Expected a item at index '" + itemIndex + "'");
+    this._obj = actualItem;
+  });
+
   chai.Assertion.addMethod('havingNumberOfRows', function (expectedNumberOfRows) {
     let rows = this._obj.find('tbody tr');
     this.assert(rows.length == expectedNumberOfRows, "Expected number of rows to be '" + expectedNumberOfRows + "' but found '" + rows.length + "'");
+  });
+
+  chai.Assertion.addMethod('havingNumberOfItems', function (expectedNumberOfItems) {
+    let items = this._obj.find('li');
+    this.assert(items.length == expectedNumberOfItems, "Expected number of items to be '" + expectedNumberOfItems + "' but found '" + items.length + "'");
   });
 
   chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {
