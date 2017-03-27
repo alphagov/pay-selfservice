@@ -79,6 +79,7 @@
     "q": "^1.4.1",
     "qs": "^6.2.0",
     "readdir": "0.0.x",
+    "requestretry": "^1.12.0",
     "serve-favicon": "2.3.x",
     "sleep": "^3.0.1",
     "thirty-two": "^1.0.2",
