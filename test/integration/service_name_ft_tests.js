@@ -44,11 +44,11 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
 [
   {
     'path': paths.serviceName.index,
-    'edit': false,
+    'edit': false
   },
   {
     'path': paths.serviceName.edit,
-    'edit': true,
+    'edit': true
   }
 ].forEach(function (testSetup) {
 
@@ -98,7 +98,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
           });
 
         build_get_request(testSetup.path, app)
-          .expect(200, {"message": "Unable to retrieve the service name."})
+          .expect(500, {"message": "Unable to retrieve the service name."})
           .end(done);
       });
 
@@ -109,7 +109,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
           });
 
         build_get_request(testSetup.path, app)
-          .expect(200, {"message": "Unable to retrieve the service name."})
+          .expect(500, {"message": "Unable to retrieve the service name."})
           .end(done);
       });
 
@@ -117,7 +117,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
         // No connectorMock defined on purpose to mock a network failure
 
         build_get_request(testSetup.path, app)
-          .expect(200, {"message": "Unable to retrieve the service name."})
+          .expect(500, {"message": "Unable to retrieve the service name."})
           .end(done);
       });
     });
@@ -165,7 +165,7 @@ describe('The provider update service name endpoint', function () {
     var expectedData = {"message": "Internal server error"};
     var path = paths.serviceName.index;
     build_form_post_request(path, sendData, true, app)
-      .expect(200, expectedData)
+      .expect(500, expectedData)
       .end(done);
   });
 
@@ -175,7 +175,7 @@ describe('The provider update service name endpoint', function () {
     var expectedData = {"message": "Internal server error"};
     var path = paths.serviceName.index;
     build_form_post_request(path, sendData, true, app)
-      .expect(200, expectedData)
+      .expect(500, expectedData)
       .end(done);
   });
 
@@ -183,7 +183,7 @@ describe('The provider update service name endpoint', function () {
     var sendData = {'service-name-input': 'Service name'};
     var path = paths.serviceName.index;
     build_form_post_request(path, sendData, false, app)
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });

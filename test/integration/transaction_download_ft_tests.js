@@ -163,7 +163,7 @@ describe('Transaction download endpoints', function () {
       connectorMock_responds(400, {'message': errorMessage}, {});
 
       download_transaction_list()
-        .expect(200, {'message': 'Internal server error'})
+        .expect(500, {'message': 'Internal server error'})
         .end(done);
 
     });
@@ -173,7 +173,7 @@ describe('Transaction download endpoints', function () {
       connectorMock_responds(500, {'message': 'some error from connector'}, {});
 
       download_transaction_list()
-        .expect(200, {'message': 'Internal server error'})
+        .expect(500, {'message': 'Internal server error'})
         .end(done);
     });
 
@@ -181,7 +181,7 @@ describe('Transaction download endpoints', function () {
       // No connectorMock defined on purpose to mock a network failure
 
       download_transaction_list()
-        .expect(200, {'message': 'Internal server error'})
+        .expect(500, {'message': 'Internal server error'})
         .end(done);
     });
   });

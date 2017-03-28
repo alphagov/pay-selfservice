@@ -83,7 +83,7 @@ describe('user permissions update controller', function () {
       return supertest(app)
         .get(updatePermissionPath(usernameToView))
         .set('Accept', 'application/json')
-        .expect(200)
+        .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to locate the user');
         })
@@ -97,7 +97,7 @@ describe('user permissions update controller', function () {
       return supertest(app)
         .get(updatePermissionPath(userInSession.username))
         .set('Accept', 'application/json')
-        .expect(200)
+        .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Not allowed to update self permission');
         })
@@ -170,7 +170,7 @@ describe('user permissions update controller', function () {
           'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
-        .expect(200)
+        .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Not allowed to update self permission');
         })
@@ -193,7 +193,7 @@ describe('user permissions update controller', function () {
           'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
-        .expect(200)
+        .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to locate the user');
         })
@@ -214,7 +214,7 @@ describe('user permissions update controller', function () {
           'role-input': nonExistentRoleId,
           csrfToken: csrf().create('123')
         })
-        .expect(200)
+        .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to update user permission');
         })
@@ -241,7 +241,7 @@ describe('user permissions update controller', function () {
           'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
-        .expect(200)
+        .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to update user permission');
         })

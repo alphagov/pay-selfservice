@@ -197,7 +197,7 @@ describe('service users resource', function () {
     return supertest(app)
       .get('/team-members/other-user')
       .set('Accept', 'application/json')
-      .expect(200)
+      .expect(500)
       .expect((res) => {
         expect(res.body.message).to.equal('Error displaying this user of the current service');
       })

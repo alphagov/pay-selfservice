@@ -206,7 +206,7 @@ describe('login post endpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -225,7 +225,7 @@ describe('otp login post enpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({code: notp.totp.gen("12345")})
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -245,7 +245,7 @@ describe('otp send again post enpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });

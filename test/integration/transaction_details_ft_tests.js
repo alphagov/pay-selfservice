@@ -700,7 +700,7 @@ describe('The transaction view scenarios', function () {
         .reply(404, connectorError);
 
       when_getTransactionHistory(nonExistentChargeId, app)
-        .expect(200, connectorError)
+        .expect(500, connectorError)
         .end(done);
     });
 
@@ -711,14 +711,14 @@ describe('The transaction view scenarios', function () {
         .reply(500, connectorError);
 
       when_getTransactionHistory(nonExistentChargeId, app)
-        .expect(200, {'message': 'Error processing transaction view'})
+        .expect(500, {'message': 'Error processing transaction view'})
         .end(done);
     });
 
     it('should return a generic if unable to communicate with connector', function (done) {
       var chargeId = 452345;
       when_getTransactionHistory(chargeId, app)
-        .expect(200, {'message': 'Error processing transaction view'})
+        .expect(500, {'message': 'Error processing transaction view'})
         .end(done);
     });
   });

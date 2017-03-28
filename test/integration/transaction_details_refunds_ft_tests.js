@@ -99,7 +99,7 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(200, {"message": "Can't do refund: amount must be pounds (10) or pounds and pence (10.10)"})
+      .expect(500, {"message": "Can't do refund: amount must be pounds (10) or pounds and pence (10.10)"})
       .end(done);
   });
 
@@ -127,7 +127,7 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(200, {"message": "Can't do refund: The requested amount is bigger than the amount available for refund"})
+      .expect(500, {"message": "Can't do refund: The requested amount is bigger than the amount available for refund"})
       .end(done);
   });
 
@@ -156,7 +156,7 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(200, {"message": "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge"})
+      .expect(500, {"message": "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge"})
       .end(done);
   });
 
@@ -185,7 +185,7 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(200, {"message": "Can't do refund: This charge has been already fully refunded"})
+      .expect(500, {"message": "Can't do refund: This charge has been already fully refunded"})
       .end(done);
   });
 
@@ -214,7 +214,7 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(200, {"message": "Can't process refund"})
+      .expect(500, {"message": "Can't process refund"})
       .end(done);
   });
 
@@ -242,7 +242,7 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(200, {"message": "Refund failed. This refund request has already been submitted."})
+      .expect(500, {"message": "Refund failed. This refund request has already been submitted."})
       .end(done);
   });
 });

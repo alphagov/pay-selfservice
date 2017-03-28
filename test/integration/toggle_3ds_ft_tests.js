@@ -157,7 +157,7 @@ describe('The 3D Secure index endpoint', function () {
       });
 
     build_get_request(paths.toggle3ds.index, app)
-      .expect(200, {"message": "Unable to retrieve the 3D Secure setting."})
+      .expect(500, {"message": "Unable to retrieve the 3D Secure setting."})
       .end(done);
   });
 
@@ -168,14 +168,14 @@ describe('The 3D Secure index endpoint', function () {
       });
 
     build_get_request(paths.toggle3ds.index, app)
-      .expect(200, {"message": "Unable to retrieve the 3D Secure setting."})
+      .expect(500, {"message": "Unable to retrieve the 3D Secure setting."})
       .end(done);
   });
 
   it('should display an error if the connection to connector fails', function (done) {
     // No connectorMock defined on purpose to mock a network failure
     build_get_request(paths.toggle3ds.index, app)
-      .expect(200, {"message": "Unable to retrieve the 3D Secure setting."})
+      .expect(500, {"message": "Unable to retrieve the 3D Secure setting."})
       .end(done);
   });
 });
@@ -214,20 +214,20 @@ describe('The turn on 3D Secure endpoint', function () {
       });
 
     build_form_post_request(paths.toggle3ds.on, {}, true, app)
-      .expect(200, {"message": "Unable to toggle 3D Secure."})
+      .expect(500, {"message": "Unable to toggle 3D Secure."})
       .end(done);
   });
 
   it('should display an error if the connection to connector fails', function (done) {
     // No connectorMock defined on purpose to mock a network failure
     build_form_post_request(paths.toggle3ds.on, {}, true, app)
-      .expect(200, {"message": "Unable to toggle 3D Secure."})
+      .expect(500, {"message": "Unable to toggle 3D Secure."})
       .end(done);
   });
 
   it('should display an error if CSRF token does not exist', function (done) {
     build_form_post_request(paths.toggle3ds.on, {}, false, app)
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -266,20 +266,20 @@ describe('The turn off 3D Secure endpoint', function () {
       });
 
     build_form_post_request(paths.toggle3ds.off, {}, true, app)
-      .expect(200, {"message": "Unable to toggle 3D Secure."})
+      .expect(500, {"message": "Unable to toggle 3D Secure."})
       .end(done);
   });
 
   it('should display an error if the connection to connector fails', function (done) {
     // No connectorMock defined on purpose to mock a network failure
     build_form_post_request(paths.toggle3ds.off, {}, true, app)
-      .expect(200, {"message": "Unable to toggle 3D Secure."})
+      .expect(500, {"message": "Unable to toggle 3D Secure."})
       .end(done);
   });
 
   it('should display an error if CSRF token does not exist', function (done) {
     build_form_post_request(paths.toggle3ds.off, {}, false, app)
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -304,7 +304,7 @@ describe('The confirm that you want to turn on 3D Secure endpoint', function () 
 
   it('should display an error if CSRF token does not exist', function (done) {
     build_form_post_request(paths.toggle3ds.onConfirm, {}, false, app)
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 

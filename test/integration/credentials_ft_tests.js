@@ -182,7 +182,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       });
 
     build_get_request(paths.credentials.index, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -194,7 +194,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       });
 
     build_get_request(paths.credentials.index, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -202,7 +202,7 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
     // No connectorMock defined on purpose to mock a network failure
 
     build_get_request(paths.credentials.index, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -342,7 +342,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       });
 
     build_get_request(paths.credentials.edit, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -354,7 +354,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       });
 
     build_get_request(paths.credentials.edit, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -362,7 +362,7 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
     // No connectorMock defined on purpose to mock a network failure
 
     build_get_request(paths.credentials.edit, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -507,7 +507,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       });
 
     build_get_request(paths.notificationCredentials.edit, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -519,7 +519,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       });
 
     build_get_request(paths.notificationCredentials.edit, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -527,7 +527,7 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
     // No connectorMock defined on purpose to mock a network failure
 
     build_get_request(paths.notificationCredentials.edit, app)
-      .expect(200, {"message": "There is a problem with the payments platform"})
+      .expect(500, {"message": "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -654,7 +654,7 @@ describe('The provider update credentials endpoint', function () {
     var expectedData = {"message": "There is a problem with the payments platform"};
     var path = paths.credentials.index;
     build_form_post_request(path, sendData, true, app)
-      .expect(200, expectedData)
+      .expect(500, expectedData)
       .end(done);
   });
 
@@ -665,7 +665,7 @@ describe('The provider update credentials endpoint', function () {
     var expectedData = {"message": "There is a problem with the payments platform"};
     var path = paths.credentials.index;
     build_form_post_request(path, sendData, true, app)
-      .expect(200, expectedData)
+      .expect(500, expectedData)
       .end(done);
   });
 
@@ -681,7 +681,7 @@ describe('The provider update credentials endpoint', function () {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var path = paths.credentials.index;
     build_form_post_request(path, sendData, false, app)
-      .expect(200, {message: "There is a problem with the payments platform"})
+      .expect(500, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
