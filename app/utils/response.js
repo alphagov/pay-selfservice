@@ -11,13 +11,17 @@ function response(req, res, template, data) {
   render(req, res, template, convertedData);
 }
 
-function errorResponse (req, res, msg) {
+function errorResponse (req, res, msg, status) {
   if (!msg) msg = ERROR_MESSAGE;
   let correlationId = req.correlationId;
   let data = { 'message': msg };
   logger.error(`[${correlationId}] An error has occurred. Rendering error view -`, {errorMessage: msg});
   res.setHeader('Content-Type', 'text/html');
-  res.status(500);
+  if(status) {
+    res.status(status);
+  } else {
+    res.status(500);
+  }
   render(req, res, ERROR_VIEW, data);
 }
 

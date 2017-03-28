@@ -681,7 +681,7 @@ describe('The provider update credentials endpoint', function () {
     var sendData = {'username': 'a-username', 'password': 'a-password'};
     var path = paths.credentials.index;
     build_form_post_request(path, sendData, false, app)
-      .expect(500, {message: "There is a problem with the payments platform"})
+      .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
