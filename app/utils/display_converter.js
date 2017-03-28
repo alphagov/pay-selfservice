@@ -4,7 +4,8 @@ const hideNavBarTemplates = [
   'services/index',
   'services/team_members',
   'services/team_member_details',
-  'services/team_member_profile'
+  'services/team_member_profile',
+  'services/team_member_permissions'
 ];
 
 const testHasMultipleGatewayAccounts = user => {

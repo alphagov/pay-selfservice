@@ -58,7 +58,7 @@ module.exports = {
 
     userService.findByUsername(username, correlationId)
       .then(user => {
-        successResponse(req, res, 'services/service_roles', viewData(user));
+        successResponse(req, res, 'services/team_member_permissions', viewData(user));
       })
       .catch(() => errorResponse(req, res, 'Unable to locate the user'));
   },

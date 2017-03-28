@@ -13,7 +13,7 @@ describe('The service role update view', function () {
       editPermissionsLink: 'some-link'
     };
 
-    let body = renderTemplate('services/service_roles', templateData);
+    let body = renderTemplate('services/team_member_permissions', templateData);
 
     body.should.containSelector('span#email').withExactText('oscar.smith@example.com');
     body.should.containSelector('form#role-update-form').withAttribute('action', 'some-link');
