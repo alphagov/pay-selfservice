@@ -7,6 +7,7 @@ let userFixtures = require(__dirname + '/../fixtures/user_fixtures');
 let paths = require(__dirname + '/../../app/paths.js');
 let roles = require('../../app/utils/roles').roles;
 let chai = require('chai');
+let _ = require('lodash');
 let chaiAsPromised = require('chai-as-promised');
 let app;
 
@@ -86,6 +87,27 @@ describe('user permissions update controller', function () {
         .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to locate the user');
+        })
+        .end(done);
+    });
+
+    it('should error if admin does not belong to users service', function (done) {
+
+      let targetUser = _.cloneDeep(userToView);
+      targetUser.service_ids[0] = '2';
+
+      let getUserResponse = userFixtures.validUserResponse(targetUser);
+      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+        .reply(200, getUserResponse.getPlain());
+
+      app = session.getAppWithLoggedInUser(getApp(), userInSession);
+
+      return supertest(app)
+        .get(updatePermissionPath(usernameToView))
+        .set('Accept', 'application/json')
+        .expect(500)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to update permissions for this user');
         })
         .end(done);
     });
@@ -196,6 +218,33 @@ describe('user permissions update controller', function () {
         .expect(500)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to locate the user');
+        })
+        .end(done);
+    });
+
+    it('should error if admin does not belong to users service', function (done) {
+
+      let targetUser = _.cloneDeep(userToView);
+      targetUser.service_ids[0] = '2';
+
+      let getUserResponse = userFixtures.validUserResponse(targetUser);
+      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+        .reply(200, getUserResponse.getPlain());
+
+      app = session.getAppWithLoggedInUser(getApp(), userInSession);
+
+      return supertest(app)
+        .post(updatePermissionPath(usernameToView))
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'role-input': roles['admin'].extId,
+          csrfToken: csrf().create('123')
+        })
+        .expect(500)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to update permissions for this user');
         })
         .end(done);
     });
