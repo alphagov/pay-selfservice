@@ -19,6 +19,7 @@ class User {
     this._sessionVersion = userData.session_version || 0;
     this._permissions = userData.permissions || [];
     this._role = userData.role || {};
+    this._serviceName = userData.service_name;
   }
 
   toJson() {
@@ -39,6 +40,7 @@ class User {
       gateway_account_ids: this._gatewayAccountIds,
       service_ids: this._serviceIds,
       telephone_number: this._telephoneNumber,
+
       /**
        * As of now, we expect these JSON representations are only used for data transfer between AdminUsers.
        * AdminUsers does not require the "role.description" (ever) as it is set directly from migration scripts.
@@ -114,6 +116,10 @@ class User {
 
   get role() {
     return this._role;
+  }
+
+  get serviceName(){
+    return this._serviceName;
   }
 }
 

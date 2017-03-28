@@ -70,6 +70,7 @@ describe('adminusers client - create user', function () {
 
       it('should create a user successfully', function (done) {
         let user = minimalUser.getAsObject();
+        delete user._serviceName; //TODO temporary removal of this field. It's going to be fixed in a later version
         adminusersClient.createUser(user).should.be.fulfilled.then(function (createdUser) {
           expect(createdUser.username).to.be.equal(user.username);
           expect(createdUser.email).to.be.equal(user.email);

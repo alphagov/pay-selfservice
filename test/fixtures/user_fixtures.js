@@ -37,6 +37,7 @@ module.exports = {
     let newExternalId = random.randomUuid();
     let newUsername = randomUsername();
     let role = {name: "admin"};
+    let service_name = 'System Generated'
 
     let data = {
       external_id: newExternalId,
@@ -58,6 +59,7 @@ module.exports = {
       },
       getPlain: () => {
         data.role_name = role.name;
+        data.service_name = service_name;
         return data;
       }
     };
@@ -73,6 +75,7 @@ module.exports = {
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
       gateway_account_ids: opts.gateway_account_ids || [randomAccountId()],
+      service_name: opts.service_name || 'System Generated',
       service_ids: opts.service_ids || [randomServiceId()],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
       otp_key: opts.otp_key || randomOtpKey(),
@@ -121,7 +124,8 @@ module.exports = {
         "href": `http://adminusers.service/v1/api/users/${req_external_id}?is_new_api_request=y`,
         "rel": "self",
         "method": "GET"
-      }]
+      }],
+      service_name: request.service_name || 'System Generated'
     };
 
     return {

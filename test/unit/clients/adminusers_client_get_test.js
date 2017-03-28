@@ -80,6 +80,7 @@ describe('adminusers client - get user', function () {
           expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
           expect(user.role.name).to.be.equal(expectedUserData.role.name);
           expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length);
+          expect(user.service_name).to.be.equal(expectedUserData._serviceName);
         }).should.notify(done);
       });
     });

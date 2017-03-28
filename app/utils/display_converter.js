@@ -70,11 +70,19 @@ const getAccount = account => {
   return account;
 };
 
+const getCurrentServiceName = user => {
+  if(user) {
+      return user.serviceName;
+  }
+};
+
 module.exports = function(user, data, template, account) {
   let convertedData = _.clone(data);
   convertedData.permissions = getPermissions(user);
   convertedData.navigation = showNavigationBar(template);
   addGatewayAccountProviderDisplayNames(convertedData);
   convertedData.currentGatewayAccount = getAccount(account);
+  convertedData.currentServiceName = getCurrentServiceName(user);
+
   return convertedData;
 };
