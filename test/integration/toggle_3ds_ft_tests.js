@@ -227,7 +227,7 @@ describe('The turn on 3D Secure endpoint', function () {
 
   it('should display an error if CSRF token does not exist', function (done) {
     build_form_post_request(paths.toggle3ds.on, {}, false, app)
-      .expect(500, {message: "There is a problem with the payments platform"})
+      .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
@@ -279,7 +279,7 @@ describe('The turn off 3D Secure endpoint', function () {
 
   it('should display an error if CSRF token does not exist', function (done) {
     build_form_post_request(paths.toggle3ds.off, {}, false, app)
-      .expect(500, {message: "There is a problem with the payments platform"})
+      .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 
@@ -304,7 +304,7 @@ describe('The confirm that you want to turn on 3D Secure endpoint', function () 
 
   it('should display an error if CSRF token does not exist', function (done) {
     build_form_post_request(paths.toggle3ds.onConfirm, {}, false, app)
-      .expect(500, {message: "There is a problem with the payments platform"})
+      .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 

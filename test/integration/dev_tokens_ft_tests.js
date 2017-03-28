@@ -313,7 +313,7 @@ describe('Dev Tokens Endpoints', function() {
       });
 
       build_put_request(false)
-        .expect(500, {
+        .expect(400, {
           'message': 'There is a problem with the payments platform'
         })
         .end(done);
@@ -381,7 +381,7 @@ describe('Dev Tokens Endpoints', function() {
         .delete(paths.devTokens.index + "?token_link=550e8400-e29b-41d4-a716-446655440000")
         .set('x-request-id',requestId)
         .set('Accept', 'application/json')
-        .expect(500, {message: "There is a problem with the payments platform"})
+        .expect(400, {message: "There is a problem with the payments platform"})
         .end(done);
     });
 

@@ -60,7 +60,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
 
       beforeEach(function (done) {
         let permissions = 'service-name:read';
-        var user = session.getUser({
+        let user = session.getUser({
           gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
         });
         app = session.getAppWithLoggedInUser(getApp(), user);
@@ -183,7 +183,7 @@ describe('The provider update service name endpoint', function () {
     var sendData = {'service-name-input': 'Service name'};
     var path = paths.serviceName.index;
     build_form_post_request(path, sendData, false, app)
-      .expect(500, {message: "There is a problem with the payments platform"})
+      .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);
   });
 });
