@@ -130,7 +130,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', `${paths.teamMembers}/${usernameToView}`)
+        .expect('Location', paths.teamMembers.show.replace(':username', usernameToView))
         .end(done);
     });
 
@@ -153,7 +153,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', `${paths.teamMembers}/${usernameToView}`)
+        .expect('Location', paths.teamMembers.show.replace(':username', usernameToView))
         .end(done);
     });
 

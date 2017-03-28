@@ -77,7 +77,7 @@ module.exports = {
     let correlationId = req.correlationId;
     let onSuccess = (user) => {
       req.flash('generic', 'Permissions have been updated');
-      res.redirect(303, paths.teamMembers + `/${user.username}`);
+      res.redirect(303, paths.teamMembers.show.replace(':username', user.username));
     };
 
     if (req.user.username == username) {
