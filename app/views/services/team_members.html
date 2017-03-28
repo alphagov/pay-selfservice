@@ -8,54 +8,55 @@ GOV.UK Pay - Team members
 <script src="/public/js/components/link-follower.js"></script>
 {{/pageSpecificJS}}
 
+{{$mainClasses}}full-width{{/mainClasses}}
 {{$full_width_content}}
-<h2 class="heading-large">Team members</h2>
-<p id="active-team-members-heading">Active ({{number_active_members}})</p>
+<a href="/my-services" class="link-back">My Services</a>
+<h1 class="heading-large">Team members</h1>
+<p class="admin-lede">Team member changes affect both live and test environments.</p>
+<div class="grid-row">
+    <div class="column-two-thirds admin-list-group">
+        <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
 
-<table id="team-members-admin-list">
-    <thead>
-    <tr>
-        <th id="admin-role-header">Administrators ({{number_admin_members}})</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#team_members.admin}}
-    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
-        <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
-    </tr>
-    {{/team_members.admin}}
-    </tbody>
-</table>
+        <div class="admin-list" id="team-members-admin-list">
+            <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{number_admin_members}})</h3>
+            <ul>
+                {{#team_members.admin}}
+                <li>
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
+                    {{username}} {{#is_current}}(you){{/is_current}}
+                    {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
+                </li>
+                {{/team_members.admin}}
+            </ul>
+        </div>
 
-<table id="team-members-view-and-refund-list">
-    <thead>
-    <tr>
-        <th id="view-and-refund-role-header">View and refund ({{number_view-and-refund_members}})</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#team_members.view-and-refund}}
-    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
-        <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
-    </tr>
-    {{/team_members.view-and-refund}}
-    </tbody>
-</table>
+        <div class="admin-list" id="team-members-view-and-refund-list">
+            <h3 id="view-and-refund-role-header" class="admin-list-heading">View and refund ({{number_view-and-refund_members}})</h3>
+            <ul>
+                {{#team_members.view-and-refund}}
+                <li>
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
+                    {{username}} {{#is_current}}(you){{/is_current}}
+                    {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
+                </li>
+                {{/team_members.view-and-refund}}
+            </ul>
+        </div>
 
-<table id="team-members-view-only-list">
-    <thead>
-    <tr>
-        <th id="view-only-role-header">View only ({{number_view-only_members}})</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#team_members.view-only}}
-    <tr {{#permissions.users_service_read}} data-follow-link data-link="{{link}}" {{/permissions.users_service_read}} >
-        <td>{{username}} {{#is_current}}(you){{/is_current}}</td>
-    </tr>
-    {{/team_members.view-only}}
-    </tbody>
-</table>
+        <div class="admin-list" id="team-members-view-only-list">
+            <h3 id="view-only-role-header" class="admin-list-heading">View only ({{number_view-only_members}})</h3>
+            <ul>
+                {{#team_members.view-only}}
+                <li>
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
+                    {{username}} {{#is_current}}(you){{/is_current}}
+                    {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
+                </li>
+                {{/team_members.view-only}}
+            </ul>
+        </div>
+    </div>
+</div>
 
 {{/full_width_content}}
 

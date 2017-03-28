@@ -1,0 +1,19 @@
+.marked-grid {
+  .grid-row {
+    .heading-group {
+      margin: 0 $gutter-half;
+      border-top: solid 1px $grey-2;
+    }
+
+    /* Adjustments to heading vertical spacing */
+    .heading-medium {
+      margin: 1.25em 0 0.8333em;
+    }
+  }
+
+  .column-half:nth-child(even) {
+    @include media(tablet) {
+      border-right: solid 1px $grey-2;
+    }
+  }
+}

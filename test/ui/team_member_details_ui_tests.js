@@ -14,7 +14,7 @@ describe('The team member details view', function () {
 
     let body = renderTemplate('services/team_member_details', templateData);
 
-    body.should.containSelector('h2#details-for').withExactText('Details for Oscar Smith');
+    body.should.containSelector('h1#details-for').withOnlyText('Details for Oscar Smith');
     body.should.containSelector('td#name').withExactText('Oscar Smith');
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com');
     body.should.containSelector('td#role').withExactText('View only');

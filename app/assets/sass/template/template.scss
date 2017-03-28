@@ -16,6 +16,10 @@
   @include respond-to-max(1260px) {
     padding: 30px;
   }
+
+  &.full-width {
+    padding-top: 0;
+  }
 }
 
 .content-wrapper {
@@ -57,6 +61,9 @@
 }
 .column-two-thirds {
   @include grid-column( 2/3 );
+}
+.column-one-whole {
+  @include grid-column( 1 );
 }
 
 .column-quarter,
