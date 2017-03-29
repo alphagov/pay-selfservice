@@ -1,6 +1,6 @@
 {{< govuk_template}}
     {{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}
-    {{$bodyClasses}}env-{{currentGatewayAccount.type}}{{/bodyClasses}}
+    {{$bodyClasses}}{{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
     {{$homepageUrl}}/{{/homepageUrl}}
     {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
 
