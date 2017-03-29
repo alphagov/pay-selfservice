@@ -24,3 +24,34 @@
      -moz-animation:yellow-fade 3s;
           animation:yellow-fade 3s;
 }
+
+/* Temporary banner for outages */
+#global-message {
+  width: 100%;
+  background-color: $light-blue-25;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  p {
+    max-width: 1200px;
+
+    @include ie-lte(8) {
+      width: 1200px;
+    }
+
+    margin: 0 $gutter-half;
+    padding: 0 $gutter-half;
+
+    @include media(tablet) {
+      margin: 0 $gutter;
+      padding: 0 $gutter;
+    }
+
+    @include media($min-width: (1200px + $gutter * 2)) {
+      margin: 0 auto;
+    }
+
+    @include core-16;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
