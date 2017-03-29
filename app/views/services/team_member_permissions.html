@@ -1,0 +1,79 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - Edit user permissions
+{{/pageTitle}}
+{{$full_width_content}}
+
+<div>
+    <h1 class="heading-large underline">
+        <span class="heading-secondary">Team members</span>
+        Edit permissions</h1>
+</div>
+
+<div id="heading-large underline">
+    <h2 class="heading-small">Email address</h2>
+    <span id="email">{{email}}</span>
+</div>
+
+
+<div class="column-full remove-left-margin">
+    <h3 class="heading-small">Permission level</h3>
+    <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
+        <div class="form-group">
+            <fieldset>
+                <legend class="visuallyhidden">Permission level</legend>
+                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+                <label class="block-label selection-button-radio" for="role-admin-input">
+                    <input id="role-admin-input" class="form-control" name="role-input" type="radio" value="{{admin.id}}" {{admin.checked}}>
+                    <span class="permission-main-type">Administrator</span>
+                    <ul class="permission-list">
+                        <li>View and change settings</li>
+                        <li>Edit data, e.g. refund a payment</li>
+                        <li>View data, e.g. transactions</li>
+                    </ul>
+                </label>
+
+                <label class="block-label selection-button-radio" for="role-view-and-refund-input">
+                    <input id="role-view-and-refund-input" class="form-control" name="role-input" type="radio" value="{{viewAndRefund.id}}" {{viewAndRefund.checked}}>
+                    <span class="permission-main-type">View and refund</span>
+                    <ul class="permission-list">
+                        <li>Edit data, e.g. refund a payment</li>
+                        <li>View data, e.g. transactions</li>
+                        <li>Cannot view or edit settings</li>
+                    </ul>
+                </label>
+
+                <label class="block-label selection-button-radio" for="role-view-input">
+                    <input id="role-view-input" class="form-control" name="role-input" type="radio" value="{{view.id}}" {{view.checked}}>
+                    <span class="permission-main-type">View only</span>
+                    <ul class="permission-list">
+                        <li>View data, e.g. transactions</li>
+                        <li>Cannot edit data</li>
+                        <li>Cannot view or edit settings</li>
+                    </ul>
+                </label>
+            </fieldset>
+            <p>
+                <div class="notice">
+                    <div>
+                    <strong class="bold-small">
+                        This change affects both live and test environments
+                    </strong>
+                    </div>
+                </div>
+            </p>
+
+            <div class="form-group">
+                <input type="submit" class="button" value="Submit">
+            </div>
+            <a id="service-name-cancel-link" href="{{routes.teamMembers.index}}">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{{/full_width_content}}
+
+{{/layout}}
