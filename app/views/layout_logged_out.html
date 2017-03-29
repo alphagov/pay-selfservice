@@ -1,15 +1,37 @@
-{{< staff_frontend_template_logged_out}}
+{{< govuk_template}}
 
-{{$head}}
-  {{>includes/head}}
-  {{$pageSpecificStyle}}
-  {{/pageSpecificStyle}}
-{{/head}}
+    {{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}
 
-{{$bodyEnd}}
-  {{>includes/scripts}}
-  {{$pageSpecificJS}}
-  {{/pageSpecificJS}}
-{{/bodyEnd}}
+    {{$homepageUrl}}/{{/homepageUrl}}
+    {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
 
-{{/staff_frontend_template_logged_out}}
+    {{$head}}
+      {{>includes/head}}
+      {{$pageSpecificStyle}}
+      {{/pageSpecificStyle}}
+    {{/head}}
+
+    {{$content}}
+        {{#flash.genericError}}
+        <p class="generic-error"> {{flash.genericError}} </p>
+        {{/flash.genericError}}
+        {{#flash.generic}}
+        <p class="generic-flash">{{flash.generic}}</p>
+        {{/flash.generic}}
+
+        <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
+          <div class="main-content">
+            <div class="inner">
+              {{$mainContent}}{{/mainContent}}
+            </div>
+          </div>
+        </main>
+    {{/content}}
+
+    {{$bodyEnd}}
+      {{>includes/scripts}}
+      {{$pageSpecificJS}}
+      {{/pageSpecificJS}}
+    {{/bodyEnd}}
+
+{{/govuk_template}}
