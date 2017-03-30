@@ -1,0 +1,32 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - My services
+{{/pageTitle}}
+
+{{$mainClasses}}full-width{{/mainClasses}}
+{{$full_width_content}}
+<div class="column-two-thirds">
+    <h1 class="heading-large underline">Edit service name</h1>
+    <p>This change won’t affect how the service name appears on the user facing payment pages.
+    </p><div class="column-two-thirds remove-left-margin">
+    {{#permissions.service_name_update}}
+    <form action="{{routes.serviceName.save}}" class="form">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+        <div class="form-group">
+            <label class="form-label" for="service-name-input">
+                Service name
+            </label>
+            <input type="text" class="form-control" id="service-name-input" name="service-name-input" placeholder="{{currentServiceName}}" maxlength="50">
+        </div>
+        <div class="form-group">
+            <input class="button" type="submit" value="Save" id="service-name-save-button" name="service-name-save-button">
+        </div>
+        <p><a href="{{routes.serviceSwitcher.index}}" id="service-name-cancel-link">Cancel</a></p>
+    </form>
+    {{/permissions.service_name_update}}
+</div>
+</div>
+{{/full_width_content}}
+
+{{/layout}}

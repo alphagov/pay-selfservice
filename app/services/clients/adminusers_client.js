@@ -432,6 +432,43 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * @param serviceId
+   * @param newServiceName
+   * @returns {Promise}
+   */
+  let updateServiceName = (serviceId, newServiceName) => {
+
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        new_service_name: newServiceName
+      }
+    };
+
+    let url = `${userResource}/${serviceId}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'PUT',
+      description: 'update a service name',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -444,6 +481,7 @@ module.exports = function (clientOptions = {}) {
     sendSecondFactor:sendSecondFactor,
     authenticateSecondFactor:authenticateSecondFactor,
     getServiceUsers: getServiceUsers,
-    updateServiceRole: updateServiceRole
+    updateServiceRole: updateServiceRole,
+    updateServiceName: updateServiceName
   };
 };

@@ -90,7 +90,7 @@ function _cardTypesUrlFor(url) {
 }
 
 /** @private */
-function _serviceNameUrlFor(gatewayAccountId, url) {
+function _gatewayAccountNameUrlFor(gatewayAccountId, url) {
   return url + SERVICE_NAME_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
 }
 
@@ -395,8 +395,8 @@ ConnectorClient.prototype = {
    * @param successCallback
    *          Callback function for successful patching of service name
    */
-  patchServiceName: function (params, successCallback) {
-    var url = _serviceNameUrlFor(params.gatewayAccountId, this.connectorUrl);
+  patchGatewayAccountName: function (params, successCallback) {
+    var url = _gatewayAccountNameUrlFor(params.gatewayAccountId, this.connectorUrl);
     logger.debug('Calling connector to update service name -', {
       service: 'connector',
       method: 'PATCH',

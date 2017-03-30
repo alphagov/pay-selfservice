@@ -19,7 +19,7 @@ GOV.UK Pay - Change service name
 </div>
 {{/permissions.service_name_read}}
 {{#permissions.service_name_update}}
-<a id="service-name-change-link" class="button" href="{{routes.serviceName.edit}}">
+<a id="service-name-change-link" class="button" href="{{routes.gatewayAccountName.edit}}">
 Change service name
 </a>
 {{/permissions.service_name_update}}
@@ -27,20 +27,20 @@ Change service name
 
 {{#permissions.service_name_update}}
 {{#editMode}}
-<form id="service-name-form" method="post" action="{{routes.serviceName.save}}">
+<form id="service-name-form" method="post" action="{{routes.gatewayAccountName.save}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
-        <label class="form-label-bold" for="service-name-input">
+        <label class="form-label-bold" for="gateway-account-name-input">
             Enter new service name
 
             <span class="form-hint">The service name can't be more than 50 characters.</span>
         </label>
-        <input id="service-name-input" class="form-control" name="service-name-input" type="text" value="{{serviceName}}" maxlength="50">
+        <input id="gateway-account-name-input" class="form-control" name="gateway-account-name-input" type="text" value="{{serviceName}}" maxlength="50">
     </div>
     <div class="form-group">
-        <input id="service-name-save-button" name="service-name-save-button" type="submit" class="button" value="Save service name">
+        <input id="gateway-account-name-save-button" name="gateway-account-name-save-button" type="submit" class="button" value="Save service name">
     </div>
-    <a id="service-name-cancel-link" href="{{routes.serviceName.index}}">
+    <a id="gateway-account-name-cancel-link" href="{{routes.gatewayAccountName.index}}">
         Cancel
     </a>
 </form>

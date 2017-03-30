@@ -1,60 +1,59 @@
 var response              = require('../utils/response.js').response;
-var auth                  = require('../services/auth_service.js');
 var router                = require('../routes.js');
-var ConnectorClient       = require('../services/clients/connector_client.js').ConnectorClient;
+var getAdminUsersClient   = require('../services/clients/adminusers_client');
 var renderErrorView       = require('../utils/response.js').renderErrorView;
 var CORRELATION_HEADER    = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
-var connectorClient = function () {
-  return new ConnectorClient(process.env.CONNECTOR_URL);
-};
 
-module.exports.index = function (req, res) {
+module.exports.edit = function (req, res) {
 
   if(!req.account) {
     return renderErrorView(req, res, 'Unable to retrieve the service name.');
   }
 
   var model = {
-    serviceName: req.account.service_name,
-    editMode: !(req.query.edit === undefined)
+    currentServiceName: req.user.currentServiceName
   };
 
-  return response(req, res, 'service_name', model);
+  return response(req, res, 'services/update_service_name', model);
 };
 
 module.exports.update = function (req, res) {
 
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+  let correlationId = req.headers[CORRELATION_HEADER] || req.correlationId || '';
 
-  var init = function () {
-    var accountId = auth.getCurrentGatewayAccountId(req);
+  let init = function () {
+    let serviceId = req.user.serviceIds[0];
 
-    var payload = {
-      service_name: req.body['service-name-input']
+    let newServiceName = req.body['service-name-input'];
+
+    let payload = {
+      service_name: newServiceName
     };
 
-    var params = {
-      gatewayAccountId: accountId,
+    let params = {
+      serviceId: serviceId,
       payload : payload,
       correlationId: correlationId
     };
 
-    connectorClient()
-      .patchServiceName(params, onSuccess)
-      .on('connectorError', onError);
+    getAdminUsersClient({correlationId: correlationId})
+      .updateServiceName(params, onSuccess)
+      .on('adminUserError', onError);
   };
 
-  var onSuccess = function () {
-    res.redirect(303, router.paths.serviceName.index);
+  let onSuccess = function () {
+    req.flash('generic', 'Service name has been updated');
+    res.redirect(303, req.user.replace(':currentServiceName', newServiceName));
   };
 
-  var onError = function (connectorError) {
-    if (connectorError) {
+  let onError = function (adminUserError) {
+    if (adminUserError) {
       renderErrorView(req, res, 'Internal server error');
       return;
     }
-    renderErrorView(req, res, 'Unable to update the service name.');
+    console.log(">>>>> " + req.body);
+    renderErrorView(req, res, req.body + 'Unable to update the service name.');
   };
 
   init();

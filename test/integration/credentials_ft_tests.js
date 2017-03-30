@@ -79,7 +79,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "permissions": {
         gateway_credentials_read: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.index, app)
@@ -107,7 +108,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "permissions": {
         gateway_credentials_read: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.index, app)
@@ -136,7 +138,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "permissions": {
         gateway_credentials_read: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.index, app)
@@ -167,7 +170,8 @@ describe('The ' + paths.credentials.index + ' endpoint', function () {
       "permissions": {
         gateway_credentials_read: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.index, app)
@@ -244,7 +248,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -272,7 +277,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -299,7 +305,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -327,7 +334,8 @@ describe('The ' + paths.credentials.edit + ' endpoint', function () {
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.edit, app)
@@ -404,7 +412,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -432,7 +441,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -461,7 +471,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -492,7 +503,8 @@ describe('The ' + paths.notificationCredentials.edit + ' endpoint', function () 
       "permissions": {
         gateway_credentials_update: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.notificationCredentials.edit, app)
@@ -578,7 +590,8 @@ describe('The notification credentials', function () {
       "permissions": {
         gateway_credentials_read: true
       },
-      navigation: true
+      navigation: true,
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.credentials.index, app)

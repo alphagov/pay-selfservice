@@ -7,12 +7,15 @@ var getUser = (opts) => {
     return userFixture.validUser(opts).getAsObject();
   },
 
-  createAppWithSession = function (app, sessionData, gatewayAccountData) {
+  createAppWithSession = function (app, sessionData, gatewayAccountData, serviceData) {
     var proxyApp = express();
     proxyApp.all("*", function (req, res, next) {
       sessionData.destroy = sinon.stub();
       req.session = sessionData || {};
       req.gateway_account = gatewayAccountData || {};
+      req.service_ids = serviceData.service_ids || {};
+      req.currentServiceName = serviceData.currentServiceName || '';
+      console.log('>>>>>> ' + req.toString());
       next();
     });
     proxyApp.use(app);
@@ -35,6 +38,10 @@ var getUser = (opts) => {
     return createAppWithSession(app, session);
   },
 
+  getAppWithSessionAndService = function(app, session, gatewayAccountData, serviceData){
+    return createAppWithSession(app, session, gatewayAccountData, serviceData);
+  },
+
   getMockSession = function (user) {
     return _.cloneDeep({
       csrfSecret: "123",
@@ -53,5 +60,6 @@ module.exports = {
   getAppWithSessionAndGatewayAccountCookies: getAppWithSessionAndGatewayAccountCookies,
   getMockSession: getMockSession,
   getUser: getUser,
-  getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor
+  getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor,
+  getAppWithSessionAndService: getAppWithSessionAndService
 };

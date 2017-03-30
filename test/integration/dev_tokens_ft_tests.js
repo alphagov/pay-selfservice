@@ -95,7 +95,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_revoked_read': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -121,7 +122,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_revoked_read': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -151,7 +153,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_revoked_read': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -191,7 +194,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_active_read': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -217,7 +221,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_active_read': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -247,7 +252,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_active_read': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -298,7 +304,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_update': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -448,7 +455,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_create': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
 
@@ -463,7 +471,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_create': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });
@@ -497,7 +506,8 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_create': true
           },
-          navigation: true
+          navigation: true,
+          currentServiceName: "System Generated"
         })
         .end(done);
     });

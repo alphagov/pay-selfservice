@@ -2,79 +2,131 @@ let should = require('chai').should();
 let renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
 let paths = require(__dirname + '/../../app/paths.js');
 
-describe('The service name view in normal mode', function () {
+describe('The current service name on landing page', function () {
 
-  it('should display the service name view with permission but no the change service name link', function () {
+
+  it('should display the current service name with navigation enabled', function () {
 
     let templateData = {
-      "serviceName": "Service Name",
-      "editMode": false,
-      permissions: {
-        service_name_read: true
+      navigation: true,
+      currentServiceName: "System Generated",
+      currentGatewayAccount: {
+        type: "test",
+        full_type: "sandbox test"
       }
     };
 
-    let body = renderTemplate('service_name', templateData);
+    let body = renderTemplate('layout', templateData);
 
-    body.should.containSelector('h1.page-title').withExactText('GOV.UK Pay - Change service name');
-    body.should.containNoSelectorWithText('a#service-name-change-link');
-    body.should.containSelector('#service-name').withExactText('Service Name');
+    //body.should.containSelector('#phase-banner'); //.withText('System Generated  sandbox test');
 
   });
 
-  it('should not display the service name when user does not have permission', function () {
+  it('should not display the current service name with navigation disabled', function () {
 
     let templateData = {
-      "serviceName": "Service Name",
-      "editMode": false,
+      navigation: false,
+      currentServiceName: "System Generated",
+      serviceName: "Service Name",
+      editMode: false,
+      currentGatewayAccount: {
+        type: "test",
+        full_type: "sandbox test"
+      },
       permissions: {
-        service_name_read: false
+        service_name_edit: false
       }
     };
 
-    let body = renderTemplate('service_name', templateData);
+    let body = renderTemplate('services/index', templateData);
 
-    body.should.containNoSelectorWithText('#service-name', 'Service Name');
+    body.should.containNoSelectorWithText('#service-name', 'sandbox test');
+    body.should.containSelector('#current_service_name').withText('System Generated');
+
   });
 });
 
-describe('The service name view in edit mode with permission', function () {
+describe('The current service name on my services page', function () {
 
-  it('should display the service name view', function () {
+  it('should not display edit link of the current service name on my services page', function () {
+
     let templateData = {
-      "serviceName": "Service Name",
-      "editMode": true,
-      permissions: {
-        service_name_update: true
-      }
-    };
-
-    let body = renderTemplate('service_name', templateData);
-
-    body.should.containSelector('h1.page-title').withExactText('GOV.UK Pay - Change service name');
-
-    body.should.containInputField('service-name-input', 'text')
-      .withAttribute('value', 'Service Name')
-      .withLabel('Enter new service name');
-
-    body.should.containInputField('service-name-save-button', 'submit');
-
-    body.should.containSelector('a#service-name-cancel-link')
-      .withAttribute("href", paths.serviceName.index)
-      .withText("Cancel");
-  });
-
-  it('should display the service name view with permission', function () {
-    let templateData = {
-      "serviceName": "Service Name",
-      "editMode": true,
+      navigation: false,
+      serviceName: "Service Name",
+      currentServiceName: "System Generated",
+      editMode: false,
       permissions: {
         service_name_update: false
       }
     };
 
-    let body = renderTemplate('service_name', templateData);
+    let body = renderTemplate('services/index', templateData);
 
-    body.should.not.containSelector('input#service-name-input');
+    body.should.containNoSelector('#update_service_name');
+    body.should.containSelector('#current_service_name').withText('System Generated');
+  });
+
+  it('should display edit link of the current service name on my services page', function () {
+
+    let templateData = {
+      navigation: false,
+      serviceName: "Service Name",
+      currentServiceName: "System Generated",
+      editMode: false,
+      permissions: {
+        service_name_update: true
+      }
+    };
+
+    let body = renderTemplate('services/index', templateData);
+
+    body.should.containSelector('#update_service_name');
+    body.should.containSelector('#current_service_name').withText('System Generated');
+  });
+});
+
+describe('The editing page of service name', function () {
+
+  it('should display edit option of the service name on the editing page', function () {
+
+    let templateData = {
+      navigation: false,
+      serviceName: "Service Name",
+      currentServiceName: "System Generated",
+      editMode: false,
+      permissions: {
+        service_name_update: true
+      }
+    };
+
+    let body = renderTemplate('services/update_service_name', templateData);
+
+    body.should.containInputField('service-name-input', 'text')
+      .withAttribute('placeholder', 'System Generated')
+      .withLabel('Service name');
+
+    body.should.containInputField('service-name-input', 'text');
+    body.should.containInputField('service-name-save-button', 'submit');
+
+    body.should.containSelector('a#service-name-cancel-link')
+      .withAttribute("href", paths.serviceSwitcher.index)
+      .withText("Cancel");
+  });
+
+  it('should not display edit option of the service name on the editing page with no permission', function () {
+
+    let templateData = {
+      navigation: false,
+      serviceName: "Service Name",
+      currentServiceName: "System Generated",
+      editMode: false,
+      permissions: {
+        service_name_update: false
+      }
+    };
+
+    let body = renderTemplate('services/update_service_name', templateData);
+
+    body.should.containNoSelector('a#service-name-cancel-link');
   });
 });

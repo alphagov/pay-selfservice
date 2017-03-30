@@ -150,6 +150,7 @@ describe('The transaction view scenarios', function () {
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeId,
+        'currentServiceName': 'System Generated',
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
@@ -307,6 +308,7 @@ describe('The transaction view scenarios', function () {
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeId,
+        'currentServiceName': 'System Generated',
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
@@ -393,6 +395,7 @@ describe('The transaction view scenarios', function () {
 
       var mockChargeResponse = {
         'charge_id': chargeId,
+        'currentServiceName': 'System Generated',
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
@@ -433,6 +436,7 @@ describe('The transaction view scenarios', function () {
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeId,
+        'currentServiceName': 'System Generated',
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
@@ -546,6 +550,7 @@ describe('The transaction view scenarios', function () {
 
       var mockChargeResponse = {
         'charge_id': chargeWithRefund,
+        'currentServiceName': 'System Generated',
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
@@ -592,6 +597,7 @@ describe('The transaction view scenarios', function () {
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeWithRefund,
+        'currentServiceName': 'System Generated',
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',

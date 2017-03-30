@@ -5,7 +5,7 @@ var credentials = require('./controllers/credentials_controller.js');
 var login = require('./controllers/login_controller.js');
 var healthcheck = require('./controllers/healthcheck_controller.js');
 var devTokens = require('./controllers/dev_tokens_controller.js');
-var serviceName = require('./controllers/service_name_controller.js');
+var gatewayAccountName = require('./controllers/gateway_account_name_controller.js');
 var paymentTypesSelectType = require('./controllers/payment_types_select_type_controller.js');
 var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
 var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
@@ -15,6 +15,7 @@ var serviceSwitchController = require('./controllers/service_switch_controller.j
 var serviceUsersController = require('./controllers/service_users_controller.js');
 var permissionController = require('./controllers/service_roles_update_controller.js');
 var toggle3ds = require('./controllers/toggle_3ds_controller.js');
+var serviceNameController = require('./controllers/service_name_controller.js');
 
 var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
@@ -94,10 +95,10 @@ module.exports.bind = function (app) {
   app.put(dt.update, auth.enforceUserAuthenticated, csrf, permission('tokens:update'), getAccount,devTokens.update);
   app.delete(dt.delete, auth.enforceUserAuthenticated, csrf, permission('tokens:delete'), getAccount,devTokens.destroy);
 
-  // SERVICE NAME
-  var sn = paths.serviceName;
-  app.get(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:read'), getAccount,serviceName.index);
-  app.post(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), getAccount,serviceName.update);
+  // GATEWAY ACCOUNT NAME
+  var sn = paths.gatewayAccountName;
+  app.get(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:read'), getAccount,gatewayAccountName.index);
+  app.post(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), getAccount,gatewayAccountName.update);
 
   // PAYMENT TYPES
   var pt = paths.paymentTypes;
@@ -121,6 +122,11 @@ module.exports.bind = function (app) {
   var serviceSwitcher = paths.serviceSwitcher;
   app.get(serviceSwitcher.index, auth.enforceUserAuthenticated, csrf, serviceSwitchController.index);
   app.post(serviceSwitcher.switch, auth.enforceUserAuthenticated, csrf, serviceSwitchController.switch);
+
+  // SERVICE - UPDATE NAME
+  var serviceName = paths.updateServiceName;
+  app.get(serviceName.edit, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), retrieveAccount, serviceNameController.edit);
+  app.post(serviceName.edit, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), retrieveAccount,serviceNameController.update);
 
   // TEAM MEMBERS - USER PROFILE
   var teamMembers = paths.teamMembers;

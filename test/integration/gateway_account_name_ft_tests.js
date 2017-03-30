@@ -18,7 +18,7 @@ var aCorrelationHeader = {
 };
 
 var CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts/" + ACCOUNT_ID;
-var CONNECTOR_ACCOUNT_SERVICE_NAME_PATH = CONNECTOR_ACCOUNT_PATH + "/servicename";
+var CONNECTOR_ACCOUNT_GATEWAY_NAME_PATH = CONNECTOR_ACCOUNT_PATH + "/servicename";
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
 
 function build_get_request(path, app) {
@@ -43,11 +43,11 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
 
 [
   {
-    'path': paths.serviceName.index,
+    'path': paths.gatewayAccountName.index,
     'edit': false
   },
   {
-    'path': paths.serviceName.edit,
+    'path': paths.gatewayAccountName.edit,
     'edit': true
   }
 ].forEach(function (testSetup) {
@@ -83,7 +83,8 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
           navigation: true,
           currentGatewayAccount: {
             "service_name": "Service name"
-          }
+          },
+          currentServiceName: "System Generated"
         };
 
         build_get_request(testSetup.path, app)
@@ -141,14 +142,15 @@ describe('The provider update service name endpoint', function () {
   });
 
   it('should send new service name to connector', function (done) {
-    connectorMock.patch(CONNECTOR_ACCOUNT_SERVICE_NAME_PATH, {
+    connectorMock.patch(CONNECTOR_ACCOUNT_GATEWAY_NAME_PATH, {
       "service_name": "Service name"
     })
       .reply(200, {});
 
     var sendData = {'service-name-input': 'Service name'};
-    var expectedLocation = paths.serviceName.index;
-    var path = paths.serviceName.index;
+    var expectedLocation = paths.gatewayAccountName.index;
+    var path = paths.gatewayAccountName.index;
+
     build_form_post_request(path, sendData, true, app)
       .expect(303, {})
       .expect('Location', expectedLocation)
@@ -163,7 +165,7 @@ describe('The provider update service name endpoint', function () {
 
     var sendData = {'service-name-input': 'Service name'};
     var expectedData = {"message": "Internal server error"};
-    var path = paths.serviceName.index;
+    var path = paths.gatewayAccountName.index;
     build_form_post_request(path, sendData, true, app)
       .expect(500, expectedData)
       .end(done);
@@ -173,7 +175,7 @@ describe('The provider update service name endpoint', function () {
     // No connectorMock defined on purpose to mock a network failure
     var sendData = {'service-name-input': 'Service name'};
     var expectedData = {"message": "Internal server error"};
-    var path = paths.serviceName.index;
+    var path = paths.gatewayAccountName.index;
     build_form_post_request(path, sendData, true, app)
       .expect(500, expectedData)
       .end(done);
@@ -181,7 +183,7 @@ describe('The provider update service name endpoint', function () {
 
   it('should display an error if csrf token does not exist for the update', function (done) {
     var sendData = {'service-name-input': 'Service name'};
-    var path = paths.serviceName.index;
+    var path = paths.gatewayAccountName.index;
     build_form_post_request(path, sendData, false, app)
       .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);

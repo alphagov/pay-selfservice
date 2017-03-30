@@ -82,7 +82,8 @@ describe('The payment types endpoint,', function () {
         ],
         "permissions": {
           "payment_types_read": true
-        }, navigation: true
+        }, navigation: true,
+        currentServiceName: "System Generated"
       };
 
       build_get_request(paths.paymentTypes.summary, app)

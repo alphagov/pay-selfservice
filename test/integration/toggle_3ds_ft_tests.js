@@ -72,7 +72,8 @@ describe('The 3D Secure index endpoint', function () {
       navigation: true,
       currentGatewayAccount: {
         "requires3ds": true
-      }
+      },
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.toggle3ds.index, app)
@@ -96,7 +97,8 @@ describe('The 3D Secure index endpoint', function () {
       navigation: true,
       currentGatewayAccount: {
         "requires3ds": true
-      }
+      },
+      currentServiceName: "System Generated"
     };
 
     build_get_request(paths.toggle3ds.index + '?toggled', app)
@@ -119,7 +121,8 @@ describe('The 3D Secure index endpoint', function () {
        navigation: true,
        currentGatewayAccount: {
          "requires3ds": false
-       }
+       },
+       currentServiceName: "System Generated"
      };
 
      build_get_request(paths.toggle3ds.index, app)
@@ -142,7 +145,8 @@ describe('The 3D Secure index endpoint', function () {
        navigation: true,
        currentGatewayAccount: {
          "requires3ds": false
-       }
+       },
+       currentServiceName: "System Generated"
      };
 
      build_get_request(paths.toggle3ds.index + '?toggled', app)

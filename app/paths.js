@@ -43,7 +43,7 @@ module.exports = {
     update: '/tokens',
     delete: '/tokens'
   },
-  serviceName: {
+  gatewayAccountName: {
     index: '/service-name',
     edit: '/service-name?edit'
   },
@@ -69,6 +69,9 @@ module.exports = {
     index: '/team-members',
     show: '/team-members/:externalId',
     permissions: '/team-members/:externalId/permissions'
+  },
+  updateServiceName: {
+    edit: '/update-service-name'
   },
   toggle3ds: {
     index: '/3ds',
