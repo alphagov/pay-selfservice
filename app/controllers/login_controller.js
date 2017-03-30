@@ -62,7 +62,7 @@ module.exports.postLogin = function (req, res) {
 module.exports.logUserin = function(req,res, next) {
   return passport.authenticate('local', {
     failureRedirect: '/login',
-    badRequestMessage : 'Invalid username or password.',
+    badRequestMessage : 'Invalid email or password.',
     failureFlash: true
   })(req, res, next);
 };
