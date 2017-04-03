@@ -27,7 +27,9 @@
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "test": "npm run lint && npm run grunt-test",
     "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js",
-    "grunt-test": "node ./node_modules/.bin/grunt test"
+    "grunt-test": "node ./node_modules/.bin/grunt test",
+    "pact-adminusers": "grunt pact --providers='[\"adminusers\"]'",
+    "pact-all": "grunt pact --providers='[\"adminusers\"]'"
   },
   "dependencies": {
     "appmetrics": "1.1.2",

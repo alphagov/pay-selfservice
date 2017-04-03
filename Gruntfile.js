@@ -1,9 +1,45 @@
 var environment  = require(__dirname + '/app/services/environment.js');
+var pactProxy = require('./test/test_helpers/pact_proxy');
+fs = require('fs')
+
+function munge(provider) {
+  let allInteractions = [];
+  let files = fs.readdirSync('pacts');
+
+  files.map(file => {
+    let fileContents = fs.readFileSync('pacts/' + file);
+    let interactions = JSON.parse(fileContents).interactions;
+    allInteractions = allInteractions.concat(interactions);
+    fs.unlinkSync('pacts/' + file);
+  });
+
+
+  let outFile = {
+    consumer: {
+      name: "selfservice"
+    },
+    provider: {
+      name: provider
+    },
+
+    interactions: allInteractions,
+    metadata: {
+      pactSpecificationVersion: "2.0.0"
+    }
+  };
+
+  fs.writeFileSync('pacts/selfservice-adminusers.json', JSON.stringify(outFile));
+
+}
 
 module.exports = function(grunt){
+
+
+
   grunt.initConfig({
     // Clean
-    clean: ['public', 'govuk_modules'],
+    clean: ['public', 'govuk_modules', 'pacts'],
+
 
     // Builds Sass
     sass: {
@@ -131,8 +167,15 @@ module.exports = function(grunt){
           reporter: 'spec',
           captureFile: 'mocha-test-results.txt'
         }
+      },
+
+      adminusers: {
+        src: [
+          'test/contract/adminusers/*.js'
+        ]
       }
     },
+
     env: {
       test: {
         src: "config/test-env.json"
@@ -141,10 +184,7 @@ module.exports = function(grunt){
         src: "config/dev-env.json"
       }
     }
-
   });
-
-
 
   [
     'grunt-contrib-copy',
@@ -155,7 +195,8 @@ module.exports = function(grunt){
     'grunt-text-replace',
     'grunt-concurrent',
     'grunt-mocha-test',
-    'grunt-env'
+    'grunt-env',
+    'grunt-text-replace'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task);
   });
@@ -173,10 +214,10 @@ module.exports = function(grunt){
       'generate-assets',
       'concurrent:target'
   ];
-
   if (process.env.LOCAL_ENV) {
     defaultTasks.unshift('env:dev');
   }
+
 
   grunt.registerTask('default',defaultTasks);
 
@@ -190,4 +231,40 @@ module.exports = function(grunt){
 
   });
 
+  grunt.registerTask('munge-pact', 'Munge pacts', function() {
+    let providers = grunt.option('providers');
+    if (!providers) {
+      console.log('Must provide a provider');
+    }
+    providers = JSON.parse(providers);
+
+    providers.map(provider => {
+      munge(provider);
+    });
+  });
+
+  grunt.registerTask('test-pact', 'Test pacts', function() {
+    let providers = grunt.option('providers');
+
+    if (!providers) {
+      console.log('Must provide a provider');
+    }
+
+    providers = JSON.parse(providers);
+    providers.map(provider => {
+      grunt.task.run('mochaTest:' + provider );
+
+    })
+  });
+
+  grunt.registerTask('publish-pact', 'Publish pact to broker and clean up', function() {
+    var done = this.async();
+    pactProxy.publish()
+      .then(() => {
+        pactProxy.removeAll();
+      })
+      .then(done);
+  });
+
+  grunt.registerTask('pact', ['clean', 'test-pact', 'munge-pact', 'publish-pact']);
 };

@@ -17,7 +17,7 @@ module.exports = {
     return wrapper.publishPacts({
       pactUrls: [path.resolve(process.cwd(), 'pacts')],
       pactBroker: pactBrokerUrl,
-      consumerVersion: "1",
+      consumerVersion: "1234566",
       tags: ['expecting_bob']
     })
       .then(cb);
@@ -25,5 +25,9 @@ module.exports = {
 
   removeAll: function () {
     return wrapper.removeAllServers();
+  },
+
+  list: function() {
+    return wrapper.listServers();
   }
 };
