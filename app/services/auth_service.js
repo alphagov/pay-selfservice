@@ -13,7 +13,7 @@ var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_H
 var localStrategyAuth = function (req, username, password, done) {
   return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
-    .catch(() => done(null, false, {message: 'Invalid username or password'}));
+    .catch(() => done(null, false, {message: 'Invalid email or password'}));
 };
 
 let localStrategy2Fa = function (req, done) {
