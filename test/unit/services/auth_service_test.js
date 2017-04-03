@@ -1,14 +1,14 @@
-var should = require('chai').should();
-var assert = require('assert');
-var sinon = require('sinon');
-var q = require('q');
-var _ = require('lodash');
-var expect = require('chai').expect;
-var nock = require('nock');
-var auth = require(__dirname + '/../../../app/services/auth_service.js');
-var paths = require(__dirname + '/../../../app/paths.js');
-var proxyquire = require('proxyquire');
-var mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
+let should = require('chai').should();
+let assert = require('assert');
+let sinon = require('sinon');
+let q = require('q');
+let _ = require('lodash');
+let expect = require('chai').expect;
+let nock = require('nock');
+let auth = require(__dirname + '/../../../app/services/auth_service.js');
+let paths = require(__dirname + '/../../../app/paths.js');
+let proxyquire = require('proxyquire');
+let mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
 
 function mockUser(opts) {
   return mockSession.getUser(opts);
@@ -16,11 +16,11 @@ function mockUser(opts) {
 
 describe('auth service', function () {
 
-  var mockByPass = function (next) {
+  let mockByPass = function (next) {
     next()
   };
 
-  var response = {
+  let response = {
       status: function () {
       },
       render: function () {
@@ -92,13 +92,13 @@ describe('auth service', function () {
       let userServiceMock = {
         findByUsername: (username) => {
           expect(username).to.be.equal('foo');
-          var defer = q.defer();
+          let defer = q.defer();
           defer.resolve(user);
           return defer.promise;
         }
       };
 
-      authService(userServiceMock).deserializeUser({headers:{'x-request-id': 'bar'}},'foo', doneSpy)
+      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'bar'}}, 'foo', doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, user));
           done();
@@ -138,7 +138,7 @@ describe('auth service', function () {
   describe('no_access', function () {
 
     it("call next when on no access", function (done) {
-      var invalid = _.cloneDeep(validRequest());
+      let invalid = _.cloneDeep(validRequest());
       invalid.url = paths.user.noAccess;
       auth.no_access(invalid, response, next);
       expect(next.calledOnce).to.be.true;
@@ -149,6 +149,69 @@ describe('auth service', function () {
       auth.no_access(validRequest(), response, next);
       assert(redirect.calledWith(paths.user.noAccess));
       done();
+    });
+  });
+
+  describe('localStrategyAuth', function () {
+
+    it("should return user when authenticates successfully", function (done) {
+
+      let authService = (userMock) => {
+        return proxyquire(__dirname + '/../../../app/services/auth_service.js',
+          {'./user_service.js': userMock});
+      };
+      let req = {
+        headers: {'x-request-id': 'corrId'}
+      };
+      let user = {username:'user@example.com'};
+      let password = 'correctPassword';
+      let doneSpy = sinon.spy(() => {});
+      let userServiceMock = {
+        authenticate: (username, password, correlationId) => {
+          expect(username).to.be.equal(user.username);
+          expect(password).to.be.equal('correctPassword');
+          expect(correlationId).to.be.equal('corrId');
+          let defer = q.defer();
+          defer.resolve(user);
+          return defer.promise;
+        }
+      };
+
+      authService(userServiceMock).localStrategyAuth(req, user.username, password, doneSpy)
+        .then(() => {
+          assert(doneSpy.calledWithExactly(null, user));
+          done();
+        });
+    });
+
+    it("should return error message when authentication fails", function (done) {
+
+      let authService = (userMock) => {
+        return proxyquire(__dirname + '/../../../app/services/auth_service.js',
+          {'./user_service.js': userMock});
+      };
+      let req = {
+        headers: {'x-request-id': 'corrId'}
+      };
+      let username = 'user@example.com';
+      let password = 'imagineThisIsInvalid';
+      let doneSpy = sinon.spy(() => {});
+      let userServiceMock = {
+        authenticate: (username, password, correlationId) => {
+          expect(username).to.be.equal('user@example.com');
+          expect(password).to.be.equal('imagineThisIsInvalid');
+          expect(correlationId).to.be.equal('corrId');
+          let defer = q.defer();
+          defer.reject();
+          return defer.promise;
+        }
+      };
+
+      authService(userServiceMock).localStrategyAuth(req, username, password, doneSpy)
+        .then(() => {
+          assert(doneSpy.calledWithExactly(null, false, {message: 'Invalid email or password'}));
+          done();
+        });
     });
   });
 
@@ -225,10 +288,10 @@ describe('auth service', function () {
     });
 
     it("should not return gateway_account_id", function (done) {
-      var test1 = auth.getCurrentGatewayAccountId({session: {passport: {user: {}}}});
-      var test2 = auth.getCurrentGatewayAccountId({session: {passport: {}}});
-      var test3 = auth.getCurrentGatewayAccountId({session: {}});
-      var test4 = auth.getCurrentGatewayAccountId({});
+      let test1 = auth.getCurrentGatewayAccountId({session: {passport: {user: {}}}});
+      let test2 = auth.getCurrentGatewayAccountId({session: {passport: {}}});
+      let test3 = auth.getCurrentGatewayAccountId({session: {}});
+      let test4 = auth.getCurrentGatewayAccountId({});
 
       assert.equal(test1, null);
       assert.equal(test2, null);
@@ -236,6 +299,5 @@ describe('auth service', function () {
       assert.equal(test4, null);
       done();
     });
-
   });
 });
