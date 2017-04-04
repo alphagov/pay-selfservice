@@ -27,7 +27,8 @@
 
   /* Row content styles */
   .admin-list-heading,
-  a {
+  a,
+  span {
     padding: 0.75em 1.25em 0.5625em 0;
   }
 
@@ -35,9 +36,13 @@
   ul {
     list-style: none;
 
+    a,
+    span {
+      display: block;
+    }
+
     a {
       text-decoration: none;
-      display: block;
       cursor: pointer;
 
       &,
