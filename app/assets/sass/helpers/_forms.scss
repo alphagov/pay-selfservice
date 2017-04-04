@@ -1,0 +1,15 @@
+/* For the first heading in a fieldset, use padding-top instead of margin-top to preserve spacing */
+fieldset > :first-child.heading-small {
+  margin-top: 0;
+  padding-top: (10 / 16) + em;
+
+  @include media(tablet) {
+    margin-top: 0;
+    padding-top: (20 / 19) + em;
+  }
+}
+
+/* Contain spacing from the margins of child elements */
+dl.read-only-fields {
+  overflow: hidden;
+}

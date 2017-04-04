@@ -11,18 +11,17 @@ GOV.UK Pay - Edit user permissions
         Edit permissions</h1>
 </div>
 
-<div id="heading-large underline">
-    <h2 class="heading-small">Email address</h2>
-    <span id="email">{{email}}</span>
-</div>
-
-
 <div class="column-full remove-left-margin">
-    <h3 class="heading-small">Permission level</h3>
+
+    <dl class="read-only-fields">
+        <dt class="heading-small">Email address</dt>
+        <dd id="email">{{email}}</dd>
+    </dl>
+
     <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
         <div class="form-group">
             <fieldset>
-                <legend class="visuallyhidden">Permission level</legend>
+                <legend class="heading-small">Permission level</legend>
                 <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
                 <label class="block-label selection-button-radio" for="role-admin-input">
