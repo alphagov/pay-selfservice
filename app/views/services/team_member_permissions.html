@@ -27,7 +27,7 @@ GOV.UK Pay - Edit user permissions
                 <label class="block-label selection-button-radio" for="role-admin-input">
                     <input id="role-admin-input" class="form-control" name="role-input" type="radio" value="{{admin.id}}" {{admin.checked}}>
                     <span class="permission-main-type">Administrator</span>
-                    <ul class="permission-list">
+                    <ul class="question-advice">
                         <li>View and change settings</li>
                         <li>Edit data, e.g. refund a payment</li>
                         <li>View data, e.g. transactions</li>
@@ -37,7 +37,7 @@ GOV.UK Pay - Edit user permissions
                 <label class="block-label selection-button-radio" for="role-view-and-refund-input">
                     <input id="role-view-and-refund-input" class="form-control" name="role-input" type="radio" value="{{viewAndRefund.id}}" {{viewAndRefund.checked}}>
                     <span class="permission-main-type">View and refund</span>
-                    <ul class="permission-list">
+                    <ul class="question-advice">
                         <li>Edit data, e.g. refund a payment</li>
                         <li>View data, e.g. transactions</li>
                         <li>Cannot view or edit settings</li>
@@ -47,26 +47,24 @@ GOV.UK Pay - Edit user permissions
                 <label class="block-label selection-button-radio" for="role-view-input">
                     <input id="role-view-input" class="form-control" name="role-input" type="radio" value="{{view.id}}" {{view.checked}}>
                     <span class="permission-main-type">View only</span>
-                    <ul class="permission-list">
+                    <ul class="question-advice">
                         <li>View data, e.g. transactions</li>
                         <li>Cannot edit data</li>
                         <li>Cannot view or edit settings</li>
                     </ul>
                 </label>
             </fieldset>
-            <p>
-                <div class="notice">
-                    <div>
-                    <strong class="bold-small">
-                        This change affects both live and test environments
-                    </strong>
-                    </div>
-                </div>
+            <p class="notice">
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <strong class="bold-small">
+                    This change affects both live and test environments
+                </strong>
             </p>
-
-            <div class="form-group">
-                <input type="submit" class="button" value="Submit">
-            </div>
+        </div>
+        <div class="form-group call-to-action-group">
+            <input type="submit" class="button" value="Submit">
             <a id="service-name-cancel-link" href="{{routes.teamMembers.index}}">
                 Cancel
             </a>

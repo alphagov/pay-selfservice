@@ -1,3 +1,13 @@
+/********** Spacing **********/
+
+%form-module-spacing {
+  margin: $gutter-half 0 0;
+
+  @include media(tablet) {
+    margin-top: $gutter;
+  }
+}
+
 /* For the first heading in a fieldset, use padding-top instead of margin-top to preserve spacing */
 fieldset > :first-child.heading-small {
   margin-top: 0;
@@ -9,7 +19,38 @@ fieldset > :first-child.heading-small {
   }
 }
 
+/********** Form fields **********/
+
 /* Contain spacing from the margins of child elements */
 dl.read-only-fields {
   overflow: hidden;
+}
+
+ul.question-advice {
+  list-style: none;
+}
+
+/* Fix white background for checkboxes and radios */
+/* To be removed when the new styles come in */
+input[type='radio'].form-control,
+input[type='checkbox'].form-control {
+  background: transparent;
+}
+
+/********** Form components **********/
+
+.notice {
+  @extend %form-module-spacing;
+}
+
+/* Groups of buttons and links, usually to submit the form or navigate away */
+.call-to-action-group {
+  a {
+    display: block;
+    margin: $gutter-half 0;
+
+    @include media(tablet) {
+      margin: $gutter 0;
+    }
+  }
 }
