@@ -45,8 +45,10 @@ describe('adminusers client - get user', function () {
 
     context('GET user api - success', () => {
 
+      let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+
       let params = {
-        external_id: '7d19aff33f8948deb97ed16b2912dcd3', // existing external id
+        external_id: existingExternalId,
         gateway_account_ids: ['666', '7']
       };
 

@@ -1,6 +1,6 @@
 let response = require('../utils/response.js');
 let userService = require('../services/user_service.js');
-var paths = require('../paths.js');
+let paths = require('../paths.js');
 let successResponse = response.response;
 let errorResponse = response.renderErrorView;
 let roles = require('../utils/roles').roles;
@@ -12,12 +12,15 @@ let mapByRoles = function (users, currentUser) {
   }
   users.map((user) => {
     if (roles[user.role.name]) {
-      let mappedUser = {username: user.username};
-      if (currentUser.externalId == user.external_id) {
+      let mappedUser = {
+        username: user.username,
+        external_id: user.external_id
+      };
+      if (currentUser.email === user.email) {
         mappedUser.is_current = true;
         mappedUser.link = paths.user.profile;
       } else {
-        mappedUser.link = paths.teamMembers.show.replace(':externalId', user.external_id);
+        mappedUser.link = paths.teamMembers.show.replace(':username', user.username);
       }
       userRolesMap[user.role.name].push(mappedUser);
     }
@@ -62,15 +65,15 @@ module.exports = {
    */
   show: (req, res) => {
 
-    let externalId = req.params.externalId;
-    if (externalId == req.user.externalId) {
+    let username = req.params.username;
+    if (username === req.user.username) {
       res.redirect(paths.user.profile);
     }
 
     let onSuccess = (user) => {
-      let hasSameService = user.serviceIds[0] == req.user.serviceIds[0];
+      let hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
       let roleInList = roles[user._role.name];
-      let editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
+      let editPermissionsLink = paths.teamMembers.permissions.replace(':username', user.username);
 
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
@@ -84,7 +87,7 @@ module.exports = {
       }
     };
 
-    return userService.findByExternalId(externalId)
+    return userService.findByUsername(username)
       .then(onSuccess)
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   },
@@ -104,7 +107,7 @@ module.exports = {
       });
     };
 
-    return userService.findByExternalId(req.user.externalId)
+    return userService.findByUsername(req.user.username)
       .then(onSuccess)
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   }

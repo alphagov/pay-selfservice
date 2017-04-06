@@ -16,6 +16,8 @@ function mockUser(opts) {
 
 describe('auth service', function () {
 
+  const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
+
   let mockByPass = function (next) {
     next()
   };
@@ -69,12 +71,12 @@ describe('auth service', function () {
   describe('serialize user', function () {
 
     it("should call done function with externalId", function (done) {
-      let user = {externalId: '7d19aff33f8948deb97ed16b2912dcd3'};
+      let user = {externalId: EXTERNAL_ID_IN_SESSION};
       let doneSpy = sinon.spy(done);
 
       auth.serializeUser(user, doneSpy);
 
-      assert(doneSpy.calledWithExactly(null, '7d19aff33f8948deb97ed16b2912dcd3'))
+      assert(doneSpy.calledWithExactly(null, EXTERNAL_ID_IN_SESSION))
     });
   });
 
@@ -91,14 +93,14 @@ describe('auth service', function () {
       });
       let userServiceMock = {
         findByExternalId: (externalId) => {
-          expect(externalId).to.be.equal('7d19aff33f8948deb97ed16b2912dcd3');
+          expect(externalId).to.be.equal(EXTERNAL_ID_IN_SESSION);
           let defer = q.defer();
           defer.resolve(user);
           return defer.promise;
         }
       };
 
-      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, '7d19aff33f8948deb97ed16b2912dcd3', doneSpy)
+      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, EXTERNAL_ID_IN_SESSION, doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, user));
           done();

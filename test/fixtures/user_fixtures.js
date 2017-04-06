@@ -104,7 +104,8 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request) => {
-    let req_external_id =  request.external_id || '7d19aff33f8948deb97ed16b2912dcd3';
+    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+    let req_external_id =  request.external_id || existingExternalId;
     let req_username = request.username || 'existing-user';
     let data = {
       external_id: req_external_id,
@@ -117,7 +118,7 @@ module.exports = {
       telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{
-        "href": `http://adminusers.service/v1/api/users/${req_external_id}`,
+        "href": `http://adminusers.service/v1/api/users/${req_external_id}?is_new_api_request=y`,
         "rel": "self",
         "method": "GET"
       }]
