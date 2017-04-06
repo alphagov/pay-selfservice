@@ -32,7 +32,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        deploy("selfservice", "test")
+        deploy("selfservice", "test", null, true)
       }
     }
   }
