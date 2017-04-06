@@ -12,6 +12,7 @@ let chaiAsPromised = require('chai-as-promised');
 let app;
 
 chai.use(chaiAsPromised);
+
 let expect = chai.expect;
 let adminusersMock = nock(process.env.ADMINUSERS_URL);
 
@@ -23,20 +24,25 @@ let updatePermissionPath = username => {
 
 describe('user permissions update controller', function () {
 
-  let serviceId = '1';
-  let usernameToView = 'other-user';
+  const SERVICE_ID = '1';
+  const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
+  const USERNAME_IN_SESSION = 'existing-user';
+  const EXTERNAL_ID_TO_VIEW = '393266e872594f1593558549caad95ec';
+  const USERNAME_TO_VIEW = 'other-user';
 
   let userInSession = session.getUser({
-    username: 'existing-user',
-    email: 'existing-user@example.com',
-    service_ids: [serviceId],
+    external_id: EXTERNAL_ID_IN_SESSION,
+    username: USERNAME_IN_SESSION,
+    email: USERNAME_IN_SESSION + '@example.com',
+    service_ids: [SERVICE_ID],
     permissions: ['users-service:create']
   });
 
   let userToView = {
-    username: usernameToView,
-    email: `${usernameToView}@example.com`,
-    service_ids: [serviceId],
+    external_id: EXTERNAL_ID_TO_VIEW,
+    username: USERNAME_TO_VIEW,
+    email: `${USERNAME_TO_VIEW}@example.com`,
+    service_ids: [SERVICE_ID],
     role: {name: 'view-only', description: 'View only'}
   };
 
@@ -52,18 +58,18 @@ describe('user permissions update controller', function () {
 
       let getUserResponse = userFixtures.validUserResponse(userToView);
 
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       return supertest(app)
-        .get(updatePermissionPath(usernameToView))
+        .get(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal(userToView.email);
-          expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', usernameToView));
+          expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', USERNAME_TO_VIEW));
           expect(res.body.admin.id).to.equal(roles['admin'].extId);
           expect(res.body.admin.checked).to.equal('');
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId);
@@ -76,13 +82,13 @@ describe('user permissions update controller', function () {
 
     it('should error if user not found', function (done) {
 
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(404);
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       return supertest(app)
-        .get(updatePermissionPath(usernameToView))
+        .get(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -97,13 +103,13 @@ describe('user permissions update controller', function () {
       targetUser.service_ids[0] = '2';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       return supertest(app)
-        .get(updatePermissionPath(usernameToView))
+        .get(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -134,16 +140,16 @@ describe('user permissions update controller', function () {
 
       let getUserResponse = userFixtures.validUserResponse(userToView);
 
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
-      adminusersMock.put(`${USER_RESOURCE}/${usernameToView}/services/${serviceId}`, {'role_name': 'admin'})
+      adminusersMock.put(`${USER_RESOURCE}/${USERNAME_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       return supertest(app)
-        .post(updatePermissionPath(usernameToView))
+        .post(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -152,7 +158,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.teamMembers.show.replace(':username', usernameToView))
+        .expect('Location', paths.teamMembers.show.replace(':username', USERNAME_TO_VIEW))
         .end(done);
     });
 
@@ -160,13 +166,13 @@ describe('user permissions update controller', function () {
 
       let getUserResponse = userFixtures.validUserResponse(userToView);
 
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       return supertest(app)
-        .post(updatePermissionPath(usernameToView))
+        .post(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -175,7 +181,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.teamMembers.show.replace(':username', usernameToView))
+        .expect('Location', paths.teamMembers.show.replace(':username', USERNAME_TO_VIEW))
         .end(done);
     });
 
@@ -203,11 +209,11 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(404);
 
       return supertest(app)
-        .post(updatePermissionPath(usernameToView))
+        .post(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -228,13 +234,13 @@ describe('user permissions update controller', function () {
       targetUser.service_ids[0] = '2';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       return supertest(app)
-        .post(updatePermissionPath(usernameToView))
+        .post(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -255,7 +261,7 @@ describe('user permissions update controller', function () {
 
       let nonExistentRoleId = '999';
       return supertest(app)
-        .post(updatePermissionPath(usernameToView))
+        .post(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -275,14 +281,14 @@ describe('user permissions update controller', function () {
       let getUserResponse = userFixtures.validUserResponse(userToView);
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      adminusersMock.get(`${USER_RESOURCE}/${usernameToView}`)
+      adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
-      adminusersMock.put(`${USER_RESOURCE}/${usernameToView}/services/${serviceId}`, {'role_name': 'admin'})
+      adminusersMock.put(`${USER_RESOURCE}/${USERNAME_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
         .reply(409);
 
       return supertest(app)
-        .post(updatePermissionPath(usernameToView))
+        .post(updatePermissionPath(USERNAME_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')

@@ -1,6 +1,6 @@
 let response = require('../utils/response.js');
 let userService = require('../services/user_service.js');
-var paths = require('../paths.js');
+let paths = require('../paths.js');
 let successResponse = response.response;
 let errorResponse = response.renderErrorView;
 let roles = require('../utils/roles').roles;
@@ -12,14 +12,17 @@ let mapByRoles = function (users, currentUser) {
   }
   users.map((user) => {
     if (roles[user.role.name]) {
-      let mappedUsername = {username: user.username};
-      if (currentUser.email == user.email) {
-        mappedUsername.is_current = true;
-        mappedUsername.link = paths.user.profile;
+      let mappedUser = {
+        username: user.username,
+        external_id: user.external_id
+      };
+      if (currentUser.email === user.email) {
+        mappedUser.is_current = true;
+        mappedUser.link = paths.user.profile;
       } else {
-        mappedUsername.link = paths.teamMembers.show.replace(':username', user.username);
+        mappedUser.link = paths.teamMembers.show.replace(':username', user.username);
       }
-      userRolesMap[user.role.name].push(mappedUsername);
+      userRolesMap[user.role.name].push(mappedUser);
     }
   });
   return userRolesMap;
@@ -63,12 +66,12 @@ module.exports = {
   show: (req, res) => {
 
     let username = req.params.username;
-    if (username == req.user.username) {
+    if (username === req.user.username) {
       res.redirect(paths.user.profile);
     }
 
     let onSuccess = (user) => {
-      let hasSameService = user.serviceIds[0] == req.user.serviceIds[0];
+      let hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
       let roleInList = roles[user._role.name];
       let editPermissionsLink = paths.teamMembers.permissions.replace(':username', user.username);
 

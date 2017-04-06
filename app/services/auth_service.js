@@ -1,43 +1,43 @@
 "use strict";
-var logger = require('winston');
-var _ = require('lodash');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var CustomStrategy = require('passport-custom').Strategy;
-var csrf = require('csrf');
-var sessionValidator = require(__dirname + '/session_validator.js');
-var paths = require(__dirname + '/../paths.js');
-var userService = require('./user_service.js');
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
+let logger = require('winston');
+let _ = require('lodash');
+let passport = require('passport');
+let LocalStrategy = require('passport-local').Strategy;
+let CustomStrategy = require('passport-custom').Strategy;
+let csrf = require('csrf');
+let sessionValidator = require(__dirname + '/session_validator.js');
+let paths = require(__dirname + '/../paths.js');
+let userService = require('./user_service.js');
+let CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
-var localStrategyAuth = function (req, username, password, done) {
+let localStrategyAuth = function (req, username, password, done) {
   return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
     .catch(() => done(null, false, {message: 'Invalid email or password'}));
 };
 
 let localStrategy2Fa = function (req, done) {
-  return userService.authenticateSecondFactor(req.user.username, req.body.code)
+  return userService.authenticateSecondFactor(req.user.externalId, req.body.code)
     .then((user) => done(null, user))
     .catch(() => done(null, false, {message: 'Invalid code'}));
 };
 
-var ensureSessionHasCsrfSecret = function (req, res, next) {
+let ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
-  var correlationId = req.headers[CORRELATION_HEADER] || '';
+  let correlationId = req.headers[CORRELATION_HEADER] || '';
   logger.debug(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
 
   return next();
 };
 
-var ensureSessionHasVersion = function (req) {
+let ensureSessionHasVersion = function (req) {
   if (!_.get(req, 'session.version', false) !== false) {
     req.session.version = _.get(req, 'user.sessionVersion', 0);
   }
 };
 
-var redirectToLogin = function (req, res) {
+let redirectToLogin = function (req, res) {
   req.session.last_url = req.originalUrl;
   res.redirect(paths.user.logIn);
 };
@@ -67,8 +67,8 @@ let getCurrentGatewayAccountId = function (req) {
   return parseInt(req.gateway_account.currentGatewayAccountId);
 };
 
-var enforceUserFirstFactor = function (req, res, next) {
-  var hasUser = _.get(req, "user"),
+let enforceUserFirstFactor = function (req, res, next) {
+  let hasUser = _.get(req, "user"),
     hasAccount = getCurrentGatewayAccountId(req),
     disabled = _.get(hasUser, "disabled");
 
@@ -79,7 +79,7 @@ var enforceUserFirstFactor = function (req, res, next) {
   ensureSessionHasCsrfSecret(req, res, next);
 };
 
-var no_access = function (req, res, next) {
+let no_access = function (req, res, next) {
   if (req.url != paths.user.noAccess) {
     res.redirect(paths.user.noAccess);
   }
@@ -88,11 +88,10 @@ var no_access = function (req, res, next) {
   }
 };
 
-var enforceUserBothFactors = function (req, res, next) {
-
+let enforceUserBothFactors = function (req, res, next) {
   enforceUserFirstFactor(req, res, () => {
 
-    var hasLoggedInOtp = _.get(req, "session.secondFactor") == 'totp';
+    let hasLoggedInOtp = _.get(req, "session.secondFactor") == 'totp';
     if (!hasLoggedInOtp) {
       return res.redirect(paths.user.otpLogIn);
     }
@@ -101,7 +100,7 @@ var enforceUserBothFactors = function (req, res, next) {
   });
 };
 
-var enforceUserAuthenticated = function (req, res, next) {
+let enforceUserAuthenticated = function (req, res, next) {
   ensureSessionHasVersion(req);
 
   if (!hasValidSession(req)) {
@@ -111,18 +110,18 @@ var enforceUserAuthenticated = function (req, res, next) {
   enforceUserBothFactors(req, res, next);
 };
 
-var hasValidSession = function (req) {
-  var isValid = sessionValidator.validate(req.user, req.session);
-  var correlationId = req.headers[CORRELATION_HEADER] || '';
-  var userSessionVersion = _.get(req, 'user.sessionVersion', 0);
-  var sessionVersion = _.get(req, 'session.version', 0);
+let hasValidSession = function (req) {
+  let isValid = sessionValidator.validate(req.user, req.session);
+  let correlationId = req.headers[CORRELATION_HEADER] || '';
+  let userSessionVersion = _.get(req, 'user.sessionVersion', 0);
+  let sessionVersion = _.get(req, 'session.version', 0);
   if (!isValid) {
     logger.info(`[${correlationId}] Invalid session version for user. User session_version: ${userSessionVersion}, session version ${sessionVersion}`);
   }
   return isValid;
 };
 
-var initialise = function (app, override_strategy) {
+let initialise = function (app, override_strategy) {
   app.use(passport.initialize());
   app.use(passport.session());
   passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth));
@@ -133,15 +132,15 @@ var initialise = function (app, override_strategy) {
   passport.deserializeUser(this.deserializeUser);
 };
 
-var deserializeUser = function (req, username, done) {
-  return userService.findByUsername(username, req.headers[CORRELATION_HEADER] || '')
+let deserializeUser = function (req, externalId, done) {
+  return userService.findByExternalId(externalId, req.headers[CORRELATION_HEADER] || '')
     .then((user) => {
       done(null, user);
     });
 };
 
-var serializeUser = function (user, done) {
-  done(null, user.username);
+let serializeUser = function (user, done) {
+  done(null, user.externalId);
 };
 
 module.exports = {

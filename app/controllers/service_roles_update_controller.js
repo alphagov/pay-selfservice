@@ -9,11 +9,11 @@ let getRole = rolesModule.getRoleByExtId;
 
 let userService = require('../services/user_service.js');
 
-var successResponse = responses.response;
-var errorResponse = responses.renderErrorView;
+let successResponse = responses.response;
+let errorResponse = responses.renderErrorView;
 
 let hasSameService = (admin, user) => {
-  return admin.serviceIds[0] == user.serviceIds[0];
+  return admin.serviceIds[0] === user.serviceIds[0];
 };
 
 let serviceIdMismatchView = (req, res, admin, user, correlationId) => {
@@ -33,7 +33,7 @@ module.exports = {
     let correlationId = req.correlationId;
     let username = req.params.username;
     let roleChecked = (roleName, currentRoleName) => {
-      if (roleName == currentRoleName) {
+      if (roleName === currentRoleName) {
         return 'checked';
       }
       return '';
@@ -60,8 +60,7 @@ module.exports = {
       }
     };
 
-
-    if (req.user.username == username) {
+    if (req.user.username === username) {
       errorResponse(req, res, 'Not allowed to update self permission');
       return;
     }
@@ -97,7 +96,7 @@ module.exports = {
       res.redirect(303, paths.teamMembers.show.replace(':username', user.username));
     };
 
-    if (req.user.username == username) {
+    if (req.user.username === username) {
       errorResponse(req, res, 'Not allowed to update self permission');
       return;
     }
@@ -113,7 +112,7 @@ module.exports = {
         if (!hasSameService(req.user, user)) {
           serviceIdMismatchView(req, res, req.user, user, correlationId);
         } else {
-          if (targetRole.name == user.role.name) {
+          if (targetRole.name === user.role.name) {
             onSuccess(user);
           } else {
             userService.updateServiceRole(user.username, targetRole.name, user.serviceIds[0], correlationId)

@@ -1,6 +1,7 @@
-let User = require(__dirname + '/../../app/models/user').User;
-let pactBase = require(__dirname + '/pact_base');
+let User      = require(__dirname + '/../../app/models/user').User;
+let pactBase  = require(__dirname + '/pact_base');
 let pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]});
+let random    = require(__dirname + '/../../app/utils/random');
 
 function randomString() {
   return Math.random().toString(36).substring(7);
@@ -33,11 +34,12 @@ function randomTelephoneNumber() {
 module.exports = {
 
   validMinimalUser: () => {
-
+    let newExternalId = random.randomUuid();
     let newUsername = randomUsername();
     let role = {name: "admin"};
 
     let data = {
+      external_id: newExternalId,
       username: newUsername,
       email: `${newUsername}@example.com`,
       gateway_account_ids: [randomAccountId()],
@@ -62,11 +64,12 @@ module.exports = {
   },
 
   validUser: (opts = {}) => {
-
+    let newExternalId = random.randomUuid();
     let newUsername = randomUsername();
     let role = {name: "admin"};
 
     let data = {
+      external_id: opts.external_id || newExternalId,
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
       gateway_account_ids: opts.gateway_account_ids || [randomAccountId()],
@@ -101,8 +104,11 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request) => {
+    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+    let req_external_id =  request.external_id || existingExternalId;
     let req_username = request.username || 'existing-user';
     let data = {
+      external_id: req_external_id,
       username: req_username,
       email: request.email || `${req_username}@example.com`,
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
@@ -112,7 +118,7 @@ module.exports = {
       telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{
-        "href": `http://adminusers.service/v1/api/users/${req_username}`,
+        "href": `http://adminusers.service/v1/api/users/${req_external_id}?is_new_api_request=y`,
         "rel": "self",
         "method": "GET"
       }]
@@ -184,7 +190,6 @@ module.exports = {
     };
 
     return pactUsers.withPactified(request);
-
   },
 
   validAuthenticateSecondFactorRequest: (code) => {
@@ -193,7 +198,6 @@ module.exports = {
     };
 
     return pactUsers.withPactified(request);
-
   },
 
   validUpdatePasswordRequest: (token, newPassword) => {
@@ -244,6 +248,6 @@ module.exports = {
     };
 
     return pactUsers.withPactified(response);
-  },
+  }
 
 };
