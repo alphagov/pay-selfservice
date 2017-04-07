@@ -27,6 +27,15 @@ pipeline {
         runEndToEnd("selfservice")
       }
     }
+    stage('Docker Tag') {
+      steps {
+        script {
+          dockerTag {
+            app = "selfservice"
+          }
+        }
+      }
+    }
     stage('Deploy') {
       when {
         branch 'master'
