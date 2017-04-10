@@ -1,7 +1,7 @@
 const urlParse = require('url');
 const https    = require('https');
 const http    = require('http');
-var  _ = require('lodash');
+const  _ = require('lodash');
 
 const logger = require('winston');
 
