@@ -3,7 +3,7 @@
 {{$pageTitle}}
 Forgotten Password
 {{/pageTitle}}
-{{$content}}
+{{$mainContent}}
 <div class="column-half no-padding">
     <form action="/reset-password" method="post" class="form submit-forgotten-email">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -26,7 +26,7 @@ Forgotten Password
     </form>
 </div>
 
-{{/content}}
+{{/mainContent}}
 {{/layout_logged_out}}
 
 

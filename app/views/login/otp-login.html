@@ -3,7 +3,7 @@
 {{$pageTitle}}
 Sign in to GOV.UK Pay
 {{/pageTitle}}
-{{$content}}
+{{$mainContent}}
 <div class="column-half no-padding">
   <form action="/otp-login" class="form" method="post" class="submit-two-fa">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -24,7 +24,7 @@ Sign in to GOV.UK Pay
 
 </div>
 
-{{/content}}
+{{/mainContent}}
 {{/layout_logged_out}}
 
 

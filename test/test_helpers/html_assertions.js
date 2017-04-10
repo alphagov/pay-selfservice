@@ -4,7 +4,7 @@ let chai = require('chai');
 let router = require('../../app/routes.js');
 
 function render(templateName, templateData) {
-  let templates = TemplateEngine._getTemplates([__dirname + '/../../app/views']);
+  let templates = TemplateEngine._getTemplates([__dirname + '/../../app/views', __dirname + '/../../govuk_modules/govuk_template/views/layouts']);
   templateData.routes = router.paths;
   return templates[templateName].render(templateData, templates);
 }
