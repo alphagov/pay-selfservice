@@ -1,29 +1,28 @@
+const urlParse = require('url');
 const https    = require('https');
-const httpAgent    = require('http').globalAgent;
-const urlParse = require('url').parse;
-var _ = require('lodash');
+const http    = require('http');
+const  _ = require('lodash');
 
 const logger = require('winston');
-var request = require('requestretry');
 
 const customCertificate       = require(__dirname + '/../../utils/custom_certificate');
 const CORRELATION_HEADER_NAME = require(__dirname + '/../../utils/correlation_header').CORRELATION_HEADER;
 
-var agentOptions = {
+const agentOptions = {
   keepAlive: true,
   maxSockets: process.env.MAX_SOCKETS || 100
 };
 
-var RETRIABLE_ERRORS = ['ECONNRESET'];
-
-function retryOnEconnreset(err) {
-  return err && _.includes(RETRIABLE_ERRORS, err.code);
-}
+const HTTP_PROTOCOL = 'http:';
 
 /**
  * @type {https.Agent}
  */
 const httpsAgent = new https.Agent(agentOptions);
+/**
+ * @type {http.Agent}
+ */
+const httpAgent = new http.Agent(agentOptions);
 
 if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
   customCertificate.addCertsToAgent(httpsAgent);
@@ -31,23 +30,24 @@ if (process.env.DISABLE_INTERNAL_HTTPS !== "true") {
   logger.warn('DISABLE_INTERNAL_HTTPS is set.');
 }
 
-var client = request
-  .defaults({
-    json: true,
-    // Adding retry on ECONNRESET as a temporary fix for PP-1727
-    maxAttempts: 3,
-    retryDelay: 5000,  
-    retryStrategy: retryOnEconnreset
-  });
-
 const getHeaders = function getHeaders(args) {
   let headers = {};
 
   headers["Content-Type"] = "application/json";
+  headers["Accept"] = "application/json";
   headers[CORRELATION_HEADER_NAME] = args.correlationId || '';
-  
+
+  if (args.payload) {
+    try {
+      headers["Content-Length"] = Buffer.byteLength(JSON.stringify(args.payload));
+    } catch (e) {
+      logger.warn(`[${args.correlationId}] Setting content length header failed: ${e}`);
+    }
+  }
+
   return headers;
 };
+
 /**
  *
  * @param {string} methodName
@@ -60,20 +60,59 @@ const getHeaders = function getHeaders(args) {
  * @private
  */
 var _request = function request(methodName, url, args, callback) {
-  let agent = urlParse(url).protocol === 'http:' ? httpAgent : httpsAgent;
 
-  const requestOptions = {
-    uri: url,
-    method: methodName,
-    agent: agent,
-    headers: getHeaders(args)
-  };
+  let parsedUrl = urlParse.parse(url);
+  let requestOptions = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port,
+      path: parsedUrl.path,
+      method: methodName,
+      agent: parsedUrl.protocol === HTTP_PROTOCOL ?
+        httpAgent:
+        httpsAgent,
+      headers: getHeaders(args)
+    };
+  let httpLib = parsedUrl.protocol === HTTP_PROTOCOL ?
+      http :
+      https;
+
+  var req = httpLib.request(requestOptions, res => {
+    let data = '';
+    res.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    res.on('end', () => {
+      if (data) {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          //if response exists but is not parsable, log it and carry on
+          if (data) {
+            logger.info('Response from %s in unexpected format: %s', url, data);
+          }
+          data = null;
+        }
+      }
+      callback(null, res, data);
+    });
+  });
 
   if (args.payload) {
-    requestOptions.body = args.payload;
+    req.write(JSON.stringify(args.payload), 'utf8');
   }
 
-  return client(requestOptions, callback);
+  req.on('response', (response) => {
+    response.on('readable', () => {
+      response.read();
+    });
+  });
+
+  req.on('error', callback);
+
+  req.end();
+
+  return req;
 };
 
 
@@ -141,3 +180,4 @@ module.exports = {
     return _request('DELETE', url, args, callback);
   }
 };
+
