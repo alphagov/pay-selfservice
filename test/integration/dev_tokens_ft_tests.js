@@ -455,10 +455,7 @@ describe('Dev Tokens Endpoints', function() {
     });
 
     it('should only return the account_id', function (done){
-      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200, {
-        "account_id": gatewayAccountId,
-        "description": "description"
-      });
+      connectorMock.get(CONNECTOR_PATH.replace("{accountId}",gatewayAccountId)).reply(200);
 
       build_get_request(paths.devTokens.show)
         .expect(200, {
@@ -466,11 +463,7 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_create': true
           },
-          navigation: true,
-          currentGatewayAccount: {
-            "account_id": gatewayAccountId,
-            "description": "description"
-          }
+          navigation: true
         })
         .end(done);
     });
@@ -504,8 +497,7 @@ describe('Dev Tokens Endpoints', function() {
           'permissions': {
             'tokens_create': true
           },
-          navigation: true,
-          "currentGatewayAccount": ""
+          navigation: true
         })
         .end(done);
     });
