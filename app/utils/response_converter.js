@@ -17,24 +17,24 @@ module.exports = {
     return (error, response, body) => {
       requestLogger.logRequestEnd(context);
 
-      if (error) {
-        requestLogger.logRequestError(context, error);
-        return defer.reject({error: error});
-      }
-
       if (response && SUCCESS_CODES.indexOf(response.statusCode) === -1) {
         requestLogger.logRequestFailure(context, response);
-        return defer.reject({
+        defer.reject({
           errorCode: response.statusCode,
-          message: body
+          message: response.body
         });
       } else {
         if (body && transformer && typeof transformer === 'function') {
-          return defer.resolve(transformer(body));
+          defer.resolve(transformer(body));
         } else {
-          return defer.resolve(body);
+          defer.resolve(body);
         }
+      }
+
+      if (error) {
+        requestLogger.logRequestError(context, error);
+        defer.reject({error: error});
       }
     };
   }
-}
+};

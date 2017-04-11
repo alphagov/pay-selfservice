@@ -98,12 +98,10 @@ describe('forgotten_password_controller', function () {
   });
 
   it('reset users password upon valid reset password request', function (done) {
-
     let req = reqFixtures.validUpdatePasswordPost();
     let res = resFixtures.getStubbedRes();
     let username = req.body.username;
-    let userResponse = userFixtures.validUserResponse({username: username}).getPlain();
-    let externalId = userResponse.external_id;
+    let userResponse = userFixtures.validUserResponse({username: username});
     let token = req.params.id;
     let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
 
@@ -111,14 +109,14 @@ describe('forgotten_password_controller', function () {
       .reply(200, forgottenPasswordResponse.getPlain());
 
     adminusersMock.get(`${USER_RESOURCE}/${username}`)
-      .reply(200, userResponse);
+      .reply(200, userResponse.getPlain());
 
     adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
       .validUpdatePasswordRequest(token, req.body.password)
       .getPlain())
       .reply(204);
 
-    adminusersMock.patch(`${USER_RESOURCE}/${externalId}?is_new_api_request=y`, userFixtures
+    adminusersMock.patch(`${USER_RESOURCE}/${username}`, userFixtures
       .validIncrementSessionVersionRequest()
       .getPlain())
       .reply(200);
