@@ -1,13 +1,16 @@
-var chai = require('chai');
-var _ = require('lodash');
-var nock = require('nock');
-var sinon = require('sinon');
+const chai = require('chai');
+const _ = require('lodash');
+const nock = require('nock');
+const sinon = require('sinon');
 
-var baseClient =  require('../../../../app/services/clients/base_client');
+const baseClient =  require('../../../../app/services/clients/base_client');
 
 const expect = chai.expect;
 
 describe('base client', function () {
+  beforeEach(function() {
+    nock.cleanAll();
+  })
   describe('request headers', function() {
     /**
      * This test and the one below are to check content length
@@ -17,7 +20,7 @@ describe('base client', function () {
      * by 2 bytes in utf-8 (eg. £)
      *
      * The length in this first test is 5 because it is the length of
-     * the string obtainer from stringifying the array: ie
+     * the string obtained from stringifying the array: ie
      * Buffer.byteLength("['a']") = 5
      *
      * In the case of ['£'] we expect length to be 6 as
@@ -86,5 +89,24 @@ describe('base client', function () {
         done();
       });
     });
+  })
+
+  describe('delete request', function() {
+    /**
+     * This test ensures node sends payload with delete request.
+     * cf. http://stackoverflow.com/questions/35589109/node-http-delete-request-no-longer-works-after-upgrading-from-0-10-40
+     */
+    it('should send payload correctly', function(done) {
+      nock.cleanAll();
+      let mockServer = nock('http://localhost:3015');
+      mockServer.delete('/', {foo: 'bar'})
+        .matchHeader('content-length', 13)
+        .reply(200);
+
+      var req = baseClient.delete('http://localhost:3015', {payload: {foo: 'bar'}}, function (err, res, data) {
+        expect(res.statusCode).to.equal(200);
+        done();
+      });
+    })
   })
 });
