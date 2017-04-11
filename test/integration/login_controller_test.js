@@ -114,16 +114,16 @@ describe('The otplogin endpoint', function () {
 
 
   it('should render and send key on first time', function (done) {
-    var user = mock_session.getUser();
 
-    var sessionData = {
+    let user = mock_session.getUser();
+    let sessionData = {
       csrfSecret: "123",
       passport: {
         user: user,
       }
     };
 
-    adminusersMock.post(`${USER_RESOURCE}/${user.username}/second-factor/`)
+    adminusersMock.post(`${USER_RESOURCE}/${user.externalId}/second-factor/`)
       .reply(200);
 
     var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData);
