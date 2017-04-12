@@ -1,52 +1,56 @@
 div.pagination {
 	margin-bottom: $gutter-half;
+  @extend %contain-floats;
 
 	.paginationForm {
-		display: inline;
-		float: left;
-		border: 1px solid $border-colour;
-		border-right: none;
-		vertical-align: middle;
-		color: $link-colour;
-		font-size: 12px;
-	}
+    float: left;
 
-	.paginationForm:last-child {
-		border: 1px solid $border-colour;
-	}
+    button[type='submit'] {
+      background: inherit;
+      border: 1px solid $border-colour;
+      border-right: none;
+      padding: 0.5em 1em;
+      vertical-align: middle;
+      color: $link-colour;
+      font-size: 12px;
+      cursor: pointer;
 
-	.paginationForm:before {
-    display: inline-block;
-    margin: 0 -12px 0 8px;	
-    position: relative;
-  }
+      &:hover {
+        color: $link-hover-colour;
+      }
 
-  .paginationForm:after {
-    display: inline-block;
-    margin: 0 8px 0 -12px;	
-    position: relative;
-  }
+      &:active {
+        color: $link-active-colour;
+      }
 
-	.paginationForm.first:before {
-		content:"\00AB";
-	}
+      &.active {
+        background-color: $highlight-colour;
+      }
+    }
 
-	.paginationForm.previous:before {
-		content:"\2039";
-	}
+    &:last-child button[type='submit'] {
+      border: 1px solid $border-colour;
+    }
 
-	.paginationForm.next:after {
-		content:"\203A";
-	}
+    /* Buttons for the next or previous set or either end of the whole lot */
+    &.first button[type='submit']:before {
+      content:"\00AB";
+      margin-right: 0.25em;
+    }
 
-	.paginationForm.last:after {
-		content:"\00BB";
-	}
+    &.previous button[type='submit']:before {
+      content:"\2039";
+      margin-right: 0.25em;
+    }
 
+    &.next button[type='submit']:after {
+      content:"\203A";
+      margin-left: 0.25em;
+    }
 
-	&::after{
-    content: "";
-    display: block;
-    clear: both;
+    &.last button[type='submit']:after {
+      content:"\00BB";
+      margin-left: 0.25em;
+    }
 	}
 }
