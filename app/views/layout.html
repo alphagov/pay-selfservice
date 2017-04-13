@@ -12,7 +12,7 @@
     {{/propositionHeader}}
 
     {{$headerClass}}with-proposition{{/headerClass}}
-    {{$bodyClasses}}{{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
+    {{$bodyClasses}}{{$classesOnBodyTag}}{{/classesOnBodyTag}} {{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
 
     {{$homepageUrl}}/{{/homepageUrl}}
     {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
