@@ -4,7 +4,7 @@
 GOV.UK Pay - View transactions
 {{/pageTitle}}
 
-{{$bodyClasses}}transactions index{{/bodyClasses}}
+{{$classesOnBodyTag}}transactions index{{/classesOnBodyTag}}
 
 {{$pageSpecificStyle}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.standalone.min.css">
@@ -50,7 +50,7 @@ GOV.UK Pay - View transactions
 {{#permissions.transactions_download_read}}
 <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
 {{/permissions.transactions_download_read}}
-<div>
+</div>
 {{/hasResults}}
 
 {{>transactions/paginator}}
