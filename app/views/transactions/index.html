@@ -4,7 +4,7 @@
 GOV.UK Pay - View transactions
 {{/pageTitle}}
 
-{{$bodyClasses}}transactions index{{/bodyClasses}}
+{{$bodyClasses}}transactions index {{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
 
 {{$pageSpecificStyle}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.standalone.min.css">
