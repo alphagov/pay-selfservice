@@ -26,12 +26,12 @@ module.exports = {
    *
    * @param req
    * @param res
-   * @path param username
+   * @path param externalId
    */
   index: (req, res) => {
 
     let correlationId = req.correlationId;
-    let username = req.params.username;
+    let externalId = req.params.externalId;
     let roleChecked = (roleName, currentRoleName) => {
       if (roleName === currentRoleName) {
         return 'checked';
@@ -40,7 +40,7 @@ module.exports = {
     };
 
     let viewData = user => {
-      let editPermissionsLink = paths.teamMembers.permissions.replace(':username', user.username);
+      let editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
 
       return {
         email: user.email,
@@ -60,12 +60,12 @@ module.exports = {
       }
     };
 
-    if (req.user.username === username) {
+    if (req.user.externalId === externalId) {
       errorResponse(req, res, 'Not allowed to update self permission');
       return;
     }
 
-    userService.findByUsername(username, correlationId)
+    userService.findByExternalId(externalId, correlationId)
       .then(user => {
         if (!hasSameService(req.user, user)) {
           serviceIdMismatchView(req, res, req.user, user, correlationId);
@@ -83,20 +83,20 @@ module.exports = {
    *
    * @param req
    * @param res
-   * @path param username
+   * @path param externalId
    */
   update: (req, res) => {
 
-    let username = req.params.username;
+    let externalId = req.params.externalId;
     let targetRoleExtId = req.body['role-input'];
     let targetRole = getRole(targetRoleExtId);
     let correlationId = req.correlationId;
     let onSuccess = (user) => {
       req.flash('generic', 'Permissions have been updated');
-      res.redirect(303, paths.teamMembers.show.replace(':username', user.username));
+      res.redirect(303, paths.teamMembers.show.replace(':externalId', user.externalId));
     };
 
-    if (req.user.username === username) {
+    if (req.user.externalId === externalId) {
       errorResponse(req, res, 'Not allowed to update self permission');
       return;
     }
@@ -107,7 +107,7 @@ module.exports = {
       return;
     }
 
-    userService.findByUsername(username, correlationId)
+    userService.findByExternalId(externalId, correlationId)
       .then(user => {
         if (!hasSameService(req.user, user)) {
           serviceIdMismatchView(req, res, req.user, user, correlationId);
@@ -115,7 +115,7 @@ module.exports = {
           if (targetRole.name === user.role.name) {
             onSuccess(user);
           } else {
-            userService.updateServiceRole(user.username, targetRole.name, user.serviceIds[0], correlationId)
+            userService.updateServiceRole(user.externalId, targetRole.name, user.serviceIds[0], correlationId)
               .then(onSuccess)
               .catch(err => {
                 logger.error(`[requestId=${correlationId}] error updating user service role [${err}]`);

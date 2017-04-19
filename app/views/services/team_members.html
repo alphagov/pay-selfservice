@@ -22,7 +22,7 @@ GOV.UK Pay - Team members
             <ul>
                 {{#team_members.admin}}
                 <li>
-                    {{#permissions.users_service_read}}<a id="user-external-id-{{external_id}}" href="{{link}}">{{/permissions.users_service_read}}
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
                     {{^permissions.users_service_read}}<span>{{/permissions.users_service_read}}
                     {{username}} {{#is_current}}(you){{/is_current}}
                     {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
@@ -37,7 +37,7 @@ GOV.UK Pay - Team members
             <ul>
                 {{#team_members.view-and-refund}}
                 <li>
-                    {{#permissions.users_service_read}}<a id="user-external-id-{{external_id}}" href="{{link}}">{{/permissions.users_service_read}}
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
                     {{^permissions.users_service_read}}<span>{{/permissions.users_service_read}}
                     {{username}} {{#is_current}}(you){{/is_current}}
                     {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
@@ -52,7 +52,7 @@ GOV.UK Pay - Team members
             <ul>
                 {{#team_members.view-only}}
                 <li>
-                    {{#permissions.users_service_read}}<a id="user-external-id-{{external_id}}" href="{{link}}">{{/permissions.users_service_read}}
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
                     {{^permissions.users_service_read}}<span>{{/permissions.users_service_read}}
                     {{username}} {{#is_current}}(you){{/is_current}}
                     {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}

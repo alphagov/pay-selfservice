@@ -79,7 +79,7 @@ describe('service users resource', function () {
       permissions: ['users-service:read']
     });
 
-    let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {username: USERNAME_TO_VIEW}]);
+    let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {external_id: EXTERNAL_ID_TO_VIEW}]);
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${service_id}/users`)
       .reply(200, serviceUsersRes.getPlain());
@@ -91,7 +91,7 @@ describe('service users resource', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.team_members.admin[1].link).to.equal(`/team-members/${USERNAME_TO_VIEW}`);
+        expect(res.body.team_members.admin[1].link).to.equal(`/team-members/${EXTERNAL_ID_TO_VIEW}`);
       })
       .end(done);
   });
@@ -117,20 +117,20 @@ describe('service users resource', function () {
 
     let getUserResponse = userFixtures.validUserResponse(user_to_view);
 
-    adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     return supertest(app)
-      .get(`/team-members/${USERNAME_TO_VIEW}`)
+      .get(`/team-members/${EXTERNAL_ID_TO_VIEW}`)
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
         expect(res.body.username).to.equal(USERNAME_TO_VIEW);
         expect(res.body.email).to.equal('other-user@example.com');
         expect(res.body.role).to.equal('View only');
-        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':username', USERNAME_TO_VIEW));
+        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':externalId', EXTERNAL_ID_TO_VIEW));
       })
       .end(done);
   });
@@ -150,7 +150,7 @@ describe('service users resource', function () {
 
     let getUserResponse = userFixtures.validUserResponse(user);
 
-    adminusersMock.get(`${USER_RESOURCE}/${USERNAME_LOGGED_IN}`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}?is_new_api_request=y`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
@@ -180,7 +180,7 @@ describe('service users resource', function () {
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     return supertest(app)
-      .get(`/team-members/${USERNAME_LOGGED_IN}`)
+      .get(`/team-members/${EXTERNAL_ID_LOGGED_IN}`)
       .set('Accept', 'application/json')
       .expect(302)
       .expect('Location', "/my-profile")
@@ -205,13 +205,13 @@ describe('service users resource', function () {
       service_ids: ['2']
     });
 
-    adminusersMock.get(`${USER_RESOURCE}/${USERNAME_TO_VIEW}`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     return supertest(app)
-      .get(`/team-members/${USERNAME_TO_VIEW}`)
+      .get(`/team-members/${EXTERNAL_ID_TO_VIEW}`)
       .set('Accept', 'application/json')
       .expect(500)
       .expect((res) => {
