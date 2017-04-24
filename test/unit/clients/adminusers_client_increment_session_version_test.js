@@ -43,11 +43,11 @@ describe('adminusers client - session', function () {
 
     context('increment session version  API - success', () => {
       let request = userFixtures.validIncrementSessionVersionRequest();
-      let username = 'existing-user';
+      let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${username}`)
+          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
             .withState('a user exists')
             .withUponReceiving('a valid increment session version update request')
             .withMethod('PATCH')
@@ -62,17 +62,17 @@ describe('adminusers client - session', function () {
 
       it('should increment session version successfully', function (done) {
 
-        adminusersClient.incrementSessionVersionForUser(username).should.be.fulfilled.notify(done);
+        adminusersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done);
       });
     });
 
     context('increment session version API - user not found', () => {
-      let username = 'non-existent-username';
+      let nonExistentExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
       let request = userFixtures.validIncrementSessionVersionRequest();
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${username}`)
+          new PactInteractionBuilder(`${USER_PATH}/${nonExistentExternalId}`)
             .withState('a user does not exist')
             .withUponReceiving('a valid increment session version request')
             .withMethod('PATCH')
@@ -89,7 +89,7 @@ describe('adminusers client - session', function () {
 
       it('should return not found if user not exist', function (done) {
 
-        adminusersClient.incrementSessionVersionForUser(username).should.be.rejected.then(function (response) {
+        adminusersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });

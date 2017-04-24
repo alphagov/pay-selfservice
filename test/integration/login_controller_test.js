@@ -92,9 +92,6 @@ describe('The postlogin endpoint', function () {
       },
       res = mockRes.getStubbedRes();
 
-    adminusersMock.post(`${USER_RESOURCE}/${user.username}/attempt-login?action=reset`)
-      .reply(200);
-
     login_controller.postLogin(req, res);
     expect(res.redirect.calledWith(expectedUrl)).to.equal(true);
     expect(req.session).to.deep.equal({
@@ -123,7 +120,7 @@ describe('The otplogin endpoint', function () {
       }
     };
 
-    adminusersMock.post(`${USER_RESOURCE}/${user.username}/second-factor/`)
+    adminusersMock.post(`${USER_RESOURCE}/${user.externalId}/second-factor/`)
       .reply(200);
 
     var app = mock_session.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData);
@@ -192,7 +189,7 @@ describe('The afterOtpLogin endpoint', function () {
 
     login_controller.afterOTPLogin(req, res);
     expect(res.redirect.calledWith('/')).to.equal(true);
-    expect(req.session.secondFactor == 'totp');
+    expect(req.session.secondFactor === 'totp');
     done();
 
   });
