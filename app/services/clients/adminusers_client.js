@@ -99,7 +99,7 @@ module.exports = function (clientOptions = {}) {
     let params = {
       correlationId: correlationId
     };
-    let url = `${userResource}/${username}`;
+    let url = `${userResource}?username=${username}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {

@@ -57,7 +57,7 @@ describe('adminusers client - get user', function () {
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
-            .withState('a user exits with the given name')
+            .withState('a user exits with the given external id')
             .withUponReceiving('a valid get user request')
             .withResponseBody(getUserResponse.getPactified())
             .build()
@@ -93,7 +93,7 @@ describe('adminusers client - get user', function () {
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
-            .withState('no user exits with the given name')
+            .withState('no user exits with the given external id')
             .withUponReceiving('a valid get user request of an non existing user')
             .withStatusCode(404)
             .withResponseHeaders({})

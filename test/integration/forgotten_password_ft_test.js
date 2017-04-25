@@ -1,5 +1,5 @@
 let nock = require('nock');
-var proxyquire = require('proxyquire');
+let proxyquire = require('proxyquire');
 const reqFixtures = require(__dirname + '/../fixtures/browser/forgotten_password_fixtures');
 const resFixtures = require(__dirname + '/../fixtures/response');
 const userFixtures = require(__dirname + '/../fixtures/user_fixtures');
@@ -7,7 +7,9 @@ const notifyFixture = require(__dirname + '/../fixtures/notify');
 
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
+
 chai.use(chaiAsPromised);
+
 const expect = chai.expect;
 
 let alwaysValidPassword = function (password) {
@@ -48,7 +50,7 @@ describe('forgotten_password_controller', function () {
     let userResponse = userFixtures.validUserResponse({username: username});
     let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username});
 
-    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
       .reply(200, userResponse.getPlain());
 
     adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
@@ -108,7 +110,7 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
       .reply(200, userResponse.getPlain());
 
     adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
@@ -116,7 +118,7 @@ describe('forgotten_password_controller', function () {
       .getPlain())
       .reply(204);
 
-    adminusersMock.patch(`${USER_RESOURCE}/${username}`, userFixtures
+    adminusersMock.patch(`${USER_RESOURCE}?username=${username}`, userFixtures
       .validIncrementSessionVersionRequest()
       .getPlain())
       .reply(200);
@@ -141,7 +143,7 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
       .reply(200, userResponse.getPlain());
 
     forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
@@ -165,7 +167,7 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
       .reply(200, userResponse.getPlain());
 
     aForgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
@@ -186,7 +188,7 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}/${username}`)
+    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
       .reply(200, userResponse.getPlain());
 
     adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
