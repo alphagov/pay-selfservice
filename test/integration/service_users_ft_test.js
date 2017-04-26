@@ -117,7 +117,7 @@ describe('service users resource', function () {
 
     let getUserResponse = userFixtures.validUserResponse(user_to_view);
 
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
@@ -150,7 +150,7 @@ describe('service users resource', function () {
 
     let getUserResponse = userFixtures.validUserResponse(user);
 
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}?is_new_api_request=y`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
@@ -205,7 +205,7 @@ describe('service users resource', function () {
       service_ids: ['2']
     });
 
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user);

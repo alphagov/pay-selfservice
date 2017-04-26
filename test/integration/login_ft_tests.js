@@ -23,7 +23,7 @@ describe('User clicks on Logout', function() {
   it('should get redirected to login page', function(done) {
 
     let incrementMock = adminusersMock
-      .patch(`${USER_RESOURCE}/${user.externalId}?is_new_api_request=y`)
+      .patch(`${USER_RESOURCE}/${user.externalId}`)
       .reply(200);
 
     build_get_request(paths.user.logOut)
@@ -31,7 +31,7 @@ describe('User clicks on Logout', function() {
       .expect('Location', paths.user.logIn)
       .expect(() => {
         assert(incrementMock.isDone());
-        assert(session.destroy.called == true);
+        assert(session.destroy.called === true);
       })
       .end(done);
   });

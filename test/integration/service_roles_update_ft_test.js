@@ -58,7 +58,7 @@ describe('user permissions update controller', function () {
 
       let getUserResponse = userFixtures.validUserResponse(userToView);
 
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
@@ -82,7 +82,7 @@ describe('user permissions update controller', function () {
 
     it('should error if user not found', function (done) {
 
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(404);
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
@@ -103,7 +103,7 @@ describe('user permissions update controller', function () {
       targetUser.service_ids[0] = '2';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
@@ -140,7 +140,7 @@ describe('user permissions update controller', function () {
 
       let getUserResponse = userFixtures.validUserResponse(userToView);
 
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
@@ -166,7 +166,7 @@ describe('user permissions update controller', function () {
 
       let getUserResponse = userFixtures.validUserResponse(userToView);
 
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
@@ -209,7 +209,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(404);
 
       return supertest(app)
@@ -234,7 +234,7 @@ describe('user permissions update controller', function () {
       targetUser.service_ids[0] = '2';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
@@ -281,7 +281,7 @@ describe('user permissions update controller', function () {
       let getUserResponse = userFixtures.validUserResponse(userToView);
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}?is_new_api_request=y`)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
       adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
