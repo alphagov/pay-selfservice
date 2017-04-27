@@ -118,7 +118,7 @@ module.exports = {
       telephone_number: request.telephone_number || "0123441",
       permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
       "_links": [{
-        "href": `http://adminusers.service/v1/api/users/${req_external_id}?is_new_api_request=y`,
+        "href": `http://adminusers.service/v1/api/users/${req_external_id}`,
         "rel": "self",
         "method": "GET"
       }]

@@ -66,7 +66,7 @@ module.exports = function (clientOptions = {}) {
     let params = {
       correlationId: correlationId
     };
-    let url = `${userResource}/${externalId}?is_new_api_request=y`;
+    let url = `${userResource}/${externalId}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
@@ -174,7 +174,7 @@ module.exports = function (clientOptions = {}) {
       }
     };
 
-    let url = `${userResource}/${externalId}?is_new_api_request=y`;
+    let url = `${userResource}/${externalId}`;
     let defer = q.defer();
     let startTime = new Date();
     let context = {
