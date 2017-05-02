@@ -10,7 +10,7 @@ var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interacti
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
-const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords';
+const FORGOTTEN_PASSWORD_PATH_V2 = '/v2/api/forgotten-passwords';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
@@ -48,7 +48,7 @@ describe('adminusers client - create forgotten password', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH_V2)
             .withState('a user exist')
             .withUponReceiving('a valid forgotten password request')
             .withMethod('POST')
@@ -85,7 +85,7 @@ describe('adminusers client - create forgotten password', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH_V2)
             .withUponReceiving('an invalid forgotten password request')
             .withMethod('POST')
             .withRequestBody(request)
@@ -114,7 +114,7 @@ describe('adminusers client - create forgotten password', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH_V2)
             .withState('a user does not exist')
             .withUponReceiving('a forgotten password request for non existent user')
             .withMethod('POST')

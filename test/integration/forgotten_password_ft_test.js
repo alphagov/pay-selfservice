@@ -32,6 +32,7 @@ let forgottenPassword = function (commonPasswordMock) {
 let adminusersMock = nock(process.env.ADMINUSERS_URL);
 const USER_RESOURCE = '/v1/api/users';
 const FORGOTTEN_PASSWORD_RESOURCE = '/v1/api/forgotten-passwords';
+const FORGOTTEN_PASSWORD_RESOURCE_V2 = '/v2/api/forgotten-passwords';
 const RESET_PASSWORD_RESOURCE = '/v1/api/reset-password';
 
 describe('forgotten_password_controller', function () {
@@ -53,7 +54,7 @@ describe('forgotten_password_controller', function () {
     adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
       .reply(200, userResponse.getPlain());
 
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
+    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE_V2, userFixtures
       .validForgottenPasswordCreateRequest(username)
       .getPlain())
       .reply(200, forgottenPasswordResponse.getPlain());
