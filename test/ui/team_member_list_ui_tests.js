@@ -102,4 +102,34 @@ describe('The team members view', function () {
     body.should.containSelector('h3#view-only-role-header').withExactText('View only (0)');
     body.should.containSelector('div#team-members-view-only-list').havingNumberOfRows(0);
   });
+
+  it('should render invite a team member option when user has create permissions', function () {
+
+    let templateData = {
+      permissions: {
+        'users_service_read': true,
+        'users_service_create': true
+      },
+      'enable_invite_users': true //temp to be removed
+    };
+
+    let body = renderTemplate('services/team_members', templateData);
+
+    body.should.containSelector('a#invite-team-member-link');
+  });
+
+  it('should not render invite a team member option when user has no create permissions', function () {
+
+    let templateData = {
+      permissions: {
+        'users_service_read': true,
+        'users_service_create': false
+      },
+      'enable_invite_users': true //temp to be removed
+    };
+
+    let body = renderTemplate('services/team_members', templateData);
+
+    body.should.not.containSelector('a#invite-team-member-link');
+  });
 });
