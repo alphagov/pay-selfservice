@@ -9,3 +9,5 @@ alpha_release-174.approve-date=2017-05-03:14:31:09
 staging-2.tag=FAILED-174
 
 staging-2.FAILED-174.date=
+
+staging-2.FAILED-174.status=failed
