@@ -122,6 +122,10 @@
     text-transform: none;
     letter-spacing: inherit;
 
+    &:first-letter {
+      text-transform: capitalize;
+    }
+
     .env-live & {
       background: $govuk-blue;
       color: $white;
