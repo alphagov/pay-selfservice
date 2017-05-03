@@ -4,7 +4,7 @@ let paths = require('../paths.js');
 let successResponse = response.response;
 let errorResponse = response.renderErrorView;
 let roles = require('../utils/roles').roles;
-
+let emailTools = require('../utils/email_tools');
 
 module.exports = {
 
@@ -38,10 +38,15 @@ module.exports = {
     let roleName = req.body['role-input'];
 
     let onSuccess = () => {
-      console.log('is it coming here ???');
       req.flash('generic', `Invite sent to ${invitee}`);
       res.redirect(303, paths.teamMembers.index);
     };
+
+    if (!emailTools(invitee).validateEmail()) {
+      req.flash('genericError', `Invalid email address`);
+      res.redirect(303, paths.teamMembers.invite);
+      return;
+    }
 
     return userService.inviteUser(invitee, senderId, serviceId, roleName, correlationId)
       .then(onSuccess)

@@ -7,6 +7,10 @@ let chai = require('chai');
 let roles = require('../../app/utils/roles').roles;
 let paths = require(__dirname + '/../../app/paths.js');
 let inviteFixtures = require(__dirname + '/../fixtures/invite_fixtures');
+let sinon = require('sinon');
+let _ = require('lodash');
+let inviteUserController = require('../../app/controllers/invite_user_controller');
+
 
 let expect = chai.expect;
 let adminusersMock = nock(process.env.ADMINUSERS_URL);
@@ -95,6 +99,28 @@ describe('invite user controller', function () {
         .end(done);
     });
 
+    it('should error invitee is an invalid email address', function (done) {
+
+      let baseReq = {
+        flash: sinon.stub()
+      };
+      let res = {
+        redirect: sinon.stub()
+      };
+
+      let invalidEmail = 'invalid@examplecom';
+      let req = _.merge(baseReq, {
+        correlationId: 'blah',
+        user: {externalId: 'some-ext-id', serviceIds: ['1']},
+        body: {'invitee-email': invalidEmail, 'role-input': '200'}
+      });
+
+      inviteUserController.invite(req, res);
+
+      expect(req.flash.calledWith('genericError', 'Invalid email address')).to.equal(true);
+      expect(res.redirect.calledWith(303, paths.teamMembers.invite)).to.equal(true);
+      done();
+    });
   });
 
 });
