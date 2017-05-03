@@ -229,7 +229,7 @@ module.exports = {
     let request = payload || {};
     let code = randomString();
     let response = {
-      username: request.username || "username",
+      user_external_id: request.userExternalId || "userExternalId",
       code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
       "_links": [{

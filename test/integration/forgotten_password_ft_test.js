@@ -3,7 +3,6 @@ let proxyquire = require('proxyquire');
 const reqFixtures = require(__dirname + '/../fixtures/browser/forgotten_password_fixtures');
 const resFixtures = require(__dirname + '/../fixtures/response');
 const userFixtures = require(__dirname + '/../fixtures/user_fixtures');
-const notifyFixture = require(__dirname + '/../fixtures/notify');
 
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
@@ -32,7 +31,6 @@ let forgottenPassword = function (commonPasswordMock) {
 let adminusersMock = nock(process.env.ADMINUSERS_URL);
 const USER_RESOURCE = '/v1/api/users';
 const FORGOTTEN_PASSWORD_RESOURCE = '/v1/api/forgotten-passwords';
-const FORGOTTEN_PASSWORD_RESOURCE_V2 = '/v2/api/forgotten-passwords';
 const RESET_PASSWORD_RESOURCE = '/v1/api/reset-password';
 
 describe('forgotten_password_controller', function () {
@@ -49,23 +47,14 @@ describe('forgotten_password_controller', function () {
     let res = resFixtures.getStubbedRes();
     let username = req.body.username;
     let userResponse = userFixtures.validUserResponse({username: username});
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username});
 
-    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
-      .reply(200, userResponse.getPlain());
-
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE_V2, userFixtures
+    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
       .validForgottenPasswordCreateRequest(username)
       .getPlain())
-      .reply(200, forgottenPasswordResponse.getPlain());
-
-    notifyFixture.mockSendForgottenPasswordEmail(
-      userResponse.getPlain().email,
-      forgottenPasswordResponse.getPlain().code);
+      .reply(200);
 
     forgottenPasswordController.emailPost(req, res).should.be.fulfilled
-      .then((user) => {
-        expect(user).to.deep.equal(userResponse.getAsObject());
+      .then(() => {
         expect(res.redirect.called).to.equal(true);
       }).should.notify(done);
   });
@@ -74,6 +63,7 @@ describe('forgotten_password_controller', function () {
     let req = reqFixtures.validForgottenPasswordGet();
     let res = resFixtures.getStubbedRes();
     let token = req.params.id;
+
     let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: token});
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
@@ -101,17 +91,18 @@ describe('forgotten_password_controller', function () {
   });
 
   it('reset users password upon valid reset password request', function (done) {
+
     let req = reqFixtures.validUpdatePasswordPost();
     let res = resFixtures.getStubbedRes();
-    let username = req.body.username;
-    let userResponse = userFixtures.validUserResponse({username: username});
+    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
     let token = req.params.id;
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token});
+    let userResponse = userFixtures.validUserResponse({external_id: userExternalId});
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain());
 
     adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
@@ -119,10 +110,43 @@ describe('forgotten_password_controller', function () {
       .getPlain())
       .reply(204);
 
-    adminusersMock.patch(`${USER_RESOURCE}?username=${username}`, userFixtures
+    adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
       .validIncrementSessionVersionRequest()
       .getPlain())
       .reply(200);
+
+    forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
+      .then(() => {
+        expect(req.session.destroy.called).to.equal(true);
+        expect(req.flash.calledWith('generic', 'Password has been updated')).to.equal(true);
+        expect(res.redirect.calledWith('/login')).to.equal(true);
+      }).should.notify(done);
+  });
+
+  it('reset users password upon valid reset password request should destroy session even if incrementing user session fails', function (done) {
+
+    let req = reqFixtures.validUpdatePasswordPost();
+    let res = resFixtures.getStubbedRes();
+    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+    let token = req.params.id;
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token});
+    let userResponse = userFixtures.validUserResponse({external_id: userExternalId});
+
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain());
+
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
+      .reply(200, userResponse.getPlain());
+
+    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
+      .validUpdatePasswordRequest(token, req.body.password)
+      .getPlain())
+      .reply(204);
+
+    adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
+      .validIncrementSessionVersionRequest()
+      .getPlain())
+      .reply(500);
 
     forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
       .then(() => {
@@ -136,15 +160,16 @@ describe('forgotten_password_controller', function () {
     let req = reqFixtures.validUpdatePasswordPost();
     let res = resFixtures.getStubbedRes();
     let username = req.body.username;
+    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
     req.body.password = 'short';
-    let userResponse = userFixtures.validUserResponse({username: username});
+    let userResponse = userFixtures.validUserResponse({username: username, external_id: userExternalId});
     let token = req.params.id;
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token});
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain());
 
     forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
@@ -160,15 +185,16 @@ describe('forgotten_password_controller', function () {
     let req = reqFixtures.validUpdatePasswordPost();
     let res = resFixtures.getStubbedRes();
     let username = req.body.username;
+    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
     req.body.password = "common password";
-    let userResponse = userFixtures.validUserResponse({username: username});
+    let userResponse = userFixtures.validUserResponse({username: username, external_id: userExternalId});
     let token = req.params.id;
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token});
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain());
 
     aForgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
@@ -182,14 +208,15 @@ describe('forgotten_password_controller', function () {
     let req = reqFixtures.validUpdatePasswordPost();
     let res = resFixtures.getStubbedRes();
     let username = req.body.username;
-    let userResponse = userFixtures.validUserResponse({username: username});
+    let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+    let userResponse = userFixtures.validUserResponse({username: username, external_id: userExternalId});
     let token = req.params.id;
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({username: username, code: token});
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token});
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain());
 
-    adminusersMock.get(`${USER_RESOURCE}?username=${username}`)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain());
 
     adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures

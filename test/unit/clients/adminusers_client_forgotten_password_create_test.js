@@ -10,7 +10,7 @@ var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interacti
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
-const FORGOTTEN_PASSWORD_PATH_V2 = '/v2/api/forgotten-passwords';
+const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
@@ -44,17 +44,15 @@ describe('adminusers client - create forgotten password', function () {
     context('create forgotten password API - success', () => {
 
       let request = userFixtures.validForgottenPasswordCreateRequest('existing-user');
-      let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse(request.getPlain());
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH_V2)
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
             .withState('a user exist')
             .withUponReceiving('a valid forgotten password request')
             .withMethod('POST')
             .withRequestBody(request.getPactified())
-            .withStatusCode(201)
-            .withResponseBody(validForgottenPasswordResponse.getPactified())
+            .withStatusCode(200)
             .build()
         ).then(() => done());
       });
@@ -66,15 +64,7 @@ describe('adminusers client - create forgotten password', function () {
       it('should create a forgotten password entry successfully', function (done) {
 
         let requestData = request.getPlain();
-        adminusersClient.createForgottenPassword(requestData.username).should.be.fulfilled.then(function (forgottenPassword) {
-
-          var expectedResponse = validForgottenPasswordResponse.getPlain();
-          expect(forgottenPassword.code).to.be.equal(expectedResponse.code);
-          expect(forgottenPassword.date).to.be.equal(expectedResponse.date);
-          expect(forgottenPassword.username).to.be.equal(expectedResponse.username);
-          expect(forgottenPassword._links.length).to.be.equal(expectedResponse._links.length);
-
-        }).should.notify(done);
+        adminusersClient.createForgottenPassword(requestData.username).should.notify(done);
       });
     });
 
@@ -85,7 +75,7 @@ describe('adminusers client - create forgotten password', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH_V2)
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
             .withUponReceiving('an invalid forgotten password request')
             .withMethod('POST')
             .withRequestBody(request)
@@ -114,7 +104,7 @@ describe('adminusers client - create forgotten password', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH_V2)
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
             .withState('a user does not exist')
             .withUponReceiving('a forgotten password request for non existent user')
             .withMethod('POST')

@@ -1,41 +1,11 @@
 const q = require('q');
-const logger = require('winston');
 
 let getAdminUsersClient = require('./clients/adminusers_client');
 let User = require('../models/user').User;
-let notify = require('../services/clients/notification_client.js');
 let paths = require(__dirname + '/../paths.js');
-let applicationMetrics = require('./../utils/metrics.js').metrics;
 let commonPassword = require('common-password');
-const MIN_PASSWORD_LENGTH = 10;
 
-/**
- * @param user
- * @param code
- * @param correlationId
- * @param defer
- */
-let sendForgottenPasswordEmail = function (user, code, correlationId, defer) {
-  template = process.env.NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID;
-  let uri = paths.generateRoute(paths.user.forgottenPasswordReset, {id: code});
-  let url = process.env.SELFSERVICE_BASE + uri;
-  let startTime = new Date();
-  notify.sendEmail(template, user.email, {code: url})
-    .then(() => {
-      let elapsed = new Date() - startTime;
-      applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
-      logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
-      logger.info(`[${correlationId}] FORGOTTEN PASSWORD EMAIL SENT TO USER ID: ` + user.id);
-      defer.resolve(user);
-    }, (e) => {
-      let elapsed = new Date() - startTime;
-      applicationMetrics.increment('notify-operations.email.failures');
-      applicationMetrics.histogram('notify-operations.email.response_time', elapsed);
-      logger.info(`[${correlationId}] - Sending email ended - elapsed time: %s ms`, elapsed);
-      logger.error(`[${correlationId}] PROBLEM SENDING FORGOTTEN PASSWORD EMAIL `, e);
-      defer.reject();
-    });
-};
+const MIN_PASSWORD_LENGTH = 10;
 
 module.exports = {
   /**
@@ -112,16 +82,8 @@ module.exports = {
    * @param correlationId
    * @returns {Promise}
    */
-  sendPasswordResetToken: function (user, correlationId) {
-    let defer = q.defer();
-    getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(user.username)
-      .then((forgottenPassword) => sendForgottenPasswordEmail(user, forgottenPassword.code, correlationId, defer),
-        () => {
-          logger.warn(`[${correlationId}] PROBLEM CREATING FORGOTTEN PASSWORD. User: `, user.username);
-          defer.reject();
-        });
-
-    return defer.promise;
+  sendPasswordResetToken: function (username, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(username);
   },
 
   /**

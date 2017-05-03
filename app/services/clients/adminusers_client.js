@@ -19,7 +19,6 @@ module.exports = function (clientOptions = {}) {
   let correlationId = clientOptions.correlationId || '';
   let userResource = `${baseUrl}/v1/api/users`;
   let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
-  let forgottenPasswordResourceV2 = `${baseUrl}/v2/api/forgotten-passwords`;
   let resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
   let serviceUserResource = `${baseUrl}/v1/api/services`;
 
@@ -210,7 +209,7 @@ module.exports = function (clientOptions = {}) {
         username: username
       }
     };
-    let url = forgottenPasswordResourceV2;
+    let url = forgottenPasswordResource;
     let defer = q.defer();
     let startTime = new Date();
     let context = {

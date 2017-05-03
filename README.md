@@ -3,7 +3,7 @@ GOV.UK Pay Self Service portal (Node.js)
 
 ## Key environment variables
 
-if you wish to override any variables, please do the following, this could be useful for testing live notify as an example
+if you wish to override any variables, please do the following:
 
 
 setup
