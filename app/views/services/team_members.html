@@ -64,7 +64,9 @@ GOV.UK Pay - Team members
     </div>
     {{#enable_invite_users}}
         {{#permissions.users_service_create}}
-            <a id="invite-team-member-link" class="button" href="{{}}">Invite a team member</a>
+            <a id="invite-team-member-link" class="button" href="{{routes.teamMembers.invite}}">
+                Invite a team member
+            </a>
         {{/permissions.users_service_create}}
     {{/enable_invite_users}}
 </div>

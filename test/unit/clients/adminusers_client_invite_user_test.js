@@ -150,7 +150,7 @@ describe('adminusers client - invite user', function () {
 
     context('invite user API - conflicting request, should return error', () => {
       let validInvite = inviteFixtures.validInviteRequest();
-      let errorResponse = inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(validInvite.getPlain().email);
+      let errorResponse = inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(validInvite.getPlain().email).getPactified();
 
       beforeEach((done) => {
         let pactified = validInvite.getPactified();

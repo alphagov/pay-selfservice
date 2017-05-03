@@ -1,0 +1,78 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - Team members
+{{/pageTitle}}
+
+{{$pageSpecificJS}}
+<script src="/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
+{{$mainClasses}}full-width{{/mainClasses}}
+{{$full_width_content}}
+<a href="/team-members" class="link-back">Back to team member profile</a>
+<div>
+    <h1 class="heading-large underline">
+        <span class="heading-secondary">Team members</span>
+        Invite a team member</h1>
+</div>
+
+<div class="column-full remove-left-margin">
+
+    <form id="invite-member-form" method="post" action="{{routes.teamMembers.invite}}">
+        <div class="form-group">
+            <label class="form-label" for="invitee-email">
+                Email
+                <span class="form-hint">
+	              Must be a government email address
+	            </span>
+            </label>
+            <input type="text" class="form-control" id="invitee-email" name="invitee-email">
+        </div>
+        <div class="form-group">
+            <fieldset>
+                <legend class="heading-small">Permission level</legend>
+                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+                <label class="block-label selection-button-radio" for="role-admin-input">
+                    <input id="role-admin-input" class="form-control" name="role-input" type="radio" value="{{admin.id}}">
+                    <span class="permission-main-type bold">Administrator</span>
+                    <ul class="question-advice">
+                        <li>View and change settings</li>
+                        <li>Edit data, e.g. refund a payment</li>
+                        <li>View data, e.g. transactions</li>
+                    </ul>
+                </label>
+
+                <label class="block-label selection-button-radio" for="role-view-and-refund-input">
+                    <input id="role-view-and-refund-input" class="form-control" name="role-input" type="radio" value="{{viewAndRefund.id}}">
+                    <span class="permission-main-type bold">View and refund</span>
+                    <ul class="question-advice">
+                        <li>Edit data, e.g. refund a payment</li>
+                        <li>View data, e.g. transactions</li>
+                        <li>Cannot view or edit settings</li>
+                    </ul>
+                </label>
+
+                <label class="block-label selection-button-radio" for="role-view-input">
+                    <input id="role-view-input" class="form-control" name="role-input" type="radio" value="{{view.id}}" checked>
+                    <span class="permission-main-type bold">View only</span>
+                    <ul class="question-advice">
+                        <li>View data, e.g. transactions</li>
+                        <li>Cannot edit data</li>
+                        <li>Cannot view or edit settings</li>
+                    </ul>
+                </label>
+            </fieldset>
+        </div>
+        <div class="form-group call-to-action-group">
+            <input type="submit" class="button" value="Submit">
+            <a id="service-name-cancel-link" href="{{routes.teamMembers.index}}">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{{/full_width_content}}
+
+{{/layout}}

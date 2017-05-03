@@ -78,7 +78,15 @@ module.exports = {
       errors: ['invite with email [' + email + '] already exists']
     };
 
-    return pactInvites.withPactified(response);
+    return {
+      getPactified: () => {
+        return pactInvites.withPactified(response);
+      },
+      getPlain: () => {
+        return response;
+      }
+    };
+
   }
 
 };
