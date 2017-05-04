@@ -1,19 +1,18 @@
 {{#hasPaginationLinks}}
 <div class="pagination">
 	{{#paginationLinks}}
-	<form class="paginationForm {{pageName}}" method="get" action="{{search_path}}">
-		<div style="display:none">
-				<input class="state" name="state" type="text" value="{{filters.state}}"/>
-        <input class="reference" name="reference" type="text" value="{{filters.reference}}" />
-				<input class="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" />
-	      <input class="toDate" name="toDate" type="text" value="{{filters.toDate}}"/>
-	      <input class="page" name="page" type="text" value="{{pageNumber}}"/>
-	      <input class="pageSize" name="pageSize" type="text" value="{{filters.pageSize}}"/>
-        <input class="fromTime" name="fromTime" type="text" value="{{filters.fromTime}}">
-        <input class="toTime" name="toTime" type="text" value="{{filters.toTime}}">
-	    </div>
-	    <input class="pagination {{pageName}} {{#activePage}}active{{/activePage}}" type="submit" value="{{pageName}}"/>
-	</form>
+    <form class="paginationForm {{pageName}}" method="get" action="{{search_path}}">
+        <input class="state" name="state" type="hidden" value="{{filters.state}}"/>
+        <input class="reference" name="reference" type="hidden" value="{{filters.reference}}" />
+        <input class="fromDate" name="fromDate" type="hidden" value="{{filters.fromDate}}" />
+        <input class="toDate" name="toDate" type="hidden" value="{{filters.toDate}}"/>
+        <input class="page" name="page" type="hidden" value="{{pageNumber}}"/>
+        <input class="pageSize" name="pageSize" type="hidden" value="{{filters.pageSize}}"/>
+        <input class="fromTime" name="fromTime" type="hidden" value="{{filters.fromTime}}">
+        <input class="toTime" name="toTime" type="hidden" value="{{filters.toTime}}">
+
+        <button class="pagination {{pageName}} {{#activePage}}active{{/activePage}}" type="submit">{{pageName}}</button>
+    </form>
 	{{/paginationLinks}}
 </div>
 {{/hasPaginationLinks}}
