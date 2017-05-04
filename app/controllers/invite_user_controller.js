@@ -4,7 +4,7 @@ let paths = require('../paths.js');
 let successResponse = response.response;
 let errorResponse = response.renderErrorView;
 let roles = require('../utils/roles').roles;
-let emailTools = require('../utils/email_tools');
+let emailTools = require('../utils/email_tools')();
 
 module.exports = {
 
@@ -42,7 +42,7 @@ module.exports = {
       res.redirect(303, paths.teamMembers.index);
     };
 
-    if (!emailTools(invitee).validateEmail()) {
+    if (!emailTools.validateEmail(invitee)) {
       req.flash('genericError', `Invalid email address`);
       res.redirect(303, paths.teamMembers.invite);
       return;

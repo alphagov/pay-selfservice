@@ -3,7 +3,7 @@
  so this follows that standard. */
 let rfc822Validator = require('rfc822-validate');
 
-var emailTools = function (email) {
+var emailTools = function () {
   "use strict";
 
   var init = function () {
@@ -30,12 +30,9 @@ var emailTools = function (email) {
     return f;
   }();
 
-  var match = init(email);
-
   return {
-    'local-part': (match !== null) ? match[1] : false,
-    'domain': (match !== null) ? match[7] : false,
-    validateEmail: function () {
+    validateEmail: function (email) {
+      var match = init(email);
       let validEmail = rfc822Validator(email);
       if (!validEmail) {
         return false;
