@@ -18,9 +18,7 @@
     {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
 
     {{$content}}
-        {{#flash.genericError}}
-        <p class="generic-error"> {{flash.genericError}} </p>
-        {{/flash.genericError}}
+        {{>includes/flash}}
         {{#navigation}}
             {{> includes/phase_banner }}
         {{/navigation}}
