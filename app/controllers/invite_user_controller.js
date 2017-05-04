@@ -1,9 +1,10 @@
+const logger = require('winston');
 let response = require('../utils/response.js');
 let userService = require('../services/user_service.js');
 let paths = require('../paths.js');
 let successResponse = response.response;
 let errorResponse = response.renderErrorView;
-let roles = require('../utils/roles').roles;
+let rolesModule = require('../utils/roles');
 let emailTools = require('../utils/email_tools')();
 
 module.exports = {
@@ -15,6 +16,7 @@ module.exports = {
    */
 
   index: (req, res) => {
+    let roles = rolesModule.roles;
 
     let data = {
       admin: {id: roles['admin'].extId},
@@ -35,7 +37,9 @@ module.exports = {
     let senderId = req.user.externalId;
     let invitee = req.body['invitee-email'];
     let serviceId = req.user.serviceIds[0];
-    let roleName = req.body['role-input'];
+    let roleId = req.body['role-input'];
+
+    let role = rolesModule.getRoleByExtId(roleId);
 
     let onSuccess = () => {
       req.flash('generic', `Invite sent to ${invitee}`);
@@ -48,10 +52,17 @@ module.exports = {
       return;
     }
 
-    return userService.inviteUser(invitee, senderId, serviceId, roleName, correlationId)
+    if (!role) {
+      logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`);
+      errorResponse(req, res, 'Unable to create invitation', 200);
+      return;
+    }
+
+    return userService.inviteUser(invitee, senderId, serviceId, role.name, correlationId)
       .then(onSuccess)
-      .catch(() => {
-        errorResponse(req, res, 'Unable to create invitation', 200)
+      .catch((err) => {
+        logger.error(`[requestId=${correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err.message));
+        errorResponse(req, res, 'Unable to create invitation', 200);
       });
   }
 

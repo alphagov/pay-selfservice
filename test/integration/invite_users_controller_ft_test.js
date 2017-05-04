@@ -99,6 +99,29 @@ describe('invite user controller', function () {
         .end(done);
     });
 
+    it('should error on unknown role externalId', function (done) {
+
+      let unknownRoleId = '999';
+
+      app = session.getAppWithLoggedInUser(getApp(), userInSession);
+
+      return supertest(app)
+        .post(paths.teamMembers.invite)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'invitee-email': 'invitee@example.com',
+          'role-input': unknownRoleId,
+          csrfToken: csrf().create('123')
+        })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to create invitation');
+        })
+        .end(done);
+    });
+
     it('should error invitee is an invalid email address', function (done) {
 
       let baseReq = {
