@@ -180,6 +180,17 @@ module.exports = {
    */
   updateServiceRole: function (externalId, roleName, serviceId, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, serviceId, roleName);
+  },
+
+  /**
+   * @param invitee
+   * @param senderId
+   * @param serviceId
+   * @param roleName
+   * @param correlationId
+   */
+  inviteUser: function (invitee, senderId, serviceId, roleName, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName);
   }
 
 };

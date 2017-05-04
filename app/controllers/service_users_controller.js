@@ -43,13 +43,15 @@ module.exports = {
       let numberOfViewOnlyMembers = team_members[roles['view-only'].name].length;
       let numberOfViewAndRefundMembers = team_members[roles['view-and-refund'].name].length;
       let numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers;
+      let enableInviteUsers = process.env.ENABLE_INVITE_USERS || false;
 
       successResponse(req, res, 'services/team_members', {
         team_members: team_members,
         number_active_members: numberActiveMembers,
         number_admin_members: numberOfAdminMembers,
         'number_view-only_members': numberOfViewOnlyMembers,
-        'number_view-and-refund_members': numberOfViewAndRefundMembers
+        'number_view-and-refund_members': numberOfViewAndRefundMembers,
+        enable_invite_users: enableInviteUsers
       });
     };
 

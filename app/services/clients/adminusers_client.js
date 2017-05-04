@@ -433,6 +433,46 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   *
+   * @param invitee
+   * @param senderId
+   * @param serviceId
+   * @param roleName
+   * @returns {Promise}
+   */
+  let inviteUser = (invitee, senderId, serviceId, roleName) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        email: invitee,
+        sender: senderId,
+        role_name: roleName
+      }
+    };
+
+    let url = `${serviceUserResource}/${serviceId}/invites`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'invite a user to signup',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -445,6 +485,7 @@ module.exports = function (clientOptions = {}) {
     sendSecondFactor:sendSecondFactor,
     authenticateSecondFactor:authenticateSecondFactor,
     getServiceUsers: getServiceUsers,
-    updateServiceRole: updateServiceRole
+    updateServiceRole: updateServiceRole,
+    inviteUser: inviteUser
   };
 };
