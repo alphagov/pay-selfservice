@@ -83,11 +83,11 @@ describe('Pagination', function () {
         .expect(200)
         .expect(function (res) {
           res.body.paginationLinks.should.eql([
-            {pageNumber: 1, pageName: 1, activePage: true},
-            {pageNumber: 2, pageName: 2, activePage: false},
-            {pageNumber: 3, pageName: 3, activePage: false},
-            {pageNumber: 2, pageName: 'next', activePage: false},
-            {pageNumber: 6, pageName: 'last', activePage: false}
+            {pageNumber: 1, pageName: 1, activePage: true, hasSymbolicName: false},
+            {pageNumber: 2, pageName: 2, activePage: false, hasSymbolicName: false},
+            {pageNumber: 3, pageName: 3, activePage: false, hasSymbolicName: false},
+            {pageNumber: 2, pageName: 'next', activePage: false, hasSymbolicName: true},
+            {pageNumber: 6, pageName: 'last', activePage: false, hasSymbolicName: true}
           ]);
         })
         .end(done);
@@ -107,14 +107,14 @@ describe('Pagination', function () {
         .expect(200)
         .expect(function (res) {
           res.body.paginationLinks.should.eql([
-            {pageNumber: 2, pageName: 'previous', activePage: false},
-            {pageNumber: 1, pageName: 1, activePage: false},
-            {pageNumber: 2, pageName: 2, activePage: false},
-            {pageNumber: 3, pageName: 3, activePage: true},
-            {pageNumber: 4, pageName: 4, activePage: false},
-            {pageNumber: 5, pageName: 5, activePage: false},
-            {pageNumber: 4, pageName: 'next', activePage: false},
-            {pageNumber: 6, pageName: 'last', activePage: false}
+            {pageNumber: 2, pageName: 'previous', activePage: false, hasSymbolicName: true},
+            {pageNumber: 1, pageName: 1, activePage: false, hasSymbolicName: false},
+            {pageNumber: 2, pageName: 2, activePage: false, hasSymbolicName: false},
+            {pageNumber: 3, pageName: 3, activePage: true, hasSymbolicName: false},
+            {pageNumber: 4, pageName: 4, activePage: false, hasSymbolicName: false},
+            {pageNumber: 5, pageName: 5, activePage: false, hasSymbolicName: false},
+            {pageNumber: 4, pageName: 'next', activePage: false, hasSymbolicName: true},
+            {pageNumber: 6, pageName: 'last', activePage: false, hasSymbolicName: true}
           ]);
         })
         .end(done);
@@ -134,14 +134,14 @@ describe('Pagination', function () {
         .expect(200)
         .expect(function (res) {
           res.body.paginationLinks.should.eql([
-            {pageNumber: 2, pageName: 'previous', activePage: false},
-            {pageNumber: 1, pageName: 1, activePage: false},
-            {pageNumber: 2, pageName: 2, activePage: false},
-            {pageNumber: 3, pageName: 3, activePage: true},
-            {pageNumber: 4, pageName: 4, activePage: false},
-            {pageNumber: 5, pageName: 5, activePage: false},
-            {pageNumber: 4, pageName: 'next', activePage: false},
-            {pageNumber: 15, pageName: 'last', activePage: false}
+            {pageNumber: 2, pageName: 'previous', activePage: false, hasSymbolicName: true},
+            {pageNumber: 1, pageName: 1, activePage: false, hasSymbolicName: false},
+            {pageNumber: 2, pageName: 2, activePage: false, hasSymbolicName: false},
+            {pageNumber: 3, pageName: 3, activePage: true, hasSymbolicName: false},
+            {pageNumber: 4, pageName: 4, activePage: false, hasSymbolicName: false},
+            {pageNumber: 5, pageName: 5, activePage: false, hasSymbolicName: false},
+            {pageNumber: 4, pageName: 'next', activePage: false, hasSymbolicName: true},
+            {pageNumber: 15, pageName: 'last', activePage: false, hasSymbolicName: true}
           ]);
         })
         .end(done);
@@ -160,11 +160,11 @@ describe('Pagination', function () {
         .expect(200)
         .expect(function (res) {
           res.body.paginationLinks.should.eql([
-            {pageNumber: 1, pageName: 1, activePage: true},
-            {pageNumber: 2, pageName: 2, activePage: false},
-            {pageNumber: 3, pageName: 3, activePage: false},
-            {pageNumber: 2, pageName: 'next', activePage: false},
-            {pageNumber: 6, pageName: 'last', activePage: false}
+            {pageNumber: 1, pageName: 1, activePage: true, hasSymbolicName: false},
+            {pageNumber: 2, pageName: 2, activePage: false, hasSymbolicName: false},
+            {pageNumber: 3, pageName: 3, activePage: false, hasSymbolicName: false},
+            {pageNumber: 2, pageName: 'next', activePage: false, hasSymbolicName: true},
+            {pageNumber: 6, pageName: 'last', activePage: false, hasSymbolicName: true}
           ]);
         })
         .end(done);

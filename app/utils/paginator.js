@@ -31,6 +31,7 @@ function createPageObject(pageNumber, pageName) {
   return {
     pageNumber: pageNumber,
     pageName: pageName || pageNumber,
+    hasSymbolicName: (pageName !== undefined),
     activePage: pageNumber === this.page
   }
 }

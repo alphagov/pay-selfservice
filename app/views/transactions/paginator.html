@@ -11,7 +11,14 @@
         <input class="fromTime" name="fromTime" type="hidden" value="{{filters.fromTime}}">
         <input class="toTime" name="toTime" type="hidden" value="{{filters.toTime}}">
 
-        <button class="pagination {{pageName}} {{#activePage}}active{{/activePage}}" type="submit">{{pageName}}</button>
+        <button class="pagination {{pageName}} {{#activePage}}active{{/activePage}}" type="submit">
+            {{#hasSymbolicName}}
+                {{pageName}}<span class="visuallyhidden"> page of results</span>
+            {{/hasSymbolicName}}
+            {{^hasSymbolicName}}
+                <span class="visuallyhidden">Results page </span>{{pageName}}
+            {{/hasSymbolicName}}
+        </button>
     </form>
 	{{/paginationLinks}}
 </div>
