@@ -28,9 +28,11 @@ module.exports = {
 
   validInviteResponse: opts => {
     let invitee = "random@example.com";
+    let randomPhoneNUmber = "123456789012";
 
     let data = {
-      email: opts.email || invitee
+      email: opts.email || invitee,
+      telephone_number: opts.telephone_number || randomPhoneNUmber
     };
 
     return {

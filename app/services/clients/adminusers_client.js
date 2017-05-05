@@ -21,6 +21,7 @@ module.exports = function (clientOptions = {}) {
   let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
   let resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
   let serviceUserResource = `${baseUrl}/v1/api/services`;
+  let inviteResource = `${baseUrl}/v1/api/invites`;
 
   /**
    * Create a new user
@@ -472,6 +473,37 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * Get a valid invite or error if it's expired
+   * @param inviteCode
+   */
+  let getValidatedInvite = (inviteCode) => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${inviteResource}/${inviteCode}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'GET',
+      description: 'find a validated invitation',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -485,6 +517,7 @@ module.exports = function (clientOptions = {}) {
     authenticateSecondFactor:authenticateSecondFactor,
     getServiceUsers: getServiceUsers,
     updateServiceRole: updateServiceRole,
-    inviteUser: inviteUser
+    inviteUser: inviteUser,
+    getValidatedInvite: getValidatedInvite
   };
 };
