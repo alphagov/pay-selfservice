@@ -1,20 +1,29 @@
-<li
+<div
   id="{{token_link}}"
   class="key-list-item js-{{^revoked}}active{{/revoked}}" data-csrf="{{ csrfToken }}">
-  <div id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</div>
-  <div id="created-by-{{token_link}}" class="font-xsmall qa-created-by">Created by: {{created_by}}</div>
-  <div id="date-created-{{token_link}}" class="font-xsmall qa-created-date">Date created: {{issued_date}}</div>
-  <div id="date-used-{{token_link}}" class="font-xsmall push-bottom-sml qa-last-used">
-    {{#last_used}}
-      Last used: {{last_used}}
-    {{/last_used}}
-    {{^last_used}}
-      Not used
-    {{/last_used}}
-  </div>
+  <h3 id="description-{{token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{description}}</h3>
+  <div class="key-list-item-meta">
+    <dl>
+      <div class="qa-created-by" id="created-by-{{token_link}}">
+        <dt>Created by: </dt><dd>{{created_by}}</dd>
+      </div>
+      <div class="qa-created-date" id="date-created-{{token_link}}">
+        <dt>Date created: </dt><dd>{{issued_date}}</dd>
+      </div>
+  {{#last_used}}
+      <div class="qa-last-used" id="date-used-{{token_link}}">
+        <dt>Last used: </dt><dd>{{last_used}}</dd>
+      </div>
+    </dl>
+  {{/last_used}}
+  {{^last_used}}
+    </dl>
+    <p class="qa-last-used">Not used</p>
+  {{/last_used}}
   {{#revoked}}
-    <div id="revoked-{{token_link}}">Key was revoked on {{revoked}}.</div>
+    <p id="revoked-{{token_link}}">Key was revoked on {{revoked}}.</p>
   {{/revoked}}
+  </div>
   {{^revoked}}
   <div class="js-edit-controls" >
       {{#permissions.tokens_update}}
@@ -25,7 +34,7 @@
       {{/permissions.tokens_delete}}
     </div>
   {{#permissions.tokens_update}}
-  <div class="js-edit-description form" hidden>
+  <div class="js-edit-description form">
       <div class="form-group">
         <label class="visually-hidden" for="description-input-{{token_link}}">Description</label>
         <textarea id="description-input-{{token_link}}" class="js-new-description form-control">{{description}}</textarea>
@@ -37,20 +46,24 @@
     </div>
   {{/permissions.tokens_update}}
   {{#permissions.tokens_delete}}
-  <div class="js-revoke-confirmation" hidden>
+  <div class="js-revoke-confirmation">
       <p>
         Are you sure you want to revoke this developer key?<br />
         If revoked it will no longer enable integration with the platform.
       </p>
       <div class="button-group">
-        <input id="revoke-token-{{token_link}}" type="button" class="button js-revoke-token" value="Yes" />
-        <input id="cancel-revoke-{{token_link}}" type="button" value="No" class="button-secondary js-toggle-revoke" />
-      </div>
+        <button id="revoke-token-{{token_link}}" type="button" class="button js-revoke-token">
+          Yes<span class="visuallyhidden"> I want to revoke {{description}}</span>
+        </button>
+        <button id="cancel-revoke-{{token_link}}" type="button" class="button-secondary js-toggle-revoke">
+          No<span class="visuallyhidden"> I don't want to revoke {{description}}</span>
+        </button>
     </div>
-    <div class="js-revoke-confirmed" hidden>
+  </div>
+    <p class="js-revoke-confirmed">
       Key successfully revoked<br />
       It will no longer enable integration with the platform.
-    </div>
+    </p>
     {{/permissions.tokens_delete}}
   {{/revoked}}
-</li>
+</div>

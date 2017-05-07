@@ -40,3 +40,36 @@ ul.tabs li.current{
 .key-list {
   margin-top: 30px;
 }
+
+.key-list-item-meta {
+  @include core-16;
+  margin-bottom: 1em;
+
+  dt, dd { display: inline; }
+
+  p {
+    margin: 0;
+  }
+}
+
+.key-list-item {
+  .form-group {
+    margin-bottom: $gutter;
+    float: none;
+  }
+
+  :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.key-list-item-controls a:last-child {
+  margin-left: 1em;
+}
+
+/* Hide edit options for tokens */
+.js-enabled div.js-edit-description,
+.js-enabled .js-revoke-confirmation,
+.js-enabled .js-revoke-confirmed {
+  display: none;
+}
