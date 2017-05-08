@@ -71,6 +71,10 @@ module.exports = {
     permissions: '/team-members/:externalId/permissions',
     invite: '/team-members-invite'
   },
+  register: {
+    index: '/register',
+    invites:'/invites/:code'
+  },
   toggle3ds: {
     index: '/3ds',
     onConfirm: '/3ds/confirm',

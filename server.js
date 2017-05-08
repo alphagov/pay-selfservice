@@ -101,6 +101,7 @@ function initialiseAuth(app) {
 function initialiseCookies(app) {
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()));
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.gatewayAccountCookie()));
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()));
 }
 
 function listen() {

@@ -26,14 +26,16 @@ module.exports = {
     };
   },
 
-  validInviteResponse: opts => {
+  validInviteResponse: (opts = {}) => {
     let invitee = "random@example.com";
-    let randomPhoneNUmber = "123456789012";
 
     let data = {
       email: opts.email || invitee,
-      telephone_number: opts.telephone_number || randomPhoneNUmber
     };
+
+    if (opts.telephone_number) {
+      data.telephone_number = opts.telephone_number;
+    }
 
     return {
       getPactified: () => {
