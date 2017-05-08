@@ -73,6 +73,7 @@ module.exports = {
   },
   register: {
     index: '/register',
+    submitDetails: '/register',
     invites:'/invites/:code'
   },
   toggle3ds: {

@@ -17,78 +17,117 @@ let mockRegisterAccountCookie;
 
 describe('register user controller', function () {
 
-  afterEach((done) => {
-    nock.cleanAll();
-    app = null;
-    done();
-  });
-
   beforeEach((done) => {
     mockRegisterAccountCookie = {};
     app = session.getAppWithRegisterInvitesCookie(getApp(), mockRegisterAccountCookie);
     done();
   });
 
-  it('should redirect to register view on a valid invite code', function (done) {
-
-    let code = '23rer87t8shjkaf';
-    let validInviteResponse = inviteFixtures.validInviteResponse().getPlain();
-
-    adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
-      .reply(200, validInviteResponse);
-
-    return supertest(app)
-      .get(`/invites/${code}`)
-      .set('x-request-id', 'bob')
-      .expect(302)
-      .expect('Location', paths.register.index)
-      .expect(() => {
-        expect(mockRegisterAccountCookie.code).to.equal(code);
-        expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
-      })
-      .end(done);
-
+  afterEach((done) => {
+    nock.cleanAll();
+    app = null;
+    done();
   });
 
-  it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', function (done) {
+  describe('invites endpoint', function () {
 
-    let code = '7s8ftgw76rwgu';
-    let telephoneNumber = '123456789';
-    let validInviteResponse = inviteFixtures.validInviteResponse({telephone_number: telephoneNumber}).getPlain();
+    it('should redirect to register view on a valid invite code', function (done) {
 
-    adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
-      .reply(200, validInviteResponse);
+      let code = '23rer87t8shjkaf';
+      let validInviteResponse = inviteFixtures.validInviteResponse().getPlain();
 
-    return supertest(app)
-      .get(`/invites/${code}`)
-      .set('x-request-id', 'bob')
-      .expect(302)
-      .expect('Location', paths.register.index)
-      .expect(() => {
-        expect(mockRegisterAccountCookie.code).to.equal(code);
-        expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
-        expect(mockRegisterAccountCookie.telephone_number).to.equal(telephoneNumber);
-      })
-      .end(done);
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse);
 
+      return supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.register.index)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.code).to.equal(code);
+          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
+        })
+        .end(done);
+
+    });
+
+    it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', function (done) {
+
+      let code = '7s8ftgw76rwgu';
+      let telephoneNumber = '123456789';
+      let validInviteResponse = inviteFixtures.validInviteResponse({telephone_number: telephoneNumber}).getPlain();
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse);
+
+      return supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.register.index)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.code).to.equal(code);
+          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
+          expect(mockRegisterAccountCookie.telephone_number).to.equal(telephoneNumber);
+        })
+        .end(done);
+
+    });
+
+    it('should error if the invite code is invalid', function (done) {
+
+      let invalidCode = 'invalidCode';
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${invalidCode}`)
+        .reply(404);
+
+      return supertest(app)
+        .get(`/invites/${invalidCode}`)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
+
+    });
   });
 
-  it('should error if the invite code is invalid', function (done) {
+  describe('index endpoint', function () {
 
-    let invalidCode = 'invalidCode';
-    adminusersMock.get(`${INVITE_RESOURCE_PATH}/${invalidCode}`)
-      .reply(404);
+    it('should display create account form', function (done) {
 
-    return supertest(app)
-      .get(`/invites/${invalidCode}`)
-      .set('Accept', 'application/json')
-      .set('x-request-id', 'bob')
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.message).to.equal('Unable to process registration');
-      })
-      .end(done);
+      mockRegisterAccountCookie.email = 'invitee@example.com';
 
+      return supertest(app)
+        .get(`/register`)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.email).to.equal('invitee@example.com');
+        })
+        .end(done);
+
+    });
+
+    it('should display create account form with telephone populated, if invite has been attempted', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.telephone_number = '123456789';
+
+      return supertest(app)
+        .get(`/register`)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.email).to.equal('invitee@example.com');
+          expect(res.body.telephone_number).to.equal('123456789');
+        })
+        .end(done);
+
+    });
   });
-
 });
