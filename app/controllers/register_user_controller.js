@@ -11,10 +11,12 @@ module.exports = {
     let code = req.params.code;
 
     let successResponse = (invite) => {
-      req.register_invite = {
-        code: code,
-        email: invite.email,
-      };
+
+      if (!req.register_invite) {
+        req.register_invite = {};
+      }
+      req.register_invite.code = code;
+      req.register_invite.email = invite.email;
       if (invite.telephone_number) {
         req.register_invite.telephone_number = invite.telephone_number;
       }
