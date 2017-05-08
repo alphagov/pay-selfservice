@@ -10,16 +10,8 @@ e.emailGet = (req, res) => {
 
 e.emailPost = (req, res) => {
   let correlationId = req.correlationId;
-  var username = req.body.username;
-  return userService.findByUsername(username, correlationId)
-    .then(
-      (user) => {
-        return userService.sendPasswordResetToken(user, correlationId);
-      },
-      () => {
-        logger.info(`[${correlationId}] user not found`);
-      }
-    )
+  let username = req.body.username;
+  return userService.sendPasswordResetToken(username, correlationId)
     .finally(() => {
       res.redirect(paths.user.passwordRequested);
     })
@@ -47,7 +39,7 @@ e.newPasswordPost = (req, res) => {
   return userService
     .findByResetToken(req.params.id)
     .then(function (forgottenPassword) {
-      return userService.findByUsername(forgottenPassword.username, req.correlationId)
+      return userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
     })
     .then(function (user) {
       if (!user) return errorView(req, res);
@@ -55,17 +47,14 @@ e.newPasswordPost = (req, res) => {
       return userService.updatePassword(req.params.id, req.body.password);
     })
     .then(function () {
-      return userService.logOut(reqUser).then(
-        () => {
-          req.session.destroy();
-          req.flash('generic', 'Password has been updated');
-          res.redirect('/login');
-        },
-        () => {
-          errorView(req, res);
-          logger.error('PROBLEM LOGGIN OUT LOGGED IN USERS')
-        }
-      );
+      return userService.logOut(reqUser)
+        .finally(
+          () => {
+            req.session.destroy();
+            req.flash('generic', 'Password has been updated');
+            res.redirect('/login');
+          }
+        );
     })
     .catch(function (error) {
       req.flash('genericError', error.message);

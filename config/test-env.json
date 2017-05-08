@@ -9,15 +9,8 @@
   "COOKIE_MAX_AGE_GATEWAY_ACCOUNT": "2592000000",
   "SESSION_ENCRYPTION_KEY": "naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk",
   "SESSION_IN_MEMORY":"true",
-  "NOTIFY_BASE_URL": "http://notify.mock.api",
-  "NOTIFICATIONS_ENABLED": "false",
-  "NOTIFY_RESET_PASSWORD_EMAIL_TEMPLATE_ID": "email-template-id",
-  "NOTIFY_SERVICE_ID": "pay-notify-service-id",
-  "NOTIFY_SECRET": "pay-notify-secret-needs-to-be-32-chars-fsghdngfhmhfkrgsfs",
-  "NOTIFY_FORGOTTEN_PASSWORD_EMAIL_TEMPLATE_ID": "template_id",
   "SELFSERVICE_BASE": "https://selfservice.pymnt.localdomain",
   "LOGIN_ATTEMPT_CAP": 2,
   "DISABLE_REQUEST_LOGGING": "true",
-  "NODE_TEST_MODE": true,
-  "NOTIFY_2FA_TEMPLATE_ID": "<body></body>"
+  "NODE_TEST_MODE": true
 }

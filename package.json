@@ -71,7 +71,6 @@
     "morgan": "1.7.x",
     "newrelic": "1.26.x",
     "node-sass": "3.8.x",
-    "notifications-node-client": "2.1.x",
     "notp": "^2.0.3",
     "pact": "^1.0.0",
     "passport": "0.3.x",
