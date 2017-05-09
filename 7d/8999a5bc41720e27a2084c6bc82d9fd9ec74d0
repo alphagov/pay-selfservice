@@ -27,3 +27,5 @@ staging-2.alpha_staging-2-176.status=success
 production-2.tag=alpha_production-2-176
 
 production-2.alpha_production-2-176.date=2017-05-09:10:44:23
+
+production-2.alpha_production-2-176.status=success
