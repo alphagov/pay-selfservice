@@ -85,7 +85,7 @@ describe('register user controller', function () {
         .get(`/invites/${invalidCode}`)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
-        .expect(200)
+        .expect(404)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to process registration');
         })
@@ -99,6 +99,7 @@ describe('register user controller', function () {
     it('should display create account form', function (done) {
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
         .get(`/register`)
@@ -115,6 +116,7 @@ describe('register user controller', function () {
     it('should display create account form with telephone populated, if invite has been attempted', function (done) {
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
       mockRegisterAccountCookie.telephone_number = '123456789';
 
       return supertest(app)
@@ -128,6 +130,18 @@ describe('register user controller', function () {
         })
         .end(done);
 
+    });
+
+    it('should display error when email and/or code is not in the cookie', function (done) {
+      return supertest(app)
+        .get(`/register`)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
     });
   });
 });
