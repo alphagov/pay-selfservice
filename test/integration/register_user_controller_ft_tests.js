@@ -4,6 +4,7 @@ let paths = require(__dirname + '/../../app/paths.js');
 let getApp = require(__dirname + '/../../server.js').getApp;
 let session = require(__dirname + '/../test_helpers/mock_session.js');
 let inviteFixtures = require(__dirname + '/../fixtures/invite_fixtures');
+let userFixtures = require(__dirname + '/../fixtures/user_fixtures');
 let csrf = require('csrf');
 
 let chai = require('chai');
@@ -241,5 +242,108 @@ describe('register user controller', function () {
 
     });
 
+  });
+
+  describe('verify telephone number endpoint', function () {
+
+    it('should error if cookie details are missing', function (done) {
+
+      return supertest(app)
+        .get(paths.register.verifyPhone)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
+
+    });
+
+    it('should display verify phone page successfully', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      return supertest(app)
+        .get(paths.register.submitDetails)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(200)
+        .end(done);
+
+    });
+  });
+
+  describe('validate otp code endpoint', function () {
+
+    it('should validate otp code successfully', function (done) {
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+      let newUserExtId = 'new-user-ext-id';
+      let validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain();
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
+        .reply(200, validUserResponse);
+
+      return supertest(app)
+        .post(paths.register.verifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'verify-code': '123456',
+          csrfToken: csrf().create('123')
+        })
+        .expect(303, {})
+        .expect('Location', paths.register.logUserIn)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.userExternalId).to.equal(newUserExtId);
+        })
+        .end(done);
+
+    });
+
+    it('should error if cookie details are missing', function (done) {
+
+      return supertest(app)
+        .post(paths.register.verifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'verify-code': '123456',
+          csrfToken: csrf().create('123')
+        })
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
+    });
+
+    it('should error if error during otp code verification', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
+        .reply(404);
+
+      return supertest(app)
+        .post(paths.register.verifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'verify-code': '123456',
+          csrfToken: csrf().create('123')
+        })
+        .expect(500)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
+    });
   });
 });

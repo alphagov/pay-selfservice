@@ -4,7 +4,7 @@ var pactProxy = require(helpersPath + '/pact_proxy.js');
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-var inviteFixtures = require(__dirname + '/../../fixtures/invite_fixtures');
+var registrationFixtures = require(__dirname + '/../../fixtures/invite_fixtures');
 var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
@@ -16,7 +16,7 @@ var mockServer = pactProxy.create('localhost', mockPort);
 
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
-describe('adminusers client - submit registration detail', function () {
+describe('adminusers client - submit verification details', function () {
 
   let adminUsersMock;
 
@@ -26,7 +26,7 @@ describe('adminusers client - submit registration detail', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-register-user', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-verify-security-code', provider: 'AdminUsers', port: mockPort});
       done();
     });
   });
@@ -40,16 +40,16 @@ describe('adminusers client - submit registration detail', function () {
       .then(() => done());
   });
 
-  describe('submit registration details API', function () {
+  describe('verify otp code API', function () {
 
-    context('submit registration details API - success', () => {
-      let validRegistration = inviteFixtures.validRegistrationRequest();
+    context('verify otp code - success', () => {
+      let validRequest = registrationFixtures.validVerifyOtpCodeRequest();
 
       beforeEach((done) => {
-        let pactified = validRegistration.getPactified();
+        let pactified = validRequest.getPactified();
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/generate`)
-            .withUponReceiving('a registration details submission')
+          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/validate`)
+            .withUponReceiving('a valid otp code submission')
             .withMethod('POST')
             .withRequestBody(pactified)
             .withStatusCode(200)
@@ -65,23 +65,23 @@ describe('adminusers client - submit registration detail', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should submit registration details successfully', function (done) {
-        let registration = validRegistration.getPlain();
-        adminusersClient.submitRegistration(registration.code, registration.telephone_number, registration.password).should.be.fulfilled
+      it('should verify otp code successfully', function (done) {
+        let securityCode = validRequest.getPlain();
+        adminusersClient.verifyOtpAndCreateUser(securityCode.code, securityCode.otp).should.be.fulfilled
           .should.notify(done);
       });
     });
 
-    context('submit registration details API - bad request', () => {
-      let registrationDetails = inviteFixtures.validRegistrationRequest();
-      registrationDetails.code = '';
-      let errorResponse = inviteFixtures.badRequestResponseWhenFieldsMissing(['code']);
+    context('verify otp code API - bad request', () => {
+      let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest();
+      verifyCodeRequest.code = '';
+      let errorResponse = registrationFixtures.badRequestResponseWhenFieldsMissing(['code']);
 
       beforeEach((done) => {
-        let pactified = registrationDetails.getPactified();
+        let pactified = verifyCodeRequest.getPactified();
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/generate`)
-            .withUponReceiving('a registration details submission with missing code')
+          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/validate`)
+            .withUponReceiving('a verify otp code request with missing code')
             .withMethod('POST')
             .withRequestBody(pactified)
             .withStatusCode(400)
@@ -99,8 +99,8 @@ describe('adminusers client - submit registration detail', function () {
       });
 
       it('should return 400 on missing fields', function (done) {
-        let registration = registrationDetails.getPlain();
-        adminusersClient.submitRegistration(registration.code, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
+        let verifyCodeData = verifyCodeRequest.getPlain();
+        adminusersClient.verifyOtpAndCreateUser(verifyCodeData.code, verifyCodeData.otp).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors[0]).to.equal('Field [code] is required');
@@ -108,14 +108,14 @@ describe('adminusers client - submit registration detail', function () {
       });
     });
 
-    context('submit registration details API - invitation not found/expired', () => {
-      let registrationData = inviteFixtures.validRegistrationRequest();
+    context('verify otp code API - invitation not found', () => {
+      let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest();
 
       beforeEach((done) => {
-        let pactified = registrationData.getPactified();
+        let pactified = verifyCodeRequest.getPactified();
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/generate`)
-            .withUponReceiving('a registration details submission for non existent code')
+          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/validate`)
+            .withUponReceiving('a verify otp code request with non existent code')
             .withMethod('POST')
             .withRequestBody(pactified)
             .withStatusCode(404)
@@ -132,8 +132,8 @@ describe('adminusers client - submit registration detail', function () {
       });
 
       it('should return 404 if code cannot be found', function (done) {
-        let registration = registrationData.getPlain();
-        adminusersClient.submitRegistration(registration.code, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
+        let request = verifyCodeRequest.getPlain();
+        adminusersClient.verifyOtpAndCreateUser(request.code, request.otp).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });

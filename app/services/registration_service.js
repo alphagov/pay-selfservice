@@ -22,5 +22,15 @@ module.exports = {
    */
   submitRegistration: function (code, phoneNumber, password, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).submitRegistration(code,phoneNumber,password);
+  },
+
+  /**
+   * validates the verification code
+   * @param code
+   * @param verifyCode
+   * @param correlationId
+   */
+  verifyOtpAndCreateUser: function (code, verifyCode, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).verifyOtpAndCreateUser(code, verifyCode);
   }
 };

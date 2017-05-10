@@ -87,7 +87,7 @@ module.exports = {
     };
   },
 
-  invalidRegistrationResponseWhenFieldsMissing: (missingFields) => {
+  badRequestResponseWhenFieldsMissing: (missingFields) => {
     let responseData = _.map(missingFields, (field) => {
       return `Field [${field}] is required`;
     });
@@ -121,6 +121,22 @@ module.exports = {
       }
     };
 
+  },
+
+  validVerifyOtpCodeRequest: (opts = {}) => {
+    let data = {
+      code: opts.code || random.randomUuid(),
+      otp: opts.otp || '123456'
+    };
+
+    return {
+      getPactified: () => {
+        return pactInvites.pactify(data);
+      },
+      getPlain: () => {
+        return data;
+      }
+    };
   }
 
 };

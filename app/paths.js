@@ -75,7 +75,9 @@ module.exports = {
     index: '/register',
     submitDetails: '/register',
     invites:'/invites/:code',
-    verifyPhone: '/verify-phone'
+    verifyPhone: '/verify-phone',
+    reVerifyPhone: '/re-verify-phone',
+    logUserIn:'proceed-to-login'
   },
   toggle3ds: {
     index: '/3ds',

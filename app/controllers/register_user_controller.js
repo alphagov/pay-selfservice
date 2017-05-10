@@ -66,7 +66,7 @@ module.exports = {
     let code = req.register_invite.code;
 
     let proceedToVerification = () => {
-      registrationService.submitRegistration(code,telephoneNumber,password,correlationId)
+      registrationService.submitRegistration(code, telephoneNumber, password, correlationId)
         .then(() => {
           req.register_invite.telephone_number = telephoneNumber;
           res.redirect(303, paths.register.verifyPhone);
@@ -96,6 +96,46 @@ module.exports = {
   },
 
   verifyPhone: (req, res) => {
-   //TODO
+    let correlationId = req.correlationId;
+
+    let displayVerifyCodePage = () => {
+      successResponse(req, res, 'registration/verify_phone', {});
+    };
+
+    shouldProceedWithRegistration(req.register_invite)
+      .then(displayVerifyCodePage)
+      .catch(err => {
+        logger.warn(`[requestId=${correlationId}] Error during verify phone ${err}`);
+        errorResponse(req, res, 'Unable to process registration', 404);
+      })
+  },
+
+  submitVerificationCode: (req, res) => {
+    let correlationId = req.correlationId;
+    let verificationCode = req.body['verify-code']; // TODO: should we validate this?
+    let code = req.register_invite.code;
+
+    let validateOtpCode = function () {
+       registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
+        .then((user) => {
+          req.register_invite.userExternalId = user.externalId;
+          res.redirect(303, paths.register.logUserIn); //TODO: temporary. probably shouldn't do this
+        })
+        .catch(err => {
+          logger.warn(`[requestId=${correlationId}] Error during verify otp code ${err.errorCode}`);
+          errorResponse(req, res, 'Unable to process registration', 500);
+        });
+    };
+
+    shouldProceedWithRegistration(req.register_invite)
+      .then(validateOtpCode)
+      .catch(err => {
+        logger.warn(`[requestId=${correlationId}] Error during verify otp code ${err.errorCode}`);
+        errorResponse(req, res, 'Unable to process registration', 404);
+      })
+  },
+
+  reVerifyPhone: (req, res) => {
+
   }
 };

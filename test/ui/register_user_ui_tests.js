@@ -36,4 +36,17 @@ describe('Register user view', function () {
 
   });
 
+  it('should render verify telephone number view', function (done) {
+
+    let templateData = {
+      email: 'invitee@example.com'
+    };
+
+    let body = renderTemplate('registration/verify_phone', templateData);
+
+    body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.register.verifyPhone);
+    body.should.containSelector('input#verify-code');
+    done();
+  });
+
 });

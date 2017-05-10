@@ -542,6 +542,38 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  let verifyOtpAndCreateUser = (code, verificationCode) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        code: code,
+        otp: verificationCode
+      }
+    };
+
+    let url = `${inviteResource}/otp/validate`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit otp code',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -557,6 +589,7 @@ module.exports = function (clientOptions = {}) {
     updateServiceRole: updateServiceRole,
     inviteUser: inviteUser,
     getValidatedInvite: getValidatedInvite,
-    submitRegistration: submitRegistration
+    submitRegistration: submitRegistration,
+    verifyOtpAndCreateUser: verifyOtpAndCreateUser
   };
 };
