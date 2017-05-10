@@ -74,7 +74,8 @@ module.exports = {
   register: {
     index: '/register',
     submitDetails: '/register',
-    invites:'/invites/:code'
+    invites:'/invites/:code',
+    verifyPhone: '/verify-phone'
   },
   toggle3ds: {
     index: '/3ds',

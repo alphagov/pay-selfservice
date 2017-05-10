@@ -1,36 +1,18 @@
 const logger = require('winston');
-let response = require('../utils/response.js');
+let response = require('../utils/response');
 let errorResponse = response.renderErrorView;
 let successResponse = response.response;
-let registrationService = require('../services/registration_service.js');
+let registrationService = require('../services/registration_service');
 let paths = require('../paths.js');
-let q = require('q');
-let _ = require('lodash');
 
-
-function shouldProceedWithRegistration(registerInviteCookie) {
-  let hasValue = (param) => {
-    return !_.isEmpty(_.trim(param));
-  };
-  let defer = q.defer();
-
-  if (!registerInviteCookie) {
-    defer.reject('request does not contain a cookie');
-    return defer.promise;
-  }
-
-  if (hasValue(registerInviteCookie.email) && hasValue(registerInviteCookie.code)) {
-    defer.resolve();
-    return defer.promise
-  } else {
-    defer.reject('registration cookie does not contain the email and/or code');
-    return defer.promise;
-  }
-}
+let validations = require('../utils/registration_validations');
+let shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
+let validateRegistrationInputs = validations.validateRegistrationInputs;
 
 module.exports = {
 
   index: (req, res) => {
+    let correlationId = req.correlationId;
 
     let renderRegistrationPage = () => {
       let data = {
@@ -45,14 +27,15 @@ module.exports = {
     return shouldProceedWithRegistration(req.register_invite)
       .then(renderRegistrationPage)
       .catch(err => {
-          logger.warn(`someone attempted registration, but ${err}`);
-          errorResponse(req,res, 'Unable to process registration', 404);
+        logger.warn(`[requestId=${correlationId}] someone attempted registration, but ${err}`);
+        errorResponse(req, res, 'Unable to process registration', 404);
       });
 
   },
 
   invites: (req, res) => {
     let code = req.params.code;
+    let correlationId = req.correlationId;
 
     let redirectToRegister = (invite) => {
 
@@ -70,8 +53,49 @@ module.exports = {
     return registrationService.getValidatedInvite(code)
       .then(redirectToRegister)
       .catch(err => {
-        logger.warn(`Invalid invite code attempted ${code}, error = ${err.errorCode}`);
-        errorResponse(req, res, 'Unable to process registration', 404); //TODO discuss with Stephen
+        logger.warn(`[requestId=${correlationId}] Invalid invite code attempted ${code}, error = ${err.errorCode}`);
+        errorResponse(req, res, 'Unable to process registration', 404);
       })
+  },
+
+  submitDetails: (req, res) => {
+
+    let telephoneNumber = req.body['telephone-number'];
+    let password = req.body['password'];
+    let correlationId = req.correlationId;
+    let code = req.register_invite.code;
+
+    let proceedToVerification = () => {
+      registrationService.submitRegistration(code,telephoneNumber,password,correlationId)
+        .then(() => {
+          req.register_invite.telephone_number = telephoneNumber;
+          res.redirect(303, paths.register.verifyPhone);
+        })
+        .catch((err) => {
+          logger.error(`[requestId=${correlationId}] error submitting user registration details ${err}`);
+          errorResponse(req, res, 'Unable to process registration', 500);
+        });
+    };
+
+    let redirectToDetailEntry = (err) => {
+      req.register_invite.telephone_number = telephoneNumber;
+      req.flash('genericError', err);
+      res.redirect(303, paths.register.index);
+    };
+
+    shouldProceedWithRegistration(req.register_invite)
+      .then(() =>
+        validateRegistrationInputs(telephoneNumber, password)
+          .then(proceedToVerification)
+          .catch(redirectToDetailEntry)
+      )
+      .catch(err => {
+        logger.warn(`[requestId=${correlationId}] Error during registration ${err}`);
+        errorResponse(req, res, 'Unable to process registration', 404);
+      })
+  },
+
+  verifyPhone: (req, res) => {
+   //TODO
   }
 };

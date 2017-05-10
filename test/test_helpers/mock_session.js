@@ -29,8 +29,8 @@ var getUser = (opts) => {
     return createAppWithSession(app, sessionData, gatewayAccountData);
   },
 
-  getAppWithRegisterInvitesCookie = function(app, registerInviteData) {
-    return createAppWithSession(app, {}, {}, registerInviteData);
+  getAppWithRegisterInvitesCookie = function (app, registerInviteData) {
+    return createAppWithSession(app, {csrfSecret: "123"}, {}, registerInviteData);
   },
 
   getAppWithSessionWithoutSecondFactor = function (app, user) {
@@ -48,7 +48,7 @@ var getUser = (opts) => {
         user: user,
       },
       secondFactor: 'totp',
-      last_url:'last_url',
+      last_url: 'last_url',
       version: user.sessionVersion
     });
   };

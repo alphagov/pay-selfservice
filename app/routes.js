@@ -140,6 +140,8 @@ module.exports.bind = function (app) {
   let register = paths.register;
   app.get(register.invites, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.invites);
   app.get(register.index, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.index);
+  app.post(register.submitDetails, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitDetails);
+  app.get(register.verifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.verifyPhone);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;

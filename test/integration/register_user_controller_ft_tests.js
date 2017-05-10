@@ -4,6 +4,7 @@ let paths = require(__dirname + '/../../app/paths.js');
 let getApp = require(__dirname + '/../../server.js').getApp;
 let session = require(__dirname + '/../test_helpers/mock_session.js');
 let inviteFixtures = require(__dirname + '/../fixtures/invite_fixtures');
+let csrf = require('csrf');
 
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
@@ -102,7 +103,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
-        .get(`/register`)
+        .get(paths.register.index)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -120,7 +121,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.telephone_number = '123456789';
 
       return supertest(app)
-        .get(`/register`)
+        .get(paths.register.index)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -134,7 +135,7 @@ describe('register user controller', function () {
 
     it('should display error when email and/or code is not in the cookie', function (done) {
       return supertest(app)
-        .get(`/register`)
+        .get(paths.register.index)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(404)
@@ -143,5 +144,102 @@ describe('register user controller', function () {
         })
         .end(done);
     });
+  });
+
+  describe('process registration details endpoint', function () {
+
+    it('should error if cookie details are missing', function (done) {
+
+      return supertest(app)
+        .post(paths.register.submitDetails)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          csrfToken: csrf().create('123')
+        })
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
+
+    });
+
+    it('should redirect back to registration form if error in phone number', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      let invalidPhone = '123456789';
+      return supertest(app)
+        .post(paths.register.submitDetails)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': invalidPhone,
+          'password': 'password1234',
+          csrfToken: csrf().create('123')
+        })
+        .expect(303, {})
+        .expect('Location', paths.register.index)
+        .expect((res) => {
+          expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone);
+        })
+        .end(done);
+
+    });
+
+    it('should redirect to phone verification page', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/generate`)
+        .reply(200);
+
+      return supertest(app)
+        .post(paths.register.submitDetails)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': '12345678901',
+          'password': 'password1234',
+          csrfToken: csrf().create('123')
+        })
+        .expect(303, {})
+        .expect('Location', paths.register.verifyPhone)
+        .end(done);
+
+    });
+
+    it('should error for valid registration data, if code not found', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/generate`)
+        .reply(404);
+
+      return supertest(app)
+        .post(paths.register.submitDetails)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': '12345678901',
+          'password': 'password1234',
+          csrfToken: csrf().create('123')
+        })
+        .expect(500)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration');
+        })
+        .end(done);
+
+    });
+
   });
 });

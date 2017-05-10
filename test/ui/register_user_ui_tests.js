@@ -14,7 +14,7 @@ describe('Register user view', function () {
 
     body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.submitDetails);
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com');
-    body.should.containSelector('input#mobile-number');
+    body.should.containSelector('input#telephone-number');
     body.should.containSelector('input#password');
     done();
   });
@@ -30,7 +30,7 @@ describe('Register user view', function () {
 
     body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.submitDetails);
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com');
-    body.should.containSelector('input#mobile-number')
+    body.should.containSelector('input#telephone-number')
       .withAttribute("value", "0328534765");
     done();
 
