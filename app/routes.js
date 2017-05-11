@@ -14,6 +14,7 @@ var forgotPassword = require('./controllers/forgotten_password_controller.js');
 var serviceSwitchController = require('./controllers/service_switch_controller.js');
 var serviceUsersController = require('./controllers/service_users_controller.js');
 var inviteUserController = require('./controllers/invite_user_controller.js');
+var registerUserController = require('./controllers/register_user_controller.js');
 var permissionController = require('./controllers/service_roles_update_controller.js');
 var toggle3ds = require('./controllers/toggle_3ds_controller.js');
 
@@ -134,6 +135,13 @@ module.exports.bind = function (app) {
   // TEAM MEMBERS - INVITE
   app.get(teamMembers.invite, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), inviteUserController.index);
   app.post(teamMembers.invite, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), inviteUserController.invite);
+
+  // USER SIGN UP
+  let register = paths.register;
+  app.get(register.invites, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.invites);
+  app.get(register.index, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.index);
+  app.post(register.submitDetails, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitDetails);
+  app.get(register.verifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.verifyPhone);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;

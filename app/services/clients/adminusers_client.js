@@ -21,6 +21,7 @@ module.exports = function (clientOptions = {}) {
   let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
   let resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
   let serviceUserResource = `${baseUrl}/v1/api/services`;
+  let inviteResource = `${baseUrl}/v1/api/invites`;
 
   /**
    * Create a new user
@@ -373,25 +374,25 @@ module.exports = function (clientOptions = {}) {
 
   let getServiceUsers = (serviceId) => {
     let url = `${serviceUserResource}/${serviceId}/users`;
-     let defer = q.defer();
-     let startTime = new Date();
-     let context = {
-        url: url,
-        defer: defer,
-        startTime: startTime,
-        correlationId: correlationId,
-        method: 'GET',
-        description: 'get a services users',
-        service: SERVICE_NAME
-     };
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'GET',
+      description: 'get a services users',
+      service: SERVICE_NAME
+    };
 
-     let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
-     requestLogger.logRequestStart(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    requestLogger.logRequestStart(context);
 
-     baseClient.get(url, { correlationId: correlationId }, callbackToPromiseConverter)
-       .on('error', callbackToPromiseConverter);
+    baseClient.get(url, {correlationId: correlationId}, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
 
-     return defer.promise;
+    return defer.promise;
   };
 
   /**
@@ -472,6 +473,75 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * Get a valid invite or error if it's expired
+   * @param inviteCode
+   */
+  let getValidatedInvite = (inviteCode) => {
+    let params = {
+      correlationId: correlationId
+    };
+    let url = `${inviteResource}/${inviteCode}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'GET',
+      description: 'find a validated invitation',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
+  /**
+   * Submit user registration details
+   * @param code
+   * @param phoneNumber
+   * @param password
+   */
+  let submitRegistration = (code, phoneNumber, password) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        telephone_number: phoneNumber,
+        password: password,
+        code: code
+      }
+    };
+    let url = `${inviteResource}/otp/generate`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit registration details',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -481,10 +551,12 @@ module.exports = function (clientOptions = {}) {
     createUser: createUser,
     authenticateUser: authenticateUser,
     updatePasswordForUser: updatePasswordForUser,
-    sendSecondFactor:sendSecondFactor,
-    authenticateSecondFactor:authenticateSecondFactor,
+    sendSecondFactor: sendSecondFactor,
+    authenticateSecondFactor: authenticateSecondFactor,
     getServiceUsers: getServiceUsers,
     updateServiceRole: updateServiceRole,
-    inviteUser: inviteUser
+    inviteUser: inviteUser,
+    getValidatedInvite: getValidatedInvite,
+    submitRegistration: submitRegistration
   };
 };
