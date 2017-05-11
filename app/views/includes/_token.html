@@ -25,14 +25,14 @@
   {{/revoked}}
   </div>
   {{^revoked}}
-  <div class="js-edit-controls" >
+  <div class="key-list-item-controls js-edit-controls">
       {{#permissions.tokens_update}}
-      <span><a href="#{{token_link}}" class="js-toggle-description">Edit description</a></span>
+      <a href="#{{token_link}}" class="js-toggle-description">Edit description<span class="visuallyhidden"> for {{description}}</span></a>
       {{/permissions.tokens_update}}
       {{#permissions.tokens_delete}}
-      <span class="push-left"><a href="#{{token_link}}" class="js-toggle-revoke">Revoke key</a></span>
+      <a href="#{{token_link}}" class="js-toggle-revoke">Revoke key<span class="visuallyhidden"> for {{description}}</span></a>
       {{/permissions.tokens_delete}}
-    </div>
+  </div>
   {{#permissions.tokens_update}}
   <div class="js-edit-description form">
       <div class="form-group">
@@ -40,8 +40,12 @@
         <textarea id="description-input-{{token_link}}" class="js-new-description form-control">{{description}}</textarea>
       </div>
       <div class="button-group">
-        <a id="save-description-{{token_link}}" href="#{{token_link}}" class="button js-save-description">Save changes</a>
-        <a id="cancel-{{token_link}}" href="#{{token_link}}" class="button-link js-toggle-description">Cancel</a>
+        <a id="save-description-{{token_link}}" href="#{{token_link}}" class="button js-save-description">
+          Save changes<span class="visuallyhidden"> to {{description}}</span>
+        </a>
+        <a id="cancel-{{token_link}}" href="#{{token_link}}" class="button-link js-toggle-description">
+          Cancel<span class="visuallyhidden"> edits to {{description}}</span>
+        </a>
       </div>
     </div>
   {{/permissions.tokens_update}}
