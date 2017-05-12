@@ -72,7 +72,6 @@
     "newrelic": "1.26.x",
     "node-sass": "3.8.x",
     "notp": "^2.0.3",
-    "pact": "^1.0.0",
     "passport": "0.3.x",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
@@ -90,7 +89,8 @@
     "yargs": "4.7.x"
   },
   "devDependencies": {
-    "@pact-foundation/pact-node": "^4.6.0",
+    "@pact-foundation/pact-node": "4.6.0",
+    "pact": "1.0.0",
     "chai": "^3.2.0",
     "chai-as-promised": "^6.0.0",
     "chai-string": "^1.1.2",
