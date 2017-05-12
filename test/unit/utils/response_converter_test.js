@@ -7,6 +7,7 @@ let q = require('q');
 
 let defer;
 let context;
+
 describe('response converter', function () {
 
   beforeEach(() => {
@@ -26,12 +27,23 @@ describe('response converter', function () {
   let body = {};
 
   it('should resolve if response is any one of success codes', function (done) {
-    let converter = responseConverter.createCallbackToPromiseConverter(context);
-    let successResponse = {statusCode: 201};
-    converter(noError, successResponse, body);
+    let noOfSuccessCodes = responseConverter.successCodes().length;
 
-    defer.promise.should.be.fulfilled
-      .notify(done);
+    expect(noOfSuccessCodes).to.be.equal(5);
+
+    responseConverter.successCodes().forEach((code, index) => {
+      let converter = responseConverter.createCallbackToPromiseConverter(context);
+      let successResponse = {statusCode: code};
+      converter(noError, successResponse, body);
+
+      defer.promise.should.be.fulfilled
+        .notify(() => {
+          //call done only if its the last index
+          if (index === noOfSuccessCodes - 1) {
+            done()
+          }
+        });
+    });
 
   });
 

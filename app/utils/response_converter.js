@@ -23,7 +23,7 @@ module.exports = {
         return
       }
 
-      if (response && SUCCESS_CODES.indexOf(response.statusCode) != -1) {
+      if (response && SUCCESS_CODES.indexOf(response.statusCode) !== -1) {
         if (body && transformer && typeof transformer === 'function') {
           defer.resolve(transformer(body));
         } else {
@@ -38,5 +38,9 @@ module.exports = {
       }
 
     };
+  },
+
+  successCodes: () => {
+    return SUCCESS_CODES;
   }
 };
