@@ -52,6 +52,18 @@ describe('An endpoint not protected', function () {
       .expect('Hello, World!')
       .end(done);
   });
+
+  it('redirects to noaccess if user disabled', function (done) {
+    let user = mockSession.getUser();
+    user.disabled = true;
+    app = getAppWithLoggedInUser(server.getApp(), user);
+    addProtectedEndpointToApp(app);
+    request(app)
+      .get('/protected')
+      .expect(302)
+      .expect('Location', paths.user.noAccess)
+      .end(done);
+  });
 });
 
 describe('An endpoint protected by auth.enforceUserBothFactors', function () {
