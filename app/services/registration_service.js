@@ -32,5 +32,9 @@ module.exports = {
    */
   verifyOtpAndCreateUser: function (code, verifyCode, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).verifyOtpAndCreateUser(code, verifyCode);
+  },
+
+  resendOtpCode: function (code, phoneNumber, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber);
   }
 };

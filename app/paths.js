@@ -72,10 +72,9 @@ module.exports = {
     invite: '/team-members-invite'
   },
   register: {
-    index: '/register',
-    submitDetails: '/register',
-    invites:'/invites/:code',
-    verifyPhone: '/verify-phone',
+    validateInvite:'/invites/:code',
+    registration: '/register',
+    otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',
     logUserIn:'proceed-to-login'
   },

@@ -574,6 +574,38 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  let resendOtpCode = (code, phoneNumber) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        code: code,
+        telephone_number: phoneNumber
+      }
+    };
+
+    let url = `${inviteResource}/otp/resend`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'resend otp code',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -590,6 +622,7 @@ module.exports = function (clientOptions = {}) {
     inviteUser: inviteUser,
     getValidatedInvite: getValidatedInvite,
     submitRegistration: submitRegistration,
-    verifyOtpAndCreateUser: verifyOtpAndCreateUser
+    verifyOtpAndCreateUser: verifyOtpAndCreateUser,
+    resendOtpCode: resendOtpCode
   };
 };

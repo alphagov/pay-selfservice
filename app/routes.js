@@ -138,12 +138,13 @@ module.exports.bind = function (app) {
 
   // USER SIGN UP
   let register = paths.register;
-  app.get(register.invites, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.invites);
-  app.get(register.index, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.index);
-  app.post(register.submitDetails, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitDetails);
-  app.get(register.verifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.verifyPhone);
-  app.post(register.verifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitVerificationCode);
-  app.get(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.reVerifyPhone);
+  app.get(register.validateInvite, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.validateInvite);
+  app.get(register.registration, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showRegistration);
+  app.post(register.registration, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitRegistration);
+  app.get(register.otpVerify  , auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showOtpVerify);
+  app.post(register.otpVerify, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitOtpVerify);
+  app.get(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showReVerifyPhone);
+  app.post(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitReVerifyPhone);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;

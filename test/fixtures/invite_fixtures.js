@@ -137,6 +137,22 @@ module.exports = {
         return data;
       }
     };
+  },
+
+  validResendOtpCodeRequest: (opts = {}) => {
+    let data = {
+      code: opts.code || random.randomUuid(),
+      telephone_number: opts.telephone_number || '01234567891'
+    };
+
+    return {
+      getPactified: () => {
+        return pactInvites.pactify(data);
+      },
+      getPlain: () => {
+        return data;
+      }
+    };
   }
 
 };

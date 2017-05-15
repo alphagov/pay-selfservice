@@ -31,7 +31,7 @@ describe('register user controller', function () {
     done();
   });
 
-  describe('invites endpoint', function () {
+  describe('verify invitation endpoint', function () {
 
     it('should redirect to register view on a valid invite code', function (done) {
 
@@ -45,7 +45,7 @@ describe('register user controller', function () {
         .get(`/invites/${code}`)
         .set('x-request-id', 'bob')
         .expect(302)
-        .expect('Location', paths.register.index)
+        .expect('Location', paths.register.registration)
         .expect(() => {
           expect(mockRegisterAccountCookie.code).to.equal(code);
           expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
@@ -67,7 +67,7 @@ describe('register user controller', function () {
         .get(`/invites/${code}`)
         .set('x-request-id', 'bob')
         .expect(302)
-        .expect('Location', paths.register.index)
+        .expect('Location', paths.register.registration)
         .expect(() => {
           expect(mockRegisterAccountCookie.code).to.equal(code);
           expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
@@ -89,14 +89,14 @@ describe('register user controller', function () {
         .set('x-request-id', 'bob')
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
 
     });
   });
 
-  describe('index endpoint', function () {
+  describe('show registration view endpoint', function () {
 
     it('should display create account form', function (done) {
 
@@ -104,7 +104,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
-        .get(paths.register.index)
+        .get(paths.register.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -122,7 +122,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.telephone_number = '123456789';
 
       return supertest(app)
-        .get(paths.register.index)
+        .get(paths.register.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -136,23 +136,23 @@ describe('register user controller', function () {
 
     it('should display error when email and/or code is not in the cookie', function (done) {
       return supertest(app)
-        .get(paths.register.index)
+        .get(paths.register.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
     });
   });
 
-  describe('process registration details endpoint', function () {
+  describe('submit registration details endpoint', function () {
 
     it('should error if cookie details are missing', function (done) {
 
       return supertest(app)
-        .post(paths.register.submitDetails)
+        .post(paths.register.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -161,7 +161,7 @@ describe('register user controller', function () {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
 
@@ -174,7 +174,7 @@ describe('register user controller', function () {
 
       let invalidPhone = '123456789';
       return supertest(app)
-        .post(paths.register.submitDetails)
+        .post(paths.register.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -184,7 +184,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.index)
+        .expect('Location', paths.register.registration)
         .expect((res) => {
           expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone);
         })
@@ -201,7 +201,7 @@ describe('register user controller', function () {
         .reply(200);
 
       return supertest(app)
-        .post(paths.register.submitDetails)
+        .post(paths.register.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -211,7 +211,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.verifyPhone)
+        .expect('Location', paths.register.otpVerify)
         .end(done);
 
     });
@@ -225,7 +225,7 @@ describe('register user controller', function () {
         .reply(404);
 
       return supertest(app)
-        .post(paths.register.submitDetails)
+        .post(paths.register.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -236,7 +236,7 @@ describe('register user controller', function () {
         })
         .expect(500)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
 
@@ -244,29 +244,29 @@ describe('register user controller', function () {
 
   });
 
-  describe('verify telephone number endpoint', function () {
+  describe('verify otp code endpoint', function () {
 
     it('should error if cookie details are missing', function (done) {
 
       return supertest(app)
-        .get(paths.register.verifyPhone)
+        .get(paths.register.otpVerify)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
 
     });
 
-    it('should display verify phone page successfully', function (done) {
+    it('should display verify otp page successfully', function (done) {
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
-        .get(paths.register.submitDetails)
+        .get(paths.register.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -287,7 +287,7 @@ describe('register user controller', function () {
         .reply(200, validUserResponse);
 
       return supertest(app)
-        .post(paths.register.verifyPhone)
+        .post(paths.register.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -307,7 +307,7 @@ describe('register user controller', function () {
     it('should error if cookie details are missing', function (done) {
 
       return supertest(app)
-        .post(paths.register.verifyPhone)
+        .post(paths.register.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -317,7 +317,7 @@ describe('register user controller', function () {
         })
         .expect(404)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
     });
@@ -331,7 +331,7 @@ describe('register user controller', function () {
         .reply(404);
 
       return supertest(app)
-        .post(paths.register.verifyPhone)
+        .post(paths.register.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -341,7 +341,90 @@ describe('register user controller', function () {
         })
         .expect(500)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration');
+          expect(res.body.message).to.equal('Unable to process registration at this time');
+        })
+        .end(done);
+    });
+  });
+
+  describe('re verify phone endpoint', function () {
+
+    it('should resend otp code successfully', function (done) {
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+      let newUserExtId = 'new-user-ext-id';
+      let validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain();
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
+        .reply(200, validUserResponse);
+
+      return supertest(app)
+        .post(paths.register.otpVerify)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'verify-code': '123456',
+          csrfToken: csrf().create('123')
+        })
+        .expect(303, {})
+        .expect('Location', paths.register.logUserIn)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.userExternalId).to.equal(newUserExtId);
+        })
+        .end(done);
+
+    });
+
+    it('should error if cookie details are missing', function (done) {
+
+      return supertest(app)
+        .post(paths.register.otpVerify)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'verify-code': '123456',
+          csrfToken: csrf().create('123')
+        })
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration at this time');
+        })
+        .end(done);
+    });
+  });
+
+  describe('resend otp code endpoint', function () {
+
+    it('should display resend otp code form with pre-populated telephone number', function (done) {
+
+      let telephoneNumber = '12345678901'
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+      mockRegisterAccountCookie.telephone_number = telephoneNumber;
+
+      return supertest(app)
+        .get(paths.register.reVerifyPhone)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.telephone_number).to.equal(telephoneNumber);
+        })
+        .end(done);
+
+    });
+
+    it('should display error when email and/or code is not in the cookie', function (done) {
+      return supertest(app)
+        .get(paths.register.reVerifyPhone)
+        .set('Accept', 'application/json')
+        .set('x-request-id', 'bob')
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration at this time');
         })
         .end(done);
     });
