@@ -8,6 +8,7 @@ let paths = require('../paths.js');
 let validations = require('../utils/registration_validations');
 let shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
 let validateRegistrationInputs = validations.validateRegistrationInputs;
+let validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber;
 let validateOtp = validations.validateOtp;
 
 const messages = {
@@ -169,10 +170,42 @@ module.exports = {
       .catch(err => {
         logger.warn(`[requestId=${correlationId}] Error during rendering resend otp code ${err.errorCode}`);
         errorResponse(req, res, messages.missingCookie, 404);
-      })
+      });
   },
 
   submitReVerifyPhone: (req, res) => {
 
+    let correlationId = req.correlationId;
+    let code = req.register_invite.code;
+    let telephoneNumber = req.body['telephone-number'];
+
+    let resendOtpAndProceedToVerify = () => {
+      registrationService.resendOtpCode(code, telephoneNumber, correlationId)
+        .then(() => {
+          req.register_invite.telephone_number = telephoneNumber;
+          res.redirect(303, paths.register.otpVerify);
+        })
+        .catch(err => {
+          logger.warn(`[requestId=${correlationId}] Error during resend otp code ${err.errorCode}`);
+          errorResponse(req, res, messages.internalError, 500);
+        });
+    };
+
+    shouldProceedWithRegistration(req.register_invite)
+      .then(() => {
+        validateRegistrationTelephoneNumber(telephoneNumber)
+          .then(resendOtpAndProceedToVerify)
+          .catch(err => {
+            logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`);
+            req.flash('genericError', err);
+            req.register_invite.telephone_number = telephoneNumber;
+            res.redirect(303, paths.register.reVerifyPhone);
+          });
+      })
+      .catch(err => {
+        logger.warn(`[requestId=${correlationId}] Error during rendering resend otp code ${err.errorCode}`);
+        errorResponse(req, res, messages.missingCookie, 404);
+      });
   }
+
 };

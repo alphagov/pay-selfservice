@@ -31,6 +31,9 @@ describe('register user controller', function () {
     done();
   });
 
+  /**
+   *  ENDPOINT validateInvite
+   */
   describe('verify invitation endpoint', function () {
 
     it('should redirect to register view on a valid invite code', function (done) {
@@ -96,6 +99,10 @@ describe('register user controller', function () {
     });
   });
 
+
+  /**
+   *  ENDPOINT showRegistration
+   */
   describe('show registration view endpoint', function () {
 
     it('should display create account form', function (done) {
@@ -146,6 +153,10 @@ describe('register user controller', function () {
         .end(done);
     });
   });
+
+  /**
+   *  ENDPOINT submitRegistration
+   */
 
   describe('submit registration details endpoint', function () {
 
@@ -244,7 +255,10 @@ describe('register user controller', function () {
 
   });
 
-  describe('verify otp code endpoint', function () {
+  /**
+   *  ENDPOINT showOtpVerify
+   */
+  describe('show otp verify endpoint', function () {
 
     it('should error if cookie details are missing', function (done) {
 
@@ -275,6 +289,9 @@ describe('register user controller', function () {
     });
   });
 
+  /**
+   *  ENDPOINT submitOtpVerify
+   */
   describe('validate otp code endpoint', function () {
 
     it('should validate otp code successfully', function (done) {
@@ -322,7 +339,7 @@ describe('register user controller', function () {
         .end(done);
     });
 
-    it('should error and allow user to reenter otp if invalid otop code entry', function (done) {
+    it('should error and allow user to reenter otp if invalid otp code entry', function (done) {
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
@@ -366,59 +383,14 @@ describe('register user controller', function () {
     });
   });
 
-  describe('re verify phone endpoint', function () {
+  /**
+   *  ENDPOINT showReVerifyPhone
+   */
+  describe('show re-verify phone endpoint', function () {
 
-    it('should resend otp code successfully', function (done) {
-      mockRegisterAccountCookie.email = 'invitee@example.com';
-      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
-      let newUserExtId = 'new-user-ext-id';
-      let validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain();
+    it('should display re verify otp code form with pre-populated telephone number', function (done) {
 
-      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
-        .reply(200, validUserResponse);
-
-      return supertest(app)
-        .post(paths.register.otpVerify)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('x-request-id', 'bob')
-        .send({
-          'verify-code': '123456',
-          csrfToken: csrf().create('123')
-        })
-        .expect(303, {})
-        .expect('Location', paths.register.logUserIn)
-        .expect(() => {
-          expect(mockRegisterAccountCookie.userExternalId).to.equal(newUserExtId);
-        })
-        .end(done);
-
-    });
-
-    it('should error if cookie details are missing', function (done) {
-
-      return supertest(app)
-        .post(paths.register.otpVerify)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .set('x-request-id', 'bob')
-        .send({
-          'verify-code': '123456',
-          csrfToken: csrf().create('123')
-        })
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time');
-        })
-        .end(done);
-    });
-  });
-
-  describe('resend otp code endpoint', function () {
-
-    it('should display resend otp code form with pre-populated telephone number', function (done) {
-
-      let telephoneNumber = '12345678901'
+      let telephoneNumber = '12345678901';
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
@@ -447,5 +419,104 @@ describe('register user controller', function () {
         })
         .end(done);
     });
+  });
+
+  /**
+   *  ENDPOINT submitReVerifyPhone
+   */
+  describe('submit re-verify phone endpoint', function () {
+
+    it('should proceed to verify otp upon successful telephone number re-entry', function (done) {
+
+      let telephoneNumber = '12345678901';
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/resend`)
+        .reply(200);
+
+      return supertest(app)
+        .post(paths.register.reVerifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': telephoneNumber,
+          csrfToken: csrf().create('123')
+        })
+        .expect(303, {})
+        .expect('Location', paths.register.otpVerify)
+        .end(done);
+    });
+
+    it('should error on an error during resend otp', function (done) {
+
+      let telephoneNumber = '12345678901';
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/resend`)
+        .reply(404);
+
+      return supertest(app)
+        .post(paths.register.reVerifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': telephoneNumber,
+          csrfToken: csrf().create('123')
+        })
+        .expect(500)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration at this time');
+        })
+        .end(done);
+    });
+
+    it('should redirect back to re verify phone view if error in phone number', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      let invalidPhone = '123456789';
+
+      return supertest(app)
+        .post(paths.register.reVerifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': invalidPhone,
+          csrfToken: csrf().create('123')
+        })
+        .expect(303, {})
+        .expect('Location', paths.register.reVerifyPhone)
+        .expect((res) => {
+          expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone);
+        })
+        .end(done);
+    });
+
+    it('should error if cookie details are missing', function (done) {
+      let telephoneNumber = '12345678901';
+      return supertest(app)
+        .post(paths.register.reVerifyPhone)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'telephone-number': telephoneNumber,
+          csrfToken: csrf().create('123')
+        })
+        .expect(404)
+        .expect((res) => {
+          expect(res.body.message).to.equal('Unable to process registration at this time');
+        })
+        .end(done);
+    });
+
   });
 });
