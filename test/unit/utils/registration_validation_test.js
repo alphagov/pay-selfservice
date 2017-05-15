@@ -127,4 +127,33 @@ describe('registration_validation module', function () {
         .should.notify(done);
     });
   });
+
+  describe('validate otp input', function () {
+
+    it('should find otp valid', function (done) {
+      let validOtp = '123456';
+
+      validation.validateOtp(validOtp)
+        .should.be.fulfilled
+        .notify(done);
+    });
+
+    it('should error if otp is undefined', function (done) {
+      let otp = undefined;
+
+      validation.validateOtp(otp)
+        .should.be.rejected.then((response) => {
+        expect(response).to.equal('Invalid verification code');
+      }).should.notify(done);
+    });
+
+    it('should error if otp is not a number', function (done) {
+      let otp = 'werb37';
+
+      validation.validateOtp(otp)
+        .should.be.rejected.then((response) => {
+        expect(response).to.equal('Invalid verification code');
+      }).should.notify(done);
+    });
+  });
 });

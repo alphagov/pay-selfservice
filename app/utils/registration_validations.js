@@ -30,11 +30,11 @@ module.exports = {
 
     if (hasValue(registerInviteCookie.email) && hasValue(registerInviteCookie.code)) {
       defer.resolve();
-      return defer.promise
     } else {
       defer.reject('registration cookie does not contain the email and/or code');
-      return defer.promise;
     }
+
+    return defer.promise;
   },
 
   validateRegistrationInputs: (telephoneNumber, password) => {
@@ -47,10 +47,10 @@ module.exports = {
 
     if (!password || password.length < MIN_PASSWORD_LENGTH || commonPassword(password)) {
       defer.reject('Your password is too simple. Choose a password that is harder for people to guess');
-      return defer.promise;
+    } else {
+      defer.resolve();
     }
 
-    defer.resolve();
     return defer.promise;
   },
 
@@ -59,10 +59,23 @@ module.exports = {
 
     if (invalidTelephoneNumber(telephoneNumber)) {
       defer.reject('Invalid phone number');
-      return defer.promise;
+    } else {
+      defer.resolve();
     }
 
-    defer.resolve();
+    return defer.promise;
+  },
+
+  validateOtp: (otp) => {
+    let defer = q.defer();
+
+    if (!otp || !NUMBERS_ONLY.test(otp)) {
+      defer.reject('Invalid verification code');
+    } else {
+      defer.resolve();
+    }
+
     return defer.promise;
   }
+
 };

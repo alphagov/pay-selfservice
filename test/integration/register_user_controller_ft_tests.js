@@ -322,6 +322,25 @@ describe('register user controller', function () {
         .end(done);
     });
 
+    it('should error and allow user to reenter otp if invalid otop code entry', function (done) {
+
+      mockRegisterAccountCookie.email = 'invitee@example.com';
+      mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
+
+      return supertest(app)
+        .post(paths.register.otpVerify)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('x-request-id', 'bob')
+        .send({
+          'verify-code': 'hfwe67q', //non-numeric
+          csrfToken: csrf().create('123')
+        })
+        .expect(303)
+        .expect('Location', paths.register.otpVerify)
+        .end(done);
+    });
+
     it('should error if error during otp code verification', function (done) {
 
       mockRegisterAccountCookie.email = 'invitee@example.com';

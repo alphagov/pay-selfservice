@@ -8,6 +8,7 @@ let paths = require('../paths.js');
 let validations = require('../utils/registration_validations');
 let shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
 let validateRegistrationInputs = validations.validateRegistrationInputs;
+let validateOtp = validations.validateOtp;
 
 const messages = {
   missingCookie: 'Unable to process registration at this time',
@@ -113,23 +114,31 @@ module.exports = {
       .catch(err => {
         logger.warn(`[requestId=${correlationId}] Error during verify phone ${err}`);
         errorResponse(req, res, messages.missingCookie, 404);
-      })
+      });
   },
 
   submitOtpVerify: (req, res) => {
     let correlationId = req.correlationId;
-    let verificationCode = req.body['verify-code']; // TODO: check if its empty and force him to re-enter
+    let verificationCode = req.body['verify-code'];
     let code = req.register_invite.code;
 
     let validateOtpCode = function () {
-      registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
-        .then((user) => {
-          req.register_invite.userExternalId = user.externalId;
-          res.redirect(303, paths.register.logUserIn); //TODO: temporary. probably shouldn't do this
+      validateOtp(verificationCode)
+        .then(() => {
+          registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
+            .then((user) => {
+              req.register_invite.userExternalId = user.externalId;
+              res.redirect(303, paths.register.logUserIn); //TODO: temporary. probably shouldn't do this
+            })
+            .catch(err => {
+              logger.warn(`[requestId=${correlationId}] Error during verify otp code ${err.errorCode}`);
+              errorResponse(req, res, messages.internalError, 500); // TODO: code not found. retry 10 times. disable auto-complete
+            });
         })
         .catch(err => {
-          logger.warn(`[requestId=${correlationId}] Error during verify otp code ${err.errorCode}`);
-          errorResponse(req, res, messages.internalError, 500); // TODO: code not found. retry 10 times. disable auto-complete
+          logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
+          req.flash('genericError', err);
+          res.redirect(303, paths.register.otpVerify);
         });
     };
 
