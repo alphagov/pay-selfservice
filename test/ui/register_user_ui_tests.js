@@ -12,7 +12,7 @@ describe('Register user view', function () {
 
     let body = renderTemplate('registration/register', templateData);
 
-    body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.submitDetails);
+    body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.registration);
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com');
     body.should.containSelector('input#telephone-number');
     body.should.containSelector('input#password');
@@ -28,12 +28,40 @@ describe('Register user view', function () {
 
     let body = renderTemplate('registration/register', templateData);
 
-    body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.submitDetails);
+    body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.registration);
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com');
     body.should.containSelector('input#telephone-number')
       .withAttribute("value", "0328534765");
     done();
 
+  });
+
+  it('should render verify telephone number view', function (done) {
+
+    let templateData = {
+      email: 'invitee@example.com'
+    };
+
+    let body = renderTemplate('registration/verify_otp', templateData);
+
+    body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.register.otpVerify);
+    body.should.containSelector('input#verify-code');
+    done();
+  });
+
+  it('should render resend otp code view', function (done) {
+
+    let telephoneNumber = '012345678901'
+
+    let templateData = {
+      telephone_number: telephoneNumber
+    };
+
+    let body = renderTemplate('registration/re_verify_phone', templateData);
+
+    body.should.containSelector('form#otp-send-again').withAttribute('action', paths.register.reVerifyPhone);
+    body.should.containSelector('input#telephone-number').withAttribute('value', telephoneNumber);
+    done();
   });
 
 });

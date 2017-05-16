@@ -1,0 +1,35 @@
+{{< layout_logged_out}}
+
+{{$pageTitle}}
+GOV.UK Pay
+{{/pageTitle}}
+{{$mainContent}}
+<div class="column-half no-padding">
+  <form action="{{routes.register.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    <h1 class="form-title heading-large">
+      Check your phone
+    </h1>
+    <p>We've sent you a text message with a security code</p>
+    <div class="form-group">
+      <label class="form-label" for="verify-code">Text message code</label>
+      <input class="form-control form-control-5em" data-module="" id="verify-code" name="verify-code" rows="6" type="text" value="">
+    </div>
+    <div class="form-group">
+      <input class="button" type="submit" value="Continue">
+    </div>
+  </form>
+  <p><a href="{{routes.register.reVerifyPhone}}">Not received a text message?</a></p>
+
+</div>
+
+{{/mainContent}}
+{{/layout_logged_out}}
+
+
+
+
+
+
+
+
