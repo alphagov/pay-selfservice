@@ -52,7 +52,7 @@ describe('adminusers client - submit verification details', function () {
             .withUponReceiving('a valid otp code submission')
             .withMethod('POST')
             .withRequestBody(pactified)
-            .withStatusCode(200)
+            .withStatusCode(201)
             .build()
         ).then(() => {
           done()

@@ -301,7 +301,7 @@ describe('register user controller', function () {
       let validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain();
 
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
-        .reply(200, validUserResponse);
+        .reply(201, validUserResponse);
 
       return supertest(app)
         .post(paths.register.otpVerify)
