@@ -22,6 +22,19 @@ let localStrategy2Fa = function (req, done) {
     .catch(() => done(null, false, {message: 'Invalid code'}));
 };
 
+let localDirectStrategy = function (req, done) {
+  userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
+    .then((user) => {
+      req.session.secondFactor = 'totp';
+      req.register_invite.destroy();
+      done(null, user);
+    })
+    .catch((err) =>{
+      req.register_invite.destroy();
+      done(null, false);
+    });
+};
+
 let ensureSessionHasCsrfSecret = function (req, res, next) {
   if (req.session.csrfSecret) return next();
   req.session.csrfSecret = csrf().secretSync();
@@ -52,14 +65,14 @@ let getCurrentGatewayAccountId = function (req) {
   }
   // retrieve user's gatewayAccountIds
   let userGatewayAccountIds = _.get(req, "user.gatewayAccountIds");
-  if((!userGatewayAccountIds) || (userGatewayAccountIds.length === 0)) {
+  if ((!userGatewayAccountIds) || (userGatewayAccountIds.length === 0)) {
     logger.error('Could not resolve the gatewayAccountId for user '); //TODO log the user.id when we have one
     return null;
   }
   // check if we don't have Cookie value
   // or if it's different user  / different userGatewayAccountIds
   if ((!currentGatewayAccountId) ||
-      (userGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
+    (userGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
     currentGatewayAccountId = userGatewayAccountIds[0];
   }
   // save currentGatewayAccountId and return it
@@ -102,11 +115,9 @@ let enforceUserBothFactors = function (req, res, next) {
 
 let enforceUserAuthenticated = function (req, res, next) {
   ensureSessionHasVersion(req);
-
   if (!hasValidSession(req)) {
     return res.redirect(paths.user.logIn);
   }
-
   enforceUserBothFactors(req, res, next);
 };
 
@@ -126,6 +137,7 @@ let initialise = function (app, override_strategy) {
   app.use(passport.session());
   passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth));
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa));
+  passport.use('localDirect', new CustomStrategy(localDirectStrategy));
 
   passport.serializeUser(this.serializeUser);
 

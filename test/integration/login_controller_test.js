@@ -6,6 +6,8 @@ var assert = require('assert');
 var notp = require('notp');
 var chai = require('chai');
 var _ = require('lodash');
+var userFixtures = require('../fixtures/user_fixtures');
+var sinon = require('sinon');
 
 var paths = require(__dirname + '/../../app/paths.js');
 var mock_session = require(__dirname + '/../test_helpers/mock_session.js');
@@ -21,6 +23,7 @@ const expect = chai.expect;
 var adminusersMock = nock(process.env.ADMINUSERS_URL);
 var ACCOUNT_ID = 182364;
 const USER_RESOURCE = '/v1/api/users';
+const CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts";
 
 var user = mock_session.getUser({gateway_account_id: ACCOUNT_ID});
 
@@ -246,3 +249,44 @@ describe('otp send again post enpoint', function () {
       .end(done);
   });
 });
+
+describe('direct login after user registration', function () {
+  it('should redirect user to homepage on a successful registration', function (done) {
+
+    let userExternalId = 'an-externalid';
+    let userName = 'bob';
+    let gatewayAccountId = '2';
+
+    let userResponse = userFixtures.validUserResponse({
+      external_id: userExternalId,
+      username: userName,
+      gateway_account_ids: [gatewayAccountId]}).getPlain();
+
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
+      .reply(200, userResponse);
+
+    let connectorMock = nock(process.env.CONNECTOR_URL);
+
+    connectorMock.get(`${CONNECTOR_ACCOUNT_PATH}/${gatewayAccountId}`)
+      .reply(200,{ foo: "bar", gateway_account_id: gatewayAccountId });
+
+    let destroyStub = sinon.stub();
+    let gatewayAccountData = {
+      userExternalId: userExternalId,
+      destroy: destroyStub
+    };
+
+    let app2 = mock_session.getAppWithRegisterInvitesCookie(getApp(), gatewayAccountData);
+
+    request(app2)
+      .get(paths.register.logUserIn)
+      .set('Accept', 'application/json')
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.name).to.equal(userName);
+        expect(destroyStub.called).to.equal(true)
+      })
+      .end(done);
+  });
+});
+
