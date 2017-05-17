@@ -41,38 +41,41 @@
           </select>
         </div>
 
-      <div class="column-half datetime-pair">
-        <label class="form-label" for="fromDate">
-          <strong>Date range</strong>
-        </label>
-        <div class="datetime-filter">
+      <fieldset class="column-half datetime-pair">
+        <legend>
+          Date range
+        </legend>
+        <fieldset class="datetime-filter datetime-filter-from">
+          <legend class="visuallyhidden">
+            From this date and time
+          </legend>
           <div class="date selector">
-            <span class="form-hint">Date</span>
+            <label class="form-label" for="fromDate"><span class="visuallyhidden">From </span>Date</label>
             <input class="form-control large date-picker start" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" autocomplete="off">
             <span class="form-hint">eg 25/11/2015</span>
           </div>
           <div class="time selector">
-            <span class="form-hint">Time</span>
+            <label class="form-label" for="fromTime"><span class="visuallyhidden">From </span>Time</label>
             <input class="form-control large time-picker start" id="fromTime" name="fromTime" type="text" value="{{filters.fromTime}}" autocomplete="off">
             <span class="form-hint">eg 9:30:00</span>
           </div>
-        </div>
-        <div class="datetime-seperator">
-          to
-        </div>
-        <div class="datetime-filter">
+        </fieldset>
+        <fieldset class="datetime-filter datetime-filter-to">
+          <legend class="datetime-separator">
+            to<span class="visuallyhidden"> this date and time</span>
+          </legend>
           <div class="date selector">
-            <span class="form-hint">Date</span>
+            <label class="form-label" for="toDate"><span class="visuallyhidden">To </span>Date</label>
             <input class="form-control large date-picker end" id="toDate" name="toDate" type="text" value="{{filters.toDate}}" autocomplete="off">
             <span class="form-hint">eg 27/11/2015</span>
           </div>
           <div class="time selector">
-            <span class="form-hint">Time</span>
+            <label class="form-label" for="toTime"><span class="visuallyhidden">To </span>Time</label>
             <input class="form-control large time-picker end" id="toTime" name="toTime" type="text" value="{{filters.toTime}}" autocomplete="off">
             <span class="form-hint">eg 15:00:00</span>
           </div>
-        </div>
-      </div>
+        </fieldset>
+      </fieldset>
       <div class="form-group filter-submit">
         {{#hasFilters}}
         <a href="{{routes.transactions.index}}" class="clear-filter"> Clear Filter </a>
