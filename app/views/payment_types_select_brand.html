@@ -21,7 +21,7 @@
             <table class="checkbox-row-selection">
                 <thead>
                 <tr>
-                    <th colspan="2">Card brand</th>
+                    <th>Card brand</th>
                     <th class="table-header-accept">Accept</th>
                 </tr>
                 </thead>
@@ -34,21 +34,11 @@
                     {{^available}}
                         <tr id="{{id}}" class="payment-types-not-available">
                     {{/available}}
-
-                        <td class="table-data-card-brand">
-                            <ul class="accepted-cards">
-                                {{#available}}
-                                <li class="{{value}} selected">
-                                {{/available}}
-
-                                {{^available}}
-                                <li class="{{value}}">
-                                {{/available}}
-                                    <span class="visuallyhidden">{{label}}</span>
-                                </li>
-                            </ul>
+                        <td class="table-data-label">
+                            {{#available}}<img src="/public/images/{{value}}-color.png" alt="" height="34" width="50" />{{/available}}
+                            {{^available}}<img src="/public/images/{{value}}-bw.png" alt="" height="34" width="50" />{{/available}}
+                            <span class="payment-types-label {{value}}">{{label}}</span>
                         </td>
-                        <td class="table-data-label"><span class="payment-types-label">{{label}}</span></td>
                         <td class="table-data-accept">
                             {{#available}}
                             <input class="payment-types-checkbox" type="checkbox" name="acceptedBrands" value="{{value}}"
