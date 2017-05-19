@@ -44,6 +44,21 @@ module.exports.noAccess = function (req, res) {
 };
 
 module.exports.logInGet = function (req, res) {
+  var setError = function (error_messages) {
+        res.locals.flash.error = {'messages': error_messages};
+      },
+      error, error_messages;
+
+  if (res.locals.flash.hasOwnProperty('error')) {
+    error = res.locals.flash.error[0];
+
+    switch (error) {
+      case 'empty_username': setError({username: 'You must enter a username'}); break;
+      case 'empty_password': setError({password: 'You must enter a username'}); break;
+      case 'empty_all': setError({username: 'You must enter a username', password: 'You must enter a password'}); break;
+      case 'invalid': setError({username: 'You must enter a valid username', password: 'You must enter a valid password'}); break;
+    }
+  }
   res.render('login/login');
 };
 
@@ -61,11 +76,26 @@ module.exports.postLogin = function (req, res) {
 };
 
 module.exports.logUserin = function (req, res, next) {
-  return passport.authenticate('local', {
-    failureRedirect: '/login',
-    badRequestMessage: 'Invalid email or password.',
-    failureFlash: true
-  })(req, res, next);
+  var error = '';
+
+  // username gets trimmed in middleware
+  if (!req.body.username) {
+    error = 'empty_username';
+  }
+
+  if (!req.body.password.trim()) {
+    error = (error === 'empty_username') ? 'empty_all' : 'empty_password';
+  }
+
+  if (error !== '') {
+    req.flash('error', error);
+    res.redirect('/login');
+  } else {
+    return passport.authenticate('local', {
+      failureRedirect: '/login',
+      failureFlash: 'invalid'
+    })(req, res, next);
+  }
 };
 
 module.exports.logUserinOTP = function (req, res, next) {
