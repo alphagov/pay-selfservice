@@ -6,27 +6,17 @@
     logger = require('winston'),
     throng = require('throng'),
     server = require('./server'),
-    grunt = require('grunt'),
     environment = require('./app/services/environment'),
-    gruntFilePath = __dirname + '/Gruntfile.js',
     pidFile = __dirname + '/.start.pid',
     fileOptions = { encoding : 'utf-8' },
     pid;
 
-  /**
-   * Use grunt to run app so that we can use watch, nodemon etc
-   */
-  function startInDevMode () {
-    grunt.cli({
-      gruntfile: gruntFilePath
-    });
-  }
 
   /**
    * throng is a wrapper around node cluster
    * https://github.com/hunterloftis/throng
    */
-  function startInProductionMode () {
+  function start() {
     throng({
       workers: environment.getWorkerCount(),
       master: startMaster,
@@ -80,11 +70,6 @@
 
   monitor();
   
-  // Default to dev mode
-  if (environment.isProduction()) {
-    startInProductionMode();
-  } else {
-    startInDevMode();
-  }
+  start();
 }());
 

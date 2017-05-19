@@ -67,14 +67,6 @@ function initialiseTemplateEngine(app) {
     app.engine('html', require(__dirname + '/lib/template-engine.js').__express);
 }
 
-function initialiseErrorHandling(app) {
-  if (!environment.isProduction()) {
-    // Will return stack traces to the browser as well - only use in development!
-    var errorhandler = require('errorhandler');
-    app.use(errorhandler())
-  }
-}
-
 function initialisePublic(app) {
   app.use('/public', express.static(__dirname + '/public'));
   app.use('/public', express.static(__dirname + '/govuk_modules/govuk_frontend_toolkit'));
@@ -127,7 +119,6 @@ function initialise() {
   initialiseAppVariables(app);
   initialiseTemplateEngine(app);
   initialiseRoutes(app);
-  initialiseErrorHandling(app);
   initialisePublic(app);
 
   return app;
