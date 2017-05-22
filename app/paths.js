@@ -76,7 +76,7 @@ module.exports = {
     registration: '/register',
     otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',
-    logUserIn:'proceed-to-login'
+    logUserIn:'/proceed-to-login'
   },
   toggle3ds: {
     index: '/3ds',

@@ -1,19 +1,20 @@
-var logger    = require('winston');
+var logger = require('winston');
 var _ = require('lodash');
-var response  = require('../utils/response.js').response;
-var userService  = require('../services/user_service.js');
-var router    = require('../routes.js');
-var passport  = require('passport');
-var paths     = require('../paths.js');
+var response = require('../utils/response.js').response;
+var userService = require('../services/user_service.js');
+var router = require('../routes.js');
+var passport = require('passport');
+var paths = require('../paths.js');
 var errorView = require('../utils/response.js').renderErrorView;
-var CORRELATION_HEADER  = require('../utils/correlation_header.js').CORRELATION_HEADER;
+var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
+let csrf = require('csrf');
 
-var error = function(req,res,err) {
-    errorView(req, res);
-    logger.error(err);
+var error = function (req, res, err) {
+  errorView(req, res);
+  logger.error(err);
 };
 
-var logLoginAction = function(req, message) {
+var logLoginAction = function (req, message) {
   var correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '');
   logger.info(`[${correlationId}] ${message}`);
 };
@@ -36,7 +37,7 @@ module.exports.logOut = function (req, res) {
   }
   res.redirect(router.paths.user.logIn);
 };
-  
+
 
 module.exports.noAccess = function (req, res) {
   res.render('login/noaccess');
@@ -59,25 +60,27 @@ module.exports.postLogin = function (req, res) {
   res.redirect(paths.user.otpLogIn);
 };
 
-module.exports.logUserin = function(req,res, next) {
+module.exports.logUserin = function (req, res, next) {
   return passport.authenticate('local', {
     failureRedirect: '/login',
-    badRequestMessage : 'Invalid email or password.',
+    badRequestMessage: 'Invalid email or password.',
     failureFlash: true
   })(req, res, next);
 };
 
-module.exports.logUserinOTP = function(req, res, next) {
-  return passport.authenticate('local2Fa', { failureRedirect: '/otp-login' })(req, res, next);
+module.exports.logUserinOTP = function (req, res, next) {
+  return passport.authenticate('local2Fa', {failureRedirect: '/otp-login'})(req, res, next);
 };
 
 module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
-    var correlationId = req.headers[CORRELATION_HEADER] ||'';
-    userService.sendOTP(req.user, correlationId).then(function(){
-      req.session.sentCode = true;
-      res.render('login/otp-login');
-    },function(err) { error(req,res,err); }
+    var correlationId = req.headers[CORRELATION_HEADER] || '';
+    userService.sendOTP(req.user, correlationId).then(function () {
+        req.session.sentCode = true;
+        res.render('login/otp-login');
+      }, function (err) {
+        error(req, res, err);
+      }
     );
   } else {
     res.render('login/otp-login');
@@ -92,14 +95,33 @@ module.exports.afterOTPLogin = function (req, res) {
   res.redirect(redirect_url);
 };
 
-module.exports.sendAgainGet = function(req, res){
+module.exports.sendAgainGet = function (req, res) {
   res.render('login/send_otp_again');
 };
 
-module.exports.sendAgainPost = function(req, res){
-  var correlationId = req.headers[CORRELATION_HEADER] ||'';
+module.exports.sendAgainPost = function (req, res) {
+  var correlationId = req.headers[CORRELATION_HEADER] || '';
   userService.sendOTP(req.user, correlationId).then(
-    () => { res.redirect(paths.user.otpLogIn); },
-    (err) => { error(req,res,err); }
+    () => {
+      res.redirect(paths.user.otpLogIn);
+    },
+    (err) => {
+      error(req, res, err);
+    }
   );
+};
+
+module.exports.setupDirectLoginAfterRegister = function (req, res, user) {
+
+  if (!user) {
+    let correlationId = req.correlationId;
+    logger.error(`[requestId=${correlationId}] unable to log user in directly after registration. missing user in req`);
+    res.redirect(303, '/login');
+    return;
+  }
+  req.register_invite.userExternalId = user.externalId;
+};
+
+module.exports.loginAfterRegister = function (req, res, next) {
+  return passport.authenticate('localDirect', {failureRedirect: '/login'})(req, res, next);
 };

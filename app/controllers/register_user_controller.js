@@ -4,7 +4,7 @@ let errorResponse = response.renderErrorView;
 let successResponse = response.response;
 let registrationService = require('../services/registration_service');
 let paths = require('../paths.js');
-
+let loginController = require('./login_controller');
 let validations = require('../utils/registration_validations');
 let shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
 let validateRegistrationInputs = validations.validateRegistrationInputs;
@@ -29,6 +29,13 @@ let withValidatedRegistrationCookie = (req, res, next) => {
 
 module.exports = {
 
+  /**
+   * intermediate endpoint which captures the invite code and validate.
+   * Upon success this forwards the request to proceed with registration
+   * @param req
+   * @param res
+   * @returns {Promise.<T>}
+   */
   validateInvite: (req, res) => {
     let code = req.params.code;
     let correlationId = req.correlationId;
@@ -55,6 +62,11 @@ module.exports = {
       })
   },
 
+  /**
+   * display user registration data entry form.
+   * @param req
+   * @param res
+   */
   showRegistration: (req, res) => {
     let renderRegistrationPage = () => {
       let data = {
@@ -69,6 +81,11 @@ module.exports = {
     return withValidatedRegistrationCookie(req, res, renderRegistrationPage);
   },
 
+  /**
+   * process submission of user registration details. Issues a OTP for verifying phone
+   * @param req
+   * @param res
+   */
   submitRegistration: (req, res) => {
     let telephoneNumber = req.body['telephone-number'];
     let password = req.body['password'];
@@ -100,28 +117,48 @@ module.exports = {
     });
   },
 
+  /**
+   * display OTP verify page
+   * @param req
+   * @param res
+   */
   showOtpVerify: (req, res) => {
+    let data = {
+      email: req.register_invite.email
+    };
+
     let displayVerifyCodePage = () => {
-      successResponse(req, res, 'registration/verify_otp', {});
+      successResponse(req, res, 'registration/verify_otp', data);
     };
 
     return withValidatedRegistrationCookie(req, res, displayVerifyCodePage);
   },
 
+  /**
+   * verify OTP (thus phone) and completes the registration by creating the user and login user in directly
+   * @param req
+   * @param res
+   */
   submitOtpVerify: (req, res) => {
     let correlationId = req.correlationId;
     let verificationCode = req.body['verify-code'];
     let code = req.register_invite.code;
 
+    let redirectToAutoLogin = (req, res) => {
+      res.redirect(303, paths.register.logUserIn);
+    };
+
+
     let verifyOtpAndCreateUser = function () {
       registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
         .then((user) => {
-          req.register_invite.userExternalId = user.externalId;
-          res.redirect(303, paths.register.logUserIn); //TODO: temporary. probably shouldn't do this
+          loginController.setupDirectLoginAfterRegister(req, res, user);
+          redirectToAutoLogin(req,res);
         })
         .catch(err => {
           logger.warn(`[requestId=${correlationId}] Error during verify otp code ${err.errorCode}`);
-          errorResponse(req, res, messages.internalError, 500); // TODO: code not found. retry 10 times. disable auto-complete
+          errorResponse(req, res, messages.internalError, 500);
+          // TODO: code not found. invitation locked. retry 10 times. disable auto-complete
         });
     };
 
@@ -136,6 +173,11 @@ module.exports = {
     });
   },
 
+  /**
+   * display re-verify screen in case if user does not receive a OTP
+   * @param req
+   * @param res
+   */
   showReVerifyPhone: (req, res) => {
     let telephoneNumber = req.register_invite.telephone_number;
 
@@ -149,6 +191,11 @@ module.exports = {
     return withValidatedRegistrationCookie(req, res, displayReVerifyCodePage);
   },
 
+  /**
+   * process submission of re-verify phone. Issues a new OTP and redirects to verify OTP
+   * @param req
+   * @param res
+   */
   submitReVerifyPhone: (req, res) => {
     let correlationId = req.correlationId;
     let code = req.register_invite.code;
