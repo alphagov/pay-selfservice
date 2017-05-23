@@ -27,7 +27,9 @@
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "test": "npm run lint && npm run grunt-test",
     "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js",
-    "grunt-test": "node ./node_modules/.bin/grunt test"
+    "grunt-test": "node ./node_modules/.bin/grunt test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "appmetrics": "1.1.2",
@@ -70,13 +72,14 @@
     "readdir": "0.0.x",
     "requestretry": "^1.12.0",
     "rfc822-validate": "^1.0.0",
-    "serve-favicon": "2.3.x",
+    "serve-favicon": "2.4.3",
     "sleep": "^3.0.1",
     "thirty-two": "^1.0.2",
     "throng": "4.0.x",
     "tunnel": "0.0.4",
     "winston": "2.2.x",
-    "yargs": "4.7.x"
+    "yargs": "4.7.x",
+    "snyk": "^1.30.1"
   },
   "devDependencies": {
     "@pact-foundation/pact-node": "4.6.0",
@@ -114,5 +117,6 @@
     "superagent": "^1.2.0",
     "supertest": "^1.0.1",
     "supertest-session": "^2.0.1"
-  }
+  },
+  "snyk": true
 }
