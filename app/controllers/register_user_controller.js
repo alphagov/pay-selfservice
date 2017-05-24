@@ -13,7 +13,9 @@ let validateOtp = validations.validateOtp;
 
 const messages = {
   missingCookie: 'Unable to process registration at this time',
-  internalError: 'Unable to process registration at this time'
+  internalError: 'Unable to process registration at this time',
+  linkExpired: 'This invitation is no longer valid',
+  invalidOtp: 'Invalid verification code'
 };
 
 let withValidatedRegistrationCookie = (req, res, next) => {
@@ -25,6 +27,21 @@ let withValidatedRegistrationCookie = (req, res, next) => {
       errorResponse(req, res, messages.missingCookie, 404);
     });
 
+};
+
+let handleError = (req, res, err) => {
+  logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`);
+
+  switch (err.errorCode) {
+    case 404:
+      errorResponse(req, res, messages.missingCookie, 404);
+      break;
+    case 410:
+      errorResponse(req, res, messages.linkExpired, 410);
+      break;
+    default:
+      errorResponse(req, res, messages.missingCookie, 500);
+  }
 };
 
 module.exports = {
@@ -39,9 +56,7 @@ module.exports = {
   validateInvite: (req, res) => {
     let code = req.params.code;
     let correlationId = req.correlationId;
-
     let redirectToRegister = (invite) => {
-
       if (!req.register_invite) {
         req.register_invite = {};
       }
@@ -53,13 +68,9 @@ module.exports = {
       res.redirect(302, paths.register.registration);
     };
 
-    return registrationService.getValidatedInvite(code)
+    return registrationService.getValidatedInvite(code, correlationId)
       .then(redirectToRegister)
-      .catch(err => {
-        logger.warn(`[requestId=${correlationId}] Invalid invite code attempted ${code}, error = ${err.errorCode}`);
-        errorResponse(req, res, messages.missingCookie, 404);
-        //TODO: give a different message when the code is expired - "This invitation link has expired"
-      })
+      .catch((err) => handleError(req, res, err));
   },
 
   /**
@@ -98,10 +109,7 @@ module.exports = {
           req.register_invite.telephone_number = telephoneNumber;
           res.redirect(303, paths.register.otpVerify);
         })
-        .catch((err) => {
-          logger.error(`[requestId=${correlationId}] error submitting user registration details ${err}`);
-          errorResponse(req, res, messages.internalError, 500);
-        });
+        .catch((err) => handleError(req, res, err));
     };
 
     let redirectToDetailEntry = (err) => {
@@ -148,28 +156,31 @@ module.exports = {
       res.redirect(303, paths.register.logUserIn);
     };
 
+    let handleInvalidOtp = (message) => {
+      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
+      req.flash('genericError', message);
+      res.redirect(303, paths.register.otpVerify);
+    };
 
     let verifyOtpAndCreateUser = function () {
       registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
         .then((user) => {
           loginController.setupDirectLoginAfterRegister(req, res, user);
-          redirectToAutoLogin(req,res);
+          redirectToAutoLogin(req, res);
         })
         .catch(err => {
-          logger.warn(`[requestId=${correlationId}] Error during verify otp code ${err.errorCode}`);
-          errorResponse(req, res, messages.internalError, 500);
-          // TODO: code not found. invitation locked. retry 10 times. disable auto-complete
+          if (err.errorCode && err.errorCode === 401) {
+            handleInvalidOtp(messages.invalidOtp);
+          } else {
+            handleError(req, res, err);
+          }
         });
     };
 
     return withValidatedRegistrationCookie(req, res, () => {
       validateOtp(verificationCode)
         .then(verifyOtpAndCreateUser)
-        .catch(err => {
-          logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
-          req.flash('genericError', err);
-          res.redirect(303, paths.register.otpVerify);
-        });
+        .catch(err => handleInvalidOtp(err));
     });
   },
 
@@ -207,10 +218,7 @@ module.exports = {
           req.register_invite.telephone_number = telephoneNumber;
           res.redirect(303, paths.register.otpVerify);
         })
-        .catch(err => {
-          logger.warn(`[requestId=${correlationId}] Error during resend otp code ${err.errorCode}`);
-          errorResponse(req, res, messages.internalError, 500);
-        });
+        .catch(err => handleError(req, res, err));
     };
 
     return withValidatedRegistrationCookie(req, res, () => {

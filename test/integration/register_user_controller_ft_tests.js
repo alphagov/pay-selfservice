@@ -245,7 +245,7 @@ describe('register user controller', function () {
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
-        .expect(500)
+        .expect(404)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to process registration at this time');
         })
@@ -375,7 +375,7 @@ describe('register user controller', function () {
           'verify-code': '123456',
           csrfToken: csrf().create('123')
         })
-        .expect(500)
+        .expect(404)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to process registration at this time');
         })
@@ -469,7 +469,7 @@ describe('register user controller', function () {
           'telephone-number': telephoneNumber,
           csrfToken: csrf().create('123')
         })
-        .expect(500)
+        .expect(404)
         .expect((res) => {
           expect(res.body.message).to.equal('Unable to process registration at this time');
         })
