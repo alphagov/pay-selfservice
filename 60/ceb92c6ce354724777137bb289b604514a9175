@@ -5,3 +5,5 @@ release.alpha_release-187.date=2017-05-25:10:26:07
 staging-2.tag=FAILED-187
 
 staging-2.FAILED-187.date=
+
+staging-2.FAILED-187.status=failed
