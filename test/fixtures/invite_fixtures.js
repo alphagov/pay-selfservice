@@ -69,6 +69,14 @@ module.exports = {
     };
   },
 
+  notPermittedInviteResponse: (userName, serviceId) => {
+    let response = {
+      errors: ["user [" + userName + "] not authorised to perform operation [invite] in service [" + serviceId + "]"]
+    };
+
+    return pactInvites.withPactified(response);
+  },
+
   validRegistrationRequest: (opts = {}) => {
 
     let data = {

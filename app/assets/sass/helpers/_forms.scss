@@ -30,6 +30,10 @@ ul.question-advice {
   list-style: none;
 }
 
+label .permission-main-type {
+  @include bold-19;
+}
+
 /* Fix white background for checkboxes and radios */
 /* To be removed when the new styles come in */
 input[type='radio'].form-control,
