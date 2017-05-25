@@ -184,6 +184,42 @@ describe('adminusers client - invite user', function () {
         }).should.notify(done);
       });
     });
-  });
 
+    context('invite user API - not permitted for user, should return error', () => {
+      let validInvite = inviteFixtures.validInviteRequest();
+      let errorResponse = inviteFixtures.notPermittedInviteResponse(validInvite.getPlain().email, serviceId);
+
+      beforeEach((done) => {
+        let pactified = validInvite.getPactified();
+
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/invites`)
+            .withUponReceiving('a not permitted user invite user request for a valid invitee')
+            .withMethod('POST')
+            .withRequestBody(pactified)
+            .withStatusCode(403)
+            .withResponseBody(errorResponse.getPactified())
+            .build()
+        ).then(() => {
+          done()
+        }).catch(e =>
+          console.log(e)
+        );
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should return not permitted', function (done) {
+        let invite = validInvite.getPlain();
+
+        adminusersClient.inviteUser(invite.email, invite.sender, serviceId, invite.role_name).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(403);
+          expect(response.message.errors.length).to.equal(1);
+          expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);
+        }).should.notify(done);
+      });
+    });
+  });
 });

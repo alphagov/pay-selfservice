@@ -97,9 +97,8 @@
 }
 
 /* Styles for banner showing environment (test or live) */
-.phase-banner {
-  @include phase-banner();
-
+.phase-banner,
+.flash-container {
   /* Corrections to phase-banner styles to allow 1200px width */
   max-width: 1200px;
 
@@ -107,14 +106,27 @@
     width: 1200px;
   }
 
-  margin: 0 $gutter-half $gutter;
+  margin: 0 $gutter-half;
 
   @include media(tablet) {
-    margin: 0 $gutter $gutter;
+    margin: 0 $gutter;
   }
 
   @include media($min-width: (1200px + $gutter * 2)) {
-    margin: 0 auto $gutter;
+    margin: 0 auto;
+  }
+}
+
+.phase-banner {
+  @include phase-banner();
+  margin-bottom: $gutter;
+
+  @include media(tablet) {
+    margin-bottom: $gutter;
+  }
+
+  @include media($min-width: (1200px + $gutter * 2)) {
+    margin-bottom: $gutter;
   }
 
   .phase-tag {

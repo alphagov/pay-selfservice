@@ -139,6 +139,36 @@ describe('adminusers client - submit verification details', function () {
       });
     });
 
+    context('submit registration details API - invitation locked', () => {
+      let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest();
+
+      beforeEach((done) => {
+        let pactified = verifyCodeRequest.getPactified();
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${INVITE_RESOURCE}/otp/validate`)
+            .withUponReceiving('a registration details submission for locked code')
+            .withMethod('POST')
+            .withRequestBody(pactified)
+            .withStatusCode(410)
+            .build()
+        ).then(() => {
+          done()
+        }).catch(e =>
+          console.log(e)
+        );
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('return 410 if code locked', function (done) {
+        let request = verifyCodeRequest.getPlain();
+        adminusersClient.verifyOtpAndCreateUser(request.code, request.otp).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(410);
+        }).should.notify(done);
+      });
+    });
   });
 
 });
