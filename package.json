@@ -58,7 +58,7 @@
     "lodash": "4.13.x",
     "luhn": "2.1.x",
     "minimist": "0.0.x",
-    "moment": "2.13.x",
+    "moment": "2.15.2",
     "moment-timezone": "0.5.x",
     "morgan": "1.7.x",
     "newrelic": "1.26.x",
