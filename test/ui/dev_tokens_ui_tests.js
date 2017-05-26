@@ -65,9 +65,9 @@ describe('The token view', function() {
     body.should.containSelector(tokenContainerSelector);
     body.should.containNoSelector('.js-toggle-description');
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user@email.com");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
+    body.should.containSelector('#created-by-' + tokenLink).withText("Created by: user@email.com");
+    body.should.containSelector('#date-created-' + tokenLink).withText("Date created: 05 Sep 2016 - 11:30");
+    body.should.containSelector('#date-used-' + tokenLink).withText("Last used: 05 Sep 2016 - 14:35");
   });
 
   it('should render the active API keys for the account (for 1 key) and not ab', function () {
@@ -98,9 +98,9 @@ describe('The token view', function() {
     body.should.containSelector('.js-toggle-description');
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user@email.com");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
+    body.should.containSelector('#created-by-' + tokenLink).withText("Created by: user@email.com");
+    body.should.containSelector('#date-created-' + tokenLink).withText("Date created: 05 Sep 2016 - 11:30");
+    body.should.containSelector('#date-used-' + tokenLink).withText("Last used: 05 Sep 2016 - 14:35");
   });
   
   it('should render the revoked API keys for the account (for 1 key)', function () {
@@ -155,19 +155,21 @@ describe('The token view', function() {
 
     body.should.containSelector('#available-tokens').withText("There are 2 active API keys");
 
-    let tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655440000';
+    let tokenLink1 = '550e8400-e29b-41d4-a716-446655440000'
+    let tokenContainerSelector = '#' + tokenLink1;
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 1');
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user1@email.com");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 11:30");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Last used: 05 Sep 2016 - 14:35");
+    body.should.containSelector('#created-by-' + tokenLink1).withText("Created by: user1@email.com");
+    body.should.containSelector('#date-created-' + tokenLink1).withText("Date created: 05 Sep 2016 - 11:30");
+    body.should.containSelector('#date-used-' + tokenLink1).withText("Last used: 05 Sep 2016 - 14:35");
 
-    tokenContainerSelector = '#550e8400-e29b-41d4-a716-446655441234';
+    let tokenLink2 = '550e8400-e29b-41d4-a716-446655441234'
+    tokenContainerSelector = '#' + tokenLink2;
     body.should.containSelector(tokenContainerSelector);
     body.should.containSelector(tokenContainerSelector + ' .heading-small').withText('description token 2');
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Created by: user2@email.com");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Date created: 05 Sep 2016 - 15:30");
-    body.should.containSelector(tokenContainerSelector + ' div').withText("Not used");
+    body.should.containSelector('#created-by-' + tokenLink2).withText("Created by: user2@email.com");
+    body.should.containSelector('#date-created-' + tokenLink2).withText("Date created: 05 Sep 2016 - 15:30");
+    body.should.containSelector(tokenContainerSelector + ' .key-list-item-meta p').withText("Not used");
   });
 
   it('should render the number of revoked API keys for the account (for 2 keys)', function () {
