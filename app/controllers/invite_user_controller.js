@@ -7,6 +7,11 @@ let errorResponse = response.renderErrorView;
 let rolesModule = require('../utils/roles');
 let emailTools = require('../utils/email_tools')();
 
+const messages = {
+  emailAlreadyInUse: 'Email already in use',
+  inviteError: 'Unable to send invitation at this time'
+};
+
 module.exports = {
 
   /**
@@ -46,6 +51,20 @@ module.exports = {
       res.redirect(303, paths.teamMembers.index);
     };
 
+    let onError = (err) => {
+      logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err.message));
+
+      switch (err.errorCode) {
+        case 409:
+          req.flash('genericError', messages.emailAlreadyInUse);
+          res.redirect(303, paths.teamMembers.invite);
+          break;
+        default:
+          errorResponse(req, res, messages.inviteError, 200);
+      }
+    };
+
+
     if (!emailTools.validateEmail(invitee)) {
       req.flash('genericError', `Invalid email address`);
       res.redirect(303, paths.teamMembers.invite);
@@ -54,16 +73,13 @@ module.exports = {
 
     if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`);
-      errorResponse(req, res, 'Unable to create invitation', 200);
+      errorResponse(req, res, messages.inviteError, 200);
       return;
     }
 
     return userService.inviteUser(invitee, senderId, serviceId, role.name, correlationId)
       .then(onSuccess)
-      .catch((err) => {
-        logger.error(`[requestId=${correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err.message));
-        errorResponse(req, res, 'Unable to create invitation', 200);
-      });
+      .catch(onError);
   }
 
 };

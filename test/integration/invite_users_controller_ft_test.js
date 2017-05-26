@@ -92,10 +92,8 @@ describe('invite user controller', function () {
           'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
-        .expect(200)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to create invitation');
-        })
+        .expect(303, {})
+        .expect('Location', paths.teamMembers.invite)
         .end(done);
     });
 
@@ -117,7 +115,7 @@ describe('invite user controller', function () {
         })
         .expect(200)
         .expect((res) => {
-          expect(res.body.message).to.equal('Unable to create invitation');
+          expect(res.body.message).to.equal('Unable to send invitation at this time');
         })
         .end(done);
     });
