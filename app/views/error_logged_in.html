@@ -1,0 +1,26 @@
+{{< layout}}
+
+{{$pageTitle}}
+GOV.UK Pay - An Error occurred
+{{/pageTitle}}
+
+{{$pageSpecificJS}}
+<script src="/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
+{{$mainClasses}}full-width{{/mainClasses}}
+{{$full_width_content}}
+
+<div class="column-two-thirds no-padding">
+    <h1 class="heading-large" id="error-title">{{error.title}}</h1>
+
+    <p id="error-message">{{error.message}}</p>
+
+    {{#enable_link}}
+    <a class="lede" href="{{link.link}}" id="back-link">{{link.text}}</a>
+    {{/enable_link}}
+</div>
+
+{{/full_width_content}}
+
+{{/layout}}
