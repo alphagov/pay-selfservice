@@ -110,7 +110,6 @@ describe('The team members view', function () {
         'users_service_read': true,
         'users_service_create': true
       },
-      'enable_invite_users': true //temp to be removed
     };
 
     let body = renderTemplate('services/team_members', templateData);
@@ -125,7 +124,6 @@ describe('The team members view', function () {
         'users_service_read': true,
         'users_service_create': false
       },
-      'enable_invite_users': true //temp to be removed
     };
 
     let body = renderTemplate('services/team_members', templateData);
