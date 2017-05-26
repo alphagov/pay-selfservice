@@ -85,7 +85,7 @@ describe('The payment select brand view', function () {
 
   });
 
-  it('should not grey out unavailable options', function () {
+  it('should not grey out available options', function () {
 
     var model = _.extend({}, templateData);
     model['brands'] = _.extend({}, templateData['brands'], {
@@ -94,7 +94,8 @@ describe('The payment select brand view', function () {
 
     var body = renderTemplate('payment_types_select_brand', model);
 
-    body.should.containSelector('ul.accepted-cards li.selected');
+    body.should.containSelector('td.table-data-label img')
+      .withAttribute('src', '/public/images/visa-color.png');
 
     body.should.containSelector('input.payment-types-checkbox')
       .withAttribute('type', 'checkbox')
