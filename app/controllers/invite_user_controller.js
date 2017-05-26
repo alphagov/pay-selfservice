@@ -56,8 +56,7 @@ module.exports = {
 
       switch (err.errorCode) {
         case 409:
-          req.flash('genericError', messages.emailAlreadyInUse);
-          res.redirect(303, paths.teamMembers.invite);
+          successResponse(req, res, 'services/team_member_invite_conflict', {invitee: invitee});
           break;
         default:
           errorResponse(req, res, messages.inviteError, 200);
