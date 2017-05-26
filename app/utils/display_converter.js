@@ -6,7 +6,8 @@ const hideNavBarTemplates = [
   'services/team_member_details',
   'services/team_member_profile',
   'services/team_member_permissions',
-  'services/team_member_invite'
+  'services/team_member_invite',
+  'services/team_member_invite_conflict',
 ];
 
 /**

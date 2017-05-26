@@ -92,8 +92,10 @@ describe('invite user controller', function () {
           'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
-        .expect(303, {})
-        .expect('Location', paths.teamMembers.invite)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.invitee).to.equal(existingUser);
+        })
         .end(done);
     });
 
