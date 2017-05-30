@@ -9,7 +9,20 @@ let emailTools = require('../utils/email_tools')();
 
 const messages = {
   emailAlreadyInUse: 'Email already in use',
-  inviteError: 'Unable to send invitation at this time'
+  inviteError: 'Unable to send invitation at this time',
+  emailConflict: (email) => {
+    return {
+      error: {
+        title: 'This person has already been invited',
+        message: `You cannot send an invitation to ${email} because they have received one already, or may be an existing team member.`
+      },
+      link: {
+        link: '/team-members',
+        text: 'View all team members'
+      },
+      enable_link: true
+    }
+  }
 };
 
 module.exports = {
@@ -56,7 +69,7 @@ module.exports = {
 
       switch (err.errorCode) {
         case 409:
-          successResponse(req, res, 'services/team_member_invite_conflict', {invitee: invitee});
+          successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee));
           break;
         default:
           errorResponse(req, res, messages.inviteError, 200);

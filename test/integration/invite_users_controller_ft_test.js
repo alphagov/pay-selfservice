@@ -94,7 +94,7 @@ describe('invite user controller', function () {
         })
         .expect(200)
         .expect((res) => {
-          expect(res.body.invitee).to.equal(existingUser);
+          expect(res.body.error.message).to.include(existingUser);
         })
         .end(done);
     });
