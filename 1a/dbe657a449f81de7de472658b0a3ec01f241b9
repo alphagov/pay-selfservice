@@ -13,3 +13,5 @@ production-2.tag=alpha_production-2-194
 production-2.alpha_production-2-194.date=2017-05-30:11:34:32
 
 production-2.alpha_production-2-194.status=success
+
+staging-2.tag=alpha_staging-2-194
