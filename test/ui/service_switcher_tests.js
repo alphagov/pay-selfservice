@@ -11,6 +11,28 @@ describe('The account switcher link', function () {
     body.should.containSelector('#my-services').withExactText('My Services');
   });
 
+  it(`should render a blank h2 tag if service name is blank`, function () {
+
+    let templateData = {
+        "serviceName": ""
+      };
+
+    let body = renderTemplate('services/index', templateData);
+
+    body.should.containSelector('h2#service-name').withExactText('');
+  });
+
+  it(`should render the service name in a h2 tag if service name is defined`, function () {
+
+    let templateData = {
+      "serviceName": "Super Mega Service"
+    };
+
+    let body = renderTemplate('services/index', templateData);
+
+    body.should.containSelector('h2#service-name').withExactText('Super Mega Service');
+  });
+
   it('should display View Team Members link in switcher page', function () {
 
     let templateData = {};

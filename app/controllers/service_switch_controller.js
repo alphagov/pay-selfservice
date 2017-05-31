@@ -21,12 +21,21 @@ module.exports = {
    * @param res
    */
   index: (req, res) => {
-    let gatewayAccountIds = _.get(req, 'user.gatewayAccountIds', null);
+    const gatewayAccountIds = _.get(req, 'user.gatewayAccountIds', null);
+    const services = _.get(req, 'user.services', null);
 
     if (!gatewayAccountIds || !gatewayAccountIds.length) {
-      logger.info(`[${req.correlationId}] No accounts found for user`);
-      return errorResponse(req, res, 'No accounts found for user');
+      logger.info(`[${req.correlationId}] No gateway accounts found for user`);
+      return errorResponse(req, res, 'No gateway accounts found for user');
     }
+
+    if (!services || !services.length) {
+      logger.info(`[${req.correlationId}] No services found for user`);
+      return errorResponse(req, res, 'No services found for user');
+    }
+
+    // TODO: currently we only support one service per user, we will support multiple in future
+    const serviceName = services[0].name === 'System Generated' ? '' : services[0].name;
 
     return q.allSettled(gatewayAccountIds
       .map(gatewayAccountId => connectorClient().getAccount({
@@ -39,7 +48,9 @@ module.exports = {
       .then(gatewayAccounts => {
         successResponse(req, res, 'services/index', {
           navigation: false,
-          gatewayAccounts: gatewayAccounts});
+          gatewayAccounts,
+          serviceName
+        });
       })
       .catch(() => errorResponse(req, res, 'Unable to display accounts'));
   },

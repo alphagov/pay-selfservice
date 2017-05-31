@@ -129,7 +129,65 @@ describe('service switch controller: list of accounts', function () {
 
     serviceSwitchController.index(req, res);
 
-    expect(renderSpy.calledWith('error', { message: 'No accounts found for user'})).to.be.equal(true);
+    expect(renderSpy.calledWith('error', { message: 'No gateway accounts found for user'})).to.be.equal(true);
+    expect(setHeaderSpy.calledWith('Content-Type', 'text/html')).to.be.equal(true);
+    expect(statusSpy.calledWith(500)).to.be.equal(true);
+  });
+
+  it('should render the name of the first returned service', function (done) {
+    renderSpy = sinon.spy();
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + '/2')
+      .reply(200, {
+        gateway_account_id: '2',
+        description: 'account 2',
+        type: 'test',
+        payment_provider: 'sandbox'
+      });
+
+    let req = {
+      user: userFixtures.validUserResponse({
+        username: 'bob',
+        services: [{
+          id: 1234,
+          name: 'Super Example Mega-Service'
+        }]
+      }).getAsObject(),
+      session: {}
+    };
+
+    let res = {
+      render: renderSpy
+    };
+
+    serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
+      expect(renderSpy.calledWith('services/index', sinon.match({
+        serviceName: 'Super Example Mega-Service'
+      }))).to.be.equal(true);
+    }).should.notify(done);
+  });
+
+  it('should show error if no services', function () {
+    let renderSpy = sinon.spy();
+    let setHeaderSpy = sinon.spy();
+    let statusSpy = sinon.spy();
+
+    let req = {
+      user: userFixtures.validUserResponse({
+        username: 'bob',
+        services: []
+      }).getAsObject(),
+      session: {}
+    };
+
+    let res = {
+      render: renderSpy,
+      setHeader: setHeaderSpy,
+      status: statusSpy
+    };
+
+    serviceSwitchController.index(req, res);
+
+    expect(renderSpy.calledWith('error', { message: 'No services found for user'})).to.be.equal(true);
     expect(setHeaderSpy.calledWith('Content-Type', 'text/html')).to.be.equal(true);
     expect(statusSpy.calledWith(500)).to.be.equal(true);
   });
@@ -168,7 +226,7 @@ describe('service switch controller: switching', function () {
     expect(redirectSpy.calledWith(302, '/')).to.be.equal(true);
   });
 
-  it('should not switch id  if user not authorised to see account id', function () {
+  it('should not switch id if user not authorised to see account id', function () {
     let redirectSpy = sinon.spy();
     let session = {};
 
