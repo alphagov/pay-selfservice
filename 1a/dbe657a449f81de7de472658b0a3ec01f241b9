@@ -23,3 +23,5 @@ staging-2.alpha_staging-2-194.status=success
 release.tag=alpha_release-195
 
 release.alpha_release-195.date=2017-05-31:13:13:25
+
+production-2.tag=alpha_production-2-194
