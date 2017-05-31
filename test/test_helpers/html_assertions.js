@@ -168,7 +168,7 @@ chai.use(function (_chai, utils) {
   });
 
   chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {
-    let actualValue = this._obj.find('td:nth-child(' + colIndex + ')').text().trim();
+    let actualValue = this._obj.find('tbody tr > :nth-child(' + colIndex + ')').text().trim();
     this.assert(actualValue === expectedValue.toString(),
       "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
       expectedValue, actualValue
