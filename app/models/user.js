@@ -12,6 +12,7 @@ class User {
     this._username = userData.username;
     this._email = userData.email || '';
     this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
+    this._services = userData.services;
     this._serviceIds = userData.service_ids;
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
@@ -36,6 +37,7 @@ class User {
       external_id: this._externalId,
       username: this._username,
       email: this._email,
+      services: this._services,
       gateway_account_ids: this._gatewayAccountIds,
       service_ids: this._serviceIds,
       telephone_number: this._telephoneNumber,
@@ -86,6 +88,10 @@ class User {
 
   get gatewayAccountIds() {
     return this._gatewayAccountIds;
+  }
+
+  get services() {
+    return this._services;
   }
 
   get serviceIds() {
