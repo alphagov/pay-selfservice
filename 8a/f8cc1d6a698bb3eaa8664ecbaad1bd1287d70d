@@ -17,3 +17,5 @@ production-1.tag=alpha_production-1-87
 production-1.alpha_production-1-87.date=2016-11-17:15:06:57
 
 production-1.alpha_production-1-87.status=success
+
+staging-2.tag=FAILED-87
