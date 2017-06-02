@@ -4,16 +4,14 @@
 Verify code - GOV.UK Pay
 {{/pageTitle}}
 {{$mainContent}}
-<div class="column-half no-padding">
+<div id="display_otp_verify" class="column-half no-padding">
   <form action="{{routes.register.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    <h1 class="form-title heading-large">
-      Check your phone
-    </h1>
+    <h1 class="form-title heading-large">Check your phone</h1>
     <p>We've sent you a text message with a security code</p>
     <div class="form-group">
       <label class="form-label" for="verify-code">Text message code</label>
-      <input class="form-control form-control-5em" data-module="" id="verify-code" name="verify-code" rows="6" type="text" value="">
+      <input class="form-control form-control-5em" data-module="" id="verify-code" name="verify-code" type="text" value="">
     </div>
     <div class="form-group">
       <input class="button" type="submit" value="Continue">
@@ -25,11 +23,3 @@ Verify code - GOV.UK Pay
 
 {{/mainContent}}
 {{/layout_logged_out}}
-
-
-
-
-
-
-
-
