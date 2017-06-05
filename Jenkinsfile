@@ -9,7 +9,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@fix_master_check")
   }
 
   stages {
