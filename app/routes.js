@@ -17,6 +17,7 @@ var inviteUserController = require('./controllers/invite_user_controller.js');
 var registerUserController = require('./controllers/register_user_controller.js');
 var permissionController = require('./controllers/service_roles_update_controller.js');
 var toggle3ds = require('./controllers/toggle_3ds_controller.js');
+var selfCreateServiceController = require('./controllers/create_service_controller.js');
 
 var static = require('./controllers/static_controller.js');
 var auth = require('./services/auth_service.js');
@@ -146,6 +147,14 @@ module.exports.bind = function (app) {
   app.get(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showReVerifyPhone);
   app.post(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitReVerifyPhone);
   app.get(register.logUserIn, auth.ensureSessionHasCsrfSecret, csrf, login.loginAfterRegister, auth.enforceUserAuthenticated, getAccount, login.loggedIn);
+
+  // SELF CREATE SERVICE
+  let selfCreateService = paths.selfCreateService;
+  app.get(selfCreateService.index, auth.ensureSessionHasCsrfSecret, csrf, selfCreateServiceController.showRegistration);
+  app.get(selfCreateService.creationConfirmed, selfCreateServiceController.showRequestedPage);
+  app.get(selfCreateService.otpVerify, auth.ensureSessionHasCsrfSecret, csrf, selfCreateServiceController.showOtpVerify);
+  app.get(selfCreateService.serviceNaming, auth.ensureSessionHasCsrfSecret, csrf, auth.enforceUserAuthenticated, getAccount, selfCreateServiceController.nameYourService);
+  app.get(selfCreateService.otpResend, auth.ensureSessionHasCsrfSecret, csrf, selfCreateServiceController.showOtpResend);
 
   // 3D SECURE TOGGLE
   var t3ds = paths.toggle3ds;

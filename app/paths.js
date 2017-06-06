@@ -78,6 +78,13 @@ module.exports = {
     reVerifyPhone: '/re-verify-phone',
     logUserIn:'/proceed-to-login'
   },
+  selfCreateService: {
+    index: '/create-service',
+    creationConfirmed: '/create-service/confirmation',
+    otpVerify: '/create-service/verify-otp',
+    serviceNaming: '/service/set-name',
+    otpResend: '/create-service/resend-otp'
+  },
   toggle3ds: {
     index: '/3ds',
     onConfirm: '/3ds/confirm',
