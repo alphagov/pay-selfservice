@@ -1,3 +1,6 @@
+// Setting default environment variables
+require(__dirname + '/env');
+// Load libraries
 if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
 var express           = require('express');
 var path              = require('path');
