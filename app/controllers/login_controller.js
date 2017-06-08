@@ -69,7 +69,11 @@ module.exports.logUserin = function (req, res, next) {
 };
 
 module.exports.logUserinOTP = function (req, res, next) {
-  return passport.authenticate('local2Fa', {failureRedirect: '/otp-login'})(req, res, next);
+  return passport.authenticate('local2Fa', {
+    failureRedirect: '/otp-login',
+    badRequestMessage: 'Invalid verification code.',
+    failureFlash: true
+  })(req, res, next);
 };
 
 module.exports.otpLogIn = function (req, res) {
