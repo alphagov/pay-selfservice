@@ -26,10 +26,10 @@ module.exports = {
    * @returns {Promise<User>}
    */
   authenticate: function (username, submittedPassword, correlationId) {
-    let defer = q.defer();
-
     if (!username || !submittedPassword) {
-      return defer.reject();
+      let defer = q.defer();
+      defer.reject();
+      return defer.promise;
     }
 
     return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword);
