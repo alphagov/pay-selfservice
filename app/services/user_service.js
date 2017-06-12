@@ -26,10 +26,10 @@ module.exports = {
    * @returns {Promise<User>}
    */
   authenticate: function (username, submittedPassword, correlationId) {
-    let defer = q.defer();
-
     if (!username || !submittedPassword) {
-      return defer.reject();
+      let defer = q.defer();
+      defer.reject();
+      return defer.promise;
     }
 
     return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword);
@@ -42,9 +42,10 @@ module.exports = {
    * @returns {Promise<User>}
    */
   authenticateSecondFactor: function (externalId, code, correlationId) {
-    let defer = q.defer();
     if (!externalId || !code) {
-      return defer.reject();
+      let defer = q.defer();
+      defer.reject();
+      return defer.promise;
     }
 
     return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code);

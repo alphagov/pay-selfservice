@@ -2,27 +2,28 @@
 require(__dirname + '/env');
 // Load libraries
 if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
-var express           = require('express');
-var path              = require('path');
-var httpsAgent        = require('https').globalAgent;
-var favicon           = require('serve-favicon');
-var router            = require(__dirname + '/app/routes.js');
-var bodyParser        = require('body-parser');
-var cookieParser      = require('cookie-parser');
-var cookieUtil        = require(__dirname + '/app/utils/cookie.js');
-var noCache           = require(__dirname + '/app/utils/no_cache.js');
-var customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
-var proxy             = require(__dirname + '/app/utils/proxy.js');
-var logger            = require('winston');
-var loggingMiddleware = require('morgan');
-var argv              = require('minimist')(process.argv.slice(2));
-var environment       = require(__dirname + '/app/services/environment.js');
-var auth              = require(__dirname + '/app/services/auth_service.js');
-var port              = (process.env.PORT || 3000);
-var unconfiguredApp   = express();
-var flash             = require('connect-flash');
-var middlwareUtils    = require('./app/utils/middleware.js');
-var applicationMetrics= require('./app/utils/metrics.js').metrics;
+let express           = require('express');
+let path              = require('path');
+let httpsAgent        = require('https').globalAgent;
+let favicon           = require('serve-favicon');
+let router            = require(__dirname + '/app/routes.js');
+let bodyParser        = require('body-parser');
+let cookieParser      = require('cookie-parser');
+let cookieUtil        = require(__dirname + '/app/utils/cookie.js');
+let noCache           = require(__dirname + '/app/utils/no_cache.js');
+let customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
+let proxy             = require(__dirname + '/app/utils/proxy.js');
+let logger            = require('winston');
+let loggingMiddleware = require('morgan');
+let argv              = require('minimist')(process.argv.slice(2));
+let environment       = require(__dirname + '/app/services/environment.js');
+let auth              = require(__dirname + '/app/services/auth_service.js');
+let port              = (process.env.PORT || 3000);
+let unconfiguredApp   = express();
+let flash             = require('connect-flash');
+let middlwareUtils    = require('./app/utils/middleware.js');
+let applicationMetrics= require('./app/utils/metrics.js').metrics;
+let errorHandler      = require(__dirname + '/app/middleware/error_handler.js');
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
@@ -99,8 +100,12 @@ function initialiseCookies(app) {
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()));
 }
 
+function initialiseErrorHandling(app) {
+  app.use(errorHandler);
+}
+
 function listen() {
-  var app = initialise();
+  let app = initialise();
   app.listen(port);
   logger.log('Listening on port ' + port);
 }
@@ -110,7 +115,7 @@ function listen() {
  * @return app
  */
 function initialise() {
-  var app = unconfiguredApp;
+  let app = unconfiguredApp;
 
   app.use(flash());
   initialiseTLS(app);
@@ -123,6 +128,7 @@ function initialise() {
   initialiseTemplateEngine(app);
   initialiseRoutes(app);
   initialisePublic(app);
+  initialiseErrorHandling(app);
 
   return app;
 }
