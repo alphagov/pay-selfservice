@@ -1,7 +1,10 @@
 'use strict';
 
-let logger = require('winston');
-let renderErrorView = require('../utils/response.js').renderErrorView;
+// NPM dependencies
+const logger = require('winston');
+// Custom dependencies
+const env = require('../../env');
+const renderErrorView = require('../utils/response').renderErrorView;
 
 module.exports = function(err, req, res, next) {
   let errorPayload = {
@@ -21,5 +24,9 @@ module.exports = function(err, req, res, next) {
     };
   }
   logger.error(`[requestId=${req.correlationId}] Internal server error -`, errorPayload);
-  renderErrorView(req, res, 'Sorry, something went wrong', 200);
+  if (env.isProduction()) {
+    renderErrorView(req, res, 'Sorry, something went wrong', 200);
+  } else {
+    next(err);
+  }
 };
