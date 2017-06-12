@@ -4,15 +4,13 @@
 Sign in to GOV.UK Pay
 {{/pageTitle}}
 {{$mainContent}}
-<div class="column-half no-padding">
-  <h1 class="form-title heading-large">
-    Check your phone
-  </h1>
-  <form action="/otp-login" class="form" method="post" class="submit-two-fa">
+<div class="column-half no-padding" id="display-otp-login">
+  <h1 class="form-title heading-large">Check your phone</h1>
+  <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <p>We've sent you a text message with a verification code</p>
     {{#flash.error}}
-      <p class="error">{{.}}</p>
+      <p class="error">{{flash.error}}</p>
     {{/flash.error}}
     <div class="form-group">
       <label class="form-label" for="sms_code">Text message code</label>
@@ -22,18 +20,9 @@ Sign in to GOV.UK Pay
       <input class="button" type="submit" value="Continue">
     </div>
   </form>
-  <p><a href="/otp-send-again">Not received a text message?</a></p>
-  <p><a href="/logout">Cancel</a></p>
-
+  <p><a href="{{routes.user.otpSendAgain}}">Not received a text message?</a></p>
+  <p><a href="{{routes.user.logOut}}">Cancel</a></p>
 </div>
 
 {{/mainContent}}
 {{/layout_logged_out}}
-
-
-
-
-
-
-
-
