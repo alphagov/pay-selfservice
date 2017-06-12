@@ -25,6 +25,10 @@ var getUser = (opts) => {
     return createAppWithSession(app, validSession);
   },
 
+  getAppWithSession = function (app, sessionData) {
+    return createAppWithSession(app, sessionData);
+  },
+
   getAppWithSessionAndGatewayAccountCookies = function (app, sessionData, gatewayAccountData) {
     return createAppWithSession(app, sessionData, gatewayAccountData);
   },

@@ -3,6 +3,23 @@ let renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').
 let paths = require('../../app/paths.js');
 
 describe('Login view', function () {
+  it('should render the right messaging when there are errors with user information', function () {
+    let templateDate = {
+      flash: {
+        error: { 
+          messages: {
+            username: 'You must enter a username',
+            password: 'You must enter a password'
+          }
+        }
+      }
+    };
+
+    let body = renderTemplate('login/login', templateDate);
+    body.should.containSelector('.error-summary-heading');
+    body.should.containSelector('label[for="username"] .error-message').withText(templateDate.flash.error.messages.username);
+    body.should.containSelector('label[for="password"] .error-message').withText(templateDate.flash.error.messages.password);
+  });
 
   it('should render send otp code form', function (done) {
     let templateData = {
