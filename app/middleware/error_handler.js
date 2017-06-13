@@ -2,9 +2,6 @@
 
 // NPM dependencies
 const logger = require('winston');
-// Custom dependencies
-const env = require('../../env');
-const renderErrorView = require('../utils/response').renderErrorView;
 
 module.exports = function(err, req, res, next) {
   let errorPayload = {
@@ -23,10 +20,9 @@ module.exports = function(err, req, res, next) {
       message: err
     };
   }
+
+  // log the exception
   logger.error(`[requestId=${req.correlationId}] Internal server error -`, errorPayload);
-  if (env.isProduction()) {
-    renderErrorView(req, res, 'Sorry, something went wrong', 200);
-  } else {
-    next(err);
-  }
+  // re-throw it
+  next(err);
 };
