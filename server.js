@@ -1,29 +1,38 @@
 // Setting default environment variables
 require(__dirname + '/env');
-// Load libraries
-if(process.env.ENABLE_NEWRELIC == 'yes') require('newrelic');
-let express           = require('express');
-let path              = require('path');
-let httpsAgent        = require('https').globalAgent;
-let favicon           = require('serve-favicon');
-let router            = require(__dirname + '/app/routes.js');
-let bodyParser        = require('body-parser');
-let cookieParser      = require('cookie-parser');
-let cookieUtil        = require(__dirname + '/app/utils/cookie.js');
-let noCache           = require(__dirname + '/app/utils/no_cache.js');
-let customCertificate = require(__dirname + '/app/utils/custom_certificate.js');
-let proxy             = require(__dirname + '/app/utils/proxy.js');
-let logger            = require('winston');
-let loggingMiddleware = require('morgan');
-let argv              = require('minimist')(process.argv.slice(2));
-let environment       = require(__dirname + '/app/services/environment.js');
-let auth              = require(__dirname + '/app/services/auth_service.js');
-let port              = (process.env.PORT || 3000);
-let unconfiguredApp   = express();
-let flash             = require('connect-flash');
-let middlwareUtils    = require('./app/utils/middleware.js');
-let applicationMetrics= require('./app/utils/metrics.js').metrics;
-let errorHandler      = require(__dirname + '/app/middleware/error_handler.js');
+
+// Node.js core dependencies
+const path = require('path');
+
+// NPM dependencies
+if(process.env.ENABLE_NEWRELIC === 'yes') {
+  require('newrelic');
+}
+const express = require('express');
+const httpsAgent = require('https').globalAgent;
+const favicon = require('serve-favicon');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const logger = require('winston');
+const loggingMiddleware = require('morgan');
+const argv = require('minimist')(process.argv.slice(2));
+const flash = require('connect-flash');
+
+// Custom dependencies
+const router = require(__dirname + '/app/routes');
+const cookieUtil = require(__dirname + '/app/utils/cookie');
+const noCache = require(__dirname + '/app/utils/no_cache');
+const customCertificate = require(__dirname + '/app/utils/custom_certificate');
+const proxy = require(__dirname + '/app/utils/proxy');
+const environment = require(__dirname + '/app/services/environment');
+const auth = require(__dirname + '/app/services/auth_service');
+const middlwareUtils = require(__dirname + '/app/utils/middleware');
+const applicationMetrics = require(__dirname + '/app/utils/metrics').metrics;
+const errorHandler = require(__dirname + '/app/middleware/error_handler');
+
+// Global constants
+const port = (process.env.PORT || 3000);
+const unconfiguredApp = express();
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser());
@@ -105,7 +114,7 @@ function initialiseErrorHandling(app) {
 }
 
 function listen() {
-  let app = initialise();
+  const app = initialise();
   app.listen(port);
   logger.log('Listening on port ' + port);
 }
@@ -115,7 +124,7 @@ function listen() {
  * @return app
  */
 function initialise() {
-  let app = unconfiguredApp;
+  const app = unconfiguredApp;
 
   app.use(flash());
   initialiseTLS(app);

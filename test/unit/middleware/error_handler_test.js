@@ -1,37 +1,37 @@
-let proxyquire = require('proxyquire');
-let sinon = require('sinon');
-let assert = require('assert');
+'use strict';
+
+// Node.js core dependencies
+const assert = require('assert');
+
+// NPM dependencies
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
 describe('error_handler middleware', function () {
-  let winstonErrorSpy = sinon.spy();
-  let renderErrorView = sinon.spy();
-  let errorHandler = proxyquire(__dirname + '/../../../app/middleware/error_handler.js', {
+  const winstonErrorSpy = sinon.spy();
+  const errorHandler = proxyquire(__dirname + '/../../../app/middleware/error_handler', {
     'winston': {
       error: winstonErrorSpy
-    },
-    '../utils/response.js': {
-      renderErrorView: renderErrorView
     }
   });
 
   afterEach(() => {
     winstonErrorSpy.reset();
-    renderErrorView.reset();
   });
 
-  it('should log string error and render error view', function (done) {
-    let err = 'Error text';
-    let req = {
+  it('should log string error', function (done) {
+    const err = 'Error text';
+    const req = {
       originalUrl: 'originalUrl',
       url: 'url',
       correlationId: 'correlationId',
     };
-    let res = {};
-    let next = sinon.spy();
+    const res = {};
+    const next = sinon.spy();
 
     errorHandler(err, req, res, next);
 
-    let errorPayload = {
+    const errorPayload = {
       request: {
         originalUrl: req.originalUrl,
         url: req.url
@@ -41,27 +41,27 @@ describe('error_handler middleware', function () {
       }
     };
     assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload));
-    assert(renderErrorView.calledWith(req, res, 'Sorry, something went wrong', 200));
+    assert(next.calledWith(err));
 
     done();
   });
 
-  it('should log object error and render error view', function (done) {
-    let err = {
+  it('should log object error', function (done) {
+    const err = {
       message: 'error message',
       stack: 'error stack',
     };
-    let req = {
+    const req = {
       originalUrl: 'originalUrl',
       url: 'url',
       correlationId: 'correlationId',
     };
-    let res = {};
-    let next = sinon.spy();
+    const res = {};
+    const next = sinon.spy();
 
     errorHandler(err, req, res, next);
 
-    let errorPayload = {
+    const errorPayload = {
       request: {
         originalUrl: req.originalUrl,
         url: req.url
@@ -72,7 +72,7 @@ describe('error_handler middleware', function () {
       }
     };
     assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload));
-    assert(renderErrorView.calledWith(req, res, 'Sorry, something went wrong', 200));
+    assert(next.calledWith(err));
 
     done();
   });
