@@ -1,13 +1,15 @@
+'use strict';
+
 const logger = require('winston');
 let response = require('../utils/response');
 let errorResponse = response.renderErrorView;
 let successResponse = response.response;
-let registrationService = require('../services/registration_service');
+let registrationService = require('../services/user_registration_service');
 let paths = require('../paths.js');
 let loginController = require('./login_controller');
 let validations = require('../utils/registration_validations');
 let shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
-let validateRegistrationInputs = validations.validateRegistrationInputs;
+let validateRegistrationInputs = validations.validateUserRegistrationInputs;
 let validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber;
 let validateOtp = validations.validateOtp;
 
