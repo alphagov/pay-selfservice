@@ -4,6 +4,10 @@
 GOV.UK Pay - Team members
 {{/pageTitle}}
 
+{{$pageSpecificJS}}
+<script src="/public/js/components/confirm.js"></script>
+{{/pageSpecificJS}}
+
 {{$mainClasses}}full-width{{/mainClasses}}
 {{$full_width_content}}
 <a href="/team-members" class="link-back">See all team members</a>
@@ -36,6 +40,27 @@ GOV.UK Pay - Team members
         </table>
     </div>
 </div>
+<div class="grid-row js-confirm">
+    <div class="column-two-thirds">
+        <p>
+            <a id="remove-user-link" class="red js-toggle-confirm-dialog" href="#">Remove user</a>
+        </p>
+    </div>
+</div>
+<div class="grid-row js-confirm-dialog hidden">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Are you sure you want to remove {{username}}?
+            </h1>
+            <div class="button-group">
+                <a id="remove-user-confirm" href="#" class="button delete">Yes, remove</a>
+                <a id="remove-user-cancel" href="#" class="js-confirm-close-dialog">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{/full_width_content}}
 
 {{/layout}}
