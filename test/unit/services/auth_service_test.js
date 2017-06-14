@@ -1,58 +1,47 @@
-let should = require('chai').should();
-let assert = require('assert');
-let sinon = require('sinon');
-let q = require('q');
-let _ = require('lodash');
-let expect = require('chai').expect;
-let nock = require('nock');
-let auth = require(__dirname + '/../../../app/services/auth_service.js');
-let paths = require(__dirname + '/../../../app/paths.js');
-let proxyquire = require('proxyquire');
-let mockSession = require(__dirname + '/../../test_helpers/mock_session.js');
+"use strict";
 
-function mockUser(opts) {
-  return mockSession.getUser(opts);
-}
+// Core Dependencies
+const assert = require('assert');
+
+// NPM Dependencies
+const sinon = require('sinon');
+const proxyquire = require('proxyquire');
+const q = require('q');
+const _ = require('lodash');
+const nock = require('nock');
+const {should, expect} = require('chai');
+
+// Local Dependencies
+const auth = require('../../../app/services/auth_service.js');
+const paths = require('../../../app/paths.js');
+const mockSession = require('../../test_helpers/mock_session.js');
+
+// Assignments and Variables
+const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
+const mockUser = opts => mockSession.getUser(opts);
+const mockByPass = next => next()
+const response = {status: () => {}, render: () => {}, redirect: () => {}}
+const validRequest = () => {
+  return {
+    session: {
+      secondFactor: 'totp',
+      passport: {
+        user: {
+          name: 'Michael',
+          gateway_account_ids: [123]
+        }
+      },
+      reload: mockByPass,
+      save: mockByPass
+    },
+    user: mockUser(),
+    headers: {}
+  }
+};
+let status, render, next, redirect;
+
 
 describe('auth service', function () {
-
-  const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
-
-  let mockByPass = function (next) {
-    next()
-  };
-
-  let response = {
-      status: function () {
-      },
-      render: function () {
-      },
-      redirect: function () {
-      }
-    },
-    status = undefined,
-    render = undefined,
-    next = undefined,
-
-    validRequest = () => {
-      return {
-        session: {
-          secondFactor: 'totp',
-          passport: {
-            user: {
-              name: 'Michael',
-              gateway_account_ids: [123]
-            }
-          },
-          reload: mockByPass,
-          save: mockByPass
-        },
-        user: mockUser(),
-        headers: {}
-      }
-    };
-
-
   beforeEach(function () {
     status = sinon.stub(response, "status");
     render = sinon.stub(response, "render");
@@ -135,6 +124,29 @@ describe('auth service', function () {
     });
 
 
+  });
+
+  describe('ensureNotDisabled', function () {
+
+    it('should call lockout user when user has a truthy disabled property', function (done) {
+      let user = mockSession.getUser({disabled: true});
+      let nextSpy = sinon.spy();
+
+      auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy);
+      assert(nextSpy.notCalled);
+      assert(response.render.calledWithExactly("login/noaccess"));
+      done();
+    });
+
+    it('should just call next when user has a falsey disabled property', function (done) {
+      let user = mockSession.getUser({disabled: false});
+      let nextSpy = sinon.spy();
+
+      auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy);
+      assert(nextSpy.called);
+      assert(response.render.notCalled);
+      done();
+    });
   });
 
   describe('no_access', function () {

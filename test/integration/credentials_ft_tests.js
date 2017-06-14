@@ -669,17 +669,14 @@ describe('The provider update credentials endpoint', function () {
       .end(done);
   });
 
-  it('fail if there is no csrf', function (done) {
+  it('should fail if there is no csrf', done => {
     connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
       "username": "a-username",
       "password": "a-password"
-    })
-      .reply(200, {});
+    }).reply(200, {});
 
-
-//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
-    var sendData = {'username': 'a-username', 'password': 'a-password'};
-    var path = paths.credentials.index;
+    const sendData = {'username': 'a-username', 'password': 'a-password'};
+    const path = paths.credentials.index;
     build_form_post_request(path, sendData, false, app)
       .expect(400, {message: "There is a problem with the payments platform"})
       .end(done);

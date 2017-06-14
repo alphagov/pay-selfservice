@@ -5,6 +5,7 @@ let csrf = require('csrf'),
   errorMsg = 'There is a problem with the payments platform',
 
   csrfValid = function (req) {
+
     return csrf().verify(req.session.csrfSecret, req.body.csrfToken);
   };
 
@@ -20,7 +21,7 @@ module.exports = function (req, res, next) {
     return errorView(req, res, errorMsg, 400);
   }
 
-  if (!req.route.methods.get && !csrfValid(req)) {
+  if (req.method !== 'GET' && !csrfValid(req)) {
     logger.warn('CSRF secret provided is invalid');
     return errorView(req, res, errorMsg, 400);
   }
