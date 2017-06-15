@@ -581,6 +581,39 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  let deleteUser = (serviceId, removerId, userId) => {
+
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        remover_id: removerId
+      }
+    };
+
+    let url = `${serviceUserResource}/${serviceId}/users/${userId}`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'DELETE',
+      description: 'delete a user from a service',
+      userDelete: userId,
+      userRemover: removerId,
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    requestLogger.logRequestStart(context);
+
+    baseClient.delete(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -597,6 +630,7 @@ module.exports = function (clientOptions = {}) {
     submitUserRegistration: submitUserRegistration,
     verifyOtpAndCreateUser: verifyOtpAndCreateUser,
     resendOtpCode: resendOtpCode,
-    submitServiceRegistration: submitServiceRegistration
+    submitServiceRegistration: submitServiceRegistration,
+    deleteUser: deleteUser
   };
 };
