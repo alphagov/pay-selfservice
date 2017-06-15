@@ -21,29 +21,30 @@ GOV.UK Pay - Team members
         <table>
             <caption class="visually-hidden">Details for {{username}}</caption>
             <tbody>
-                <tr>
-                    <td>Name:</td>
-                    <td id="name">{{username}}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Email:</td>
-                    <td id="email">{{email}}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Permission level:</td>
-                    <td id="role">{{role}}</td>
-                    <td id="edit-permissions-link"><a href="{{editPermissionsLink}}">Edit permissions</a></td>
-                </tr>
+            <tr>
+                <td>Name:</td>
+                <td id="name">{{username}}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td id="email">{{email}}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Permission level:</td>
+                <td id="role">{{role}}</td>
+                <td id="edit-permissions-link"><a href="{{editPermissionsLink}}">Edit permissions</a></td>
+            </tr>
             </tbody>
         </table>
     </div>
 </div>
+{{#permissions.users_service_delete}}
 <div class="grid-row js-confirm">
     <div class="column-two-thirds">
         <p>
-            <a id="remove-user-link" class="red js-toggle-confirm-dialog" href="#">Remove user</a>
+            <a id="remove-team-member" class="red js-toggle-confirm-dialog" href="#">Remove user</a>
         </p>
     </div>
 </div>
@@ -54,13 +55,16 @@ GOV.UK Pay - Team members
                 Are you sure you want to remove {{username}}?
             </h1>
             <div class="button-group">
-                <a id="remove-user-confirm" href="#" class="button delete">Yes, remove</a>
-                <a id="remove-user-cancel" href="#" class="js-confirm-close-dialog">Cancel</a>
+                <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
+                    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                    <input id="remove-team-member-confirm" type="submit" value="Yes, remove" class="button delete"/>
+                    <a id="remove-team-member-cancel" href="#" class="js-confirm-close-dialog">Cancel</a>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
+{{/permissions.users_service_delete}}
 {{/full_width_content}}
 
 {{/layout}}

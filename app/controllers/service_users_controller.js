@@ -74,13 +74,15 @@ module.exports = {
       let hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
       let roleInList = roles[user._role.name];
       let editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
+      let removeTeamMemberLink = paths.teamMembers.delete.replace(':externalId', user.externalId);
 
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
           username: user.username,
           email: user.email,
           role: roles[user.role.name].description,
-          editPermissionsLink: editPermissionsLink
+          editPermissionsLink: editPermissionsLink,
+          removeTeamMemberLink: removeTeamMemberLink
         });
       } else {
         errorResponse(req, res, 'Error displaying this user of the current service');
@@ -89,6 +91,36 @@ module.exports = {
 
     return userService.findByExternalId(externalId)
       .then(onSuccess)
+      .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
+  },
+
+  /**
+   * Delete a Team member
+   * @param req
+   * @param res
+   */
+  delete: (req, res) => {
+
+    let userToRemoveId = req.params.externalId;
+    let removerId = req.user.externalId;
+    let serviceId = req.user.serviceIds[0];
+    let correlationId = req.correlationId;
+
+    if (userToRemoveId === removerId) {
+      errorResponse(req, res, 'Not allowed to delete a user itself');
+      return;
+    }
+
+    let onSuccess = (username) => {
+      req.flash('generic', username + ' was successfully removed');
+      res.redirect(303, paths.teamMembers.index);
+    };
+
+    return userService.findByExternalId(userToRemoveId, correlationId)
+      .then((user) => user.username)
+      .then((username) => userService.delete(serviceId, removerId, userToRemoveId, correlationId)
+        .then(onSuccess(username))
+        .catch(() => errorResponse(req, res, 'Unable to delete user')))
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   },
 

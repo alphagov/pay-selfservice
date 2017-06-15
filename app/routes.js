@@ -53,8 +53,8 @@ module.exports.paths = paths;
 module.exports.bind = function (app) {
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'));
-  
-  
+
+
   // APPLY GENERIC MIDDLEWARE
 
   app.use('*', (req,res,next) => {
@@ -84,7 +84,7 @@ module.exports.bind = function (app) {
   app.get(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone);
   app.post(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone);
   app.get(register.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn);
-  
+
   // LOGIN
   app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet);
   // todo: remove loginCounter.enforce once adminusers updated PP-1979
@@ -97,7 +97,7 @@ module.exports.bind = function (app) {
   app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost);
   app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf,  loginCtrl.otpLogIn);
   app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.logUserinOTP, loginCtrl.afterOTPLogin);
-  
+
   // FORGOTTEN PASSWORD
   app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet);
   app.post(user.forgottenPassword,  trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost);
@@ -185,6 +185,7 @@ module.exports.bind = function (app) {
   app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show);
   app.get(teamMembers.permissions, permission('users-service:create'), permissionController.index);
   app.post(teamMembers.permissions, permission('users-service:create'), permissionController.update);
+  app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete);
   app.get(user.profile, serviceUsersController.profile);
 
   // TEAM MEMBERS - INVITE
@@ -196,6 +197,4 @@ module.exports.bind = function (app) {
   app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm);
   app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on);
   app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off);
-
-
 };
