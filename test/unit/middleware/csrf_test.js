@@ -1,7 +1,7 @@
 var sinon = require('sinon');
 var assert = require('assert');
 var proxyquire = require('proxyquire');
-var csrf = require(__dirname + '/../../../app/middleware/regenerate_csrf_token.js');
+var csrf = require(__dirname + '/../../../app/middleware/csrf.js').validateAndRefreshCsrf;
 
 describe('CSRF', function () {
   it('should create a CSRF token', function () {
@@ -13,14 +13,14 @@ describe('CSRF', function () {
       .withArgs("it's a secret")
       .returns('newly-created token');
 
-    var csrf = proxyquire(__dirname + '/../../../app/middleware/regenerate_csrf_token.js',
+    var csrf = proxyquire(__dirname + '/../../../app/middleware/csrf.js',
       {'csrf': () => {
         return {
           verify: verify,
           create: create
         };
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -40,11 +40,11 @@ describe('CSRF', function () {
 
   it('should error if session not present', function () {
     var renderErrorView = sinon.spy();
-    var csrf = proxyquire(__dirname + '/../../../app/middleware/regenerate_csrf_token.js', {
+    var csrf = proxyquire(__dirname + '/../../../app/middleware/csrf.js', {
       '../utils/response.js': {
-        renderErrorView:renderErrorView
+        renderErrorView: renderErrorView
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -62,11 +62,11 @@ describe('CSRF', function () {
 
   it('should error if session has no CSRF secret', function () {
     var renderErrorView = sinon.spy();
-    var csrf = proxyquire(__dirname + '/../../../app/middleware/regenerate_csrf_token.js', {
+    var csrf = proxyquire(__dirname + '/../../../app/middleware/csrf.js', {
       '../utils/response.js': {
         renderErrorView:renderErrorView
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -88,7 +88,7 @@ describe('CSRF', function () {
     var verify = sinon.stub()
       .withArgs("it's a secret", "forged token - call the police")
       .returns(false);
-    var csrf = proxyquire(__dirname + '/../../../app/middleware/regenerate_csrf_token.js', {
+    var csrf = proxyquire(__dirname + '/../../../app/middleware/csrf.js', {
       '../utils/response.js': {
         renderErrorView:renderErrorView
       },
@@ -97,7 +97,7 @@ describe('CSRF', function () {
           verify: verify
         };
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -123,14 +123,14 @@ describe('CSRF', function () {
       .withArgs("it's a secret")
       .returns('newly-created token');
 
-    var csrf = proxyquire(__dirname + '/../../../app/middleware/regenerate_csrf_token.js',
+    var csrf = proxyquire(__dirname + '/../../../app/middleware/csrf.js',
       {'csrf': () => {
         return {
           verify: verify,
           create: create
         };
       }
-      });
+      }).validateAndRefreshCsrf;
 
     var req = {
       method: "GET",

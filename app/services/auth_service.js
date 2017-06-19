@@ -6,44 +6,36 @@ const lodash = require('lodash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const CustomStrategy = require('passport-custom').Strategy;
-const csrf = require('csrf');
+
 
 // Local Dependencies
 const sessionValidator = require('./session_validator.js');
 const paths = require('../paths.js');
 const userService = require('./user_service.js');
+const csrf = require('../middleware/csrf');
 const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
 
 // Exports
-exports.enforceUserFirstFactor = enforceUserFirstFactor;
-exports.enforceUserAuthenticated = enforceUserAuthenticated;
-exports.ensureSessionHasCsrfSecret = ensureSessionHasCsrfSecret;
-exports.lockOutDisabledUsers = lockOutDisabledUsers;
-exports.initialise = initialise;
-exports.deserializeUser = deserializeUser;
-exports.serializeUser = serializeUser;
-exports.localStrategyAuth = localStrategyAuth;
-exports.no_access = no_access;
-exports.getCurrentGatewayAccountId = getCurrentGatewayAccountId;
+module.exports = {
+  enforceUserFirstFactor,
+  enforceUserAuthenticated,
+  lockOutDisabledUsers,
+  initialise,
+  deserializeUser,
+  serializeUser,
+  localStrategyAuth,
+  no_access,
+  getCurrentGatewayAccountId
+};
 
 
 // Middleware
-function ensureSessionHasCsrfSecret(req, res, next) {
-  if (req.session.csrfSecret) return next();
-  req.session.csrfSecret = csrf().secretSync();
-  let correlationId = req.headers[CORRELATION_HEADER] || '';
-  logger.debug(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
-
-  return next();
-}
-
-
 // todo: we currently have 2 implementations for 'noaccess' one is a 'res.render' the other a 'res.redirect'
 function lockOutDisabledUsers (req, res, next) {
   if (req.user && req.user.disabled) {
-    const correlationId = req.headers[CORRELATION_HEADER] || ''
-    logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.id')} locked out due to many password attempts`)
+    const correlationId = req.headers[CORRELATION_HEADER] || '';
+    logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.id')} locked out due to many password attempts`);
     return res.render("login/noaccess");
   }
   return next();
@@ -58,7 +50,7 @@ function enforceUserFirstFactor(req, res, next) {
   if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
 
-  ensureSessionHasCsrfSecret(req, res, next);
+  csrf.ensureSessionHasCsrfSecret(req, res, next);
 }
 
 function no_access(req, res, next) {
@@ -124,7 +116,7 @@ function ensureSessionHasVersion(req) {
 function redirectToLogin(req, res) {
   req.session.last_url = req.originalUrl;
   res.redirect(paths.user.logIn);
-};
+}
 
 function getCurrentGatewayAccountId(req) {
   // retrieve currentGatewayAccountId from Cookie
@@ -162,7 +154,7 @@ function hasValidSession(req) {
   return isValid;
 }
 
-function initialise(app, override_strategy) {
+function initialise(app) {
   app.use(passport.initialize());
   app.use(passport.session());
   passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth));

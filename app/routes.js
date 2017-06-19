@@ -1,11 +1,11 @@
 "use strict";
 
-// NPM Modules
+// NPM Dependencies
 const lodash = require('lodash');
 const passport  = require('passport');
 const querystring = require('querystring');
 
-// Local Modules
+// Local Dependencies
 const response = require('./utils/response.js').response;
 const generateRoute = require('./utils/generate_route.js');
 const paths = require('./paths.js');
@@ -13,8 +13,8 @@ const CORRELATION_HEADER = require('./utils/correlation_header.js').CORRELATION_
 
 // - Middleware
 const loginCounter = require('./middleware/login_counter');
-const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, ensureSessionHasCsrfSecret} = require('./services/auth_service.js');
-const regenerateCsrfToken = require('./middleware/regenerate_csrf_token.js');
+const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor} = require('./services/auth_service.js');
+const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf.js');
 const retrieveAccount = require('./middleware/retrieve_account.js');
 const getAccount = require('./middleware/get_gateway_account');
 const trimUsername = require('./middleware/trim_username.js');
@@ -76,41 +76,41 @@ module.exports.bind = function (app) {
   app.all(staticPaths.naxsiError, staticCtrl.naxsiError);
 
   // REGISTER USER
-  app.get(register.validateInvite, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.validateInvite);
-  app.get(register.registration, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.showRegistration);
-  app.post(register.registration, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.submitRegistration);
-  app.get(register.otpVerify, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.showOtpVerify);
-  app.post(register.otpVerify, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.submitOtpVerify);
-  app.get(register.reVerifyPhone, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.showReVerifyPhone);
-  app.post(register.reVerifyPhone, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.submitReVerifyPhone);
-  app.get(register.logUserIn, ensureSessionHasCsrfSecret, regenerateCsrfToken, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn);
+  app.get(register.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.validateInvite);
+  app.get(register.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration);
+  app.post(register.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration);
+  app.get(register.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify);
+  app.post(register.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify);
+  app.get(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone);
+  app.post(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone);
+  app.get(register.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn);
   
   // LOGIN
-  app.get(user.logIn, ensureSessionHasCsrfSecret, regenerateCsrfToken, loginCtrl.logInGet);
+  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet);
   // todo: remove loginCounter.enforce once adminusers updated PP-1979
   // todo: is lockOutDisabledUsers necessary here or is it sufficient to lock out on redirect to `GET /${paths.user.otpLogIn}`
-  app.post(user.logIn, regenerateCsrfToken, trimUsername, loginCounter.enforce, loginCtrl.logUserin, lockOutDisabledUsers, getAccount, loginCtrl.postLogin);
-  app.get(user.loggedIn, enforceUserAuthenticated, regenerateCsrfToken, getAccount, loginCtrl.loggedIn);
+  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCounter.enforce, loginCtrl.logUserin, lockOutDisabledUsers, getAccount, loginCtrl.postLogin);
+  app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, getAccount, loginCtrl.loggedIn);
   app.get(user.noAccess, loginCtrl.noAccess);
   app.get(user.logOut, loginCtrl.logOut);
-  app.get(user.otpSendAgain, enforceUserFirstFactor, regenerateCsrfToken, loginCtrl.sendAgainGet);
-  app.post(user.otpSendAgain, enforceUserFirstFactor, regenerateCsrfToken, loginCtrl.sendAgainPost);
-  app.get(user.otpLogIn, enforceUserFirstFactor, regenerateCsrfToken,  loginCtrl.otpLogIn);
-  app.post(user.otpLogIn, regenerateCsrfToken, loginCtrl.logUserinOTP, loginCtrl.afterOTPLogin);
+  app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet);
+  app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost);
+  app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf,  loginCtrl.otpLogIn);
+  app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.logUserinOTP, loginCtrl.afterOTPLogin);
   
   // FORGOTTEN PASSWORD
-  app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, regenerateCsrfToken, forgotPassword.emailGet);
-  app.post(user.forgottenPassword,  trimUsername, regenerateCsrfToken, forgotPassword.emailPost);
+  app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet);
+  app.post(user.forgottenPassword,  trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost);
   app.get(user.passwordRequested, forgotPassword.passwordRequested);
-  app.get(user.forgottenPasswordReset, ensureSessionHasCsrfSecret, regenerateCsrfToken, forgotPassword.newPasswordGet);
-  app.post(user.forgottenPasswordReset, regenerateCsrfToken, forgotPassword.newPasswordPost);
+  app.get(user.forgottenPasswordReset, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.newPasswordGet);
+  app.post(user.forgottenPasswordReset, validateAndRefreshCsrf, forgotPassword.newPasswordPost);
 
   // SELF CREATE SERVICE
-  app.get(selfCreateService.index, ensureSessionHasCsrfSecret, regenerateCsrfToken, selfCreateServiceCtrl.showRegistration);
+  app.get(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration);
   app.get(selfCreateService.creationConfirmed, selfCreateServiceCtrl.showRequestedPage);
-  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, regenerateCsrfToken, selfCreateServiceCtrl.showOtpVerify);
-  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, regenerateCsrfToken, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.nameYourService);
-  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, regenerateCsrfToken, selfCreateServiceCtrl.showOtpResend);
+  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpVerify);
+  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.nameYourService);
+  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpResend);
 
 
   // ----------------------
@@ -130,7 +130,7 @@ module.exports.bind = function (app) {
     ...lodash.values(t3ds)
   ]; // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated, regenerateCsrfToken); // Enforce authentication on all get requests
+  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf); // Enforce authentication on all get requests
 
 
   //  TRANSACTIONS
