@@ -42,7 +42,7 @@ const toggle3ds = require('./controllers/toggle_3ds_controller.js');
 const selfCreateServiceCtrl = require('./controllers/create_service_controller.js');
 
 // Assignments
-const {healthcheck, statics, register, user, selfCreateService, transactions, credentials, devTokens, serviceSwitcher, teamMembers} = paths;
+const {healthcheck, register, user, selfCreateService, transactions, credentials, devTokens, serviceSwitcher, teamMembers, staticPaths} = paths;
 const {notificationCredentials: nc, serviceName: sn, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths;
 
 
@@ -73,7 +73,7 @@ module.exports.bind = function (app) {
   app.get(healthcheck.path, healthcheckCtrl.healthcheck);
 
   // STATIC
-  app.all(statics.naxsiError, staticCtrl.naxsiError);
+  app.all(staticPaths.naxsiError, staticCtrl.naxsiError);
 
   // REGISTER USER
   app.get(register.validateInvite, ensureSessionHasCsrfSecret, regenerateCsrfToken, registerCtrl.validateInvite);
