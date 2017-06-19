@@ -1,173 +1,201 @@
-var response = require(__dirname + '/utils/response.js').response;
-var generateRoute = require(__dirname + '/utils/generate_route.js');
-var transactions = require('./controllers/transaction_controller.js');
-var credentials = require('./controllers/credentials_controller.js');
-var login = require('./controllers/login_controller.js');
-var healthcheck = require('./controllers/healthcheck_controller.js');
-var devTokens = require('./controllers/dev_tokens_controller.js');
-var serviceName = require('./controllers/service_name_controller.js');
-var paymentTypesSelectType = require('./controllers/payment_types_select_type_controller.js');
-var paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
-var paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
-var emailNotifications = require('./controllers/email_notifications_controller.js');
-var forgotPassword = require('./controllers/forgotten_password_controller.js');
-var serviceSwitchController = require('./controllers/service_switch_controller.js');
-var serviceUsersController = require('./controllers/service_users_controller.js');
-var inviteUserController = require('./controllers/invite_user_controller.js');
-var registerUserController = require('./controllers/register_user_controller.js');
-var permissionController = require('./controllers/service_roles_update_controller.js');
-var toggle3ds = require('./controllers/toggle_3ds_controller.js');
-var selfCreateServiceController = require('./controllers/create_service_controller.js');
+"use strict";
 
-var static = require('./controllers/static_controller.js');
-var auth = require('./services/auth_service.js');
-var querystring = require('querystring');
-var paths = require(__dirname + '/paths.js');
-var csrf = require('./middleware/csrf.js');
-var retrieveAccount = require('./middleware/retrieve_account.js');
-var getAccount = require('./middleware/get_gateway_account');
-var trimUsername = require('./middleware/trim_username.js');
-var loginCounter = require('./middleware/login_counter.js');
-var permission = require('./middleware/permission.js');
+// NPM Dependencies
+const lodash = require('lodash');
+const passport  = require('passport');
+const querystring = require('querystring');
 
-var CORRELATION_HEADER    = require('./utils/correlation_header.js').CORRELATION_HEADER;
+// Local Dependencies
+const response = require('./utils/response.js').response;
+const generateRoute = require('./utils/generate_route.js');
+const paths = require('./paths.js');
+const CORRELATION_HEADER = require('./utils/correlation_header.js').CORRELATION_HEADER;
+
+// - Middleware
+const loginCounter = require('./middleware/login_counter');
+const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor} = require('./services/auth_service.js');
+const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf.js');
+const retrieveAccount = require('./middleware/retrieve_account.js');
+const getAccount = require('./middleware/get_gateway_account');
+const trimUsername = require('./middleware/trim_username.js');
+const permission = require('./middleware/permission.js');
+
+// - Controllers
+const staticCtrl = require('./controllers/static_controller.js');
+const transactionsCtrl = require('./controllers/transaction_controller.js');
+const credentialsCtrl = require('./controllers/credentials_controller.js');
+const loginCtrl = require('./controllers/login_controller.js');
+const healthcheckCtrl = require('./controllers/healthcheck_controller.js');
+const devTokensCtrl = require('./controllers/dev_tokens_controller.js');
+const serviceNameCtrl = require('./controllers/service_name_controller.js');
+const paymentTypesSelectType = require('./controllers/payment_types_select_type_controller.js');
+const paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller.js');
+const paymentTypesSummary = require('./controllers/payment_types_summary_controller.js');
+const emailNotifications = require('./controllers/email_notifications_controller.js');
+const forgotPassword = require('./controllers/forgotten_password_controller.js');
+const serviceSwitchController = require('./controllers/service_switch_controller.js');
+const serviceUsersController = require('./controllers/service_users_controller.js');
+const inviteUserController = require('./controllers/invite_user_controller.js');
+const registerCtrl = require('./controllers/register_user_controller.js');
+const permissionController = require('./controllers/service_roles_update_controller.js');
+const toggle3ds = require('./controllers/toggle_3ds_controller.js');
+const selfCreateServiceCtrl = require('./controllers/create_service_controller.js');
+
+// Assignments
+const {healthcheck, register, user, selfCreateService, transactions, credentials, devTokens, serviceSwitcher, teamMembers, staticPaths} = paths;
+const {notificationCredentials: nc, serviceName: sn, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths;
 
 
-var _ = require('lodash');
-var passport  = require('passport');
-
-
+// Exports
 module.exports.generateRoute = generateRoute;
 module.exports.paths = paths;
 
 module.exports.bind = function (app) {
 
-  app.get('/style-guide', function (req, res) {
-    response(req, res, 'style_guide');
-  });
+  app.get('/style-guide', (req, res) => response(req, res, 'style_guide'));
+  
+  
+  // APPLY GENERIC MIDDLEWARE
 
-  app.all('*', (req,res,next) => {
+  app.use('*', (req,res,next) => {
     req.correlationId = req.headers[CORRELATION_HEADER] || '';
     next();
   });
 
-  //  TRANSACTIONS
-  var tr = paths.transactions;
-  app.get(tr.index, auth.enforceUserAuthenticated, csrf, permission('transactions:read'), getAccount,transactions.index);
-  app.get(tr.download, auth.enforceUserAuthenticated, csrf, permission('transactions-download:read'), getAccount,transactions.download);
-  app.get(tr.show, auth.enforceUserAuthenticated, csrf, permission('transactions-details:read'), getAccount,transactions.show);
-  app.post(tr.refund, auth.enforceUserAuthenticated, csrf, permission('refunds:create'), getAccount,transactions.refund);
+  app.all(lockOutDisabledUsers); // On all requests, if there is a user, and its disabled, lock out.
 
-  // CREDENTIALS
-  var cred = paths.credentials;
-  app.get(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), getAccount, credentials.index);
-  app.get(cred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.editCredentials);
-  app.post(cred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.update);
 
-  var notCred = paths.notificationCredentials;
-  app.get(notCred.index, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:read'), getAccount,credentials.index);
-  app.get(notCred.edit, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.editNotificationCredentials);
-  app.post(notCred.update, auth.enforceUserAuthenticated, csrf, permission('gateway-credentials:update'), getAccount,credentials.updateNotificationCredentials);
-
-  // LOGIN
-  var user = paths.user;
-  app.get(user.logIn, auth.ensureSessionHasCsrfSecret, csrf, login.logInGet);
-  app.post(user.logIn, csrf, trimUsername, loginCounter.enforce, login.logUserin, getAccount, login.postLogin);
-  app.get(user.loggedIn, auth.enforceUserAuthenticated, csrf, getAccount, login.loggedIn);
-  app.get(user.noAccess, login.noAccess);
-  app.get(user.logOut, login.logOut);
-  app.get(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainGet);
-  app.post(user.otpSendAgain, auth.enforceUserFirstFactor, csrf, login.sendAgainPost);
-  app.get(user.otpLogIn, auth.enforceUserFirstFactor, csrf,  login.otpLogIn);
-  app.post(user.otpLogIn, csrf, loginCounter.enforceOtp, login.logUserinOTP, login.afterOTPLogin);
-
-  // FORGOTTEN PASSWORD
-  app.get(user.forgottenPassword, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.emailGet);
-  app.post(user.forgottenPassword,  trimUsername, csrf, forgotPassword.emailPost);
-  app.get(user.passwordRequested, forgotPassword.passwordRequested);
-  app.get(user.forgottenPasswordReset, auth.ensureSessionHasCsrfSecret, csrf, forgotPassword.newPasswordGet);
-  app.post(user.forgottenPasswordReset, csrf, forgotPassword.newPasswordPost);
-
-  // DEV TOKENS
-  var dt = paths.devTokens;
-  app.get(dt.index, auth.enforceUserAuthenticated, csrf, permission('tokens-active:read'), getAccount,devTokens.index);
-  app.get(dt.revoked, auth.enforceUserAuthenticated, csrf, permission('tokens-revoked:read'), getAccount,devTokens.revoked);
-  app.get(dt.show, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), getAccount,devTokens.show);
-  app.post(dt.create, auth.enforceUserAuthenticated, csrf, permission('tokens:create'), getAccount,devTokens.create);
-  app.put(dt.update, auth.enforceUserAuthenticated, csrf, permission('tokens:update'), getAccount,devTokens.update);
-  app.delete(dt.delete, auth.enforceUserAuthenticated, csrf, permission('tokens:delete'), getAccount,devTokens.destroy);
-
-  // SERVICE NAME
-  var sn = paths.serviceName;
-  app.get(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:read'), getAccount,serviceName.index);
-  app.post(sn.index, auth.enforceUserAuthenticated, csrf, permission('service-name:update'), getAccount,serviceName.update);
-
-  // PAYMENT TYPES
-  var pt = paths.paymentTypes;
-  app.get(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), getAccount,paymentTypesSelectType.selectType);
-  app.post(pt.selectType, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), getAccount,paymentTypesSelectType.updateType);
-  app.get(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), getAccount,paymentTypesSelectBrand.showBrands);
-  app.post(pt.selectBrand, auth.enforceUserAuthenticated, csrf, permission('payment-types:update'), getAccount,paymentTypesSelectBrand.updateBrands);
-  app.get(pt.summary, auth.enforceUserAuthenticated, csrf, permission('payment-types:read'), getAccount,paymentTypesSummary.showSummary);
-
-  // EMAIL
-  var en = paths.emailNotifications;
-  app.get(en.index, auth.enforceUserAuthenticated, csrf, permission('email-notification-template:read'), retrieveAccount, emailNotifications.index);
-  app.get(en.edit, auth.enforceUserAuthenticated, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.edit);
-  app.post(en.confirm, auth.enforceUserAuthenticated, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.confirm);
-  app.post(en.update, auth.enforceUserAuthenticated, csrf, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.update);
-  app.post(en.off, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
-  app.get(en.offConfirm, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
-  app.post(en.on, auth.enforceUserAuthenticated, csrf, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
-
-  // SERVICE SWITCHER
-  var serviceSwitcher = paths.serviceSwitcher;
-  app.get(serviceSwitcher.index, auth.enforceUserAuthenticated, csrf, serviceSwitchController.index);
-  app.post(serviceSwitcher.switch, auth.enforceUserAuthenticated, csrf, serviceSwitchController.switch);
-
-  // TEAM MEMBERS - USER PROFILE
-  var teamMembers = paths.teamMembers;
-  app.get(teamMembers.index, auth.enforceUserAuthenticated, csrf, serviceUsersController.index);
-  app.get(teamMembers.show, auth.enforceUserAuthenticated, csrf, permission('users-service:read'), serviceUsersController.show);
-  app.get(teamMembers.permissions, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), permissionController.index);
-  app.post(teamMembers.permissions, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), permissionController.update);
-  app.get(user.profile, auth.enforceUserAuthenticated, csrf, serviceUsersController.profile);
-
-  // TEAM MEMBERS - INVITE
-  app.get(teamMembers.invite, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), inviteUserController.index);
-  app.post(teamMembers.invite, auth.enforceUserAuthenticated, csrf, permission('users-service:create'), inviteUserController.invite);
-
-  // USER SIGN UP
-  let register = paths.register;
-  app.get(register.validateInvite, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.validateInvite);
-  app.get(register.registration, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showRegistration);
-  app.post(register.registration, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitRegistration);
-  app.get(register.otpVerify, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showOtpVerify);
-  app.post(register.otpVerify, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitOtpVerify);
-  app.get(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.showReVerifyPhone);
-  app.post(register.reVerifyPhone, auth.ensureSessionHasCsrfSecret, csrf, registerUserController.submitReVerifyPhone);
-  app.get(register.logUserIn, auth.ensureSessionHasCsrfSecret, csrf, login.loginAfterRegister, auth.enforceUserAuthenticated, getAccount, login.loggedIn);
-
-  // SELF CREATE SERVICE
-  let selfCreateService = paths.selfCreateService;
-  app.get(selfCreateService.index, auth.ensureSessionHasCsrfSecret, csrf, selfCreateServiceController.showRegistration);
-  app.get(selfCreateService.creationConfirmed, selfCreateServiceController.showRequestedPage);
-  app.get(selfCreateService.otpVerify, auth.ensureSessionHasCsrfSecret, csrf, selfCreateServiceController.showOtpVerify);
-  app.get(selfCreateService.serviceNaming, auth.ensureSessionHasCsrfSecret, csrf, auth.enforceUserAuthenticated, getAccount, selfCreateServiceController.nameYourService);
-  app.get(selfCreateService.otpResend, auth.ensureSessionHasCsrfSecret, csrf, selfCreateServiceController.showOtpResend);
-
-  // 3D SECURE TOGGLE
-  var t3ds = paths.toggle3ds;
-  app.get(t3ds.index, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:read'), getAccount, toggle3ds.index);
-  app.post(t3ds.onConfirm, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm);
-  app.post(t3ds.on, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), getAccount, toggle3ds.on);
-  app.post(t3ds.off, auth.enforceUserAuthenticated, csrf, permission('toggle-3ds:update'), getAccount, toggle3ds.off);
+  // ----------------------
+  // UNAUTHENTICATED ROUTES
+  // ----------------------
 
   // HEALTHCHECK
-  var hc = paths.healthcheck;
-  app.get(hc.path, healthcheck.healthcheck);
+  app.get(healthcheck.path, healthcheckCtrl.healthcheck);
 
   // STATIC
-  var st = paths.static;
-  app.all(st.naxsiError, static.naxsiError);
+  app.all(staticPaths.naxsiError, staticCtrl.naxsiError);
+
+  // REGISTER USER
+  app.get(register.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.validateInvite);
+  app.get(register.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration);
+  app.post(register.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration);
+  app.get(register.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify);
+  app.post(register.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify);
+  app.get(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone);
+  app.post(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone);
+  app.get(register.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn);
+  
+  // LOGIN
+  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet);
+  // todo: remove loginCounter.enforce once adminusers updated PP-1979
+  // todo: is lockOutDisabledUsers necessary here or is it sufficient to lock out on redirect to `GET /${paths.user.otpLogIn}`
+  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCounter.enforce, loginCtrl.logUserin, lockOutDisabledUsers, getAccount, loginCtrl.postLogin);
+  app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, getAccount, loginCtrl.loggedIn);
+  app.get(user.noAccess, loginCtrl.noAccess);
+  app.get(user.logOut, loginCtrl.logOut);
+  app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet);
+  app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost);
+  app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf,  loginCtrl.otpLogIn);
+  app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.logUserinOTP, loginCtrl.afterOTPLogin);
+  
+  // FORGOTTEN PASSWORD
+  app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet);
+  app.post(user.forgottenPassword,  trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost);
+  app.get(user.passwordRequested, forgotPassword.passwordRequested);
+  app.get(user.forgottenPasswordReset, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.newPasswordGet);
+  app.post(user.forgottenPasswordReset, validateAndRefreshCsrf, forgotPassword.newPasswordPost);
+
+  // SELF CREATE SERVICE
+  app.get(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration);
+  app.get(selfCreateService.creationConfirmed, selfCreateServiceCtrl.showRequestedPage);
+  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpVerify);
+  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.nameYourService);
+  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpResend);
+
+
+  // ----------------------
+  // AUTHENTICATED ROUTES
+  // ----------------------
+
+  const authenticatedPaths = [
+    ...lodash.values(transactions),
+    ...lodash.values(credentials),
+    ...lodash.values(nc),
+    ...lodash.values(devTokens),
+    ...lodash.values(sn),
+    ...lodash.values(pt),
+    ...lodash.values(en),
+    ...lodash.values(serviceSwitcher),
+    ...lodash.values(teamMembers),
+    ...lodash.values(t3ds)
+  ]; // Extract all the authenticated paths as a single array
+
+  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf); // Enforce authentication on all get requests
+
+
+  //  TRANSACTIONS
+  app.get(transactions.index, permission('transactions:read'), getAccount,transactionsCtrl.index);
+  app.get(transactions.download, permission('transactions-download:read'), getAccount,transactionsCtrl.download);
+  app.get(transactions.show, permission('transactions-details:read'), getAccount,transactionsCtrl.show);
+  app.post(transactions.refund, permission('refunds:create'), getAccount,transactionsCtrl.refund);
+
+  // CREDENTIALS
+  app.get(credentials.index, permission('gateway-credentials:read'), getAccount, credentialsCtrl.index);
+  app.get(credentials.edit, permission('gateway-credentials:update'), getAccount,credentialsCtrl.editCredentials);
+  app.post(credentials.index, permission('gateway-credentials:update'), getAccount,credentialsCtrl.update);
+
+  app.get(nc.index, permission('gateway-credentials:read'), getAccount,credentialsCtrl.index);
+  app.get(nc.edit, permission('gateway-credentials:update'), getAccount,credentialsCtrl.editNotificationCredentials);
+  app.post(nc.update, permission('gateway-credentials:update'), getAccount,credentialsCtrl.updateNotificationCredentials);
+
+  // DEV TOKENS
+  app.get(devTokens.index, permission('tokens-active:read'), getAccount, devTokensCtrl.index);
+  app.get(devTokens.revoked, permission('tokens-revoked:read'), getAccount,devTokensCtrl.revoked);
+  app.get(devTokens.show, permission('tokens:create'), getAccount, devTokensCtrl.show);
+  app.post(devTokens.create, permission('tokens:create'), getAccount, devTokensCtrl.create);
+  app.put(devTokens.update, permission('tokens:update'), getAccount, devTokensCtrl.update);
+  app.delete(devTokens.delete, permission('tokens:delete'), getAccount, devTokensCtrl.destroy);
+
+  // SERVICE NAME
+  app.get(sn.index, permission('service-name:read'), getAccount,serviceNameCtrl.index);
+  app.post(sn.index, permission('service-name:update'), getAccount,serviceNameCtrl.update);
+
+  // PAYMENT TYPES
+  app.get(pt.selectType, permission('payment-types:read'), getAccount,paymentTypesSelectType.selectType);
+  app.post(pt.selectType, permission('payment-types:update'), getAccount,paymentTypesSelectType.updateType);
+  app.get(pt.selectBrand, permission('payment-types:read'), getAccount,paymentTypesSelectBrand.showBrands);
+  app.post(pt.selectBrand, permission('payment-types:update'), getAccount,paymentTypesSelectBrand.updateBrands);
+  app.get(pt.summary, permission('payment-types:read'), getAccount,paymentTypesSummary.showSummary);
+
+  // EMAIL
+  app.get(en.index, permission('email-notification-template:read'), retrieveAccount, emailNotifications.index);
+  app.get(en.edit, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.edit);
+  app.post(en.confirm, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.confirm);
+  app.post(en.update, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.update);
+  app.post(en.off, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
+  app.get(en.offConfirm, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
+  app.post(en.on, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
+
+  // SERVICE SWITCHER
+  app.get(serviceSwitcher.index, serviceSwitchController.index);
+  app.post(serviceSwitcher.switch, serviceSwitchController.switch);
+
+  // TEAM MEMBERS - USER PROFILE
+  app.get(teamMembers.index, serviceUsersController.index);
+  app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show);
+  app.get(teamMembers.permissions, permission('users-service:create'), permissionController.index);
+  app.post(teamMembers.permissions, permission('users-service:create'), permissionController.update);
+  app.get(user.profile, serviceUsersController.profile);
+
+  // TEAM MEMBERS - INVITE
+  app.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index);
+  app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite);
+
+  // 3D SECURE TOGGLE
+  app.get(t3ds.index, permission('toggle-3ds:read'), getAccount, toggle3ds.index);
+  app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm);
+  app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on);
+  app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off);
+
+
 };

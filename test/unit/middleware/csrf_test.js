@@ -1,7 +1,7 @@
 var sinon = require('sinon');
 var assert = require('assert');
 var proxyquire = require('proxyquire');
-var csrf = require(__dirname + '/../../../app/middleware/csrf.js');
+var csrf = require(__dirname + '/../../../app/middleware/csrf.js').validateAndRefreshCsrf;
 
 describe('CSRF', function () {
   it('should create a CSRF token', function () {
@@ -20,7 +20,7 @@ describe('CSRF', function () {
           create: create
         };
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -42,9 +42,9 @@ describe('CSRF', function () {
     var renderErrorView = sinon.spy();
     var csrf = proxyquire(__dirname + '/../../../app/middleware/csrf.js', {
       '../utils/response.js': {
-        renderErrorView:renderErrorView
+        renderErrorView: renderErrorView
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -66,7 +66,7 @@ describe('CSRF', function () {
       '../utils/response.js': {
         renderErrorView:renderErrorView
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -97,7 +97,7 @@ describe('CSRF', function () {
           verify: verify
         };
       }
-    });
+    }).validateAndRefreshCsrf;
 
     var req = {
       route: {methods: {post: {}}},
@@ -114,7 +114,7 @@ describe('CSRF', function () {
     sinon.assert.calledWith(renderErrorView, req, res);
   });
 
-  it('should not error if CSFR token is not valid but method is GET', function () {
+  it('should not error if CSRF token is not valid but method is GET', function () {
     var verify = sinon.stub()
       .withArgs("it's a secret", "submitted forged token - but we don't really care")
       .returns(false);
@@ -130,10 +130,10 @@ describe('CSRF', function () {
           create: create
         };
       }
-      });
+      }).validateAndRefreshCsrf;
 
     var req = {
-      route: {methods: {get: {}}},
+      method: "GET",
       session: {csrfSecret: "it's a secret"},
       body: {csrfToken: "submitted forged token - but we don't really care"}
     };
