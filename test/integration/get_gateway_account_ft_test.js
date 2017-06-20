@@ -1,4 +1,3 @@
-
 let nock = require('nock');
 var proxyquire = require('proxyquire');
 var supertest = require('supertest');
