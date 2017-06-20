@@ -5,9 +5,6 @@ require(__dirname + '/env');
 const path = require('path');
 
 // NPM dependencies
-if(process.env.ENABLE_NEWRELIC === 'yes') {
-  require('newrelic');
-}
 const express = require('express');
 const httpsAgent = require('https').globalAgent;
 const favicon = require('serve-favicon');

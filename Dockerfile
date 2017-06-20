@@ -17,8 +17,6 @@ RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/
 RUN apk add glibc-2.25-r0.apk
 
 ENV PORT 9000
-ENV ENABLE_NEWRELIC no
-ENV NEW_RELIC_HOME /app/newrelic
 
 EXPOSE 9000
 
