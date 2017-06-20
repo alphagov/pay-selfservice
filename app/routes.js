@@ -12,7 +12,6 @@ const paths = require('./paths.js');
 const CORRELATION_HEADER = require('./utils/correlation_header.js').CORRELATION_HEADER;
 
 // - Middleware
-const loginCounter = require('./middleware/login_counter');
 const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor} = require('./services/auth_service.js');
 const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf.js');
 const getEmailNotification = require('./middleware/get_email_notification.js');
@@ -84,9 +83,7 @@ module.exports.bind = function (app) {
   
   // LOGIN
   app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet);
-  // todo: remove loginCounter.enforce once adminusers updated PP-1979
-  // todo: is lockOutDisabledUsers necessary here or is it sufficient to lock out on redirect to `GET /${paths.user.otpLogIn}`
-  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCounter.enforce, loginCtrl.logUserin, lockOutDisabledUsers, getAccount, loginCtrl.postLogin);
+  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.logUserin, getAccount, loginCtrl.postLogin);
   app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, getAccount, loginCtrl.loggedIn);
   app.get(user.noAccess, loginCtrl.noAccess);
   app.get(user.logOut, loginCtrl.logOut);
