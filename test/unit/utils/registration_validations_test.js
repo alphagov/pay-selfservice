@@ -1,6 +1,8 @@
-let validation = require(__dirname + '/../../../app/utils/registration_validations');
-let chai = require('chai');
-let chaiAsPromised = require('chai-as-promised');
+'use strict';
+
+const validation = require(__dirname + '/../../../app/utils/registration_validations');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
@@ -11,25 +13,25 @@ describe('registration_validation module', function () {
   describe('validate registration inputs', function () {
 
     it('should find the provided details valid', function (done) {
-      let validPhoneNumber = '01234567890';
-      let validPassword = 'dnvlkHdPlfw8e_+@!';
-      validation.validateRegistrationInputs(validPhoneNumber, validPassword)
+      const validPhoneNumber = '01234567890';
+      const validPassword = 'dnvlkHdPlfw8e_+@!';
+      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.fulfilled
         .notify(done);
     });
 
     it('should find the provided details valid for phone number with spaces', function (done) {
-      let validPhoneNumber = '0123 4567 890';
-      let validPassword = 'dnvlkHdPlfw8e_+@!';
-      validation.validateRegistrationInputs(validPhoneNumber, validPassword)
+      const validPhoneNumber = '0123 4567 890';
+      const validPassword = 'dnvlkHdPlfw8e_+@!';
+      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.fulfilled
         .notify(done);
     });
 
     it('should find the provided phone number invalid', function (done) {
-      let validPhoneNumber = '(0)1234567890';
-      let validPassword = 'dnvlkHdPlfw8e_+@!';
-      validation.validateRegistrationInputs(validPhoneNumber, validPassword)
+      const validPhoneNumber = '(0)1234567890';
+      const validPassword = 'dnvlkHdPlfw8e_+@!';
+      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.rejected.then((response) => {
         expect(response).to.equal('Invalid phone number');
       })
@@ -37,9 +39,9 @@ describe('registration_validation module', function () {
     });
 
     it('should invalidate if the provided password null/undefined', function (done) {
-      let validPhoneNumber = '01234567890';
-      let password = undefined;
-      validation.validateRegistrationInputs(validPhoneNumber, password)
+      const validPhoneNumber = '01234567890';
+      const password = undefined;
+      validation.validateUserRegistrationInputs(validPhoneNumber, password)
         .should.be.rejected.then((response) => {
         expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess');
       })
@@ -47,9 +49,9 @@ describe('registration_validation module', function () {
     });
 
     it('should invalidate if the provided password a common password', function (done) {
-      let validPhoneNumber = '01234567890';
-      let password = '1234567890';
-      validation.validateRegistrationInputs(validPhoneNumber, password)
+      const validPhoneNumber = '01234567890';
+      const password = '1234567890';
+      validation.validateUserRegistrationInputs(validPhoneNumber, password)
         .should.be.rejected.then((response) => {
         expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess');
       })
@@ -57,9 +59,9 @@ describe('registration_validation module', function () {
     });
 
     it('should invalidate if the provided password invalid if its too short', function (done) {
-      let validPhoneNumber = '01234567890';
-      let validPassword = '2se45&s';
-      validation.validateRegistrationInputs(validPhoneNumber, validPassword)
+      const validPhoneNumber = '01234567890';
+      const validPassword = '2se45&s';
+      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.rejected.then((response) => {
         expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess');
       })
@@ -67,7 +69,7 @@ describe('registration_validation module', function () {
     });
   });
 
-  describe('validate data needed to proceed with registration', function () {
+  describe('validate data needed to proceed with user registration', function () {
 
     beforeEach((done) => {
       mockRegisterAccountCookie = {};
@@ -110,7 +112,7 @@ describe('registration_validation module', function () {
   describe('validate telephone number input', function () {
 
     it('should find the provided details valid', function (done) {
-      let validPhoneNumber = '01234567890';
+      const validPhoneNumber = '01234567890';
 
       validation.validateRegistrationTelephoneNumber(validPhoneNumber)
         .should.be.fulfilled
@@ -118,7 +120,7 @@ describe('registration_validation module', function () {
     });
 
     it('should find the provided phone number invalid', function (done) {
-      let validPhoneNumber = '(0)1234567890';
+      const validPhoneNumber = '(0)1234567890';
 
       validation.validateRegistrationTelephoneNumber(validPhoneNumber)
         .should.be.rejected.then((response) => {
@@ -131,7 +133,7 @@ describe('registration_validation module', function () {
   describe('validate otp input', function () {
 
     it('should find otp valid', function (done) {
-      let validOtp = '123456';
+      const validOtp = '123456';
 
       validation.validateOtp(validOtp)
         .should.be.fulfilled
@@ -139,7 +141,7 @@ describe('registration_validation module', function () {
     });
 
     it('should error if otp is undefined', function (done) {
-      let otp = undefined;
+      const otp = undefined;
 
       validation.validateOtp(otp)
         .should.be.rejected.then((response) => {
@@ -148,12 +150,85 @@ describe('registration_validation module', function () {
     });
 
     it('should error if otp is not a number', function (done) {
-      let otp = 'werb37';
+      const otp = 'werb37';
 
       validation.validateOtp(otp)
         .should.be.rejected.then((response) => {
         expect(response).to.equal('Invalid verification code');
       }).should.notify(done);
+    });
+  });
+
+  describe('validate data needed to proceed with service registration', function () {
+
+    it('should success if email, telephone_number and password are present', function (done) {
+      const email = 'me@gov.uk';
+      const telephoneNumber = '07512345678';
+      const password = 'password1234';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.fulfilled
+        .notify(done);
+    });
+
+    it('should be rejected if email is not valid', function (done) {
+      const email = 'me@gov';
+      const telephoneNumber = '07512345678';
+      const password = 'password1234';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.rejected
+        .notify(done);
+    });
+
+    it('should rejected if email is missing', function (done) {
+      const email = '';
+      const telephoneNumber = '07512345678';
+      const password = 'password1234';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.rejected
+        .notify(done);
+    });
+
+    it('should be rejected if telephone number is not valid', function (done) {
+      const email = 'me@gov';
+      const telephoneNumber = '0751234567';
+      const password = 'password1234';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.rejected
+        .notify(done);
+    });
+
+    it('should rejected if telephone number is missing', function (done) {
+      const email = 'me@gov';
+      const telephoneNumber = '';
+      const password = 'password1234';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.rejected
+        .notify(done);
+    });
+
+    it('should be rejected if password is not valid', function (done) {
+      const email = 'me@gov';
+      const telephoneNumber = '07512345678';
+      const password = 'password1234';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.rejected
+        .notify(done);
+    });
+
+    it('should rejected if password is missing', function (done) {
+      const email = 'me@gov';
+      const telephoneNumber = '07512345678';
+      const password = '';
+
+      validation.validateServiceRegistrationInputs(email, telephoneNumber, password)
+        .should.be.rejected
+        .notify(done);
     });
   });
 });

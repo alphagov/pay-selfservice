@@ -67,7 +67,7 @@ describe('adminusers client - submit registration detail', function () {
 
       it('should submit registration details successfully', function (done) {
         let registration = validRegistration.getPlain();
-        adminusersClient.submitRegistration(registration.code, registration.telephone_number, registration.password).should.be.fulfilled
+        adminusersClient.submitUserRegistration(registration.code, registration.telephone_number, registration.password).should.be.fulfilled
           .should.notify(done);
       });
     });
@@ -100,7 +100,7 @@ describe('adminusers client - submit registration detail', function () {
 
       it('should return 400 on missing fields', function (done) {
         let registration = registrationDetails.getPlain();
-        adminusersClient.submitRegistration(registration.code, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
+        adminusersClient.submitUserRegistration(registration.code, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors[0]).to.equal('Field [code] is required');
@@ -133,7 +133,7 @@ describe('adminusers client - submit registration detail', function () {
 
       it('should return 404 if code cannot be found', function (done) {
         let registration = registrationData.getPlain();
-        adminusersClient.submitRegistration(registration.code, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
+        adminusersClient.submitUserRegistration(registration.code, registration.telephone_number, registration.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404);
         }).should.notify(done);
       });

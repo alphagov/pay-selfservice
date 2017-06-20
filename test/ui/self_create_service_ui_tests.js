@@ -13,7 +13,7 @@ describe('Self-create service view', function () {
 
     body.should.containSelector('h1').withExactText('Create an account');
 
-    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.otpVerify);
+    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.index);
     body.should.containInputField('email', 'text');
     body.should.containInputField('telephone-number', 'text');
     body.should.containInputField('password', 'password');

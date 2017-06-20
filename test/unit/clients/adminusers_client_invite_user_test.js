@@ -137,7 +137,7 @@ describe('adminusers client - invite user', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should return not found', function (done) {
+      it('should return bad request', function (done) {
         let invite = invalidInvite.getPlain();
 
         adminusersClient.inviteUser(invite.email, invite.sender, serviceId, invite.role_name).should.be.rejected.then(function (response) {

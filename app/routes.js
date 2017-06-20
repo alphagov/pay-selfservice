@@ -53,8 +53,8 @@ module.exports.paths = paths;
 module.exports.bind = function (app) {
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'));
-  
-  
+
+
   // APPLY GENERIC MIDDLEWARE
 
   app.use('*', (req,res,next) => {
@@ -107,9 +107,10 @@ module.exports.bind = function (app) {
 
   // SELF CREATE SERVICE
   app.get(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration);
+  app.post(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration);
   app.get(selfCreateService.creationConfirmed, selfCreateServiceCtrl.showRequestedPage);
   app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpVerify);
-  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.nameYourService);
+  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.showNameYourService);
   app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpResend);
 
 
@@ -196,6 +197,5 @@ module.exports.bind = function (app) {
   app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm);
   app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on);
   app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off);
-
 
 };
