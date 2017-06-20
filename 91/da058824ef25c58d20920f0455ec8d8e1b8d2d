@@ -7,3 +7,5 @@ staging-2.tag=alpha_staging-2-206
 staging-2.alpha_staging-2-206.date=2017-06-20:09:08:08
 
 staging-2.alpha_staging-2-206.status=success
+
+production-2.tag=alpha_production-2-206
