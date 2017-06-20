@@ -8,6 +8,7 @@ let paths = require(__dirname + '/../../app/paths.js');
 let roles = require('../../app/utils/roles').roles;
 let chai = require('chai');
 let chaiAsPromised = require('chai-as-promised');
+let csrf = require('csrf');
 let app;
 
 chai.use(chaiAsPromised);
@@ -22,8 +23,8 @@ describe('service users resource', function () {
 
   const EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3';
   const USERNAME_LOGGED_IN = 'existing-user';
-  const EXTERNAL_ID_TO_VIEW = '393266e872594f1593558549caad95ec';
-  const USERNAME_TO_VIEW = 'other-user';
+  const EXTERNAL_ID_OTHER_USER = '393266e872594f1593558549caad95ec';
+  const USERNAME_OTHER_USER = 'other-user';
 
   afterEach((done) => {
     nock.cleanAll();
@@ -79,7 +80,7 @@ describe('service users resource', function () {
       permissions: ['users-service:read']
     });
 
-    let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {external_id: EXTERNAL_ID_TO_VIEW}]);
+    let serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {external_id: EXTERNAL_ID_OTHER_USER}]);
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${service_id}/users`)
       .reply(200, serviceUsersRes.getPlain());
@@ -91,7 +92,7 @@ describe('service users resource', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.team_members.admin[1].link).to.equal(`/team-members/${EXTERNAL_ID_TO_VIEW}`);
+        expect(res.body.team_members.admin[1].link).to.equal(`/team-members/${EXTERNAL_ID_OTHER_USER}`);
       })
       .end(done);
   });
@@ -109,32 +110,32 @@ describe('service users resource', function () {
     });
 
     let user_to_view = {
-      external_id: EXTERNAL_ID_TO_VIEW,
-      username: USERNAME_TO_VIEW,
+      external_id: EXTERNAL_ID_OTHER_USER,
+      username: USERNAME_OTHER_USER,
       service_ids: [service_id],
       role: {"name": "view-only"}
     };
 
     let getUserResponse = userFixtures.validUserResponse(user_to_view);
 
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     return supertest(app)
-      .get(`/team-members/${EXTERNAL_ID_TO_VIEW}`)
+      .get(`/team-members/${EXTERNAL_ID_OTHER_USER}`)
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.username).to.equal(USERNAME_TO_VIEW);
+        expect(res.body.username).to.equal(USERNAME_OTHER_USER);
         expect(res.body.email).to.equal('other-user@example.com');
         expect(res.body.role).to.equal('View only');
-        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':externalId', EXTERNAL_ID_TO_VIEW));
+        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':externalId', EXTERNAL_ID_OTHER_USER));
+        expect(res.body.removeTeamMemberLink).to.equal(paths.teamMembers.delete.replace(':externalId', EXTERNAL_ID_OTHER_USER));
       })
       .end(done);
   });
-
 
   it('should show my profile', function (done) {
 
@@ -200,22 +201,63 @@ describe('service users resource', function () {
     });
 
     let getUserResponse = userFixtures.validUserResponse({
-      external_id: EXTERNAL_ID_TO_VIEW,
-      username: USERNAME_TO_VIEW,
+      external_id: EXTERNAL_ID_OTHER_USER,
+      username: USERNAME_OTHER_USER,
       service_ids: ['2']
     });
 
-    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200, getUserResponse.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     return supertest(app)
-      .get(`/team-members/${EXTERNAL_ID_TO_VIEW}`)
+      .get(`/team-members/${EXTERNAL_ID_OTHER_USER}`)
       .set('Accept', 'application/json')
       .expect(500)
       .expect((res) => {
         expect(res.body.message).to.equal('Error displaying this user of the current service');
+      })
+      .end(done);
+  });
+
+  it('remove a team member', function (done) {
+
+    let service_id = '1';
+
+    let user_in_session = session.getUser({
+      external_id: EXTERNAL_ID_LOGGED_IN,
+      username: USERNAME_LOGGED_IN,
+      email: USERNAME_LOGGED_IN + '@example.com',
+      service_ids: [service_id],
+      permissions: ['users-service:delete'],
+    });
+
+    let user_to_delete = {
+      external_id: EXTERNAL_ID_OTHER_USER,
+      username: USERNAME_OTHER_USER,
+      service_ids: [service_id],
+      role: {"name": "view-only"}
+    };
+
+    let getUserResponse = userFixtures.validUserResponse(user_to_delete);
+
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
+      .reply(200, getUserResponse.getPlain());
+
+    adminusersMock.delete(`${SERVICE_RESOURCE}/users/${EXTERNAL_ID_OTHER_USER}`)
+      .reply(200);
+
+
+    app = session.getAppWithLoggedInUser(getApp(), user_in_session);
+
+    return supertest(app)
+      .post(`/team-members/${EXTERNAL_ID_OTHER_USER}/delete`)
+      .send({csrfToken: csrf().create('123')})
+      .expect(303)
+      .expect('Location', "/team-members")
+      .expect((res) => {
+        console.log(JSON.stringify(res));
       })
       .end(done);
   });

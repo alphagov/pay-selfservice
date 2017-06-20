@@ -9,7 +9,11 @@ describe('The team member details view', function () {
       username: 'Oscar Smith',
       email: 'oscar.smith@example.com',
       role: 'View only',
-      editPermissionsLink:'some-link'
+      editPermissionsLink: 'some-link',
+      removeTeamMemberLink: 'remove-link',
+      permissions: {
+        users_service_delete: true
+      }
     };
 
     let body = renderTemplate('services/team_member_details', templateData);
@@ -18,7 +22,30 @@ describe('The team member details view', function () {
     body.should.containSelector('td#name').withExactText('Oscar Smith');
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com');
     body.should.containSelector('td#role').withExactText('View only');
-    body.should.containSelector('td#edit-permissions-link > a').withAttribute('href','some-link');
+    body.should.containSelector('td#edit-permissions-link > a').withAttribute('href', 'some-link');
+    body.should.containSelector('input#remove-team-member-confirm');
+    body.should.containSelector('form#remove-team-member-form').withAttribute('action', 'remove-link');
+  });
+
+  it('should render team member details without remove team member link', function () {
+
+    let templateData = {
+      username: 'Oscar Smith',
+      email: 'oscar.smith@example.com',
+      role: 'View only',
+      editPermissionsLink: 'some-link',
+      removeTeamMemberLink: 'remove-link',
+      permissions: {}
+    };
+
+    let body = renderTemplate('services/team_member_details', templateData);
+
+    body.should.containSelector('h1#details-for').withOnlyText('Details for Oscar Smith');
+    body.should.containSelector('td#name').withExactText('Oscar Smith');
+    body.should.containSelector('td#email').withExactText('oscar.smith@example.com');
+    body.should.containSelector('td#role').withExactText('View only');
+    body.should.containSelector('td#edit-permissions-link > a').withAttribute('href', 'some-link');
+    body.should.containNoSelector('a#remove-team-member');
   });
 
   it('should render team member My profile view', function () {
