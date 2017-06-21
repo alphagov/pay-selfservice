@@ -2,27 +2,27 @@
   <div class="inner">
       <nav role="navigation">
           <ul>
-              <li><a href="/">Homepage</a></li>
+              <li><a id="navigation-menu-home" href="/">Homepage</a></li>
               {{#permissions.tokens_read}}
-              <li><a href="{{ routes.devTokens.index }}">API keys</a></li>
+              <li><a id="navigation-menu-api-keys" href="{{ routes.devTokens.index }}">API keys</a></li>
               {{/permissions.tokens_read}}
               {{#permissions.transactions_read}}
-              <li><a href="{{ routes.transactions.index }}" data-qa-transaction-link>Transactions</a></li>
+              <li><a id="navigation-menu-transactions" href="{{ routes.transactions.index }}" data-qa-transaction-link>Transactions</a></li>
               {{/permissions.transactions_read}}
               {{#permissions.gateway_credentials_read}}
-              <li><a href="{{ routes.credentials.index }}">Account credentials</a></li>
+              <li><a id="navigation-menu-gateway-credentials" href="{{ routes.credentials.index }}">Account credentials</a></li>
               {{/permissions.gateway_credentials_read}}
               {{#permissions.service_name_read}}
-              <li><a href="{{ routes.serviceName.index }}">Change service name</a></li>
+              <li><a id="navigation-menu-gateway-name" href="{{ routes.serviceName.index }}">Change service name</a></li>
               {{/permissions.service_name_read}}
               {{#permissions.payment_types_read}}
-              <li><a href="{{ routes.paymentTypes.summary }}">Payment types</a></li>
+              <li><a id="navigation-menu-payment-types" href="{{ routes.paymentTypes.summary }}">Payment types</a></li>
               {{/permissions.payment_types_read}}
               {{#permissions.toggle_3ds_read}}
-              <li><a href="{{ routes.toggle3ds.index }}">3D Secure</a></li>
+              <li><a id="navigation-menu-3d-secure" href="{{ routes.toggle3ds.index }}">3D Secure</a></li>
               {{/permissions.toggle_3ds_read}}
               {{#permissions.email_notification_template_read}}
-              <li><a href="{{ routes.emailNotifications.index }}">Email notifications</a></li>
+              <li><a id="navigation-menu-email-notifications" href="{{ routes.emailNotifications.index }}">Email notifications</a></li>
               {{/permissions.email_notification_template_read}}
           </ul>
       </nav>
