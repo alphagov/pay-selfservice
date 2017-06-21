@@ -1,17 +1,16 @@
 require(__dirname + '/../test_helpers/serialize_mock.js');
-var request = require('supertest');
-var auth = require(__dirname + '/../../app/services/auth_service.js');
-var login = require(__dirname + '/../../app/controllers/login_controller.js');
-var express = require('express');
-var mockSession = require(__dirname + '/../test_helpers/mock_session.js');
-var getAppWithSessionAndGatewayAccountCookies = mockSession.getAppWithSessionAndGatewayAccountCookies;
-var getAppWithLoggedInUser = mockSession.getAppWithLoggedInUser;
+const request = require('supertest');
+const auth = require(__dirname + '/../../app/services/auth_service.js');
+const login = require(__dirname + '/../../app/controllers/login_controller.js');
+const express = require('express');
+const mockSession = require(__dirname + '/../test_helpers/mock_session.js');
+const getAppWithSessionAndGatewayAccountCookies = mockSession.getAppWithSessionAndGatewayAccountCookies;
+const getAppWithLoggedInUser = mockSession.getAppWithLoggedInUser;
+const paths = require(__dirname + '/../../app/paths.js');
+const path = require('path');
+const server = require(__dirname + '/../../server.js');
 
-var paths = require(__dirname + '/../../app/paths.js');
-var path = require('path');
-var server = require(__dirname + '/../../server.js');
-
-var app;
+let app;
 
 function addUnprotectedEndpointToApp(app) {
   app.get('/unprotected', function (req, res) {
@@ -43,7 +42,7 @@ describe('An endpoint not protected', function () {
   });
 
   it('allows access if authenticated', function (done) {
-    let user = mockSession.getUser();
+    const user = mockSession.getUser();
     app = getAppWithLoggedInUser(server.getApp(), user);
     addUnprotectedEndpointToApp(app);
     request(app)
@@ -54,7 +53,7 @@ describe('An endpoint not protected', function () {
   });
 
   it('redirects to noaccess if user disabled', function (done) {
-    let user = mockSession.getUser();
+    const user = mockSession.getUser();
     user.disabled = true;
     app = getAppWithLoggedInUser(server.getApp(), user);
     addProtectedEndpointToApp(app);
@@ -84,7 +83,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   });
 
   it('allows access if authenticated', function (done) {
-    let user = mockSession.getUser();
+    const user = mockSession.getUser();
 
     app = getAppWithLoggedInUser(server.getApp(), user);
     addProtectedEndpointToApp(app);
@@ -97,7 +96,7 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
   });
 
   it('redirects if not second factor loggedin', function (done) {
-    let user = mockSession.getUser();
+    const user = mockSession.getUser();
 
     app = mockSession.getAppWithSessionWithoutSecondFactor(server.getApp(), user);
     addProtectedEndpointToApp(app);
@@ -106,21 +105,6 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
       .get('/protected')
       .expect(302)
       .expect('Location', paths.user.otpLogIn)
-      .end(done);
-  });
-
-
-  it('redirects to noaccess if no account_id', function (done) {
-    let user = mockSession.getUser();
-    user.gatewayAccountIds = [];
-
-    app = getAppWithLoggedInUser(server.getApp(), user);
-    addProtectedEndpointToApp(app);
-
-    request(app)
-      .get('/protected')
-      .expect(302)
-      .expect('Location', paths.user.noAccess)
       .end(done);
   });
 });

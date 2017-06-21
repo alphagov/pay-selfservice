@@ -16,6 +16,7 @@ const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor} =
 const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf.js');
 const getEmailNotification = require('./middleware/get_email_notification.js');
 const getAccount = require('./middleware/get_gateway_account');
+const hasServices = require('./middleware/has_services');
 const trimUsername = require('./middleware/trim_username.js');
 const permission = require('./middleware/permission.js');
 
@@ -125,7 +126,7 @@ module.exports.bind = function (app) {
     ...lodash.values(t3ds)
   ]; // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf); // Enforce authentication on all get requests
+  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices); // Enforce authentication on all get requests
 
 
   //  TRANSACTIONS
