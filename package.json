@@ -61,7 +61,6 @@
     "moment": "2.15.2",
     "moment-timezone": "0.5.x",
     "morgan": "1.7.x",
-    "newrelic": "1.26.x",
     "node-sass": "3.8.x",
     "notp": "^2.0.3",
     "passport": "0.3.x",
