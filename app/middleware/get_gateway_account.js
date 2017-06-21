@@ -1,10 +1,10 @@
 const auth          = require('../services/auth_service.js');
 const Connector     = require('../services/clients/connector_client.js').ConnectorClient;
-let connectorClient = new Connector(process.env.CONNECTOR_URL);
+const connectorClient = new Connector(process.env.CONNECTOR_URL);
 
 module.exports = function (req, res, next) {
-  let accountId = auth.getCurrentGatewayAccountId(req);
-  let params = {
+  const accountId = auth.getCurrentGatewayAccountId(req);
+  const params = {
     gatewayAccountId: accountId,
     correlationId: req.correlationId
   };
