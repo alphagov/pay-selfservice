@@ -41,7 +41,7 @@ describe('Error handler', function () {
   let controller = function (errorCode) {
     return proxyquire(__dirname + '/../../../app/controllers/register_user_controller.js',
       {
-        '../services/registration_service': {
+        '../services/user_registration_service': {
           getValidatedInvite: () => {
             let defer = q.defer();
             defer.reject({errorCode: errorCode});

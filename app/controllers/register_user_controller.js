@@ -1,15 +1,20 @@
+'use strict';
+
+// Node.js core dependencies
 const logger = require('winston');
-let response = require('../utils/response');
-let errorResponse = response.renderErrorView;
-let successResponse = response.response;
-let registrationService = require('../services/registration_service');
-let paths = require('../paths.js');
-let loginController = require('./login_controller');
-let validations = require('../utils/registration_validations');
-let shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
-let validateRegistrationInputs = validations.validateRegistrationInputs;
-let validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber;
-let validateOtp = validations.validateOtp;
+
+// Custom dependencies
+const response = require('../utils/response');
+const errorResponse = response.renderErrorView;
+const successResponse = response.response;
+const registrationService = require('../services/user_registration_service');
+const paths = require('../paths');
+const loginController = require('./login_controller');
+const validations = require('../utils/registration_validations');
+const shouldProceedWithRegistration = validations.shouldProceedWithRegistration;
+const validateRegistrationInputs = validations.validateUserRegistrationInputs;
+const validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber;
+const validateOtp = validations.validateOtp;
 
 const messages = {
   missingCookie: 'Unable to process registration at this time',
@@ -18,8 +23,8 @@ const messages = {
   invalidOtp: 'Invalid verification code'
 };
 
-let withValidatedRegistrationCookie = (req, res, next) => {
-  let correlationId = req.correlationId;
+const withValidatedRegistrationCookie = (req, res, next) => {
+  const correlationId = req.correlationId;
   return shouldProceedWithRegistration(req.register_invite)
     .then(next)
     .catch(err => {
@@ -29,7 +34,7 @@ let withValidatedRegistrationCookie = (req, res, next) => {
 
 };
 
-let handleError = (req, res, err) => {
+const handleError = (req, res, err) => {
   logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`);
 
   switch (err.errorCode) {
@@ -54,9 +59,9 @@ module.exports = {
    * @returns {Promise.<T>}
    */
   validateInvite: (req, res) => {
-    let code = req.params.code;
-    let correlationId = req.correlationId;
-    let redirectToRegister = (invite) => {
+    const code = req.params.code;
+    const correlationId = req.correlationId;
+    const redirectToRegister = (invite) => {
       if (!req.register_invite) {
         req.register_invite = {};
       }
@@ -79,8 +84,8 @@ module.exports = {
    * @param res
    */
   showRegistration: (req, res) => {
-    let renderRegistrationPage = () => {
-      let data = {
+    const renderRegistrationPage = () => {
+      const data = {
         email: req.register_invite.email
       };
       if (req.register_invite.telephone_number) {
@@ -98,12 +103,12 @@ module.exports = {
    * @param res
    */
   submitRegistration: (req, res) => {
-    let telephoneNumber = req.body['telephone-number'];
-    let password = req.body['password'];
-    let correlationId = req.correlationId;
-    let code = req.register_invite.code;
+    const telephoneNumber = req.body['telephone-number'];
+    const password = req.body['password'];
+    const correlationId = req.correlationId;
+    const code = req.register_invite.code;
 
-    let proceedToVerification = () => {
+    const proceedToVerification = () => {
       registrationService.submitRegistration(code, telephoneNumber, password, correlationId)
         .then(() => {
           req.register_invite.telephone_number = telephoneNumber;
@@ -112,7 +117,7 @@ module.exports = {
         .catch((err) => handleError(req, res, err));
     };
 
-    let redirectToDetailEntry = (err) => {
+    const redirectToDetailEntry = (err) => {
       req.register_invite.telephone_number = telephoneNumber;
       req.flash('genericError', err);
       res.redirect(303, paths.register.registration);
@@ -131,11 +136,11 @@ module.exports = {
    * @param res
    */
   showOtpVerify: (req, res) => {
-    let data = {
+    const data = {
       email: req.register_invite.email
     };
 
-    let displayVerifyCodePage = () => {
+    const displayVerifyCodePage = () => {
       successResponse(req, res, 'registration/verify_otp', data);
     };
 
@@ -148,21 +153,21 @@ module.exports = {
    * @param res
    */
   submitOtpVerify: (req, res) => {
-    let correlationId = req.correlationId;
-    let verificationCode = req.body['verify-code'];
-    let code = req.register_invite.code;
+    const correlationId = req.correlationId;
+    const verificationCode = req.body['verify-code'];
+    const code = req.register_invite.code;
 
-    let redirectToAutoLogin = (req, res) => {
+    const redirectToAutoLogin = (req, res) => {
       res.redirect(303, paths.register.logUserIn);
     };
 
-    let handleInvalidOtp = (message) => {
+    const handleInvalidOtp = (message) => {
       logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
       req.flash('genericError', message);
       res.redirect(303, paths.register.otpVerify);
     };
 
-    let verifyOtpAndCreateUser = function () {
+    const verifyOtpAndCreateUser = function () {
       registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
         .then((user) => {
           loginController.setupDirectLoginAfterRegister(req, res, user);
@@ -190,10 +195,10 @@ module.exports = {
    * @param res
    */
   showReVerifyPhone: (req, res) => {
-    let telephoneNumber = req.register_invite.telephone_number;
+    const telephoneNumber = req.register_invite.telephone_number;
 
-    let displayReVerifyCodePage = () => {
-      let data = {
+    const displayReVerifyCodePage = () => {
+      const data = {
         telephone_number: telephoneNumber
       };
       successResponse(req, res, 'registration/re_verify_phone', data);
@@ -208,11 +213,11 @@ module.exports = {
    * @param res
    */
   submitReVerifyPhone: (req, res) => {
-    let correlationId = req.correlationId;
-    let code = req.register_invite.code;
-    let telephoneNumber = req.body['telephone-number'];
+    const correlationId = req.correlationId;
+    const code = req.register_invite.code;
+    const telephoneNumber = req.body['telephone-number'];
 
-    let resendOtpAndProceedToVerify = () => {
+    const resendOtpAndProceedToVerify = () => {
       registrationService.resendOtpCode(code, telephoneNumber, correlationId)
         .then(() => {
           req.register_invite.telephone_number = telephoneNumber;

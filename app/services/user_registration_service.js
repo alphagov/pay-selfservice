@@ -1,5 +1,7 @@
-let getAdminUsersClient = require('./clients/adminusers_client');
-let paths = require(__dirname + '/../paths.js');
+'use strict';
+
+const getAdminUsersClient = require('./clients/adminusers_client');
+const paths = require(__dirname + '/../paths.js');
 
 module.exports = {
 
@@ -20,7 +22,7 @@ module.exports = {
    * @param correlationId
    */
   submitRegistration: function (code, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).submitRegistration(code,phoneNumber,password);
+    return getAdminUsersClient({correlationId: correlationId}).submitUserRegistration(code,phoneNumber,password);
   },
 
   /**

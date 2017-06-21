@@ -1,6 +1,9 @@
-let q = require('q');
-let _ = require('lodash');
-let commonPassword = require('common-password');
+'use strict';
+
+const q = require('q');
+const _ = require('lodash');
+const commonPassword = require('common-password');
+const emailTools = require('../utils/email_tools')();
 
 const MIN_PHONE_NUMBER_LENGTH = 11;
 const MIN_PASSWORD_LENGTH = 10;
@@ -37,7 +40,7 @@ module.exports = {
     return defer.promise;
   },
 
-  validateRegistrationInputs: (telephoneNumber, password) => {
+  validateUserRegistrationInputs: (telephoneNumber, password) => {
     let defer = q.defer();
 
     if (invalidTelephoneNumber(telephoneNumber)) {
@@ -76,6 +79,28 @@ module.exports = {
     }
 
     return defer.promise;
-  }
+  },
+
+  validateServiceRegistrationInputs: (email, telephoneNumber, password) => {
+    let defer = q.defer();
+
+    if (!emailTools.validateEmail(email)) {
+      defer.reject('Invalid email');
+      return defer.promise;
+    }
+
+    if (invalidTelephoneNumber(telephoneNumber)) {
+      defer.reject('Invalid phone number');
+      return defer.promise;
+    }
+
+    if (!password || password.length < MIN_PASSWORD_LENGTH || commonPassword(password)) {
+      defer.reject('Your password is too simple. Choose a password that is harder for people to guess');
+    } else {
+      defer.resolve();
+    }
+
+    return defer.promise;
+  },
 
 };

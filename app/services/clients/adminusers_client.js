@@ -1,3 +1,5 @@
+'use strict';
+
 const q = require('q');
 const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
@@ -510,7 +512,7 @@ module.exports = function (clientOptions = {}) {
    * @param phoneNumber
    * @param password
    */
-  let submitRegistration = (code, phoneNumber, password) => {
+  let submitUserRegistration = (code, phoneNumber, password) => {
     let params = {
       correlationId: correlationId,
       payload: {
@@ -606,6 +608,45 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * Submit service registration details
+   *
+   * @param email
+   * @param phoneNumber
+   * @param password
+   */
+  const submitServiceRegistration = (email, phoneNumber, password) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        email: email,
+        telephone_number: phoneNumber,
+        password: password
+      }
+    };
+    const url = `${inviteResource}/service`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit service registration details',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -621,8 +662,9 @@ module.exports = function (clientOptions = {}) {
     updateServiceRole: updateServiceRole,
     inviteUser: inviteUser,
     getValidatedInvite: getValidatedInvite,
-    submitRegistration: submitRegistration,
+    submitUserRegistration: submitUserRegistration,
     verifyOtpAndCreateUser: verifyOtpAndCreateUser,
-    resendOtpCode: resendOtpCode
+    resendOtpCode: resendOtpCode,
+    submitServiceRegistration: submitServiceRegistration
   };
 };
