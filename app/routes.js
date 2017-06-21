@@ -15,7 +15,7 @@ const CORRELATION_HEADER = require('./utils/correlation_header.js').CORRELATION_
 const loginCounter = require('./middleware/login_counter');
 const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor} = require('./services/auth_service.js');
 const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf.js');
-const retrieveAccount = require('./middleware/retrieve_account.js');
+const getEmailNotification = require('./middleware/get_email_notification.js');
 const getAccount = require('./middleware/get_gateway_account');
 const trimUsername = require('./middleware/trim_username.js');
 const permission = require('./middleware/permission.js');
@@ -54,16 +54,13 @@ module.exports.bind = function (app) {
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'));
 
-
   // APPLY GENERIC MIDDLEWARE
-
   app.use('*', (req,res,next) => {
     req.correlationId = req.headers[CORRELATION_HEADER] || '';
     next();
   });
 
   app.all(lockOutDisabledUsers); // On all requests, if there is a user, and its disabled, lock out.
-
 
   // ----------------------
   // UNAUTHENTICATED ROUTES
@@ -169,13 +166,13 @@ module.exports.bind = function (app) {
   app.get(pt.summary, permission('payment-types:read'), getAccount,paymentTypesSummary.showSummary);
 
   // EMAIL
-  app.get(en.index, permission('email-notification-template:read'), retrieveAccount, emailNotifications.index);
-  app.get(en.edit, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.edit);
-  app.post(en.confirm, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.confirm);
-  app.post(en.update, permission('email-notification-paragraph:update'), retrieveAccount, emailNotifications.update);
-  app.post(en.off, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.off);
-  app.get(en.offConfirm, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.offConfirm);
-  app.post(en.on, permission('email-notification-toggle:update'), retrieveAccount, emailNotifications.on);
+  app.get(en.index, permission('email-notification-template:read'), getAccount, getEmailNotification, emailNotifications.index);
+  app.get(en.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, emailNotifications.edit);
+  app.post(en.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, emailNotifications.confirm);
+  app.post(en.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, emailNotifications.update);
+  app.post(en.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.off);
+  app.get(en.offConfirm, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.offConfirm);
+  app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.on);
 
   // SERVICE SWITCHER
   app.get(serviceSwitcher.index, serviceSwitchController.index);
@@ -197,5 +194,4 @@ module.exports.bind = function (app) {
   app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm);
   app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on);
   app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off);
-
 };
