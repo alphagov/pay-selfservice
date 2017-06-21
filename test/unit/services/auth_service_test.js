@@ -60,8 +60,8 @@ describe('auth service', function () {
   describe('serialize user', function () {
 
     it("should call done function with externalId", function (done) {
-      let user = {externalId: EXTERNAL_ID_IN_SESSION};
-      let doneSpy = sinon.spy(done);
+      const user = {externalId: EXTERNAL_ID_IN_SESSION};
+      const doneSpy = sinon.spy(done);
 
       auth.serializeUser(user, doneSpy);
 
@@ -72,18 +72,18 @@ describe('auth service', function () {
   describe('deserialize user', function () {
 
     it("should find user by external id", function (done) {
-      let authService = (userMock) => {
+      const authService = (userMock) => {
         return proxyquire(__dirname + '/../../../app/services/auth_service.js',
           {'./user_service.js': userMock});
       };
 
-      let user = mockUser();
-      let doneSpy = sinon.spy(() => {
+      const user = mockUser();
+      const doneSpy = sinon.spy(() => {
       });
-      let userServiceMock = {
+      const userServiceMock = {
         findByExternalId: (externalId) => {
           expect(externalId).to.be.equal(EXTERNAL_ID_IN_SESSION);
-          let defer = q.defer();
+          const defer = q.defer();
           defer.resolve(user);
           return defer.promise;
         }
@@ -105,17 +105,8 @@ describe('auth service', function () {
       done();
     });
 
-    it("should not call next if has invalid user", function (done) {
-      let invalid = _.cloneDeep(validRequest());
-      invalid.user.gatewayAccountIds = null;
-      auth.enforceUserAuthenticated(invalid, response, next);
-      expect(next.called).to.be.false;
-      assert(redirect.calledWith(paths.user.noAccess));
-      done();
-    });
-
     it("should not call next if has a disabled user", function (done) {
-      let invalid = _.cloneDeep(validRequest());
+      const invalid = _.cloneDeep(validRequest());
       invalid.user.disabled = true;
       auth.enforceUserAuthenticated(invalid, response, next);
       expect(next.called).to.be.false;
@@ -129,8 +120,8 @@ describe('auth service', function () {
   describe('ensureNotDisabled', function () {
 
     it('should call lockout user when user has a truthy disabled property', function (done) {
-      let user = mockSession.getUser({disabled: true});
-      let nextSpy = sinon.spy();
+      const user = mockSession.getUser({disabled: true});
+      const nextSpy = sinon.spy();
 
       auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy);
       assert(nextSpy.notCalled);
@@ -139,8 +130,8 @@ describe('auth service', function () {
     });
 
     it('should just call next when user has a falsey disabled property', function (done) {
-      let user = mockSession.getUser({disabled: false});
-      let nextSpy = sinon.spy();
+      const user = mockSession.getUser({disabled: false});
+      const nextSpy = sinon.spy();
 
       auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy);
       assert(nextSpy.called);
@@ -152,7 +143,7 @@ describe('auth service', function () {
   describe('no_access', function () {
 
     it("call next when on no access", function (done) {
-      let invalid = _.cloneDeep(validRequest());
+      const invalid = _.cloneDeep(validRequest());
       invalid.url = paths.user.noAccess;
       auth.no_access(invalid, response, next);
       expect(next.calledOnce).to.be.true;
@@ -170,22 +161,22 @@ describe('auth service', function () {
 
     it("should return user when authenticates successfully", function (done) {
 
-      let authService = (userMock) => {
+      const authService = (userMock) => {
         return proxyquire(__dirname + '/../../../app/services/auth_service.js',
           {'./user_service.js': userMock});
       };
-      let req = {
+      const req = {
         headers: {'x-request-id': 'corrId'}
       };
-      let user = {username:'user@example.com'};
-      let password = 'correctPassword';
-      let doneSpy = sinon.spy(() => {});
-      let userServiceMock = {
+      const user = {username:'user@example.com'};
+      const password = 'correctPassword';
+      const doneSpy = sinon.spy(() => {});
+      const userServiceMock = {
         authenticate: (username, password, correlationId) => {
           expect(username).to.be.equal(user.username);
           expect(password).to.be.equal('correctPassword');
           expect(correlationId).to.be.equal('corrId');
-          let defer = q.defer();
+          const defer = q.defer();
           defer.resolve(user);
           return defer.promise;
         }
@@ -200,22 +191,22 @@ describe('auth service', function () {
 
     it("should return error message when authentication fails", function (done) {
 
-      let authService = (userMock) => {
+      const authService = (userMock) => {
         return proxyquire(__dirname + '/../../../app/services/auth_service.js',
           {'./user_service.js': userMock});
       };
-      let req = {
+      const req = {
         headers: {'x-request-id': 'corrId'}
       };
-      let username = 'user@example.com';
-      let password = 'imagineThisIsInvalid';
-      let doneSpy = sinon.spy(() => {});
-      let userServiceMock = {
+      const username = 'user@example.com';
+      const password = 'imagineThisIsInvalid';
+      const doneSpy = sinon.spy(() => {});
+      const userServiceMock = {
         authenticate: (username, password, correlationId) => {
           expect(username).to.be.equal('user@example.com');
           expect(password).to.be.equal('imagineThisIsInvalid');
           expect(correlationId).to.be.equal('corrId');
-          let defer = q.defer();
+          const defer = q.defer();
           defer.reject();
           return defer.promise;
         }
@@ -232,32 +223,32 @@ describe('auth service', function () {
   describe('getCurrentGatewayAccountId', function () {
 
     it("should return first gateway_account_id if user has multiple gateway accounts if its undefined in cookie", function (done) {
-      let req = {
+      const req = {
         user: mockUser({
           gateway_account_ids: ["1", "2"]
         })
       };
-      let test = auth.getCurrentGatewayAccountId(req);
+      const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
       assert.equal(req.gateway_account.currentGatewayAccountId, 1);
       done();
     });
 
     it("should return first gateway_account_id if user has multiple gateway accounts if its empty object in cookie", function (done) {
-      let req = {
+      const req = {
         gateway_account: {},
         user: mockUser({
           gateway_account_ids: ["1", "2"]
         })
       };
-      let test = auth.getCurrentGatewayAccountId(req);
+      const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
       assert.equal(req.gateway_account.currentGatewayAccountId, 1);
       done();
     });
 
     it("should return first gateway_account_id if user has multiple gateway accounts if its null value in cookie", function (done) {
-      let req = {
+      const req = {
         gateway_account: {
           currentGatewayAccountId: null
         },
@@ -265,14 +256,14 @@ describe('auth service', function () {
           gateway_account_ids: ["1", "2"]
         })
       };
-      let test = auth.getCurrentGatewayAccountId(req);
+      const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
       assert.equal(req.gateway_account.currentGatewayAccountId, 1);
       done();
     });
 
     it("should return first gateway_account_id if user has invalid currentGatewayAccountId cookie value", function (done) {
-      let req = {
+      const req = {
         gateway_account: {
           currentGatewayAccountId: "777"
         },
@@ -280,14 +271,14 @@ describe('auth service', function () {
           gateway_account_ids: ["1", "2", "3"]
         })
       };
-      let test = auth.getCurrentGatewayAccountId(req);
+      const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
       assert.equal(req.gateway_account.currentGatewayAccountId, 1);
       done();
     });
 
     it("should return gateway_account_id from cookie", function (done) {
-      let req = {
+      const req = {
         gateway_account: {
           currentGatewayAccountId: "3"
         },
@@ -295,17 +286,17 @@ describe('auth service', function () {
           gateway_account_ids: ["1", "2", "3"]
         })
       };
-      let test = auth.getCurrentGatewayAccountId(req);
+      const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 3);
       assert.equal(req.gateway_account.currentGatewayAccountId, 3);
       done();
     });
 
     it("should not return gateway_account_id", function (done) {
-      let test1 = auth.getCurrentGatewayAccountId({session: {passport: {user: {}}}});
-      let test2 = auth.getCurrentGatewayAccountId({session: {passport: {}}});
-      let test3 = auth.getCurrentGatewayAccountId({session: {}});
-      let test4 = auth.getCurrentGatewayAccountId({});
+      const test1 = auth.getCurrentGatewayAccountId({session: {passport: {user: {}}}});
+      const test2 = auth.getCurrentGatewayAccountId({session: {passport: {}}});
+      const test3 = auth.getCurrentGatewayAccountId({session: {}});
+      const test4 = auth.getCurrentGatewayAccountId({});
 
       assert.equal(test1, null);
       assert.equal(test2, null);

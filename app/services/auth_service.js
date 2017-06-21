@@ -42,11 +42,9 @@ function lockOutDisabledUsers (req, res, next) {
 
 function enforceUserFirstFactor(req, res, next) {
   let hasUser = lodash.get(req, "user"),
-    hasAccount = getCurrentGatewayAccountId(req),
     disabled = lodash.get(hasUser, "disabled");
 
   if (!hasUser) return redirectToLogin(req, res);
-  if (!hasAccount) return no_access(req, res, next);
   if (disabled === true) return no_access(req, res, next);
 
   csrf.ensureSessionHasCsrfSecret(req, res, next);
