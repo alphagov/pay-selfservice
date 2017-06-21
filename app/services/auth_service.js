@@ -31,12 +31,11 @@ module.exports = {
 
 
 // Middleware
-// todo: we currently have 2 implementations for 'noaccess' one is a 'res.render' the other a 'res.redirect'
 function lockOutDisabledUsers (req, res, next) {
   if (req.user && req.user.disabled) {
     const correlationId = req.headers[CORRELATION_HEADER] || '';
-    logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.id')} locked out due to many password attempts`);
-    return res.render("login/noaccess");
+    logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.externalId')} locked out due to many password attempts`);
+    return no_access(req, res, next)
   }
   return next();
 }
@@ -129,7 +128,7 @@ function getCurrentGatewayAccountId(req) {
   // retrieve user's gatewayAccountIds
   let userGatewayAccountIds = lodash.get(req, "user.gatewayAccountIds");
   if ((!userGatewayAccountIds) || (userGatewayAccountIds.length === 0)) {
-    logger.error('Could not resolve the gatewayAccountId for user '); //TODO log the user.id when we have one
+    logger.error(`Could not resolve the gatewayAccountId for user: ${lodash.get(req, 'user.externalId')}`);
     return null;
   }
   // check if we don't have Cookie value

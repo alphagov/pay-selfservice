@@ -26,40 +26,6 @@ module.exports = function (clientOptions = {}) {
   let inviteResource = `${baseUrl}/v1/api/invites`;
 
   /**
-   * Create a new user
-   *
-   * @param {User} user
-   * @returns {Promise<User>}
-   */
-  let createUser = (user) => {
-    let params = {
-      payload: user.toMinimalJson(),
-      correlationId: correlationId
-    };
-    let url = userResource;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'POST',
-      description: 'create a user',
-      service: SERVICE_NAME
-    };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
-
-    requestLogger.logRequestStart(context);
-
-    baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
-
-    return defer.promise;
-  };
-
-  /**
    * Get a User by external id
    *
    * @param {string} externalId
@@ -92,38 +58,6 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  /**
-   * Get a User by username
-   *
-   * @param {string} username
-   * @return {Promise<User>} A promise of a User
-   */
-  let getUserByUsername = (username) => {
-    let params = {
-      correlationId: correlationId
-    };
-    let url = `${userResource}?username=${username}`;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'GET',
-      description: 'find a user',
-      service: SERVICE_NAME
-    };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
-
-    requestLogger.logRequestStart(context);
-
-    baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
-
-    return defer.promise;
-  };
 
   /**
    * @param username
@@ -652,8 +586,6 @@ module.exports = function (clientOptions = {}) {
     createForgottenPassword: createForgottenPassword,
     incrementSessionVersionForUser: incrementSessionVersionForUser,
     getUserByExternalId: getUserByExternalId,
-    getUserByUsername: getUserByUsername,
-    createUser: createUser,
     authenticateUser: authenticateUser,
     updatePasswordForUser: updatePasswordForUser,
     sendSecondFactor: sendSecondFactor,
