@@ -10,9 +10,9 @@ describe('Register user view', function () {
       email: 'invitee@example.com'
     };
 
-    let body = renderTemplate('registration/register', templateData);
+    let body = renderTemplate('user_registration/register', templateData);
 
-    body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.registration);
+    body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration);
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com');
     body.should.containSelector('input#telephone-number');
     body.should.containSelector('input#password');
@@ -26,9 +26,9 @@ describe('Register user view', function () {
       telephone_number: '0328534765'
     };
 
-    let body = renderTemplate('registration/register', templateData);
+    let body = renderTemplate('user_registration/register', templateData);
 
-    body.should.containSelector('form#submit-registration').withAttribute('action', paths.register.registration);
+    body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration);
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com');
     body.should.containSelector('input#telephone-number')
       .withAttribute("value", "0328534765");
@@ -42,9 +42,9 @@ describe('Register user view', function () {
       email: 'invitee@example.com'
     };
 
-    let body = renderTemplate('registration/verify_otp', templateData);
+    let body = renderTemplate('user_registration/verify_otp', templateData);
 
-    body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.register.otpVerify);
+    body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.registerUser.otpVerify);
     body.should.containSelector('input#verify-code');
     done();
   });
@@ -57,9 +57,9 @@ describe('Register user view', function () {
       telephone_number: telephoneNumber
     };
 
-    let body = renderTemplate('registration/re_verify_phone', templateData);
+    let body = renderTemplate('user_registration/re_verify_phone', templateData);
 
-    body.should.containSelector('form#otp-send-again').withAttribute('action', paths.register.reVerifyPhone);
+    body.should.containSelector('form#otp-send-again').withAttribute('action', paths.registerUser.reVerifyPhone);
     body.should.containSelector('input#telephone-number').withAttribute('value', telephoneNumber);
     done();
   });

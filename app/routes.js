@@ -40,9 +40,10 @@ const registerCtrl = require('./controllers/register_user_controller.js');
 const permissionController = require('./controllers/service_roles_update_controller.js');
 const toggle3ds = require('./controllers/toggle_3ds_controller.js');
 const selfCreateServiceCtrl = require('./controllers/create_service_controller.js');
+const inviteValidationCtrl = require('./controllers/invite_validation_controller.js');
 
 // Assignments
-const {healthcheck, register, user, selfCreateService, transactions, credentials, devTokens, serviceSwitcher, teamMembers, staticPaths} = paths;
+const {healthcheck, registerUser, user, selfCreateService, transactions, credentials, devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation} = paths;
 const {notificationCredentials: nc, serviceName: sn, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths;
 
 
@@ -72,15 +73,17 @@ module.exports.bind = function (app) {
   // STATIC
   app.all(staticPaths.naxsiError, staticCtrl.naxsiError);
 
+  //VALIDATE INVITE
+  app.get(inviteValidation.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationCtrl.validateInvite);
+
   // REGISTER USER
-  app.get(register.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.validateInvite);
-  app.get(register.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration);
-  app.post(register.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration);
-  app.get(register.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify);
-  app.post(register.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify);
-  app.get(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone);
-  app.post(register.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone);
-  app.get(register.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn);
+  app.get(registerUser.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration);
+  app.post(registerUser.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration);
+  app.get(registerUser.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify);
+  app.post(registerUser.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify);
+  app.get(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone);
+  app.post(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone);
+  app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn);
   
   // LOGIN
   app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet);

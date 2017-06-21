@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   root: "/",
   transactions: {
@@ -71,8 +73,10 @@ module.exports = {
     permissions: '/team-members/:externalId/permissions',
     invite: '/team-members-invite'
   },
-  register: {
+  inviteValidation: {
     validateInvite:'/invites/:code',
+  },
+  registerUser: {
     registration: '/register',
     otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',

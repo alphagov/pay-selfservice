@@ -279,7 +279,7 @@ describe('direct login after user registration', function () {
     let app2 = mock_session.getAppWithRegisterInvitesCookie(getApp(), gatewayAccountData);
 
     request(app2)
-      .get(paths.register.logUserIn)
+      .get(paths.registerUser.logUserIn)
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res)=>{

@@ -15,7 +15,7 @@ Resend verification code - GOV.UK Pay
     If you no longer have access to the phone with the number registered for this service,
     speak to your service manager to reset the number
   </p>
-  <form action="{{routes.register.reVerifyPhone}}" class="form" method="post" id="otp-send-again">
+  <form action="{{routes.registerUser.reVerifyPhone}}" class="form" method="post" id="otp-send-again">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
       <label class="form-label" for="telephone-number">

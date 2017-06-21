@@ -1,17 +1,17 @@
-let random = require(__dirname + '/../../app/utils/random');
-let pactBase = require(__dirname + '/pact_base');
-let pactInvites = pactBase();
-let _ = require('lodash');
+const random = require(__dirname + '/../../app/utils/random');
+const pactBase = require(__dirname + '/pact_base');
+const pactInvites = pactBase();
+const _ = require('lodash');
 
 module.exports = {
 
   validInviteRequest: (opts = {}) => {
 
-    let invitee = "random@example.com";
-    let senderId = random.randomUuid();
-    let role = {name: "admin"};
+    const invitee = "random@example.com";
+    const senderId = random.randomUuid();
+    const role = {name: "admin"};
 
-    let data = {
+    const data = {
       email: opts.email || invitee,
       sender: opts.sender || senderId,
       role_name: opts.role_name || role
@@ -28,10 +28,12 @@ module.exports = {
   },
 
   validInviteResponse: (opts = {}) => {
-    let invitee = "random@example.com";
+    const invitee = "random@example.com";
+    const type = 'user';
 
-    let data = {
+    const data = {
       email: opts.email || invitee,
+      type: opts.type || type
     };
 
     if (opts.telephone_number) {
@@ -50,10 +52,10 @@ module.exports = {
 
   invalidInviteRequest: (opts = {}) => {
 
-    let senderId = random.randomUuid();
-    let role = {name: "admin"};
+    const senderId = random.randomUuid();
+    const role = {name: "admin"};
 
-    let data = {
+    const data = {
       email: opts.email || '',
       sender: opts.sender || senderId,
       role_name: opts.role_name || role
@@ -70,7 +72,7 @@ module.exports = {
   },
 
   notPermittedInviteResponse: (userName, serviceId) => {
-    let response = {
+    const response = {
       errors: ["user [" + userName + "] not authorised to perform operation [invite] in service [" + serviceId + "]"]
     };
 
@@ -79,7 +81,7 @@ module.exports = {
 
   validRegistrationRequest: (opts = {}) => {
 
-    let data = {
+    const data = {
       code: opts.code || random.randomUuid(),
       telephone_number: opts.telephone_number || '12345678901',
       password: opts.password || 'password1234'
@@ -96,10 +98,10 @@ module.exports = {
   },
 
   badRequestResponseWhenFieldsMissing: (missingFields) => {
-    let responseData = _.map(missingFields, (field) => {
+    const responseData = _.map(missingFields, (field) => {
       return `Field [${field}] is required`;
     });
-    let response = {
+    const response = {
       errors: responseData
     };
 
@@ -107,7 +109,7 @@ module.exports = {
   },
 
   invalidInviteCreateResponseWhenFieldsMissing: () => {
-    let response = {
+    const response = {
       // At the moment to discuss Failfast approach to the API rather than error collection
       errors: ["Field [email] is required"]
     };
@@ -116,7 +118,7 @@ module.exports = {
   },
 
   conflictingInviteResponseWhenEmailUserAlreadyCreated: (email) => {
-    let response = {
+    const response = {
       errors: ['invite with email [' + email + '] already exists']
     };
 
@@ -132,7 +134,7 @@ module.exports = {
   },
 
   validVerifyOtpCodeRequest: (opts = {}) => {
-    let data = {
+    const data = {
       code: opts.code || random.randomUuid(),
       otp: opts.otp || '123456'
     };
@@ -148,7 +150,7 @@ module.exports = {
   },
 
   validResendOtpCodeRequest: (opts = {}) => {
-    let data = {
+    const data = {
       code: opts.code || random.randomUuid(),
       telephone_number: opts.telephone_number || '01234567891'
     };
