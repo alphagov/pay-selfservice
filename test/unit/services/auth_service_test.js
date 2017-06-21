@@ -134,7 +134,7 @@ describe('auth service', function () {
 
       auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy);
       assert(nextSpy.notCalled);
-      assert(response.render.calledWithExactly("login/noaccess"));
+      assert(response.redirect.calledWithExactly("/noaccess"));
       done();
     });
 

@@ -1,24 +1,12 @@
 const q = require('q');
 
 let getAdminUsersClient = require('./clients/adminusers_client');
-let User = require('../models/user').User;
 let paths = require(__dirname + '/../paths.js');
 let commonPassword = require('common-password');
 
 const MIN_PASSWORD_LENGTH = 10;
 
 module.exports = {
-  /**
-   * @param userData
-   * @param role
-   * @returns {Promise<User>}
-   */
-  create: function (userData, role) {
-    userData.role = role;
-    let user = new User(userData);
-    return getAdminUsersClient().createUser(user);
-  },
-
   /**
    * @param username
    * @param submittedPassword
@@ -60,14 +48,6 @@ module.exports = {
     return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId);
   },
 
-  /**
-   * @param username
-   * @param correlationId
-   * @returns {Promise<User>}
-   */
-  findByUsername: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getUserByUsername(username);
-  },
 
   /**
    * @param {User} user
