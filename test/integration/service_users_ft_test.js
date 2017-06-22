@@ -184,6 +184,31 @@ describe('service users resource', function () {
       .end(done);
   });
 
+  it('should not show my profile without second factor', function (done) {
+
+    const user = {
+      external_id: EXTERNAL_ID_LOGGED_IN,
+      username: USERNAME_LOGGED_IN,
+      email: USERNAME_LOGGED_IN + '@example.com',
+      telephone_number: '+447876548778',
+      service_ids: ['1']
+    };
+    const user_in_session = session.getUser(user);
+    const getUserResponse = userFixtures.validUserResponse(user);
+
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}`)
+      .reply(200, getUserResponse.getPlain());
+
+    app = session.getAppWithSessionWithoutSecondFactor(getApp(), user_in_session);
+
+    return supertest(app)
+      .get('/my-profile')
+      .set('Accept', 'application/json')
+      .expect(302)
+      .expect('Location', '/otp-login')
+      .end(done);
+  });
+
   it('should redirect to my profile when trying to access my user through team members path', function (done) {
 
     const user_in_session = session.getUser({

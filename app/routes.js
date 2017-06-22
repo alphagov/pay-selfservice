@@ -184,7 +184,7 @@ module.exports.bind = function (app) {
   app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show);
   app.get(teamMembers.permissions, permission('users-service:create'), permissionController.index);
   app.post(teamMembers.permissions, permission('users-service:create'), permissionController.update);
-  app.get(user.profile, serviceUsersController.profile);
+  app.get(user.profile, enforceUserAuthenticated, serviceUsersController.profile);
 
   // TEAM MEMBERS - INVITE
   app.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index);
