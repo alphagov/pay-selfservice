@@ -1,20 +1,22 @@
-let nock = require('nock');
-let supertest = require('supertest');
-let paths = require(__dirname + '/../../app/paths.js');
-let getApp = require(__dirname + '/../../server.js').getApp;
-let session = require(__dirname + '/../test_helpers/mock_session.js');
-let inviteFixtures = require(__dirname + '/../fixtures/invite_fixtures');
-let userFixtures = require(__dirname + '/../fixtures/user_fixtures');
-let csrf = require('csrf');
+'use strict';
 
-let chai = require('chai');
-let chaiAsPromised = require('chai-as-promised');
+const nock = require('nock');
+const supertest = require('supertest');
+const paths = require(__dirname + '/../../app/paths.js');
+const getApp = require(__dirname + '/../../server.js').getApp;
+const session = require(__dirname + '/../test_helpers/mock_session.js');
+const userFixtures = require(__dirname + '/../fixtures/user_fixtures');
+const csrf = require('csrf');
+
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-let app;
-let adminusersMock = nock(process.env.ADMINUSERS_URL);
-let INVITE_RESOURCE_PATH = '/v1/api/invites';
+const adminusersMock = nock(process.env.ADMINUSERS_URL);
+const INVITE_RESOURCE_PATH = '/v1/api/invites';
 const expect = chai.expect;
+
+let app;
 let mockRegisterAccountCookie;
 
 describe('register user controller', function () {
@@ -32,75 +34,6 @@ describe('register user controller', function () {
   });
 
   /**
-   *  ENDPOINT validateInvite
-   */
-  describe('verify invitation endpoint', function () {
-
-    it('should redirect to register view on a valid invite code', function (done) {
-
-      let code = '23rer87t8shjkaf';
-      let validInviteResponse = inviteFixtures.validInviteResponse().getPlain();
-
-      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
-        .reply(200, validInviteResponse);
-
-      return supertest(app)
-        .get(`/invites/${code}`)
-        .set('x-request-id', 'bob')
-        .expect(302)
-        .expect('Location', paths.register.registration)
-        .expect(() => {
-          expect(mockRegisterAccountCookie.code).to.equal(code);
-          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
-        })
-        .end(done);
-
-    });
-
-    it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', function (done) {
-
-      let code = '7s8ftgw76rwgu';
-      let telephoneNumber = '123456789';
-      let validInviteResponse = inviteFixtures.validInviteResponse({telephone_number: telephoneNumber}).getPlain();
-
-      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
-        .reply(200, validInviteResponse);
-
-      return supertest(app)
-        .get(`/invites/${code}`)
-        .set('x-request-id', 'bob')
-        .expect(302)
-        .expect('Location', paths.register.registration)
-        .expect(() => {
-          expect(mockRegisterAccountCookie.code).to.equal(code);
-          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email);
-          expect(mockRegisterAccountCookie.telephone_number).to.equal(telephoneNumber);
-        })
-        .end(done);
-
-    });
-
-    it('should error if the invite code is invalid', function (done) {
-
-      let invalidCode = 'invalidCode';
-      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${invalidCode}`)
-        .reply(404);
-
-      return supertest(app)
-        .get(`/invites/${invalidCode}`)
-        .set('Accept', 'application/json')
-        .set('x-request-id', 'bob')
-        .expect(404)
-        .expect((res) => {
-          expect(res.body.message).to.equal('Unable to process registration at this time');
-        })
-        .end(done);
-
-    });
-  });
-
-
-  /**
    *  ENDPOINT showRegistration
    */
   describe('show registration view endpoint', function () {
@@ -111,7 +44,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
-        .get(paths.register.registration)
+        .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -129,7 +62,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.telephone_number = '123456789';
 
       return supertest(app)
-        .get(paths.register.registration)
+        .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -143,7 +76,7 @@ describe('register user controller', function () {
 
     it('should display error when email and/or code is not in the cookie', function (done) {
       return supertest(app)
-        .get(paths.register.registration)
+        .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(404)
@@ -163,7 +96,7 @@ describe('register user controller', function () {
     it('should error if cookie details are missing', function (done) {
 
       return supertest(app)
-        .post(paths.register.registration)
+        .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -183,9 +116,9 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
-      let invalidPhone = '123456789';
+      const invalidPhone = '123456789';
       return supertest(app)
-        .post(paths.register.registration)
+        .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -195,7 +128,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.registration)
+        .expect('Location', paths.registerUser.registration)
         .expect((res) => {
           expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone);
         })
@@ -212,7 +145,7 @@ describe('register user controller', function () {
         .reply(200);
 
       return supertest(app)
-        .post(paths.register.registration)
+        .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -222,7 +155,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.otpVerify)
+        .expect('Location', paths.registerUser.otpVerify)
         .end(done);
 
     });
@@ -236,7 +169,7 @@ describe('register user controller', function () {
         .reply(404);
 
       return supertest(app)
-        .post(paths.register.registration)
+        .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -263,7 +196,7 @@ describe('register user controller', function () {
     it('should error if cookie details are missing', function (done) {
 
       return supertest(app)
-        .get(paths.register.otpVerify)
+        .get(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(404)
@@ -280,7 +213,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
-        .get(paths.register.registration)
+        .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -297,14 +230,14 @@ describe('register user controller', function () {
     it('should validate otp code successfully', function (done) {
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
-      let newUserExtId = 'new-user-ext-id';
-      let validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain();
+      const newUserExtId = 'new-user-ext-id';
+      const validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain();
 
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
         .reply(201, validUserResponse);
 
       return supertest(app)
-        .post(paths.register.otpVerify)
+        .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -313,7 +246,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.logUserIn)
+        .expect('Location', paths.registerUser.logUserIn)
         .expect(() => {
           expect(mockRegisterAccountCookie.userExternalId).to.equal(newUserExtId);
         })
@@ -324,7 +257,7 @@ describe('register user controller', function () {
     it('should error if cookie details are missing', function (done) {
 
       return supertest(app)
-        .post(paths.register.otpVerify)
+        .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -345,7 +278,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       return supertest(app)
-        .post(paths.register.otpVerify)
+        .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -354,7 +287,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303)
-        .expect('Location', paths.register.otpVerify)
+        .expect('Location', paths.registerUser.otpVerify)
         .end(done);
     });
 
@@ -367,7 +300,7 @@ describe('register user controller', function () {
         .reply(404);
 
       return supertest(app)
-        .post(paths.register.otpVerify)
+        .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -390,14 +323,14 @@ describe('register user controller', function () {
 
     it('should display re verify otp code form with pre-populated telephone number', function (done) {
 
-      let telephoneNumber = '12345678901';
+      const telephoneNumber = '12345678901';
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
       mockRegisterAccountCookie.telephone_number = telephoneNumber;
 
       return supertest(app)
-        .get(paths.register.reVerifyPhone)
+        .get(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(200)
@@ -410,7 +343,7 @@ describe('register user controller', function () {
 
     it('should display error when email and/or code is not in the cookie', function (done) {
       return supertest(app)
-        .get(paths.register.reVerifyPhone)
+        .get(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
         .expect(404)
@@ -428,7 +361,7 @@ describe('register user controller', function () {
 
     it('should proceed to verify otp upon successful telephone number re-entry', function (done) {
 
-      let telephoneNumber = '12345678901';
+      const telephoneNumber = '12345678901';
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
@@ -437,7 +370,7 @@ describe('register user controller', function () {
         .reply(200);
 
       return supertest(app)
-        .post(paths.register.reVerifyPhone)
+        .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -446,13 +379,13 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.otpVerify)
+        .expect('Location', paths.registerUser.otpVerify)
         .end(done);
     });
 
     it('should error on an error during resend otp', function (done) {
 
-      let telephoneNumber = '12345678901';
+      const telephoneNumber = '12345678901';
 
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
@@ -461,7 +394,7 @@ describe('register user controller', function () {
         .reply(404);
 
       return supertest(app)
-        .post(paths.register.reVerifyPhone)
+        .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -481,10 +414,10 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
-      let invalidPhone = '123456789';
+      const invalidPhone = '123456789';
 
       return supertest(app)
-        .post(paths.register.reVerifyPhone)
+        .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -493,7 +426,7 @@ describe('register user controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.register.reVerifyPhone)
+        .expect('Location', paths.registerUser.reVerifyPhone)
         .expect((res) => {
           expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone);
         })
@@ -501,9 +434,9 @@ describe('register user controller', function () {
     });
 
     it('should error if cookie details are missing', function (done) {
-      let telephoneNumber = '12345678901';
+      const telephoneNumber = '12345678901';
       return supertest(app)
-        .post(paths.register.reVerifyPhone)
+        .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')

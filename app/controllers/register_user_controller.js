@@ -52,33 +52,6 @@ const handleError = (req, res, err) => {
 module.exports = {
 
   /**
-   * intermediate endpoint which captures the invite code and validate.
-   * Upon success this forwards the request to proceed with registration
-   * @param req
-   * @param res
-   * @returns {Promise.<T>}
-   */
-  validateInvite: (req, res) => {
-    const code = req.params.code;
-    const correlationId = req.correlationId;
-    const redirectToRegister = (invite) => {
-      if (!req.register_invite) {
-        req.register_invite = {};
-      }
-      req.register_invite.code = code;
-      req.register_invite.email = invite.email;
-      if (invite.telephone_number) {
-        req.register_invite.telephone_number = invite.telephone_number;
-      }
-      res.redirect(302, paths.register.registration);
-    };
-
-    return registrationService.getValidatedInvite(code, correlationId)
-      .then(redirectToRegister)
-      .catch((err) => handleError(req, res, err));
-  },
-
-  /**
    * display user registration data entry form.
    * @param req
    * @param res
@@ -91,7 +64,7 @@ module.exports = {
       if (req.register_invite.telephone_number) {
         data.telephone_number = req.register_invite.telephone_number;
       }
-      successResponse(req, res, 'registration/register', data);
+      successResponse(req, res, 'user_registration/register', data);
     };
 
     return withValidatedRegistrationCookie(req, res, renderRegistrationPage);
@@ -112,7 +85,7 @@ module.exports = {
       registrationService.submitRegistration(code, telephoneNumber, password, correlationId)
         .then(() => {
           req.register_invite.telephone_number = telephoneNumber;
-          res.redirect(303, paths.register.otpVerify);
+          res.redirect(303, paths.registerUser.otpVerify);
         })
         .catch((err) => handleError(req, res, err));
     };
@@ -120,7 +93,7 @@ module.exports = {
     const redirectToDetailEntry = (err) => {
       req.register_invite.telephone_number = telephoneNumber;
       req.flash('genericError', err);
-      res.redirect(303, paths.register.registration);
+      res.redirect(303, paths.registerUser.registration);
     };
 
     return withValidatedRegistrationCookie(req, res, () => {
@@ -141,7 +114,7 @@ module.exports = {
     };
 
     const displayVerifyCodePage = () => {
-      successResponse(req, res, 'registration/verify_otp', data);
+      successResponse(req, res, 'user_registration/verify_otp', data);
     };
 
     return withValidatedRegistrationCookie(req, res, displayVerifyCodePage);
@@ -158,13 +131,13 @@ module.exports = {
     const code = req.register_invite.code;
 
     const redirectToAutoLogin = (req, res) => {
-      res.redirect(303, paths.register.logUserIn);
+      res.redirect(303, paths.registerUser.logUserIn);
     };
 
     const handleInvalidOtp = (message) => {
       logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
       req.flash('genericError', message);
-      res.redirect(303, paths.register.otpVerify);
+      res.redirect(303, paths.registerUser.otpVerify);
     };
 
     const verifyOtpAndCreateUser = function () {
@@ -201,7 +174,7 @@ module.exports = {
       const data = {
         telephone_number: telephoneNumber
       };
-      successResponse(req, res, 'registration/re_verify_phone', data);
+      successResponse(req, res, 'user_registration/re_verify_phone', data);
     };
 
     return withValidatedRegistrationCookie(req, res, displayReVerifyCodePage);
@@ -221,7 +194,7 @@ module.exports = {
       registrationService.resendOtpCode(code, telephoneNumber, correlationId)
         .then(() => {
           req.register_invite.telephone_number = telephoneNumber;
-          res.redirect(303, paths.register.otpVerify);
+          res.redirect(303, paths.registerUser.otpVerify);
         })
         .catch(err => handleError(req, res, err));
     };
@@ -233,7 +206,7 @@ module.exports = {
           logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`);
           req.flash('genericError', err);
           req.register_invite.telephone_number = telephoneNumber;
-          res.redirect(303, paths.register.reVerifyPhone);
+          res.redirect(303, paths.registerUser.reVerifyPhone);
         });
     });
   }

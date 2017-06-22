@@ -1,20 +1,22 @@
-let Pact = require('pact');
-let helpersPath = __dirname + '/../../test_helpers/';
-let pactProxy = require(helpersPath + '/pact_proxy.js');
-let chai = require('chai');
-let chaiAsPromised = require('chai-as-promised');
-let inviteFixtures = require(__dirname + '/../../fixtures/invite_fixtures');
-let getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-let PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+'use strict';
+
+const Pact = require('pact');
+const helpersPath = __dirname + '/../../test_helpers/';
+const pactProxy = require(helpersPath + '/pact_proxy.js');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const inviteFixtures = require(__dirname + '/../../fixtures/invite_fixtures');
+const getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
+const PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
 
 const INVITES_PATH = '/v1/api/invites';
-let mockPort = Math.floor(Math.random() * 65535);
-let mockServer = pactProxy.create('localhost', mockPort);
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+const mockPort = Math.floor(Math.random() * 65535);
+const mockServer = pactProxy.create('localhost', mockPort);
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client - get a validated invite', function () {
 
@@ -44,15 +46,15 @@ describe('adminusers client - get a validated invite', function () {
 
     context('GET invite api - success', () => {
 
-      let inviteCode = '7d19aff33f8948deb97ed16b2912dcd3';
+      const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3';
 
-      let params = {
+      const params = {
         invite_code: inviteCode,
         telephone_number: '0123456789'
       };
 
 
-      let getInviteResponse = inviteFixtures.validInviteResponse(params);
+      const getInviteResponse = inviteFixtures.validInviteResponse(params);
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -69,18 +71,19 @@ describe('adminusers client - get a validated invite', function () {
       });
 
       it('should find an invite successfully', function (done) {
-        let expectedInviteData = getInviteResponse.getPlain();
+        const expectedInviteData = getInviteResponse.getPlain();
 
         adminusersClient.getValidatedInvite(params.invite_code).should.be.fulfilled.then(function(invite) {
           expect(invite.email).to.be.equal(expectedInviteData.email);
           expect(invite.telephone_number).to.be.equal(expectedInviteData.telephone_number);
+          expect(invite.type).to.be.equal(expectedInviteData.type);
         }).should.notify(done);
       });
     });
 
     context('GET invite api - expired', () => {
 
-      let expiredCode = '7d19aff33f8948deb97ed16b2912dcd3';
+      const expiredCode = '7d19aff33f8948deb97ed16b2912dcd3';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -107,7 +110,7 @@ describe('adminusers client - get a validated invite', function () {
 
     context('GET invite api - not found', () => {
 
-      let nonExistingCode = '7d19aff33f8948deb97ed16b2912dcd3';
+      const nonExistingCode = '7d19aff33f8948deb97ed16b2912dcd3';
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(

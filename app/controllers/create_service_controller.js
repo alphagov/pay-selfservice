@@ -45,7 +45,7 @@ module.exports = {
    * @param res
    */
   showOtpVerify: (req, res) => {
-    res.render('self_create_service/service_creation_verify_otp');
+    res.render('self_create_service/verify_otp');
   },
 
   /**
