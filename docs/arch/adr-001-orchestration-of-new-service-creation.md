@@ -24,6 +24,8 @@ The proposed signup flow is approximately as follows:
 There is uncertainty around the appropriate design for implementing this.
 
 A few options have been proposed:
+
+![Orchestration diagram](img/adr-001-orchestration-of-new-service-creation.jpg)
  
 ### Option A: Orchestration in `selfservice`
 
@@ -32,12 +34,16 @@ A few options have been proposed:
 1. `selfservice` calls `POST` `http://adminusers/v1/api/users`
 1. `selfservice` calls `PATCH` `http://adminusers/v1/api/services/{serviceExternalId}`
 
+(shown in black in the diagram)
+
 ### Option B: Orchestration in `adminusers`
 
 1. `selfservice` calls adminusers to create the service and user accounts
   1. `adminusers` calls `POST` `http://connector/v1/api/accounts`, and records the id `gateway_account_id`
   1. `adminusers` internally creates the user
   1. `adminusers` internally creates the service, recording the `gateway_account_id`
+
+(shown in green as option 2 in the diagram)
   
 ### Option C: New `serviceManager` orchestration service
 
@@ -48,6 +54,8 @@ A new microservice, let's call it `serviceManager`
    1. `serviceManager` calls `POST` `http://connector/v1/api/accounts`
    1. `serviceManager` calls `POST` `http://adminusers/v1/api/users`
    1. `serviceManager` calls `PATCH` `http://adminusers/v1/api/services/{serviceExternalId}`
+
+(shown in red as option 3 in the diagram)
 
 ## Discussion
 
