@@ -84,8 +84,7 @@ describe('service users resource', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        console.log(JSON.stringify(res.body));
-        expect(res.body.message).to.equal('User does not belong to any service');
+        expect(res.body.message).to.equal('This user does not belong to any service. Ask your service administrator to invite you to GOV.UK Pay.');
       })
       .end(done);
   });
@@ -261,7 +260,7 @@ describe('service users resource', function () {
       .end(done);
   });
 
-  it('remove a team member', function (done) {
+  it('remove a team member successfully should redirect user to team member', function (done) {
 
     let externalServiceId = 'service-external-id';
 
@@ -295,8 +294,37 @@ describe('service users resource', function () {
       .send({csrfToken: csrf().create('123')})
       .expect(302)
       .expect('Location', "/team-members")
+      .end(done);
+  });
+
+  it('when remove a team member fails when user does not exist should redirect user to error view with link to view team members', function (done) {
+
+    let externalServiceId = 'service-external-id';
+
+    let user_in_session = session.getUser({
+      external_id: EXTERNAL_ID_LOGGED_IN,
+      username: USERNAME_LOGGED_IN,
+      email: USERNAME_LOGGED_IN + '@example.com',
+      services: [{external_id: externalServiceId}],
+      permissions: ['users-service:delete'],
+    });
+
+    adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
+      .reply(404);
+
+    app = session.getAppWithLoggedInUser(getApp(), user_in_session);
+
+    return supertest(app)
+      .post(`/team-members/${EXTERNAL_ID_OTHER_USER}/delete`)
+      .set('Accept', 'application/json')
+      .send({csrfToken: csrf().create('123')})
+      .expect(200)
       .expect((res) => {
-        console.log(JSON.stringify(res));
+        expect(res.body.error.title).to.equal('This person has already been removed');
+        expect(res.body.error.message).to.equal('This person has already been removed by another administrator.');
+        expect(res.body.link.link).to.equal('/team-members');
+        expect(res.body.link.text).to.equal('View all team members');
+        expect(res.body.enable_link).to.equal(true);
       })
       .end(done);
   });

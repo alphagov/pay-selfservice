@@ -140,11 +140,14 @@ describe('adminusers client - delete user', function () {
     context('delete user API - user context (remover) does not exist - forbidden', () => {
 
       const nonExistentRemoverId = "user-does-not-exist";
+      const serviceId = "pact-service-no-remover-test";
+      const userId = "pact-user-no-remover-test";
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
-            .withUponReceiving('a non existent user context ')
+            .withState('a user exists but not the remover before a delete operation')
+            .withUponReceiving('a non existent user context')
             .withMethod('DELETE')
             .withRequestHeaders({
               'Accept': 'application/json',
@@ -161,7 +164,7 @@ describe('adminusers client - delete user', function () {
         adminUsersMock.finalize().then(() => done())
       });
 
-      it('should return not found when resource is not found (user or service)', function (done) {
+      it('should return forbidden when remover dos not ex', function (done) {
         adminusersClient.deleteUser(serviceId, nonExistentRemoverId, userId).should.be.rejected
           .then((response) => {
             expect(response.errorCode).to.equal(403);

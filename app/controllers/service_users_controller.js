@@ -1,18 +1,18 @@
-let response = require('../utils/response.js');
-let userService = require('../services/user_service.js');
-let paths = require('../paths.js');
-let successResponse = response.response;
-let errorResponse = response.renderErrorView;
-let roles = require('../utils/roles').roles;
+const response = require('../utils/response.js');
+const userService = require('../services/user_service.js');
+const paths = require('../paths.js');
+const successResponse = response.response;
+const errorResponse = response.renderErrorView;
+const roles = require('../utils/roles').roles;
 
-let mapByRoles = function (users, currentUser) {
-  let userRolesMap = {};
-  for (let role in roles) {
+const mapByRoles = function (users, currentUser) {
+  const userRolesMap = {};
+  for (const role in roles) {
     userRolesMap[roles[role].name] = [];
   }
   users.map((user) => {
     if (roles[user.role.name]) {
-      let mappedUser = {
+      const mappedUser = {
         username: user.username,
         external_id: user.external_id
       };
@@ -37,12 +37,12 @@ module.exports = {
    */
   index: (req, res) => {
 
-    let onSuccess = function (data) {
-      let team_members = mapByRoles(data, req.user);
-      let numberOfAdminMembers = team_members.admin.length;
-      let numberOfViewOnlyMembers = team_members[roles['view-only'].name].length;
-      let numberOfViewAndRefundMembers = team_members[roles['view-and-refund'].name].length;
-      let numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers;
+    const onSuccess = function (data) {
+      const team_members = mapByRoles(data, req.user);
+      const numberOfAdminMembers = team_members.admin.length;
+      const numberOfViewOnlyMembers = team_members[roles['view-only'].name].length;
+      const numberOfViewAndRefundMembers = team_members[roles['view-and-refund'].name].length;
+      const numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers;
 
       successResponse(req, res, 'services/team_members', {
         team_members: team_members,
@@ -65,16 +65,16 @@ module.exports = {
    */
   show: (req, res) => {
 
-    let externalId = req.params.externalId;
+    const externalId = req.params.externalId;
     if (externalId === req.user.externalId) {
       res.redirect(paths.user.profile);
     }
 
-    let onSuccess = (user) => {
-      let hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
-      let roleInList = roles[user._role.name];
-      let editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
-      let removeTeamMemberLink = paths.teamMembers.delete.replace(':externalId', user.externalId);
+    const onSuccess = (user) => {
+      const hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
+      const roleInList = roles[user._role.name];
+      const editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
+      const removeTeamMemberLink = paths.teamMembers.delete.replace(':externalId', user.externalId);
 
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
@@ -101,26 +101,40 @@ module.exports = {
    */
   delete: (req, res) => {
 
-    let userToRemoveId = req.params.externalId;
-    let removerId = req.user.externalId;
-    let serviceId = req.user.services[0].external_id;
-    let correlationId = req.correlationId;
+    const userToRemoveId = req.params.externalId;
+    const removerId = req.user.externalId;
+    const serviceId = req.user.services[0].external_id;
+    const correlationId = req.correlationId;
 
     if (userToRemoveId === removerId) {
       errorResponse(req, res, 'Not allowed to delete a user itself');
       return;
     }
 
-    let onSuccess = (username) => {
+    const onSuccess = (username) => {
       req.flash('generic', username + ' was successfully removed');
       res.redirect(paths.teamMembers.index);
     };
 
-    console.log('>>>>>>>>>>>>>>>> correlationId', correlationId);
+    const onError = () => {
+      const messageUserHasBeenDeleted = {
+        error: {
+          title: 'This person has already been removed',
+          message: 'This person has already been removed by another administrator.'
+        },
+        link: {
+          link: '/team-members',
+          text: 'View all team members'
+        },
+        enable_link: true
+      };
+      successResponse(req, res, 'error_logged_in', messageUserHasBeenDeleted)
+    };
+
     return userService.findByExternalId(userToRemoveId, correlationId)
       .then(user => userService.delete(serviceId, removerId, userToRemoveId, correlationId).then(() => user.username))
       .then((username) => onSuccess(username))
-      .catch(() => errorResponse(req, res, 'Unable to delete user'));
+      .catch(onError);
   },
 
   /**
@@ -130,7 +144,7 @@ module.exports = {
    */
   profile: (req, res) => {
 
-    let onSuccess = (user) => {
+    const onSuccess = (user) => {
       successResponse(req, res, 'services/team_member_profile', {
         username: user.username,
         email: user.email,
