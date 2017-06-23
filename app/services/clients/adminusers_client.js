@@ -8,6 +8,7 @@ let User = require('../../models/user').User;
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
 
 const SERVICE_NAME = 'adminusers';
+const HEADER_USER_CONTEXT = 'GovUkPay-User-Context';
 
 /**
  * @private
@@ -583,17 +584,14 @@ module.exports = function (clientOptions = {}) {
 
   let deleteUser = (serviceId, removerId, userId) => {
 
-    let params = {
+    const params = {
       correlationId: correlationId,
-      payload: {
-        remover_id: removerId
-      }
+      headers: {}
     };
-
-    let url = `${serviceUserResource}/${serviceId}/users/${userId}`;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
+    const url = `${serviceUserResource}/${serviceId}/users/${userId}`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -604,10 +602,10 @@ module.exports = function (clientOptions = {}) {
       userRemover: removerId,
       service: SERVICE_NAME
     };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
     requestLogger.logRequestStart(context);
 
+    params.headers[HEADER_USER_CONTEXT] = removerId;
     baseClient.delete(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 

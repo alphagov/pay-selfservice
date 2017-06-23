@@ -1,20 +1,17 @@
-let Pact = require('pact');
-let helpersPath = __dirname + '/../../test_helpers/';
-let pactProxy = require(helpersPath + '/pact_proxy.js');
-let chai = require('chai');
-let chaiAsPromised = require('chai-as-promised');
-let getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-let PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
-const {somethingLike: like} = Pact.Matchers;
+const Pact = require('pact');
+const helpersPath = __dirname + '/../../test_helpers/';
+const pactProxy = require(helpersPath + '/pact_proxy.js');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
+const PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+const SERVICES_PATH = '/v1/api/services';
+const mockPort = Math.floor(Math.random() * 65535);
+const mockServer = pactProxy.create('localhost', mockPort);
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+const expect = chai.expect;
 
 chai.use(chaiAsPromised);
-
-const expect = chai.expect;
-const SERVICES_PATH = '/v1/api/services';
-let mockPort = Math.floor(Math.random() * 65535);
-let mockServer = pactProxy.create('localhost', mockPort);
-
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
 
 describe('adminusers client - delete user', function () {
 
@@ -41,23 +38,22 @@ describe('adminusers client - delete user', function () {
 
   describe('delete user API', function () {
 
-    let service_id = "pact-delete-service-id";
-    let remover_id = "pact-delete-remover-id";
-    let user_id = "pact-delete-user-id";
+    const serviceId = "pact-delete-service-id";
+    const removerId = "pact-delete-remover-id";
+    const userId = "pact-delete-user-id";
 
     context('delete user API - success', () => {
 
-      const removerBodyExpectation = {
-        'remover_id': like(remover_id)
-      };
-
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${service_id}/users/${user_id}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
             .withState('a user and user admin exists in service with the given ids before a delete operation')
             .withUponReceiving('a valid delete user from service request')
             .withMethod('DELETE')
-            .withRequestBody(removerBodyExpectation)
+            .withRequestHeaders({
+              'Accept': 'application/json',
+              'GovUkPay-User-Context': removerId
+            })
             .withResponseHeaders({})
             .withStatusCode(204)
             .build())
@@ -70,57 +66,24 @@ describe('adminusers client - delete user', function () {
       });
 
       it('should delete a user successfully', function (done) {
-        adminusersClient.deleteUser(service_id, remover_id, user_id).should.be.fulfilled
+        adminusersClient.deleteUser(serviceId, removerId, userId).should.be.fulfilled
           .then(() => {
           })
           .should.notify(done);
       });
     });
 
-    context('delete user API - missing remover - bad request', () => {
-
-      let empty_remover_id = ' ';
-      const removerBodyExpectation = {
-        'remover_id': like(empty_remover_id)
-      };
-
-      beforeEach((done) => {
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${service_id}/users/${user_id}`)
-            .withUponReceiving('an invalid delete user from service request as remover is missing')
-            .withMethod('DELETE')
-            .withRequestBody(removerBodyExpectation)
-            .withResponseHeaders({})
-            .withStatusCode(400)
-            .build())
-          .then(() => done())
-          .catch(e => console.log(e));
-      });
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      });
-
-      it('should respond 400 when required fields missing', function (done) {
-        adminusersClient.deleteUser(service_id, empty_remover_id, user_id).should.be.rejected
-          .then((response) => {
-            expect(response.errorCode).to.equal(400);
-          }).should.notify(done);
-      });
-    });
-
     context('delete user API - remove user itself - conflict', () => {
 
-      const removerBodyExpectation = {
-        'remover_id': like(remover_id)
-      };
-
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${service_id}/users/${remover_id}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${removerId}`)
             .withUponReceiving('a valid delete user from service request but remover is equal to user to be removed')
             .withMethod('DELETE')
-            .withRequestBody(removerBodyExpectation)
+            .withRequestHeaders({
+              'Accept': 'application/json',
+              'GovUkPay-User-Context': removerId
+            })
             .withResponseHeaders({})
             .withStatusCode(409)
             .build())
@@ -133,7 +96,7 @@ describe('adminusers client - delete user', function () {
       });
 
       it('should conflict when remover and user to delete coincide', function (done) {
-        adminusersClient.deleteUser(service_id, remover_id, remover_id).should.be.rejected
+        adminusersClient.deleteUser(serviceId, removerId, removerId).should.be.rejected
           .then((response) => {
             expect(response.errorCode).to.equal(409);
           })
@@ -143,18 +106,17 @@ describe('adminusers client - delete user', function () {
 
     context('delete user API - user does not exist - not found', () => {
 
-      let other_user_id = "user-does-not-exist";
-
-      const removerBodyExpectation = {
-        'remover_id': like(remover_id)
-      };
+      const other_user_id = "user-does-not-exist";
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${service_id}/users/${other_user_id}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${other_user_id}`)
             .withUponReceiving('an invalid delete user from service request as user does not exist')
             .withMethod('DELETE')
-            .withRequestBody(removerBodyExpectation)
+            .withRequestHeaders({
+              'Accept': 'application/json',
+              'GovUkPay-User-Context': removerId
+            })
             .withResponseHeaders({})
             .withStatusCode(404)
             .build())
@@ -167,9 +129,42 @@ describe('adminusers client - delete user', function () {
       });
 
       it('should return not found when resource is not found (user or service)', function (done) {
-        adminusersClient.deleteUser(service_id, remover_id, other_user_id).should.be.rejected
+        adminusersClient.deleteUser(serviceId, removerId, other_user_id).should.be.rejected
           .then((response) => {
             expect(response.errorCode).to.equal(404);
+          })
+          .should.notify(done);
+      });
+    });
+
+    context('delete user API - user context (remover) does not exist - forbidden', () => {
+
+      const nonExistentRemoverId = "user-does-not-exist";
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
+            .withUponReceiving('a non existent user context ')
+            .withMethod('DELETE')
+            .withRequestHeaders({
+              'Accept': 'application/json',
+              'GovUkPay-User-Context': nonExistentRemoverId
+            })
+            .withResponseHeaders({})
+            .withStatusCode(403)
+            .build())
+          .then(() => done())
+          .catch(e => console.log(e));
+      });
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      });
+
+      it('should return not found when resource is not found (user or service)', function (done) {
+        adminusersClient.deleteUser(serviceId, nonExistentRemoverId, userId).should.be.rejected
+          .then((response) => {
+            expect(response.errorCode).to.equal(403);
           })
           .should.notify(done);
       });
