@@ -63,7 +63,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .get(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(200)
@@ -87,7 +87,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .get(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
@@ -108,7 +108,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .get(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
@@ -122,7 +122,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .get(updatePermissionPath(userInSession.externalId))
         .set('Accept', 'application/json')
         .expect(500)
@@ -148,7 +148,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -171,7 +171,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -189,7 +189,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(userInSession.externalId))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -212,7 +212,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(404);
 
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -239,7 +239,7 @@ describe('user permissions update controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -260,7 +260,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       let nonExistentRoleId = '999';
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -287,7 +287,7 @@ describe('user permissions update controller', function () {
       adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
         .reply(409);
 
-      return supertest(app)
+      supertest(app)
         .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')

@@ -43,7 +43,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -61,7 +61,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
       mockRegisterAccountCookie.telephone_number = '123456789';
 
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -75,7 +75,7 @@ describe('register user controller', function () {
     });
 
     it('should display error when email and/or code is not in the cookie', function (done) {
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -95,7 +95,7 @@ describe('register user controller', function () {
 
     it('should error if cookie details are missing', function (done) {
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -117,7 +117,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
       const invalidPhone = '123456789';
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -144,7 +144,7 @@ describe('register user controller', function () {
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/generate`)
         .reply(200);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -168,7 +168,7 @@ describe('register user controller', function () {
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/generate`)
         .reply(404);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -195,7 +195,7 @@ describe('register user controller', function () {
 
     it('should error if cookie details are missing', function (done) {
 
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -212,7 +212,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -236,7 +236,7 @@ describe('register user controller', function () {
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
         .reply(201, validUserResponse);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -256,7 +256,7 @@ describe('register user controller', function () {
 
     it('should error if cookie details are missing', function (done) {
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -277,7 +277,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com';
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -299,7 +299,7 @@ describe('register user controller', function () {
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
         .reply(404);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -329,7 +329,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf';
       mockRegisterAccountCookie.telephone_number = telephoneNumber;
 
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -342,7 +342,7 @@ describe('register user controller', function () {
     });
 
     it('should display error when email and/or code is not in the cookie', function (done) {
-      return supertest(app)
+      supertest(app)
         .get(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('x-request-id', 'bob')
@@ -369,7 +369,7 @@ describe('register user controller', function () {
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/resend`)
         .reply(200);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -393,7 +393,7 @@ describe('register user controller', function () {
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/resend`)
         .reply(404);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -416,7 +416,7 @@ describe('register user controller', function () {
 
       const invalidPhone = '123456789';
 
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -435,7 +435,7 @@ describe('register user controller', function () {
 
     it('should error if cookie details are missing', function (done) {
       const telephoneNumber = '12345678901';
-      return supertest(app)
+      supertest(app)
         .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
