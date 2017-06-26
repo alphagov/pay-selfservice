@@ -112,7 +112,7 @@
     "portfinder": "^0.4.0",
     "proxyquire": "~1.8.0",
     "should": "^11.2.1",
-    "sinon": "^1.17.3",
+    "sinon": "^2.3.5",
     "superagent": "^1.2.0",
     "supertest": "^1.0.1",
     "supertest-session": "^2.0.1"
