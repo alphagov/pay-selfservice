@@ -280,6 +280,54 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * Creates a new gateway account
+   *
+   * @param paymentProvider
+   * @param type
+   * @param description
+   * @param analyticsId
+   * @param correlationId
+   *
+   * @returns {*|Constructor|promise}
+   */
+  createGatewayAccount: function (paymentProvider, type, description, analyticsId, correlationId) {
+    const url = this.connectorUrl + ACCOUNTS_API_PATH;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'create a gateway account',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    const params = {
+      payload: {
+        payment_provider: paymentProvider
+      }
+    }
+    if (type) {
+      params.payload.type = type;
+    }
+    if (description) {
+      params.payload.description = description;
+    }
+    if (analyticsId) {
+      params.payload.analytics_id = analyticsId;
+    }
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  },
+
+  /**
    *
    * @param {Object} params
    * @param {Function} successCallback
