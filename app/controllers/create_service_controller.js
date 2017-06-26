@@ -126,5 +126,44 @@ module.exports = {
     } else {
       return errorResponse(req, res, 'Invalid route', 404);
     }
+  },
+
+  submitOtpVerify: (req, res) => {
+    const correlationId = req.correlationId;
+    const code = req.body.code;
+    const otpCode = req.body['verify-code'];
+
+    const handleInvalidOtp = (message) => {
+      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
+      req.flash('genericError', message);
+      res.redirect(303, paths.selfCreateService.otpVerify);
+    };
+
+    const handleError = (req, res, err) => {
+      logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`);
+      switch (err.errorCode) {
+        case 401:
+          handleInvalidOtp('Invalid verification code');
+          break;
+        case 404:
+          errorResponse(req, res, 'Unable to process registration at this time', 404);
+          break;
+        case 410:
+          errorResponse(req, res, 'This invitation is no longer valid', 410);
+          break;
+        default:
+          errorResponse(req, res, 'Unable to process registration at this time', 500);
+      }
+    };
+
+    const validateServiceOtpCode = (code, otpCode) => {
+      registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+        .then(() => res.send(200))
+        .catch(
+          (err) => handleError(req, res, err)
+        );
+    };
+
+    return validateServiceOtpCode(code, otpCode);
   }
 };
