@@ -7,8 +7,8 @@ module.exports = {
    *
    * @returns {boolean}
    */
-  validate: function(user, session) {
-    return _.get(user, 'sessionVersion', 0) === session.version;
+  validate: function (user, session) {
+    return _.get(user, 'sessionVersion', 0) === _.get(session, 'version');
   },
 
 };

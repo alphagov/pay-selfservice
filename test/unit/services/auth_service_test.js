@@ -19,8 +19,8 @@ const mockSession = require('../../test_helpers/mock_session.js');
 // Assignments and Variables
 const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
 const mockUser = opts => mockSession.getUser(opts);
-const mockByPass = next => next()
-const response = {status: () => {}, render: () => {}, redirect: () => {}}
+const mockByPass = next => next();
+const response = {status: () => {}, render: () => {}, redirect: () => {}};
 const validRequest = () => {
   return {
     session: {
@@ -32,7 +32,8 @@ const validRequest = () => {
         }
       },
       reload: mockByPass,
-      save: mockByPass
+      save: mockByPass,
+      version: 0
     },
     user: mockUser(),
     headers: {}
@@ -168,7 +169,7 @@ describe('auth service', function () {
       const req = {
         headers: {'x-request-id': 'corrId'}
       };
-      const user = {username:'user@example.com'};
+      const user = {username: 'user@example.com'};
       const password = 'correctPassword';
       const doneSpy = sinon.spy(() => {});
       const userServiceMock = {
@@ -218,6 +219,49 @@ describe('auth service', function () {
           done();
         });
     });
+  });
+
+  describe('localDirectStrategy', function () {
+
+    it('should successfully mark a user as second factor authenticated', function (done) {
+
+      const authService = (userMock) => {
+        return proxyquire(__dirname + '/../../../app/services/auth_service.js',
+          {'./user_service.js': userMock});
+      };
+      const user = {username: 'user@example.com', sessionVersion: 1};
+      const doneSpy = sinon.spy();
+      const registerInviteCookie = {
+        userExternalId: '874riuwhf',
+        destroy: sinon.spy()
+      };
+      const req = {
+        headers: {'x-request-id': 'corrId'},
+        register_invite: registerInviteCookie,
+        user: user,
+        session: {}
+      };
+      const userServiceMock = {
+        findByExternalId: () => {
+          const defer = q.defer();
+          defer.resolve(user);
+          return defer.promise;
+        }
+      };
+
+      authService(userServiceMock).localDirectStrategy(req, doneSpy)
+        .then(() => {
+          expect(registerInviteCookie.destroy.called).to.equal(true);
+          expect(req.session.secondFactor).to.equal('totp');
+          expect(doneSpy.calledWithExactly(null, user)).to.equal(true);
+          expect(req.session.version).to.equal(1);
+          done();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    });
+
   });
 
   describe('getCurrentGatewayAccountId', function () {
