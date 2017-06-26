@@ -111,7 +111,7 @@ module.exports = {
     const proceedToRegistration = () => {
       registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
         .then(() => {
-          _.set(req, 'session.pageData.submitRegistration', {
+          _.set(req, 'session.pageData.submitRegistrationPageData', {
             requesterEmail: email
           });
           res.redirect(303, paths.selfCreateService.creationConfirmed);
