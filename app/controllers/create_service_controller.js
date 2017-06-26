@@ -117,6 +117,26 @@ module.exports = {
         .then(proceedToRegistration)
         .catch(
           (err) => handleError(err));
+  },
+
+  submitOtpVerify: (req, res) => {
+    const correlationId = req.correlationId;
+    const code = req.body.code;
+    const otpCode = req.body['verify-code'];
+
+    const handleError = err => {
+
+    };
+
+    const validateServiceOtpCode = (code, otpCode) => {
+      registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+        .then(() => res.send(200))
+        .catch(
+          (err) => handleError(err)
+        );
+    };
+
+    return validateServiceOtpCode(code, otpCode);
   }
 
 };
