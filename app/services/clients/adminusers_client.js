@@ -511,6 +511,38 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  let verifyOtpForServiceInvite = (inviteCode, verificationCode) => {
+    let params = {
+      correlationId: correlationId,
+      payload: {
+        code: inviteCode,
+        otp: verificationCode
+      }
+    };
+
+    let url = `${inviteResource}/otp/validate/service`;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit service invite otp code',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   let resendOtpCode = (code, phoneNumber) => {
     let params = {
       correlationId: correlationId,
@@ -629,6 +661,7 @@ module.exports = function (clientOptions = {}) {
     verifyOtpAndCreateUser: verifyOtpAndCreateUser,
     resendOtpCode: resendOtpCode,
     submitServiceRegistration: submitServiceRegistration,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    verifyOtpForServiceInvite: verifyOtpForServiceInvite
   };
 };
