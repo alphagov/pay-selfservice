@@ -28,5 +28,43 @@ module.exports = {
       errors: ["service not found"]
     };
     return pactServices.withPactified(response);
+  },
+
+  validCreateServiceRequest: (opts) => {
+    opts = opts || {};
+    const accountIds = opts.accountIds || ['2'];
+
+    const data = {
+      gateway_account_ids: accountIds
+    };
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data);
+      },
+      getPlain: () => {
+        return data;
+      }
+    };
+  },
+
+  validCreateServiceResponse: (opts) => {
+    opts = opts || {};
+    const externalId = opts.externalId || 'externalId';
+    const serviceName = opts.serviceName || 'serviceName';
+
+    const data = {
+      external_id: externalId,
+      name: serviceName
+    };
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data);
+      },
+      getPlain: () => {
+        return data;
+      }
+    };
   }
 };
