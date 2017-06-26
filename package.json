@@ -113,7 +113,7 @@
     "proxyquire": "~1.8.0",
     "should": "^11.2.1",
     "sinon": "^2.3.5",
-    "superagent": "^1.2.0",
+    "superagent": "^3.5.2",
     "supertest": "^3.0.0",
     "supertest-session": "^3.0.0"
   },
