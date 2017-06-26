@@ -114,8 +114,8 @@
     "should": "^11.2.1",
     "sinon": "^2.3.5",
     "superagent": "^1.2.0",
-    "supertest": "^1.0.1",
-    "supertest-session": "^2.0.1"
+    "supertest": "^3.0.0",
+    "supertest-session": "^3.0.0"
   },
   "snyk": true
 }
