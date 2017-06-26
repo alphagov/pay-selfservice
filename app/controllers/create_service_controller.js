@@ -40,8 +40,8 @@ module.exports = {
    * @param res
    */
   showRequestedPage: (req, res) => {
-    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
-    _.unset(req, 'session.pageData.submitRegistration');
+    const requester_email = _.get(req, 'session.pageData.submitRegistrationPageData.requesterEmail', '');
+    _.unset(req, 'session.pageData.submitRegistrationPageData');
     res.render('self_create_service/confirmation', {
       requester_email
     });
@@ -122,33 +122,24 @@ module.exports = {
     };
 
     return validateRegistrationInputs(email, telephoneNumber, password)
-      .then(proceedToRegistration)
-      .catch(
-        (err) => handleError(err));
+        .then(proceedToRegistration)
+        .catch(
+          (err) => handleError(err));
   },
 
-  createPopulatedService: (req, res) => {
+  submitOtpVerify: (req, res) => {
     const correlationId = req.correlationId;
-    const email = undefined;//req.register_invite.email;
-    const phoneNumber = req.register_invite.telephone_number;
-    const role = 'admin';
+    const code = req.register_invite.code;
+    const otpCode = req.body['verify-code'];
 
-    const redirectToAutoLogin = (req, res) => {
-      res.redirect(303, paths.selfCreateService.serviceNaming);
+    const handleInvalidOtp = (message) => {
+      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
+      req.flash('genericError', message);
+      res.redirect(303, paths.selfCreateService.otpVerify);
     };
 
-    const handleOtpError = (req, res, err) => {
-      const handleInvalidOtp = (message) => {
-        // logger.debug(`[requestId=${correlationId}] invalid user input - otp code`);
-
-        console.log('submitOtpVerify failed' + JSON.stringify(err));
-
-        req.flash('genericError', message);
-        res.redirect(303, paths.selfCreateService.otpVerify);
-      };
-
+    const handleError = (req, res, err) => {
       logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`);
-
       switch (err.errorCode) {
         case 401:
           handleInvalidOtp('Invalid verification code');
@@ -164,70 +155,15 @@ module.exports = {
       }
     };
 
-    const handleError = (req, res, err) => {
-      errorResponse(req, res, 'Unable to process registration at this time', 500);
+    const validateServiceOtpCode = (code, otpCode) => {
+      registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+        .then(() => res.send(200))
+        .catch(
+          (err) => handleError(req, res, err)
+        );
     };
 
-
-    const handleOrchastration = () => {
-      registrationService.createPopulatedService({email, role, phoneNumber}, correlationId)
-        .then((user) => {
-          loginController.setupDirectLoginAfterRegister(req, res, user);
-          redirectToAutoLogin(req, res);
-        })
-        .catch(err => {
-          console.log('createPopulatedService failed' + JSON.stringify(err));
-          handleError(err);
-        });
-    };
-
-    return submitOtpVerify(req)
-      .then(handleOrchastration)
-      .catch(err => handleOtpError(err));
-  },
-
-  submitServiceNameChange: (req, res) => {
-    console.log('=============== ' + JSON.stringify(req.register_invite));
-    const correlationId = req.correlationId;
-    const serviceExternalId = req.register_invite.service_ext_id;
-    const newName = req.body['service-name'];
-
-    const submitNameChange = (serviceExternalId, newName, correlationId) => {
-      return registrationService.renameService(serviceExternalId, newName, correlationId);
-    };
-
-    const redirectToHomePage = res => {
-      res.redirect(303, paths.user.loggedIn);
-    };
-
-
-    const handleError = (req, res, err) => {
-      // logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`);
-      console.log('ERROR!1 : ' + JSON.stringify(err));
-      console.log('ERROR!2 : ' + err);
-      switch (err.errorCode) {
-        case 401:
-          handleInvalidOtp('Invalid verification code');
-          break;
-        case 404:
-          errorResponse(req, res, 'Unable to process registration at this time', 404);
-          break;
-        case 410:
-          errorResponse(req, res, 'This invitation is no longer valid', 410);
-          break;
-        default:
-          errorResponse(req, res, 'Unable to process registration at this time', 500);
-      }
-      console.log('ERROR!3 : ' + JSON.stringify(err));
-      // redirectToHomePage(res);
-    };
-
-
-    return submitNameChange(serviceExternalId, newName, correlationId)
-      .then(() => {
-        redirectToHomePage(res);
-      })
-      .catch(err => handleError(req, res, err));
+    return validateServiceOtpCode(code, otpCode);
   }
 
 };

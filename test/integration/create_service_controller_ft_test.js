@@ -26,6 +26,9 @@ describe('create service otp validation', function () {
 
   it('should return 200 on receiving valid otp', function (done) {
     const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest();
+    const registerInviteData = {
+      code: validServiceInviteOtpRequest.getPlain().code
+    };
 
     adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
       .reply(200);
@@ -44,6 +47,9 @@ describe('create service otp validation', function () {
 
   it('should redirect to verify otp page on invalid otp code', function (done) {
     const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest();
+    const registerInviteData = {
+      code: validServiceInviteOtpRequest.getPlain().code
+    };
 
     adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
       .reply(401);
@@ -63,11 +69,14 @@ describe('create service otp validation', function () {
 
   it('should error if invite code is not found', function (done) {
     const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest();
+    const registerInviteData = {
+      code: validServiceInviteOtpRequest.getPlain().code
+    };
 
     adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
       .reply(404);
 
-    app = session.getAppWithLoggedOutSession(getApp());
+    app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData);
 
     supertest(app)
       .post(paths.selfCreateService.otpVerify)
@@ -87,6 +96,9 @@ describe('create service otp validation', function () {
 
   it('should error if invite code is no longer valid (expired)', function (done) {
     const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest();
+    const registerInviteData = {
+      code: validServiceInviteOtpRequest.getPlain().code
+    };
 
     adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
       .reply(410);
