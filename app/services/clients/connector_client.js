@@ -280,6 +280,35 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * Creates a new gateway account
+   * @param params
+   *          An object with the following elements;
+   *            correlationId (optional)
+   *@return {Promise}
+   */
+  createAccount: function (params) {
+    var url = this.connectorUrl + ACCOUNT_FRONTEND_PATH;
+    let defer = q.defer();
+    let startTime = new Date();
+    let context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'POST',
+      description: 'create a gateway account',
+      service: SERVICE_NAME
+    };
+
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  },
+
+  /**
    *
    * @param {Object} params
    * @param {Function} successCallback
