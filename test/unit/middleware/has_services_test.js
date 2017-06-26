@@ -48,7 +48,7 @@ describe('user has services middleware', function () {
     hasServices(req, response, next);
 
     expect(next.notCalled).to.be.true;
-    assert(render.calledWith("error", {message: 'User does not belong to any service'}));
+    assert(render.calledWith("error", {message: 'This user does not belong to any service. Ask your service administrator to invite you to GOV.UK Pay.'}));
     assert(status.calledWith(200));
 
     done();

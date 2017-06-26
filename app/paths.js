@@ -70,6 +70,7 @@ module.exports = {
   teamMembers: {
     index: '/team-members',
     show: '/team-members/:externalId',
+    delete: '/team-members/:externalId/delete',
     permissions: '/team-members/:externalId/permissions',
     invite: '/team-members-invite'
   },

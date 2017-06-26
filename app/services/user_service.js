@@ -134,6 +134,15 @@ module.exports = {
    */
   inviteUser: function (invitee, senderId, serviceId, roleName, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName);
-  }
+  },
 
+  /**
+   *
+   * @param serviceId
+   * @param removerId
+   * @param userId
+   */
+  delete: function (serviceId, removerId, userId, correlationId) {
+      return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+  }
 };
