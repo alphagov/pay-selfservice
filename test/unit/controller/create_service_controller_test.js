@@ -12,6 +12,9 @@ describe('Error handler register service', function () {
   let correlationId, req, res, flashStub, redirectStub, renderStub, statusStub, email, telephoneNumber, password;
 
   beforeEach(() => {
+
+    process.env.SERVICE_REGISTRATION_ENABLED = true;
+
     correlationId = 'abcde12345';
     email = 'be@gov.uk';
     telephoneNumber = '07512345678'
@@ -42,6 +45,8 @@ describe('Error handler register service', function () {
   });
 
   afterEach(() => {
+    delete process.env.SERVICE_REGISTRATION_ENABLED;
+
     flashStub.reset();
     redirectStub.reset();
     renderStub.reset();

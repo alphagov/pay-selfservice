@@ -17,13 +17,17 @@ module.exports = {
    * @param res
    */
   showRegistration: (req, res) => {
-    const email = _.get(req, 'session.pageData.submitRegistrationPageData.email', '');
-    const telephone_number = _.get(req, 'session.pageData.submitRegistrationPageData.telephone_number', '');
-    _.unset(req, 'session.pageData.submitRegistrationPageData');
-    res.render('self_create_service/index', {
-      email,
-      telephone_number
-    });
+    if (process.env.SERVICE_REGISTRATION_ENABLED === 'true') {
+      const email = _.get(req, 'session.pageData.submitRegistrationPageData.email', '');
+      const telephone_number = _.get(req, 'session.pageData.submitRegistrationPageData.telephone_number', '');
+      _.unset(req, 'session.pageData.submitRegistrationPageData');
+      res.render('self_create_service/index', {
+        email,
+        telephone_number
+      });
+    } else {
+      errorResponse(req, res, 'Invalid route', 404);
+    }
   },
 
   /**
@@ -113,10 +117,13 @@ module.exports = {
         }).catch((err) => handleError(err));
     };
 
-    return validateRegistrationInputs(email, telephoneNumber, password)
+    if (process.env.SERVICE_REGISTRATION_ENABLED === 'true') {
+      return validateRegistrationInputs(email, telephoneNumber, password)
         .then(proceedToRegistration)
         .catch(
           (err) => handleError(err));
+    } else {
+      return errorResponse(req, res, 'Invalid route', 404);
+    }
   }
-
 };
