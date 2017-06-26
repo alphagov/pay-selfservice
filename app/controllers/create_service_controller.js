@@ -121,7 +121,7 @@ module.exports = {
 
   submitOtpVerify: (req, res) => {
     const correlationId = req.correlationId;
-    const code = req.body.code;
+    const code = req.register_invite.code;
     const otpCode = req.body['verify-code'];
 
     const handleInvalidOtp = (message) => {
