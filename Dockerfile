@@ -38,6 +38,6 @@ RUN apk del ruby openssl
 # Swap glibc for libc6-compat which is a safer package to use for production as it is officially supported by
 # alpine base image distribution.
 # Note: glibc is only required to run pact-mock_service.
-RUN apk del glibc && apk add libc6-compat
+RUN apk del glibc python make g++ && apk add libc6-compat
 
 CMD bash ./docker-startup.sh
