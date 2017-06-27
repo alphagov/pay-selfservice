@@ -3,9 +3,32 @@ var dates     = require('../utils/dates.js');
 var logger    = require('winston');
 var json2csv  = require('json2csv');
 
+
+
 module.exports = function (data) {
+
   logger.debug('Converting transactions list from json to csv');
   var defer = q.defer();
+
+  var sanitiseAgainstSpreadsheetFormulaInjection = function(fieldValue) {
+
+        if (typeof(fieldValue) !== 'string') { return fieldValue; }
+
+        var escapingCharacter = "'";
+
+        var injectionTriggerCharacters = ['=', '@', '+', '-'];
+
+        for (var i = 0; i < injectionTriggerCharacters.length; i++) {
+            injectionTriggerCharacter = injectionTriggerCharacters[i];
+            if (fieldValue.startsWith(injectionTriggerCharacter)) {
+                fieldValue = escapingCharacter + fieldValue;
+                break;
+            }
+        }
+
+        return fieldValue;
+  }
+
   json2csv(
     {
       data: data,
@@ -13,15 +36,21 @@ module.exports = function (data) {
       fields: [
         {
           label: 'Reference',
-          value: "reference"
+            value: function(row) {
+                return sanitiseAgainstSpreadsheetFormulaInjection(row.reference);
+            }
         },
         {
           label: 'Description',
-          value: "description"
+          value: function(row) {
+            return sanitiseAgainstSpreadsheetFormulaInjection(row.description);
+          }
         },
         {
           label: 'Email',
-          value: "email"
+            value: function(row) {
+                return sanitiseAgainstSpreadsheetFormulaInjection(row.email);
+            }
         },
         {
           label: "Amount",
@@ -31,43 +60,78 @@ module.exports = function (data) {
         },
         {
           label: 'Card Brand',
-          value: "card_details.card_brand"
+            value: function(row) {
+                return row.card_details
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.card_details.card_brand)
+                    : null;
+
+            }
         },
         {
           label: 'Cardholder Name',
-          value: "card_details.cardholder_name"
+            value: function(row) {
+                return row.card_details
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.card_details.cardholder_name)
+                    : null;
+            }
         },
         {
           label: 'Card Expiry Date',
-          value: "card_details.expiry_date"
+            value: function(row) {
+                return row.card_details
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.card_details.expiry_date)
+                    : null;
+            }
         },
         {
           label: 'Card Number',
-          value: "card_details.last_digits_card_number"
+            value: function(row) {
+                return  row.card_details
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.card_details.last_digits_card_number)
+                    : null;
+            }
         },
         {
           label: 'State',
-          value: "state.status"
+            value: function(row) {
+                return  row.state
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.state.status)
+                    : null;
+            }
         },
         {
           label: 'Finished',
-          value: "state.finished"
+            value: function(row) {
+                return  row.state
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.state.finished)
+                    : null;
+            }
         },
         {
           label: 'Error Code',
-          value: "state.code"
+            value: function(row) {
+                return  row.state
+                    ? sanitiseAgainstSpreadsheetFormulaInjection(row.state.code)
+                    : null;
+            }
         },
         {
           label: 'Error Message',
-          value: "state.message"
+            value: function(row) {
+                return sanitiseAgainstSpreadsheetFormulaInjection(row.state.message);
+            }
         },
         {
           label: 'Provider ID',
-          value: "gateway_transaction_id"
+            value: function(row) {
+                return sanitiseAgainstSpreadsheetFormulaInjection(row.gateway_transaction_id);
+            }
         },
         {
           label: 'GOV.UK Payment ID',
-          value: "charge_id"
+            value: function(row) {
+                return sanitiseAgainstSpreadsheetFormulaInjection(row.charge_id);
+            }
         },
         {
           label: 'Date Created',

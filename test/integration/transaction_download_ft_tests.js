@@ -157,6 +157,65 @@ describe('Transaction download endpoints', function () {
         });
     });
 
+      // @see https://payments-platform.atlassian.net/browse/PP-2254
+      it('should download a csv file comprising a list of transactions and preventing Spreadsheet Formula Injection', function (done) {
+          var results = [{
+              amount: 12345,
+              state: {status: 'succeeded', finished: false},
+              card_brand: 'Visa',
+              description: '=calc+z!A0',
+              reference: '+red',
+              email: '-alice.111@mail.fake',
+              links: [],
+              charge_id: 'charge1',
+              gateway_transaction_id: 'transaction-1',
+              return_url: 'https://demoservice.pymnt.localdomain:443/return/red',
+              payment_provider: 'sandbox',
+              created_date: '2016-05-12T16:37:29.245Z',
+              card_details: {
+                  billing_address: {
+                      city: 'TEST01',
+                      country: 'GB',
+                      line1: 'TEST',
+                      line2: 'TEST - DO NOT PROCESS',
+                      postcode: 'SE1 3UZ'
+                  },
+                  card_brand: '@Visa',
+                  cardholder_name: 'TEST01',
+                  expiry_date: '12/19',
+                  last_digits_card_number: '4242'
+              },
+          }];
+          mockJson = {
+              results: results,
+              _links: {
+                  next_page: {href: 'http://localhost:8000/bar'}
+              }
+          };
+
+          var secondPageMock = nock("http://localhost:8000");
+
+          secondPageMock.get("/bar")
+              .reply(200, {
+                  results: results,
+              });
+
+          connectorMock_responds(200, mockJson, {});
+
+          download_transaction_list()
+              .expect(200)
+              .expect('Content-Type', 'text/csv; charset=utf-8')
+              .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+              .end(function (err, res) {
+                  if (err) return done(err);
+                  var csvContent = res.text;
+                  var arrayOfLines = csvContent.split("\n");
+                  expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created"');
+                  expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","succeeded",false,"","","transaction-1","charge1","12 May 2016 — 17:37:29"');
+                  done()
+              });
+      });
+
     it('should show error message on a bad request', function (done) {
 
       var errorMessage = 'Unable to download list of transactions.';
