@@ -46,7 +46,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
-    return supertest(app)
+    supertest(app)
       .get('/team-members')
       .set('Accept', 'application/json')
       .expect(200)
@@ -78,7 +78,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
-    return supertest(app)
+    supertest(app)
       .get('/team-members')
       .set('Accept', 'application/json')
       .expect(200)
@@ -108,7 +108,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
-    return supertest(app)
+    supertest(app)
       .get('/team-members')
       .set('Accept', 'application/json')
       .expect(200)
@@ -141,7 +141,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
-    return supertest(app)
+    supertest(app)
       .get(`/team-members/${EXTERNAL_ID_TO_VIEW}`)
       .set('Accept', 'application/json')
       .expect(200)
@@ -172,7 +172,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
-    return supertest(app)
+    supertest(app)
       .get('/my-profile')
       .set('Accept', 'application/json')
       .expect(200)
@@ -201,7 +201,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithSessionWithoutSecondFactor(getApp(), user_in_session);
 
-    return supertest(app)
+    supertest(app)
       .get('/my-profile')
       .set('Accept', 'application/json')
       .expect(302)
@@ -221,7 +221,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
-    return supertest(app)
+    supertest(app)
       .get(`/team-members/${EXTERNAL_ID_LOGGED_IN}`)
       .set('Accept', 'application/json')
       .expect(302)
@@ -250,7 +250,7 @@ describe('service users resource', function () {
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
-    return supertest(app)
+    supertest(app)
       .get(`/team-members/${EXTERNAL_ID_TO_VIEW}`)
       .set('Accept', 'application/json')
       .expect(500)
