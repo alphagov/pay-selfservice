@@ -8,6 +8,7 @@ const errorResponse = response.renderErrorView;
 const registrationService = require('../services/service_registration_service');
 const validations = require('../utils/registration_validations');
 const validateRegistrationInputs = validations.validateServiceRegistrationInputs;
+const serviceRegistrationEnabled = process.env.SERVICE_REGISTRATION_ENABLED === 'true';
 
 module.exports = {
 
@@ -17,10 +18,10 @@ module.exports = {
    * @param res
    */
   showRegistration: (req, res) => {
-    if (process.env.SERVICE_REGISTRATION_ENABLED === 'true') {
-      const email = _.get(req, 'session.pageData.submitRegistrationPageData.email', '');
-      const telephone_number = _.get(req, 'session.pageData.submitRegistrationPageData.telephone_number', '');
-      _.unset(req, 'session.pageData.submitRegistrationPageData');
+    if (serviceRegistrationEnabled) {
+      const email = _.get(req, 'session.pageData.submitRegistration.email', '');
+      const telephone_number = _.get(req, 'session.pageData.submitRegistration.telephone_number', '');
+      _.unset(req, 'session.pageData.submitRegistration');
       res.render('self_create_service/index', {
         email,
         telephone_number
@@ -36,8 +37,8 @@ module.exports = {
    * @param res
    */
   showRequestedPage: (req, res) => {
-    const requester_email = _.get(req, 'session.pageData.submitRegistrationPageData.requesterEmail', '');
-    _.unset(req, 'session.pageData.submitRegistrationPageData');
+    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
+    _.unset(req, 'session.pageData.submitRegistration');
     res.render('self_create_service/confirmation', {
       requester_email
     });
@@ -82,7 +83,7 @@ module.exports = {
     const password = req.body['password'];
 
     const handleErrorCode = (err) => {
-      _.set(req, 'session.pageData.submitRegistrationPageData', {
+      _.set(req, 'session.pageData.submitRegistration', {
         email,
         telephone_number: telephoneNumber
       });
@@ -110,14 +111,14 @@ module.exports = {
     const proceedToRegistration = () => {
       registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
         .then(() => {
-          _.set(req, 'session.pageData.submitRegistrationPageData', {
+          _.set(req, 'session.pageData.submitRegistration', {
             requesterEmail: email
           });
           res.redirect(303, paths.selfCreateService.creationConfirmed);
         }).catch((err) => handleError(err));
     };
 
-    if (process.env.SERVICE_REGISTRATION_ENABLED === 'true') {
+    if (serviceRegistrationEnabled) {
       return validateRegistrationInputs(email, telephoneNumber, password)
         .then(proceedToRegistration)
         .catch(
