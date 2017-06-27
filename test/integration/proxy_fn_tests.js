@@ -35,36 +35,41 @@ describe('request.js client', function () {
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write('{"message":"server-response"}');
         res.end();
-      }).listen(aPort);
+      }).listen(aPort, function() {
+
+        // create non proxied server
+        portfinder.getPort(function (err, aPort) {
+
+          nonProxiedServer = http.createServer(function (req, res) {
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.write('{"message":"non-proxied-server-response"}');
+            res.end();
+          }).listen(aPort, function() {
+
+            // create proxy server
+            portfinder.getPort(function (err, aPort) {
+
+              proxyServer = httpProxy
+                  .createProxyServer({target: {host: 'localhost', port: proxiedServer.address().port}})
+                  .listen(aPort);
+              proxyUrl = "http://localhost:" + aPort;
+
+              proxyServer.on('proxyRes', function (proxyRes, req, res) {
+                proxyRes.headers['X-Proxy-Header'] = 'touched by proxy';
+              });
+            });
+
+          });
+
+          nonProxiedServerPort = aPort;
+          nonProxiedServerUrl = "http://localhost:" + aPort;
+
+        });
+
+      });
 
       proxiedServerUrl = "http://localhost:" + aPort;
     });
-
-    // create non proxied server
-    portfinder.getPort(function (err, aPort) {
-
-      nonProxiedServer = http.createServer(function (req, res) {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write('{"message":"non-proxied-server-response"}');
-        res.end();
-      }).listen(aPort);
-      nonProxiedServerPort = aPort;
-      nonProxiedServerUrl = "http://localhost:" + aPort;
-    });
-
-    // create proxy server
-    portfinder.getPort(function (err, aPort) {
-
-      proxyServer = httpProxy
-        .createProxyServer({target: {host: 'localhost', port: proxiedServer.address().port}})
-        .listen(aPort);
-      proxyUrl = "http://localhost:" + aPort;
-
-      proxyServer.on('proxyRes', function (proxyRes, req, res) {
-        proxyRes.headers['X-Proxy-Header'] = 'touched by proxy';
-      });
-    });
-
 
   });
 

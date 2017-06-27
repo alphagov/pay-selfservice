@@ -36,7 +36,7 @@ describe('get account', function () {
       payment_provider: 'sandbox'
     });
 
-    return supertest(app)
+    supertest(app)
       .get('/service-name')
       .set('Accept', 'application/json')
       .expect(200)
