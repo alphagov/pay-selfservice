@@ -8,6 +8,7 @@ let User = require('../../models/user').User;
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
 
 const SERVICE_NAME = 'adminusers';
+const HEADER_USER_CONTEXT = 'GovUkPay-User-Context';
 
 /**
  * @private
@@ -510,6 +511,38 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  const verifyOtpForServiceInvite = (inviteCode, verificationCode) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        code: inviteCode,
+        otp: verificationCode
+      }
+    };
+
+    const url = `${inviteResource}/otp/validate/service`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit service invite otp code',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   let resendOtpCode = (code, phoneNumber) => {
     let params = {
       correlationId: correlationId,
@@ -581,6 +614,36 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  let deleteUser = (serviceId, removerId, userId) => {
+
+    const params = {
+      correlationId: correlationId,
+      headers: {}
+    };
+    const url = `${serviceUserResource}/${serviceId}/users/${userId}`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'DELETE',
+      description: 'delete a user from a service',
+      userDelete: userId,
+      userRemover: removerId,
+      service: SERVICE_NAME
+    };
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    requestLogger.logRequestStart(context);
+
+    params.headers[HEADER_USER_CONTEXT] = removerId;
+    baseClient.delete(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -597,6 +660,8 @@ module.exports = function (clientOptions = {}) {
     submitUserRegistration: submitUserRegistration,
     verifyOtpAndCreateUser: verifyOtpAndCreateUser,
     resendOtpCode: resendOtpCode,
-    submitServiceRegistration: submitServiceRegistration
+    submitServiceRegistration: submitServiceRegistration,
+    deleteUser: deleteUser,
+    verifyOtpForServiceInvite: verifyOtpForServiceInvite
   };
 };

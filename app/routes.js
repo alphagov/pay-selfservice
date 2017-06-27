@@ -55,6 +55,7 @@ module.exports.bind = function (app) {
 
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'));
 
+
   // APPLY GENERIC MIDDLEWARE
   app.use('*', (req,res,next) => {
     req.correlationId = req.headers[CORRELATION_HEADER] || '';
@@ -88,14 +89,14 @@ module.exports.bind = function (app) {
   // LOGIN
   app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet);
   app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.logUserin, getAccount, loginCtrl.postLogin);
-  app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, getAccount, loginCtrl.loggedIn);
+  app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, loginCtrl.loggedIn);
   app.get(user.noAccess, loginCtrl.noAccess);
   app.get(user.logOut, loginCtrl.logOut);
   app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet);
   app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost);
   app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf,  loginCtrl.otpLogIn);
   app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.logUserinOTP, loginCtrl.afterOTPLogin);
-  
+
   // FORGOTTEN PASSWORD
   app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet);
   app.post(user.forgottenPassword,  trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost);
@@ -184,6 +185,7 @@ module.exports.bind = function (app) {
   app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show);
   app.get(teamMembers.permissions, permission('users-service:create'), permissionController.index);
   app.post(teamMembers.permissions, permission('users-service:create'), permissionController.update);
+  app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete);
   app.get(user.profile, enforceUserAuthenticated, serviceUsersController.profile);
 
   // TEAM MEMBERS - INVITE
