@@ -36,7 +36,7 @@ describe('invite user controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .get(paths.teamMembers.invite)
         .set('Accept', 'application/json')
         .expect(200)
@@ -60,7 +60,7 @@ describe('invite user controller', function () {
         .reply(201, inviteFixtures.validInviteResponse(validInvite.getPlain()));
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.teamMembers.invite)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -82,7 +82,7 @@ describe('invite user controller', function () {
         .reply(409, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser).getPlain());
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.teamMembers.invite)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -105,7 +105,7 @@ describe('invite user controller', function () {
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
-      return supertest(app)
+      supertest(app)
         .post(paths.teamMembers.invite)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
