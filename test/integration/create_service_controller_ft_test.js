@@ -24,27 +24,6 @@ describe('create service otp validation', function () {
     done();
   });
 
-  it('should return 200 on receiving valid otp', function (done) {
-    const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest();
-    const registerInviteData = {
-      code: validServiceInviteOtpRequest.getPlain().code
-    };
-
-    adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
-      .reply(200);
-
-    app = session.getAppWithLoggedOutSession(getApp());
-    supertest(app)
-      .post(paths.selfCreateService.otpVerify)
-      .send({
-        code: validServiceInviteOtpRequest.getPlain().code,
-        'verify-code': validServiceInviteOtpRequest.getPlain().otp,
-        csrfToken: csrf().create('123'),
-      })
-      .expect(200)
-      .end(done);
-  });
-
   it('should redirect to verify otp page on invalid otp code', function (done) {
     const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest();
     const registerInviteData = {
@@ -54,9 +33,9 @@ describe('create service otp validation', function () {
     adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
       .reply(401);
 
-    app = session.getAppWithLoggedOutSession(getApp());
+    app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData);
     supertest(app)
-      .post(paths.selfCreateService.otpVerify)
+      .post('/create-service/verify-otp')
       .send({
         code: validServiceInviteOtpRequest.getPlain().code,
         'verify-code': validServiceInviteOtpRequest.getPlain().otp,
@@ -103,7 +82,7 @@ describe('create service otp validation', function () {
     adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
       .reply(410);
 
-    app = session.getAppWithLoggedOutSession(getApp());
+    app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData);
 
     supertest(app)
       .post(paths.selfCreateService.otpVerify)

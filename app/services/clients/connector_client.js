@@ -284,13 +284,13 @@ ConnectorClient.prototype = {
    * @param params
    *          An object with the following elements;
    *            correlationId (optional)
-   *@return {Promise}
+   * @return {Promise}
    */
   createAccount: function (params) {
-    var url = this.connectorUrl + ACCOUNT_FRONTEND_PATH;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
+    const url = this.connectorUrl + ACCOUNTS_API_PATH;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -300,8 +300,7 @@ ConnectorClient.prototype = {
       service: SERVICE_NAME
     };
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
-
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
     baseClient.post(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter);
 
