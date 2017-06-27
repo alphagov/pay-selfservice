@@ -6,7 +6,9 @@ const paths = require('../paths.js');
 const response = require('../utils/response');
 const errorResponse = response.renderErrorView;
 const registrationService = require('../services/service_registration_service');
+const userService = require('../services/user_service');
 const validations = require('../utils/registration_validations');
+const loginController = require('./login_controller');
 const validateRegistrationInputs = validations.validateServiceRegistrationInputs;
 
 module.exports = {
@@ -156,6 +158,28 @@ module.exports = {
     };
 
     return validateServiceOtpCode(code, otpCode);
+  },
+
+  createPopulatedService: (req, res) => {
+    const correlationId = req.correlationId;
+    const email = req.register_invite.email;
+    const phoneNumber = req.register_invite.telephone_number;
+    const role = 'admin';
+
+    const redirectToAutoLogin = (req, res) => {
+      res.redirect(303, paths.registerUser.logUserIn);
+    };
+
+    const handleError = (req, res, err) => {
+      console.log('ERROR!: ' + JSON.stringify(err));
+    };
+
+    return registrationService.createPopulatedService({email, role, phoneNumber}, correlationId)
+      .then((user) => {
+        loginController.setupDirectLoginAfterRegister(req, res, user);
+        redirectToAutoLogin(req, res);
+      })
+      .catch(err => handleError(req, res, err));
   }
 
 };

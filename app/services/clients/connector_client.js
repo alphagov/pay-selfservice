@@ -287,7 +287,7 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   createAccount: function (params) {
-    var url = this.connectorUrl + ACCOUNT_FRONTEND_PATH;
+    var url = this.connectorUrl + ACCOUNTS_API_PATH;
     let defer = q.defer();
     let startTime = new Date();
     let context = {

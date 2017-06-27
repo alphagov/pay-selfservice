@@ -645,7 +645,7 @@ module.exports = function (clientOptions = {}) {
   };
 
  /**
-   * Submit service registration details
+   * Submit service creation details
    *
    */
   const createService = (gatewayAccountIds) => {
@@ -679,7 +679,7 @@ module.exports = function (clientOptions = {}) {
   };
 
   /**
-   * Submit service registration details
+   * Submit user create details
    *
    */
   const createUser = (email, gatewayAccountIds, serviceIds, role, phoneNumber) => {
