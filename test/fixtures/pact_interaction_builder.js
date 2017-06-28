@@ -22,13 +22,13 @@ class PactInteractionBuilder {
     return this;
   }
 
-  withStatusCode(statusCode) {
-    this.statusCode = statusCode;
+  withRequestHeaders(headers) {
+    this.requestHeaders = headers;
     return this;
   }
 
-  withQuery(query) {
-    this.query = query;
+  withStatusCode(statusCode) {
+    this.statusCode = statusCode;
     return this;
   }
 
@@ -72,6 +72,10 @@ class PactInteractionBuilder {
 
     if (this.responseBody) {
       pact.willRespondWith.body = this.responseBody;
+    }
+
+    if (this.requestHeaders) {
+      pact.withRequest.headers = this.requestHeaders;
     }
 
     if (this.responseHeaders) {

@@ -4,6 +4,10 @@
 GOV.UK Pay - Team members
 {{/pageTitle}}
 
+{{$pageSpecificJS}}
+<script src="/public/js/components/confirm.js"></script>
+{{/pageSpecificJS}}
+
 {{$mainClasses}}full-width{{/mainClasses}}
 {{$full_width_content}}
 <a href="/team-members" class="link-back">See all team members</a>
@@ -17,25 +21,50 @@ GOV.UK Pay - Team members
         <table>
             <caption class="visually-hidden">Details for {{username}}</caption>
             <tbody>
-                <tr>
-                    <td>Name:</td>
-                    <td id="name">{{username}}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Email:</td>
-                    <td id="email">{{email}}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Permission level:</td>
-                    <td id="role">{{role}}</td>
-                    <td id="edit-permissions-link"><a href="{{editPermissionsLink}}">Edit permissions</a></td>
-                </tr>
+            <tr>
+                <td>Name:</td>
+                <td id="name">{{username}}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td id="email">{{email}}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Permission level:</td>
+                <td id="role">{{role}}</td>
+                <td id="edit-permissions-link"><a href="{{editPermissionsLink}}">Edit permissions</a></td>
+            </tr>
             </tbody>
         </table>
     </div>
 </div>
+{{#permissions.users_service_delete}}
+<div class="grid-row js-confirm">
+    <div class="column-two-thirds">
+        <p>
+            <a id="remove-team-member" class="red js-toggle-confirm-dialog" href="#">Remove user</a>
+        </p>
+    </div>
+</div>
+<div id="confirm-remove-user-dialog" class="grid-row js-confirm-dialog hidden">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                Are you sure you want to remove {{username}}?
+            </h1>
+            <div class="button-group">
+                <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
+                    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                    <input id="remove-team-member-confirm" type="submit" value="Yes, remove" class="button delete"/>
+                    <a id="remove-team-member-cancel" href="#" class="js-confirm-close-dialog">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{/permissions.users_service_delete}}
 {{/full_width_content}}
 
 {{/layout}}

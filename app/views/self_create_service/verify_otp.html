@@ -5,7 +5,7 @@ Verify code - GOV.UK Pay
 {{/pageTitle}}
 {{$mainContent}}
 <div id="display_otp_verify" class="column-half no-padding">
-  <form action="{{routes.register.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
+  <form action="{{routes.selfCreateService.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title heading-large">Check your phone</h1>
     <p>We've sent you a text message with a security code</p>
@@ -17,7 +17,7 @@ Verify code - GOV.UK Pay
       <input class="button" type="submit" value="Continue">
     </div>
   </form>
-  <p><a href="{{routes.register.reVerifyPhone}}">Not received a text message?</a></p>
+  <p><a href="{{routes.selfCreateService.reVerifyPhone}}">Not received a text message?</a></p>
 
 </div>
 

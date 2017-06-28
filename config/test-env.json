@@ -12,5 +12,7 @@
   "SELFSERVICE_BASE": "https://selfservice.pymnt.localdomain",
   "LOGIN_ATTEMPT_CAP": 2,
   "DISABLE_REQUEST_LOGGING": "true",
-  "NODE_TEST_MODE": true
+  "NODE_TEST_MODE": true,
+  "NODE_ENV": "test",
+  "SERVICE_REGISTRATION_ENABLED": "true"
 }

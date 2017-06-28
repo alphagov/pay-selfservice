@@ -1,8 +1,10 @@
-let proxyquire = require('proxyquire');
-let sinon = require('sinon');
-let q = require('q');
-let chai = require('chai');
-let chaiAsPromised = require('chai-as-promised');
+'use strict';
+
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
+const q = require('q');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 
@@ -38,12 +40,12 @@ describe('Error handler', function () {
     renderStub.reset();
   });
 
-  let controller = function (errorCode) {
-    return proxyquire(__dirname + '/../../../app/controllers/register_user_controller.js',
+  const controller = function (errorCode) {
+    return proxyquire(__dirname + '/../../../app/controllers/invite_validation_controller.js',
       {
-        '../services/registration_service': {
+        '../services/validate_invite_service': {
           getValidatedInvite: () => {
-            let defer = q.defer();
+            const defer = q.defer();
             defer.reject({errorCode: errorCode});
             return defer.promise;
           }
@@ -54,7 +56,7 @@ describe('Error handler', function () {
 
   it('should handle 404 as unable to process registration at this time', function (done) {
 
-    let errorCode = 404;
+    const errorCode = 404;
 
     controller(errorCode).validateInvite(req, res).should.be.fulfilled
       .then(() => {
@@ -64,7 +66,7 @@ describe('Error handler', function () {
   });
 
   it('should handle 410 as this invitation link has expired', function (done) {
-    let errorCode = 410;
+    const errorCode = 410;
 
     controller(errorCode).validateInvite(req, res).should.be.fulfilled
       .then(() => {
@@ -74,7 +76,7 @@ describe('Error handler', function () {
   });
 
   it('should handle undefined as unable to process registration at this time with error code 500', function (done) {
-    let errorCode = undefined;
+    const errorCode = undefined;
 
     controller(errorCode).validateInvite(req, res).should.be.fulfilled
       .then(() => {

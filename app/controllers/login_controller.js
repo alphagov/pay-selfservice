@@ -2,6 +2,7 @@ var logger = require('winston');
 var _ = require('lodash');
 var response = require('../utils/response.js').response;
 var userService = require('../services/user_service.js');
+var {setSessionVersion} = require('../services/auth_service.js');
 var router = require('../routes.js');
 var passport = require('passport');
 var paths = require('../paths.js');
@@ -27,6 +28,7 @@ module.exports.loggedIn = function (req, res) {
 };
 
 module.exports.logOut = function (req, res) {
+
   if (req.user) {
     userService.logOut(req.user, req.correlationId);
   }
@@ -35,6 +37,7 @@ module.exports.logOut = function (req, res) {
     logLoginAction(req, 'logged out');
     req.session.destroy();
   }
+
   res.redirect(router.paths.user.logIn);
 };
 
@@ -123,9 +126,10 @@ module.exports.otpLogIn = function (req, res) {
 
 module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp';
-  var redirect_url = (req.session.last_url) ? req.session.last_url : "/";
+  const redirect_url = req.session.last_url || "/";
   delete req.session.last_url;
   logLoginAction(req, 'successfully entered a valid 2fa token');
+  setSessionVersion(req);
   res.redirect(redirect_url);
 };
 

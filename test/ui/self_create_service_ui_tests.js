@@ -13,7 +13,7 @@ describe('Self-create service view', function () {
 
     body.should.containSelector('h1').withExactText('Create an account');
 
-    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.otpVerify);
+    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.index);
     body.should.containInputField('email', 'text');
     body.should.containInputField('telephone-number', 'text');
     body.should.containInputField('password', 'password');
@@ -47,7 +47,7 @@ describe('Self-create service view', function () {
     body.should.containSelector('h1').withExactText('Check your phone');
 
     body.should.containSelector('form#verify-phone-form > p:nth-child(3)').withExactText(`We've sent you a text message with a security code`);
-    body.should.containSelector('form#verify-phone-form');//.withAttribute('action', paths.register.registration);
+    body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.selfCreateService.otpVerify);
     body.should.containInputField('verify-code', 'text');
 
     body.should.containSelector('div#display_otp_verify > p:nth-child(2) > a').withExactText('Not received a text message?');
@@ -65,7 +65,7 @@ describe('Self-create service view', function () {
     body.should.containSelector('h1').withExactText('What service will you be taking payments for?');
 
     body.should.containInputField('service-name', 'text');
-    body.should.containSelector('form#name-your-service-form');//.withAttribute('action', paths.register.registration);
+    body.should.containSelector('form#name-your-service-form').withAttribute('action', paths.selfCreateService.serviceNaming);
 
     done();
   });

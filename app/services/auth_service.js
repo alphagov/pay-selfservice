@@ -1,72 +1,131 @@
 "use strict";
-let logger = require('winston');
-let _ = require('lodash');
-let passport = require('passport');
-let LocalStrategy = require('passport-local').Strategy;
-let CustomStrategy = require('passport-custom').Strategy;
-let csrf = require('csrf');
-let sessionValidator = require(__dirname + '/session_validator.js');
-let paths = require(__dirname + '/../paths.js');
-let userService = require('./user_service.js');
-let CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
 
-let localStrategyAuth = function (req, username, password, done) {
+// NPM Dependencies
+const logger = require('winston');
+const lodash = require('lodash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const CustomStrategy = require('passport-custom').Strategy;
+
+
+// Local Dependencies
+const sessionValidator = require('./session_validator.js');
+const paths = require('../paths.js');
+const userService = require('./user_service.js');
+const csrf = require('../middleware/csrf');
+const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER;
+
+
+// Exports
+module.exports = {
+  enforceUserFirstFactor,
+  enforceUserAuthenticated,
+  lockOutDisabledUsers,
+  initialise,
+  deserializeUser,
+  serializeUser,
+  localStrategyAuth,
+  localDirectStrategy,
+  no_access,
+  getCurrentGatewayAccountId,
+  setSessionVersion
+};
+
+
+// Middleware
+function lockOutDisabledUsers(req, res, next) {
+  if (req.user && req.user.disabled) {
+    const correlationId = req.headers[CORRELATION_HEADER] || '';
+    logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.externalId')} locked out due to many password attempts`);
+    return no_access(req, res, next)
+  }
+  return next();
+}
+
+function enforceUserFirstFactor(req, res, next) {
+  let hasUser = lodash.get(req, "user"),
+    disabled = lodash.get(hasUser, "disabled");
+
+  if (!hasUser) return redirectToLogin(req, res);
+  if (disabled === true) return no_access(req, res, next);
+  csrf.ensureSessionHasCsrfSecret(req, res, next);
+}
+
+function no_access(req, res, next) {
+  if (req.url !== paths.user.noAccess) {
+    res.redirect(paths.user.noAccess);
+  } else {
+    next(); // don't redirect again if we're already there
+  }
+}
+
+function enforceUserBothFactors(req, res, next) {
+  enforceUserFirstFactor(req, res, () => {
+    let hasLoggedInOtp = lodash.get(req, "session.secondFactor") === 'totp';
+    if (!hasLoggedInOtp) {
+      return res.redirect(paths.user.otpLogIn);
+    }
+
+    next();
+  });
+}
+
+function enforceUserAuthenticated(req, res, next) {
+  if (!hasValidSession(req)) {
+    return redirectToLogin(req, res);
+  }
+  enforceUserBothFactors(req, res, next);
+}
+
+
+// Other Methods
+function localStrategyAuth(req, username, password, done) {
   return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
     .catch(() => done(null, false, {message: 'Invalid email or password'}));
-};
+}
 
-let localStrategy2Fa = function (req, done) {
+function localStrategy2Fa(req, done) {
   return userService.authenticateSecondFactor(req.user.externalId, req.body.code)
     .then((user) => done(null, user))
     .catch(() => done(null, false, {message: 'Invalid code'}));
-};
+}
 
-let localDirectStrategy = function (req, done) {
-  userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
+function localDirectStrategy(req, done) {
+  return userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
     .then((user) => {
       req.session.secondFactor = 'totp';
+      setSessionVersion(req);
       req.register_invite.destroy();
       done(null, user);
     })
-    .catch((err) =>{
+    .catch(() => {
       req.register_invite.destroy();
       done(null, false);
     });
-};
+}
 
-let ensureSessionHasCsrfSecret = function (req, res, next) {
-  if (req.session.csrfSecret) return next();
-  req.session.csrfSecret = csrf().secretSync();
-  let correlationId = req.headers[CORRELATION_HEADER] || '';
-  logger.debug(`[${correlationId}] Saved csrfSecret: ${req.session.csrfSecret}`);
+function setSessionVersion(req) {
+  req.session.version = lodash.get(req, 'user.sessionVersion', 0);
+}
 
-  return next();
-};
-
-let ensureSessionHasVersion = function (req) {
-  if (!_.get(req, 'session.version', false) !== false) {
-    req.session.version = _.get(req, 'user.sessionVersion', 0);
-  }
-};
-
-let redirectToLogin = function (req, res) {
+function redirectToLogin(req, res) {
   req.session.last_url = req.originalUrl;
   res.redirect(paths.user.logIn);
-};
+}
 
-let getCurrentGatewayAccountId = function (req) {
+function getCurrentGatewayAccountId(req) {
   // retrieve currentGatewayAccountId from Cookie
   let currentGatewayAccountId = null;
-  if (_.get(req, "gateway_account")) {
-    currentGatewayAccountId = _.get(req, "gateway_account.currentGatewayAccountId");
+  if (lodash.get(req, "gateway_account")) {
+    currentGatewayAccountId = lodash.get(req, "gateway_account.currentGatewayAccountId");
   } else {
     req.gateway_account = {};
   }
   // retrieve user's gatewayAccountIds
-  let userGatewayAccountIds = _.get(req, "user.gatewayAccountIds");
+  let userGatewayAccountIds = lodash.get(req, "user.gatewayAccountIds");
   if ((!userGatewayAccountIds) || (userGatewayAccountIds.length === 0)) {
-    logger.error('Could not resolve the gatewayAccountId for user '); //TODO log the user.id when we have one
+    logger.error(`Could not resolve the gatewayAccountId for user: ${lodash.get(req, 'user.externalId')}`);
     return null;
   }
   // check if we don't have Cookie value
@@ -78,61 +137,20 @@ let getCurrentGatewayAccountId = function (req) {
   // save currentGatewayAccountId and return it
   req.gateway_account.currentGatewayAccountId = currentGatewayAccountId;
   return parseInt(req.gateway_account.currentGatewayAccountId);
-};
+}
 
-let enforceUserFirstFactor = function (req, res, next) {
-  let hasUser = _.get(req, "user"),
-    hasAccount = getCurrentGatewayAccountId(req),
-    disabled = _.get(hasUser, "disabled");
-
-  if (!hasUser) return redirectToLogin(req, res);
-  if (!hasAccount) return no_access(req, res, next);
-  if (disabled === true) return no_access(req, res, next);
-
-  ensureSessionHasCsrfSecret(req, res, next);
-};
-
-let no_access = function (req, res, next) {
-  if (req.url != paths.user.noAccess) {
-    res.redirect(paths.user.noAccess);
-  }
-  else {
-    next(); // don't redirect again if we're already there
-  }
-};
-
-let enforceUserBothFactors = function (req, res, next) {
-  enforceUserFirstFactor(req, res, () => {
-
-    let hasLoggedInOtp = _.get(req, "session.secondFactor") == 'totp';
-    if (!hasLoggedInOtp) {
-      return res.redirect(paths.user.otpLogIn);
-    }
-
-    next();
-  });
-};
-
-let enforceUserAuthenticated = function (req, res, next) {
-  ensureSessionHasVersion(req);
-  if (!hasValidSession(req)) {
-    return res.redirect(paths.user.logIn);
-  }
-  enforceUserBothFactors(req, res, next);
-};
-
-let hasValidSession = function (req) {
+function hasValidSession(req) {
   let isValid = sessionValidator.validate(req.user, req.session);
   let correlationId = req.headers[CORRELATION_HEADER] || '';
-  let userSessionVersion = _.get(req, 'user.sessionVersion', 0);
-  let sessionVersion = _.get(req, 'session.version', 0);
+  let userSessionVersion = lodash.get(req, 'user.sessionVersion', 0);
+  let sessionVersion = lodash.get(req, 'session.version', 0);
   if (!isValid) {
     logger.info(`[${correlationId}] Invalid session version for user. User session_version: ${userSessionVersion}, session version ${sessionVersion}`);
   }
   return isValid;
-};
+}
 
-let initialise = function (app, override_strategy) {
+function initialise(app) {
   app.use(passport.initialize());
   app.use(passport.session());
   passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth));
@@ -142,27 +160,17 @@ let initialise = function (app, override_strategy) {
   passport.serializeUser(this.serializeUser);
 
   passport.deserializeUser(this.deserializeUser);
-};
+}
 
-let deserializeUser = function (req, externalId, done) {
+function deserializeUser(req, externalId, done) {
   return userService.findByExternalId(externalId, req.headers[CORRELATION_HEADER] || '')
     .then((user) => {
       done(null, user);
     });
-};
+}
 
-let serializeUser = function (user, done) {
+function serializeUser(user, done) {
   done(null, user.externalId);
-};
+}
 
-module.exports = {
-  enforceUserFirstFactor: enforceUserFirstFactor,
-  enforceUserAuthenticated: enforceUserAuthenticated,
-  ensureSessionHasCsrfSecret: ensureSessionHasCsrfSecret,
-  initialise: initialise,
-  deserializeUser: deserializeUser,
-  serializeUser: serializeUser,
-  localStrategyAuth: localStrategyAuth,
-  no_access: no_access,
-  getCurrentGatewayAccountId: getCurrentGatewayAccountId
-};
+

@@ -37,6 +37,10 @@ var getUser = (opts) => {
     return createAppWithSession(app, {csrfSecret: "123"}, {}, registerInviteData);
   },
 
+  getAppWithLoggedOutSession = function (app) {
+    return createAppWithSession(app, {csrfSecret: "123"}, {});
+  },
+
   getAppWithSessionWithoutSecondFactor = function (app, user) {
     var session = getMockSession(user);
     delete session.secondFactor;
@@ -58,10 +62,12 @@ var getUser = (opts) => {
   };
 
 module.exports = {
+  createAppWithSession:createAppWithSession,
   getAppWithLoggedInUser: getAppWithLoggedInUser,
   getAppWithSessionAndGatewayAccountCookies: getAppWithSessionAndGatewayAccountCookies,
   getMockSession: getMockSession,
   getUser: getUser,
   getAppWithSessionWithoutSecondFactor: getAppWithSessionWithoutSecondFactor,
-  getAppWithRegisterInvitesCookie: getAppWithRegisterInvitesCookie
+  getAppWithRegisterInvitesCookie: getAppWithRegisterInvitesCookie,
+  getAppWithLoggedOutSession: getAppWithLoggedOutSession
 };

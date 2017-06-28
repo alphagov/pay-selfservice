@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   root: "/",
   transactions: {
@@ -68,11 +70,14 @@ module.exports = {
   teamMembers: {
     index: '/team-members',
     show: '/team-members/:externalId',
+    delete: '/team-members/:externalId/delete',
     permissions: '/team-members/:externalId/permissions',
     invite: '/team-members-invite'
   },
-  register: {
+  inviteValidation: {
     validateInvite:'/invites/:code',
+  },
+  registerUser: {
     registration: '/register',
     otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',
@@ -94,7 +99,7 @@ module.exports = {
   healthcheck: {
     path: '/healthcheck'
   },
-  static: {
+  staticPaths: {
     naxsiError: "/request-denied"
   },
   generateRoute: require(__dirname + '/utils/generate_route.js')

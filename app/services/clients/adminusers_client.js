@@ -1,3 +1,5 @@
+'use strict';
+
 const q = require('q');
 const _ = require('lodash');
 const requestLogger = require('../../utils/request_logger');
@@ -6,6 +8,7 @@ let User = require('../../models/user').User;
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
 
 const SERVICE_NAME = 'adminusers';
+const HEADER_USER_CONTEXT = 'GovUkPay-User-Context';
 
 /**
  * @private
@@ -22,40 +25,6 @@ module.exports = function (clientOptions = {}) {
   let resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
   let serviceUserResource = `${baseUrl}/v1/api/services`;
   let inviteResource = `${baseUrl}/v1/api/invites`;
-
-  /**
-   * Create a new user
-   *
-   * @param {User} user
-   * @returns {Promise<User>}
-   */
-  let createUser = (user) => {
-    let params = {
-      payload: user.toMinimalJson(),
-      correlationId: correlationId
-    };
-    let url = userResource;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'POST',
-      description: 'create a user',
-      service: SERVICE_NAME
-    };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
-
-    requestLogger.logRequestStart(context);
-
-    baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
-
-    return defer.promise;
-  };
 
   /**
    * Get a User by external id
@@ -90,38 +59,6 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
-  /**
-   * Get a User by username
-   *
-   * @param {string} username
-   * @return {Promise<User>} A promise of a User
-   */
-  let getUserByUsername = (username) => {
-    let params = {
-      correlationId: correlationId
-    };
-    let url = `${userResource}?username=${username}`;
-    let defer = q.defer();
-    let startTime = new Date();
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'GET',
-      description: 'find a user',
-      service: SERVICE_NAME
-    };
-
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
-
-    requestLogger.logRequestStart(context);
-
-    baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
-
-    return defer.promise;
-  };
 
   /**
    * @param username
@@ -510,7 +447,7 @@ module.exports = function (clientOptions = {}) {
    * @param phoneNumber
    * @param password
    */
-  let submitRegistration = (code, phoneNumber, password) => {
+  let submitUserRegistration = (code, phoneNumber, password) => {
     let params = {
       correlationId: correlationId,
       payload: {
@@ -574,6 +511,38 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  const verifyOtpForServiceInvite = (inviteCode, verificationCode) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        code: inviteCode,
+        otp: verificationCode
+      }
+    };
+
+    const url = `${inviteResource}/otp/validate/service`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit service invite otp code',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   let resendOtpCode = (code, phoneNumber) => {
     let params = {
       correlationId: correlationId,
@@ -606,13 +575,80 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * Submit service registration details
+   *
+   * @param email
+   * @param phoneNumber
+   * @param password
+   */
+  const submitServiceRegistration = (email, phoneNumber, password) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        email: email,
+        telephone_number: phoneNumber,
+        password: password
+      }
+    };
+    const url = `${inviteResource}/service`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'submit service registration details',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
+  let deleteUser = (serviceId, removerId, userId) => {
+
+    const params = {
+      correlationId: correlationId,
+      headers: {}
+    };
+    const url = `${serviceUserResource}/${serviceId}/users/${userId}`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'DELETE',
+      description: 'delete a user from a service',
+      userDelete: userId,
+      userRemover: removerId,
+      service: SERVICE_NAME
+    };
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    requestLogger.logRequestStart(context);
+
+    params.headers[HEADER_USER_CONTEXT] = removerId;
+    baseClient.delete(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
     incrementSessionVersionForUser: incrementSessionVersionForUser,
     getUserByExternalId: getUserByExternalId,
-    getUserByUsername: getUserByUsername,
-    createUser: createUser,
     authenticateUser: authenticateUser,
     updatePasswordForUser: updatePasswordForUser,
     sendSecondFactor: sendSecondFactor,
@@ -621,8 +657,11 @@ module.exports = function (clientOptions = {}) {
     updateServiceRole: updateServiceRole,
     inviteUser: inviteUser,
     getValidatedInvite: getValidatedInvite,
-    submitRegistration: submitRegistration,
+    submitUserRegistration: submitUserRegistration,
     verifyOtpAndCreateUser: verifyOtpAndCreateUser,
-    resendOtpCode: resendOtpCode
+    resendOtpCode: resendOtpCode,
+    submitServiceRegistration: submitServiceRegistration,
+    deleteUser: deleteUser,
+    verifyOtpForServiceInvite: verifyOtpForServiceInvite
   };
 };
