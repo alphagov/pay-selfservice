@@ -50,7 +50,7 @@
     "forever": "0.15.x",
     "govuk-elements-sass": "1.1.1",
     "govuk_frontend_toolkit": "4.6.0",
-    "govuk_template_mustache": "0.13.x",
+    "govuk_template_mustache": "0.22.x",
     "hogan.js": "3.0.x",
     "html5shiv": "3.7.x",
     "http-proxy": "1.14.x",
