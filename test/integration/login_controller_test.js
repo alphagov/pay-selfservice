@@ -85,15 +85,15 @@ describe('The logout endpoint', function () {
 describe('The postlogin endpoint', function () {
   it('should redirect to root and clean mock_session of all but passport,currentGatewayAccountId  and last_url', function (done) {
     // happens after the passort middleware, so cant test through supertest
-    var user = mock_session.getUser();
-    var session = mock_session.getMockSession(user),
-      expectedUrl = paths.user.otpLogIn,
-      req = {
+    const user = mock_session.getUser();
+    const session = mock_session.getMockSession(user);
+    const expectedUrl = paths.user.otpLogIn;
+    const req = {
         session: _.merge(session, {currentGatewayAccountId: '13'}),
         headers: {'x-request-id': 'some-unique-id'},
         user: user
-      },
-      res = mockRes.getStubbedRes();
+    };
+    const res = mockRes.getStubbedRes();
 
     login_controller.postLogin(req, res);
     expect(res.redirect.calledWith(expectedUrl)).to.equal(true);
@@ -179,20 +179,22 @@ describe('The afterOtpLogin endpoint', function () {
   });
 
   it('should redirect to root if lasturl is not defined', function (done) {
-    var user = mock_session.getUser();
-    var session = mock_session.getMockSession(user);
-    delete session.last_url;
-    delete session.secondFactor;
-    var req = {
-        session: session,
-        headers: {'x-request-id': 'some-unique-id'},
-        user: user
-      },
-      res = mockRes.getStubbedRes();
+    const user = mock_session.getUser();
+    user.sessionVersion = 1;
+    const req = {
+      session: mock_session.getMockSession(user),
+      headers: {'x-request-id': 'some-unique-id'},
+      user: user
+    };
+    const res = mockRes.getStubbedRes();
+    delete req.session.last_url;
+    delete req.session.secondFactor;
+    req.session.version = 0;
 
     login_controller.afterOTPLogin(req, res);
     expect(res.redirect.calledWith('/')).to.equal(true);
-    expect(req.session.secondFactor === 'totp');
+    expect(req.session.secondFactor).to.equal('totp');
+    expect(req.session.version).to.equal(1);
     done();
 
   });
