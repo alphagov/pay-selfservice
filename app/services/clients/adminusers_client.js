@@ -4,7 +4,7 @@ const q = require('q')
 const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
-let User = require('../../models/user').User
+const User = require('../../models/User.class')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
 const SERVICE_NAME = 'adminusers'

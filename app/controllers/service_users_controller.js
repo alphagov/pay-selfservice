@@ -103,7 +103,7 @@ module.exports = {
 
     const userToRemoveId = req.params.externalId;
     const removerId = req.user.externalId;
-    const serviceId = req.user.services[0].external_id;
+    const serviceId = req.user.services[0].externalId;
     const correlationId = req.correlationId;
 
     if (userToRemoveId === removerId) {

@@ -4,10 +4,10 @@
 const _ = require('lodash')
 
 // Custom dependencies
-const User = require('../../app/models/user').User
-const pactBase = require('./pact_base')
-const pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids']})
-const random = require('../../app/utils/random')
+let User = require('../../app/models/User.class')
+let pactBase = require('./pact_base')
+let pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]})
+let random = require('../../app/utils/random')
 
 function randomString () {
   return Math.random().toString(36).substring(7)
@@ -42,16 +42,17 @@ module.exports = {
   validMinimalUser: () => {
     let newExternalId = random.randomUuid()
     let newUsername = randomUsername()
-    let role = {name: 'admin'}
+    let role = {name: "admin"}
     let defaultServiceId = randomServiceId()
+    let accountIds = [randomAccountId()]
 
     let data = {
       external_id: newExternalId,
       username: newUsername,
       email: `${newUsername}@example.com`,
-      gateway_account_ids: [randomAccountId()],
+      gateway_account_ids: accountIds,
       service_ids: [defaultServiceId],
-      services: [{name: 'System Generated', id: defaultServiceId}],
+      services: [{name: 'System Generated', id: defaultServiceId, gateway_account_ids: accountIds}],
       telephone_number: randomTelephoneNumber()
     }
 
@@ -72,18 +73,23 @@ module.exports = {
   },
 
   validUser: (opts = {}) => {
-    let newExternalId = random.randomUuid()
-    let newUsername = randomUsername()
-    let role = {name: 'admin'}
-    let defaultServiceId = randomServiceId()
+    let newExternalId = random.randomUuid();
+    let newUsername = randomUsername();
+    let role = {name: "admin"};
+    let defaultServiceId = randomServiceId();
+    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()];
 
     let data = {
       external_id: opts.external_id || newExternalId,
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
-      gateway_account_ids: opts.gateway_account_ids || [randomAccountId()],
+      gateway_account_ids: gatewayAccountIds,
       service_ids: opts.service_ids || [defaultServiceId],
-      services: opts.services || [{name: 'System Generated', id: defaultServiceId}],
+      services: opts.services || [{
+        name: 'System Generated',
+        id: defaultServiceId,
+        gateway_account_ids: gatewayAccountIds
+      }],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
       otp_key: opts.otp_key || randomOtpKey(),
       disabled: opts.disabled || false,
@@ -114,18 +120,23 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request) => {
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let req_external_id = request.external_id || existingExternalId
-    let req_username = request.username || 'existing-user'
-    let defaultServiceId = randomServiceId()
+    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+    let req_external_id = request.external_id || existingExternalId;
+    let req_username = request.username || 'existing-user';
+    let defaultServiceId = randomServiceId();
+    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId()];
 
     let data = {
       external_id: req_external_id,
       username: req_username,
       email: request.email || `${req_username}@example.com`,
-      gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
+      gateway_account_ids: gatewayAccountIds,
       service_ids: request.service_ids || [defaultServiceId],
-      services: request.services || [{name: 'System Generated', id: defaultServiceId}],
+      services: request.services || [{
+        name: 'System Generated',
+        id: defaultServiceId,
+        gateway_account_ids: gatewayAccountIds
+      }],
       otp_key: request.otp_key || '43c3c4t',
       role: request.role || {'name': 'admin', 'description': 'Administrator'},
       telephone_number: request.telephone_number || '0123441',
