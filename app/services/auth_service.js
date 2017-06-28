@@ -25,13 +25,15 @@ module.exports = {
   deserializeUser,
   serializeUser,
   localStrategyAuth,
+  localDirectStrategy,
   no_access,
-  getCurrentGatewayAccountId
+  getCurrentGatewayAccountId,
+  setSessionVersion
 };
 
 
 // Middleware
-function lockOutDisabledUsers (req, res, next) {
+function lockOutDisabledUsers(req, res, next) {
   if (req.user && req.user.disabled) {
     const correlationId = req.headers[CORRELATION_HEADER] || '';
     logger.info(`[${correlationId}] user: ${lodash.get(req, 'user.externalId')} locked out due to many password attempts`);
@@ -46,7 +48,6 @@ function enforceUserFirstFactor(req, res, next) {
 
   if (!hasUser) return redirectToLogin(req, res);
   if (disabled === true) return no_access(req, res, next);
-
   csrf.ensureSessionHasCsrfSecret(req, res, next);
 }
 
@@ -70,9 +71,8 @@ function enforceUserBothFactors(req, res, next) {
 }
 
 function enforceUserAuthenticated(req, res, next) {
-  ensureSessionHasVersion(req);
   if (!hasValidSession(req)) {
-    return res.redirect(paths.user.logIn);
+    return redirectToLogin(req, res);
   }
   enforceUserBothFactors(req, res, next);
 }
@@ -92,22 +92,21 @@ function localStrategy2Fa(req, done) {
 }
 
 function localDirectStrategy(req, done) {
-  userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
+  return userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
     .then((user) => {
       req.session.secondFactor = 'totp';
+      setSessionVersion(req);
       req.register_invite.destroy();
       done(null, user);
     })
-    .catch(() =>{
+    .catch(() => {
       req.register_invite.destroy();
       done(null, false);
     });
 }
 
-function ensureSessionHasVersion(req) {
-  if (!lodash.get(req, 'session.version', false) !== false) {
-    req.session.version = lodash.get(req, 'user.sessionVersion', 0);
-  }
+function setSessionVersion(req) {
+  req.session.version = lodash.get(req, 'user.sessionVersion', 0);
 }
 
 function redirectToLogin(req, res) {

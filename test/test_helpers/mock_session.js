@@ -54,6 +54,7 @@ var getUser = (opts) => {
   };
 
 module.exports = {
+  createAppWithSession:createAppWithSession,
   getAppWithLoggedInUser: getAppWithLoggedInUser,
   getAppWithSessionAndGatewayAccountCookies: getAppWithSessionAndGatewayAccountCookies,
   getMockSession: getMockSession,
