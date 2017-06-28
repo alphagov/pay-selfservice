@@ -1,5 +1,5 @@
-// Setting default environment variables
-require(__dirname + '/env');
+//Please leave here even though it looks unused - this enables Node.js metrics to be pushed to Hosted Graphite
+require(__dirname + '/app/utils/metrics').metrics;
 
 // Node.js core dependencies
 const path = require('path');
@@ -24,7 +24,6 @@ const proxy = require(__dirname + '/app/utils/proxy');
 const environment = require(__dirname + '/app/services/environment');
 const auth = require(__dirname + '/app/services/auth_service');
 const middlwareUtils = require(__dirname + '/app/utils/middleware');
-const applicationMetrics = require(__dirname + '/app/utils/metrics').metrics;
 const errorHandler = require(__dirname + '/app/middleware/error_handler');
 
 // Global constants
