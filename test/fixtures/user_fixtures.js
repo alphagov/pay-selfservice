@@ -87,7 +87,7 @@ module.exports = {
       service_ids: opts.service_ids || [defaultServiceId],
       services: opts.services || [{
         name: 'System Generated',
-        id: defaultServiceId,
+        external_id: defaultServiceId,
         gateway_account_ids: gatewayAccountIds
       }],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
@@ -123,7 +123,7 @@ module.exports = {
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
     let req_external_id = request.external_id || existingExternalId;
     let req_username = request.username || 'existing-user';
-    let defaultServiceId = randomServiceId();
+    let defaultServiceId = randomString();
     const gatewayAccountIds = request.gateway_account_ids || [randomAccountId()];
 
     let data = {
@@ -134,7 +134,7 @@ module.exports = {
       service_ids: request.service_ids || [defaultServiceId],
       services: request.services || [{
         name: 'System Generated',
-        id: defaultServiceId,
+        external_id: defaultServiceId,
         gateway_account_ids: gatewayAccountIds
       }],
       otp_key: request.otp_key || '43c3c4t',

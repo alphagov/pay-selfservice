@@ -1,0 +1,25 @@
+<div class="service">
+    <div class="heading-group">
+        <h2 class="heading-medium service-name">{{name}}</h2>
+    </div>
+    <div class="column-half">
+        {{#gateway_accounts}}
+        <form method="post" action="{{routes.serviceSwitcher.switch}}">
+            <input name="csrfToken" type="hidden" value="{{csrf}}" />
+            <input name="gatewayAccountId" type="hidden" value="{{id}}"/>
+
+            <input class="service_switcher" type="submit" role="link" value="{{service_name}} {{type}}">
+        </form>
+        {{/gateway_accounts}}
+    </div>
+    <div id="team-members" class="column-half">
+        <p>
+            {{#permissions.users_service_create}}
+            <a href="/service/{{external_id}}" class="manage-team-members">Manage team members</a>
+            {{/permissions.users_service_create}}
+            {{^permissions.users_service_create}}
+            <a href="/service/{{external_id}}" class="view-team-members">View team members</a>
+            {{/permissions.users_service_create}}
+        </p>
+    </div>
+</div>

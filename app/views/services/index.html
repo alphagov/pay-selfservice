@@ -6,41 +6,25 @@ GOV.UK Pay - My services
 
 {{$mainClasses}}full-width{{/mainClasses}}
 {{$full_width_content}}
-    <h1 class="heading-large">My services</h1>
-    <div class="grid-row grid-row-align-to-edges">
-        <div class="column-two-thirds">
-            <p class="lede"></p>
-        </div>
-        <div class="column-one-third">
-        </div>
+<h1 class="heading-large">My services</h1>
+<div class="grid-row grid-row-align-to-edges">
+    <div class="column-two-thirds">
+        <p class="lede"></p>
     </div>
-    <div class="marked-grid">
-        <div class="grid-row">
-            <div class="heading-group">
-                <h2 id="service-name" class="heading-medium">{{serviceName}}</h2>
-            </div>
-            <div class="column-half">
-                {{#gatewayAccounts}}
-                <form method="post" action="{{routes.serviceSwitcher.switch}}">
-                    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-                    <input name="gatewayAccountId" type="hidden" value="{{gateway_account_id}}"/>
+    <div class="column-one-third">
+    </div>
+</div>
+<div class="marked-grid">
+    <div class="grid-row">
+        {{^services.length}}
+        <p class="admin-lede no-services">You have 0 services.</p>
+        {{/services.length}}
 
-                    <input class="service_switcher" type="submit" role="link" value="{{payment_provider_display_name}} {{type}}">
-                </form>
-                {{/gatewayAccounts}}
-            </div>
-            <div id="team-members" class="column-half">
-                <p>
-                    {{#permissions.users_service_create}}
-                    <a href="/team-members" id="manage-team-members">Manage team members</a>
-                    {{/permissions.users_service_create}}
-                    {{^permissions.users_service_create}}
-                    <a href="/team-members" id="view-team-members">View team members</a>
-                    {{/permissions.users_service_create}}
-                </p>
-            </div>
-        </div>
+        {{#services}}
+        {{>services/_service_section}}
+        {{/services}}
     </div>
+
 </div>
 {{/full_width_content}}
 

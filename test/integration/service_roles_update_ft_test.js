@@ -18,13 +18,11 @@ let adminusersMock = nock(process.env.ADMINUSERS_URL);
 
 const USER_RESOURCE = '/v1/api/users';
 
-let updatePermissionPath = externalId => {
-  return paths.teamMembers.permissions.replace(':externalId', externalId);
-};
+const formattedPathFor = require('../../app/utils/replace_params_in_path');
 
 describe('user permissions update controller', function () {
 
-  const SERVICE_ID = '1';
+  const EXTERNAL_SERVICE_ID = '38745gf8y';
   const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
   const USERNAME_IN_SESSION = 'existing-user';
   const EXTERNAL_ID_TO_VIEW = '393266e872594f1593558549caad95ec';
@@ -34,7 +32,10 @@ describe('user permissions update controller', function () {
     external_id: EXTERNAL_ID_IN_SESSION,
     username: USERNAME_IN_SESSION,
     email: USERNAME_IN_SESSION + '@example.com',
-    service_ids: [SERVICE_ID],
+    services: [{
+      name: 'System Generated',
+      external_id: EXTERNAL_SERVICE_ID
+    }],
     permissions: ['users-service:create']
   });
 
@@ -42,7 +43,10 @@ describe('user permissions update controller', function () {
     external_id: EXTERNAL_ID_TO_VIEW,
     username: USERNAME_TO_VIEW,
     email: `${USERNAME_TO_VIEW}@example.com`,
-    service_ids: [SERVICE_ID],
+    services: [{
+      name: 'System Generated',
+      external_id: EXTERNAL_SERVICE_ID
+    }],
     role: {name: 'view-only', description: 'View only'}
   };
 
@@ -64,12 +68,12 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .get(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal(userToView.email);
-          expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':externalId', EXTERNAL_ID_TO_VIEW));
+          expect(res.body.editPermissionsLink).to.equal(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW));
           expect(res.body.admin.id).to.equal(roles['admin'].extId);
           expect(res.body.admin.checked).to.equal('');
           expect(res.body.viewAndRefund.id).to.equal(roles['view-and-refund'].extId);
@@ -88,7 +92,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .get(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -100,7 +104,7 @@ describe('user permissions update controller', function () {
     it('should error if admin does not belong to users service', function (done) {
 
       let targetUser = _.cloneDeep(userToView);
-      targetUser.service_ids[0] = '2';
+      targetUser.services[0].external_id = 'other-service-id';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
@@ -109,7 +113,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .get(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -123,7 +127,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .get(updatePermissionPath(userInSession.externalId))
+        .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
         .set('Accept', 'application/json')
         .expect(500)
         .expect((res) => {
@@ -143,13 +147,13 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, {'role_name': 'admin'})
         .reply(200, getUserResponse.getPlain());
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -158,7 +162,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.teamMembers.show.replace(':externalId', EXTERNAL_ID_TO_VIEW))
+        .expect('Location', formattedPathFor(paths.teamMembers.show, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .end(done);
     });
 
@@ -172,7 +176,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -181,7 +185,7 @@ describe('user permissions update controller', function () {
           csrfToken: csrf().create('123')
         })
         .expect(303, {})
-        .expect('Location', paths.teamMembers.show.replace(':externalId', EXTERNAL_ID_TO_VIEW))
+        .expect('Location', formattedPathFor(paths.teamMembers.show, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .end(done);
     });
 
@@ -190,7 +194,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .post(updatePermissionPath(userInSession.externalId))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -213,7 +217,7 @@ describe('user permissions update controller', function () {
         .reply(404);
 
       supertest(app)
-        .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -231,7 +235,7 @@ describe('user permissions update controller', function () {
     it('should error if admin does not belong to users service', function (done) {
 
       let targetUser = _.cloneDeep(userToView);
-      targetUser.service_ids[0] = '2';
+      targetUser.services[0].external_id = 'other-service-id';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
@@ -240,7 +244,7 @@ describe('user permissions update controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -261,7 +265,7 @@ describe('user permissions update controller', function () {
 
       let nonExistentRoleId = '999';
       supertest(app)
-        .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -284,11 +288,11 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${SERVICE_ID}`, {'role_name': 'admin'})
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, {'role_name': 'admin'})
         .reply(409);
 
       supertest(app)
-        .post(updatePermissionPath(EXTERNAL_ID_TO_VIEW))
+        .post(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, EXTERNAL_ID_TO_VIEW))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')

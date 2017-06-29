@@ -35,7 +35,7 @@ class User {
     this._email = userData.email || '';
     this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
     this._services = userData.services.map(serviceData => new Service(serviceData));
-    this._serviceIds = userData.service_ids;
+    this._serviceIds = this._services.map(service => service.externalId);
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
     this._disabled = userData.disabled ? userData.disabled : false;

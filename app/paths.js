@@ -68,11 +68,11 @@ module.exports = {
     switch: '/my-services/switch'
   },
   teamMembers: {
-    index: '/team-members',
-    show: '/team-members/:externalId',
-    delete: '/team-members/:externalId/delete',
-    permissions: '/team-members/:externalId/permissions',
-    invite: '/team-members-invite'
+    index: '/service/:externalServiceId',
+    show: '/service/:externalServiceId/team-member/:externalUserId',
+    delete: '/service/:externalServiceId/team-member/:externalUserId/delete',
+    permissions: '/service/:externalServiceId/team-member/:externalUserId/permissions',
+    invite: '/service/:externalServiceId/team-members/invite'
   },
   inviteValidation: {
     validateInvite:'/invites/:code',

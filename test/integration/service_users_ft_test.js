@@ -17,6 +17,8 @@ const USER_RESOURCE = '/v1/api/users';
 let app;
 chai.use(chaiAsPromised);
 
+const formattedPathFor = require('../../app/utils/replace_params_in_path');
+
 describe('service users resource', function () {
 
   const EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3';
@@ -32,23 +34,26 @@ describe('service users resource', function () {
 
   it('get list of service users should link to my profile for my user', function (done) {
 
-    const service_id = '1';
+    const externalServiceId = '734rgw76jhka';
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_ids: [service_id]
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId
+      }],
     });
 
     const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}]);
 
-    adminusersMock.get(`${SERVICE_RESOURCE}/${service_id}/users`)
+    adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     supertest(app)
-      .get('/team-members')
+      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
@@ -68,19 +73,18 @@ describe('service users resource', function () {
 
   it('should redirect to an error page when user does not belong to any service', function (done) {
 
-    const service_id = '1';
+    const notAllowedServiceId = '47835y3478thew';
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_ids: [service_id],
       services: []
     });
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     supertest(app)
-      .get('/team-members')
+      .get(formattedPathFor(paths.teamMembers.index, notAllowedServiceId))
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
@@ -91,47 +95,56 @@ describe('service users resource', function () {
 
   it('get list of service users should link to a users view details for other users', function (done) {
 
-    const service_id = '1';
+    const externalServiceId = '734rgw76jhka';
 
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_ids: [service_id],
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId
+      }],
       permissions: ['users-service:read']
     });
 
     const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {external_id: EXTERNAL_ID_OTHER_USER}]);
 
-    adminusersMock.get(`${SERVICE_RESOURCE}/${service_id}/users`)
+    adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain());
 
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     supertest(app)
-      .get('/team-members')
+      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.team_members.admin[1].link).to.equal(`/team-members/${EXTERNAL_ID_OTHER_USER}`);
+        expect(res.body.team_members.admin[1].link).to.equal(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER));
       })
       .end(done);
   });
 
   it('view team member details', function (done) {
 
-    const service_id = '1';
+    const externalServiceId = '734rgw76jhka';
     const user_in_session = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_ids: [service_id],
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId
+      }],
       permissions: ['users-service:read']
     });
     const user_to_view = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
-      service_ids: [service_id],
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId
+      }],
       role: {"name": "view-only"}
     };
     const getUserResponse = userFixtures.validUserResponse(user_to_view);
@@ -142,15 +155,15 @@ describe('service users resource', function () {
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     supertest(app)
-      .get(`/team-members/${EXTERNAL_ID_OTHER_USER}`)
+      .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
         expect(res.body.username).to.equal(USERNAME_OTHER_USER);
         expect(res.body.email).to.equal('other-user@example.com');
         expect(res.body.role).to.equal('View only');
-        expect(res.body.editPermissionsLink).to.equal(paths.teamMembers.permissions.replace(':externalId', EXTERNAL_ID_OTHER_USER));
-        expect(res.body.removeTeamMemberLink).to.equal(paths.teamMembers.delete.replace(':externalId', EXTERNAL_ID_OTHER_USER));
+        expect(res.body.editPermissionsLink).to.equal(formattedPathFor(paths.teamMembers.permissions, externalServiceId, EXTERNAL_ID_OTHER_USER));
+        expect(res.body.removeTeamMemberLink).to.equal(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER));
       })
       .end(done);
   });
@@ -162,7 +175,10 @@ describe('service users resource', function () {
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
-      service_ids: ['1']
+      services: [{
+        name: 'System Generated',
+        external_id: '8348754ihuwk'
+      }],
     };
     const user_in_session = session.getUser(user);
     const getUserResponse = userFixtures.validUserResponse(user);
@@ -191,7 +207,10 @@ describe('service users resource', function () {
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
-      service_ids: ['1']
+      services: [{
+        name: 'System Generated',
+        external_id: '3894hewfui'
+      }],
     };
     const user_in_session = session.getUser(user);
     const getUserResponse = userFixtures.validUserResponse(user);
@@ -211,18 +230,22 @@ describe('service users resource', function () {
 
   it('should redirect to my profile when trying to access my user through team members path', function (done) {
 
+    const externalServiceId = '3784ihwuheruw8e';
     const user_in_session = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_ids: ['1'],
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId
+      }],
       permissions: ['users-service:read']
     });
 
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     supertest(app)
-      .get(`/team-members/${EXTERNAL_ID_LOGGED_IN}`)
+      .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_LOGGED_IN))
       .set('Accept', 'application/json')
       .expect(302)
       .expect('Location', "/my-profile")
@@ -231,18 +254,25 @@ describe('service users resource', function () {
 
   it('error when accessing an user from other service profile (cheeky!)', function (done) {
 
-    const service_id = '1';
+    const externalServiceId1 = '48753g874tg';
+    const externalServiceId2 = '7huh4y7tu6g';
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_ids: [service_id],
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId1
+      }],
       permissions: ['users-service:read']
     });
     const getUserResponse = userFixtures.validUserResponse({
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
-      service_ids: ['2']
+      services: [{
+        name: 'System Generated',
+        external_id: externalServiceId2
+      }],
     });
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
@@ -251,7 +281,7 @@ describe('service users resource', function () {
     app = session.getAppWithLoggedInUser(getApp(), user);
 
     supertest(app)
-      .get(`/team-members/${EXTERNAL_ID_OTHER_USER}`)
+      .get(formattedPathFor(paths.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .expect(500)
       .expect((res) => {
@@ -290,10 +320,10 @@ describe('service users resource', function () {
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     supertest(app)
-      .post(`/team-members/${EXTERNAL_ID_OTHER_USER}/delete`)
+      .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .send({csrfToken: csrf().create('123')})
       .expect(302)
-      .expect('Location', "/team-members")
+      .expect('Location', formattedPathFor(paths.teamMembers.index, externalServiceId))
       .end(done);
   });
 
@@ -315,7 +345,7 @@ describe('service users resource', function () {
     app = session.getAppWithLoggedInUser(getApp(), user_in_session);
 
     supertest(app)
-      .post(`/team-members/${EXTERNAL_ID_OTHER_USER}/delete`)
+      .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .send({csrfToken: csrf().create('123')})
       .expect(200)

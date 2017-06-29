@@ -7,6 +7,8 @@ let errorResponse = response.renderErrorView;
 let rolesModule = require('../utils/roles');
 let emailTools = require('../utils/email_tools')();
 
+const formattedPathFor = require('../../app/utils/replace_params_in_path');
+
 const messages = {
   emailAlreadyInUse: 'Email already in use',
   inviteError: 'Unable to send invitation at this time',
@@ -35,8 +37,12 @@ module.exports = {
 
   index: (req, res) => {
     let roles = rolesModule.roles;
-
+    const externalServiceId = req.params.externalServiceId;
+    const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId);
+    const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId);
     let data = {
+      teamMemberIndexLink: teamMemberIndexLink,
+      teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
       admin: {id: roles['admin'].extId},
       viewAndRefund: {id: roles['view-and-refund'].extId},
       view: {id: roles['view-only'].extId}
@@ -53,6 +59,7 @@ module.exports = {
   invite: (req, res) => {
     let correlationId = req.correlationId;
     let senderId = req.user.externalId;
+    let externalServiceId = req.params.externalServiceId;
     let invitee = req.body['invitee-email'];
     let serviceId = req.user.serviceIds[0];
     let roleId = req.body['role-input'];
@@ -61,7 +68,7 @@ module.exports = {
 
     let onSuccess = () => {
       req.flash('generic', `Invite sent to ${invitee}`);
-      res.redirect(303, paths.teamMembers.index);
+      res.redirect(303, formattedPathFor(paths.teamMembers.index, externalServiceId));
     };
 
     let onError = (err) => {
@@ -79,7 +86,7 @@ module.exports = {
 
     if (!emailTools.validateEmail(invitee)) {
       req.flash('genericError', `Invalid email address`);
-      res.redirect(303, paths.teamMembers.invite);
+      res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId));
       return;
     }
 
