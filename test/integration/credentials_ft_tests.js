@@ -623,19 +623,21 @@ describe('The provider update credentials endpoint', function () {
       .end(done);
   });
 
-  it('should send new username, password, passphrase and psp_id credentials to connector', function (done) {
+  it('should send new username, password, merchant_id, sha_in_passphrase and sha_out_passphrase credentials to connector', function (done) {
 
     connectorMock.patch(CONNECTOR_ACCOUNT_CREDENTIALS_PATH, {
       "credentials": {
         "username": "a-username",
         "password": "a-password",
-        "sha_in_passphrase": "a-passphrase",
-        "psp_id": "a-psp-id"
+        "merchant_id": "a-psp-id",
+        "sha_in_passphrase": "a-sha-in-passphrase",
+        "sha_out_passphrase": "a-sha-out-passphrase"
+
       }
     }).reply(200, {});
 
-//    verify_post_request(path, sendData, cookieValue, expectedRespCode, expectedData, expectedLocation) {
-    var sendData = {'username': 'a-username', 'password': 'a-password', 'shaInPassphrase': 'a-passphrase', 'pspId': 'a-psp-id'};
+    var sendData = {'username': 'a-username', 'password': 'a-password',  'merchantId': 'a-psp-id',
+                    'shaInPassphrase': 'a-sha-in-passphrase', 'shaOutPassphrase': 'a-sha-out-passphrase'};
     var expectedLocation = paths.credentials.index;
     var path = paths.credentials.index;
     build_form_post_request(path, sendData, true, app)

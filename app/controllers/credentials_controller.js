@@ -52,10 +52,14 @@ function credentialsPatchRequestValueOf(req) {
 
   if ('merchantId' in req.body) {
     requestPayload.credentials.merchant_id = req.body.merchantId;
+  }
 
-  } else if ('pspId' in req.body) {
-    requestPayload.credentials.psp_id = req.body.pspId;
+  if ('shaInPassphrase' in req.body) {
     requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase;
+  }
+
+  if ('shaOutPassphrase' in req.body) {
+      requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase;
   }
 
   return requestPayload;

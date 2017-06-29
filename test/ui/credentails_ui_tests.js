@@ -57,8 +57,7 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/worldpay', templateData);
 
-    body.should.not.containSelector('h4#view-notification-title').withExactText('Your Worldpay Notification Credentials');
-    body.should.not.containSelector('dt#notification-username-key').withExactText('Username');
+    body.should.not.containSelector('h4#view-notification-title');
 
   });
 
@@ -137,14 +136,14 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('dd#notification-password-value').withExactText('****');
   });
 
-  it('should display credentials view for a ePDQ account', function () {
+  it('should display credentials view for an ePDQ account', function () {
 
     var templateData = {
       currentGatewayAccount: {
         "payment_provider": "ePDQ",
         "credentials": {
           'username': 'a-username',
-          'psp_id': 'a-psp-id'
+          'merchant_id': 'a-psp-id'
         }
       },
 
@@ -164,8 +163,8 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('dl#credentials');
 
-    body.should.containSelector('dt#psp-id-key').withExactText('PSP ID');
-    body.should.containSelector('dd#psp-id-value').withExactText('a-psp-id');
+    body.should.containSelector('dt#merchant-id-key').withExactText('PSP ID');
+    body.should.containSelector('dd#merchant-id-value').withExactText('a-psp-id');
 
     body.should.containSelector('dt#username-key').withExactText('Username');
     body.should.containSelector('dd#username-value').withExactText('a-username');
@@ -173,8 +172,11 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('dt#password-key').withExactText('Password');
     body.should.containSelector('dd#password-value').withExactText('****');
 
-    body.should.containSelector('dt#sha-in-passphrase-key').withExactText('SHA in passphrase');
+    body.should.containSelector('dt#sha-in-passphrase-key').withExactText('SHA-IN passphrase');
     body.should.containSelector('dd#sha-in-passphrase-value').withExactText('****');
+
+    body.should.containSelector('dt#sha-out-passphrase-key').withExactText('SHA-OUT passphrase');
+    body.should.containSelector('dd#sha-out-passphrase-value').withExactText('****');
   });
 
   it('should not display notification credentials for ePDQ', function() {
@@ -187,16 +189,14 @@ describe('The credentials view in normal mode', function () {
           'psp_id': 'a-psp-id'
         }
       },
-
       permissions: {
         gateway_credentials_read: true
       }
     };
 
-    let body = renderTemplate('provider_credentials/epdq', templateData);
+    var body = renderTemplate('provider_credentials/epdq', templateData);
 
-    body.should.not.containSelector('h4#view-notification-title').withExactText('Your ePDQ Notification Credentials');
-    body.should.not.containSelector('dt#notification-username-key').withExactText('Username');
+    body.should.not.containSelector('h4#view-notification-title');
   });
 
   it('should display credentials view for a sandbox account', function () {
@@ -336,7 +336,7 @@ describe('The credentials view in edit mode', function () {
 
     body.should.not.containSelector('a#edit-credentials-link');
 
-    body.should.containInputField('pspId', 'text')
+    body.should.containInputField('merchantId', 'text')
       .withAttribute('value', 'a-psp-id')
       .withLabel('PSP ID');
 
@@ -350,7 +350,11 @@ describe('The credentials view in edit mode', function () {
 
     body.should.containInputField('shaInPassphrase', 'password')
       .withAttribute('value', '')
-      .withLabel('SHA in passphrase');
+      .withLabel('SHA-IN passphrase');
+
+    body.should.containInputField('shaOutPassphrase', 'password')
+      .withAttribute('value', '')
+      .withLabel('SHA-OUT passphrase');
 
     body.should.containInputField('submitCredentials', 'submit');
   });
