@@ -1,6 +1,8 @@
 # pay-selfservice
 GOV.UK Pay Self Service portal (Node.js)
 
+We use [Architecure Decision Records](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) to keep track of the history of software design decisions on this application. Please see [docs/arch](docs/arch/).
+
 ## Key environment variables
 
 if you wish to override any variables, please do the following:
