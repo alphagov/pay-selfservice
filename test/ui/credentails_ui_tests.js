@@ -317,7 +317,7 @@ describe('The credentials view in edit mode', function () {
         "payment_provider": "ePDQ",
         "credentials": {
           'username': 'a-username',
-          'psp_id': 'a-psp-id'
+          'merchant_id': 'a-psp-id'
         }
       },
       'editMode': 'true',

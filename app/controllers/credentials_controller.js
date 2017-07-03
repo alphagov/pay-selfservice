@@ -3,6 +3,7 @@ const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials';
 
 var logger                = require('winston');
 var changeCase            = require('change-case');
+var _                     = require('lodash');
 
 var response              = require('../utils/response.js').response;
 var errorView             = require('../utils/response.js').renderErrorView;
@@ -50,16 +51,19 @@ function credentialsPatchRequestValueOf(req) {
     }
   };
 
-  if ('merchantId' in req.body) {
+  const merchantId = _.get(req, 'body.merchantId');
+  if (merchantId) {
     requestPayload.credentials.merchant_id = req.body.merchantId;
   }
 
-  if ('shaInPassphrase' in req.body) {
+  const shaInPassphrase = _.get(req, 'body.shaInPassphrase');
+  if (shaInPassphrase) {
     requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase;
   }
 
-  if ('shaOutPassphrase' in req.body) {
-      requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase;
+  const shaOutPassphrase = _.get(req, 'body.shaOutPassphrase');
+  if (shaOutPassphrase) {
+    requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase;
   }
 
   return requestPayload;
