@@ -54,66 +54,13 @@ describe('Transaction download endpoints', function () {
     userCreator.mockUserResponse(user.toJson(), done);
   });
 
-
-
   describe('The /transactions/download endpoint', function () {
 
     it('should download a csv file comprising a list of transactions for the gateway account', function (done) {
-      var results = [{
-        amount: 12345,
-        state: {status: 'succeeded', finished: false},
-        card_brand: 'Visa',
-        description: 'desc-red',
-        reference: 'red',
-        email: 'alice.111@mail.fake',
-        links: [],
-        charge_id: 'charge1',
-        gateway_transaction_id: 'transaction-1',
-        return_url: 'https://demoservice.pymnt.localdomain:443/return/red',
-        payment_provider: 'sandbox',
-        created_date: '2016-05-12T16:37:29.245Z',
-        card_details: {
-          billing_address: {
-            city: 'TEST01',
-            country: 'GB',
-            line1: 'TEST',
-            line2: 'TEST - DO NOT PROCESS',
-            postcode: 'SE1 3UZ'
-          },
-          card_brand: 'Visa',
-          cardholder_name: 'TEST01',
-          expiry_date: '12/19',
-          last_digits_card_number: '4242'
-        },
-      },
-        {
-          amount: 999,
-          state: {status: 'canceled', finished: true, code: 'P01234', message: 'Something happened'},
-          card_brand: 'Mastercard',
-          description: 'desc-blue',
-          reference: 'blue',
-          email: 'alice.222@mail.fake',
-          links: [],
-          charge_id: 'charge2',
-          gateway_transaction_id: 'transaction-2',
-          return_url: 'https://demoservice.pymnt.localdomain:443/return/blue',
-          payment_provider: 'worldpay',
-          created_date: '2015-04-12T18:55:29.999Z',
-          card_details: {
-            billing_address: {
-              city: 'TEST02',
-              country: 'GB',
-              line1: 'TEST',
-              line2: 'TEST - DO NOT PROCESS',
-              postcode: 'SE1 3UZ'
-            },
-            card_brand: 'Mastercard',
-            cardholder_name: 'TEST02',
-            expiry_date: '12/19',
-            last_digits_card_number: '4241'
-          },
-        }];
-      mockJson = {
+
+        var results = require('./json/transaction_download.json');
+
+        mockJson = {
         results: results,
         _links: {
           next_page: {href: 'http://localhost:8000/bar'}
@@ -156,6 +103,41 @@ describe('Transaction download endpoints', function () {
           done()
         });
     });
+
+      // @see https://payments-platform.atlassian.net/browse/PP-2254
+      it('should download a csv file comprising a list of transactions and preventing Spreadsheet Formula Injection', function (done) {
+
+          var results = require('./json/transaction_download_spreadsheet_formula_injection.json');
+
+          mockJson = {
+              results: results,
+              _links: {
+                  next_page: {href: 'http://localhost:8000/bar'}
+              }
+          };
+
+          var secondPageMock = nock("http://localhost:8000");
+
+          secondPageMock.get("/bar")
+              .reply(200, {
+                  results: results,
+              });
+
+          connectorMock_responds(200, mockJson, {});
+
+          download_transaction_list()
+              .expect(200)
+              .expect('Content-Type', 'text/csv; charset=utf-8')
+              .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+              .end(function (err, res) {
+                  if (err) return done(err);
+                  var csvContent = res.text;
+                  var arrayOfLines = csvContent.split("\n");
+                  expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created"');
+                  expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","succeeded",false,"","","transaction-1","charge1","12 May 2016 — 17:37:29"');
+                  done()
+              });
+      });
 
     it('should show error message on a bad request', function (done) {
 
