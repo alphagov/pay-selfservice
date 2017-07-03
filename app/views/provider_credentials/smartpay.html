@@ -83,12 +83,12 @@
 <form id="notification_credentials_form" method="post" action="{{routes.notificationCredentials.update}}">
     <input id="notification-csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
-        <label class="form-label" for="username">Username</label>
+        <label class="form-label" for="notification-username">Username</label>
         <input class="form-control" id="notification-username" name="username" type="text" value="{{currentGatewayAccount.notification_credentials.userName}}">
     </div>
 
     <div class="form-group">
-        <label class="form-label" for="password">Password</label>
+        <label class="form-label" for="notification-password">Password</label>
         <input class="form-control" id="notification-password" name="password" type="password" value="">
     </div>
 
