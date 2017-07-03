@@ -124,3 +124,15 @@
       margin-top: 5px;
   }
 }
+
+// bootstrap datepicker overides :s
+.datepicker .datepicker-days table tr td.day.focused,
+.datepicker .datepicker-days table tr td.day:hover {
+    background: $yellow;
+}
+.datepicker .datepicker-days table tr td.active:active,
+.datepicker .datepicker-days table tr td.active.highlighted:active,
+.datepicker .datepicker-days table tr td.active.active,
+.datepicker .datepicker-days table tr td.active.highlighted.active {
+  background: $govuk-blue;
+}
