@@ -59,7 +59,7 @@ module.exports.logInGet = function (req, res) {
       case 'invalid': setError({username: 'You must enter a valid username', password: 'You must enter a valid password'}); break;
       case 'empty_all': setError({username: 'You must enter a username', password: 'You must enter a password'}); break;
       case 'empty_username': setError({username: 'You must enter a username'}); break;
-      case 'empty_password': setError({password: 'You must enter a username'}); break;
+      case 'empty_password': setError({password: 'You must enter a password'}); break;
     }
   }
   res.render('login/login');
