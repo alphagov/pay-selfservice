@@ -31,7 +31,7 @@ describe('create service otp validation', function () {
       .reply(200);
 
     app = session.getAppWithLoggedOutSession(getApp());
-    return supertest(app)
+    supertest(app)
       .post(paths.selfCreateService.otpVerify)
       .send({
         code: validServiceInviteOtpRequest.getPlain().code,
@@ -49,7 +49,7 @@ describe('create service otp validation', function () {
       .reply(401);
 
     app = session.getAppWithLoggedOutSession(getApp());
-    return supertest(app)
+    supertest(app)
       .post(paths.selfCreateService.otpVerify)
       .send({
         code: validServiceInviteOtpRequest.getPlain().code,
@@ -69,7 +69,7 @@ describe('create service otp validation', function () {
 
     app = session.getAppWithLoggedOutSession(getApp());
 
-    return supertest(app)
+    supertest(app)
       .post(paths.selfCreateService.otpVerify)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -93,7 +93,7 @@ describe('create service otp validation', function () {
 
     app = session.getAppWithLoggedOutSession(getApp());
 
-    return supertest(app)
+    supertest(app)
       .post(paths.selfCreateService.otpVerify)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')

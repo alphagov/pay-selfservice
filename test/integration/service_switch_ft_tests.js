@@ -30,7 +30,7 @@ describe('service switch controller', function () {
     let mockSession = session.getMockSession(user);
     app = session.getAppWithSessionAndGatewayAccountCookies(getApp(), mockSession, mockGatewayAccountCookie);
 
-    return supertest(app)
+    supertest(app)
       .post('/my-services/switch')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
