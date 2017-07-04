@@ -3,6 +3,7 @@ const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials';
 
 var logger                = require('winston');
 var changeCase            = require('change-case');
+var _                     = require('lodash');
 
 var response              = require('../utils/response.js').response;
 var errorView             = require('../utils/response.js').renderErrorView;
@@ -41,6 +42,32 @@ function loadIndex(req, res, viewMode) {
   }
 }
 
+function credentialsPatchRequestValueOf(req) {
+
+  let requestPayload = {
+    credentials: {
+      username: req.body.username,
+      password: req.body.password
+    }
+  };
+
+  const merchantId = _.get(req, 'body.merchantId');
+  if (merchantId) {
+    requestPayload.credentials.merchant_id = req.body.merchantId;
+  }
+
+  const shaInPassphrase = _.get(req, 'body.shaInPassphrase');
+  if (shaInPassphrase) {
+    requestPayload.credentials.sha_in_passphrase = req.body.shaInPassphrase;
+  }
+
+  const shaOutPassphrase = _.get(req, 'body.shaOutPassphrase');
+  if (shaOutPassphrase) {
+    requestPayload.credentials.sha_out_passphrase = req.body.shaOutPassphrase;
+  }
+
+  return requestPayload;
+}
 
 module.exports = {
   index: function (req, res) {
@@ -115,16 +142,6 @@ module.exports = {
     });
     var accountId = auth.getCurrentGatewayAccountId(req);
     var connectorUrl = process.env.CONNECTOR_URL + "/v1/frontend/accounts/{accountId}/credentials";
-    var requestPayload = {
-        credentials: {
-          username: req.body.username,
-          password: req.body.password
-        }
-    };
-
-    if ('merchantId' in req.body) {
-      requestPayload.credentials.merchant_id = req.body.merchantId;
-    }
 
     logger.info('Calling connector to update provider credentials -', {
       service: 'connector',
@@ -136,7 +153,7 @@ module.exports = {
 
     var startTime = new Date();
     connectorClient().patchAccountCredentials({
-      payload: requestPayload,
+      payload: credentialsPatchRequestValueOf(req),
       correlationId: correlationId,
       gatewayAccountId: accountId
     }, function (connectorData, connectorResponse) {
