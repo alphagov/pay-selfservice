@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
 // NPM dependencies
-const _ = require('lodash');
+const _ = require('lodash')
 
 // Custom dependencies
-const userFixtures = require(__dirname + '/user_fixtures');
-const pactBase     = require(__dirname + '/pact_base');
+const userFixtures = require(__dirname + '/user_fixtures')
+const pactBase = require(__dirname + '/pact_base')
 
 // Global setup
-const pactServices = pactBase({array: ["service_ids"]});
+const pactServices = pactBase({array: ['service_ids']})
 
 module.exports = {
 
@@ -17,79 +17,79 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getPlain: (function()) request with overrides applied}}
    */
   validServiceUsersResponse: (users) => {
-    let data = [];
+    let data = []
     for (let user of users) {
-      data.push(userFixtures.validUserResponse(user).getPlain());
+      data.push(userFixtures.validUserResponse(user).getPlain())
     }
     return {
       getPactified: () => {
-        return pactServices.pactifyNestedArray(data);
+        return pactServices.pactifyNestedArray(data)
       },
       getPlain: () => {
-        return data;
+        return data
       }
-    };
+    }
   },
 
   getServiceUsersNotFoundResponse: () => {
     let response = {
-      errors: ["service not found"]
-    };
-    return pactServices.withPactified(response);
+      errors: ['service not found']
+    }
+    return pactServices.withPactified(response)
   },
 
   validCreateServiceRequest: (opts) => {
-    opts = opts || {};
+    opts = opts || {}
 
-    const data = {};
+    const data = {}
     if (opts.name) {
-      data.name = opts.name;
+      data.name = opts.name
     }
     if (opts.gateway_account_ids) {
-      data.gateway_account_ids = opts.gateway_account_ids;
+      data.gateway_account_ids = opts.gateway_account_ids
     }
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data);
+        return pactServices.pactify(data)
       },
       getPlain: () => {
-        return data;
+        return data
       }
-    };
+    }
   },
 
   validCreateServiceResponse: (opts) => {
-    opts = opts || {};
+    opts = opts || {}
 
-    const externalId = opts.external_id || 'externalId';
-    const serviceName = opts.name || 'System Generated';
-    const gatewayAccountIds = opts.gateway_account_ids || [];
+    const externalId = opts.external_id || 'externalId'
+    const serviceName = opts.name || 'System Generated'
+    const gatewayAccountIds = opts.gateway_account_ids || []
 
     const data = {
       external_id: externalId,
       name: serviceName,
       gateway_account_ids: gatewayAccountIds
-    };
+    }
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data);
+        return pactServices.pactify(data)
       },
       getPlain: () => {
-        return data;
+        return data
       }
-    };
+    }
   },
 
   badRequestResponseWhenNonNumericGatewayAccountIds: (nonNumericGatewayAccountIds) => {
     const responseData = _.map(nonNumericGatewayAccountIds, (field) => {
-      return `Field [${field}] must contain numeric values`;
-    });
+      return `Field [${field}] must contain numeric values`
+    })
     const response = {
       errors: responseData
-    };
+    }
 
-    return pactServices.withPactified(response);
+    return pactServices.withPactified(response)
   },
-};
+}
