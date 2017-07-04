@@ -7,8 +7,8 @@ const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies
 const pactProxy = require('../../../test_helpers/pact_proxy')
-const Connector = require('../../../../app/services/clients/connector_client').ConnectorClient
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
+const Connector = require('../../../../app/services/clients/connector_client').ConnectorClient
 const gatewayAccountFixtures = require('../../../fixtures/gateway_account_fixtures')
 
 // Constants
@@ -16,10 +16,10 @@ const ACCOUNTS_RESOURCE = '/v1/api/accounts'
 const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
 const connectorClient = new Connector(`http://localhost:${mockPort}`)
+const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
-const expect = chai.expect
 
 describe('connector client - create gateway account', function () {
 
