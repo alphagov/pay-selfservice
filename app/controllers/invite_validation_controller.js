@@ -44,6 +44,7 @@ module.exports = {
     const code = req.params.code;
     const correlationId = req.correlationId;
     const redirect = (invite) => {
+
       let redirectTarget;
 
       if (!req.register_invite) {
@@ -55,6 +56,10 @@ module.exports = {
       if (invite.telephone_number) {
         req.register_invite.telephone_number = invite.telephone_number;
       }
+
+      if (invite.email) {
+        req.register_invite.email = invite.email;
+      };
 
       switch(invite.type) {
         case 'user':

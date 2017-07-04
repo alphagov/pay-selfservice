@@ -7,6 +7,7 @@ const response = require('../utils/response');
 const errorResponse = response.renderErrorView;
 const registrationService = require('../services/service_registration_service');
 const validations = require('../utils/registration_validations');
+const loginController = require('./login_controller');
 const validateRegistrationInputs = validations.validateServiceRegistrationInputs;
 const serviceRegistrationEnabled = process.env.SERVICE_REGISTRATION_ENABLED === 'true';
 
@@ -14,6 +15,7 @@ module.exports = {
 
   /**
    * Display user registration data entry form
+   *
    * @param req
    * @param res
    */
@@ -32,47 +34,8 @@ module.exports = {
   },
 
   /**
-   * Display service creation requested page
-   * @param req
-   * @param res
-   */
-  showRequestedPage: (req, res) => {
-    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
-    _.unset(req, 'session.pageData.submitRegistration');
-    res.render('self_create_service/confirmation', {
-      requester_email
-    });
-  },
-
-  /**
-   * Display OTP verify page
-   * @param req
-   * @param res
-   */
-  showOtpVerify: (req, res) => {
-    res.render('self_create_service/verify_otp');
-  },
-
-  /**
-   * Displayname your service form
-   * @param req
-   * @param res
-   */
-  showNameYourService: (req, res) => {
-    res.render('self_create_service/set_name');
-  },
-
-  /**
-   * DisplayOTP resend page
-   * @param req
-   * @param res
-   */
-  showOtpResend: (req, res) => {
-    res.render('self_create_service/service_creation_resend_otp');
-  },
-
-  /**
    * Process submission of service registration details
+   *
    * @param req
    * @param res
    */
@@ -128,9 +91,40 @@ module.exports = {
     }
   },
 
-  submitOtpVerify: (req, res) => {
+  /**
+   * Display service creation requested page
+   *
+   * @param req
+   * @param res
+   */
+  showRequestedPage: (req, res) => {
+    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
+    _.unset(req, 'session.pageData.submitRegistration');
+    res.render('self_create_service/confirmation', {
+      requester_email
+    });
+  },
+
+  /**
+   * Display OTP verify page
+   *
+   * @param req
+   * @param res
+   */
+  showOtpVerify: (req, res) => {
+    res.render('self_create_service/verify_otp');
+  },
+
+  /**
+   * Process submission of otp verification
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  submitOtpVerify: (req, res, next) => {
     const correlationId = req.correlationId;
-    const code = req.body.code;
+    const code = req.register_invite.code;
     const otpCode = req.body['verify-code'];
 
     const handleInvalidOtp = (message) => {
@@ -158,12 +152,72 @@ module.exports = {
 
     const validateServiceOtpCode = (code, otpCode) => {
       registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
-        .then(() => res.send(200))
+        .then(() => {
+          next();
+        })
         .catch(
           (err) => handleError(req, res, err)
         );
     };
 
     return validateServiceOtpCode(code, otpCode);
+  },
+
+  /**
+   * This should be refactored into separate route
+   *
+   * @param req
+   * @param res
+   * @returns {*|Promise|Promise.<T>}
+   */
+  createPopulatedService: (req, res) => {
+    const correlationId = req.correlationId;
+    const email = req.register_invite.email;
+    const phoneNumber = req.register_invite.telephone_number;
+    const role = 'admin';
+
+    const redirectToServiceNaming = (req, res) => {
+      res.redirect(303, paths.selfCreateService.serviceNaming);
+    };
+
+    const handleError = (req, res, err) => {
+      errorResponse(req, res, 'Unable to process registration at this time', 500);
+    };
+
+    return registrationService.createPopulatedService({email, role, phoneNumber}, correlationId)
+      .then((user) => {
+        loginController.setupDirectLoginAfterRegister(req, res, user);
+        redirectToServiceNaming(req, res);
+      })
+      .catch(err => handleError(req, res, err));
+  },
+
+  /**
+   * Display name your service form
+   *
+   * @param req
+   * @param res
+   */
+  showNameYourService: (req, res) => {
+    res.render('self_create_service/set_name');
+  },
+
+  /**
+   * Process submission of service name form
+   *
+   * @param req
+   * @param res
+   */
+  submitYourServiceName: (req, res) => {
+    res.render('self_create_service/set_name');
+  },
+
+  /**
+   * DisplayOTP resend page
+   * @param req
+   * @param res
+   */
+  showOtpResend: (req, res) => {
+    res.render('self_create_service/service_creation_resend_otp');
   }
 };

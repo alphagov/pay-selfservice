@@ -109,8 +109,9 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration);
   app.get(selfCreateService.creationConfirmed, selfCreateServiceCtrl.showRequestedPage);
   app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpVerify);
-  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitOtpVerify);
-  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.showNameYourService);
+  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitOtpVerify, selfCreateServiceCtrl.createPopulatedService);
+  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService);
+  app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName);
   app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpResend);
 
 

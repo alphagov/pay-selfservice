@@ -255,6 +255,33 @@ module.exports = {
     };
 
     return pactUsers.withPactified(response);
+  },
+
+  validCreateUserRequest: () => {
+    let newUsername = randomUsername();
+    let role = {name: "admin"};
+    let defaultServiceId = randomServiceId();
+
+    let data = {
+      username: newUsername,
+      email: `${newUsername}@example.com`,
+      gateway_account_ids: [randomAccountId()],
+      service_ids: [defaultServiceId],
+      telephone_number: randomTelephoneNumber(),
+      role_name: role
+    };
+
+    return {
+      getPactified: () => {
+        data.role_name = role.name;
+        return pactUsers.pactify(data);
+      },
+
+      getPlain: () => {
+        data.role_name = role.name;
+        return data;
+      }
+    };
   }
 
 };

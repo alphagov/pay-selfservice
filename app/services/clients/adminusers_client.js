@@ -644,6 +644,79 @@ module.exports = function (clientOptions = {}) {
     return defer.promise;
   };
 
+  /**
+   * Submit service creation details
+   *
+   */
+  const createService = (gatewayAccountIds) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        gateway_account_ids: gatewayAccountIds
+      }
+    };
+    const url = `${serviceUserResource}`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'create service',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
+  /**
+   * Submit user create details
+   *
+   */
+  const createUser = (email, gatewayAccountIds, serviceIds, role, phoneNumber) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        email: email,
+        username: email,
+        gateway_account_ids: gatewayAccountIds,
+        service_ids: serviceIds,
+        telephone_number: phoneNumber,
+        role_name: role
+      }
+    };
+    const url = `${userResource}`;
+    const defer = q.defer();
+    const startTime = new Date();
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'create user',
+      service: SERVICE_NAME
+    };
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+
+    requestLogger.logRequestStart(context);
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter);
+
+    return defer.promise;
+  };
+
   return {
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
@@ -662,6 +735,8 @@ module.exports = function (clientOptions = {}) {
     resendOtpCode: resendOtpCode,
     submitServiceRegistration: submitServiceRegistration,
     deleteUser: deleteUser,
-    verifyOtpForServiceInvite: verifyOtpForServiceInvite
+    verifyOtpForServiceInvite: verifyOtpForServiceInvite,
+    createService: createService,
+    createUser: createUser
   };
 };
