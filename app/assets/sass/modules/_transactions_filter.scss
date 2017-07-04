@@ -74,10 +74,11 @@
   .datetime-pair {
     width: 80%;
     width: calc(100% - 200px);
-    margin-top: 0;
+
     @include respond-to-max(860px) {
       width: 100%;
     }
+
     @include respond-to-max(mobile) {
       margin-top: 15px;
     }
