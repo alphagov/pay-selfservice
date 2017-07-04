@@ -1,7 +1,13 @@
-let User      = require(__dirname + '/../../app/models/user').User;
-let pactBase  = require(__dirname + '/pact_base');
-let pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]});
-let random    = require(__dirname + '/../../app/utils/random');
+'use strict'
+
+// NPM dependencies
+const _ = require('lodash');
+
+// Custom dependencies
+const User      = require(__dirname + '/../../app/models/user').User;
+const pactBase  = require(__dirname + '/pact_base');
+const pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]});
+const random    = require(__dirname + '/../../app/utils/random');
 
 function randomString() {
   return Math.random().toString(36).substring(7);
@@ -144,24 +150,31 @@ module.exports = {
     };
   },
 
-  invalidUserCreateRequestWithFieldsMissing: () => {
-    let request = {
-      username: randomUsername(),
-      gateway_account_ids: [''],
-      email: '',
-      telephone_number: ''
+  validCreateUserRequest: () => {
+    let newUsername = randomUsername();
+    let role = {name: "admin"};
+    let defaultServiceId = randomServiceId();
+
+    let data = {
+      username: newUsername,
+      email: `${newUsername}@example.com`,
+      gateway_account_ids: [randomAccountId()],
+      service_ids: [defaultServiceId],
+      telephone_number: randomTelephoneNumber(),
+      role_name: role
     };
 
-    return pactUsers.withPactified(request);
-  },
+    return {
+      getPactified: () => {
+        data.role_name = role.name;
+        return pactUsers.pactify(data);
+      },
 
-  invalidUserCreateResponseWhenFieldsMissing: () => {
-    let response = {
-      // At the moment to discuss Failfast approach to the API rather than error collection
-      errors: ["Field [email] is required", "Field [telephone_number] is required", "Field [role_name] is required"]
+      getPlain: () => {
+        data.role_name = role.name;
+        return data;
+      }
     };
-
-    return pactUsers.withPactified(response);
   },
 
   validAuthenticateRequest: (options) => {
@@ -252,6 +265,17 @@ module.exports = {
   badForgottenPasswordResponse: () => {
     let response = {
       errors: ["Field [username] is required"]
+    };
+
+    return pactUsers.withPactified(response);
+  },
+
+  badRequestResponseWhenFieldsMissing: (missingFields) => {
+    const responseData = _.map(missingFields, (field) => {
+      return `Field [${field}] is required`;
+    });
+    const response = {
+      errors: responseData
     };
 
     return pactUsers.withPactified(response);
