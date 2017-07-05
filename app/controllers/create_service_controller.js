@@ -14,6 +14,7 @@ module.exports = {
 
   /**
    * Display user registration data entry form
+   *
    * @param req
    * @param res
    */
@@ -32,47 +33,8 @@ module.exports = {
   },
 
   /**
-   * Display service creation requested page
-   * @param req
-   * @param res
-   */
-  showRequestedPage: (req, res) => {
-    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
-    _.unset(req, 'session.pageData.submitRegistration');
-    res.render('self_create_service/confirmation', {
-      requester_email
-    });
-  },
-
-  /**
-   * Display OTP verify page
-   * @param req
-   * @param res
-   */
-  showOtpVerify: (req, res) => {
-    res.render('self_create_service/verify_otp');
-  },
-
-  /**
-   * Displayname your service form
-   * @param req
-   * @param res
-   */
-  showNameYourService: (req, res) => {
-    res.render('self_create_service/set_name');
-  },
-
-  /**
-   * DisplayOTP resend page
-   * @param req
-   * @param res
-   */
-  showOtpResend: (req, res) => {
-    res.render('self_create_service/service_creation_resend_otp');
-  },
-
-  /**
    * Process submission of service registration details
+   *
    * @param req
    * @param res
    */
@@ -128,9 +90,39 @@ module.exports = {
     }
   },
 
+  /**
+   * Display service creation requested page
+   *
+   * @param req
+   * @param res
+   */
+  showRequestedPage: (req, res) => {
+    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
+    _.unset(req, 'session.pageData.submitRegistration');
+    res.render('self_create_service/confirmation', {
+      requester_email
+    });
+  },
+
+  /**
+   * Display OTP verify page
+   *
+   * @param req
+   * @param res
+   */
+  showOtpVerify: (req, res) => {
+    res.render('self_create_service/verify_otp');
+  },
+
+  /**
+   * Process submission of otp verification
+   *
+   * @param req
+   * @param res
+   */
   submitOtpVerify: (req, res) => {
     const correlationId = req.correlationId;
-    const code = req.body.code;
+    const code = req.register_invite.code;
     const otpCode = req.body['verify-code'];
 
     const handleInvalidOtp = (message) => {
@@ -165,5 +157,24 @@ module.exports = {
     };
 
     return validateServiceOtpCode(code, otpCode);
+  },
+
+  /**
+   * Display name your service form
+   *
+   * @param req
+   * @param res
+   */
+  showNameYourService: (req, res) => {
+    res.render('self_create_service/set_name');
+  },
+
+  /**
+   * DisplayOTP resend page
+   * @param req
+   * @param res
+   */
+  showOtpResend: (req, res) => {
+    res.render('self_create_service/service_creation_resend_otp');
   }
 };
