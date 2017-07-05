@@ -2,6 +2,12 @@
 
 /**
  * @class GatewayAccount
+ * @property {string} name - The name of the gateway account
+ * @property {string} id - The id of the gateway account
+ * @property {string} type - The type of the gateway account (e.g. test/live)
+ * @property {string} description - The description of the gateway account
+ * @property {string} analyticsId - Google analyticsId of the gateway account
+ * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
  */
 class GatewayAccount {
 
@@ -16,12 +22,12 @@ class GatewayAccount {
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
    **/
   constructor(gatewayAccountData) {
-    this._id = gatewayAccountData.gateway_account_id;
-    this._name = gatewayAccountData.service_name;
-    this._type = gatewayAccountData.type;
-    this._description = gatewayAccountData.description;
-    this._analyticsId = gatewayAccountData.analytics_id;
-    this._toggle3ds = gatewayAccountData.toggle_3ds;
+    this.id = gatewayAccountData.gateway_account_id;
+    this.name = gatewayAccountData.service_name;
+    this.type = gatewayAccountData.type;
+    this.description = gatewayAccountData.description;
+    this.analyticsId = gatewayAccountData.analytics_id;
+    this.toggle3ds = gatewayAccountData.toggle_3ds;
   }
 
   /**
@@ -34,48 +40,6 @@ class GatewayAccount {
       service_name: this.name,
       type: this.type
     }
-  }
-
-  /**
-   * @property {string} name - The name of the gateway account
-   */
-  get name () {
-    return this._name
-  }
-
-  /**
-   * @property {string} id - The id of the gateway account
-   */
-  get id () {
-    return this._id
-  }
-
-  /**
-   * @property {string} type - The type of the gateway account (e.g. test/live)
-   */
-  get type() {
-    return this._type;
-  }
-
-  /**
-   * @property {string} description - The description of the gateway account
-   */
-  get description() {
-    return this._description;
-  }
-
-  /**
-   * @property {string} analyticsId - Google analyticsId of the gateway account
-   */
-  get analyticsId() {
-    return this._analyticsId;
-  }
-
-  /**
-   * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
-   */
-  get toggle3ds() {
-    return this._toggle3ds;
   }
 }
 

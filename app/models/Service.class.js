@@ -1,9 +1,10 @@
 'use strict';
 
-
-
 /**
  @class Service
+ * @property {string} externalId - The external ID of the service
+ * @property {string} name -  The name of the service
+ * @property {string[]} gatewayAccountIds -  list of gateway account id's that belong to this service
  */
 class Service {
   /**
@@ -11,12 +12,12 @@ class Service {
    * @param {Object} serviceData - raw 'service' object from server
    * @param {string} serviceData.external_id - The external ID of the service
    * @param {string} serviceData.name - The name of the service
-   * @param {string} serviceData.gateway_account_ids - list of gateway account id's that belong to this service
+   * @param {string[]} serviceData.gateway_account_ids - list of gateway account id's that belong to this service
    **/
   constructor(serviceData) {
-    this._externalId = serviceData.external_id;
-    this._name = serviceData.name;
-    this._gatewayAccountIds = serviceData.gateway_account_ids;
+    this.externalId = serviceData.external_id;
+    this.name = serviceData.name;
+    this.gatewayAccountIds = serviceData.gateway_account_ids;
   }
 
   /**
@@ -29,27 +30,6 @@ class Service {
       name: this.name,
       gateway_account_ids: this.gatewayAccountIds
     }
-  }
-
-  /**
-   * @property {string} externalId - The external ID of the service
-   */
-  get externalId () {
-    return this._externalId;
-  }
-
-  /**
-   * @property {string} name -  The name of the service
-   */
-  get name () {
-    return this._name;
-  }
-
-  /**
-   * @property {string[]} gatewayAccountIds -  list of gateway account id's that belong to this service
-   */
-  get gatewayAccountIds() {
-    return this._gatewayAccountIds;
   }
 }
 
