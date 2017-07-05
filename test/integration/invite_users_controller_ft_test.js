@@ -21,7 +21,7 @@ describe('invite user controller', function () {
   const EXTERNAL_SERVICE_ID = 'by46fewgkln';
   const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
   const USERNAME_IN_SESSION = 'existing-user';
-  const INVITE_RESOURCE = `/v1/api/services/${EXTERNAL_SERVICE_ID}/invites`;
+  const INVITE_RESOURCE = `/v1/api/invites/user`;
 
   let userInSession = session.getUser({
     external_id: EXTERNAL_ID_IN_SESSION,

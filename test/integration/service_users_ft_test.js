@@ -35,17 +35,21 @@ describe('service users resource', function () {
   it('get list of service users should link to my profile for my user', function (done) {
 
     const externalServiceId = '734rgw76jhka';
+    const serviceRoles = [{
+      service: {
+        name: 'System Generated',
+        external_id: externalServiceId
+      },
+      role: {name: "admin", description: 'Administrator', permissions: ['users-service:create']}
+    }];
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      services: [{
-        name: 'System Generated',
-        external_id: externalServiceId
-      }],
+      service_roles: serviceRoles,
     });
 
-    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}]);
+    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}]);
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain());
@@ -78,7 +82,7 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      services: []
+      service_roles: []
     });
 
     app = session.getAppWithLoggedInUser(getApp(), user);
@@ -97,18 +101,24 @@ describe('service users resource', function () {
 
     const externalServiceId = '734rgw76jhka';
 
+    const serviceRoles = [{
+      service: {
+        name: 'System Generated',
+        external_id: externalServiceId
+      },
+      role: {name: "admin", description: 'Administrator', permissions: ['users-service:create']}
+    }];
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      services: [{
-        name: 'System Generated',
-        external_id: externalServiceId
-      }],
-      permissions: ['users-service:read']
+      service_roles: serviceRoles,
     });
 
-    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{}, {external_id: EXTERNAL_ID_OTHER_USER}]);
+    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}, {
+      external_id: EXTERNAL_ID_OTHER_USER,
+      service_roles: serviceRoles
+    }]);
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain());
@@ -132,20 +142,25 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      services: [{
-        name: 'System Generated',
-        external_id: externalServiceId
-      }],
-      permissions: ['users-service:read']
+      service_roles: [{
+        service: {
+          name: 'System Generated',
+          external_id: externalServiceId
+        },
+        role: {name: "admin", description: 'Administrator', permissions: ['users-service:read']}
+      }]
     });
+
     const user_to_view = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
-      services: [{
-        name: 'System Generated',
-        external_id: externalServiceId
+      service_roles: [{
+        service: {
+          name: 'System Generated',
+          external_id: externalServiceId
+        },
+        role: {name: "view-only", description: 'View only'}
       }],
-      role: {"name": "view-only"}
     };
     const getUserResponse = userFixtures.validUserResponse(user_to_view);
 
@@ -175,6 +190,7 @@ describe('service users resource', function () {
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
+      //TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: '8348754ihuwk'
@@ -207,6 +223,7 @@ describe('service users resource', function () {
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
+      //TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: '3894hewfui'
@@ -235,6 +252,7 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
+      //TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: externalServiceId
@@ -260,6 +278,7 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
+      //TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: externalServiceId1
@@ -269,6 +288,7 @@ describe('service users resource', function () {
     const getUserResponse = userFixtures.validUserResponse({
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
+      //TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: externalServiceId2
@@ -298,6 +318,7 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
+      //TODO: fix to use serviceRoles
       services: [{external_id: externalServiceId}],
       permissions: ['users-service:delete'],
     });
@@ -335,6 +356,7 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
+      //TODO: fix to use serviceRoles
       services: [{external_id: externalServiceId}],
       permissions: ['users-service:delete'],
     });

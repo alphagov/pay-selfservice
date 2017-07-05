@@ -61,7 +61,6 @@ module.exports = {
     let senderId = req.user.externalId;
     let externalServiceId = req.params.externalServiceId;
     let invitee = req.body['invitee-email'];
-    let serviceId = req.user.serviceIds[0];
     let roleId = req.body['role-input'];
 
     let role = rolesModule.getRoleByExtId(roleId);
@@ -96,7 +95,7 @@ module.exports = {
       return;
     }
 
-    return userService.inviteUser(invitee, senderId, serviceId, role.name, correlationId)
+    return userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
       .then(onSuccess)
       .catch(onError);
   }

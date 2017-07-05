@@ -1,3 +1,5 @@
+const _ = require('lodash');
+const logger = require('winston');
 const response = require('../utils/response.js');
 const userService = require('../services/user_service.js');
 const paths = require('../paths.js');
@@ -13,18 +15,19 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
     userRolesMap[roles[role].name] = [];
   }
   users.map((user) => {
-    if (roles[user.role.name]) {
+    const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name');
+    if (roles[userRoleName]) {
       const mappedUser = {
         username: user.username,
-        external_id: user.external_id
+        external_id: user.externalId
       };
-      if (currentUser.externalId === user.external_id) {
+      if (currentUser.externalId === user.externalId) {
         mappedUser.is_current = true;
         mappedUser.link = paths.user.profile;
       } else {
-        mappedUser.link = formattedPathFor(paths.teamMembers.show, externalServiceId, user.external_id);
+        mappedUser.link = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId);
       }
-      userRolesMap[user.role.name].push(mappedUser);
+      userRolesMap[userRoleName].push(mappedUser);
     }
   });
   return userRolesMap;
@@ -46,11 +49,13 @@ module.exports = {
       const numberOfViewOnlyMembers = team_members[roles['view-only'].name].length;
       const numberOfViewAndRefundMembers = team_members[roles['view-and-refund'].name].length;
       const numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers;
+      const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId);
 
       successResponse(req, res, 'services/team_members', {
         team_members: team_members,
         number_active_members: numberActiveMembers,
         number_admin_members: numberOfAdminMembers,
+        inviteTeamMemberLink: inviteTeamMemberLink,
         'number_view-only_members': numberOfViewOnlyMembers,
         'number_view-and-refund_members': numberOfViewAndRefundMembers,
       });
@@ -58,7 +63,10 @@ module.exports = {
 
     return userService.getServiceUsers(externalServiceId, req.correlationId)
       .then(onSuccess)
-      .catch(() => errorResponse(req, res, 'Unable to retrieve the services users'));
+      .catch((err) => {
+        logger.error(`[requestId=${req.correlationId}] error retrieving users for service ${externalServiceId}. [${err}]`);
+        errorResponse(req, res, 'Unable to retrieve the services users')
+      });
   },
 
   /**
@@ -75,8 +83,8 @@ module.exports = {
     }
 
     const onSuccess = (user) => {
-      const hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
-      const roleInList = roles[user._role.name];
+      const hasSameService = user.hasService(externalServiceId) && req.user.hasService(externalServiceId);
+      const roleInList = roles[_.get(user.getRoleForService(externalServiceId), 'name')];
       const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, externalUserId);
       const removeTeamMemberLink = formattedPathFor(paths.teamMembers.delete, externalServiceId, externalUserId);
 
@@ -84,7 +92,7 @@ module.exports = {
         successResponse(req, res, 'services/team_member_details', {
           username: user.username,
           email: user.email,
-          role: roles[user.role.name].description,
+          role: roleInList.description,
           editPermissionsLink: editPermissionsLink,
           removeTeamMemberLink: removeTeamMemberLink
         });

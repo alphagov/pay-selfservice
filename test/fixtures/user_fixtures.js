@@ -51,8 +51,18 @@ module.exports = {
       username: newUsername,
       email: `${newUsername}@example.com`,
       gateway_account_ids: accountIds,
-      service_ids: [defaultServiceId],
-      services: [{name: 'System Generated', id: defaultServiceId, gateway_account_ids: accountIds}],
+      service_roles: [{
+        service: {
+          name: 'System Generated',
+          external_id: defaultServiceId,
+          gateway_account_ids: accountIds
+        },
+        role: {
+          name: "admin",
+          description: "Administrator",
+          permissions: ["perm-1"]
+        }
+      }],
       telephone_number: randomTelephoneNumber()
     }
 
@@ -85,10 +95,17 @@ module.exports = {
       email: opts.email || `${newUsername}@example.com`,
       gateway_account_ids: gatewayAccountIds,
       service_ids: opts.service_ids || [defaultServiceId],
-      services: opts.services || [{
-        name: 'System Generated',
-        external_id: defaultServiceId,
-        gateway_account_ids: gatewayAccountIds
+      service_roles: opts.service_roles || [{
+        service: {
+          name: 'System Generated',
+          external_id: defaultServiceId,
+          gateway_account_ids: gatewayAccountIds
+        },
+        role: opts.role || {
+          name: "admin",
+          description: "Administrator",
+          permissions: opts.permissions || ["perm-1"]
+        }
       }],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
       otp_key: opts.otp_key || randomOtpKey(),
@@ -131,15 +148,28 @@ module.exports = {
       username: req_username,
       email: request.email || `${req_username}@example.com`,
       gateway_account_ids: gatewayAccountIds,
-      service_ids: request.service_ids || [defaultServiceId],
-      services: request.services || [{
-        name: 'System Generated',
-        external_id: defaultServiceId,
-        gateway_account_ids: gatewayAccountIds
+      service_roles: request.service_roles || [{
+        service: {
+          name: 'System Generated',
+          external_id: defaultServiceId,
+          gateway_account_ids: gatewayAccountIds
+        },
+        role: {
+          name: "admin",
+          description: "Administrator",
+          permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
+          "_links": [{
+            "href": `http://adminusers.service/v1/api/users/${req_external_id}`,
+            "rel": "self",
+            "method": "GET"
+          }]
+        },
       }],
       otp_key: request.otp_key || '43c3c4t',
       role: request.role || {'name': 'admin', 'description': 'Administrator'},
       telephone_number: request.telephone_number || '0123441',
+
+      //DEPRECATED: remove once migrated to serviceRole.role.permissions
       permissions: request.permissions || ['perm-1', 'perm-2', 'perm-3'],
       '_links': [{
         'href': `http://adminusers.service/v1/api/users/${req_external_id}`,

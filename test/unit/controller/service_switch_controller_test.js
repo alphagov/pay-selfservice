@@ -45,23 +45,28 @@ describe('service switch controller: list of accounts', function () {
       correlationId: 'correlationId',
       user: userFixtures.validUserResponse({
         username: 'bob',
-        services: [
+        service_roles: [
           {
-            name: 'My Service 1',
-            external_id: 'service-external-id-1',
-            gateway_account_ids: service1gatewayAccountIds
+            service: {
+              name: 'My Service 1',
+              external_id: 'service-external-id-1',
+              gateway_account_ids: service1gatewayAccountIds
+            }
           },
           {
-            name: 'My Service 2',
-            external_id: 'service-external-id-2',
-            gateway_account_ids: service2gatewayAccountIds
+            service: {
+              name: 'My Service 2',
+              external_id: 'service-external-id-2',
+              gateway_account_ids: service2gatewayAccountIds
+            }
           },
           {
-            name: 'System Generated',
-            external_id: 'service-external-id-3',
-            gateway_account_ids: service3gatewayAccountIds
-          }
-        ]
+            service: {
+              name: 'System Generated',
+              external_id: 'service-external-id-3',
+              gateway_account_ids: service3gatewayAccountIds
+            }
+          }]
       }).getAsObject(),
       session: {}
     };
@@ -97,7 +102,7 @@ describe('service switch controller: list of accounts', function () {
     let req = {
       user: userFixtures.validUserResponse({
         username: 'bob',
-        services: []
+        service_roles: []
       }).getAsObject(),
       session: {}
     };

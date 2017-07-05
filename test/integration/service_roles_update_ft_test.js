@@ -32,22 +32,26 @@ describe('user permissions update controller', function () {
     external_id: EXTERNAL_ID_IN_SESSION,
     username: USERNAME_IN_SESSION,
     email: USERNAME_IN_SESSION + '@example.com',
-    services: [{
-      name: 'System Generated',
-      external_id: EXTERNAL_SERVICE_ID
+    service_roles: [{
+      service: {
+        name: 'System Generated',
+        external_id: EXTERNAL_SERVICE_ID
+      },
+      role: {name: "admin", description: 'Administrator', permissions: ['users-service:create']}
     }],
-    permissions: ['users-service:create']
   });
 
   let userToView = {
     external_id: EXTERNAL_ID_TO_VIEW,
     username: USERNAME_TO_VIEW,
     email: `${USERNAME_TO_VIEW}@example.com`,
-    services: [{
-      name: 'System Generated',
-      external_id: EXTERNAL_SERVICE_ID
-    }],
-    role: {name: 'view-only', description: 'View only'}
+    service_roles: [{
+      service: {
+        name: 'System Generated',
+        external_id: EXTERNAL_SERVICE_ID
+      },
+      role: {name: 'view-only', description: 'View only', permissions:[]}
+    }]
   };
 
   afterEach((done) => {
@@ -104,7 +108,7 @@ describe('user permissions update controller', function () {
     it('should error if admin does not belong to users service', function (done) {
 
       let targetUser = _.cloneDeep(userToView);
-      targetUser.services[0].external_id = 'other-service-id';
+      targetUser.service_roles[0].service.external_id = 'other-service-id';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
@@ -173,6 +177,9 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain());
 
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, {'role_name': 'view-only'})
+        .reply(200, getUserResponse.getPlain());
+
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
@@ -235,7 +242,7 @@ describe('user permissions update controller', function () {
     it('should error if admin does not belong to users service', function (done) {
 
       let targetUser = _.cloneDeep(userToView);
-      targetUser.services[0].external_id = 'other-service-id';
+      targetUser.service_roles[0].service.external_id = 'other-service-id';
 
       let getUserResponse = userFixtures.validUserResponse(targetUser);
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)

@@ -22,16 +22,16 @@ module.exports = {
    * @param res
    */
   index: (req, res) => {
-    const services = _.get(req, 'user.services', []);
+    const servicesRoles = _.get(req, 'user.serviceRoles', []);
 
-    return q.allSettled(services.map(service => {
+    return q.allSettled(servicesRoles.map(serviceRole => {
       let defer = q.defer();
 
-      serviceService.getGatewayAccounts(service.gatewayAccountIds, req.correlationId)
+      serviceService.getGatewayAccounts(serviceRole.service.gatewayAccountIds, req.correlationId)
         .then(accounts => {
           defer.resolve({
-            name: displayNameOf(service),
-            external_id: service.externalId,
+            name: displayNameOf(serviceRole.service),
+            external_id: serviceRole.service.externalId,
             gateway_accounts: accounts
           })
         })

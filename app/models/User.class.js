@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const Service = require('./Service.class')
+const ServiceRole = require('./ServiceRole.class')
 const notp = require('notp');
 
 /**
@@ -34,7 +35,10 @@ class User {
     this._username = userData.username;
     this._email = userData.email || '';
     this._gatewayAccountIds = _.concat([], userData.gateway_account_ids);
-    this._services = userData.services.map(serviceData => new Service(serviceData));
+    this._serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData));
+    //TODO: fix to only use serviceRoles
+    this._services = this._serviceRoles.map(serviceRole => serviceRole.service);
+    //TODO: fix to use serviceRoles
     this._serviceIds = this._services.map(service => service.externalId);
     this._otpKey = userData.otp_key || '';
     this._telephoneNumber = userData.telephone_number || '';
@@ -43,6 +47,7 @@ class User {
     this._permissions = userData.permissions || [];
     this._role = userData.role || {};
   }
+
   /**
    * @method toJson
    * @returns an 'adminusers' compatible representation of the user object
@@ -56,6 +61,7 @@ class User {
       permissions: this._permissions,
     });
   }
+
   /**
    * @method toJson
    * @returns an minimal 'adminusers' compatible representation of the user object
@@ -89,7 +95,20 @@ class User {
    * @returns {boolean} Whether or not the user has the given permission
    */
   hasPermission(permissionName) {
-    return this._permissions.includes(permissionName);
+    return _.flatten(this._serviceRoles.map(serviceRole => serviceRole.role.permissions)).includes(permissionName);
+  }
+
+  getRoleForService(externalServiceId) {
+    const serviceRole = this._serviceRoles.find(serviceRole => serviceRole.service.externalId === externalServiceId);
+    return _.get(serviceRole, 'role');
+  }
+  /**
+   * @method hasService
+   * @param externalServiceId
+   * @returns {boolean}
+   */
+  hasService(externalServiceId) {
+    return this._serviceRoles.map(serviceRole => serviceRole.service.externalId).includes(externalServiceId)
   }
 
   /**
@@ -112,6 +131,7 @@ class User {
   get sessionVersion() {
     return this._sessionVersion;
   }
+
   set sessionVersion(value) {
     this._sessionVersion = value;
   }
@@ -132,11 +152,12 @@ class User {
 
   /**
    * @property {string[]} gatewayAccountIds - A list of the user's gateway account IDs
-   * @deprecated
+   * x@deprecated
    */
   get gatewayAccountIds() {
     return this._gatewayAccountIds;
   }
+
   set gatewayAccountIds(value) {
     this._gatewayAccountIds = value;
   }
@@ -147,7 +168,7 @@ class User {
    * @deprecated
    */
   get services() {
-    return this._services;
+    return this._serviceRoles.map(serviceRole => serviceRole.service);
   }
 
   /**
@@ -164,6 +185,7 @@ class User {
   get otpKey() {
     return this._otpKey;
   }
+
   /**
    * @property {string} telephoneNumber - The user's telephone number
    */
@@ -177,6 +199,7 @@ class User {
   get disabled() {
     return this._disabled;
   }
+
   set disabled(value) {
     this._disabled = value;
   }
@@ -186,6 +209,15 @@ class User {
    */
   get role() {
     return this._role;
+  }
+
+
+  /**
+   *
+   * @property {ServiceRole[]}
+   */
+  get serviceRoles() {
+    return this._serviceRoles;
   }
 }
 
