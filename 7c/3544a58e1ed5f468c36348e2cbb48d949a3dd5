@@ -1,3 +1,5 @@
 release.tag=alpha_release-235
 
 release.alpha_release-235.date=2017-07-05:08:08:21
+
+staging-2.tag=FAILED-235
