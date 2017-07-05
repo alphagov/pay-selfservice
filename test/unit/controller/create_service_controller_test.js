@@ -81,7 +81,7 @@ describe('Error handler register service', function () {
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
         expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true);
-        expect(redirectStub.calledWith(303, paths.selfCreateService.index)).to.eq(true);
+        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.eq(true);
       }).should.notify(done);
   });
 
@@ -92,7 +92,7 @@ describe('Error handler register service', function () {
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
         expect(flashStub.calledWith('genericError', error)).to.equal(true);
-        expect(redirectStub.calledWith(303, paths.selfCreateService.index)).to.eq(true);
+        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.eq(true);
       }).should.notify(done);
   });
 

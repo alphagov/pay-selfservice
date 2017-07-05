@@ -105,9 +105,9 @@ module.exports.bind = function (app) {
   app.post(user.forgottenPasswordReset, validateAndRefreshCsrf, forgotPassword.newPasswordPost);
 
   // SELF CREATE SERVICE
-  app.get(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration);
-  app.post(selfCreateService.index, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration);
-  app.get(selfCreateService.creationConfirmed, selfCreateServiceCtrl.showRequestedPage);
+  app.get(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration);
+  app.post(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration);
+  app.get(selfCreateService.confirm, selfCreateServiceCtrl.showConfirmation);
   app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpVerify);
   app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitOtpVerify);
   app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.showNameYourService);

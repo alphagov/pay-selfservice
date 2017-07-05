@@ -5,7 +5,7 @@ Self-create a service - GOV.UK Pay
 {{/pageTitle}}
 {{$mainContent}}
 <div class="column-half no-padding">
-    <form action="{{routes.selfCreateService.index}}" method="post" id="submit-service-creation" class="form submit-registration">
+    <form action="{{routes.selfCreateService.register}}" method="post" id="submit-service-creation" class="form submit-registration">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
         <h1 class="heading-large">Create an account</h1>
         <div class="form-group">

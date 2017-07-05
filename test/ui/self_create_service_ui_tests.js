@@ -9,11 +9,11 @@ describe('Self-create service view', function () {
     let templateData = {
     };
 
-    let body = renderTemplate('self_create_service/index', templateData);
+    let body = renderTemplate('self_create_service/register', templateData);
 
     body.should.containSelector('h1').withExactText('Create an account');
 
-    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.index);
+    body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.register);
     body.should.containInputField('email', 'text');
     body.should.containInputField('telephone-number', 'text');
     body.should.containInputField('password', 'password');
@@ -28,7 +28,7 @@ describe('Self-create service view', function () {
       requester_email: email
     };
 
-    let body = renderTemplate('self_create_service/confirmation', templateData);
+    let body = renderTemplate('self_create_service/confirm', templateData);
 
     body.should.containSelector('h1').withExactText('Check your email');
     body.should.containSelector('div#display-email-sent > p:nth-child(2)').withExactText(`An email has been sent to ${email}.`);

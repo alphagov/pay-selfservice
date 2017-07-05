@@ -23,7 +23,7 @@ module.exports = {
       const email = _.get(req, 'session.pageData.submitRegistration.email', '');
       const telephone_number = _.get(req, 'session.pageData.submitRegistration.telephone_number', '');
       _.unset(req, 'session.pageData.submitRegistration');
-      res.render('self_create_service/index', {
+      res.render('self_create_service/register', {
         email,
         telephone_number
       });
@@ -54,7 +54,7 @@ module.exports = {
         logger.debug(`[requestId=${correlationId}] invalid user input - 403`);
         const error = (err.message && err.message.errors) ? err.message.errors : 'Invalid input';
         req.flash('genericError', error);
-        res.redirect(303, paths.selfCreateService.index);
+        res.redirect(303, paths.selfCreateService.register);
       } else {
         errorResponse(req, res, 'Unable to process registration at this time', err.errorCode);
       }
@@ -66,7 +66,7 @@ module.exports = {
       } else {
         logger.debug(`[requestId=${correlationId}] invalid user input`);
         req.flash('genericError', err);
-        res.redirect(303, paths.selfCreateService.index);
+        res.redirect(303, paths.selfCreateService.register);
       }
     };
 
@@ -76,7 +76,7 @@ module.exports = {
           _.set(req, 'session.pageData.submitRegistration', {
             requesterEmail: email
           });
-          res.redirect(303, paths.selfCreateService.creationConfirmed);
+          res.redirect(303, paths.selfCreateService.confirm);
         }).catch((err) => handleError(err));
     };
 
@@ -96,10 +96,10 @@ module.exports = {
    * @param req
    * @param res
    */
-  showRequestedPage: (req, res) => {
+  showConfirmation: (req, res) => {
     const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
     _.unset(req, 'session.pageData.submitRegistration');
-    res.render('self_create_service/confirmation', {
+    res.render('self_create_service/confirm', {
       requester_email
     });
   },
