@@ -1,30 +1,30 @@
-'use strict';
+'use strict'
 
-const q = require('q');
-const _ = require('lodash');
-const requestLogger = require('../../utils/request_logger');
-const baseClient = require('./base_client');
-let User = require('../../models/user').User;
-const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
+const q = require('q')
+const _ = require('lodash')
+const requestLogger = require('../../utils/request_logger')
+const baseClient = require('./base_client')
+let User = require('../../models/user').User
+const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
-const SERVICE_NAME = 'adminusers';
-const HEADER_USER_CONTEXT = 'GovUkPay-User-Context';
+const SERVICE_NAME = 'adminusers'
+const HEADER_USER_CONTEXT = 'GovUkPay-User-Context'
 
 /**
  * @private
  * @param body
  */
-const responseBodyToUserTransformer = body => new User(body);
+const responseBodyToUserTransformer = body => new User(body)
 
 module.exports = function (clientOptions = {}) {
 
-  let baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL;
-  let correlationId = clientOptions.correlationId || '';
-  let userResource = `${baseUrl}/v1/api/users`;
-  let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`;
-  let resetPasswordResource = `${baseUrl}/v1/api/reset-password`;
-  let serviceUserResource = `${baseUrl}/v1/api/services`;
-  let inviteResource = `${baseUrl}/v1/api/invites`;
+  let baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL
+  let correlationId = clientOptions.correlationId || ''
+  let userResource = `${baseUrl}/v1/api/users`
+  let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`
+  let resetPasswordResource = `${baseUrl}/v1/api/reset-password`
+  let serviceUserResource = `${baseUrl}/v1/api/services`
+  let inviteResource = `${baseUrl}/v1/api/invites`
 
   /**
    * Get a User by external id
@@ -35,10 +35,10 @@ module.exports = function (clientOptions = {}) {
   let getUserByExternalId = (externalId) => {
     let params = {
       correlationId: correlationId
-    };
-    let url = `${userResource}/${externalId}`;
-    let defer = q.defer();
-    let startTime = new Date();
+    }
+    let url = `${userResource}/${externalId}`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -47,18 +47,17 @@ module.exports = function (clientOptions = {}) {
       method: 'GET',
       description: 'find a user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
-
+    return defer.promise
+  }
 
   /**
    * @param username
@@ -72,11 +71,11 @@ module.exports = function (clientOptions = {}) {
         username: username,
         password: password
       }
-    };
+    }
 
-    let url = `${userResource}/authenticate`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${userResource}/authenticate`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -85,17 +84,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'authenticate a user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -110,11 +109,11 @@ module.exports = function (clientOptions = {}) {
         path: 'sessionVersion',
         value: 1
       }
-    };
+    }
 
-    let url = `${userResource}/${externalId}`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${userResource}/${externalId}`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -123,17 +122,17 @@ module.exports = function (clientOptions = {}) {
       method: 'PATCH',
       description: 'increment session version for a user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.patch(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -146,10 +145,10 @@ module.exports = function (clientOptions = {}) {
       payload: {
         username: username
       }
-    };
-    let url = forgottenPasswordResource;
-    let defer = q.defer();
-    let startTime = new Date();
+    }
+    let url = forgottenPasswordResource
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -158,17 +157,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'create a forgotten password for a user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -178,10 +177,10 @@ module.exports = function (clientOptions = {}) {
   let getForgottenPassword = (code) => {
     let params = {
       correlationId: correlationId,
-    };
-    let url = `${forgottenPasswordResource}/${code}`;
-    let defer = q.defer();
-    let startTime = new Date();
+    }
+    let url = `${forgottenPasswordResource}/${code}`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -190,17 +189,17 @@ module.exports = function (clientOptions = {}) {
       method: 'GET',
       description: 'get a forgotten password',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -215,10 +214,10 @@ module.exports = function (clientOptions = {}) {
         forgotten_password_code: token,
         new_password: newPassword
       }
-    };
-    let url = resetPasswordResource;
-    let defer = q.defer();
-    let startTime = new Date();
+    }
+    let url = resetPasswordResource
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -227,17 +226,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'update a password for a user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -247,11 +246,11 @@ module.exports = function (clientOptions = {}) {
   let sendSecondFactor = (externalId) => {
     let params = {
       correlationId: correlationId,
-    };
+    }
 
-    let url = `${userResource}/${externalId}/second-factor/`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${userResource}/${externalId}/second-factor/`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -260,17 +259,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'post a second factor auth token to the user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -284,11 +283,11 @@ module.exports = function (clientOptions = {}) {
       payload: {
         code: code
       }
-    };
+    }
 
-    let url = `${userResource}/${externalId}/second-factor/authenticate`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${userResource}/${externalId}/second-factor/authenticate`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -297,22 +296,22 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'authenticate a second factor auth token entered by user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   let getServiceUsers = (serviceId) => {
-    let url = `${serviceUserResource}/${serviceId}/users`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${serviceUserResource}/${serviceId}/users`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -321,16 +320,16 @@ module.exports = function (clientOptions = {}) {
       method: 'GET',
       description: 'get a services users',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
-    requestLogger.logRequestStart(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    requestLogger.logRequestStart(context)
 
     baseClient.get(url, {correlationId: correlationId}, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -345,11 +344,11 @@ module.exports = function (clientOptions = {}) {
       payload: {
         role_name: roleName
       }
-    };
+    }
 
-    let url = `${userResource}/${externalId}/services/${serviceId}`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${userResource}/${externalId}/services/${serviceId}`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -358,17 +357,17 @@ module.exports = function (clientOptions = {}) {
       method: 'PUT',
       description: 'authenticate a second factor auth token entered by user',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.put(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    *
@@ -386,11 +385,11 @@ module.exports = function (clientOptions = {}) {
         sender: senderId,
         role_name: roleName
       }
-    };
+    }
 
-    let url = `${serviceUserResource}/${serviceId}/invites`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${serviceUserResource}/${serviceId}/invites`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -399,16 +398,16 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'invite a user to signup',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
-    requestLogger.logRequestStart(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    * Get a valid invite or error if it's expired
@@ -417,10 +416,10 @@ module.exports = function (clientOptions = {}) {
   let getValidatedInvite = (inviteCode) => {
     let params = {
       correlationId: correlationId
-    };
-    let url = `${inviteResource}/${inviteCode}`;
-    let defer = q.defer();
-    let startTime = new Date();
+    }
+    let url = `${inviteResource}/${inviteCode}`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -429,17 +428,17 @@ module.exports = function (clientOptions = {}) {
       method: 'GET',
       description: 'find a validated invitation',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    * Submit user registration details
@@ -455,10 +454,10 @@ module.exports = function (clientOptions = {}) {
         password: password,
         code: code
       }
-    };
-    let url = `${inviteResource}/otp/generate`;
-    let defer = q.defer();
-    let startTime = new Date();
+    }
+    let url = `${inviteResource}/otp/generate`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -467,17 +466,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'submit registration details',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   let verifyOtpAndCreateUser = (code, verificationCode) => {
     let params = {
@@ -486,11 +485,11 @@ module.exports = function (clientOptions = {}) {
         code: code,
         otp: verificationCode
       }
-    };
+    }
 
-    let url = `${inviteResource}/otp/validate`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${inviteResource}/otp/validate`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -499,17 +498,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'submit otp code',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   const verifyOtpForServiceInvite = (inviteCode, verificationCode) => {
     const params = {
@@ -518,11 +517,11 @@ module.exports = function (clientOptions = {}) {
         code: inviteCode,
         otp: verificationCode
       }
-    };
+    }
 
-    const url = `${inviteResource}/otp/validate/service`;
-    const defer = q.defer();
-    const startTime = new Date();
+    const url = `${inviteResource}/otp/validate/service`
+    const defer = q.defer()
+    const startTime = new Date()
     const context = {
       url: url,
       defer: defer,
@@ -531,17 +530,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'submit service invite otp code',
       service: SERVICE_NAME
-    };
+    }
 
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   let resendOtpCode = (code, phoneNumber) => {
     let params = {
@@ -550,11 +549,11 @@ module.exports = function (clientOptions = {}) {
         code: code,
         telephone_number: phoneNumber
       }
-    };
+    }
 
-    let url = `${inviteResource}/otp/resend`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${inviteResource}/otp/resend`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -563,17 +562,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'resend otp code',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   /**
    * Submit service registration details
@@ -590,10 +589,10 @@ module.exports = function (clientOptions = {}) {
         telephone_number: phoneNumber,
         password: password
       }
-    };
-    const url = `${inviteResource}/service`;
-    const defer = q.defer();
-    const startTime = new Date();
+    }
+    const url = `${inviteResource}/service`
+    const defer = q.defer()
+    const startTime = new Date()
     const context = {
       url: url,
       defer: defer,
@@ -602,27 +601,27 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'submit service registration details',
       service: SERVICE_NAME
-    };
+    }
 
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   let deleteUser = (serviceId, removerId, userId) => {
 
     const params = {
       correlationId: correlationId,
       headers: {}
-    };
-    const url = `${serviceUserResource}/${serviceId}/users/${userId}`;
-    const defer = q.defer();
-    const startTime = new Date();
+    }
+    const url = `${serviceUserResource}/${serviceId}/users/${userId}`
+    const defer = q.defer()
+    const startTime = new Date()
     const context = {
       url: url,
       defer: defer,
@@ -633,16 +632,57 @@ module.exports = function (clientOptions = {}) {
       userDelete: userId,
       userRemover: removerId,
       service: SERVICE_NAME
-    };
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context);
-    requestLogger.logRequestStart(context);
+    }
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    requestLogger.logRequestStart(context)
 
-    params.headers[HEADER_USER_CONTEXT] = removerId;
+    params.headers[HEADER_USER_CONTEXT] = removerId
     baseClient.delete(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
+
+  /**
+   * Create a service
+   *
+   * @param serviceName
+   * @param gatewayAccountIds
+   * @returns {*|promise|Constructor}
+   */
+  const createService = (serviceName, gatewayAccountIds) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {}
+    }
+    if (serviceName) {
+      params.payload.name = serviceName
+    }
+    if (gatewayAccountIds) {
+      params.payload.gateway_account_ids = gatewayAccountIds
+    }
+    const url = serviceUserResource
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'create service',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
 
   return {
     getForgottenPassword: getForgottenPassword,
@@ -662,6 +702,7 @@ module.exports = function (clientOptions = {}) {
     resendOtpCode: resendOtpCode,
     submitServiceRegistration: submitServiceRegistration,
     deleteUser: deleteUser,
-    verifyOtpForServiceInvite: verifyOtpForServiceInvite
-  };
-};
+    verifyOtpForServiceInvite: verifyOtpForServiceInvite,
+    createService: createService
+  }
+}
