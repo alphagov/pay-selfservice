@@ -1,44 +1,44 @@
-'use strict';
+'use strict'
 
 // NPM dependencies
 
-const Pact = require('pact');
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
+const path = require('path')
+const Pact = require('pact')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies
 
-const helpersPath = __dirname + '/../../test_helpers/';
-const pactProxy = require(helpersPath + '/pact_proxy.js');
-const getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-const registerFixtures = require(__dirname + '/../../fixtures/self_register_fixtures');
-const PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+const helpersPath = path.join(__dirname, '/../../test_helpers/')
+const pactProxy = require(helpersPath + '/pact_proxy.js')
+const getAdminUsersClient = require('../../../app/services/clients/adminusers_client')
+const registerFixtures = require(path.join(__dirname, '/../../fixtures/self_register_fixtures'))
+const PactInteractionBuilder = require(path.join(__dirname, '/../../fixtures/pact_interaction_builder')).PactInteractionBuilder
 
 // Globals
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
-const expect = chai.expect;
-const mockPort = Math.floor(Math.random() * 65535);
-const mockServer = pactProxy.create('localhost', mockPort);
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+const expect = chai.expect
+const mockPort = Math.floor(Math.random() * 65535)
+const mockServer = pactProxy.create('localhost', mockPort)
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
-const INVITE_PATH = '/v1/api/invites';
+const INVITE_PATH = '/v1/api/invites'
 
 describe('adminusers client - self register service', function () {
-
-  let adminUsersMock;
+  let adminUsersMock
 
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-self-register-service', provider: 'AdminUsers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-self-register-service', provider: 'AdminUsers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -46,15 +46,14 @@ describe('adminusers client - self register service', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('self register service API', function () {
-
     context('send service registration notification API - success', () => {
-      const validRegistration = registerFixtures.validRegisterRequest();
+      const validRegistration = registerFixtures.validRegisterRequest()
 
-      const pactified = validRegistration.getPactified();
+      const pactified = validRegistration.getPactified()
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_PATH}/service`)
@@ -64,30 +63,30 @@ describe('adminusers client - self register service', function () {
             .withStatusCode(201)
             .build()
         ).then(() => {
-          done();
+          done()
         }).catch(e => {
-          console.log(e);
-        });
-      });
+          console.log(e)
+        })
+      })
 
       afterEach((done) => {
-        adminUsersMock.finalize().then(() => done());
-      });
+        adminUsersMock.finalize().then(() => done())
+      })
 
       it('should send a notification successfully', function (done) {
-        const register = validRegistration.getPlain();
+        const register = validRegistration.getPlain()
 
-        adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.fulfilled.then(function(response) {
-        }).should.notify(done);
-      });
-    });
+        adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.fulfilled.then(function (response) {
+        }).should.notify(done)
+      })
+    })
 
     context('send service registration notification API - bad request, should return error', () => {
-      const invalidInvite = registerFixtures.invalidEmailRegisterRequest();
-      const errorResponse = registerFixtures.badRequestResponseWhenFieldsMissing(['email']);
+      const invalidInvite = registerFixtures.invalidEmailRegisterRequest()
+      const errorResponse = registerFixtures.badRequestResponseWhenFieldsMissing(['email'])
 
       beforeEach((done) => {
-        const pactified = invalidInvite.getPactified();
+        const pactified = invalidInvite.getPactified()
 
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_PATH}/service`)
@@ -98,25 +97,25 @@ describe('adminusers client - self register service', function () {
             .withResponseBody(errorResponse.getPactified())
             .build()
         ).then(() => {
-          done();
+          done()
         }).catch(e => {
-          console.log(e);
-        });
-      });
+          console.log(e)
+        })
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should return bad request', function (done) {
-        const register = invalidInvite.getPlain();
+        const register = invalidInvite.getPlain()
 
         adminusersClient.submitServiceRegistration(register.email, register.telephone_number, register.password).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(400);
-          expect(response.message.errors.length).to.equal(1);
-          expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);
-        }).should.notify(done);
-      });
-    });
-  });
-});
+          expect(response.errorCode).to.equal(400)
+          expect(response.message.errors.length).to.equal(1)
+          expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
+        }).should.notify(done)
+      })
+    })
+  })
+})

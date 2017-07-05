@@ -1,36 +1,35 @@
-let Pact = require('pact');
-let helpersPath = __dirname + '/../../test_helpers/';
-let pactProxy = require(helpersPath + '/pact_proxy.js');
-let chai = require('chai');
-let _ = require('lodash');
-let chaiAsPromised = require('chai-as-promised');
-let userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
-let getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-let PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+const path = require('path')
+const Pact = require('pact')
+const helpersPath = path.join(__dirname, '/../../test_helpers/')
+const pactProxy = require(helpersPath + '/pact_proxy.js')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const userFixtures = require(path.join(__dirname, '/../../fixtures/user_fixtures'))
+const getAdminUsersClient = require('../../../app/services/clients/adminusers_client')
+const PactInteractionBuilder = require(path.join(__dirname, '/../../fixtures/pact_interaction_builder')).PactInteractionBuilder
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
-const expect = chai.expect;
+const expect = chai.expect
 
-const USER_PATH = '/v1/api/users';
-let mockPort = Math.floor(Math.random() * 65535);
-let mockServer = pactProxy.create('localhost', mockPort);
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+const USER_PATH = '/v1/api/users'
+const mockPort = Math.floor(Math.random() * 65535)
+const mockServer = pactProxy.create('localhost', mockPort)
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - get user', function () {
-
-  let adminUsersMock;
+  let adminUsersMock
 
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-get-user', provider: 'AdminUsers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-get-user', provider: 'AdminUsers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -38,21 +37,19 @@ describe('adminusers client - get user', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('GET user api', () => {
-
     context('GET user api - success', () => {
-
-      let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+      let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
       let params = {
         external_id: existingExternalId,
         gateway_account_ids: ['666', '7']
-      };
+      }
 
-      let getUserResponse = userFixtures.validUserResponse(params);
+      let getUserResponse = userFixtures.validUserResponse(params)
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -61,34 +58,33 @@ describe('adminusers client - get user', function () {
             .withUponReceiving('a valid get user request')
             .withResponseBody(getUserResponse.getPactified())
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should find a user successfully', function (done) {
-        let expectedUserData = getUserResponse.getPlain();
+        let expectedUserData = getUserResponse.getPlain()
 
-        adminusersClient.getUserByExternalId(params.external_id).should.be.fulfilled.then(function(user) {
-          expect(user.externalId).to.be.equal(expectedUserData.external_id);
-          expect(user.username).to.be.equal(expectedUserData.username);
-          expect(user.email).to.be.equal(expectedUserData.email);
-          expect(expectedUserData.gateway_account_ids.length).to.be.equal(2);
-          expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);
-          expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
-          expect(user.role.name).to.be.equal(expectedUserData.role.name);
-          expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length);
-        }).should.notify(done);
-      });
-    });
+        adminusersClient.getUserByExternalId(params.external_id).should.be.fulfilled.then(function (user) {
+          expect(user.externalId).to.be.equal(expectedUserData.external_id)
+          expect(user.username).to.be.equal(expectedUserData.username)
+          expect(user.email).to.be.equal(expectedUserData.email)
+          expect(expectedUserData.gateway_account_ids.length).to.be.equal(2)
+          expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
+          expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
+          expect(user.role.name).to.be.equal(expectedUserData.role.name)
+          expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length)
+        }).should.notify(done)
+      })
+    })
 
     context('GET user api - not found', () => {
-
       let params = {
         external_id: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
-      };
+      }
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -98,20 +94,18 @@ describe('adminusers client - get user', function () {
             .withStatusCode(404)
             .withResponseHeaders({})
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should respond 404 if user not found', function (done) {
-
-        adminusersClient.getUserByExternalId(params.external_id).should.be.rejected.then(function(response) {
-          expect(response.errorCode).to.equal(404);
-        }).should.notify(done);
-      });
-    });
-
-  });
-});
+        adminusersClient.getUserByExternalId(params.external_id).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(404)
+        }).should.notify(done)
+      })
+    })
+  })
+})

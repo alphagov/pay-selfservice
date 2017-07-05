@@ -1,5 +1,4 @@
-const logger     = require('winston');
-
+const logger = require('winston')
 
 module.exports = {
   logRequestStart: context => {
@@ -7,12 +6,12 @@ module.exports = {
       service: context.service,
       method: context.method,
       url: context.url
-    });
+    })
   },
 
   logRequestEnd: context => {
-    let duration = new Date() - context.startTime;
-    logger.info(`[${context.correlationId}] - ${context.method} to ${context.url} ended - elapsed time: ${duration} ms`);
+    let duration = new Date() - context.startTime
+    logger.info(`[${context.correlationId}] - ${context.method} to ${context.url} ended - elapsed time: ${duration} ms`)
   },
 
   logRequestFailure: (context, response) => {
@@ -21,7 +20,7 @@ module.exports = {
       method: context.method,
       url: context.url,
       status: response.statusCode
-    });
+    })
   },
 
   logRequestError: (context, error) => {
@@ -30,6 +29,6 @@ module.exports = {
       method: context.method,
       url: context.url,
       error: error
-    });
+    })
   }
-};
+}

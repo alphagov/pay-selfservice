@@ -1,34 +1,34 @@
-var Pact = require('pact');
-var helpersPath = __dirname + '/../../test_helpers/';
-var pactProxy = require(helpersPath + '/pact_proxy.js');
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-var userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
-var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+const path = require('path')
+const Pact = require('pact')
+const helpersPath = path.join(__dirname, '/../../test_helpers/')
+const pactProxy = require(helpersPath + '/pact_proxy.js')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const getAdminUsersClient = require('../../../app/services/clients/adminusers_client')
+const userFixtures = require(path.join(__dirname, '/../../fixtures/user_fixtures'))
+const PactInteractionBuilder = require(path.join(__dirname, '/../../fixtures/pact_interaction_builder')).PactInteractionBuilder
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
-const expect = chai.expect;
-const RESET_PASSWORD_PATH = '/v1/api/reset-password';
-var mockPort = Math.floor(Math.random() * 65535);
-var mockServer = pactProxy.create('localhost', mockPort);
+const expect = chai.expect
+const RESET_PASSWORD_PATH = '/v1/api/reset-password'
+var mockPort = Math.floor(Math.random() * 65535)
+var mockServer = pactProxy.create('localhost', mockPort)
 
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - update password', function () {
-
-  var adminUsersMock;
+  var adminUsersMock
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-update-password', provider: 'AdminUsers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-update-password', provider: 'AdminUsers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -36,13 +36,12 @@ describe('adminusers client - update password', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('update password API', function () {
-
     context('update password for user API - success', () => {
-      let request = userFixtures.validUpdatePasswordRequest("avalidforgottenpasswordtoken");
+      let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -54,22 +53,21 @@ describe('adminusers client - update password', function () {
             .withStatusCode(204)
             .withResponseHeaders({})
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should update password successfully', function (done) {
-
-        let requestData = request.getPlain();
-        adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done);
-      });
-    });
+        let requestData = request.getPlain()
+        adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done)
+      })
+    })
 
     context('update password for user API - not found', () => {
-      let request = userFixtures.validUpdatePasswordRequest();
+      let request = userFixtures.validUpdatePasswordRequest()
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -80,21 +78,19 @@ describe('adminusers client - update password', function () {
             .withRequestBody(request.getPactified())
             .withStatusCode(404)
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should error if forgotten password code is not found/expired', function (done) {
-
-        let requestData = request.getPlain();
+        let requestData = request.getPlain()
         adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(404);
-        }).should.notify(done);
-      });
-    });
-
-  });
-});
+          expect(response.errorCode).to.equal(404)
+        }).should.notify(done)
+      })
+    })
+  })
+})

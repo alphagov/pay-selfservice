@@ -1,10 +1,9 @@
-const q = require('q');
+const q = require('q')
 
-let getAdminUsersClient = require('./clients/adminusers_client');
-let paths = require(__dirname + '/../paths.js');
-let commonPassword = require('common-password');
+const getAdminUsersClient = require('./clients/adminusers_client')
+const commonPassword = require('common-password')
 
-const MIN_PASSWORD_LENGTH = 10;
+const MIN_PASSWORD_LENGTH = 10
 
 module.exports = {
   /**
@@ -15,12 +14,12 @@ module.exports = {
    */
   authenticate: function (username, submittedPassword, correlationId) {
     if (!username || !submittedPassword) {
-      let defer = q.defer();
-      defer.reject();
-      return defer.promise;
+      let defer = q.defer()
+      defer.reject()
+      return defer.promise
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword)
   },
 
   /**
@@ -31,12 +30,12 @@ module.exports = {
    */
   authenticateSecondFactor: function (externalId, code, correlationId) {
     if (!externalId || !code) {
-      let defer = q.defer();
-      defer.reject();
-      return defer.promise;
+      let defer = q.defer()
+      defer.reject()
+      return defer.promise
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code)
   },
 
   /**
@@ -45,9 +44,8 @@ module.exports = {
    * @returns {Promise<User>}
    */
   findByExternalId: function (externalId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId);
+    return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId)
   },
-
 
   /**
    * @param {User} user
@@ -64,7 +62,7 @@ module.exports = {
    * @returns {Promise}
    */
   sendPasswordResetToken: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(username);
+    return getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(username)
   },
 
   /**
@@ -72,7 +70,7 @@ module.exports = {
    * @returns {Promise}
    */
   findByResetToken: function (token) {
-    return getAdminUsersClient().getForgottenPassword(token);
+    return getAdminUsersClient().getForgottenPassword(token)
   },
 
   /**
@@ -81,16 +79,16 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.externalId);
+    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.externalId)
   },
 
   /**
-   * @param service_id
+   * @param serviceId
    * @param correlationId
    * @returns {Promise}
    */
-  getServiceUsers: function (service_id, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(service_id);
+  getServiceUsers: function (serviceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(serviceId)
   },
 
   /**
@@ -99,19 +97,19 @@ module.exports = {
    * @returns {Promise}
    */
   updatePassword: function (token, newPassword) {
-    let defer = q.defer();
+    let defer = q.defer()
 
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      defer.reject({message: "Your password must be at least 10 characters."});
+      defer.reject({message: 'Your password must be at least 10 characters.'})
     } else if (commonPassword(newPassword)) {
-      defer.reject({message: "Your password is too simple. Choose a password that is harder for people to guess."});
+      defer.reject({message: 'Your password is too simple. Choose a password that is harder for people to guess.'})
     } else {
       getAdminUsersClient().updatePasswordForUser(token, newPassword)
         .then(
           () => defer.resolve(),
-          () => defer.reject({message: 'There has been a problem updating password.'}));
+          () => defer.reject({message: 'There has been a problem updating password.'}))
     }
-    return defer.promise;
+    return defer.promise
   },
 
   /**
@@ -122,7 +120,7 @@ module.exports = {
    * @returns {Promise<User>}
    */
   updateServiceRole: function (externalId, roleName, serviceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, serviceId, roleName);
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, serviceId, roleName)
   },
 
   /**
@@ -133,7 +131,7 @@ module.exports = {
    * @param correlationId
    */
   inviteUser: function (invitee, senderId, serviceId, roleName, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName);
+    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName)
   },
 
   /**
@@ -143,6 +141,6 @@ module.exports = {
    * @param userId
    */
   delete: function (serviceId, removerId, userId, correlationId) {
-      return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+    return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
   }
-};
+}

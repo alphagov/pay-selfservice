@@ -22,7 +22,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
-
   let connectorMock
 
   /**
@@ -46,7 +45,6 @@ describe('connector client - create gateway account', function () {
   })
 
   describe('create gateway account', function () {
-
     context('create gateway account - success', () => {
       const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
 
@@ -124,5 +122,4 @@ describe('connector client - create gateway account', function () {
       })
     })
   })
-
 })

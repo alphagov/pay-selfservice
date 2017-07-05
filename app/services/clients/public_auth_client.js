@@ -1,16 +1,15 @@
-const q          = require('q');
+const q = require('q')
 
-const requestLogger = require('../../utils/request_logger');
-const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
-const baseClient = require('./base_client');
+const requestLogger = require('../../utils/request_logger')
+const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
+const baseClient = require('./base_client')
 
-const SERVICE_NAME = 'publicauth';
+const SERVICE_NAME = 'publicauth'
 
 /**
  * @param {string} accountId
  */
-const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accountId}`;
-
+const getUrlForAccountId = accountId => `${process.env.PUBLIC_AUTH_URL}/${accountId}`
 
 module.exports = {
   /**
@@ -25,9 +24,9 @@ module.exports = {
    * @returns {Promise}
    */
   getActiveTokensForAccount: (params) => {
-    let url = getUrlForAccountId(params.accountId);
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = getUrlForAccountId(params.accountId)
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -36,15 +35,15 @@ module.exports = {
       method: 'GET',
       description: 'get active tokens',
       service: SERVICE_NAME
-    };
-    let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
+    }
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
+    return defer.promise
   },
 
   /**
@@ -59,9 +58,9 @@ module.exports = {
    * @returns {Promise}
    */
   getRevokedTokensForAccount: (params) => {
-    let url = `${getUrlForAccountId(params.accountId)}?state=revoked`;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = `${getUrlForAccountId(params.accountId)}?state=revoked`
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -70,15 +69,15 @@ module.exports = {
       method: 'GET',
       description: 'get revoked tokens',
       service: SERVICE_NAME
-    };
-    let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
+    }
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
+    return defer.promise
   },
 
   /**
@@ -98,9 +97,9 @@ module.exports = {
    * @returns {Promise}
    */
   createTokenForAccount: (params) => {
-    let url = process.env.PUBLIC_AUTH_URL;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = process.env.PUBLIC_AUTH_URL
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -109,15 +108,15 @@ module.exports = {
       method: 'POST',
       description: 'create new token',
       service: SERVICE_NAME
-    };
-    let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
+    }
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
+    return defer.promise
   },
 
   /**
@@ -136,9 +135,9 @@ module.exports = {
    * @returns {Promise}
    */
   updateToken: (params) => {
-    let url = process.env.PUBLIC_AUTH_URL;
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = process.env.PUBLIC_AUTH_URL
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -147,15 +146,15 @@ module.exports = {
       method: 'PUT',
       description: 'update token',
       service: SERVICE_NAME
-    };
-    let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
+    }
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.put(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
+    return defer.promise
   },
 
   /**
@@ -173,9 +172,9 @@ module.exports = {
    * @returns {Promise}
    */
   deleteTokenForAccount: (params) => {
-    let url = getUrlForAccountId(params.accountId);
-    let defer = q.defer();
-    let startTime = new Date();
+    let url = getUrlForAccountId(params.accountId)
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -184,14 +183,14 @@ module.exports = {
       method: 'DELETE',
       description: 'delete token',
       service: SERVICE_NAME
-    };
-    let callbackToPromiseConverter =  createCallbackToPromiseConverter(context);
+    }
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.delete(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
+    return defer.promise
   }
-};
+}

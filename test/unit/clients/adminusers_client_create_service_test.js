@@ -22,7 +22,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('adminusers client - create a new service', function () {
-
   let adminUsersMock
 
   /**
@@ -41,8 +40,8 @@ describe('adminusers client - create a new service', function () {
    */
   after(function (done) {
     mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
+        .then(() => pactProxy.removeAll())
+        .then(() => done())
   })
 
   describe('creating a service', function () {
@@ -51,17 +50,17 @@ describe('adminusers client - create a new service', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(SERVICE_RESOURCE)
-            .withUponReceiving('a valid create service request with empty object')
-            .withMethod('POST')
-            .withRequestBody({})
-            .withStatusCode(201)
-            .withResponseBody(validCreateServiceResponse.getPactified())
-            .build()
+            new PactInteractionBuilder(SERVICE_RESOURCE)
+                .withUponReceiving('a valid create service request with empty object')
+                .withMethod('POST')
+                .withRequestBody({})
+                .withStatusCode(201)
+                .withResponseBody(validCreateServiceResponse.getPactified())
+                .build()
         ).then(() => {
           done()
         }).catch(e =>
-          console.log(e)
+            console.log(e)
         )
       })
 
@@ -76,108 +75,107 @@ describe('adminusers client - create a new service', function () {
           expect(service.gateway_account_ids).to.deep.equal([])
         }).should.notify(done)
       })
-    }),
+    })
 
-      context('create a service sending gateway account ids - success', () => {
-        const validRequest = serviceFixtures.validCreateServiceRequest({gatewayAccountIds: ['1', '5']})
-        const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
+    context('create a service sending gateway account ids - success', () => {
+      const validRequest = serviceFixtures.validCreateServiceRequest({gatewayAccountIds: ['1', '5']})
+      const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
 
-        beforeEach((done) => {
-          adminUsersMock.addInteraction(
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
             new PactInteractionBuilder(SERVICE_RESOURCE)
-              .withUponReceiving('a valid create service request with gateway account ids')
-              .withMethod('POST')
-              .withRequestBody(validRequest.getPactified())
-              .withStatusCode(201)
-              .withResponseBody(validCreateServiceResponse.getPactified())
-              .build()
-          ).then(() => {
-            done()
-          }).catch(e =>
+                .withUponReceiving('a valid create service request with gateway account ids')
+                .withMethod('POST')
+                .withRequestBody(validRequest.getPactified())
+                .withStatusCode(201)
+                .withResponseBody(validCreateServiceResponse.getPactified())
+                .build()
+        ).then(() => {
+          done()
+        }).catch(e =>
             console.log(e)
-          )
-        })
-
-        afterEach((done) => {
-          adminUsersMock.finalize().then(() => done())
-        })
-
-        it('should create a new service', function (done) {
-          adminusersClient.createService(null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
-            expect(service.external_id).to.equal('externalId')
-            expect(service.name).to.equal('System Generated')
-            expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
-          }).should.notify(done)
-        })
-      }),
-
-      context('create a service sending service name - success', () => {
-        const validRequest = serviceFixtures.validCreateServiceRequest({name: 'Service name'})
-        const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
-
-        beforeEach((done) => {
-          adminUsersMock.addInteraction(
-            new PactInteractionBuilder(SERVICE_RESOURCE)
-              .withUponReceiving('a valid create service request with service name')
-              .withMethod('POST')
-              .withRequestBody(validRequest.getPactified())
-              .withStatusCode(201)
-              .withResponseBody(validCreateServiceResponse.getPactified())
-              .build()
-          ).then(() => {
-            done()
-          }).catch(e =>
-            console.log(e)
-          )
-        })
-
-        afterEach((done) => {
-          adminUsersMock.finalize().then(() => done())
-        })
-
-        it('should create a new service', function (done) {
-          adminusersClient.createService('Service name', null).should.be.fulfilled.then(service => {
-            expect(service.external_id).to.equal('externalId')
-            expect(service.name).to.equal('Service name')
-            expect(service.gateway_account_ids).to.deep.equal([])
-          }).should.notify(done)
-        })
-      }),
-
-      context('create a service - bad request', () => {
-        const invalidRequest = serviceFixtures.validCreateServiceRequest({gateway_account_ids: ['non-numeric-id']})
-        const errorResponse = serviceFixtures.badRequestResponseWhenNonNumericGatewayAccountIds(['non-numeric-id'])
-
-        beforeEach((done) => {
-          adminUsersMock.addInteraction(
-            new PactInteractionBuilder(SERVICE_RESOURCE)
-              .withUponReceiving('an invalid create service request')
-              .withMethod('POST')
-              .withRequestBody(invalidRequest.getPactified())
-              .withStatusCode(400)
-              .withResponseBody(errorResponse.getPactified())
-              .build()
-          ).then(() => {
-            done()
-          }).catch(e =>
-            console.log(e)
-          )
-        })
-
-        afterEach((done) => {
-          adminUsersMock.finalize().then(() => done())
-        })
-
-        it('should return 400 on invalid gateway account ids', function (done) {
-          adminusersClient.createService(
-            null, ['non-numeric-id']
-          ).should.be.rejected.then(function (response) {
-            expect(response.errorCode).to.equal(400)
-            expect(response.message.errors.length).to.equal(1)
-            expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
-          }).should.notify(done)
-        })
+        )
       })
-  })
 
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      })
+
+      it('should create a new service', function (done) {
+        adminusersClient.createService(null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
+          expect(service.external_id).to.equal('externalId')
+          expect(service.name).to.equal('System Generated')
+          expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
+        }).should.notify(done)
+      })
+    })
+
+    context('create a service sending service name - success', () => {
+      const validRequest = serviceFixtures.validCreateServiceRequest({name: 'Service name'})
+      const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
+            new PactInteractionBuilder(SERVICE_RESOURCE)
+                .withUponReceiving('a valid create service request with service name')
+                .withMethod('POST')
+                .withRequestBody(validRequest.getPactified())
+                .withStatusCode(201)
+                .withResponseBody(validCreateServiceResponse.getPactified())
+                .build()
+        ).then(() => {
+          done()
+        }).catch(e =>
+            console.log(e)
+        )
+      })
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      })
+
+      it('should create a new service', function (done) {
+        adminusersClient.createService('Service name', null).should.be.fulfilled.then(service => {
+          expect(service.external_id).to.equal('externalId')
+          expect(service.name).to.equal('Service name')
+          expect(service.gateway_account_ids).to.deep.equal([])
+        }).should.notify(done)
+      })
+    })
+
+    context('create a service - bad request', () => {
+      const invalidRequest = serviceFixtures.validCreateServiceRequest({gateway_account_ids: ['non-numeric-id']})
+      const errorResponse = serviceFixtures.badRequestResponseWhenNonNumericGatewayAccountIds(['non-numeric-id'])
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
+            new PactInteractionBuilder(SERVICE_RESOURCE)
+                .withUponReceiving('an invalid create service request')
+                .withMethod('POST')
+                .withRequestBody(invalidRequest.getPactified())
+                .withStatusCode(400)
+                .withResponseBody(errorResponse.getPactified())
+                .build()
+        ).then(() => {
+          done()
+        }).catch(e =>
+            console.log(e)
+        )
+      })
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      })
+
+      it('should return 400 on invalid gateway account ids', function (done) {
+        adminusersClient.createService(
+            null, ['non-numeric-id']
+        ).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(400)
+          expect(response.message.errors.length).to.equal(1)
+          expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
+        }).should.notify(done)
+      })
+    })
+  })
 })

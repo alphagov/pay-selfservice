@@ -1,4 +1,4 @@
-let _ = require('lodash');
+let _ = require('lodash')
 
 const hideNavBarTemplates = [
   'services/index',
@@ -9,7 +9,7 @@ const hideNavBarTemplates = [
   'services/team_member_invite',
   'error_logged_in',
   'self_create_service/set_name'
-];
+]
 
 /**
  * converts users permission array of form
@@ -32,52 +32,49 @@ const hideNavBarTemplates = [
  * @returns {object}
  */
 const getPermissions = user => {
-  let permissionMap = {};
-  let userPermissions;
+  let permissionMap = {}
+  let userPermissions
   if (user && user.permissions) {
-    userPermissions = _.clone(user.permissions);
+    userPermissions = _.clone(user.permissions)
     _.forEach(userPermissions, x => {
-      permissionMap[x.replace(/[-:]/g, '_')] = true;
-    });
+      permissionMap[x.replace(/[-:]/g, '_')] = true
+    })
   }
-  return permissionMap;
-};
+  return permissionMap
+}
 
 const showNavigationBar = template => {
-  return hideNavBarTemplates.indexOf(template) === -1;
-};
+  return hideNavBarTemplates.indexOf(template) === -1
+}
 
 const addGatewayAccountProviderDisplayNames = data => {
-  let gatewayAccounts = _.get(data, 'gatewayAccounts', null);
-  if(gatewayAccounts) {
-
-    let convertedGateWayAccounts =  gatewayAccounts.map(gatewayAccount => {
+  let gatewayAccounts = _.get(data, 'gatewayAccounts', null)
+  if (gatewayAccounts) {
+    let convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
       if (gatewayAccount.payment_provider) {
-        gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider);
+        gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider)
       }
-      return gatewayAccount;
-    });
-    data.gatewayAccounts = convertedGateWayAccounts;
-
+      return gatewayAccount
+    })
+    data.gatewayAccounts = convertedGateWayAccounts
   }
-
-};
+}
 
 const getAccount = account => {
-  if(account) {
-    account.full_type = account.type === 'test' ?
-      [account.payment_provider, account.type].join(' ') :
-      account.type;
+  if (account) {
+    account.full_type = account.type === 'test'
+      ? [account.payment_provider, account.type].join(' ')
+      : account.type
   }
 
-  return account;
-};
+  return account
+}
 
-module.exports = function(user, data, template, account) {
-  let convertedData = _.clone(data);
-  convertedData.permissions = getPermissions(user);
-  convertedData.navigation = showNavigationBar(template);
-  addGatewayAccountProviderDisplayNames(convertedData);
-  convertedData.currentGatewayAccount = getAccount(account);
-  return convertedData;
-};
+module.exports = function (user, data, template, account) {
+  let convertedData = _.clone(data)
+  convertedData.permissions = getPermissions(user)
+  convertedData.navigation = showNavigationBar(template)
+  addGatewayAccountProviderDisplayNames(convertedData)
+  convertedData.currentGatewayAccount = getAccount(account)
+  return convertedData
+}

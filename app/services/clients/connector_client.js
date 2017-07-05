@@ -3,7 +3,6 @@ var _ = require('lodash')
 var util = require('util')
 var EventEmitter = require('events').EventEmitter
 var logger = require('winston')
-var request = require('request')
 var querystring = require('querystring')
 const q = require('q')
 
@@ -115,12 +114,6 @@ var _getToggle3dsUrlFor = function (accountID) {
   return process.env.CONNECTOR_URL + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
 }
 
-function _options (url) {
-  return {
-    url: url
-  }
-}
-
 function getQueryStringForParams (params) {
   return querystring.stringify({
     reference: params.reference,
@@ -136,7 +129,6 @@ function getQueryStringForParams (params) {
 
 function searchUrl (baseUrl, params) {
   return baseUrl + CHARGES_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
-
 }
 
 /**
@@ -158,9 +150,8 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   searchTransactions (params, successCallback) {
-
     let startTime = new Date()
-    //allow url to be overridden to allow recursion using next url
+    // allow url to be overridden to allow recursion using next url
     let url = params.url || searchUrl(this.connectorUrl, params)
     let responseHandler = this.responseHandler(successCallback)
 
@@ -187,9 +178,7 @@ ConnectorClient.prototype = {
   getAllTransactions (params, successCallback) {
     var results = []
     var connectorClient = this
-
     var recursiveRetrieve = function (recursiveParams) {
-
       connectorClient.searchTransactions(recursiveParams, function (data) {
         var next = _.get(data, '_links.next_page')
         results = results.concat(data.results)
@@ -275,7 +264,7 @@ ConnectorClient.prototype = {
     let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   },
@@ -323,7 +312,7 @@ ConnectorClient.prototype = {
     }
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   },
@@ -417,11 +406,11 @@ ConnectorClient.prototype = {
    *          Callback function upon successful card type retrieval
    */
   getAllCardTypes: function (params, successCallback) {
-    var correlationParams = {}
+    var correlationParams = {} // eslint-disable-line
     if (typeof params === 'function') {
       successCallback = params
     } else {
-      correlationParams = params
+      correlationParams = params // eslint-disable-line
     }
 
     var url = _cardTypesUrlFor(this.connectorUrl)
