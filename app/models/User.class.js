@@ -102,8 +102,10 @@ class User {
    * @param {String} permissionName name of permission
    * @returns {boolean} Whether or not the user has the given permission
    */
-  hasPermission(permissionName) {
-    return _.flatten(this.serviceRoles.map(serviceRole => serviceRole.role.permissions)).includes(permissionName);
+  hasPermission(serviceExternalId, permissionName) {
+    return _.get(this.getRoleForService(serviceExternalId), 'permissions', [])
+      .map(permission => permission.name)
+      .includes(permissionName);
   }
 
   /**
@@ -123,6 +125,15 @@ class User {
    */
   hasService(externalServiceId) {
     return this.serviceRoles.map(serviceRole => serviceRole.service.externalId).includes(externalServiceId)
+  }
+
+  /**
+   * @method getPermissionsForService
+   * @param serviceExternalId
+   * @returns {String[]} permission names for the given serviceId
+   */
+  getPermissionsForService(serviceExternalId) {
+    return _.get(this.getRoleForService(serviceExternalId), 'permissions', []).map(permission => permission.name);
   }
 
 }

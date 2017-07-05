@@ -25,7 +25,7 @@ function build_get_request(path, app) {
   return request(app)
     .get(path)
     .set('Accept', 'application/json')
-    .set('x-request-id',requestId);
+    .set('x-request-id', requestId);
 }
 
 function build_form_post_request(path, sendData, sendCSRF, app) {
@@ -37,7 +37,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
     .post(path)
     .set('Accept', 'application/json')
     .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('x-request-id',requestId)
+    .set('x-request-id', requestId)
     .send(sendData);
 }
 
@@ -52,76 +52,76 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
   }
 ].forEach(function (testSetup) {
 
-    describe('The ' + testSetup.path + ' endpoint', function () {
-      afterEach(function () {
-        nock.cleanAll();
-        app = null;
-      });
+  describe('The ' + testSetup.path + ' endpoint', function () {
+    afterEach(function () {
+      nock.cleanAll();
+      app = null;
+    });
 
-      beforeEach(function (done) {
-        let permissions = 'service-name:read';
-        let user = session.getUser({
-          gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
+    beforeEach(function (done) {
+      let permissions = 'service-name:read';
+      let user = session.getUser({
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+      });
+      app = session.getAppWithLoggedInUser(getApp(), user);
+
+      userCreator.mockUserResponse(user.toJson(), done);
+    });
+
+    it('should display received service name from connector', function (done) {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          "service_name": "Service name"
         });
-        app = session.getAppWithLoggedInUser(getApp(), user);
 
-        userCreator.mockUserResponse(user.toJson(), done);
-      });
+      var expectedData = {
+        "serviceName": "Service name",
+        "editMode": testSetup.edit,
+        permissions: {
+          'service_name_read': true
+        },
+        navigation: true,
+        currentGatewayAccount: {
+          "service_name": "Service name"
+        }
+      };
 
-      it('should display received service name from connector', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-          .reply(200, {
-            "service_name": "Service name"
-          });
+      build_get_request(testSetup.path, app)
+        .expect(200, expectedData)
+        .end(done);
+    });
 
-        var expectedData = {
-          "serviceName": "Service name",
-          "editMode": testSetup.edit,
-          permissions: {
-            'service_name_read': true
-          },
-          navigation: true,
-          currentGatewayAccount: {
-            "service_name": "Service name"
-          }
-        };
+    it('should display an error if the account does not exist', function (done) {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(404, {
+          "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
+        });
 
-        build_get_request(testSetup.path, app)
-          .expect(200, expectedData)
-          .end(done);
-      });
+      build_get_request(testSetup.path, app)
+        .expect(500, {"message": "Unable to retrieve the service name."})
+        .end(done);
+    });
 
-      it('should display an error if the account does not exist', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-          .reply(404, {
-            "message": "The gateway account id '" + ACCOUNT_ID + "' does not exist"
-          });
+    it('should display an error if connector returns any other error', function (done) {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(999, {
+          "message": "Some error in Connector"
+        });
 
-        build_get_request(testSetup.path, app)
-          .expect(500, {"message": "Unable to retrieve the service name."})
-          .end(done);
-      });
+      build_get_request(testSetup.path, app)
+        .expect(500, {"message": "Unable to retrieve the service name."})
+        .end(done);
+    });
 
-      it('should display an error if connector returns any other error', function (done) {
-        connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-          .reply(999, {
-            "message": "Some error in Connector"
-          });
+    it('should display an error if the connection to connector fails', function (done) {
+      // No connectorMock defined on purpose to mock a network failure
 
-        build_get_request(testSetup.path, app)
-          .expect(500, {"message": "Unable to retrieve the service name."})
-          .end(done);
-      });
-
-      it('should display an error if the connection to connector fails', function (done) {
-        // No connectorMock defined on purpose to mock a network failure
-
-        build_get_request(testSetup.path, app)
-          .expect(500, {"message": "Unable to retrieve the service name."})
-          .end(done);
-      });
+      build_get_request(testSetup.path, app)
+        .expect(500, {"message": "Unable to retrieve the service name."})
+        .end(done);
     });
   });
+});
 
 describe('The provider update service name endpoint', function () {
 
@@ -133,7 +133,7 @@ describe('The provider update service name endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'service-name:update';
     var user = session.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [{name:permissions}]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 

@@ -12,14 +12,14 @@ const formattedPathFor = require('../../app/utils/replace_params_in_path');
 const messages = {
   emailAlreadyInUse: 'Email already in use',
   inviteError: 'Unable to send invitation at this time',
-  emailConflict: (email) => {
+  emailConflict: (email, externalServiceId) => {
     return {
       error: {
         title: 'This person has already been invited',
         message: `You cannot send an invitation to ${email} because they have received one already, or may be an existing team member.`
       },
       link: {
-        link: '/team-members',
+        link: formattedPathFor(paths.teamMembers.index, externalServiceId),
         text: 'View all team members'
       },
       enable_link: true
@@ -75,7 +75,7 @@ module.exports = {
 
       switch (err.errorCode) {
         case 409:
-          successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee));
+          successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId));
           break;
         default:
           errorResponse(req, res, messages.inviteError, 200);

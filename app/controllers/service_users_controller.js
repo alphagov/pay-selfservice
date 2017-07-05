@@ -75,7 +75,6 @@ module.exports = {
    * @param res
    */
   show: (req, res) => {
-
     const externalServiceId = req.params.externalServiceId;
     const externalUserId = req.params.externalUserId;
     if (externalUserId === req.user.externalId) {
@@ -87,12 +86,14 @@ module.exports = {
       const roleInList = roles[_.get(user.getRoleForService(externalServiceId), 'name')];
       const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, externalUserId);
       const removeTeamMemberLink = formattedPathFor(paths.teamMembers.delete, externalServiceId, externalUserId);
+      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId);
 
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
           username: user.username,
           email: user.email,
           role: roleInList.description,
+          teamMemberIndexLink: teamMemberIndexLink,
           editPermissionsLink: editPermissionsLink,
           removeTeamMemberLink: removeTeamMemberLink
         });
@@ -135,7 +136,7 @@ module.exports = {
           message: 'This person has already been removed by another administrator.'
         },
         link: {
-          link: '/team-members',
+          link: formattedPathFor(paths.teamMembers.index, externalServiceId),
           text: 'View all team members'
         },
         enable_link: true

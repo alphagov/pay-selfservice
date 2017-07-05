@@ -57,7 +57,7 @@ describe('Pagination', function () {
   beforeEach(function (done) {
     let permissions = 'transactions:read';
     var user = session.getUser({
-      gateway_account_ids: [gatewayAccountId], permissions: [permissions]
+      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 

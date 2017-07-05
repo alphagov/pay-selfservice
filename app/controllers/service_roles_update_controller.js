@@ -36,20 +36,18 @@ module.exports = {
     let correlationId = req.correlationId;
     let externalUserId = req.params.externalUserId;
     let externalServiceId = req.params.externalServiceId;
-    let roleChecked = (roleName, currentRoleName) => {
-      if (roleName === currentRoleName) {
-        return 'checked';
-      }
-      return '';
-    };
 
     let viewData = user => {
-      let editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, user.externalId);
+      const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, user.externalId);
+      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId);
+      const teamMemberProfileLink = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId);
 
       const role = user.getRoleForService(externalServiceId);
       return {
         email: user.email,
-        editPermissionsLink: editPermissionsLink,
+        editPermissionsLink,
+        teamMemberIndexLink,
+        teamMemberProfileLink,
         admin: {
           id: roles['admin'].extId,
           checked: _.get(role, 'name') === 'admin' ? 'checked' : ''

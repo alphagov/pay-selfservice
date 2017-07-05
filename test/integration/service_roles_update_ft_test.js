@@ -37,7 +37,7 @@ describe('user permissions update controller', function () {
         name: 'System Generated',
         external_id: EXTERNAL_SERVICE_ID
       },
-      role: {name: "admin", description: 'Administrator', permissions: ['users-service:create']}
+      role: {name: "admin", description: 'Administrator', permissions: [{name: 'users-service:create'}]}
     }],
   });
 
@@ -50,7 +50,7 @@ describe('user permissions update controller', function () {
         name: 'System Generated',
         external_id: EXTERNAL_SERVICE_ID
       },
-      role: {name: 'view-only', description: 'View only', permissions:[]}
+      role: {name: 'view-only', description: 'View only', permissions: []}
     }]
   };
 

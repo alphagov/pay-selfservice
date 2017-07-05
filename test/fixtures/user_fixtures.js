@@ -104,7 +104,7 @@ module.exports = {
         role: opts.role || {
           name: "admin",
           description: "Administrator",
-          permissions: opts.permissions || ["perm-1"]
+          permissions: opts.permissions || [{name: "perm-1"}]
         }
       }],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
@@ -136,7 +136,7 @@ module.exports = {
    * @param request Params override response
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
-  validUserResponse: (request) => {
+  validUserResponse: (request = {}) => {
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
     let req_external_id = request.external_id || existingExternalId;
     let req_username = request.username || 'existing-user';
@@ -157,7 +157,7 @@ module.exports = {
         role: {
           name: "admin",
           description: "Administrator",
-          permissions: request.permissions || ["perm-1", "perm-2", "perm-3"],
+          permissions: request.permissions || [{name: "perm-1"}, {name: "perm-2"}, {name: "perm-3"}],
           "_links": [{
             "href": `http://adminusers.service/v1/api/users/${req_external_id}`,
             "rel": "self",

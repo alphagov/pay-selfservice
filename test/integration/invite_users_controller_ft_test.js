@@ -18,21 +18,10 @@ const formattedPathFor = require('../../app/utils/replace_params_in_path');
 
 describe('invite user controller', function () {
 
-  const EXTERNAL_SERVICE_ID = 'by46fewgkln';
-  const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3';
-  const USERNAME_IN_SESSION = 'existing-user';
+  const userInSession = session.getUser({});
+  const EXTERNAL_SERVICE_ID = userInSession.serviceRoles[0].service.externalId;
+  userInSession.serviceRoles[0].role.permissions.push({name: 'users-service:create'});
   const INVITE_RESOURCE = `/v1/api/invites/user`;
-
-  let userInSession = session.getUser({
-    external_id: EXTERNAL_ID_IN_SESSION,
-    username: USERNAME_IN_SESSION,
-    email: USERNAME_IN_SESSION + '@example.com',
-    services: [{
-      name: 'System Generated',
-      external_id: EXTERNAL_SERVICE_ID
-    }],
-    permissions: ['users-service:create']
-  });
 
   describe('invite user index view', function () {
 
@@ -89,7 +78,7 @@ describe('invite user controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .post(paths.teamMembers.invite)
+        .post(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -112,7 +101,7 @@ describe('invite user controller', function () {
       app = session.getAppWithLoggedInUser(getApp(), userInSession);
 
       supertest(app)
-        .post(paths.teamMembers.invite)
+        .post(formattedPathFor(paths.teamMembers.invite, EXTERNAL_SERVICE_ID))
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
@@ -143,7 +132,7 @@ describe('invite user controller', function () {
         correlationId: 'blah',
         user: {externalId: 'some-ext-id', serviceIds: ['1']},
         body: {'invitee-email': invalidEmail, 'role-input': '200'},
-        params:{
+        params: {
           externalServiceId: externalServiceId
         }
       });

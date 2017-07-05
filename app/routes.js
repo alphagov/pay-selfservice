@@ -17,6 +17,7 @@ const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middlewa
 const getEmailNotification = require('./middleware/get_email_notification')
 const getAccount = require('./middleware/get_gateway_account')
 const hasServices = require('./middleware/has_services')
+const resolveService = require('./middleware/resolve_service');
 const trimUsername = require('./middleware/trim_username')
 const permission = require('./middleware/permission')
 const validateRegistrationInviteCookie = require('./middleware/validate_registration_invite_cookie')
@@ -84,11 +85,10 @@ module.exports.bind = function (app) {
   app.get(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone)
   app.post(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone)
   app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn)
-
   // LOGIN
   app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet)
   app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.logUserin, getAccount, loginCtrl.postLogin)
-  app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, loginCtrl.loggedIn)
+  app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, loginCtrl.loggedIn)
   app.get(user.noAccess, loginCtrl.noAccess)
   app.get(user.logOut, loginCtrl.logOut)
   app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet)
@@ -180,7 +180,7 @@ module.exports.bind = function (app) {
   app.post(serviceSwitcher.switch, serviceSwitchController.switch)
 
   // TEAM MEMBERS - USER PROFILE
-  app.get(teamMembers.index, serviceUsersController.index)
+  app.get(teamMembers.index, resolveService, serviceUsersController.index)
   app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
   app.get(teamMembers.permissions, permission('users-service:create'), permissionController.index)
   app.post(teamMembers.permissions, permission('users-service:create'), permissionController.update)
