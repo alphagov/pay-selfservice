@@ -624,10 +624,10 @@ module.exports = function (clientOptions = {}) {
         telephone_number: phoneNumber,
         role_name: role
       }
-    };
-    const url = userResource;
-    const defer = q.defer();
-    const startTime = new Date();
+    }
+    const url = userResource
+    const defer = q.defer()
+    const startTime = new Date()
     const context = {
       url: url,
       defer: defer,
@@ -636,17 +636,17 @@ module.exports = function (clientOptions = {}) {
       method: 'POST',
       description: 'create user',
       service: SERVICE_NAME
-    };
+    }
 
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer);
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
-    requestLogger.logRequestStart(context);
+    requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
-  };
+    return defer.promise
+  }
 
   let deleteUser = (serviceId, removerId, userId) => {
     const params = {
