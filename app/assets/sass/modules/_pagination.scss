@@ -1,8 +1,8 @@
 div.pagination {
-	margin-bottom: $gutter-half;
+  margin-bottom: $gutter-half;
   @extend %contain-floats;
 
-	.paginationForm {
+  .paginationForm {
     float: left;
 
     button[type='submit'] {
@@ -52,5 +52,5 @@ div.pagination {
       content:"\00BB";
       margin-left: 0.25em;
     }
-	}
+  }
 }
