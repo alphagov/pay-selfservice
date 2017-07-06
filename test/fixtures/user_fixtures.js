@@ -4,10 +4,11 @@
 const _ = require('lodash')
 
 // Custom dependencies
-const User = require('../../app/models/user').User
-const pactBase = require('./pact_base')
+const path = require('path')
+const User = require(path.join(__dirname, '/../../app/models/user')).User
+const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids']})
-const random = require('../../app/utils/random')
+const random = require(path.join(__dirname, '/../../app/utils/random'))
 
 function randomString () {
   return Math.random().toString(36).substring(7)
@@ -115,14 +116,14 @@ module.exports = {
    */
   validUserResponse: (request) => {
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let req_external_id = request.external_id || existingExternalId
-    let req_username = request.username || 'existing-user'
+    let reqExternalId = request.external_id || existingExternalId
+    let reqUsername = request.username || 'existing-user'
     let defaultServiceId = randomServiceId()
 
     let data = {
-      external_id: req_external_id,
-      username: req_username,
-      email: request.email || `${req_username}@example.com`,
+      external_id: reqExternalId,
+      username: reqUsername,
+      email: request.email || `${reqUsername}@example.com`,
       gateway_account_ids: request.gateway_account_ids || [randomAccountId()],
       service_ids: request.service_ids || [defaultServiceId],
       services: request.services || [{name: 'System Generated', id: defaultServiceId}],
@@ -131,7 +132,7 @@ module.exports = {
       telephone_number: request.telephone_number || '0123441',
       permissions: request.permissions || ['perm-1', 'perm-2', 'perm-3'],
       '_links': [{
-        'href': `http://adminusers.service/v1/api/users/${req_external_id}`,
+        'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
         'rel': 'self',
         'method': 'GET'
       }]
@@ -175,6 +176,26 @@ module.exports = {
         return data
       }
     }
+  },
+
+  invalidUserCreateRequestWithFieldsMissing: () => {
+    let request = {
+      username: randomUsername(),
+      gateway_account_ids: [''],
+      email: '',
+      telephone_number: ''
+    }
+
+    return pactUsers.withPactified(request)
+  },
+
+  invalidUserCreateResponseWhenFieldsMissing: () => {
+    let response = {
+      // At the moment to discuss Failfast approach to the API rather than error collection
+      errors: ['Field [email] is required', 'Field [telephone_number] is required', 'Field [role_name] is required']
+    }
+
+    return pactUsers.withPactified(response)
   },
 
   validAuthenticateRequest: (options) => {

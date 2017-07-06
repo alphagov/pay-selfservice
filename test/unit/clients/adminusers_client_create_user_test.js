@@ -23,12 +23,11 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('adminusers client - create a new user', function () {
-
   let adminUsersMock
 
-  /**
-   * Start the server and set up Pact
-   */
+    /**
+     * Start the server and set up Pact
+     */
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
@@ -37,17 +36,16 @@ describe('adminusers client - create a new user', function () {
     })
   })
 
-  /**
-   * Remove the server and publish pacts to broker
-   */
+    /**
+     * Remove the server and publish pacts to broker
+     */
   after(function (done) {
     mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
+            .then(() => pactProxy.removeAll())
+            .then(() => done())
   })
 
   describe('creating a user', function () {
-
     context('create a user - success', () => {
       const validRequest = userFixtures.validCreateUserRequest()
       const validCreateUserResponse = userFixtures.validUserResponse(validRequest.getPlain())
@@ -55,18 +53,18 @@ describe('adminusers client - create a new user', function () {
       beforeEach((done) => {
         let pactified = validRequest.getPactified()
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_RESOURCE}`)
-            .withUponReceiving('a valid create user request')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(201)
-            .withResponseBody(validCreateUserResponse.getPactified())
-            .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
-        )
+                    new PactInteractionBuilder(`${USER_RESOURCE}`)
+                        .withUponReceiving('a valid create user request')
+                        .withMethod('POST')
+                        .withRequestBody(pactified)
+                        .withStatusCode(201)
+                        .withResponseBody(validCreateUserResponse.getPactified())
+                        .build()
+                ).then(() => {
+                  done()
+                }).catch(e =>
+                    console.log(e)
+                )
       })
 
       afterEach((done) => {
@@ -76,50 +74,50 @@ describe('adminusers client - create a new user', function () {
       it('should create a new user', function (done) {
         let userData = validRequest.getPlain()
         adminusersClient.createUser(
-          userData.email,
-          userData.gateway_account_ids,
-          userData.service_ids,
-          userData.role_name,
-          userData.telephone_number).should.be.fulfilled.then(user => {
-          expect(user.username).to.be.equal(userData.username)
-          expect(user.email).to.be.equal(userData.email)
-          expect(_.isEqual(user.gatewayAccountIds, userData.gateway_account_ids)).to.be.equal(true)
-          expect(user.telephoneNumber).to.be.equal(userData.telephone_number)
-          expect(user.role.name).to.be.equal(userData.role_name)
+                    userData.email,
+                    userData.gateway_account_ids,
+                    userData.service_ids,
+                    userData.role_name,
+                    userData.telephone_number).should.be.fulfilled.then(user => {
+                      expect(user.username).to.be.equal(userData.username)
+                      expect(user.email).to.be.equal(userData.email)
+                      expect(_.isEqual(user.gatewayAccountIds, userData.gateway_account_ids)).to.be.equal(true)
+                      expect(user.telephoneNumber).to.be.equal(userData.telephone_number)
+                      expect(user.role.name).to.be.equal(userData.role_name)
+                    }).should.notify(done)
+      })
+    })
+
+    context('create a user - missing required fields', () => {
+      const errorResponse = userFixtures.badRequestResponseWhenFieldsMissing(['username', 'email', 'gateway_account_ids', 'telephone_number', 'role_name'])
+
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
+                    new PactInteractionBuilder(`${USER_RESOURCE}`)
+                        .withUponReceiving('a create user request missing required fields')
+                        .withMethod('POST')
+                        .withRequestBody({})
+                        .withStatusCode(400)
+                        .withResponseBody(errorResponse.getPactified())
+                        .build()
+                ).then(() => {
+                  done()
+                }).catch(e =>
+                    console.log(e)
+                )
+      })
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      })
+
+      it('should return a 400', function (done) {
+        adminusersClient.createUser().should.be.rejected.then(response => {
+          expect(response.errorCode).to.equal(400)
+          expect(response.message.errors.length).to.equal(5)
+          expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
         }).should.notify(done)
       })
-    }),
-
-      context('create a user - missing required fields', () => {
-        const errorResponse = userFixtures.badRequestResponseWhenFieldsMissing(['username', 'email', 'gateway_account_ids', 'telephone_number', 'role_name'])
-
-        beforeEach((done) => {
-          adminUsersMock.addInteraction(
-            new PactInteractionBuilder(`${USER_RESOURCE}`)
-              .withUponReceiving('a create user request missing required fields')
-              .withMethod('POST')
-              .withRequestBody({})
-              .withStatusCode(400)
-              .withResponseBody(errorResponse.getPactified())
-              .build()
-          ).then(() => {
-            done()
-          }).catch(e =>
-            console.log(e)
-          )
-        })
-
-        afterEach((done) => {
-          adminUsersMock.finalize().then(() => done())
-        })
-
-        it('should return a 400', function (done) {
-          adminusersClient.createUser().should.be.rejected.then(response => {
-            expect(response.errorCode).to.equal(400)
-            expect(response.message.errors.length).to.equal(5)
-            expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
-          }).should.notify(done)
-        })
-      })
+    })
   })
 })

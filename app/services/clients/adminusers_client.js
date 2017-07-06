@@ -1,7 +1,6 @@
 'use strict'
 
 const q = require('q')
-const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
 let User = require('../../models/user').User
@@ -17,7 +16,6 @@ const HEADER_USER_CONTEXT = 'GovUkPay-User-Context'
 const responseBodyToUserTransformer = body => new User(body)
 
 module.exports = function (clientOptions = {}) {
-
   let baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL
   let correlationId = clientOptions.correlationId || ''
   let userResource = `${baseUrl}/v1/api/users`
@@ -54,7 +52,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -91,7 +89,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -129,7 +127,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.patch(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -164,7 +162,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -176,7 +174,7 @@ module.exports = function (clientOptions = {}) {
    */
   let getForgottenPassword = (code) => {
     let params = {
-      correlationId: correlationId,
+      correlationId: correlationId
     }
     let url = `${forgottenPasswordResource}/${code}`
     let defer = q.defer()
@@ -196,7 +194,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -233,7 +231,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -245,7 +243,7 @@ module.exports = function (clientOptions = {}) {
    */
   let sendSecondFactor = (externalId) => {
     let params = {
-      correlationId: correlationId,
+      correlationId: correlationId
     }
 
     let url = `${userResource}/${externalId}/second-factor/`
@@ -266,7 +264,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -303,7 +301,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -326,7 +324,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, {correlationId: correlationId}, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -364,7 +362,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.put(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -404,7 +402,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -435,7 +433,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -473,7 +471,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -505,7 +503,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -537,7 +535,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -569,7 +567,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -608,7 +606,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -643,7 +641,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -672,7 +670,7 @@ module.exports = function (clientOptions = {}) {
 
     params.headers[HEADER_USER_CONTEXT] = removerId
     baseClient.delete(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }
@@ -713,7 +711,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }

@@ -1,11 +1,12 @@
 'use strict'
 
 // NPM dependencies
+const path = require('path')
 const _ = require('lodash')
 
 // Custom dependencies
-const userFixtures = require(__dirname + '/user_fixtures')
-const pactBase = require(__dirname + '/pact_base')
+const userFixtures = require(path.join(__dirname, '/user_fixtures'))
+const pactBase = require(path.join(__dirname, '/pact_base'))
 
 // Global setup
 const pactServices = pactBase({array: ['service_ids']})
@@ -91,5 +92,5 @@ module.exports = {
     }
 
     return pactServices.withPactified(response)
-  },
+  }
 }

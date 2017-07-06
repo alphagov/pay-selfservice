@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('lodash')
 
 module.exports = {
   /**
@@ -8,7 +8,7 @@ module.exports = {
    * @returns {boolean}
    */
   validate: function (user, session) {
-    return _.get(user, 'sessionVersion', 0) === _.get(session, 'version');
-  },
+    return _.get(user, 'sessionVersion', 0) === _.get(session, 'version')
+  }
 
-};
+}

@@ -1,62 +1,59 @@
-var request     = require('supertest');
-var nock        = require('nock');
-var _        = require('lodash');
+const path = require('path')
+const request = require('supertest')
+const nock = require('nock')
+const _ = require('lodash')
 
-require(__dirname + '/../test_helpers/serialize_mock.js');
-var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
-var getApp        = require(__dirname + '/../../server.js').getApp;
-var paths       = require(__dirname + '/../../app/paths.js');
-var session     = require(__dirname + '/../test_helpers/mock_session.js');
+require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+const userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 
-var gatewayAccountId = 15486734;
+const gatewayAccountId = 15486734
 
-var app;
-var chargeId = 452345;
+let app
 
-var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}';
-var connectorMock = nock(process.env.CONNECTOR_URL);
+const CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}'
+const connectorMock = nock(process.env.CONNECTOR_URL)
 
-function connectorMock_responds(path, data) {
+function connectorMockResponds (path, data) {
   return connectorMock.get(path)
-    .reply(200, data);
+    .reply(200, data)
 }
 
-function when_getTransactionHistory(chargeId, baseApp) {
+function whenGetTransactionHistory (chargeId, baseApp) {
   return request(baseApp)
     .get(paths.generateRoute(paths.transactions.show, {chargeId: chargeId}))
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
 }
 
-function connectorChargePathFor(chargeId) {
-  return CONNECTOR_CHARGE_PATH.replace('{chargeId}', chargeId);
+function connectorChargePathFor (chargeId) {
+  return CONNECTOR_CHARGE_PATH.replace('{chargeId}', chargeId)
 }
 
-function asTemplate(data) {
-  return _.merge(data, {navigation: true});
+function asTemplate (data) {
+  return _.merge(data, {navigation: true})
 }
 
 describe('The transaction view scenarios', function () {
-
   afterEach(function () {
-    nock.cleanAll();
-    app = null;
-  });
+    nock.cleanAll()
+    app = null
+  })
 
   beforeEach(function (done) {
-    let permissions = 'transactions-details:read';
+    let permissions = 'transactions-details:read'
     var user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [permissions]
-    });
-    app = session.getAppWithLoggedInUser(getApp(), user);
+    })
+    app = session.getAppWithLoggedInUser(getApp(), user)
 
-    userCreator.mockUserResponse(user.toJson(), done);
-  });
-
+    userCreator.mockUserResponse(user.toJson(), done)
+  })
 
   describe('The transaction history endpoint', function () {
-
     it('should return a list of transaction history for a given charge id', function (done) {
-      var chargeId = 452345;
+      var chargeId = 452345
       var mockEventsResponse = {
         'charge_id': chargeId,
         'events': [
@@ -100,7 +97,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 12:05:43'
           }
         ]
-      };
+      }
 
       var mockChargeResponse = {
         'charge_id': chargeId,
@@ -145,8 +142,8 @@ describe('The transaction view scenarios', function () {
             'method': 'GET',
             'href': 'http://frontend/charges/1?chargeTokenId=82347'
           }
-        ],
-      };
+        ]
+      }
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeId,
@@ -194,9 +191,9 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the user',
               'code': 'P0030'
             },
-            "state_friendly": "User failed to complete payment of £50.00",
-            "updated": "2015-12-24 12:05:43",
-            "updated_friendly": "24 Dec 2015 — 12:05:43",
+            'state_friendly': 'User failed to complete payment of £50.00',
+            'updated': '2015-12-24 12:05:43',
+            'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
           {
             'state': {
@@ -205,18 +202,18 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the service',
               'code': 'P0040'
             },
-            "state_friendly": "Service cancelled payment of £50.00",
-            "updated": "2015-12-24 12:05:43",
-            "updated_friendly": "24 Dec 2015 — 12:05:43"
+            'state_friendly': 'Service cancelled payment of £50.00',
+            'updated': '2015-12-24 12:05:43',
+            'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
           {
             'state': {
               'status': 'success',
               'finished': true
             },
-            "state_friendly": "Payment of £50.00 succeeded",
-            "updated": "2015-12-24 12:05:43",
-            "updated_friendly": "24 Dec 2015 — 12:05:43"
+            'state_friendly': 'Payment of £50.00 succeeded',
+            'updated': '2015-12-24 12:05:43',
+            'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
           {
             'state': {
@@ -237,21 +234,21 @@ describe('The transaction view scenarios', function () {
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
         ],
-        "permissions": {
-          "transactions_details_read": true
+        'permissions': {
+          'transactions_details_read': true
         }
-      });
+      })
 
-      connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
-      connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
+      connectorMockResponds(connectorChargePathFor(chargeId), mockChargeResponse)
+      connectorMockResponds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse)
 
-      when_getTransactionHistory(chargeId, app)
+      whenGetTransactionHistory(chargeId, app)
         .expect(200, expectedEventsView)
-        .end(done);
-    });
+        .end(done)
+    })
 
     it('should show a transaction when no card details are present', function (done) {
-      var chargeId = 452345;
+      var chargeId = 452345
       var mockEventsResponse = {
         'charge_id': chargeId,
         'events': [
@@ -270,7 +267,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:23:12'
           }
         ]
-      };
+      }
 
       var mockChargeResponse = {
         'charge_id': chargeId,
@@ -303,7 +300,7 @@ describe('The transaction view scenarios', function () {
             'href': 'http://frontend/charges/1?chargeTokenId=82347'
           }
         ]
-      };
+      }
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeId,
@@ -311,7 +308,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'refundable': true,
-        'net_amount': "50.00",
+        'net_amount': '50.00',
         'net_amount_display': '£50.00',
         'refunded_amount': '£0.00',
         'refunded': false,
@@ -356,21 +353,21 @@ describe('The transaction view scenarios', function () {
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
         ],
-        "permissions": {
-          "transactions_details_read": true
+        'permissions': {
+          'transactions_details_read': true
         }
-      });
+      })
 
-      connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
-      connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
+      connectorMockResponds(connectorChargePathFor(chargeId), mockChargeResponse)
+      connectorMockResponds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse)
 
-      when_getTransactionHistory(chargeId, app)
+      whenGetTransactionHistory(chargeId, app)
         .expect(200, expectedEventsView)
-        .end(done);
-    });
+        .end(done)
+    })
 
     it('should show a transaction when legacy cards details are present', function (done) {
-      var chargeId = 452345;
+      var chargeId = 452345
       var mockEventsResponse = {
         'charge_id': chargeId,
         'events': [
@@ -389,7 +386,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:23:12'
           }
         ]
-      };
+      }
 
       var mockChargeResponse = {
         'charge_id': chargeId,
@@ -429,7 +426,7 @@ describe('The transaction view scenarios', function () {
             'href': 'http://frontend/charges/1?chargeTokenId=82347'
           }
         ]
-      };
+      }
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeId,
@@ -437,7 +434,7 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'refundable': true,
-        'net_amount': "50.00",
+        'net_amount': '50.00',
         'net_amount_display': '£50.00',
         'refunded_amount': '£0.00',
         'refunded': false,
@@ -483,22 +480,21 @@ describe('The transaction view scenarios', function () {
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
         ],
-        "permissions": {
-          "transactions_details_read": true
+        'permissions': {
+          'transactions_details_read': true
         }
-      });
+      })
 
-      connectorMock_responds(connectorChargePathFor(chargeId), mockChargeResponse);
-      connectorMock_responds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse);
+      connectorMockResponds(connectorChargePathFor(chargeId), mockChargeResponse)
+      connectorMockResponds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse)
 
-      when_getTransactionHistory(chargeId, app)
+      whenGetTransactionHistory(chargeId, app)
         .expect(200, expectedEventsView)
-        .end(done);
-    });
+        .end(done)
+    })
 
     it('should return a list of transaction history for a given charge id and show refunded', function (done) {
-
-      var chargeWithRefund = 12345;
+      var chargeWithRefund = 12345
       var mockEventsResponse = {
         'charge_id': chargeWithRefund,
         'events': [
@@ -542,7 +538,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 12:05:43'
           }
         ]
-      };
+      }
 
       var mockChargeResponse = {
         'charge_id': chargeWithRefund,
@@ -587,8 +583,8 @@ describe('The transaction view scenarios', function () {
             'method': 'GET',
             'href': 'http://frontend/charges/1?chargeTokenId=82347'
           }
-        ],
-      };
+        ]
+      }
 
       var expectedEventsView = asTemplate({
         'charge_id': chargeWithRefund,
@@ -636,9 +632,9 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the user',
               'code': 'P0030'
             },
-            "state_friendly": "User failed to complete payment of £50.00",
-            "updated": "2015-12-24 12:05:43",
-            "updated_friendly": "24 Dec 2015 — 12:05:43",
+            'state_friendly': 'User failed to complete payment of £50.00',
+            'updated': '2015-12-24 12:05:43',
+            'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
           {
             'state': {
@@ -647,18 +643,18 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the service',
               'code': 'P0040'
             },
-            "state_friendly": "Service cancelled payment of £50.00",
-            "updated": "2015-12-24 12:05:43",
-            "updated_friendly": "24 Dec 2015 — 12:05:43"
+            'state_friendly': 'Service cancelled payment of £50.00',
+            'updated': '2015-12-24 12:05:43',
+            'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
           {
             'state': {
               'status': 'success',
               'finished': true
             },
-            "state_friendly": "Payment of £50.00 succeeded",
-            "updated": "2015-12-24 12:05:43",
-            "updated_friendly": "24 Dec 2015 — 12:05:43"
+            'state_friendly': 'Payment of £50.00 succeeded',
+            'updated': '2015-12-24 12:05:43',
+            'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
           {
             'state': {
@@ -679,47 +675,47 @@ describe('The transaction view scenarios', function () {
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
         ],
-        "permissions": {
-          "transactions_details_read": true
+        'permissions': {
+          'transactions_details_read': true
         }
-      });
+      })
 
-      var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events';
-      connectorMock_responds(connectorChargePathFor(chargeWithRefund), mockChargeResponse);
-      connectorMock_responds(events, mockEventsResponse);
+      var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events'
+      connectorMockResponds(connectorChargePathFor(chargeWithRefund), mockChargeResponse)
+      connectorMockResponds(events, mockEventsResponse)
 
-      when_getTransactionHistory(chargeWithRefund, app)
+      whenGetTransactionHistory(chargeWithRefund, app)
         .expect(200, expectedEventsView)
-        .end(done);
-    });
+        .end(done)
+    })
 
     it('should return charge not found if a non existing charge id requested', function (done) {
-      var nonExistentChargeId = 888;
-      var connectorError = {'message': 'Charge not found'};
+      var nonExistentChargeId = 888
+      var connectorError = {'message': 'Charge not found'}
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
-        .reply(404, connectorError);
+        .reply(404, connectorError)
 
-      when_getTransactionHistory(nonExistentChargeId, app)
+      whenGetTransactionHistory(nonExistentChargeId, app)
         .expect(500, connectorError)
-        .end(done);
-    });
+        .end(done)
+    })
 
     it('should return a generic if connector responds with an error', function (done) {
-      var nonExistentChargeId = 888;
-      var connectorError = {'message': 'Internal server error'};
+      var nonExistentChargeId = 888
+      var connectorError = {'message': 'Internal server error'}
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
-        .reply(500, connectorError);
+        .reply(500, connectorError)
 
-      when_getTransactionHistory(nonExistentChargeId, app)
+      whenGetTransactionHistory(nonExistentChargeId, app)
         .expect(500, {'message': 'Error processing transaction view'})
-        .end(done);
-    });
+        .end(done)
+    })
 
     it('should return a generic if unable to communicate with connector', function (done) {
-      var chargeId = 452345;
-      when_getTransactionHistory(chargeId, app)
+      var chargeId = 452345
+      whenGetTransactionHistory(chargeId, app)
         .expect(500, {'message': 'Error processing transaction view'})
-        .end(done);
-    });
-  });
-});
+        .end(done)
+    })
+  })
+})

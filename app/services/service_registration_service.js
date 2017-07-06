@@ -1,7 +1,6 @@
-'use strict';
+'use strict'
 
-const getAdminUsersClient = require('./clients/adminusers_client');
-const paths = require(__dirname + '/../paths.js');
+const getAdminUsersClient = require('./clients/adminusers_client')
 
 module.exports = {
 
@@ -13,9 +12,8 @@ module.exports = {
    * @param correlationId
    */
   submitRegistration: function (email, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).submitServiceRegistration(email, phoneNumber, password);
+    return getAdminUsersClient({correlationId: correlationId}).submitServiceRegistration(email, phoneNumber, password)
   },
-
 
   /**
    * submit otp code for verification
@@ -24,7 +22,7 @@ module.exports = {
    * @param correlationId
    */
   submitServiceInviteOtpCode: function (code, otpCode, correlationId) {
-    return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode);
+    return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode)
   }
 
-};
+}
