@@ -1,56 +1,57 @@
-'use strict';
-var _                     = require('lodash');
-var util                  = require('util');
-var EventEmitter          = require('events').EventEmitter;
-var logger                = require('winston');
-var request               = require('request');
-var querystring           = require('querystring');
-const q = require('q');
+'use strict'
+var _ = require('lodash')
+var util = require('util')
+var EventEmitter = require('events').EventEmitter
+var logger = require('winston')
+var request = require('request')
+var querystring = require('querystring')
+const q = require('q')
 
-var dates                 = require('../../utils/dates.js');
-const baseClient          = require('./base_client');
-const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter;
+var dates = require('../../utils/dates.js')
+const baseClient = require('./base_client')
+const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
-const SERVICE_NAME = 'connector';
-var ACCOUNTS_API_PATH                 = '/v1/api/accounts';
-var ACCOUNT_API_PATH                  = ACCOUNTS_API_PATH + '/{accountId}';
-var CHARGES_API_PATH                  = ACCOUNT_API_PATH + '/charges';
-var CHARGE_API_PATH                   = CHARGES_API_PATH + '/{chargeId}';
-var CHARGE_REFUNDS_API_PATH           = CHARGE_API_PATH + '/refunds';
-var CARD_TYPES_API_PATH               = '/v1/api/card-types';
+const SERVICE_NAME = 'connector'
+var ACCOUNTS_API_PATH = '/v1/api/accounts'
+var ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
+var CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
+var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
+var CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
+var CARD_TYPES_API_PATH = '/v1/api/card-types'
 
-var ACCOUNTS_FRONTEND_PATH            = '/v1/frontend/accounts';
-var ACCOUNT_FRONTEND_PATH             = ACCOUNTS_FRONTEND_PATH + '/{accountId}';
-var SERVICE_NAME_FRONTEND_PATH        = ACCOUNT_FRONTEND_PATH + '/servicename';
-var ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types';
-var ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials';
-var ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials';
-var EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification';
-var TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle';
+var ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
+var ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
+var SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename'
+var ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
+var ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
+var ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
+var EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
+var TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 
 /**
  * @private
  * @param  {object} self
  */
-function _createResponseHandler(self) {
+function _createResponseHandler (self) {
   return function (callback) {
     return function (error, response, body) {
       if (error || !isInArray(response.statusCode, [200, 202])) {
         if (error) {
           logger.error('Calling connector error -', {
             service: 'connector',
-            error: JSON.stringify(error)});
+            error: JSON.stringify(error)
+          })
         } else {
           logger.error('Calling connector response failed -', {
             service: 'connector',
             status: response.statusCode
-          });
+          })
         }
-        self.emit('connectorError', error, response, body);
-        return;
+        self.emit('connectorError', error, response, body)
+        return
       }
 
-      callback(body, response);
+      callback(body, response)
     }
   }
 }
@@ -60,67 +61,67 @@ function _createResponseHandler(self) {
  * @param  {Object} value - value to find into the array
  * @param {Object[]} array - array source for finding the given value
  */
-function isInArray(value, array) {
-  return array.indexOf(value) > -1;
+function isInArray (value, array) {
+  return array.indexOf(value) > -1
 }
 
 /** @private */
-function _accountUrlFor(gatewayAccountId, url) {
-  return url + ACCOUNT_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
+function _accountUrlFor (gatewayAccountId, url) {
+  return url + ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountNotificationCredentialsUrlFor(gatewayAccountId, url) {
-  return url + ACCOUNT_NOTIFICATION_CREDENTIALS_PATH.replace("{accountId}", gatewayAccountId);
+function _accountNotificationCredentialsUrlFor (gatewayAccountId, url) {
+  return url + ACCOUNT_NOTIFICATION_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountCredentialsUrlFor(gatewayAccountId, url) {
-  return url + ACCOUNT_CREDENTIALS_PATH.replace("{accountId}", gatewayAccountId);
+function _accountCredentialsUrlFor (gatewayAccountId, url) {
+  return url + ACCOUNT_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _accountAcceptedCardTypesUrlFor(gatewayAccountId, url) {
-  return url + ACCEPTED_CARD_TYPES_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
+function _accountAcceptedCardTypesUrlFor (gatewayAccountId, url) {
+  return url + ACCEPTED_CARD_TYPES_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _cardTypesUrlFor(url) {
-  return url + CARD_TYPES_API_PATH;
+function _cardTypesUrlFor (url) {
+  return url + CARD_TYPES_API_PATH
 }
 
 /** @private */
-function _serviceNameUrlFor(gatewayAccountId, url) {
-  return url + SERVICE_NAME_FRONTEND_PATH.replace("{accountId}", gatewayAccountId);
+function _serviceNameUrlFor (gatewayAccountId, url) {
+  return url + SERVICE_NAME_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
-function _chargeUrlFor(gatewayAccountId, chargeId, url) {
-  return url + CHARGE_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
+function _chargeUrlFor (gatewayAccountId, chargeId, url) {
+  return url + CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
 }
 
 /** @private */
-function _chargeRefundsUrlFor(gatewayAccountId, chargeId, url) {
-  return url + CHARGE_REFUNDS_API_PATH.replace("{accountId}", gatewayAccountId).replace("{chargeId}", chargeId);
+function _chargeRefundsUrlFor (gatewayAccountId, chargeId, url) {
+  return url + CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
 }
 
 /** @private */
-var _getNotificationEmailUrlFor = function(accountID){
-  return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION__PATH.replace("{accountId}", accountID);
-};
+var _getNotificationEmailUrlFor = function (accountID) {
+  return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
+}
 
 /** @private */
-var _getToggle3dsUrlFor = function(accountID){
-  return process.env.CONNECTOR_URL + TOGGLE_3DS_PATH.replace("{accountId}", accountID);
-};
+var _getToggle3dsUrlFor = function (accountID) {
+  return process.env.CONNECTOR_URL + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
+}
 
-function _options(url) {
+function _options (url) {
   return {
     url: url
   }
 }
 
-function getQueryStringForParams(params) {
+function getQueryStringForParams (params) {
   return querystring.stringify({
     reference: params.reference,
     email: params.email,
@@ -130,11 +131,11 @@ function getQueryStringForParams(params) {
     to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
     page: params.page || 1,
     display_size: params.pageSize || 100
-  });
+  })
 }
 
-function searchUrl(baseUrl, params) {
-  return baseUrl + CHARGES_API_PATH.replace("{accountId}", params.gatewayAccountId) + "?" + getQueryStringForParams(params);
+function searchUrl (baseUrl, params) {
+  return baseUrl + CHARGES_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
 
 }
 
@@ -142,11 +143,11 @@ function searchUrl(baseUrl, params) {
  * Connects to connector
  * @param {string} connectorUrl connector url
  */
-function ConnectorClient(connectorUrl) {
-  this.connectorUrl = connectorUrl;
-  this.responseHandler = _createResponseHandler(this);
+function ConnectorClient (connectorUrl) {
+  this.connectorUrl = connectorUrl
+  this.responseHandler = _createResponseHandler(this)
 
-  EventEmitter.call(this);
+  EventEmitter.call(this)
 }
 
 ConnectorClient.prototype = {
@@ -157,24 +158,24 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   searchTransactions (params, successCallback) {
-    
-    let startTime = new Date();
+
+    let startTime = new Date()
     //allow url to be overridden to allow recursion using next url
-    let url = params.url || searchUrl(this.connectorUrl, params);
-    let responseHandler = this.responseHandler(successCallback);
+    let url = params.url || searchUrl(this.connectorUrl, params)
+    let responseHandler = this.responseHandler(successCallback)
 
     logger.debug('Calling connector to search account transactions -', {
       service: 'connector',
       method: 'GET',
       url: url
-    });
+    })
 
-    baseClient.get(url, {correlationId: params.correlationId}, function(error, response, body) {
-      logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url,  new Date() - startTime);
-      responseHandler(error, response, body);
-    });
+    baseClient.get(url, {correlationId: params.correlationId}, function (error, response, body) {
+      logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url, new Date() - startTime)
+      responseHandler(error, response, body)
+    })
 
-    return this;
+    return this
   },
 
   /**
@@ -184,24 +185,24 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   getAllTransactions (params, successCallback) {
-    var results = [];
-    var connectorClient = this;
+    var results = []
+    var connectorClient = this
 
-    var recursiveRetrieve = function(recursiveParams) {
+    var recursiveRetrieve = function (recursiveParams) {
 
       connectorClient.searchTransactions(recursiveParams, function (data) {
-        var next = _.get(data, "_links.next_page");
-        results = results.concat(data.results);
-        if (next === undefined) return successCallback(results);
+        var next = _.get(data, '_links.next_page')
+        results = results.concat(data.results)
+        if (next === undefined) return successCallback(results)
 
-        recursiveParams.url = next.href;
-        recursiveRetrieve(recursiveParams);
-      });
-    };
+        recursiveParams.url = next.href
+        recursiveRetrieve(recursiveParams)
+      })
+    }
 
-    recursiveRetrieve(params);
+    recursiveRetrieve(params)
 
-    return this;
+    return this
   },
 
   /**
@@ -216,15 +217,15 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   getCharge: function (params, successCallback) {
-    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl);
+    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
     logger.debug('Calling connector to get charge -', {
       service: 'connector',
       method: 'GET',
       url: url,
       chargeId: params.chargeId
-    });
-    baseClient.get(url, {correlationId: params.correlationId}, this.responseHandler(successCallback));
-    return this;
+    })
+    baseClient.get(url, {correlationId: params.correlationId}, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -238,15 +239,15 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   getChargeEvents: function (params, successCallback) {
-    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + "/events";
+    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + '/events'
     logger.debug('Calling connector to get events -', {
       service: 'connector',
       method: 'GET',
       url: url,
       chargeId: params.chargeId
-    });
-    baseClient.get(url, params, this.responseHandler(successCallback));
-    return this;
+    })
+    baseClient.get(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -258,9 +259,9 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: function (params) {
-    var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl);
-    let defer = q.defer();
-    let startTime = new Date();
+    var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let defer = q.defer()
+    let startTime = new Date()
     let context = {
       url: url,
       defer: defer,
@@ -269,14 +270,62 @@ ConnectorClient.prototype = {
       method: 'GET',
       description: 'get an account',
       service: SERVICE_NAME
-    };
+    }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context);
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter);
+      .on('error', callbackToPromiseConverter)
 
-    return defer.promise;
+    return defer.promise
+  },
+
+  /**
+   * Creates a new gateway account
+   *
+   * @param paymentProvider
+   * @param type
+   * @param description
+   * @param analyticsId
+   * @param correlationId
+   *
+   * @returns {*|Constructor|promise}
+   */
+  createGatewayAccount: function (paymentProvider, type, description, analyticsId, correlationId) {
+    const url = this.connectorUrl + ACCOUNTS_API_PATH
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'create a gateway account',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    const params = {
+      payload: {
+        payment_provider: paymentProvider
+      }
+    }
+    if (type) {
+      params.payload.type = type
+    }
+    if (description) {
+      params.payload.description = description
+    }
+    if (analyticsId) {
+      params.payload.analytics_id = analyticsId
+    }
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
   },
 
   /**
@@ -286,18 +335,18 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   patchAccountCredentials: function (params, successCallback) {
-    var url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl);
+    var url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
     logger.debug('Calling connector to get account -', {
       service: 'connector',
       method: 'PATCH',
       url: url
-    });
+    })
 
-    baseClient.patch(url, params, this.responseHandler(successCallback));
-    return this;
+    baseClient.patch(url, params, this.responseHandler(successCallback))
+    return this
   },
-  
+
   /**
    *
    * @param {Object} params
@@ -305,16 +354,16 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   postAccountNotificationCredentials: function (params, successCallback) {
-    var url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl);
+    var url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
     logger.debug('Calling connector to get account -', {
       service: 'connector',
       method: 'POST',
       url: url
-    });
+    })
 
-    baseClient.post(url, params, this.responseHandler(successCallback));
-    return this;
+    baseClient.post(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -327,14 +376,14 @@ ConnectorClient.prototype = {
    *          Callback function upon retrieving accepted cards successfully
    */
   getAcceptedCardsForAccount: function (params, successCallback) {
-    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl);
+    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
     logger.debug('Calling connector to get accepted card types for account -', {
       service: 'connector',
       method: 'GET',
       url: url
-    });
-    baseClient.get(url, params, this.responseHandler(successCallback));
-    return this;
+    })
+    baseClient.get(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -348,15 +397,15 @@ ConnectorClient.prototype = {
    *          Callback function upon saving accepted cards successfully
    */
   postAcceptedCardsForAccount: function (params, successCallback) {
-    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl);
+    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
     logger.debug('Calling connector to post accepted card types for account -', {
       service: 'connector',
       method: 'POST',
       url: url
-    });
+    })
 
-    baseClient.post(url, params, this.responseHandler(successCallback));
-    return this;
+    baseClient.post(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -368,21 +417,21 @@ ConnectorClient.prototype = {
    *          Callback function upon successful card type retrieval
    */
   getAllCardTypes: function (params, successCallback) {
-    var correlationParams = {};
-    if(typeof params === "function") {
-      successCallback = params;
+    var correlationParams = {}
+    if (typeof params === 'function') {
+      successCallback = params
     } else {
-      correlationParams = params;
+      correlationParams = params
     }
 
-    var url = _cardTypesUrlFor(this.connectorUrl);
+    var url = _cardTypesUrlFor(this.connectorUrl)
     logger.debug('Calling connector to get all card types -', {
       service: 'connector',
       method: 'GET',
       url: url
-    });
-    baseClient.get(url, params, this.responseHandler(successCallback));
-    return this;
+    })
+    baseClient.get(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -396,15 +445,15 @@ ConnectorClient.prototype = {
    *          Callback function for successful patching of service name
    */
   patchServiceName: function (params, successCallback) {
-    var url = _serviceNameUrlFor(params.gatewayAccountId, this.connectorUrl);
+    var url = _serviceNameUrlFor(params.gatewayAccountId, this.connectorUrl)
     logger.debug('Calling connector to update service name -', {
       service: 'connector',
       method: 'PATCH',
       url: url
-    });
+    })
 
-    baseClient.patch(url, params, this.responseHandler(successCallback));
-    return this;
+    baseClient.patch(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -419,17 +468,17 @@ ConnectorClient.prototype = {
    *          Callback function for successful refunds
    */
   postChargeRefund: function (params, successCallback) {
-    var url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl);
+    var url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
     logger.debug('Calling connector to post a refund for payment -', {
       service: 'connector',
       method: 'POST',
       url: url,
       chargeId: params.chargeId,
       payload: params.payload
-    });
+    })
 
-    baseClient.post(url, params, this.responseHandler(successCallback));
-    return this;
+    baseClient.post(url, params, this.responseHandler(successCallback))
+    return this
   },
 
   /**
@@ -437,11 +486,11 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  getNotificationEmail: function(params, successCallback) {
-    var url = _getNotificationEmailUrlFor(params.gatewayAccountId);
-    baseClient.get(url, params, this.responseHandler(successCallback));
+  getNotificationEmail: function (params, successCallback) {
+    var url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+    baseClient.get(url, params, this.responseHandler(successCallback))
 
-    return this;
+    return this
   },
 
   /**
@@ -449,11 +498,11 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  updateNotificationEmail: function(params, successCallback) {
-    var url = _getNotificationEmailUrlFor(params.gatewayAccountId);
-    baseClient.post(url, params, this.responseHandler(successCallback));
+  updateNotificationEmail: function (params, successCallback) {
+    var url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+    baseClient.post(url, params, this.responseHandler(successCallback))
 
-    return this;
+    return this
   },
 
   /**
@@ -461,25 +510,25 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  updateNotificationEmailEnabled: function(params, successCallback) {
-    var url = _getNotificationEmailUrlFor(params.gatewayAccountId);
-    baseClient.patch(url, params, this.responseHandler(successCallback));
+  updateNotificationEmailEnabled: function (params, successCallback) {
+    var url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+    baseClient.patch(url, params, this.responseHandler(successCallback))
 
-    return this;
+    return this
   },
 
-    /**
-     *
-     * @param {Object} params
-     * @param {Function} successCallback
-     */
-    update3dsEnabled: function(params, successCallback) {
-      var url = _getToggle3dsUrlFor(params.gatewayAccountId);
-      baseClient.patch(url, params, this.responseHandler(successCallback));
-      return this;
-    }
-};
+  /**
+   *
+   * @param {Object} params
+   * @param {Function} successCallback
+   */
+  update3dsEnabled: function (params, successCallback) {
+    var url = _getToggle3dsUrlFor(params.gatewayAccountId)
+    baseClient.patch(url, params, this.responseHandler(successCallback))
+    return this
+  }
+}
 
-util.inherits(ConnectorClient, EventEmitter);
+util.inherits(ConnectorClient, EventEmitter)
 
-module.exports.ConnectorClient = ConnectorClient;
+module.exports.ConnectorClient = ConnectorClient
