@@ -9,21 +9,17 @@ GOV.UK Pay - My services
 <h1 class="heading-large">My services</h1>
 <div class="grid-row grid-row-align-to-edges">
     <div class="column-two-thirds">
-        <p class="lede"></p>
+        <p class="lede service-count">You have {{services.length}} services</p>
     </div>
     <div class="column-one-third">
     </div>
 </div>
 <div class="marked-grid">
-    <div class="grid-row">
-        {{^services.length}}
-        <p class="admin-lede no-services">You have 0 services.</p>
-        {{/services.length}}
 
         {{#services}}
         {{>services/_service_section}}
         {{/services}}
-    </div>
+
 
 </div>
 {{/full_width_content}}

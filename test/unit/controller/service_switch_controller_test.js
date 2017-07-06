@@ -51,6 +51,10 @@ describe('service switch controller: list of accounts', function () {
               name: 'My Service 1',
               external_id: 'service-external-id-1',
               gateway_account_ids: service1gatewayAccountIds
+            },
+            role: {
+              name: 'admin',
+              permissions:[{name:'blah-blah:blah'}]
             }
           },
           {
@@ -58,6 +62,10 @@ describe('service switch controller: list of accounts', function () {
               name: 'My Service 2',
               external_id: 'service-external-id-2',
               gateway_account_ids: service2gatewayAccountIds
+            },
+            role: {
+              name: 'admin',
+              permissions:[{name:'blah-blah:blah'}]
             }
           },
           {
@@ -65,6 +73,10 @@ describe('service switch controller: list of accounts', function () {
               name: 'System Generated',
               external_id: 'service-external-id-3',
               gateway_account_ids: service3gatewayAccountIds
+            },
+            role: {
+              name: 'admin',
+              permissions:[{name:'blah-blah:blah'}]
             }
           }]
       }).getAsObject(),
@@ -86,6 +98,7 @@ describe('service switch controller: list of accounts', function () {
 
       expect(path).to.equal('services/index');
       expect(renderData.navigation).to.equal(false);
+
       expect(renderData.services.map(service => service.name)).to.have.lengthOf(3).and.to.include('My Service 1', 'My Service 2', '');
 
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5');

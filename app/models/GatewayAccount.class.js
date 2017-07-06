@@ -17,6 +17,7 @@ class GatewayAccount {
    * @param {string} gatewayAccountData.gateway_account_id - The external ID of the gateway account
    * @param {string} gatewayAccountData.service_name - The name of the gateway account
    * @param {string} gatewayAccountData.type - The type of the gateway account
+   * @param {string} gatewayAccountData.payment_provider - The payment provider of the gateway account
    * @param {string} gatewayAccountData.description - The description of the gateway account
    * @param {string} gatewayAccountData.analytics_id - Google analytics_id of the gateway account
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
@@ -25,6 +26,7 @@ class GatewayAccount {
     this.id = gatewayAccountData.gateway_account_id;
     this.name = gatewayAccountData.service_name;
     this.type = gatewayAccountData.type;
+    this.paymentProvider = gatewayAccountData.payment_provider;
     this.description = gatewayAccountData.description;
     this.analyticsId = gatewayAccountData.analytics_id;
     this.toggle3ds = gatewayAccountData.toggle_3ds;
@@ -37,6 +39,7 @@ class GatewayAccount {
   toMinimalJson() {
     return {
       id: this.id,
+      payment_provider: this.paymentProvider,
       service_name: this.name,
       type: this.type
     }

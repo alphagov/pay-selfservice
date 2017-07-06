@@ -1,4 +1,5 @@
 let _ = require('lodash');
+const getHeldPermissions = require('./get_held_permissions');
 
 const hideNavBarTemplates = [
   'services/index',
@@ -32,18 +33,16 @@ const hideNavBarTemplates = [
  * @returns {object}
  */
 const getPermissions = (user, service) => {
-  let permissionMap = {};
+
   if (service) {
     let userPermissions;
     const permissionsForService = user.getPermissionsForService(service.externalId);
     if (user && permissionsForService) {
       userPermissions = _.clone(permissionsForService);
-      _.forEach(userPermissions, x => {
-        permissionMap[x.replace(/[-:]/g, '_')] = true;
-      });
+      return getHeldPermissions(userPermissions);
     }
   }
-  return permissionMap;
+
 };
 
 const showNavigationBar = template => {

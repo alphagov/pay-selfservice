@@ -108,7 +108,7 @@ describe('The account switcher link', () => {
 
     body = render('services/index', templateData);
 
-    body.should.containSelector('p.no-services').withText('You have 0 services')
+    body.should.containSelector('p.service-count').withText('You have 0 services')
   });
 
 

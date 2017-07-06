@@ -5,6 +5,7 @@ const logger = require('winston');
 const paths = require('../paths');
 const responses = require('../utils/response');
 const serviceService = require('../services/service_service');
+const getHeldPermissions = require('../utils/get_held_permissions');
 
 const successResponse = responses.response;
 
@@ -13,7 +14,7 @@ const validAccountId = (accountId, user) => {
   return accountId && gatewayAccountIds.indexOf(accountId) !== -1
 };
 
-const displayNameOf = (service) => service.name === 'System Generated' ? '' : service.name;
+const displayNameOf = (service) => service.name === 'System Generated' ? 'Temporary Service Name' : service.name;
 
 module.exports = {
   /**
@@ -32,7 +33,8 @@ module.exports = {
           defer.resolve({
             name: displayNameOf(serviceRole.service),
             external_id: serviceRole.service.externalId,
-            gateway_accounts: accounts
+            gateway_accounts: accounts,
+            permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
           })
         })
         .catch(() => defer.reject());
