@@ -56,6 +56,10 @@ module.exports = {
         req.register_invite.telephone_number = invite.telephone_number;
       }
 
+      if (invite.email) {
+        req.register_invite.email = invite.email
+      }
+
       switch(invite.type) {
         case 'user':
           req.register_invite.email = invite.email;
