@@ -23,9 +23,9 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
-      .withAttribute('href', paths.credentials.edit)
-      .withText('Edit credentials')
+        .withAttribute('class', 'button')
+        .withAttribute('href', paths.credentials.edit)
+        .withText('Edit credentials')
 
     body.should.containSelector('dl#credentials')
 
@@ -77,9 +77,9 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
-      .withAttribute('href', paths.credentials.edit)
-      .withText('Edit credentials')
+        .withAttribute('class', 'button')
+        .withAttribute('href', paths.credentials.edit)
+        .withText('Edit credentials')
 
     body.should.containSelector('dl#credentials')
 
@@ -116,9 +116,9 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('h4#view-notification-title').withExactText('Your Smartpay Notification Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
-      .withAttribute('href', paths.credentials.edit)
-      .withText('Edit credentials')
+        .withAttribute('class', 'button')
+        .withAttribute('href', paths.credentials.edit)
+        .withText('Edit credentials')
 
     body.should.containSelector('dl#credentials')
 
@@ -152,9 +152,9 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('h4#view-title').withExactText('Your ePDQ Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
-      .withAttribute('href', paths.credentials.edit)
-      .withText('Edit credentials')
+        .withAttribute('class', 'button')
+        .withAttribute('href', paths.credentials.edit)
+        .withText('Edit credentials')
 
     body.should.containSelector('dl#credentials')
 
@@ -242,22 +242,22 @@ describe('The credentials view in edit mode', function () {
     body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials')
 
     body.should.containSelector('form#credentials-form')
-      .withAttribute('method', 'post')
-      .withAttribute('action', paths.credentials.create)
+        .withAttribute('method', 'post')
+        .withAttribute('action', paths.credentials.create)
 
     body.should.not.containSelector('a#edit-credentials-link')
 
     body.should.containInputField('merchantId', 'text')
-      .withAttribute('value', 'a-merchant-id')
-      .withLabel('Merchant ID')
+        .withAttribute('value', 'a-merchant-id')
+        .withLabel('Merchant ID')
 
     body.should.containInputField('username', 'text')
-      .withAttribute('value', 'a-username')
-      .withLabel('Username')
+        .withAttribute('value', 'a-username')
+        .withLabel('Username')
 
     body.should.containInputField('password', 'password')
-      .withAttribute('value', '')
-      .withLabel('Password')
+        .withAttribute('value', '')
+        .withLabel('Password')
 
     body.should.containInputField('submitCredentials', 'submit')
   })
@@ -282,22 +282,22 @@ describe('The credentials view in edit mode', function () {
     body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials')
 
     body.should.containSelector('form#credentials-form')
-      .withAttribute('method', 'post')
-      .withAttribute('action', paths.credentials.create)
+        .withAttribute('method', 'post')
+        .withAttribute('action', paths.credentials.create)
 
     body.should.not.containSelector('a#edit-credentials-link')
 
     body.should.containInputField('merchantId', 'text')
-      .withAttribute('value', 'a-merchant-id')
-      .withLabel('Merchant ID')
+        .withAttribute('value', 'a-merchant-id')
+        .withLabel('Merchant ID')
 
     body.should.containInputField('username', 'text')
-      .withAttribute('value', 'a-username')
-      .withLabel('Username')
+        .withAttribute('value', 'a-username')
+        .withLabel('Username')
 
     body.should.containInputField('password', 'password')
-      .withAttribute('value', '')
-      .withLabel('Password')
+        .withAttribute('value', '')
+        .withLabel('Password')
 
     body.should.containInputField('submitCredentials', 'submit')
   })
@@ -322,30 +322,30 @@ describe('The credentials view in edit mode', function () {
     body.should.containSelector('h4#view-title').withExactText('Your ePDQ Credentials')
 
     body.should.containSelector('form#credentials-form')
-      .withAttribute('method', 'post')
-      .withAttribute('action', paths.credentials.create)
+        .withAttribute('method', 'post')
+        .withAttribute('action', paths.credentials.create)
 
     body.should.not.containSelector('a#edit-credentials-link')
 
     body.should.containInputField('merchantId', 'text')
-      .withAttribute('value', 'a-psp-id')
-      .withLabel('PSP ID')
+        .withAttribute('value', 'a-psp-id')
+        .withLabel('PSP ID')
 
     body.should.containInputField('username', 'text')
-      .withAttribute('value', 'a-username')
-      .withLabel('Username')
+        .withAttribute('value', 'a-username')
+        .withLabel('Username')
 
     body.should.containInputField('password', 'password')
-      .withAttribute('value', '')
-      .withLabel('Password')
+        .withAttribute('value', '')
+        .withLabel('Password')
 
     body.should.containInputField('shaInPassphrase', 'password')
-      .withAttribute('value', '')
-      .withLabel('SHA-IN passphrase')
+        .withAttribute('value', '')
+        .withLabel('SHA-IN passphrase')
 
     body.should.containInputField('shaOutPassphrase', 'password')
-      .withAttribute('value', '')
-      .withLabel('SHA-OUT passphrase')
+        .withAttribute('value', '')
+        .withLabel('SHA-OUT passphrase')
 
     body.should.containInputField('submitCredentials', 'submit')
   })

@@ -3,7 +3,6 @@ const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
 var logger = require('winston')
 var _ = require('lodash')
-
 var response = require('../utils/response.js').response
 var errorView = require('../utils/response.js').renderErrorView
 var ConnectorClient = require('../services/clients/connector_client').ConnectorClient
@@ -138,6 +137,16 @@ module.exports = {
     })
     var accountId = auth.getCurrentGatewayAccountId(req)
     var connectorUrl = process.env.CONNECTOR_URL + '/v1/frontend/accounts/{accountId}/credentials'
+    var requestPayload = {
+      credentials: {
+        username: req.body.username,
+        password: req.body.password
+      }
+    }
+
+    if ('merchantId' in req.body) {
+      requestPayload.credentials.merchant_id = req.body.merchantId
+    }
 
     logger.info('Calling connector to update provider credentials -', {
       service: 'connector',

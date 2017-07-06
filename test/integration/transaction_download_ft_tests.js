@@ -139,7 +139,6 @@ describe('Transaction download endpoints', function () {
     it('should show error message on a bad request', function (done) {
       var errorMessage = 'Unable to download list of transactions.'
       connectorMockResponds(400, {'message': errorMessage}, {})
-
       downloadTransactionList()
         .expect(500, {'message': 'Internal server error'})
         .end(done)
