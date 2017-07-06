@@ -6,7 +6,8 @@ const paths = require(__dirname + '/../paths.js');
 module.exports = {
 
   /**
-   * submit the user details for self registration of a service
+   * Submit the user details for self registration of a service
+   *
    * @param email
    * @param phoneNumber
    * @param password
@@ -18,13 +19,24 @@ module.exports = {
 
 
   /**
-   * submit otp code for verification
+   * Submit otp code for verification
+   *
    * @param code
    * @param otpCode
    * @param correlationId
    */
   submitServiceInviteOtpCode: function (code, otpCode, correlationId) {
     return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode);
-  }
+  },
 
+  /**
+   * Resend otp code
+   *
+   * @param code
+   * @param phoneNumber
+   * @param correlationId
+   */
+  resendOtpCode: function (code, phoneNumber, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber);
+  }
 };

@@ -73,7 +73,7 @@ describe('Self-create service view', function () {
 
     const telephoneNumber = '07812345678'
     const templateData = {
-      telephone_number: telephoneNumber
+      telephoneNumber: telephoneNumber
     }
 
     const body = renderTemplate('self_create_service/resend_otp', templateData)
