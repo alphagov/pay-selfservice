@@ -9,10 +9,9 @@ const paths = require('../paths')
 const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const registrationService = require('../services/service_registration_service')
-const validations = require('../utils/registration_validations')
+const {validateServiceRegistrationInputs, validateOtp} = require('../utils/registration_validations')
 
 // Constants
-const validateRegistrationInputs = validations.validateServiceRegistrationInputs
 const serviceRegistrationEnabled = process.env.SERVICE_REGISTRATION_ENABLED === 'true'
 
 module.exports = {
@@ -90,7 +89,7 @@ module.exports = {
     }
 
     if (serviceRegistrationEnabled) {
-      return validateRegistrationInputs(email, telephoneNumber, password)
+      return validateServiceRegistrationInputs(email, telephoneNumber, password)
         .then(proceedToRegistration)
         .catch(
           (err) => handleError(err))
@@ -134,13 +133,7 @@ module.exports = {
     const code = req.register_invite.code
     const otpCode = req.body['verify-code']
 
-    const handleInvalidOtp = (message) => {
-      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`)
-      req.flash('genericError', message)
-      res.redirect(303, paths.selfCreateService.otpVerify)
-    }
-
-    const handleError = (req, res, err) => {
+    const handleServerError = (err) => {
       logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
       switch (err.errorCode) {
         case 401:
@@ -157,15 +150,24 @@ module.exports = {
       }
     }
 
-    const validateServiceOtpCode = (code, otpCode) => {
-      registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
-        .then(() => res.send(200))
-        .catch(
-          (err) => handleError(req, res, err)
-        )
+    const handleInvalidOtp = (message) => {
+      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`)
+      req.flash('genericError', message)
+      res.redirect(303, paths.selfCreateService.otpVerify)
     }
 
-    return validateServiceOtpCode(code, otpCode)
+    const handleError = (err) => {
+      if (err.errorCode) {
+        handleServerError(err)
+      } else {
+        handleInvalidOtp(err)
+      }
+    }
+
+    return validateOtp(otpCode)
+        .then(() => registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId))
+        .then(() => res.send(200))
+        .catch(err => handleError(err))
   },
 
   /**
