@@ -25,7 +25,7 @@ describe('Self-create service view', function () {
 
     let email = 'bob@example.com';
     let templateData = {
-      requester_email: email
+      requesterEmail: email
     };
 
     let body = renderTemplate('self_create_service/confirm', templateData);

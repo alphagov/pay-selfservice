@@ -1,15 +1,16 @@
 'use strict';
 
 const nock = require('nock');
-const session = require(__dirname + '/../test_helpers/mock_session.js');
-const getApp = require(__dirname + '/../../server.js').getApp;
+const session = require('../../test_helpers/mock_session');
+const getApp = require('../../../server').getApp;
 const csrf = require('csrf');
 const supertest = require('supertest');
-const inviteFixtures = require(__dirname + '/../fixtures/invite_fixtures');
-const paths = require(__dirname + '/../../app/paths.js');
+const inviteFixtures = require('../../fixtures/invite_fixtures');
+const paths = require('../../../app/paths');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const adminusersMock = nock(process.env.ADMINUSERS_URL);
+const SERVICE_INVITE_RESOURCE = '/v1/api/invites/service';
 const SERVICE_INVITE_OTP_RESOURCE = '/v1/api/invites/otp/validate/service';
 
 let app;

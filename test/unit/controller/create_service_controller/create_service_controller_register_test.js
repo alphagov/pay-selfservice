@@ -5,7 +5,7 @@ const chai = require('chai');
 
 const expect = chai.expect;
 
-const paths = require('../../../app/paths.js');
+const paths = require('../../../../app/paths.js');
 
 describe('Error handler register service', function () {
 
@@ -54,7 +54,7 @@ describe('Error handler register service', function () {
   });
 
   const controller = function (error) {
-    return proxyquire(__dirname + '/../../../app/controllers/create_service_controller.js',
+    return proxyquire('../../../../app/controllers/create_service_controller.js',
       {
         '../services/service_registration_service': {
           submitRegistration: () => {
@@ -67,6 +67,22 @@ describe('Error handler register service', function () {
       });
   };
 
+  it('should handle 400 as 303 redirect to index', function (done) {
+    email = 'be@mail.com';
+    const errorMessage = `Invalid input`;
+    const error = {
+      errorCode: 400,
+      message: {
+        errors: errorMessage
+      }
+    };
+
+    controller(error).submitRegistration(req, res).should.be.fulfilled
+      .then(() => {
+        expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true);
+        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true);
+      }).should.notify(done);
+  });
 
   it('should handle 403 as 303 redirect to index', function (done) {
     email = 'be@mail.com';
@@ -81,7 +97,24 @@ describe('Error handler register service', function () {
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
         expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true);
-        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.eq(true);
+        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true);
+      }).should.notify(done);
+  });
+
+  it('should handle 409 as 303 redirect to index', function (done) {
+    email = 'be@mail.com';
+    const errorMessage = `email [${email}] already exists`;
+    const error = {
+      errorCode: 409,
+      message: {
+        errors: errorMessage
+      }
+    };
+
+    controller(error).submitRegistration(req, res).should.be.fulfilled
+      .then(() => {
+        expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true);
+        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true);
       }).should.notify(done);
   });
 
@@ -92,7 +125,7 @@ describe('Error handler register service', function () {
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
         expect(flashStub.calledWith('genericError', error)).to.equal(true);
-        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.eq(true);
+        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true);
       }).should.notify(done);
   });
 
@@ -110,7 +143,7 @@ describe('Error handler register service', function () {
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
         expect(statusStub.calledWith(errorCode)).to.eq(true);
-        expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.eq(true);
+        expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.equal(true);
       }).should.notify(done);
   });
 });

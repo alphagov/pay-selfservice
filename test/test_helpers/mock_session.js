@@ -33,8 +33,10 @@ var getUser = (opts) => {
     return createAppWithSession(app, {csrfSecret: "123"}, {}, registerInviteData);
   },
 
-  getAppWithLoggedOutSession = function (app) {
-    return createAppWithSession(app, {csrfSecret: "123"}, {});
+  getAppWithLoggedOutSession = function (app, session) {
+    session = session || {};
+    session.csrfSecret = "123";
+    return createAppWithSession(app, session, {});
   },
 
   getAppWithSessionWithoutSecondFactor = function (app, user) {

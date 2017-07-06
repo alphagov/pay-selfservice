@@ -10,9 +10,7 @@ function validPassword() {
 }
 module.exports = {
 
-
   validRegisterRequest: (opts = {}) => {
-
     const register = "random@example.com";
 
     const data = {
@@ -26,13 +24,12 @@ module.exports = {
         return pactRegister.pactify(data);
       },
       getPlain: () => {
-        return data;
+        return _.clone(data);
       }
     };
   },
 
   invalidEmailRegisterRequest: (opts = {}) => {
-
     const data = {
       email: opts.email || '',
       telephone_number: opts.telephone_number || '07912345678',
@@ -44,7 +41,7 @@ module.exports = {
         return pactRegister.pactify(data);
       },
       getPlain: () => {
-        return data;
+        return _.clone(data);
       }
     };
   },

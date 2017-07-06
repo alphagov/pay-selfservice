@@ -21,11 +21,11 @@ module.exports = {
   showRegistration: (req, res) => {
     if (serviceRegistrationEnabled) {
       const email = _.get(req, 'session.pageData.submitRegistration.email', '');
-      const telephone_number = _.get(req, 'session.pageData.submitRegistration.telephone_number', '');
+      const telephoneNumber = _.get(req, 'session.pageData.submitRegistration.telephoneNumber', '');
       _.unset(req, 'session.pageData.submitRegistration');
       res.render('self_create_service/register', {
         email,
-        telephone_number
+        telephoneNumber
       });
     } else {
       errorResponse(req, res, 'Invalid route', 404);
@@ -44,29 +44,32 @@ module.exports = {
     const telephoneNumber = req.body['telephone-number'];
     const password = req.body['password'];
 
-    const handleErrorCode = (err) => {
-      _.set(req, 'session.pageData.submitRegistration', {
-        email,
-        telephone_number: telephoneNumber
-      });
-
-      if (err.errorCode === 403) {
-        logger.debug(`[requestId=${correlationId}] invalid user input - 403`);
-        const error = (err.message && err.message.errors) ? err.message.errors : 'Invalid input';
-        req.flash('genericError', error);
-        res.redirect(303, paths.selfCreateService.register);
+    const handleServerError = (err) => {
+      if ((err.errorCode === 400) ||
+        (err.errorCode === 403) ||
+        (err.errorCode === 409)) {
+          const error = (err.message && err.message.errors) ? err.message.errors : 'Invalid input';
+          handleInvalidUserInput(error);
       } else {
         errorResponse(req, res, 'Unable to process registration at this time', err.errorCode);
       }
     };
 
+    const handleInvalidUserInput = (err) => {
+      _.set(req, 'session.pageData.submitRegistration', {
+        email,
+        telephoneNumber
+      });
+      logger.debug(`[requestId=${correlationId}] invalid user input`);
+      req.flash('genericError', err);
+      res.redirect(303, paths.selfCreateService.register);
+    }
+
     const handleError = (err) => {
       if (err.errorCode) {
-        handleErrorCode(err);
+        handleServerError(err);
       } else {
-        logger.debug(`[requestId=${correlationId}] invalid user input`);
-        req.flash('genericError', err);
-        res.redirect(303, paths.selfCreateService.register);
+        handleInvalidUserInput(err);
       }
     };
 
@@ -74,7 +77,8 @@ module.exports = {
       registrationService.submitRegistration(email, telephoneNumber, password, correlationId)
         .then(() => {
           _.set(req, 'session.pageData.submitRegistration', {
-            requesterEmail: email
+            email,
+            telephoneNumber
           });
           res.redirect(303, paths.selfCreateService.confirm);
         }).catch((err) => handleError(err));
@@ -97,10 +101,10 @@ module.exports = {
    * @param res
    */
   showConfirmation: (req, res) => {
-    const requester_email = _.get(req, 'session.pageData.submitRegistration.requesterEmail', '');
+    const requesterEmail = _.get(req, 'session.pageData.submitRegistration.email', '');
     _.unset(req, 'session.pageData.submitRegistration');
     res.render('self_create_service/confirm', {
-      requester_email
+      requesterEmail
     });
   },
 
