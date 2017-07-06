@@ -31,7 +31,7 @@ describe('create service otp validation', function () {
     done()
   })
 
-  describe('get otp verify page', function() {
+  describe('get otp verify page', function () {
     it('should return an error when register_invite cookie not present', function (done) {
       app = session.getAppWithLoggedOutSession(getApp())
       supertest(app)
@@ -41,7 +41,7 @@ describe('create service otp validation', function () {
     })
   })
 
-  describe('post to otp verify page', function() {
+  describe('post to otp verify page', function () {
     it('should return 200 when user submits valid otp code', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
@@ -63,7 +63,6 @@ describe('create service otp validation', function () {
         .expect(200)
         .end(done)
     })
-
 
     it('should return error when register_invite cookie not present', function (done) {
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()

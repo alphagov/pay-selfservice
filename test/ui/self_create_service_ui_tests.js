@@ -1,8 +1,14 @@
 'use strict'
 
-const should = require('chai').should()
-const renderTemplate = require('../test_helpers/html_assertions.js').render
-const paths = require('../../app/paths.js')
+// NPM dependencies
+const chai = require('chai')
+
+// Custom dependencies
+const renderTemplate = require('../test_helpers/html_assertions').render
+const paths = require('../../app/paths')
+
+// Constants
+const should = chai.should()
 
 describe('Self-create service view', function () {
 

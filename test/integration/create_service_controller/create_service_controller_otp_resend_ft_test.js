@@ -31,7 +31,7 @@ describe('create service otp resend validation', function () {
     done()
   })
 
-  describe('get otp resend page', function() {
+  describe('get otp resend page', function () {
     it('should return an error when register_invite cookie not present', function (done) {
       app = mockSession.getAppWithLoggedOutSession(getApp())
       supertest(app)
@@ -41,7 +41,7 @@ describe('create service otp resend validation', function () {
     })
   })
 
-  describe('post to otp resend page', function() {
+  describe('post to otp resend page', function () {
     it('should redirect to otp verify page on valid telephone number submission', function (done) {
       const validServiceInviteOtpResendRequestPlain = inviteFixtures.validResendOtpCodeRequest().getPlain()
       const registerInviteData = {

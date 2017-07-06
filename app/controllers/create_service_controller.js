@@ -165,9 +165,9 @@ module.exports = {
     }
 
     return validateOtp(otpCode)
-        .then(() => registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId))
-        .then(() => res.send(200))
-        .catch(err => handleError(err))
+      .then(() => registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId))
+      .then(() => res.send(200))
+      .catch(err => handleError(err))
   },
 
   /**
@@ -205,11 +205,11 @@ module.exports = {
     const resendOtpAndProceedToVerify = () => {
       registrationService.resendOtpCode(code, telephoneNumber, correlationId)
         .then(() => {
-          req.register_invite.telephone_number = telephoneNumber;
-          res.redirect(303, paths.selfCreateService.otpVerify);
+          req.register_invite.telephone_number = telephoneNumber
+          res.redirect(303, paths.selfCreateService.otpVerify)
         })
         .catch(err => handleServerError(req, res, err))
-    };
+    }
 
     return validateRegistrationTelephoneNumber(telephoneNumber)
       .then(resendOtpAndProceedToVerify)
