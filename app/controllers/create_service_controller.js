@@ -9,6 +9,7 @@ const paths = require('../paths')
 const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const registrationService = require('../services/service_registration_service')
+const loginController = require('../controllers/login_controller')
 const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateOtp} = require('../utils/registration_validations')
 
 // Constants
@@ -91,8 +92,7 @@ module.exports = {
     if (serviceRegistrationEnabled) {
       return validateServiceRegistrationInputs(email, telephoneNumber, password)
         .then(proceedToRegistration)
-        .catch(
-          (err) => handleError(err))
+        .catch(err => handleError(err))
     } else {
       return errorResponse(req, res, 'Invalid route', 404)
     }
@@ -128,7 +128,7 @@ module.exports = {
    * @param req
    * @param res
    */
-  submitOtpVerify: (req, res) => {
+  submitOtpVerify: (req, res, next) => {
     const correlationId = req.correlationId
     const code = req.register_invite.code
     const otpCode = req.body['verify-code']
@@ -156,18 +156,44 @@ module.exports = {
       res.redirect(303, paths.selfCreateService.otpVerify)
     }
 
-    const handleError = (err) => {
-      if (err.errorCode) {
-        handleServerError(err)
-      } else {
-        handleInvalidOtp(err)
-      }
-    }
-
     return validateOtp(otpCode)
       .then(() => registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId))
-      .then(() => res.send(200))
-      .catch(err => handleError(err))
+      .then(next)
+      .catch(err => {
+        if (err.errorCode) {
+          handleServerError(err)
+        } else {
+          handleInvalidOtp(err)
+        }
+      })
+  },
+
+  /**
+   * Orchestration logic
+   *
+   * @param req
+   * @param res
+   * @returns {*|Promise|Promise.<T>}
+   */
+  createPopulatedService: (req, res) => {
+    const correlationId = req.correlationId
+    const email = req.register_invite.email
+    const phoneNumber = req.register_invite.telephone_number
+    const role = 'admin'
+
+    return registrationService.createPopulatedService({email, role, phoneNumber}, correlationId)
+      .then(user => {
+        loginController.setupDirectLoginAfterRegister(req, res, user)
+        res.redirect(303, paths.selfCreateService.serviceNaming)
+      })
+      .catch(err => {
+        if (err.errorCode === 409) {
+          const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
+          errorResponse(req, res, error, err.errorCode)
+        } else {
+          errorResponse(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+        }
+      })
   },
 
   /**
@@ -193,22 +219,20 @@ module.exports = {
     const code = req.register_invite.code
     const telephoneNumber = req.body['telephone-number']
 
-    const handleServerError = (err) => {
-      logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
-      if (err.errorCode === 404) {
-        errorResponse(req, res, 'Unable to process registration at this time', 404)
-      } else {
-        errorResponse(req, res, 'Unable to process registration at this time', 500)
-      }
-    }
-
     const resendOtpAndProceedToVerify = () => {
       registrationService.resendOtpCode(code, telephoneNumber, correlationId)
         .then(() => {
           req.register_invite.telephone_number = telephoneNumber
           res.redirect(303, paths.selfCreateService.otpVerify)
         })
-        .catch(err => handleServerError(req, res, err))
+        .catch(err => {
+          logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
+          if (err.errorCode === 404) {
+            errorResponse(req, res, 'Unable to process registration at this time', 404)
+          } else {
+            errorResponse(req, res, 'Unable to process registration at this time', 500)
+          }
+        })
     }
 
     return validateRegistrationTelephoneNumber(telephoneNumber)

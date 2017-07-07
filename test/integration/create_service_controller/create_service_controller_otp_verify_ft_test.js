@@ -11,11 +11,18 @@ const chaiAsPromised = require('chai-as-promised')
 const session = require('../../test_helpers/mock_session')
 const getApp = require('../../../server').getApp
 const inviteFixtures = require('../../fixtures/invite_fixtures')
+const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
+const serviceFixtures = require('../../fixtures/service_fixtures')
+const userFixtures = require('../../fixtures/user_fixtures')
 const paths = require('../../../app/paths')
 
 // Constants
 const SERVICE_INVITE_OTP_RESOURCE = '/v1/api/invites/otp/validate/service'
+const CONNECTOR_CREATE_ACCOUNT_URL = '/v1/api/accounts'
+const ADMINUSER_CREATE_SERVICE_URL = '/v1/api/services'
+const ADMINUSER_CREATE_USER_URL = '/v1/api/users'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
+const connectorMock = nock(process.env.CONNECTOR_URL)
 const expect = chai.expect
 
 // Global setup
@@ -35,17 +42,34 @@ describe('create service otp validation', function () {
     it('should return an error when register_invite cookie not present', function (done) {
       app = session.getAppWithLoggedOutSession(getApp())
       supertest(app)
-        .get('/create-service/verify-otp')
+        .get(paths.selfCreateService.otpVerify)
         .expect(404)
         .end(done)
     })
   })
 
   describe('post to otp verify page', function () {
-    it('should return 200 when user submits valid otp code', function (done) {
+    it('should redirect to service naming page when user submits valid otp code', function (done) {
+      const gatewayAccountId = '1'
+
+      const connectorCreateGatewayAccountResponse =
+        gatewayAccountFixtures.validCreateGatewayAccountResponse({gateway_account_id: gatewayAccountId}).getPlain()
+      const adminUserServiceCreateResponse = serviceFixtures.validCreateServiceResponse()
+      const minimalUser = userFixtures.validMinimalUser().getPlain()
+      minimalUser.username = minimalUser.email
+      const adminUserCreateUserResponse = userFixtures.validUserResponse(minimalUser).getPlain()
+
+      connectorMock.post(CONNECTOR_CREATE_ACCOUNT_URL)
+        .reply(201, connectorCreateGatewayAccountResponse)
+      adminusersMock.post(ADMINUSER_CREATE_SERVICE_URL, {gateway_account_ids: [gatewayAccountId]})
+        .reply(201, adminUserServiceCreateResponse)
+      adminusersMock.post(ADMINUSER_CREATE_USER_URL)
+        .reply(201, adminUserCreateUserResponse)
+
       const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
       const registerInviteData = {
         code: validServiceInviteOtpRequest.getPlain().code,
+        telephone_number: '07451234567',
         email: 'bob@bob.com'
       }
 
@@ -54,13 +78,14 @@ describe('create service otp validation', function () {
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
       supertest(app)
-        .post('/create-service/verify-otp')
+        .post(paths.selfCreateService.otpVerify)
         .send({
           code: validServiceInviteOtpRequest.getPlain().code,
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,
           csrfToken: csrf().create('123'),
         })
-        .expect(200)
+        .expect(303)
+        .expect('Location', paths.selfCreateService.serviceNaming)
         .end(done)
     })
 
@@ -69,7 +94,7 @@ describe('create service otp validation', function () {
 
       app = session.getAppWithLoggedOutSession(getApp())
       supertest(app)
-        .post('/create-service/verify-otp')
+        .post(paths.selfCreateService.otpVerify)
         .send({
           code: validServiceInviteOtpRequest.getPlain().code,
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,
@@ -91,7 +116,7 @@ describe('create service otp validation', function () {
 
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
       supertest(app)
-        .post('/create-service/verify-otp')
+        .post(paths.selfCreateService.otpVerify)
         .send({
           code: validServiceInviteOtpRequest.getPlain().code,
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,

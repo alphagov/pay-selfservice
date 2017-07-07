@@ -108,10 +108,10 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
   app.get(selfCreateService.confirm, selfCreateServiceCtrl.showConfirmation)
   app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
-  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpVerify)
+  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpVerify, selfCreateServiceCtrl.createPopulatedService)
   app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
   app.post(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
-  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.showNameYourService)
+  app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
 
   // ----------------------
   // AUTHENTICATED ROUTES

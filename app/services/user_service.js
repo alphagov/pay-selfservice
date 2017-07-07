@@ -143,6 +143,20 @@ module.exports = {
    * @param userId
    */
   delete: function (serviceId, removerId, userId, correlationId) {
-      return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+    return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+  },
+
+  /**
+   * Submit create user
+   *
+   * @param email
+   * @param gatewayAccountIds
+   * @param serviceIds
+   * @param role
+   * @param phoneNumber
+   * @param correlationId
+   */
+  createUser: function (email, gatewayAccountIds, serviceIds, role, phoneNumber, correlationId) {
+    return getAdminUsersClient({correlationId}).createUser(email, gatewayAccountIds, serviceIds, role, phoneNumber)
   }
 };
