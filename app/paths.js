@@ -84,8 +84,8 @@ module.exports = {
     logUserIn:'/proceed-to-login'
   },
   selfCreateService: {
-    index: '/create-service',
-    creationConfirmed: '/create-service/confirmation',
+    register: '/create-service/register',
+    confirm: '/create-service/confirm',
     otpVerify: '/create-service/verify-otp',
     serviceNaming: '/service/set-name',
     otpResend: '/create-service/resend-otp'
