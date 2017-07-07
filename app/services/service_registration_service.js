@@ -1,30 +1,42 @@
-'use strict';
+'use strict'
 
-const getAdminUsersClient = require('./clients/adminusers_client');
-const paths = require(__dirname + '/../paths.js');
+// Custom dependencies
+const getAdminUsersClient = require('./clients/adminusers_client')
+const paths = require(__dirname + '/../paths')
 
 module.exports = {
 
   /**
-   * submit the user details for self registration of a service
+   * Submit the user details for self registration of a service
+   *
    * @param email
    * @param phoneNumber
    * @param password
    * @param correlationId
    */
   submitRegistration: function (email, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).submitServiceRegistration(email, phoneNumber, password);
+    return getAdminUsersClient({correlationId: correlationId}).submitServiceRegistration(email, phoneNumber, password)
   },
 
-
   /**
-   * submit otp code for verification
+   * Submit otp code for verification
+   *
    * @param code
    * @param otpCode
    * @param correlationId
    */
   submitServiceInviteOtpCode: function (code, otpCode, correlationId) {
-    return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode);
-  }
+    return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode)
+  },
 
-};
+  /**
+   * Resend otp code
+   *
+   * @param code
+   * @param phoneNumber
+   * @param correlationId
+   */
+  resendOtpCode: function (code, phoneNumber, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber)
+  }
+}
