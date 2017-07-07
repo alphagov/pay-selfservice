@@ -1,8 +1,14 @@
 'use strict'
 
-const should = require('chai').should()
-const renderTemplate = require('../test_helpers/html_assertions.js').render
-const paths = require('../../app/paths.js')
+// NPM dependencies
+const chai = require('chai')
+
+// Custom dependencies
+const renderTemplate = require('../test_helpers/html_assertions').render
+const paths = require('../../app/paths')
+
+// Constants
+const should = chai.should()
 
 describe('Self-create service view', function () {
 
@@ -73,7 +79,7 @@ describe('Self-create service view', function () {
 
     const telephoneNumber = '07812345678'
     const templateData = {
-      telephone_number: telephoneNumber
+      telephoneNumber: telephoneNumber
     }
 
     const body = renderTemplate('self_create_service/resend_otp', templateData)

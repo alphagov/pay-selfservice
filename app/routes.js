@@ -19,6 +19,7 @@ const getAccount = require('./middleware/get_gateway_account')
 const hasServices = require('./middleware/has_services')
 const trimUsername = require('./middleware/trim_username')
 const permission = require('./middleware/permission')
+const validateRegistrationInviteCookie = require('./middleware/validate_registration_invite_cookie')
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -106,10 +107,11 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration)
   app.post(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
   app.get(selfCreateService.confirm, selfCreateServiceCtrl.showConfirmation)
-  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpVerify)
-  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitOtpVerify)
+  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
+  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpVerify)
+  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
+  app.post(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
   app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.showNameYourService)
-  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showOtpResend)
 
   // ----------------------
   // AUTHENTICATED ROUTES
