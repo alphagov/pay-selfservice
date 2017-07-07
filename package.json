@@ -25,8 +25,7 @@
     "start": "node_modules/forever/bin/forever --minUptime 1000 --spinSleepTime 500 start.js",
     "stop": "node_modules/forever/bin/forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
-    "test": "npm run lint && npm run grunt-test",
-    "lint": "node ./node_modules/.bin/jshint --verbose ./app/*.js",
+    "test": "npm run grunt-test",
     "grunt-test": "node ./node_modules/.bin/grunt test",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect"
