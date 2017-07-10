@@ -5,14 +5,14 @@ div.pagination {
   .paginationForm {
     float: left;
 
-    button[type='submit'] {
-      background: inherit;
+    button[type="submit"] {
+      padding: .5em 1em;
       border: 1px solid $border-colour;
-      border-right: none;
-      padding: 0.5em 1em;
-      vertical-align: middle;
+      border-right: 0;
       color: $link-colour;
+      background: inherit;
       font-size: 12px;
+      vertical-align: middle;
       cursor: pointer;
 
       &:hover {
@@ -35,29 +35,29 @@ div.pagination {
       }
     }
 
-    &:last-child button[type='submit'] {
+    &:last-child button[type="submit"] {
       border: 1px solid $border-colour;
     }
 
-    /* Buttons for the next or previous set or either end of the whole lot */
-    &.first button[type='submit']:before {
-      content:"\00AB";
-      margin-right: 0.25em;
+    // Buttons for the next or previous set or either end of the whole lot
+    &.first button[type="submit"]:before {
+      content: "\00AB";
+      margin-right: .25em;
     }
 
-    &.previous button[type='submit']:before {
-      content:"\2039";
-      margin-right: 0.25em;
+    &.previous button[type="submit"]:before {
+      content: "\2039";
+      margin-right: .25em;
     }
 
-    &.next button[type='submit']:after {
-      content:"\203A";
-      margin-left: 0.25em;
+    &.next button[type="submit"]:after {
+      content: "\203A";
+      margin-left: .25em;
     }
 
-    &.last button[type='submit']:after {
-      content:"\00BB";
-      margin-left: 0.25em;
+    &.last button[type="submit"]:after {
+      content: "\00BB";
+      margin-left: .25em;
     }
   }
 }

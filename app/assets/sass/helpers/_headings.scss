@@ -12,7 +12,12 @@
 
 .heading-group {
   /* Allow other tags to sit alongside the heading */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @include inline-block;
   }
 

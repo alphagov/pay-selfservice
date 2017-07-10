@@ -1,39 +1,43 @@
-ul.tabs{
-  padding: 0px;
+ul.tabs {
+  padding: 0;
   list-style: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid $grey-2;
 }
 
 .tabs {
-  a, a:visited, a:hover, a:active {
+  a,
+  a:visited,
+  a:hover,
+  a:active {
     color: inherit;
     text-decoration: none;
   }
 }
-ul.tabs li{
-  margin-left: 10px;
-  font-weight: bold;
-  padding: 10px 40px;
-  background: none;
-  color: $link-colour;
+
+ul.tabs li {
   display: inline-block;
-  cursor: pointer;
   margin-bottom: -1px;
+  margin-left: 10px;
+  padding: 10px 40px;
+  color: $link-colour;
+  background: none;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-ul.tabs li.current{
-  color: black;
-  border: 1px solid #ccc;
+ul.tabs li.current {
+  border: 1px solid $grey-2;
   border-bottom: hidden;
-  background-color: white;
+  color: $text-colour;
+  background-color: $page-colour;
 }
 
-.tab-content{
+.tab-content {
   display: none;
   padding-top: 30px;
 }
 
-.tab-content.current{
+.tab-content.current {
   display: inherit;
 }
 
@@ -45,7 +49,10 @@ ul.tabs li.current{
   @include core-16;
   margin-bottom: 1em;
 
-  dt, dd { display: inline; }
+  dt,
+  dd {
+    display: inline;
+  }
 
   p {
     margin: 0;
@@ -67,8 +74,8 @@ ul.tabs li.current{
   margin-left: 1em;
 }
 
-/* Hide edit options for tokens */
-.js-enabled div.js-edit-description,
+// Hide edit options for tokens
+.js-enabled .js-edit-description,
 .js-enabled .js-revoke-confirmation,
 .js-enabled .js-revoke-confirmed {
   display: none;

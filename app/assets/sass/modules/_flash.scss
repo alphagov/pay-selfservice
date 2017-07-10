@@ -1,17 +1,20 @@
-.notification {
-  margin-top: $gutter;
-  padding: $gutter $gutter / 2;
-  border: 5px solid $green;
-  color: $green;
+.generic-error {
+  margin: 0;
+  padding: 5px;
+  color: $page-colour;
+  background: $red;
   font-weight: bold;
   text-align: center;
 }
 
-.generic-error {
-  border-color: $red;
-  color: $red;
+.generic-flash {
+  margin-top: 0;
+  padding: 10px;
+  color: $page-colour;
+  background: $green;
+  font-weight: bold;
+  text-align: center;
 }
-
 .error-summary ul {
   list-style: none;
 }
