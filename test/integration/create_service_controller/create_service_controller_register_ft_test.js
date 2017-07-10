@@ -40,7 +40,7 @@ describe('create service otp validation', function () {
 
     app = mockSession.getAppWithLoggedOutSession(getApp())
     supertest(app)
-      .post(paths.selfCreateService.register)
+      .post('/create-service/register')
       .send({
         email: request.email,
         'telephone-number': request.telephone_number,
@@ -59,7 +59,7 @@ describe('create service otp validation', function () {
     let session = {}
     app = mockSession.getAppWithLoggedOutSession(getApp(), session)
     supertest(app)
-      .post(paths.selfCreateService.register)
+      .post('/create-service/register')
       .send({
         email: request.email,
         'telephone-number': request.telephone_number,

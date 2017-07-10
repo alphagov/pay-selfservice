@@ -50,7 +50,7 @@ describe('The 3D Secure index endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'toggle-3ds:read';
     var user = session.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -190,7 +190,7 @@ describe('The turn on 3D Secure endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'toggle-3ds:update';
     var user = session.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -242,7 +242,7 @@ describe('The turn off 3D Secure endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'toggle-3ds:update';
     var user = session.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 

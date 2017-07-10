@@ -1,5 +1,3 @@
-const _ = require('lodash');
-const logger = require('winston');
 const response = require('../utils/response.js');
 const userService = require('../services/user_service.js');
 const paths = require('../paths.js');
@@ -7,27 +5,24 @@ const successResponse = response.response;
 const errorResponse = response.renderErrorView;
 const roles = require('../utils/roles').roles;
 
-const formattedPathFor = require('../utils/replace_params_in_path');
-
-const mapByRoles = function (users, externalServiceId, currentUser) {
+const mapByRoles = function (users, currentUser) {
   const userRolesMap = {};
   for (const role in roles) {
     userRolesMap[roles[role].name] = [];
   }
   users.map((user) => {
-    const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name');
-    if (roles[userRoleName]) {
+    if (roles[user.role.name]) {
       const mappedUser = {
         username: user.username,
-        external_id: user.externalId
+        external_id: user.external_id
       };
-      if (currentUser.externalId === user.externalId) {
+      if (currentUser.externalId === user.external_id) {
         mappedUser.is_current = true;
         mappedUser.link = paths.user.profile;
       } else {
-        mappedUser.link = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId);
+        mappedUser.link = paths.teamMembers.show.replace(':externalId', user.external_id);
       }
-      userRolesMap[userRoleName].push(mappedUser);
+      userRolesMap[user.role.name].push(mappedUser);
     }
   });
   return userRolesMap;
@@ -41,32 +36,26 @@ module.exports = {
    * @param res
    */
   index: (req, res) => {
-    const externalServiceId = req.params.externalServiceId;
 
     const onSuccess = function (data) {
-      const team_members = mapByRoles(data, externalServiceId, req.user);
+      const team_members = mapByRoles(data, req.user);
       const numberOfAdminMembers = team_members.admin.length;
       const numberOfViewOnlyMembers = team_members[roles['view-only'].name].length;
       const numberOfViewAndRefundMembers = team_members[roles['view-and-refund'].name].length;
       const numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers;
-      const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId);
 
       successResponse(req, res, 'services/team_members', {
         team_members: team_members,
         number_active_members: numberActiveMembers,
         number_admin_members: numberOfAdminMembers,
-        inviteTeamMemberLink: inviteTeamMemberLink,
         'number_view-only_members': numberOfViewOnlyMembers,
         'number_view-and-refund_members': numberOfViewAndRefundMembers,
       });
     };
 
-    return userService.getServiceUsers(externalServiceId, req.correlationId)
+    return userService.getServiceUsers(req.user.serviceIds[0], req.correlationId)
       .then(onSuccess)
-      .catch((err) => {
-        logger.error(`[requestId=${req.correlationId}] error retrieving users for service ${externalServiceId}. [${err}]`);
-        errorResponse(req, res, 'Unable to retrieve the services users')
-      });
+      .catch(() => errorResponse(req, res, 'Unable to retrieve the services users'));
   },
 
   /**
@@ -75,25 +64,23 @@ module.exports = {
    * @param res
    */
   show: (req, res) => {
-    const externalServiceId = req.params.externalServiceId;
-    const externalUserId = req.params.externalUserId;
-    if (externalUserId === req.user.externalId) {
+
+    const externalId = req.params.externalId;
+    if (externalId === req.user.externalId) {
       res.redirect(paths.user.profile);
     }
 
     const onSuccess = (user) => {
-      const hasSameService = user.hasService(externalServiceId) && req.user.hasService(externalServiceId);
-      const roleInList = roles[_.get(user.getRoleForService(externalServiceId), 'name')];
-      const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, externalUserId);
-      const removeTeamMemberLink = formattedPathFor(paths.teamMembers.delete, externalServiceId, externalUserId);
-      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId);
+      const hasSameService = user.serviceIds[0] === req.user.serviceIds[0];
+      const roleInList = roles[user._role.name];
+      const editPermissionsLink = paths.teamMembers.permissions.replace(':externalId', user.externalId);
+      const removeTeamMemberLink = paths.teamMembers.delete.replace(':externalId', user.externalId);
 
       if (roleInList && hasSameService) {
         successResponse(req, res, 'services/team_member_details', {
           username: user.username,
           email: user.email,
-          role: roleInList.description,
-          teamMemberIndexLink: teamMemberIndexLink,
+          role: roles[user.role.name].description,
           editPermissionsLink: editPermissionsLink,
           removeTeamMemberLink: removeTeamMemberLink
         });
@@ -102,7 +89,7 @@ module.exports = {
       }
     };
 
-    return userService.findByExternalId(externalUserId)
+    return userService.findByExternalId(externalId)
       .then(onSuccess)
       .catch(() => errorResponse(req, res, 'Unable to retrieve user'));
   },
@@ -114,9 +101,9 @@ module.exports = {
    */
   delete: (req, res) => {
 
-    const userToRemoveId = req.params.externalUserId;
-    const externalServiceId = req.params.externalServiceId;
+    const userToRemoveId = req.params.externalId;
     const removerId = req.user.externalId;
+    const serviceId = req.user.services[0].external_id;
     const correlationId = req.correlationId;
 
     if (userToRemoveId === removerId) {
@@ -126,7 +113,7 @@ module.exports = {
 
     const onSuccess = (username) => {
       req.flash('generic', username + ' was successfully removed');
-      res.redirect(formattedPathFor(paths.teamMembers.index, externalServiceId));
+      res.redirect(paths.teamMembers.index);
     };
 
     const onError = () => {
@@ -136,7 +123,7 @@ module.exports = {
           message: 'This person has already been removed by another administrator.'
         },
         link: {
-          link: formattedPathFor(paths.teamMembers.index, externalServiceId),
+          link: '/team-members',
           text: 'View all team members'
         },
         enable_link: true
@@ -145,7 +132,7 @@ module.exports = {
     };
 
     return userService.findByExternalId(userToRemoveId, correlationId)
-      .then(user => userService.delete(externalServiceId, removerId, userToRemoveId, correlationId).then(() => user.username))
+      .then(user => userService.delete(serviceId, removerId, userToRemoveId, correlationId).then(() => user.username))
       .then((username) => onSuccess(username))
       .catch(onError);
   },

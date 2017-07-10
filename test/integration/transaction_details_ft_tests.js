@@ -45,7 +45,7 @@ describe('The transaction view scenarios', function () {
   beforeEach(function (done) {
     let permissions = 'transactions-details:read';
     var user = session.getUser({
-      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
+      gateway_account_ids: [gatewayAccountId], permissions: [permissions]
     });
     app = session.getAppWithLoggedInUser(getApp(), user);
 

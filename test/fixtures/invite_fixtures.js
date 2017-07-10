@@ -12,7 +12,6 @@ module.exports = {
     const role = {name: "admin"};
 
     const data = {
-      service_external_id: opts.externalServiceId || random.randomUuid(),
       email: opts.email || invitee,
       sender: opts.sender || senderId,
       role_name: opts.role_name || role
@@ -57,7 +56,6 @@ module.exports = {
     const role = {name: "admin"};
 
     const data = {
-      service_external_id: opts.externalServiceId,
       email: opts.email || '',
       sender: opts.sender || senderId,
       role_name: opts.role_name || role

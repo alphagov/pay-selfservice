@@ -19,27 +19,9 @@ var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPor
 describe('adminusers client - service users', function () {
 
   let adminUsersMock;
-  let serviceExternalId = "12345";
+  let service_id = "12345";
   let non_existing_service_id = "500";
-  let response_params = {
-    service_roles: [{
-      service: {
-        name: 'System Generated',
-        external_id: serviceExternalId,
-        gateway_account_ids: []
-      },
-      role: {
-        name: "admin",
-        description: "Administrator",
-        permissions: ["perm-1", "perm-2", "perm-3"],
-        "_links": [{
-          "href": `http://adminusers.service/v1/api/users/${serviceExternalId}`,
-          "rel": "self",
-          "method": "GET"
-        }]
-      },
-    }]
-  };
+  let response_params = { service_ids : [service_id]};
   let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([response_params]);
 
   /**
@@ -68,7 +50,7 @@ describe('adminusers client - service users', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceExternalId}/users`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${service_id}/users`)
             .withState('a service exists with the given id')
             .withUponReceiving('a valid get service users request')
             .withResponseBody(getServiceUsersResponse.getPactified())
@@ -83,12 +65,11 @@ describe('adminusers client - service users', function () {
 
       it('should return service users successfully', function (done) {
 
-        adminusersClient.getServiceUsers(serviceExternalId).should.be.fulfilled.then(
-          function (users) {
-            let expectedResponse = getServiceUsersResponse.getPlain();
-            expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length);
-            expect(users[0].hasService(serviceExternalId)).to.be.equal(true);
-          }
+        adminusersClient.getServiceUsers(service_id).should.be.fulfilled.then (
+           function (users) {
+             let expectedResponse = getServiceUsersResponse.getPlain();
+             expect(users[0].service_ids[0]).to.be.equal(expectedResponse[0].service_ids[0]);
+           }
         ).should.notify(done);
       });
     });
@@ -112,12 +93,12 @@ describe('adminusers client - service users', function () {
 
       it('should return service not found', function (done) {
 
-        adminusersClient.getServiceUsers(non_existing_service_id).should.be.rejected.then(
-          function (err) {
-            expect(err.errorCode).to.equal(404);
-          }
-        ).should.notify(done);
-      });
+         adminusersClient.getServiceUsers(non_existing_service_id).should.be.rejected.then (
+            function (err) {
+                expect(err.errorCode).to.equal(404);
+            }
+         ).should.notify(done);
+       });
     });
-  });
+   });
 });

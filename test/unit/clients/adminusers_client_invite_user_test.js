@@ -10,7 +10,7 @@ var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interacti
 chai.use(chaiAsPromised);
 
 const expect = chai.expect;
-const INVITES_PATH = '/v1/api/invites/user';
+const SERVICES_PATH = '/v1/api/services';
 var mockPort = Math.floor(Math.random() * 65535);
 var mockServer = pactProxy.create('localhost', mockPort);
 
@@ -19,7 +19,7 @@ var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPor
 describe('adminusers client - invite user', function () {
 
   let adminUsersMock;
-  let externalServiceId = "12345";
+  let serviceId = "12345";
 
   /**
    * Start the server and set up Pact
@@ -44,12 +44,12 @@ describe('adminusers client - invite user', function () {
   describe('invite user API', function () {
 
     context('invite user API - success', () => {
-      let validInvite = inviteFixtures.validInviteRequest({externalServiceId: externalServiceId});
+      let validInvite = inviteFixtures.validInviteRequest();
 
       beforeEach((done) => {
         let pactified = validInvite.getPactified();
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITES_PATH}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/invites`)
             .withUponReceiving('a valid user invite user request')
             .withMethod('POST')
             .withRequestBody(pactified)
@@ -70,7 +70,7 @@ describe('adminusers client - invite user', function () {
       it('should create a invite successfully', function (done) {
         let invite = validInvite.getPlain();
 
-        adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.fulfilled.then(function (inviteResponse) {
+        adminusersClient.inviteUser(invite.email, invite.sender, serviceId, invite.role_name).should.be.fulfilled.then(function (inviteResponse) {
           expect(inviteResponse.email).to.be.equal(invite.email);
 
         }).should.notify(done);
@@ -78,13 +78,14 @@ describe('adminusers client - invite user', function () {
     });
 
     context('invite user API - service not found', () => {
+      let validInvite = inviteFixtures.validInviteRequest();
+
       let nonExistentServiceId = "111111";
-      let validInvite = inviteFixtures.validInviteRequest({externalServiceId: nonExistentServiceId});
 
       beforeEach((done) => {
         let pactified = validInvite.getPactified();
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITES_PATH}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${nonExistentServiceId}/invites`)
             .withUponReceiving('a valid user invite user request for a non-existent service')
             .withMethod('POST')
             .withRequestBody(pactified)
@@ -111,14 +112,14 @@ describe('adminusers client - invite user', function () {
     });
 
     context('invite user API - bad request, should return error', () => {
-      let invalidInvite = inviteFixtures.invalidInviteRequest({externalServiceId:externalServiceId});
+      let invalidInvite = inviteFixtures.invalidInviteRequest();
       let errorResponse = inviteFixtures.invalidInviteCreateResponseWhenFieldsMissing();
 
       beforeEach((done) => {
         let pactified = invalidInvite.getPactified();
 
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITES_PATH}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/invites`)
             .withUponReceiving('an invalid user invite user request for an empty invitee')
             .withMethod('POST')
             .withRequestBody(pactified)
@@ -139,7 +140,7 @@ describe('adminusers client - invite user', function () {
       it('should return bad request', function (done) {
         let invite = invalidInvite.getPlain();
 
-        adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.rejected.then(function (response) {
+        adminusersClient.inviteUser(invite.email, invite.sender, serviceId, invite.role_name).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);
@@ -148,14 +149,14 @@ describe('adminusers client - invite user', function () {
     });
 
     context('invite user API - conflicting request, should return error', () => {
-      let validInvite = inviteFixtures.validInviteRequest({externalServiceId:externalServiceId});
+      let validInvite = inviteFixtures.validInviteRequest();
       let errorResponse = inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(validInvite.getPlain().email).getPactified();
 
       beforeEach((done) => {
         let pactified = validInvite.getPactified();
 
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITES_PATH}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/invites`)
             .withUponReceiving('a conflicting user invite user request for a valid invitee')
             .withMethod('POST')
             .withRequestBody(pactified)
@@ -176,7 +177,7 @@ describe('adminusers client - invite user', function () {
       it('should return conflict', function (done) {
         let invite = validInvite.getPlain();
 
-        adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.rejected.then(function (response) {
+        adminusersClient.inviteUser(invite.email, invite.sender, serviceId, invite.role_name).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(409);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);
@@ -185,14 +186,14 @@ describe('adminusers client - invite user', function () {
     });
 
     context('invite user API - not permitted for user, should return error', () => {
-      let validInvite = inviteFixtures.validInviteRequest({externalServiceId: externalServiceId});
-      let errorResponse = inviteFixtures.notPermittedInviteResponse(validInvite.getPlain().email, externalServiceId);
+      let validInvite = inviteFixtures.validInviteRequest();
+      let errorResponse = inviteFixtures.notPermittedInviteResponse(validInvite.getPlain().email, serviceId);
 
       beforeEach((done) => {
         let pactified = validInvite.getPactified();
 
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITES_PATH}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/invites`)
             .withUponReceiving('a not permitted user invite user request for a valid invitee')
             .withMethod('POST')
             .withRequestBody(pactified)
@@ -213,7 +214,7 @@ describe('adminusers client - invite user', function () {
       it('should return not permitted', function (done) {
         let invite = validInvite.getPlain();
 
-        adminusersClient.inviteUser(invite.email, invite.sender, externalServiceId, invite.role_name).should.be.rejected.then(function (response) {
+        adminusersClient.inviteUser(invite.email, invite.sender, serviceId, invite.role_name).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(403);
           expect(response.message.errors.length).to.equal(1);
           expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors);

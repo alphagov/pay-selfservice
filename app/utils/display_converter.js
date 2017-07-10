@@ -1,5 +1,4 @@
 let _ = require('lodash');
-const getHeldPermissions = require('./get_held_permissions');
 
 const hideNavBarTemplates = [
   'services/index',
@@ -32,17 +31,16 @@ const hideNavBarTemplates = [
  * @param user
  * @returns {object}
  */
-const getPermissions = (user, service) => {
-
-  if (service) {
-    let userPermissions;
-    const permissionsForService = user.getPermissionsForService(service.externalId);
-    if (user && permissionsForService) {
-      userPermissions = _.clone(permissionsForService);
-      return getHeldPermissions(userPermissions);
-    }
+const getPermissions = user => {
+  let permissionMap = {};
+  let userPermissions;
+  if (user && user.permissions) {
+    userPermissions = _.clone(user.permissions);
+    _.forEach(userPermissions, x => {
+      permissionMap[x.replace(/[-:]/g, '_')] = true;
+    });
   }
-
+  return permissionMap;
 };
 
 const showNavigationBar = template => {
@@ -51,9 +49,9 @@ const showNavigationBar = template => {
 
 const addGatewayAccountProviderDisplayNames = data => {
   let gatewayAccounts = _.get(data, 'gatewayAccounts', null);
-  if (gatewayAccounts) {
+  if(gatewayAccounts) {
 
-    let convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
+    let convertedGateWayAccounts =  gatewayAccounts.map(gatewayAccount => {
       if (gatewayAccount.payment_provider) {
         gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider);
       }
@@ -66,7 +64,7 @@ const addGatewayAccountProviderDisplayNames = data => {
 };
 
 const getAccount = account => {
-  if (account) {
+  if(account) {
     account.full_type = account.type === 'test' ?
       [account.payment_provider, account.type].join(' ') :
       account.type;
@@ -75,11 +73,9 @@ const getAccount = account => {
   return account;
 };
 
-module.exports = function (req, data, template) {
-  let user = req.user;
-  let account = req.account;
+module.exports = function(user, data, template, account) {
   let convertedData = _.clone(data);
-  convertedData.permissions = getPermissions(user, req.service);
+  convertedData.permissions = getPermissions(user);
   convertedData.navigation = showNavigationBar(template);
   addGatewayAccountProviderDisplayNames(convertedData);
   convertedData.currentGatewayAccount = getAccount(account);
