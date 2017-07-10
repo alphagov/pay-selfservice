@@ -17,10 +17,11 @@ const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middlewa
 const getEmailNotification = require('./middleware/get_email_notification')
 const getAccount = require('./middleware/get_gateway_account')
 const hasServices = require('./middleware/has_services')
-const resolveService = require('./middleware/resolve_service');
+const resolveService = require('./middleware/resolve_service')
 const trimUsername = require('./middleware/trim_username')
 const permission = require('./middleware/permission')
 const validateRegistrationInviteCookie = require('./middleware/validate_registration_invite_cookie')
+const otpVerify = require('./middleware/otp_verify')
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -108,7 +109,7 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
   app.get(selfCreateService.confirm, selfCreateServiceCtrl.showConfirmation)
   app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
-  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpVerify, selfCreateServiceCtrl.createPopulatedService)
+  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, otpVerify.verifyOtpForServiceInvite, selfCreateServiceCtrl.createPopulatedService)
   app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
   app.post(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
   app.get(selfCreateService.serviceNaming, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)

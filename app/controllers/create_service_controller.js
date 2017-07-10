@@ -10,7 +10,7 @@ const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login_controller')
-const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateOtp} = require('../utils/registration_validations')
+const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber} = require('../utils/registration_validations')
 
 // Constants
 const serviceRegistrationEnabled = process.env.SERVICE_REGISTRATION_ENABLED === 'true'
@@ -120,52 +120,6 @@ module.exports = {
    */
   showOtpVerify: (req, res) => {
     res.render('self_create_service/verify_otp')
-  },
-
-  /**
-   * Process submission of otp verification
-   *
-   * @param req
-   * @param res
-   */
-  submitOtpVerify: (req, res, next) => {
-    const correlationId = req.correlationId
-    const code = req.register_invite.code
-    const otpCode = req.body['verify-code']
-
-    const handleServerError = (err) => {
-      logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
-      switch (err.errorCode) {
-        case 401:
-          handleInvalidOtp('Invalid verification code')
-          break
-        case 404:
-          errorResponse(req, res, 'Unable to process registration at this time', 404)
-          break
-        case 410:
-          errorResponse(req, res, 'This invitation is no longer valid', 410)
-          break
-        default:
-          errorResponse(req, res, 'Unable to process registration at this time', 500)
-      }
-    }
-
-    const handleInvalidOtp = (message) => {
-      logger.debug(`[requestId=${correlationId}] invalid user input - otp code`)
-      req.flash('genericError', message)
-      res.redirect(303, paths.selfCreateService.otpVerify)
-    }
-
-    return validateOtp(otpCode)
-      .then(() => registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId))
-      .then(next)
-      .catch(err => {
-        if (err.errorCode) {
-          handleServerError(err)
-        } else {
-          handleInvalidOtp(err)
-        }
-      })
   },
 
   /**
