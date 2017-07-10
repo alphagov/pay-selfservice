@@ -34,6 +34,10 @@
 
   }
 
+  legend {
+    font-weight: 700;
+  }
+
   .clear-filter {
     @include core-14;
     float: right;
@@ -91,39 +95,60 @@
   }
 
   .datetime-filter {
-    float: left;
-    width:45%;
-    width: calc(50% - 20px);
-    @include respond-to-max(mobile) {
-      width: 100%;
+    width: 100%;
+
+    @include media(tablet) {
+      float: left;
+    }
+
+    .form-label {
+      @include core-14;
+      padding-bottom: 5px;
+    }
+
+    .selector {
+      width:47.5%;
+      margin: 0 2.5%;
+      float: left;
+
       &:first-of-type {
-        margin-top: 5px;
+        margin-left: 0;
+      }
+
+      &:last-of-type {
+        float: right;
+        margin-right: 0;
+      }
+
+    }
+  }
+
+  @include media(tablet) {
+    .datetime-filter-from {
+      width: 45%;
+    }
+  }
+
+  @include media(tablet) {
+    .datetime-filter-to {
+      width: 55%;
+
+      .selector {
+        width: 42.5%;
       }
     }
   }
 
-  .datetime-filter .selector {
-    width:47.5%;
-    margin: 0 2.5%;
-    float: left;
-    &:first-of-type {
-      margin-left: 0;
-    }
-    &:last-of-type {
-      float: right;
-      margin-right: 0;
-    }
+  .datetime-separator {
+    text-align: left;
+    line-height: 32px;
+    font-weight: normal;
 
-  }
-  .datetime-seperator {
-    width: 40px;
-    float: left;
-    line-height: 86px;
-    text-align: center;
-    @include respond-to-max(mobile) {
-      text-align: left;
-      line-height: 32px;
-      font-weight: bold;
+    @include media(tablet) {
+      width: 10%;
+      float: left;
+      line-height: 86px;
+      text-align: center;
     }
   }
 

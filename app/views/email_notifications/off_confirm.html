@@ -9,9 +9,16 @@ GOV.UK Pay - Email notifications
 <h1 class="heading-medium">
   Are you sure you want to turn off email notifications?
 </h1>
-<p class="info">
-  Your users won’t receive payment confirmation emails from GOV.UK Pay if you do this.
-</p>
+<div class="text">
+    <div class="notice">
+      <i class="icon icon-important">
+        <span class="visually-hidden">Warning</span>
+      </i>
+      <strong class="bold-small">
+          Your users won’t receive payment confirmation emails from GOV.UK Pay if you do this.
+      </strong>
+    </div>
+</div>
 <form method="post" action="{{routes.emailNotifications.off}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input name="email-off" type="submit" class="button push-top qa-off" value="Turn off email notifications">

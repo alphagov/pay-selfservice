@@ -87,13 +87,14 @@ describe('The payment types summary view', function () {
 
     var body = renderTemplate('payment_types_summary', model);
 
-    body.should.containSelector('ul.accepted-cards li.selected');
+    body.should.containSelector('td.table-data-label img')
+      .withAttribute('src', '/public/images/visa-color.png');
 
     body.should.containSelector('span.payment-types-selected')
       .withText('Yes');
   });
 
-  it('should display selected options as Yes', function () {
+  it('should display unselected options as No', function () {
 
     var model = _.extend({}, templateData);
     model['brands'] = _.extend({}, templateData['brands'], {
@@ -103,7 +104,8 @@ describe('The payment types summary view', function () {
 
     var body = renderTemplate('payment_types_summary', model);
 
-    body.should.containSelector('ul.accepted-cards li.selected');
+    body.should.containSelector('td.table-data-label img')
+      .withAttribute('src', '/public/images/visa-color.png');
 
     body.should.containSelector('span.payment-types-not-selected')
       .withText('No');

@@ -18,11 +18,11 @@
   <tbody>
   {{#results}}
     <tr data-follow-link data-link="{{link}}">
-      <td class="charge-column reference" data-gateway-transaction-id="{{gateway_transaction_id}}">
+      <th scope="row" class="charge-column reference" data-gateway-transaction-id="{{gateway_transaction_id}}">
         <a class="reference" id="charge-id-{{charge_id}}" data-charge-id="{{charge_id}}" href="{{link}}">
           {{reference}}
         </a>
-      </td>
+      </th>
       {{#permissions.transactions_email_read}}
       <td class="email">{{email}}</td>
       {{/permissions.transactions_email_read}}

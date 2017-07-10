@@ -12,24 +12,53 @@ Sign in to GOV.UK Pay
 {{$mainContent}}
 
 <div class="column-two-thirds no-padding">
-  <h1 class="heading-large">Sign in</h1>
   {{#flash.error}}
-  <p class="error">{{.}}</p>
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+      There was a problem with the details you gave for:
+    </h1>
+    <ul class="error-summary-list">
+      {{#messages}}
+        {{#username}}
+        <li><a href="#username">Email</a></li>
+        {{/username}}
+        {{#password}}
+        <li><a href="#password">Password</a></li>
+        {{/password}}
+      {{/messages}}
+    </ul>
+  </div>
   {{/flash.error}}
+  
+  <h1 class="heading-large">Sign in</h1>
 
   <form action="/login" method="post" name="userLoginForm" class="push-bottom">
   <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group">
-      <label class="form-label" for="username">
-          <label for="username">Email</label>
+    <div class="form-group{{#flash.error}}{{#messages}}{{#username}} error{{/username}}{{/messages}}{{/flash.error}}">
+      <label for="username" class="form-label">
+        Email
+        {{#flash.error}}
+        {{#messages}}
+        <span class="error-message">
+          {{username}}
+        </span>
+        {{/messages}}
+        {{/flash.error}}
       </label>
-      <input class="form-control form-control-2-3 " data-module="" id="username" name="username" rows="8" type="text" value="">
+      <input class="form-control form-control-2-3" data-module="" id="username" name="username" rows="8" type="text" value="">
     </div>
-    <div class="form-group">
-      <label class="form-label" for="password">
-          <label for="password">Password</label>
+    <div class="form-group{{#flash.error}}{{#messages}}{{#password}} error{{/password}}{{/messages}}{{/flash.error}}">
+      <label for="password" class="form-label">
+        Password
+        {{#flash.error}}
+        {{#messages}}
+        <span class="error-message">
+          {{password}}
+        </span>
+        {{/messages}}
+        {{/flash.error}}
       </label>
-      <input class="form-control form-control-2-3 " data-module="" id="password" name="password" rows="8" type="password" value="">
+      <input class="form-control form-control-2-3" data-module="" id="password" name="password" rows="8" type="password" value="">
     </div>
     <div>
     <input type="submit" class="button" value="Continue">

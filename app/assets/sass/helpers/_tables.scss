@@ -13,4 +13,8 @@ table {
   tr:first-of-type {
     border-top: 1px solid $grey-2;
   }
+
+  tbody tr th {
+    font-weight: normal;
+  }
 }

@@ -8,6 +8,7 @@ var chai = require('chai');
 var _ = require('lodash');
 var userFixtures = require('../fixtures/user_fixtures');
 var sinon = require('sinon');
+var csrf = require('csrf');
 
 var paths = require(__dirname + '/../../app/paths.js');
 var mock_session = require(__dirname + '/../test_helpers/mock_session.js');
@@ -26,6 +27,14 @@ const USER_RESOURCE = '/v1/api/users';
 const CONNECTOR_ACCOUNT_PATH = "/v1/frontend/accounts";
 
 var user = mock_session.getUser({gateway_account_id: ACCOUNT_ID});
+
+function testController(controller, req, res) {
+  _.assign(req, {
+    headers: {'x-request-id': 'some-unique-id'},
+    flash: sinon.stub()
+  });
+  controller(req, res);
+};
 
 describe('The logged in endpoint', function () {
 
@@ -200,8 +209,53 @@ describe('The afterOtpLogin endpoint', function () {
   });
 });
 
+describe('login get endpoint', function () {
+  it('should set the right flash message if both fields are empty', function (done) {
+    var req = { 'body': { 'username': '', 'password': '' } },
+        res = mockRes.getStubbedRes();
+
+    testController(login_controller.logUserin, req, res);
+    expect(req.flash('error') === 'empty_all');
+
+    res.locals = { 'flash': {} };
+    testController(login_controller.logInGet, req, res);
+    expect(res.locals.flash === {username: 'You must enter a username', password: 'You must enter a password'})
+    done();
+  });
+
+  it('should set the right flash message if individual fields are empty', function (done) {
+    var req = { 'body': { 'username': '', 'password': '123' } },
+        res = mockRes.getStubbedRes();
+
+    testController(login_controller.logUserin, req, res);
+    expect(req.flash('error') === 'empty_username');
+
+    res.locals = { 'flash': {} };
+    testController(login_controller.logInGet, req, res);
+    expect(res.locals.flash === {username: 'You must enter a username'})
+    done();
+  });
+});
 
 describe('login post endpoint', function () {
+  it('should set the right flash message if both fields are empty', function (done) {
+    var req = { 'body': { 'username': '', 'password': '' } },
+        res = mockRes.getStubbedRes();
+
+    testController(login_controller.logUserin, req, res);
+    expect(req.flash('error') === 'empty_all');
+    done();
+  });
+
+  it('should set the right flash message if individual fields are empty', function (done) {
+    var req = { 'body': { 'username': '', 'password': '123' } },
+        res = mockRes.getStubbedRes();
+
+    testController(login_controller.logUserin, req, res);
+    expect(req.flash('error') === 'empty_username');
+    done();
+  });
+
   it('should display an error if csrf token does not exist for the login post', function (done) {
     request(getApp())
       .post(paths.user.logIn)
