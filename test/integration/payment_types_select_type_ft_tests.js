@@ -51,14 +51,15 @@ describe('The payment types endpoint,', function () {
     });
 
     beforeEach(function (done) {
-      let permissions = 'payment-types:read';
-      var user = session.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
+      const permissions ='payment-types:read';
+      let user = session.getUser({
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 
       userCreator.mockUserResponse(user.toJson(), done);
     });
+
     it('should select debit and credit cards option by default if no card types are accepted for the account', function (done) {
       connectorMock.get(CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH)
         .reply(200, {
@@ -81,7 +82,13 @@ describe('The payment types endpoint,', function () {
       };
 
       build_get_request(paths.paymentTypes.selectType, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.allCardOption).to.deep.equal(expectedData.allCardOption);
+          expect(res.body.debitCardOption).to.deep.equal(expectedData.debitCardOption);
+          expect(res.body.permissions).to.include(expectedData.permissions);
+          expect(res.body.navigation).to.equal(expectedData.navigation);
+        })
         .end(done);
     });
 
@@ -107,7 +114,13 @@ describe('The payment types endpoint,', function () {
       };
 
       build_get_request(paths.paymentTypes.selectType, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.allCardOption).to.deep.equal(expectedData.allCardOption);
+          expect(res.body.debitCardOption).to.deep.equal(expectedData.debitCardOption);
+          expect(res.body.permissions).to.include(expectedData.permissions);
+          expect(res.body.navigation).to.equal(expectedData.navigation);
+        })
         .end(done);
     });
 
@@ -133,7 +146,13 @@ describe('The payment types endpoint,', function () {
       };
 
       build_get_request(paths.paymentTypes.selectType, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.allCardOption).to.deep.equal(expectedData.allCardOption);
+          expect(res.body.debitCardOption).to.deep.equal(expectedData.debitCardOption);
+          expect(res.body.permissions).to.include(expectedData.permissions);
+          expect(res.body.navigation).to.equal(expectedData.navigation);
+        })
         .end(done);
     });
 
@@ -178,7 +197,7 @@ describe('The payment types endpoint,', function () {
     beforeEach(function (done) {
       let permissions = 'payment-types:update';
       var user = session.getUser({
-        gateway_account_id: ACCOUNT_ID, permissions: [permissions]
+        gateway_account_id: ACCOUNT_ID, permissions: [{name: permissions}]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 

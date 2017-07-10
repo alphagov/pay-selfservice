@@ -7,7 +7,7 @@ const ERROR_MESSAGE = 'There is a problem with the payments platform';
 const ERROR_VIEW = 'error';
 
 function response(req, res, template, data) {
-  let convertedData = displayConverter(req.user, data, template, req.account);
+  let convertedData = displayConverter(req, data, template);
   render(req, res, template, convertedData);
 }
 

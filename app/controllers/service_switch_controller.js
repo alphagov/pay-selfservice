@@ -1,18 +1,20 @@
 const q = require('q');
-const urlParse = require('url').parse;
 const _ = require('lodash');
 const logger = require('winston');
 
 const paths = require('../paths');
 const responses = require('../utils/response');
-const ConnectorClient = require('../services/clients/connector_client').ConnectorClient;
+const serviceService = require('../services/service_service');
+const getHeldPermissions = require('../utils/get_held_permissions');
 
-var successResponse = responses.response;
-var errorResponse = responses.renderErrorView;
+const successResponse = responses.response;
 
-var connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL);
+const validAccountId = (accountId, user) => {
+  const gatewayAccountIds = _.flattenDeep(_.concat(user.services.map(service => service.gatewayAccountIds)));
+  return accountId && gatewayAccountIds.indexOf(accountId) !== -1
+};
 
-const validAccountId = (accountId, user) => accountId && user.gatewayAccountIds.indexOf(accountId) !== -1;
+const displayNameOf = (service) => service.name === 'System Generated' ? 'Temporary Service Name' : service.name;
 
 module.exports = {
   /**
@@ -21,38 +23,34 @@ module.exports = {
    * @param res
    */
   index: (req, res) => {
-    const gatewayAccountIds = _.get(req, 'user.gatewayAccountIds', null);
-    const services = _.get(req, 'user.services', null);
+    const servicesRoles = _.get(req, 'user.serviceRoles', []);
 
-    if (!gatewayAccountIds || !gatewayAccountIds.length) {
-      logger.info(`[${req.correlationId}] No gateway accounts found for user`);
-      return errorResponse(req, res, 'No gateway accounts found for user');
-    }
+    return q.allSettled(servicesRoles.map(serviceRole => {
+      let defer = q.defer();
 
-    if (!services || !services.length) {
-      logger.info(`[${req.correlationId}] No services found for user`);
-      return errorResponse(req, res, 'No services found for user');
-    }
-
-    // TODO: currently we only support one service per user, we will support multiple in future
-    const serviceName = services[0].name === 'System Generated' ? '' : services[0].name;
-
-    return q.allSettled(gatewayAccountIds
-      .map(gatewayAccountId => connectorClient().getAccount({
-        gatewayAccountId: gatewayAccountId,
-        correlationId: req.correlationId
-      })))
-      .then(gatewayAccountPromises => gatewayAccountPromises
-        .filter(promise => promise.state === 'fulfilled')
-        .map(promise => promise.value))
-      .then(gatewayAccounts => {
-        successResponse(req, res, 'services/index', {
-          navigation: false,
-          gatewayAccounts,
-          serviceName
-        });
-      })
-      .catch(() => errorResponse(req, res, 'Unable to display accounts'));
+      serviceService.getGatewayAccounts(serviceRole.service.gatewayAccountIds, req.correlationId)
+        .then(accounts => {
+          defer.resolve({
+            name: displayNameOf(serviceRole.service),
+            external_id: serviceRole.service.externalId,
+            gateway_accounts: accounts,
+            permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
+          })
+        })
+        .catch(() => defer.reject());
+      return defer.promise;
+    }))
+      .then(serviceDataPromises =>
+        serviceDataPromises
+          .filter(promise => promise.state === 'fulfilled')
+          .map(promise => promise.value))
+      .then(servicesData => {
+        return successResponse(req, res, 'services/index', {
+            navigation: false,
+            services: servicesData
+          }
+        );
+      });
   },
 
   /**
@@ -71,4 +69,5 @@ module.exports = {
       res.redirect(302, paths.serviceSwitcher.index);
     }
   }
-};
+}
+;

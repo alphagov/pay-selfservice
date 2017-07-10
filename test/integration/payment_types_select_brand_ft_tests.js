@@ -45,7 +45,7 @@ function build_get_request(path, app) {
   return request(app)
     .get(path)
     .set('Accept', 'application/json')
-    .set('x-request-id',requestId);
+    .set('x-request-id', requestId);
 }
 
 function build_form_post_request(path, sendData, sendCSRF, app) {
@@ -57,7 +57,7 @@ function build_form_post_request(path, sendData, sendCSRF, app) {
     .post(path)
     .set('Accept', 'application/json')
     .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('x-request-id',requestId)
+    .set('x-request-id', requestId)
     .send(sendData);
 }
 
@@ -71,7 +71,7 @@ describe('The payment types endpoint,', function () {
     beforeEach(function (done) {
       let permissions = 'payment-types:read';
       var user = session.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 
@@ -277,7 +277,7 @@ describe('The payment types endpoint,', function () {
     beforeEach(function (done) {
       let permissions = 'payment-types:update';
       var user = session.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [permissions]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       });
       app = session.getAppWithLoggedInUser(getApp(), user);
 

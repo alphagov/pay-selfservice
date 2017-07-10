@@ -8,7 +8,6 @@ const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 const q = require('q');
 const _ = require('lodash');
-const nock = require('nock');
 const {should, expect} = require('chai');
 
 // Local Dependencies
@@ -49,7 +48,6 @@ describe('auth service', function () {
     redirect = sinon.stub(response, "redirect");
 
     next = sinon.spy();
-    nock.cleanAll();
   });
 
   afterEach(function () {

@@ -4,7 +4,7 @@ const q = require('q')
 const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
-let User = require('../../models/user').User
+const User = require('../../models/User.class')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
 const SERVICE_NAME = 'adminusers'
@@ -15,6 +15,7 @@ const HEADER_USER_CONTEXT = 'GovUkPay-User-Context'
  * @param body
  */
 const responseBodyToUserTransformer = body => new User(body)
+const responseBodyToUserListTransformer = body => body.map(userData => new User(userData))
 
 module.exports = function (clientOptions = {}) {
 
@@ -322,7 +323,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserListTransformer)
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, {correlationId: correlationId}, callbackToPromiseConverter)
@@ -334,11 +335,11 @@ module.exports = function (clientOptions = {}) {
   /**
    *
    * @param externalId
-   * @param serviceId
+   * @param serviceExternalId
    * @param roleName
    * @returns {Promise<User>}
    */
-  let updateServiceRole = (externalId, serviceId, roleName) => {
+  let updateServiceRole = (externalId, serviceExternalId, roleName) => {
     let params = {
       correlationId: correlationId,
       payload: {
@@ -346,7 +347,7 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    let url = `${userResource}/${externalId}/services/${serviceId}`
+    let url = `${userResource}/${externalId}/services/${serviceExternalId}`
     let defer = q.defer()
     let startTime = new Date()
     let context = {
@@ -373,21 +374,22 @@ module.exports = function (clientOptions = {}) {
    *
    * @param invitee
    * @param senderId
-   * @param serviceId
+   * @param externalServiceId
    * @param roleName
    * @returns {Promise}
    */
-  let inviteUser = (invitee, senderId, serviceId, roleName) => {
+  let inviteUser = (invitee, senderId, externalServiceId, roleName) => {
     let params = {
       correlationId: correlationId,
       payload: {
         email: invitee,
         sender: senderId,
+        service_external_id: externalServiceId,
         role_name: roleName
       }
     }
 
-    let url = `${serviceUserResource}/${serviceId}/invites`
+    let url = `${inviteResource}/user`
     let defer = q.defer()
     let startTime = new Date()
     let context = {
