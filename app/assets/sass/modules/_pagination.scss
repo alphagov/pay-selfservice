@@ -16,7 +16,8 @@ div.pagination {
       cursor: pointer;
 
       &:hover {
-        color: $link-hover-colour;
+        color: $text-colour;
+        background-color: $focus-colour;
       }
 
       &:active {
@@ -24,7 +25,13 @@ div.pagination {
       }
 
       &.active {
-        background-color: $highlight-colour;
+        background-color: $govuk-blue;
+        border-color: $govuk-blue;
+        color: $highlight-colour;
+
+        &:active {
+          color: $highlight-colour;
+        }
       }
     }
 
