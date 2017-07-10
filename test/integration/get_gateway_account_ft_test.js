@@ -22,8 +22,8 @@ describe('get account', function () {
 
   it('should get account', function (done) {
     const user = session.getUser({
-      gateway_account_ids: ['1', '2', '5'],
-      permissions: [{name: 'service-name:read'}]
+      gateway_account_ids: ['1','2','5'],
+      permissions: ['service-name:read']
     });
     const mockSession = session.getMockSession(user);
     session.currentGatewayAccountId = '2';

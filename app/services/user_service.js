@@ -117,12 +117,12 @@ module.exports = {
   /**
    * @param externalId
    * @param roleName
-   * @param externalServiceId
+   * @param serviceId
    * @param correlationId
    * @returns {Promise<User>}
    */
-  updateServiceRole: function (externalId, roleName, externalServiceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, externalServiceId, roleName);
+  updateServiceRole: function (externalId, roleName, serviceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, serviceId, roleName);
   },
 
   /**

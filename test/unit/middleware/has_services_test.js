@@ -1,11 +1,11 @@
-const assert = require('assert');
-const sinon = require('sinon');
-const nock = require('nock');
-const chai = require('chai');
-const {should, expect} = chai;
-const chaiAsPromised = require('chai-as-promised');
-const hasServices = require(__dirname + '/../../../app/middleware/has_services.js');
-const userFixtures = require('../../fixtures/user_fixtures');
+const assert            = require('assert');
+const sinon             = require('sinon');
+const nock              = require('nock');
+const chai              = require('chai');
+const {should, expect}  = chai;
+const chaiAsPromised    = require('chai-as-promised');
+const hasServices       = require(__dirname + '/../../../app/middleware/has_services.js');
+const paths             = require(__dirname + '/../../../app/paths.js');
 
 chai.use(chaiAsPromised);
 
@@ -31,12 +31,8 @@ describe('user has services middleware', function () {
   });
 
   it("should call next when user has services", function (done) {
-    const user = userFixtures.validUser({
-      services_roles: [{service: {external_id: '1'}}],
-      external_id: 'external-id'
-    }).getAsObject();
 
-    const req = {user: user, headers: {}};
+    const req = {user: {services: ['1'], external_id: 'external-id'}, headers: {}};
 
     hasServices(req, response, next);
 
