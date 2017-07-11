@@ -44,7 +44,30 @@ module.exports = {
         return pactRegister.pactify(data)
       },
       getPlain: () => {
-        return data
+        return _.clone(data)
+      }
+    }
+  },
+
+  validCreateGatewayAccountResponse: (opts = {}) => {
+    const data = {
+      gateway_account_id: opts.gateway_account_id || '1',
+      description: opts.description || null,
+      analytics_id: opts.analytics_id || null,
+      links: [{
+        href: 'https://connector.internal.pymnt.localdomain:9300/v1/api/accounts/' + (opts.gateway_account_id || '1'),
+        rel: 'self',
+        method: 'GET'
+      }],
+      type: opts.type || 'test'
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
       }
     }
   }

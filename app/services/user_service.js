@@ -1,12 +1,18 @@
-const q = require('q');
+'use strict'
 
-let getAdminUsersClient = require('./clients/adminusers_client');
-let paths = require(__dirname + '/../paths.js');
-let commonPassword = require('common-password');
+// NPM dependencies
+const q = require('q')
+const commonPassword = require('common-password')
 
-const MIN_PASSWORD_LENGTH = 10;
+// Custom dependencies
+const paths = require('../paths.js')
+const getAdminUsersClient = require('./clients/adminusers_client')
+
+// Constants
+const MIN_PASSWORD_LENGTH = 10
 
 module.exports = {
+
   /**
    * @param username
    * @param submittedPassword
@@ -15,12 +21,12 @@ module.exports = {
    */
   authenticate: function (username, submittedPassword, correlationId) {
     if (!username || !submittedPassword) {
-      let defer = q.defer();
-      defer.reject();
-      return defer.promise;
+      const defer = q.defer()
+      defer.reject()
+      return defer.promise
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword)
   },
 
   /**
@@ -31,12 +37,12 @@ module.exports = {
    */
   authenticateSecondFactor: function (externalId, code, correlationId) {
     if (!externalId || !code) {
-      let defer = q.defer();
-      defer.reject();
-      return defer.promise;
+      const defer = q.defer()
+      defer.reject()
+      return defer.promise
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code);
+    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code)
   },
 
   /**
@@ -45,9 +51,8 @@ module.exports = {
    * @returns {Promise<User>}
    */
   findByExternalId: function (externalId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId);
+    return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId)
   },
-
 
   /**
    * @param {User} user
@@ -64,7 +69,7 @@ module.exports = {
    * @returns {Promise}
    */
   sendPasswordResetToken: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(username);
+    return getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(username)
   },
 
   /**
@@ -72,7 +77,7 @@ module.exports = {
    * @returns {Promise}
    */
   findByResetToken: function (token) {
-    return getAdminUsersClient().getForgottenPassword(token);
+    return getAdminUsersClient().getForgottenPassword(token)
   },
 
   /**
@@ -81,7 +86,7 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.externalId);
+    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.externalId)
   },
 
   /**
@@ -90,7 +95,7 @@ module.exports = {
    * @returns {Promise}
    */
   getServiceUsers: function (service_id, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(service_id);
+    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(service_id)
   },
 
   /**
@@ -99,19 +104,19 @@ module.exports = {
    * @returns {Promise}
    */
   updatePassword: function (token, newPassword) {
-    let defer = q.defer();
+    const defer = q.defer()
 
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      defer.reject({message: "Your password must be at least 10 characters."});
+      defer.reject({message: 'Your password must be at least 10 characters.'})
     } else if (commonPassword(newPassword)) {
-      defer.reject({message: "Your password is too simple. Choose a password that is harder for people to guess."});
+      defer.reject({message: 'Your password is too simple. Choose a password that is harder for people to guess.'})
     } else {
       getAdminUsersClient().updatePasswordForUser(token, newPassword)
         .then(
           () => defer.resolve(),
-          () => defer.reject({message: 'There has been a problem updating password.'}));
+          () => defer.reject({message: 'There has been a problem updating password.'}))
     }
-    return defer.promise;
+    return defer.promise
   },
 
   /**
@@ -119,10 +124,10 @@ module.exports = {
    * @param roleName
    * @param externalServiceId
    * @param correlationId
-   * @returns {Promise<User>}
+   * @returns {Promise.<User>}
    */
   updateServiceRole: function (externalId, roleName, externalServiceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, externalServiceId, roleName);
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, externalServiceId, roleName)
   },
 
   /**
@@ -133,7 +138,7 @@ module.exports = {
    * @param correlationId
    */
   inviteUser: function (invitee, senderId, serviceId, roleName, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName);
+    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName)
   },
 
   /**
@@ -143,6 +148,20 @@ module.exports = {
    * @param userId
    */
   delete: function (serviceId, removerId, userId, correlationId) {
-      return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+    return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+  },
+
+  /**
+   * Submit create user
+   *
+   * @param email
+   * @param gatewayAccountIds
+   * @param serviceIds
+   * @param role
+   * @param phoneNumber
+   * @param correlationId
+   */
+  createUser: function (email, gatewayAccountIds, serviceIds, role, phoneNumber, correlationId) {
+    return getAdminUsersClient({correlationId}).createUser(email, gatewayAccountIds, serviceIds, role, phoneNumber)
   }
-};
+}
