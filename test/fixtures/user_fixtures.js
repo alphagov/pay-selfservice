@@ -6,7 +6,7 @@ const _ = require('lodash')
 // Custom dependencies
 let User = require('../../app/models/User.class')
 let pactBase = require('./pact_base')
-let pactUsers = pactBase({array: ["permissions", "gateway_account_ids", "service_ids"]})
+let pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids']})
 let random = require('../../app/utils/random')
 
 function randomString () {
@@ -42,7 +42,7 @@ module.exports = {
   validMinimalUser: () => {
     let newExternalId = random.randomUuid()
     let newUsername = randomUsername()
-    let role = {name: "admin"}
+    let role = {name: 'admin'}
     let defaultServiceId = randomServiceId()
     let accountIds = [randomAccountId()]
 
@@ -58,9 +58,9 @@ module.exports = {
           gateway_account_ids: accountIds
         },
         role: {
-          name: "admin",
-          description: "Administrator",
-          permissions: ["perm-1"]
+          name: 'admin',
+          description: 'Administrator',
+          permissions: ['perm-1']
         }
       }],
       telephone_number: randomTelephoneNumber()
@@ -83,11 +83,11 @@ module.exports = {
   },
 
   validUser: (opts = {}) => {
-    let newExternalId = random.randomUuid();
-    let newUsername = randomUsername();
-    let role = {name: "admin"};
-    let defaultServiceId = opts.default_service_id || randomServiceId();
-    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()];
+    let newExternalId = random.randomUuid()
+    let newUsername = randomUsername()
+    let role = {name: 'admin'}
+    let defaultServiceId = opts.default_service_id || randomServiceId()
+    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()]
 
     let data = {
       external_id: opts.external_id || newExternalId,
@@ -102,9 +102,9 @@ module.exports = {
           gateway_account_ids: gatewayAccountIds
         },
         role: opts.role || {
-          name: "admin",
-          description: "Administrator",
-          permissions: opts.permissions || [{name: "perm-1"}]
+          name: 'admin',
+          description: 'Administrator',
+          permissions: opts.permissions || [{name: 'perm-1'}]
         }
       }],
       telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
@@ -137,11 +137,11 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request = {}) => {
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
-    let req_external_id = request.external_id || existingExternalId;
-    let req_username = request.username || 'existing-user';
-    let defaultServiceId = randomString();
-    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId()];
+    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    let req_external_id = request.external_id || existingExternalId
+    let req_username = request.username || 'existing-user'
+    let defaultServiceId = randomString()
+    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId()]
 
     let data = {
       external_id: req_external_id,
@@ -155,13 +155,13 @@ module.exports = {
           gateway_account_ids: gatewayAccountIds
         },
         role: {
-          name: "admin",
-          description: "Administrator",
-          permissions: request.permissions || [{name: "perm-1"}, {name: "perm-2"}, {name: "perm-3"}],
-          "_links": [{
-            "href": `http://adminusers.service/v1/api/users/${req_external_id}`,
-            "rel": "self",
-            "method": "GET"
+          name: 'admin',
+          description: 'Administrator',
+          permissions: request.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}],
+          '_links': [{
+            'href': `http://adminusers.service/v1/api/users/${req_external_id}`,
+            'rel': 'self',
+            'method': 'GET'
           }]
         },
       }],

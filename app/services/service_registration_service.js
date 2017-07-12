@@ -11,6 +11,7 @@ const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../paths')
 const userService = require('./user_service')
 
+// Global functions
 const submitCreateService = function (gatewayAccountIds, correlationId) {
   return getAdminUsersClient({correlationId}).createService(null, gatewayAccountIds)
 }

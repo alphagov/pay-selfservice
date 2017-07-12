@@ -32,7 +32,7 @@ describe('create service - service naming', function () {
   })
 
   it('should redirect to home page on successful submission', function (done) {
-    const serviceExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+    const serviceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const validServiceNameRequest = selfRegisterFixtures.validServiceNameRequest()
 
     adminusersMock.patch(`${SERVICE_RESOURCE}/${serviceExternalId}`).reply(200)
