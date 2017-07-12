@@ -86,7 +86,7 @@ module.exports = {
     let newExternalId = random.randomUuid();
     let newUsername = randomUsername();
     let role = {name: "admin"};
-    let defaultServiceId = randomServiceId();
+    let defaultServiceId = opts.default_service_id || randomServiceId();
     let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()];
 
     let data = {

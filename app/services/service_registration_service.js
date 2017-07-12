@@ -60,7 +60,7 @@ module.exports = {
         return userService.createUser(userData.email, [gatewayAccountId], [service.externalId], userData.role, userData.phoneNumber, correlationId)
       })
       .then(user => {
-        defer.resolve(user);
+        defer.resolve(user)
       })
       .catch(error => {
         logger.error(`[requestId=${correlationId}] Create populated service orchestration error -`, error)
@@ -79,5 +79,16 @@ module.exports = {
    */
   resendOtpCode: function (code, phoneNumber, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber)
+  },
+
+  /**
+   * Update service name
+   *
+   * @param serviceId
+   * @param serviceName
+   * @param correlationId
+   */
+  updateServiceName: function (serviceId, serviceName, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceName(serviceId, serviceName)
   }
 }

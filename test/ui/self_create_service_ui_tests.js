@@ -63,13 +63,16 @@ describe('Self-create service view', function () {
 
   it('should render name your service form', function (done) {
 
-    const templateData = {}
+    const serviceName = 'My Service name'
+    const templateData = {
+      serviceName
+    }
 
     const body = renderTemplate('self_create_service/set_name', templateData)
 
     body.should.containSelector('h1').withExactText('What service will you be taking payments for?')
 
-    body.should.containInputField('service-name', 'text')
+    body.should.containInputField('service-name', 'text').withAttribute('value', serviceName)
     body.should.containSelector('form#name-your-service-form').withAttribute('action', paths.selfCreateService.serviceNaming)
 
     done()

@@ -52,6 +52,36 @@ module.exports = {
     }
   },
 
+  validServiceNameRequest: (opts = {}) => {
+    const data = {
+      service_name: opts.service_name || 'My Service name'
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  invalidServiceNameRequest: (opts = {}) => {
+    const data = {
+      service_name: opts.service_name || ' '
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
   badRequestResponseWhenFieldsMissing: (missingFields) => {
     const responseData = _.map(missingFields, (field) => {
       return `Field [${field}] is required`

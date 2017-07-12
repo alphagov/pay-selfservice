@@ -49,7 +49,7 @@ describe('create service otp validation', function () {
   })
 
   describe('post to otp verify page', function () {
-    it('should redirect to service naming page when user submits valid otp code', function (done) {
+    it('should redirect to proceed-to-login page when user submits valid otp code', function (done) {
       const gatewayAccountId = '1'
 
       const connectorCreateGatewayAccountResponse =
@@ -85,7 +85,7 @@ describe('create service otp validation', function () {
           csrfToken: csrf().create('123'),
         })
         .expect(303)
-        .expect('Location', paths.selfCreateService.serviceNaming)
+        .expect('Location', paths.selfCreateService.logUserIn)
         .end(done)
     })
 

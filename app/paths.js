@@ -83,8 +83,9 @@ module.exports = {
     register: '/create-service/register',
     confirm: '/create-service/confirm',
     otpVerify: '/create-service/verify-otp',
-    serviceNaming: '/service/set-name',
-    otpResend: '/create-service/resend-otp'
+    otpResend: '/create-service/resend-otp',
+    logUserIn: '/create-service/proceed-to-login',
+    serviceNaming: '/service/set-name'
   },
   toggle3ds: {
     index: '/3ds',

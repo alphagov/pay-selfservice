@@ -10,7 +10,7 @@ const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login_controller')
-const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber} = require('../utils/registration_validations')
+const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateServiceNamingInputs} = require('../utils/registration_validations')
 
 // Constants
 const serviceRegistrationEnabled = process.env.SERVICE_REGISTRATION_ENABLED === 'true'
@@ -138,7 +138,7 @@ module.exports = {
     return registrationService.createPopulatedService({email, role, phoneNumber}, correlationId)
       .then(user => {
         loginController.setupDirectLoginAfterRegister(req, res, user)
-        res.redirect(303, paths.selfCreateService.serviceNaming)
+        res.redirect(303, paths.selfCreateService.logUserIn)
       })
       .catch(err => {
         if (err.errorCode === 409) {
@@ -148,6 +148,16 @@ module.exports = {
           errorResponse(req, res, 'Unable to process registration at this time', err.errorCode || 500)
         }
       })
+  },
+
+  /**
+   * Auto-login handler
+   *
+   * @param req
+   * @param res
+   */
+  loggedIn: (req, res) => {
+    res.redirect(303, paths.selfCreateService.serviceNaming)
   },
 
   /**
@@ -206,6 +216,39 @@ module.exports = {
    * @param res
    */
   showNameYourService: (req, res) => {
-    res.render('self_create_service/set_name')
+    const serviceName = _.get(req, 'session.pageData.submitYourServiceName.serviceName', '')
+    _.unset(req, 'session.pageData.submitYourServiceName')
+    res.render('self_create_service/set_name', {
+      serviceName
+    })
+  },
+
+  /**
+   * Process submission of service name form
+   *
+   * @param req
+   * @param res
+   */
+  submitYourServiceName: (req, res) => {
+    const correlationId = req.correlationId
+    const serviceName = req.body['service-name']
+
+    _.set(req, 'session.pageData.submitYourServiceName', {
+      serviceName
+    })
+
+    return validateServiceNamingInputs(serviceName)
+      .then(() => {
+        return registrationService.updateServiceName(req.user.services[0].externalId, serviceName, correlationId)
+      })
+      .then((updatedService) => {
+        _.unset(req, 'session.pageData.submitYourServiceName')
+        res.redirect(303, paths.user.loggedIn)
+      })
+      .catch(err => {
+        logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
+        req.flash('genericError', err)
+        res.redirect(303, paths.selfCreateService.serviceNaming)
+      })
   }
 }

@@ -5,7 +5,7 @@ Set the service name - GOV.UK Pay
 {{/pageTitle}}
 {{$mainContent}}
 <div id="display-name-your-service" class="column-half no-padding">
-    <form action="{{routes.selfCreateService.serviceNaming}}" class="form" method="post" class="submit-two-fa" id="name-your-service-form">
+    <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
         <h1 class="form-title heading-large">What service will you be taking payments for?</h1>
         <div class="form-group">
@@ -16,7 +16,7 @@ Set the service name - GOV.UK Pay
 	            </span>
             </label>
 
-            <input class="form-control form-control-5em" data-module="" id="service-name" name="service-name" type="text" value="">
+            <input class="form-control form-control-5em" data-module="" id="service-name" name="service-name" type="text" value="{{serviceName}}">
         </div>
         <div class="form-group">
             <input class="button" type="submit" value="Add service">
