@@ -42,7 +42,6 @@ module.exports = {
   validMinimalUser: () => {
     let newExternalId = random.randomUuid()
     let newUsername = randomUsername()
-    let role = {name: 'admin'}
     let defaultServiceId = randomServiceId()
     let accountIds = [randomAccountId()]
 
@@ -67,26 +66,22 @@ module.exports = {
 
     return {
       getPactified: () => {
-        data.role_name = role.name
         return pactUsers.pactify(data)
       },
       getAsObject: () => {
-        data.role = role
         return new User(data)
       },
       getPlain: () => {
-        data.role_name = role.name
         return data
       }
     }
   },
 
   validUser: (opts = {}) => {
-    let newExternalId = random.randomUuid()
-    let newUsername = randomUsername()
-    let role = {name: 'admin'}
-    let defaultServiceId = opts.default_service_id || randomServiceId()
-    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()]
+    let newExternalId = random.randomUuid();
+    let newUsername = randomUsername();
+    let defaultServiceId = opts.default_service_id || randomServiceId();
+    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()];
 
     let data = {
       external_id: opts.external_id || newExternalId,
@@ -108,21 +103,17 @@ module.exports = {
       otp_key: opts.otp_key || randomOtpKey(),
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
-      session_version: opts.session_version || 0,
-      role: opts.role || {}
+      session_version: opts.session_version || 0
     }
 
     return {
       getPactified: () => {
-        data.role_name = role.name
         return pactUsers.pactify(data)
       },
       getAsObject: () => {
-        data.role = role
         return new User(data)
       },
       getPlain: () => {
-        data.role_name = role.name
         return data
       }
     }
@@ -161,7 +152,6 @@ module.exports = {
         },
       }],
       otp_key: request.otp_key || '43c3c4t',
-      role: request.role || {'name': 'admin', 'description': 'Administrator'},
       telephone_number: request.telephone_number || '0123441',
       '_links': [{
         'href': `http://adminusers.service/v1/api/users/${req_external_id}`,
@@ -194,17 +184,15 @@ module.exports = {
       gateway_account_ids: [randomAccountId()],
       service_ids: [defaultServiceId],
       telephone_number: randomTelephoneNumber(),
-      role_name: role
+      role_name: role.name
     }
 
     return {
       getPactified: () => {
-        data.role_name = role.name
         return pactUsers.pactify(data)
       },
 
       getPlain: () => {
-        data.role_name = role.name
         return data
       }
     }

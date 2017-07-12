@@ -44,12 +44,6 @@ class User {
     this.telephoneNumber = userData.telephone_number || '';
     this.disabled = userData.disabled ? userData.disabled : false;
     this.sessionVersion = userData.session_version || 0;
-
-    /**
-     * @Deprecated
-     * ToDo: The below are deprecated in favour of the serviceRoles model for per-service permissions/roles
-     */
-    this.role = userData.role || {};
   }
 
   /**
@@ -76,12 +70,6 @@ class User {
       email: this.email,
       gateway_account_ids: this.gatewayAccountIds,
       telephone_number: this.telephoneNumber,
-      /**
-       * As of now, we expect these JSON representations are only used for data transfer between AdminUsers.
-       * AdminUsers does not require the "role.description" (ever) as it is set directly from migration scripts.
-       * Hence we are flattening the role object just to "role_name" here.
-       */
-      role_name: this.role.name
     };
 
     if (this.otpKey) {

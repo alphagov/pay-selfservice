@@ -77,7 +77,7 @@ describe('adminusers client - authenticate', function () {
           expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, expectedUser.service_roles[0].gateway_account_ids)).to.be.equal(true);
           expect(user.telephoneNumber).to.be.equal(expectedUser.telephone_number);
           expect(user.otpKey).to.be.equal(expectedUser.otp_key);
-          expect(user.role.name).to.be.equal(expectedUser.role.name);
+          expect(user.serviceRoles[0].role.name).to.be.equal(expectedUser.service_roles[0].role.name);
           expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUser.service_roles[0].role.permissions.length);
         }).should.notify(done);
       });
