@@ -19,11 +19,12 @@ let invalidTelephoneNumber = (telephoneNumber) => {
   }
 };
 
+const hasValue = (param) => {
+  return !_.isEmpty(_.trim(param));
+};
+
 module.exports = {
   shouldProceedWithRegistration: (registerInviteCookie) => {
-    let hasValue = (param) => {
-      return !_.isEmpty(_.trim(param));
-    };
     let defer = q.defer();
 
     if (!registerInviteCookie) {
@@ -103,4 +104,15 @@ module.exports = {
     return defer.promise;
   },
 
+  validateServiceNamingInputs: (serviceName) => {
+    const defer = q.defer();
+
+    if (hasValue(serviceName)) {
+      defer.resolve();
+    } else {
+      defer.reject('Invalid service name');
+    }
+
+    return defer.promise;
+  }
 };

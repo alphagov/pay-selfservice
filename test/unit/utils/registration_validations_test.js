@@ -231,4 +231,29 @@ describe('registration_validation module', function () {
         .notify(done);
     });
   });
+
+  describe('validate service naming input', function () {
+
+    it('should success if service name is valid', function (done) {
+      const validServiceName = 'My Service name';
+
+      validation.validateServiceNamingInputs(validServiceName).should.be.fulfilled.notify(done);
+    });
+
+    it('should error if service name is undefined', function (done) {
+      const invalidServiceName = undefined;
+
+      validation.validateServiceNamingInputs(invalidServiceName).should.be.rejected.then(response => {
+        expect(response).to.equal('Invalid service name');
+      }).should.notify(done);
+    });
+
+    it('should error if service name is whitespace', function (done) {
+      const invalidServiceName = ' ';
+
+      validation.validateServiceNamingInputs(invalidServiceName).should.be.rejected.then(response => {
+        expect(response).to.equal('Invalid service name');
+      }).should.notify(done);
+    });
+  });
 });
