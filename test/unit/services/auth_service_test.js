@@ -266,9 +266,9 @@ describe('auth service', function () {
 
     it("should return first gateway_account_id if user has multiple gateway accounts if its undefined in cookie", function (done) {
       const req = {
-        user: mockUser({
-          gateway_account_ids: ["1", "2"]
-        })
+        service:{
+          gatewayAccountIds: ["1", "2"]
+        }
       };
       const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
@@ -279,9 +279,9 @@ describe('auth service', function () {
     it("should return first gateway_account_id if user has multiple gateway accounts if its empty object in cookie", function (done) {
       const req = {
         gateway_account: {},
-        user: mockUser({
-          gateway_account_ids: ["1", "2"]
-        })
+        service:{
+          gatewayAccountIds: ["1", "2"]
+        }
       };
       const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
@@ -294,9 +294,9 @@ describe('auth service', function () {
         gateway_account: {
           currentGatewayAccountId: null
         },
-        user: mockUser({
-          gateway_account_ids: ["1", "2"]
-        })
+        service:{
+          gatewayAccountIds: ["1", "2"]
+        }
       };
       const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 1);
@@ -309,13 +309,15 @@ describe('auth service', function () {
         gateway_account: {
           currentGatewayAccountId: "777"
         },
-        user: mockUser({
-          gateway_account_ids: ["1", "2", "3"]
-        })
+        service:{
+          gatewayAccountIds: ["1", "2", "3"]
+        }
       };
       const test = auth.getCurrentGatewayAccountId(req);
-      assert.equal(test, 1);
-      assert.equal(req.gateway_account.currentGatewayAccountId, 1);
+
+      expect(test).to.equal(1)
+      expect(req.gateway_account.currentGatewayAccountId).to.equal("1")
+
       done();
     });
 
@@ -324,9 +326,9 @@ describe('auth service', function () {
         gateway_account: {
           currentGatewayAccountId: "3"
         },
-        user: mockUser({
-          gateway_account_ids: ["1", "2", "3"]
-        })
+        service:{
+          gatewayAccountIds: ["1", "2", "3"]
+        }
       };
       const test = auth.getCurrentGatewayAccountId(req);
       assert.equal(test, 3);

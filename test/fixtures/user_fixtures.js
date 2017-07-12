@@ -50,7 +50,6 @@ module.exports = {
       external_id: newExternalId,
       username: newUsername,
       email: `${newUsername}@example.com`,
-      gateway_account_ids: accountIds,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -93,7 +92,6 @@ module.exports = {
       external_id: opts.external_id || newExternalId,
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
-      gateway_account_ids: gatewayAccountIds,
       service_roles: opts.service_roles || [{
         service: {
           name: 'System Generated',
@@ -146,7 +144,6 @@ module.exports = {
       external_id: req_external_id,
       username: req_username,
       email: request.email || `${req_username}@example.com`,
-      gateway_account_ids: gatewayAccountIds,
       service_roles: request.service_roles || [{
         service: {
           name: 'System Generated',

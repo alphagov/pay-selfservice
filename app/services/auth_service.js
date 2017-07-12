@@ -123,16 +123,16 @@ function getCurrentGatewayAccountId(req) {
     req.gateway_account = {};
   }
   // retrieve user's gatewayAccountIds
-  let userGatewayAccountIds = lodash.get(req, "user.gatewayAccountIds");
-  if ((!userGatewayAccountIds) || (userGatewayAccountIds.length === 0)) {
+  let currentServiceGatewayAccountIds = lodash.get(req, "service.gatewayAccountIds");
+  if ((!currentServiceGatewayAccountIds) || (currentServiceGatewayAccountIds.length === 0)) {
     logger.error(`Could not resolve the gatewayAccountId for user: ${lodash.get(req, 'user.externalId')}`);
     return null;
   }
   // check if we don't have Cookie value
   // or if it's different user  / different userGatewayAccountIds
   if ((!currentGatewayAccountId) ||
-    (userGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
-    currentGatewayAccountId = userGatewayAccountIds[0];
+    (currentServiceGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
+    currentGatewayAccountId = currentServiceGatewayAccountIds[0];
   }
   // save currentGatewayAccountId and return it
   req.gateway_account.currentGatewayAccountId = currentGatewayAccountId;

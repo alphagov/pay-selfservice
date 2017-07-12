@@ -75,7 +75,6 @@ describe('adminusers client - get user', function () {
           expect(user.externalId).to.be.equal(expectedUserData.external_id);
           expect(user.username).to.be.equal(expectedUserData.username);
           expect(user.email).to.be.equal(expectedUserData.email);
-          expect(user.gatewayAccountIds.length).to.be.equal(2);
           expect(user.serviceRoles.length).to.be.equal(1);
           expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2);
           expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);

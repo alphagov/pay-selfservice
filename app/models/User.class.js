@@ -49,7 +49,6 @@ class User {
      * @Deprecated
      * ToDo: The below are deprecated in favour of the serviceRoles model for per-service permissions/roles
      */
-    this.gatewayAccountIds = _.concat([], userData.gateway_account_ids);
     this.permissions = userData.permissions || [];
     this.role = userData.role || {};
   }
