@@ -1,7 +1,6 @@
-'use strict';
+'use strict'
 
 module.exports = {
-  root: "/",
   transactions: {
     index: '/transactions',
     download: '/transactions/download',
@@ -13,13 +12,11 @@ module.exports = {
     edit: '/credentials/edit',
     create: '/credentials'
   },
-
   notificationCredentials: {
     index: '/credentials',
     edit: '/notification-credentials/edit',
     update: '/notification-credentials'
   },
-
   user: {
     logIn: '/login',
     profile: '/my-profile',
@@ -33,7 +30,6 @@ module.exports = {
     forgottenPassword: '/reset-password',
     passwordRequested: '/reset-password-requested',
     forgottenPasswordReset: '/reset-password/:id'
-
   },
   devTokens: {
     index: '/tokens',
@@ -75,13 +71,13 @@ module.exports = {
     invite: '/service/:externalServiceId/team-members/invite'
   },
   inviteValidation: {
-    validateInvite:'/invites/:code',
+    validateInvite: '/invites/:code',
   },
   registerUser: {
     registration: '/register',
     otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',
-    logUserIn:'/proceed-to-login'
+    logUserIn: '/proceed-to-login'
   },
   selfCreateService: {
     register: '/create-service/register',
@@ -100,7 +96,7 @@ module.exports = {
     path: '/healthcheck'
   },
   staticPaths: {
-    naxsiError: "/request-denied"
+    naxsiError: '/request-denied'
   },
   generateRoute: require(__dirname + '/utils/generate_route.js')
-};
+}
