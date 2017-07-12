@@ -24,7 +24,7 @@ module.exports = function (clientOptions = {}) {
   let userResource = `${baseUrl}/v1/api/users`
   let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`
   let resetPasswordResource = `${baseUrl}/v1/api/reset-password`
-  let serviceUserResource = `${baseUrl}/v1/api/services`
+  let serviceResource = `${baseUrl}/v1/api/services`
   let inviteResource = `${baseUrl}/v1/api/invites`
 
   /**
@@ -310,7 +310,7 @@ module.exports = function (clientOptions = {}) {
   }
 
   let getServiceUsers = (serviceId) => {
-    let url = `${serviceUserResource}/${serviceId}/users`
+    let url = `${serviceResource}/${serviceId}/users`
     let defer = q.defer()
     let startTime = new Date()
     let context = {
@@ -655,7 +655,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       headers: {}
     }
-    const url = `${serviceUserResource}/${serviceId}/users/${userId}`
+    const url = `${serviceResource}/${serviceId}/users/${userId}`
     const defer = q.defer()
     const startTime = new Date()
     const context = {
@@ -697,7 +697,7 @@ module.exports = function (clientOptions = {}) {
     if (gatewayAccountIds) {
       params.payload.gateway_account_ids = gatewayAccountIds
     }
-    const url = serviceUserResource
+    const url = serviceResource
     const defer = q.defer()
     const startTime = new Date()
     const context = {
@@ -715,6 +715,46 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
+   * Update service name
+   *
+   * @param serviceExternalId
+   * @param serviceName
+   * @returns {*|Constructor|promise}
+   */
+  const updateServiceName = (serviceExternalId, serviceName) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        op: 'replace',
+        path: 'name',
+        value: serviceName
+      }
+    }
+
+    const url = `${serviceResource}/${serviceExternalId}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'PATCH',
+      description: 'update service name',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.patch(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter)
 
     return defer.promise
@@ -740,6 +780,7 @@ module.exports = function (clientOptions = {}) {
     createUser: createUser,
     deleteUser: deleteUser,
     verifyOtpForServiceInvite: verifyOtpForServiceInvite,
-    createService: createService
+    createService: createService,
+    updateServiceName: updateServiceName
   }
 }
