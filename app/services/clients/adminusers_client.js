@@ -309,8 +309,8 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  let getServiceUsers = (serviceId) => {
-    let url = `${serviceResource}/${serviceId}/users`
+  let getServiceUsers = (serviceExternalId) => {
+    let url = `${serviceResource}/${serviceExternalId}/users`
     let defer = q.defer()
     let startTime = new Date()
     let context = {
@@ -374,17 +374,17 @@ module.exports = function (clientOptions = {}) {
    *
    * @param invitee
    * @param senderId
-   * @param externalServiceId
+   * @param serviceExternalId
    * @param roleName
    * @returns {Promise}
    */
-  let inviteUser = (invitee, senderId, externalServiceId, roleName) => {
+  let inviteUser = (invitee, senderId, serviceExternalId, roleName) => {
     let params = {
       correlationId: correlationId,
       payload: {
         email: invitee,
         sender: senderId,
-        service_external_id: externalServiceId,
+        service_external_id: serviceExternalId,
         role_name: roleName
       }
     }
@@ -615,14 +615,14 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  const createUser = (email, gatewayAccountIds, serviceIds, role, phoneNumber) => {
+  const createUser = (email, gatewayAccountIds, serviceExternalIds, role, phoneNumber) => {
     const params = {
       correlationId: correlationId,
       payload: {
         email: email,
         username: email,
         gateway_account_ids: gatewayAccountIds,
-        service_ids: serviceIds,
+        service_ids: serviceExternalIds,
         telephone_number: phoneNumber,
         role_name: role
       }
@@ -650,12 +650,12 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  let deleteUser = (serviceId, removerId, userId) => {
+  let deleteUser = (serviceExternalId, removerId, userId) => {
     const params = {
       correlationId: correlationId,
       headers: {}
     }
-    const url = `${serviceResource}/${serviceId}/users/${userId}`
+    const url = `${serviceResource}/${serviceExternalId}/users/${userId}`
     const defer = q.defer()
     const startTime = new Date()
     const context = {
