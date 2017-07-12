@@ -82,6 +82,65 @@ module.exports = {
     }
   },
 
+  validUpdateServiceNameRequest: (opts) => {
+    opts = opts || {}
+
+    const data = {
+      op: 'replace',
+      path: 'name',
+      value: opts.name || 'updated-service-name'
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validUpdateServiceNameResponse: (opts) => {
+    opts = opts || {}
+
+    const externalId = opts.external_id || 'externalId'
+    const serviceName = opts.name || 'updated-service-name'
+
+    const data = {
+      external_id: externalId,
+      name: serviceName
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  badRequestWithInvalidPathWhenUpdateServiceNameRequest: (opts) => {
+    opts = opts || {}
+
+    const data = {
+      op: 'replace',
+      path: 'invalid-path',
+      value: opts.name || 'updated-service-name'
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
   badRequestResponseWhenNonNumericGatewayAccountIds: (nonNumericGatewayAccountIds) => {
     const responseData = _.map(nonNumericGatewayAccountIds, (field) => {
       return `Field [${field}] must contain numeric values`
