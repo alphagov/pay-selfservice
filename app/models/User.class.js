@@ -49,7 +49,6 @@ class User {
      * @Deprecated
      * ToDo: The below are deprecated in favour of the serviceRoles model for per-service permissions/roles
      */
-    this.permissions = userData.permissions || [];
     this.role = userData.role || {};
   }
 
@@ -62,8 +61,7 @@ class User {
 
     return _.merge(json, {
       disabled: this.disabled,
-      session_version: this.sessionVersion,
-      permissions: this.permissions,
+      session_version: this.sessionVersion
     });
   }
 

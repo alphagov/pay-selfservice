@@ -80,7 +80,7 @@ describe('adminusers client - get user', function () {
           expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number);
           expect(user.otpKey).to.be.equal(expectedUserData.otp_key);
           expect(user.role.name).to.be.equal(expectedUserData.role.name);
-          expect(user.permissions.length).to.be.equal(expectedUserData.permissions.length);
+          expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length);
         }).should.notify(done);
       });
     });

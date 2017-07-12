@@ -109,7 +109,6 @@ module.exports = {
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
-      permissions: opts.permissions || ['perm-1'],
       role: opts.role || {}
     }
 
@@ -164,9 +163,6 @@ module.exports = {
       otp_key: request.otp_key || '43c3c4t',
       role: request.role || {'name': 'admin', 'description': 'Administrator'},
       telephone_number: request.telephone_number || '0123441',
-
-      //DEPRECATED: remove once migrated to serviceRole.role.permissions
-      permissions: request.permissions || ['perm-1', 'perm-2', 'perm-3'],
       '_links': [{
         'href': `http://adminusers.service/v1/api/users/${req_external_id}`,
         'rel': 'self',
