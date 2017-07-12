@@ -123,7 +123,7 @@ function getCurrentGatewayAccountId(req) {
     req.gateway_account = {};
   }
   // retrieve user's gatewayAccountIds
-  let currentServiceGatewayAccountIds = lodash.get(req, "service.gatewayAccountIds");
+  let currentServiceGatewayAccountIds = lodash.get(req, "service.gatewayAccountIds") || lodash.get(req, "user.serviceRoles[0].service.gatewayAccountIds", false);
   if ((!currentServiceGatewayAccountIds) || (currentServiceGatewayAccountIds.length === 0)) {
     logger.error(`Could not resolve the gatewayAccountId for user: ${lodash.get(req, 'user.externalId')}`);
     return null;
