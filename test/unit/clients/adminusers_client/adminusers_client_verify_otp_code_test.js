@@ -1,11 +1,11 @@
 var Pact = require('pact');
-var helpersPath = __dirname + '/../../test_helpers/';
+var helpersPath = '../../../test_helpers/';
 var pactProxy = require(helpersPath + '/pact_proxy.js');
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-var getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-var registrationFixtures = require(__dirname + '/../../fixtures/invite_fixtures');
-var PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+var getAdminUsersClient = require('../../../../app/services/clients/adminusers_client');
+var registrationFixtures = require('../../../fixtures/invite_fixtures');
+var PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 

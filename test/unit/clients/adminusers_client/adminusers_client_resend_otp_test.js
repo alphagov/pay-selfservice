@@ -6,10 +6,10 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies
-const pactProxy = require('../../test_helpers/pact_proxy')
-const PactInteractionBuilder = require('../../fixtures/pact_interaction_builder').PactInteractionBuilder
-const getAdminUsersClient = require('../../../app/services/clients/adminusers_client')
-const inviteFixtures = require(__dirname + '/../../fixtures/invite_fixtures')
+const pactProxy = require('../../../test_helpers/pact_proxy')
+const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
+const getAdminUsersClient = require('../../../../app/services/clients/adminusers_client')
+const inviteFixtures = require('../../../fixtures/invite_fixtures')
 
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'

@@ -1,12 +1,12 @@
 let Pact = require('pact');
-let helpersPath = __dirname + '/../../test_helpers/';
+let helpersPath =  '../../../test_helpers/';
 let pactProxy = require(helpersPath + '/pact_proxy.js');
 let chai = require('chai');
 let _ = require('lodash');
 let chaiAsPromised = require('chai-as-promised');
-let userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
-let getAdminUsersClient = require('../../../app/services/clients/adminusers_client');
-let PactInteractionBuilder = require(__dirname + '/../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+let userFixtures = require('../../../fixtures/user_fixtures');
+let getAdminUsersClient = require('../../../../app/services/clients/adminusers_client');
+let PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 chai.use(chaiAsPromised);
 
