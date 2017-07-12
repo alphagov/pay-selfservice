@@ -17,8 +17,8 @@ let hasSameService = (admin, user, externalServiceId) => {
   return admin.hasService(externalServiceId) && user.hasService(externalServiceId);
 };
 
-let serviceIdMismatchView = (req, res, admin, user, correlationId) => {
-  logger.error(`[requestId=${correlationId}] mismatching service Ids between admin user [service=${admin.serviceIds[0]}] and user [service=${user.serviceIds[0]}]`);
+let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId, correlationId) => {
+  logger.error(`[requestId=${correlationId}] service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`);
   errorResponse(req, res, 'Unable to update permissions for this user');
 };
 
@@ -35,14 +35,14 @@ module.exports = {
 
     let correlationId = req.correlationId;
     let externalUserId = req.params.externalUserId;
-    let externalServiceId = req.params.externalServiceId;
+    let serviceExternalId = req.params.externalServiceId;
 
     let viewData = user => {
-      const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, externalServiceId, user.externalId);
-      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId);
-      const teamMemberProfileLink = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId);
+      const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, serviceExternalId, user.externalId);
+      const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, serviceExternalId);
+      const teamMemberProfileLink = formattedPathFor(paths.teamMembers.show, serviceExternalId, user.externalId);
 
-      const role = user.getRoleForService(externalServiceId);
+      const role = user.getRoleForService(serviceExternalId);
       return {
         email: user.email,
         editPermissionsLink,
@@ -70,8 +70,8 @@ module.exports = {
 
     userService.findByExternalId(externalUserId, correlationId)
       .then(user => {
-        if (!hasSameService(req.user, user, externalServiceId)) {
-          serviceIdMismatchView(req, res, req.user, user, correlationId);
+        if (!hasSameService(req.user, user, serviceExternalId)) {
+          serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId);
         } else {
           successResponse(req, res, 'services/team_member_permissions', viewData(user));
         }
@@ -114,7 +114,7 @@ module.exports = {
     userService.findByExternalId(externalUserId, correlationId)
       .then(user => {
         if (!hasSameService(req.user, user, serviceExternalId)) {
-          serviceIdMismatchView(req, res, req.user, user, correlationId);
+          serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId);
         } else {
           if (targetRole.name === user.getRoleForService(serviceExternalId)) {
             onSuccess(user);

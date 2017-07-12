@@ -40,7 +40,7 @@ const serviceSwitchController = require('./controllers/service_switch_controller
 const serviceUsersController = require('./controllers/service_users_controller')
 const inviteUserController = require('./controllers/invite_user_controller')
 const registerCtrl = require('./controllers/register_user_controller')
-const permissionController = require('./controllers/service_roles_update_controller')
+const serviceRolesUpdateController = require('./controllers/service_roles_update_controller')
 const toggle3ds = require('./controllers/toggle_3ds_controller')
 const selfCreateServiceCtrl = require('./controllers/create_service_controller')
 const inviteValidationCtrl = require('./controllers/invite_validation_controller')
@@ -185,8 +185,8 @@ module.exports.bind = function (app) {
   // TEAM MEMBERS - USER PROFILE
   app.get(teamMembers.index, resolveService, serviceUsersController.index)
   app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
-  app.get(teamMembers.permissions, permission('users-service:create'), permissionController.index)
-  app.post(teamMembers.permissions, permission('users-service:create'), permissionController.update)
+  app.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
+  app.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
   app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
   app.get(user.profile, enforceUserAuthenticated, serviceUsersController.profile)
 

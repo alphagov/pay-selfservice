@@ -94,7 +94,6 @@ module.exports = {
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
       gateway_account_ids: gatewayAccountIds,
-      service_ids: opts.service_ids || [defaultServiceId],
       service_roles: opts.service_roles || [{
         service: {
           name: 'System Generated',
