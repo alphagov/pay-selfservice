@@ -49,7 +49,6 @@ class User {
      * @Deprecated
      * ToDo: The below are deprecated in favour of the serviceRoles model for per-service permissions/roles
      */
-    this.services = this.serviceRoles.map(serviceRole => serviceRole.service);
     this.gatewayAccountIds = _.concat([], userData.gateway_account_ids);
     this.permissions = userData.permissions || [];
     this.role = userData.role || {};
@@ -78,7 +77,6 @@ class User {
       external_id: this.externalId,
       username: this.username,
       email: this.email,
-      services: this.services.map(service => service.toJson()),
       gateway_account_ids: this.gatewayAccountIds,
       telephone_number: this.telephoneNumber,
       /**

@@ -10,7 +10,7 @@ const getHeldPermissions = require('../utils/get_held_permissions');
 const successResponse = responses.response;
 
 const validAccountId = (accountId, user) => {
-  const gatewayAccountIds = _.flattenDeep(_.concat(user.services.map(service => service.gatewayAccountIds)));
+  const gatewayAccountIds = _.flattenDeep(_.concat(user.serviceRoles.map(serviceRole => serviceRole.service.gatewayAccountIds)));
   return accountId && gatewayAccountIds.indexOf(accountId) !== -1
 };
 
