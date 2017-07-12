@@ -13,6 +13,7 @@ module.exports.index = function (req, res) {
   }
 
   var model = {
+    supports3ds: req.account.payment_provider === 'worldpay',
     requires3ds: req.account.requires3ds,
     justToggled: typeof req.query.toggled !== 'undefined'
   };

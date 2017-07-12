@@ -57,13 +57,42 @@ describe('The 3D Secure index endpoint', function () {
     userCreator.mockUserResponse(user.toJson(), done);
   });
 
+  it('should not support 3D Secure for payment providers that are not Worldpay', function (done) {
+    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+      .times(2)
+      .reply(200, {
+        "payment_provider": "sandbox",
+        "requires3ds": false
+      });
+
+    var expectedData = {
+      supports3ds: false,
+      requires3ds: false,
+      justToggled: false,
+      permissions: {
+        'toggle_3ds_read': true
+      },
+      navigation: true,
+      currentGatewayAccount: {
+        "payment_provider": "sandbox",
+        "requires3ds": false
+      }
+    };
+
+    build_get_request(paths.toggle3ds.index, app)
+      .expect(200, expectedData)
+      .end(done);
+   });
+
   it('should display if 3D Secure is on', function (done) {
     connectorMock.get(CONNECTOR_ACCOUNT_PATH)
       .reply(200, {
+        "payment_provider": "worldpay",
         "requires3ds": true
       });
 
     var expectedData = {
+      supports3ds: true,
       requires3ds: true,
       justToggled: false,
       permissions: {
@@ -71,6 +100,7 @@ describe('The 3D Secure index endpoint', function () {
       },
       navigation: true,
       currentGatewayAccount: {
+        "payment_provider": "worldpay",
         "requires3ds": true
       }
     };
@@ -84,10 +114,12 @@ describe('The 3D Secure index endpoint', function () {
     connectorMock.get(CONNECTOR_ACCOUNT_PATH)
       .times(2)
       .reply(200, {
+        "payment_provider": "worldpay",
         "requires3ds": true
       });
 
     var expectedData = {
+      supports3ds: true,
       requires3ds: true,
       justToggled: true,
       permissions: {
@@ -95,6 +127,7 @@ describe('The 3D Secure index endpoint', function () {
       },
       navigation: true,
       currentGatewayAccount: {
+        "payment_provider": "worldpay",
         "requires3ds": true
       }
     };
@@ -107,10 +140,12 @@ describe('The 3D Secure index endpoint', function () {
    it('should display if 3D Secure is off', function (done) {
      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
        .reply(200, {
+         "payment_provider": "worldpay",
          "requires3ds": false
        });
 
      var expectedData = {
+       supports3ds: true,
        requires3ds: false,
        justToggled: false,
        permissions: {
@@ -118,6 +153,7 @@ describe('The 3D Secure index endpoint', function () {
        },
        navigation: true,
        currentGatewayAccount: {
+         "payment_provider": "worldpay",
          "requires3ds": false
        }
      };
@@ -130,10 +166,12 @@ describe('The 3D Secure index endpoint', function () {
    it('should display if 3D Secure is off and has just been toggled', function (done) {
      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
        .reply(200, {
+         "payment_provider": "worldpay",
          "requires3ds": false
        });
 
      var expectedData = {
+       supports3ds: true,
        requires3ds: false,
        justToggled: true,
        permissions: {
@@ -141,6 +179,7 @@ describe('The 3D Secure index endpoint', function () {
        },
        navigation: true,
        currentGatewayAccount: {
+         "payment_provider": "worldpay",
          "requires3ds": false
        }
      };
