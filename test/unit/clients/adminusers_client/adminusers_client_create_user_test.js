@@ -88,38 +88,38 @@ describe('adminusers client - create a new user', function () {
           expect(user.role.name).to.be.equal(userData.role_name)
         }).should.notify(done)
       })
-    }),
+    })
 
-      context('create a user - missing required fields', () => {
-        const errorResponse = userFixtures.badRequestResponseWhenFieldsMissing(['username', 'email', 'gateway_account_ids', 'telephone_number', 'role_name'])
+    context('create a user - missing required fields', () => {
+      const errorResponse = userFixtures.badRequestResponseWhenFieldsMissing(['username', 'email', 'gateway_account_ids', 'telephone_number', 'role_name'])
 
-        beforeEach((done) => {
-          adminUsersMock.addInteraction(
-            new PactInteractionBuilder(`${USER_RESOURCE}`)
-              .withUponReceiving('a create user request missing required fields')
-              .withMethod('POST')
-              .withRequestBody({})
-              .withStatusCode(400)
-              .withResponseBody(errorResponse.getPactified())
-              .build()
-          ).then(() => {
-            done()
-          }).catch(e =>
-            console.log(e)
-          )
-        })
-
-        afterEach((done) => {
-          adminUsersMock.finalize().then(() => done())
-        })
-
-        it('should return a 400', function (done) {
-          adminusersClient.createUser().should.be.rejected.then(response => {
-            expect(response.errorCode).to.equal(400)
-            expect(response.message.errors.length).to.equal(5)
-            expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
-          }).should.notify(done)
-        })
+      beforeEach((done) => {
+        adminUsersMock.addInteraction(
+          new PactInteractionBuilder(`${USER_RESOURCE}`)
+            .withUponReceiving('a create user request missing required fields')
+            .withMethod('POST')
+            .withRequestBody({})
+            .withStatusCode(400)
+            .withResponseBody(errorResponse.getPactified())
+            .build()
+        ).then(() => {
+          done()
+        }).catch(e =>
+          console.log(e)
+        )
       })
+
+      afterEach((done) => {
+        adminUsersMock.finalize().then(() => done())
+      })
+
+      it('should return a 400', function (done) {
+        adminusersClient.createUser().should.be.rejected.then(response => {
+          expect(response.errorCode).to.equal(400)
+          expect(response.message.errors.length).to.equal(5)
+          expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
+        }).should.notify(done)
+      })
+    })
   })
 })
