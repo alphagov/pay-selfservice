@@ -202,6 +202,7 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
 
         return expect(result)
           .to.be.rejected
+          .and.to.eventually.have.property('errorCode').to.equal(404)
 
       })
 

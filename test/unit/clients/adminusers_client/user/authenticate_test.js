@@ -1,6 +1,5 @@
 var Pact = require('pact');
-var helpersPath = '../../../test_helpers/';
-var pactProxy = require(helpersPath + '/pact_proxy.js');
+var pactProxy = require('../../../../test_helpers/pact_proxy');
 var chai = require('chai');
 var _ = require('lodash');
 var chaiAsPromised = require('chai-as-promised');

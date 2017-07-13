@@ -151,4 +151,28 @@ module.exports = {
 
     return pactServices.withPactified(response)
   },
+
+  addGatewayAccountsRequest: (opts) => {
+    opts = opts || {}
+    opts.gatewayAccountIds = opts.gatewayAccountIds || ['666']
+
+    const data = {
+      op: 'add',
+      path: 'gateway_account_ids',
+      value: [].concat(opts.gatewayAccountIds)
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+
+
+  },
+
+
 }

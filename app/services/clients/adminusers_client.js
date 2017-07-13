@@ -5,6 +5,7 @@ const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
 const User = require('../../models/User.class')
+const Service = require('../../models/Service.class');
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
 const SERVICE_NAME = 'adminusers'
@@ -16,6 +17,7 @@ const HEADER_USER_CONTEXT = 'GovUkPay-User-Context'
  */
 const responseBodyToUserTransformer = body => new User(body)
 const responseBodyToUserListTransformer = body => body.map(userData => new User(userData))
+const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
 
@@ -790,7 +792,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToServiceTransformer)
 
     requestLogger.logRequestStart(context)
 
