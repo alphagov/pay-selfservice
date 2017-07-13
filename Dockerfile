@@ -17,6 +17,8 @@ RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/
 RUN apk add glibc-2.25-r0.apk
 
 ENV PORT 9000
+ENV AWS_XRAY_DAEMON_ADDRESS="172.74.5.254:2000"
+ENV AWS_XRAY_DEBUG_MODE=TRUE
 
 EXPOSE 9000
 

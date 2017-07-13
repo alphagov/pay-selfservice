@@ -1,3 +1,5 @@
+const AWSXRay = require('aws-xray-sdk');
+AWSXRay.captureHTTPsGlobal(require('https'));
 const https    = require('https');
 const httpAgent    = require('http').globalAgent;
 const urlParse = require('url').parse;
@@ -34,7 +36,7 @@ const client = request
     json: true,
     // Adding retry on ECONNRESET as a temporary fix for PP-1727
     maxAttempts: 3,
-    retryDelay: 5000,  
+    retryDelay: 5000,
     retryStrategy: retryOnEconnreset
   });
 
