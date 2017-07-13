@@ -83,9 +83,9 @@ describe('adminusers client - create a new user', function () {
           userData.telephone_number).should.be.fulfilled.then(user => {
           expect(user.username).to.be.equal(userData.username)
           expect(user.email).to.be.equal(userData.email)
-          expect(_.isEqual(user.gatewayAccountIds, userData.gateway_account_ids)).to.be.equal(true)
+          expect(user.serviceRoles[0].service.gatewayAccountIds).to.deep.equal(userData.gateway_account_ids)
           expect(user.telephoneNumber).to.be.equal(userData.telephone_number)
-          expect(user.role.name).to.be.equal(userData.role_name)
+          expect(user.serviceRoles[0].role.name).to.be.equal(userData.role_name)
         }).should.notify(done)
       })
     })

@@ -50,7 +50,7 @@ describe('adminusers client - update user service role', function () {
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${user.externalId}/services/${user.service_ids[0]}`)
+          new PactInteractionBuilder(`${USER_PATH}/${user.external_id}/services/${user.service_roles[0].service.external_id}`)
             .withState('a user exist')
             .withUponReceiving('a valid update service role request')
             .withMethod('PUT')
@@ -67,8 +67,9 @@ describe('adminusers client - update user service role', function () {
 
       it('should update service role of a user successfully', function (done) {
         let requestData = request.getPlain();
-        adminusersClient.updateServiceRole(user.externalId, user.service_ids[0], requestData.role_name).should.be.fulfilled.then(function (updatedUser){
-          expect(updatedUser.role.name).to.be.equal(role);
+        adminusersClient.updateServiceRole(user.external_id, user.service_roles[0].service.external_id, requestData.role_name).should.be.fulfilled.then(function (updatedUser){
+          const updatedServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === user.service_roles[0].service.external_id);
+          expect(updatedServiceRole.role.name).to.be.equal(role);
         }).should.notify(done);
       });
     });

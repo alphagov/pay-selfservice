@@ -74,11 +74,11 @@ describe('adminusers client - authenticate', function () {
           let expectedUser = validUserResponse.getPlain();
           expect(user.username).to.be.equal(expectedUser.username);
           expect(user.email).to.be.equal(expectedUser.email);
-          expect(_.isEqual(user.gatewayAccountIds, expectedUser.gateway_account_ids)).to.be.equal(true);
+          expect(_.isEqual(user.serviceRoles[0].gatewayAccountIds, expectedUser.service_roles[0].gateway_account_ids)).to.be.equal(true);
           expect(user.telephoneNumber).to.be.equal(expectedUser.telephone_number);
           expect(user.otpKey).to.be.equal(expectedUser.otp_key);
-          expect(user.role.name).to.be.equal(expectedUser.role.name);
-          expect(user.permissions.length).to.be.equal(expectedUser.permissions.length);
+          expect(user.serviceRoles[0].role.name).to.be.equal(expectedUser.service_roles[0].role.name);
+          expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUser.service_roles[0].role.permissions.length);
         }).should.notify(done);
       });
     });
