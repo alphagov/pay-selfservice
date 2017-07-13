@@ -11,6 +11,7 @@ const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const paths = require('../paths')
 const userService = require('./user_service')
 
+// Global functions
 const submitCreateService = function (gatewayAccountIds, correlationId) {
   return getAdminUsersClient({correlationId}).createService(null, gatewayAccountIds)
 }
@@ -60,7 +61,7 @@ module.exports = {
         return userService.createUser(userData.email, [gatewayAccountId], [service.externalId], userData.role, userData.phoneNumber, correlationId)
       })
       .then(user => {
-        defer.resolve(user);
+        defer.resolve(user)
       })
       .catch(error => {
         logger.error(`[requestId=${correlationId}] Create populated service orchestration error -`, error)
@@ -79,5 +80,16 @@ module.exports = {
    */
   resendOtpCode: function (code, phoneNumber, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber)
+  },
+
+  /**
+   * Update service name
+   *
+   * @param serviceId
+   * @param serviceName
+   * @param correlationId
+   */
+  updateServiceName: function (serviceId, serviceName, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).updateServiceName(serviceId, serviceName)
   }
 }

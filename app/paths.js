@@ -1,7 +1,6 @@
-'use strict';
+'use strict'
 
 module.exports = {
-  root: "/",
   transactions: {
     index: '/transactions',
     download: '/transactions/download',
@@ -13,13 +12,11 @@ module.exports = {
     edit: '/credentials/edit',
     create: '/credentials'
   },
-
   notificationCredentials: {
     index: '/credentials',
     edit: '/notification-credentials/edit',
     update: '/notification-credentials'
   },
-
   user: {
     logIn: '/login',
     profile: '/my-profile',
@@ -33,7 +30,6 @@ module.exports = {
     forgottenPassword: '/reset-password',
     passwordRequested: '/reset-password-requested',
     forgottenPasswordReset: '/reset-password/:id'
-
   },
   devTokens: {
     index: '/tokens',
@@ -75,20 +71,21 @@ module.exports = {
     invite: '/service/:externalServiceId/team-members/invite'
   },
   inviteValidation: {
-    validateInvite:'/invites/:code',
+    validateInvite: '/invites/:code',
   },
   registerUser: {
     registration: '/register',
     otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',
-    logUserIn:'/proceed-to-login'
+    logUserIn: '/proceed-to-login'
   },
   selfCreateService: {
     register: '/create-service/register',
     confirm: '/create-service/confirm',
     otpVerify: '/create-service/verify-otp',
-    serviceNaming: '/service/set-name',
-    otpResend: '/create-service/resend-otp'
+    otpResend: '/create-service/resend-otp',
+    logUserIn: '/create-service/proceed-to-login',
+    serviceNaming: '/service/set-name'
   },
   toggle3ds: {
     index: '/3ds',
@@ -100,7 +97,7 @@ module.exports = {
     path: '/healthcheck'
   },
   staticPaths: {
-    naxsiError: "/request-denied"
+    naxsiError: '/request-denied'
   },
   generateRoute: require(__dirname + '/utils/generate_route.js')
-};
+}
