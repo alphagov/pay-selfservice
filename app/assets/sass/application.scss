@@ -17,7 +17,7 @@ $grey-8: #fff;
 
 @mixin media-down($mobile) {
   @content;
-};
+}
 
 @import 'govuk-elements';
 
@@ -52,12 +52,10 @@ $grey-8: #fff;
 @import "modules/_related_information";
 @import "modules/_marked_grid";
 
-
-
 @import 'gov-uk-overrides/_forms';
 @import 'gov-uk-overrides/_icons';
 @import 'gov-uk-overrides/_movement';
-
+@import 'gov-uk-overrides/_footer-categories';
 
 @import "template/template";
 @import "template/fonts";

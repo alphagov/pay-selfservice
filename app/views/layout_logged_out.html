@@ -22,6 +22,18 @@
         </main>
     {{/content}}
 
+    {{$footerTop}}
+      {{>includes/footer-categories}}
+    {{/footerTop}}
+
+    {{$licenceMessage}}
+      {{>includes/license-message}}
+    {{/licenceMessage}}
+
+    {{$crownCopyrightMessage}}
+      {{>includes/crown-copyright}}
+    {{/crownCopyrightMessage}}
+
     {{$bodyEnd}}
       {{>includes/scripts}}
       {{$pageSpecificJS}}
