@@ -5,6 +5,7 @@ const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
 const User = require('../../models/User.class')
+const Service = require('../../models/Service.class');
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
 const SERVICE_NAME = 'adminusers'
@@ -16,6 +17,7 @@ const HEADER_USER_CONTEXT = 'GovUkPay-User-Context'
  */
 const responseBodyToUserTransformer = body => new User(body)
 const responseBodyToUserListTransformer = body => body.map(userData => new User(userData))
+const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
 
@@ -760,7 +762,48 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
+  /**
+   * Update service name
+   *
+   * @param serviceExternalId
+   * @param gatewayAccountIds {String[]} a list of (unassigned) gateway account ids to add to the service
+   * @returns {Promise<Service|Error>}
+   */
+  const addGatewayAccountsToService = (serviceExternalId, gatewayAccountIds) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        op: 'add',
+        path: 'gateway_account_ids',
+        value: gatewayAccountIds
+      }
+    }
+
+    const url = `${serviceResource}/${serviceExternalId}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'PATCH',
+      description: 'update service name',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToServiceTransformer)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.patch(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
   return {
+    // User-related Methods
     getForgottenPassword: getForgottenPassword,
     createForgottenPassword: createForgottenPassword,
     incrementSessionVersionForUser: incrementSessionVersionForUser,
@@ -769,18 +812,25 @@ module.exports = function (clientOptions = {}) {
     updatePasswordForUser: updatePasswordForUser,
     sendSecondFactor: sendSecondFactor,
     authenticateSecondFactor: authenticateSecondFactor,
-    getServiceUsers: getServiceUsers,
-    updateServiceRole: updateServiceRole,
-    inviteUser: inviteUser,
-    getValidatedInvite: getValidatedInvite,
-    submitUserRegistration: submitUserRegistration,
     verifyOtpAndCreateUser: verifyOtpAndCreateUser,
     resendOtpCode: resendOtpCode,
-    submitServiceRegistration: submitServiceRegistration,
     createUser: createUser,
     deleteUser: deleteUser,
+
+    // UserServiceRole-related Methods
+    updateServiceRole: updateServiceRole,
+    getServiceUsers: getServiceUsers,
+
+    // Invite-related Methods
     verifyOtpForServiceInvite: verifyOtpForServiceInvite,
+    inviteUser: inviteUser,
+    getValidatedInvite: getValidatedInvite,
+    submitServiceRegistration: submitServiceRegistration,
+    submitUserRegistration: submitUserRegistration,
+
+    // Service-related Methods
     createService: createService,
-    updateServiceName: updateServiceName
+    updateServiceName: updateServiceName,
+    addGatewayAccountsToService: addGatewayAccountsToService
   }
 }
