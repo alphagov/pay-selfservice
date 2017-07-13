@@ -239,7 +239,7 @@ module.exports = {
 
     return validateServiceNamingInputs(serviceName)
       .then(() => {
-        return registrationService.updateServiceName(req.user.services[0].externalId, serviceName, correlationId)
+        return registrationService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, correlationId)
       })
       .then((updatedService) => {
         _.unset(req, 'session.pageData.submitYourServiceName')
