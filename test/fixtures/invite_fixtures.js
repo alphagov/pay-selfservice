@@ -31,10 +31,12 @@ module.exports = {
   validInviteResponse: (opts = {}) => {
     const invitee = "random@example.com";
     const type = 'user';
+    const disabled = opts.disabled === true;
 
     const data = {
       email: opts.email || invitee,
-      type: opts.type || type
+      type: opts.type || type,
+      disabled
     };
 
     if (opts.telephone_number) {
@@ -46,7 +48,7 @@ module.exports = {
         return pactInvites.pactify(data);
       },
       getPlain: () => {
-        return data;
+        return _.clone(data);
       }
     };
   },

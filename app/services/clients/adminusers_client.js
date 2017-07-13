@@ -445,6 +445,39 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Complete an invite
+   *
+   * @param inviteCode
+   * @returns {*|Constructor|promise}
+   */
+  const completeInvite = (inviteCode) => {
+    const params = {
+      correlationId: correlationId
+    }
+    const url = `${inviteResource}/${inviteCode}/complete`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'complete invite',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
    * Submit user registration details
    * @param code
    * @param phoneNumber
@@ -825,6 +858,7 @@ module.exports = function (clientOptions = {}) {
     verifyOtpForServiceInvite: verifyOtpForServiceInvite,
     inviteUser: inviteUser,
     getValidatedInvite: getValidatedInvite,
+    completeInvite: completeInvite,
     submitServiceRegistration: submitServiceRegistration,
     submitUserRegistration: submitUserRegistration,
 
