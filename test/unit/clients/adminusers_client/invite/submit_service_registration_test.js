@@ -10,9 +10,9 @@ const chaiAsPromised = require('chai-as-promised');
 
 const helpersPath = '../../../test_helpers/';
 const pactProxy = require(helpersPath + '/pact_proxy.js');
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers_client');
-const registerFixtures = require('../../../fixtures/self_register_fixtures');
-const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client');
+const registerFixtures = require('../../../../fixtures/self_register_fixtures');
+const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
 
 // Globals
 
