@@ -5,7 +5,7 @@ const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
 const User = require('../../models/User.class')
-const Service = require('../../models/Service.class');
+const Service = require('../../models/Service.class')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
 const SERVICE_NAME = 'adminusers'
@@ -21,13 +21,13 @@ const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
 
-  let baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL
-  let correlationId = clientOptions.correlationId || ''
-  let userResource = `${baseUrl}/v1/api/users`
-  let forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`
-  let resetPasswordResource = `${baseUrl}/v1/api/reset-password`
-  let serviceResource = `${baseUrl}/v1/api/services`
-  let inviteResource = `${baseUrl}/v1/api/invites`
+  const baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL
+  const correlationId = clientOptions.correlationId || ''
+  const userResource = `${baseUrl}/v1/api/users`
+  const forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`
+  const resetPasswordResource = `${baseUrl}/v1/api/reset-password`
+  const serviceResource = `${baseUrl}/v1/api/services`
+  const inviteResource = `${baseUrl}/v1/api/invites`
 
   /**
    * Get a User by external id
@@ -35,14 +35,14 @@ module.exports = function (clientOptions = {}) {
    * @param {string} externalId
    * @return {Promise<User>} A promise of a User
    */
-  let getUserByExternalId = (externalId) => {
-    let params = {
+  const getUserByExternalId = (externalId) => {
+    const params = {
       correlationId: correlationId
     }
-    let url = `${userResource}/${externalId}`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${userResource}/${externalId}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -52,7 +52,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -67,8 +67,8 @@ module.exports = function (clientOptions = {}) {
    * @param password
    * @returns {Promise<User>}
    */
-  let authenticateUser = (username, password) => {
-    let params = {
+  const authenticateUser = (username, password) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         username: username,
@@ -76,10 +76,10 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    let url = `${userResource}/authenticate`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${userResource}/authenticate`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -89,7 +89,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -104,8 +104,8 @@ module.exports = function (clientOptions = {}) {
    * @param externalId
    * @returns {Promise}
    */
-  let incrementSessionVersionForUser = (externalId) => {
-    let params = {
+  const incrementSessionVersionForUser = (externalId) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         op: 'append',
@@ -114,10 +114,10 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    let url = `${userResource}/${externalId}`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${userResource}/${externalId}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -127,7 +127,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -142,17 +142,17 @@ module.exports = function (clientOptions = {}) {
    * @param username
    * @returns {Promise<ForgottenPassword>}
    */
-  let createForgottenPassword = (username) => {
-    let params = {
+  const createForgottenPassword = (username) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         username: username
       }
     }
-    let url = forgottenPasswordResource
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = forgottenPasswordResource
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -162,7 +162,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
@@ -177,14 +177,14 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise<ForgottenPassword>}
    */
-  let getForgottenPassword = (code) => {
-    let params = {
+  const getForgottenPassword = (code) => {
+    const params = {
       correlationId: correlationId,
     }
-    let url = `${forgottenPasswordResource}/${code}`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${forgottenPasswordResource}/${code}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -194,7 +194,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
@@ -210,18 +210,18 @@ module.exports = function (clientOptions = {}) {
    * @param newPassword
    * @returns {Promise}
    */
-  let updatePasswordForUser = (token, newPassword) => {
-    let params = {
+  const updatePasswordForUser = (token, newPassword) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         forgotten_password_code: token,
         new_password: newPassword
       }
     }
-    let url = resetPasswordResource
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = resetPasswordResource
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -231,7 +231,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
@@ -246,15 +246,15 @@ module.exports = function (clientOptions = {}) {
    * @param externalId
    * @returns {Promise}
    */
-  let sendSecondFactor = (externalId) => {
-    let params = {
+  const sendSecondFactor = (externalId) => {
+    const params = {
       correlationId: correlationId,
     }
 
-    let url = `${userResource}/${externalId}/second-factor/`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${userResource}/${externalId}/second-factor/`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -264,7 +264,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
@@ -280,18 +280,18 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise}
    */
-  let authenticateSecondFactor = (externalId, code) => {
-    let params = {
+  const authenticateSecondFactor = (externalId, code) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         code: code
       }
     }
 
-    let url = `${userResource}/${externalId}/second-factor/authenticate`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${userResource}/${externalId}/second-factor/authenticate`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -301,7 +301,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -311,11 +311,11 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  let getServiceUsers = (serviceExternalId) => {
-    let url = `${serviceResource}/${serviceExternalId}/users`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+  const getServiceUsers = (serviceExternalId) => {
+    const url = `${serviceResource}/${serviceExternalId}/users`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -325,7 +325,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserListTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserListTransformer)
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, {correlationId: correlationId}, callbackToPromiseConverter)
@@ -341,18 +341,18 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    * @returns {Promise<User>}
    */
-  let updateServiceRole = (externalId, serviceExternalId, roleName) => {
-    let params = {
+  const updateServiceRole = (externalId, serviceExternalId, roleName) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         role_name: roleName
       }
     }
 
-    let url = `${userResource}/${externalId}/services/${serviceExternalId}`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${userResource}/${externalId}/services/${serviceExternalId}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -362,7 +362,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -380,8 +380,8 @@ module.exports = function (clientOptions = {}) {
    * @param roleName
    * @returns {Promise}
    */
-  let inviteUser = (invitee, senderId, serviceExternalId, roleName) => {
-    let params = {
+  const inviteUser = (invitee, senderId, serviceExternalId, roleName) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         email: invitee,
@@ -391,10 +391,10 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    let url = `${inviteResource}/user`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${inviteResource}/user`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -404,7 +404,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
     requestLogger.logRequestStart(context)
 
     baseClient.post(url, params, callbackToPromiseConverter)
@@ -417,14 +417,14 @@ module.exports = function (clientOptions = {}) {
    * Get a valid invite or error if it's expired
    * @param inviteCode
    */
-  let getValidatedInvite = (inviteCode) => {
-    let params = {
+  const getValidatedInvite = (inviteCode) => {
+    const params = {
       correlationId: correlationId
     }
-    let url = `${inviteResource}/${inviteCode}`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${inviteResource}/${inviteCode}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -434,11 +434,44 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
     baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
+   * Complete an invite
+   *
+   * @param inviteCode
+   * @returns {*|Constructor|promise}
+   */
+  const completeInvite = (inviteCode) => {
+    const params = {
+      correlationId: correlationId
+    }
+    const url = `${inviteResource}/${inviteCode}/complete`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'complete invite',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter)
 
     return defer.promise
@@ -450,8 +483,8 @@ module.exports = function (clientOptions = {}) {
    * @param phoneNumber
    * @param password
    */
-  let submitUserRegistration = (code, phoneNumber, password) => {
-    let params = {
+  const submitUserRegistration = (code, phoneNumber, password) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         telephone_number: phoneNumber,
@@ -459,10 +492,10 @@ module.exports = function (clientOptions = {}) {
         code: code
       }
     }
-    let url = `${inviteResource}/otp/generate`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${inviteResource}/otp/generate`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -472,7 +505,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
@@ -482,8 +515,8 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  let verifyOtpAndCreateUser = (code, verificationCode) => {
-    let params = {
+  const verifyOtpAndCreateUser = (code, verificationCode) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         code: code,
@@ -491,10 +524,10 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    let url = `${inviteResource}/otp/validate`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${inviteResource}/otp/validate`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -504,7 +537,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -546,8 +579,8 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  let resendOtpCode = (code, phoneNumber) => {
-    let params = {
+  const resendOtpCode = (code, phoneNumber) => {
+    const params = {
       correlationId: correlationId,
       payload: {
         code: code,
@@ -555,10 +588,10 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    let url = `${inviteResource}/otp/resend`
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
+    const url = `${inviteResource}/otp/resend`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
       url: url,
       defer: defer,
       startTime: startTime,
@@ -568,7 +601,7 @@ module.exports = function (clientOptions = {}) {
       service: SERVICE_NAME
     }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
     requestLogger.logRequestStart(context)
 
@@ -652,7 +685,7 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  let deleteUser = (serviceExternalId, removerId, userId) => {
+  const deleteUser = (serviceExternalId, removerId, userId) => {
     const params = {
       correlationId: correlationId,
       headers: {}
@@ -804,33 +837,34 @@ module.exports = function (clientOptions = {}) {
 
   return {
     // User-related Methods
-    getForgottenPassword: getForgottenPassword,
-    createForgottenPassword: createForgottenPassword,
-    incrementSessionVersionForUser: incrementSessionVersionForUser,
-    getUserByExternalId: getUserByExternalId,
-    authenticateUser: authenticateUser,
-    updatePasswordForUser: updatePasswordForUser,
-    sendSecondFactor: sendSecondFactor,
-    authenticateSecondFactor: authenticateSecondFactor,
-    verifyOtpAndCreateUser: verifyOtpAndCreateUser,
-    resendOtpCode: resendOtpCode,
-    createUser: createUser,
-    deleteUser: deleteUser,
+    getForgottenPassword,
+    createForgottenPassword,
+    incrementSessionVersionForUser,
+    getUserByExternalId,
+    authenticateUser,
+    updatePasswordForUser,
+    sendSecondFactor,
+    authenticateSecondFactor,
+    verifyOtpAndCreateUser,
+    resendOtpCode,
+    createUser,
+    deleteUser,
 
     // UserServiceRole-related Methods
-    updateServiceRole: updateServiceRole,
-    getServiceUsers: getServiceUsers,
+    updateServiceRole,
+    getServiceUsers,
 
     // Invite-related Methods
-    verifyOtpForServiceInvite: verifyOtpForServiceInvite,
-    inviteUser: inviteUser,
-    getValidatedInvite: getValidatedInvite,
-    submitServiceRegistration: submitServiceRegistration,
-    submitUserRegistration: submitUserRegistration,
+    verifyOtpForServiceInvite,
+    inviteUser,
+    getValidatedInvite,
+    completeInvite,
+    submitServiceRegistration,
+    submitUserRegistration,
 
     // Service-related Methods
-    createService: createService,
-    updateServiceName: updateServiceName,
-    addGatewayAccountsToService: addGatewayAccountsToService
+    createService,
+    updateServiceName,
+    addGatewayAccountsToService
   }
 }
