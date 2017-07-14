@@ -171,6 +171,77 @@ module.exports = {
         return data
       }
     }
+  },
+
+  validInviteCompleteRequest: (opts = {}) => {
+    opts = opts || {}
+
+    const gatewayAccountIds = opts.gateway_account_ids || []
+    const data = {
+      gateway_account_ids: gatewayAccountIds
+    }
+
+    return {
+      getPactified: () => {
+        return pactInvites.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validInviteCompleteResponse: (opts = {}) => {
+    opts = opts || {}
+    opts.invite = opts.invite || {}
+
+    const inviteInvitee = 'random@example.com'
+    const inviteType = 'user'
+    const inviteDisabled = opts.invite.disabled === true
+    const inviteUserExist = opts.invite.userExist === true
+    const invite = {
+      code: opts.invite.code || random.randomUuid(),
+      email: opts.invite.email || inviteInvitee,
+      type: opts.invite.type || inviteType,
+      disabled: inviteDisabled,
+      userExist: inviteUserExist
+    }
+    if (opts.invite.telephone_number) {
+      invite.invite.telephone_number = opts.invite.telephone_number
+    }
+
+    const data = {
+      invite,
+      userExternalId: opts.userExternalId || random.randomUuid(),
+      serviceExternalId: opts.serviceExternalId || random.randomUuid()
+    }
+
+    return {
+      getPactified: () => {
+        return pactInvites.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  badRequestResponseWhenNonNumericGatewayAccountIds: (nonNumericGatewayAccountIds) => {
+    const responseData = _.map(nonNumericGatewayAccountIds, (field) => {
+      return `Field [${field}] must contain numeric values`
+    })
+    const response = {
+      errors: responseData
+    }
+
+    return {
+      getPactified: () => {
+        return pactInvites.pactify(response)
+      },
+      getPlain: () => {
+        return _.clone(response)
+      }
+    }
   }
 
 }
