@@ -12,15 +12,12 @@ const session = require('../../test_helpers/mock_session')
 const getApp = require('../../../server').getApp
 const inviteFixtures = require('../../fixtures/invite_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
-const serviceFixtures = require('../../fixtures/service_fixtures')
-const userFixtures = require('../../fixtures/user_fixtures')
 const paths = require('../../../app/paths')
 
 // Constants
 const SERVICE_INVITE_OTP_RESOURCE = '/v1/api/invites/otp/validate/service'
-const CONNECTOR_CREATE_ACCOUNT_URL = '/v1/api/accounts'
-const ADMINUSER_CREATE_SERVICE_URL = '/v1/api/services'
-const ADMINUSER_CREATE_USER_URL = '/v1/api/users'
+const CONNECTOR_ACCOUNTS_URL = '/v1/api/accounts'
+const ADMINUSERS_INVITES_URL = '/v1/api/invites'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const expect = chai.expect
@@ -50,37 +47,49 @@ describe('create service otp validation', function () {
 
   describe('post to otp verify page', function () {
     it('should redirect to proceed-to-login page when user submits valid otp code', function (done) {
+      const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
+      const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'
+      const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
       const gatewayAccountId = '1'
 
-      const connectorCreateGatewayAccountResponse =
-        gatewayAccountFixtures.validCreateGatewayAccountResponse({gateway_account_id: gatewayAccountId}).getPlain()
-      const adminUserServiceCreateResponse = serviceFixtures.validCreateServiceResponse()
-      const minimalUser = userFixtures.validMinimalUser().getPlain()
-      minimalUser.username = minimalUser.email
-      const adminUserCreateUserResponse = userFixtures.validUserResponse(minimalUser).getPlain()
+      const mockConnectorCreateGatewayAccountResponse =
+        gatewayAccountFixtures.validCreateGatewayAccountResponse({
+          gateway_account_id: gatewayAccountId
+        }).getPlain()
+      const mockAdminUsersInviteCompleteRequest =
+        inviteFixtures.validInviteCompleteRequest({
+          gateway_account_ids: [gatewayAccountId]
+        }).getPlain()
+      const mockAdminUsersInviteCompleteResponse =
+        inviteFixtures.validInviteCompleteResponse({
+          invite: {
+            code: inviteCode,
+            type: 'service',
+            disabled: true
+          },
+          user_external_id: userExternalId,
+          service_external_id: serviceExternalId
+        }).getPlain()
 
-      connectorMock.post(CONNECTOR_CREATE_ACCOUNT_URL)
-        .reply(201, connectorCreateGatewayAccountResponse)
-      adminusersMock.post(ADMINUSER_CREATE_SERVICE_URL, {gateway_account_ids: [gatewayAccountId]})
-        .reply(201, adminUserServiceCreateResponse)
-      adminusersMock.post(ADMINUSER_CREATE_USER_URL)
-        .reply(201, adminUserCreateUserResponse)
+      connectorMock.post(CONNECTOR_ACCOUNTS_URL)
+        .reply(201, mockConnectorCreateGatewayAccountResponse)
+      adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
+        .reply(200, mockAdminUsersInviteCompleteResponse)
 
-      const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest()
-      const registerInviteData = {
-        code: validServiceInviteOtpRequest.getPlain().code,
-        telephone_number: '07451234567',
-        email: 'bob@bob.com'
-      }
-
+      const validServiceInviteOtpRequest = inviteFixtures.validVerifyOtpCodeRequest({
+        code: inviteCode
+      })
       adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
         .reply(200)
 
-      app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
+      app = session.getAppWithRegisterInvitesCookie(getApp(), {
+        code: inviteCode,
+        telephone_number: '07451234567',
+        email: 'bob@bob.com'
+      })
       supertest(app)
         .post(paths.selfCreateService.otpVerify)
         .send({
-          code: validServiceInviteOtpRequest.getPlain().code,
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,
           csrfToken: csrf().create('123'),
         })

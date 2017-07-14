@@ -149,15 +149,15 @@ module.exports.sendAgainPost = function (req, res) {
   );
 };
 
-module.exports.setupDirectLoginAfterRegister = function (req, res, user) {
-
-  if (!user) {
+module.exports.setupDirectLoginAfterRegister = function (req, res, userExternalId) {
+  if (!userExternalId) {
     let correlationId = req.correlationId;
-    logger.error(`[requestId=${correlationId}] unable to log user in directly after registration. missing user in req`);
+    logger.error(`[requestId=${correlationId}] unable to log user in directly after registration. missing user external id in req`);
     res.redirect(303, '/login');
     return;
   }
-  req.register_invite.userExternalId = user.externalId;
+
+  req.register_invite.userExternalId = userExternalId;
 };
 
 module.exports.loginAfterRegister = function (req, res, next) {

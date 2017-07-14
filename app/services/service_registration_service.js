@@ -12,8 +12,8 @@ const paths = require('../paths')
 const userService = require('./user_service')
 
 // Global functions
-const submitCreateService = function (gatewayAccountIds, correlationId) {
-  return getAdminUsersClient({correlationId}).createService(null, gatewayAccountIds)
+const completeServiceInvite = function (inviteCode, gatewayAccountIds, correlationId) {
+  return getAdminUsersClient({correlationId}).completeServiceInvite(inviteCode, gatewayAccountIds)
 }
 
 const createGatewayAccount = function (correlationId) {
@@ -31,7 +31,7 @@ module.exports = {
    * @param correlationId
    */
   submitRegistration: function (email, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).submitServiceRegistration(email, phoneNumber, password)
+    return getAdminUsersClient({correlationId}).submitServiceRegistration(email, phoneNumber, password)
   },
 
   /**
@@ -48,20 +48,17 @@ module.exports = {
   /**
    * Creates a service containing a sandbox gateway account and a user
    */
-  createPopulatedService: (userData, correlationId) => {
+  createPopulatedService: (inviteCode, correlationId) => {
     const defer = q.defer()
 
     let gatewayAccountId
     createGatewayAccount(correlationId)
       .then(gatewayAccount => {
         gatewayAccountId = gatewayAccount.gateway_account_id
-        return submitCreateService([gatewayAccountId], correlationId)
+        return completeServiceInvite(inviteCode, [gatewayAccountId], correlationId)
       })
-      .then(service => {
-        return userService.createUser(userData.email, [gatewayAccountId], [service.externalId], userData.role, userData.phoneNumber, correlationId)
-      })
-      .then(user => {
-        defer.resolve(user)
+      .then(completeServiceInviteResponse => {
+        defer.resolve(completeServiceInviteResponse)
       })
       .catch(error => {
         logger.error(`[requestId=${correlationId}] Create populated service orchestration error -`, error)
@@ -79,7 +76,7 @@ module.exports = {
    * @param correlationId
    */
   resendOtpCode: function (code, phoneNumber, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber)
+    return getAdminUsersClient({correlationId}).resendOtpCode(code, phoneNumber)
   },
 
   /**
@@ -90,6 +87,6 @@ module.exports = {
    * @param correlationId
    */
   updateServiceName: function (serviceId, serviceName, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).updateServiceName(serviceId, serviceName)
+    return getAdminUsersClient({correlationId}).updateServiceName(serviceId, serviceName)
   }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-// Node.js core dependencies
+// NPM dependencies
 const logger = require('winston');
 
 // Custom dependencies
@@ -143,7 +143,7 @@ module.exports = {
     const verifyOtpAndCreateUser = function () {
       registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
         .then((user) => {
-          loginController.setupDirectLoginAfterRegister(req, res, user);
+          loginController.setupDirectLoginAfterRegister(req, res, user.externalId);
           redirectToAutoLogin(req, res);
         })
         .catch(err => {

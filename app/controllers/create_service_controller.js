@@ -131,13 +131,10 @@ module.exports = {
    */
   createPopulatedService: (req, res) => {
     const correlationId = req.correlationId
-    const email = req.register_invite.email
-    const phoneNumber = req.register_invite.telephone_number
-    const role = 'admin'
 
-    return registrationService.createPopulatedService({email, role, phoneNumber}, correlationId)
-      .then(user => {
-        loginController.setupDirectLoginAfterRegister(req, res, user)
+    return registrationService.createPopulatedService(req.register_invite.code, correlationId)
+      .then(completeServiceInviteResponse => {
+        loginController.setupDirectLoginAfterRegister(req, res, completeServiceInviteResponse.user_external_id)
         res.redirect(303, paths.selfCreateService.logUserIn)
       })
       .catch(err => {

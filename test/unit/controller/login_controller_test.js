@@ -55,7 +55,7 @@ describe('Direct login after register', function () {
       externalId: 'hd329chjqkdna89',
     };
 
-    loginController.setupDirectLoginAfterRegister(req, res, user);
+    loginController.setupDirectLoginAfterRegister(req, res, user.externalId);
     assert.deepEqual(req.register_invite.userExternalId, user.externalId);
 
   });
