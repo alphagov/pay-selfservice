@@ -445,14 +445,18 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-   * Complete an invite
+   * Complete a service invite
    *
    * @param inviteCode
-   * @returns {*|Constructor|promise}
+   * @param gatewayAccountIds
+   * @returns {*|promise|Constructor}
    */
-  const completeInvite = (inviteCode) => {
+  const completeServiceInvite = (inviteCode, gatewayAccountIds) => {
     const params = {
-      correlationId: correlationId
+      correlationId: correlationId,
+      payload: {
+        gateway_account_ids: gatewayAccountIds
+      }
     }
     const url = `${inviteResource}/${inviteCode}/complete`
     const defer = q.defer()
@@ -858,7 +862,7 @@ module.exports = function (clientOptions = {}) {
     verifyOtpForServiceInvite,
     inviteUser,
     getValidatedInvite,
-    completeInvite,
+    completeServiceInvite,
     submitServiceRegistration,
     submitUserRegistration,
 
