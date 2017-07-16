@@ -28,5 +28,10 @@ module.exports = {
 
   resendOtpCode: function (code, phoneNumber, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber);
+  },
+
+  completeInvite: function (code, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).completeInvite(code);
   }
+
 };

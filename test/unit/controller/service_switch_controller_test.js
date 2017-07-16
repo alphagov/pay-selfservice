@@ -1,36 +1,38 @@
-const sinon = require('sinon');
-const chai = require('chai');
-const nock = require('nock');
-const _ = require('lodash');
+'use strict'
 
-const serviceSwitchController = require(__dirname + '/../../../app/controllers/service_switch_controller');
-const userFixtures = require(__dirname + '/../../fixtures/user_fixtures');
-const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures');
-const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+const sinon = require('sinon')
+const chai = require('chai')
+const nock = require('nock')
+const _ = require('lodash')
 
-const expect = chai.expect;
-const connectorMock = nock(process.env.CONNECTOR_URL);
-const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts';
+const serviceSwitchController = require(__dirname + '/../../../app/controllers/service_switch_controller')
+const userFixtures = require(__dirname + '/../../fixtures/user_fixtures')
+const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
+const chaiAsPromised = require('chai-as-promised')
+chai.use(chaiAsPromised)
 
-let renderSpy = sinon.spy();
-let redirectSpy = sinon.spy();
+const expect = chai.expect
+const connectorMock = nock(process.env.CONNECTOR_URL)
+const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
+
+const renderSpy = sinon.spy()
+const redirectSpy = sinon.spy()
 
 
 describe('service switch controller: list of accounts', function () {
   beforeEach(() => {
-    nock.cleanAll();
-  });
+    nock.cleanAll()
+  })
 
   afterEach(() => {
-    renderSpy.reset();
-  });
+    renderSpy.reset()
+  })
 
   it('should render a list of services when user has multiple services', function (done) {
-    const service1gatewayAccountIds = ['2', '5'];
-    const service2gatewayAccountIds = ['3', '6', '7'];
-    const service3gatewayAccountIds = ['4', '9'];
-    const gatewayAccountIds = _.concat(service1gatewayAccountIds, service2gatewayAccountIds, service3gatewayAccountIds);
+    const service1gatewayAccountIds = ['2', '5']
+    const service2gatewayAccountIds = ['3', '6', '7']
+    const service3gatewayAccountIds = ['4', '9']
+    const gatewayAccountIds = _.concat(service1gatewayAccountIds, service2gatewayAccountIds, service3gatewayAccountIds)
 
     gatewayAccountIds.forEach(gid => {
       connectorMock.get(ACCOUNTS_FRONTEND_PATH + `/${gid}`)
@@ -38,10 +40,10 @@ describe('service switch controller: list of accounts', function () {
           gateway_account_id: gid,
           service_name: `account ${gid}`,
           type: _.sample(['test', 'live'])
-        }).getPlain());
-    });
+        }).getPlain())
+    })
 
-    let req = {
+    const req = {
       correlationId: 'correlationId',
       user: userFixtures.validUserResponse({
         username: 'bob',
@@ -81,75 +83,74 @@ describe('service switch controller: list of accounts', function () {
           }]
       }).getAsObject(),
       session: {}
-    };
+    }
 
     const res = {
       render: renderSpy
-    };
+    }
 
 
-    const gatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.map(g => g.service_name);
+    const gatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.map(g => g.service_name)
 
     serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
-      expect(renderSpy.calledOnce).to.be.equal(true);
+      expect(renderSpy.calledOnce).to.be.equal(true)
 
-      let path = renderSpy.getCall(0).args[0];
-      let renderData = renderSpy.getCall(0).args[1];
+      const path = renderSpy.getCall(0).args[0]
+      const renderData = renderSpy.getCall(0).args[1]
 
-      expect(path).to.equal('services/index');
-      expect(renderData.navigation).to.equal(false);
+      expect(path).to.equal('services/index')
+      expect(renderData.navigation).to.equal(false)
 
-      expect(renderData.services.map(service => service.name)).to.have.lengthOf(3).and.to.include('My Service 1', 'My Service 2', '');
+      expect(renderData.services.map(service => service.name)).to.have.lengthOf(3).and.to.include('My Service 1', 'My Service 2', '')
 
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5');
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7');
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9');
+      expect(gatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
+      expect(gatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
+      expect(gatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
 
-    }).should.notify(done);
-  });
+    }).should.notify(done)
+  })
 
   it('should render page with no data even if user does not belong to any service', function (done) {
-    let setHeaderSpy = sinon.spy();
-    let statusSpy = sinon.spy();
+    const setHeaderSpy = sinon.spy()
+    const statusSpy = sinon.spy()
 
-    let req = {
+    const req = {
       user: userFixtures.validUserResponse({
         username: 'bob',
         service_roles: []
       }).getAsObject(),
       session: {}
-    };
+    }
 
-    let res = {
+    const res = {
       render: renderSpy,
       setHeader: setHeaderSpy,
       status: statusSpy
-    };
+    }
 
     serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
-      expect(renderSpy.calledOnce).to.be.equal(true);
+      expect(renderSpy.calledOnce).to.be.equal(true)
 
-      let path = renderSpy.getCall(0).args[0];
-      let renderData = renderSpy.getCall(0).args[1];
-      expect(path).to.equal('services/index');
+      const path = renderSpy.getCall(0).args[0]
+      const renderData = renderSpy.getCall(0).args[1]
+      expect(path).to.equal('services/index')
 
-      expect(renderData.navigation).to.equal(false);
-      expect(renderData.services).to.have.lengthOf(0);
-    }).should.notify(done);
-  });
-});
+      expect(renderData.navigation).to.equal(false)
+      expect(renderData.services).to.have.lengthOf(0)
+    }).should.notify(done)
+  })
+})
 
 describe('service switch controller: switching', function () {
   afterEach(() => {
-    redirectSpy.reset();
-  });
+    redirectSpy.reset()
+  })
 
   it('should redirect to / with correct account id set', function () {
-    redirectSpy = sinon.spy();
-    let session = {};
-    let gateway_account = {};
+    const session = {}
+    const gateway_account = {}
 
-    let req = {
+    const req = {
       originalUrl: 'http://bob.com?accountId=6',
       user: userFixtures.validUserResponse({
         username: 'bob',
@@ -160,38 +161,116 @@ describe('service switch controller: switching', function () {
       body: {
         gatewayAccountId: '6'
       }
-    };
+    }
 
-    let res = {
+    const res = {
       redirect: redirectSpy
-    };
+    }
 
-    serviceSwitchController.switch(req, res);
+    serviceSwitchController.switch(req, res)
 
-    expect(gateway_account.currentGatewayAccountId).to.be.equal('6');
-    expect(redirectSpy.calledWith(302, '/')).to.be.equal(true);
-  });
+    expect(gateway_account.currentGatewayAccountId).to.be.equal('6')
+    expect(redirectSpy.calledWith(302, '/')).to.be.equal(true)
+  })
 
   it('should not switch id if user not authorised to see account id', function () {
-    let redirectSpy = sinon.spy();
-    let session = {};
+    const session = {}
 
-    let req = {
+    const req = {
       originalUrl: 'http://bob.com?accountId=6',
       user: userFixtures.validUserResponse({
         username: 'bob',
         gateway_account_ids: ['8', '666']
       }).getAsObject(),
       session: session
-    };
+    }
 
-    let res = {
+    const res = {
       redirect: redirectSpy
-    };
+    }
 
-    serviceSwitchController.switch(req, res);
+    serviceSwitchController.switch(req, res)
 
-    expect(session).to.deep.equal({});
-    expect(redirectSpy.calledWith(302, '/my-services')).to.be.equal(true);
-  });
-});
+    expect(session).to.deep.equal({})
+    expect(redirectSpy.calledWith(302, '/my-services')).to.be.equal(true)
+  })
+})
+
+describe('service switch controller: display added to the new service msg', function () {
+  beforeEach(() => {
+    nock.cleanAll()
+  })
+
+  afterEach(() => {
+    renderSpy.reset()
+  })
+
+  it('should render a list of services when user has multiple services and display added to new service message', function (done) {
+    const service1gatewayAccountIds = ['2', '5']
+    const newServiceGatewayAccountIds = ['3', '6', '7']
+    const gatewayAccountIds = _.concat(service1gatewayAccountIds, newServiceGatewayAccountIds)
+
+    gatewayAccountIds.forEach(gid => {
+      connectorMock.get(ACCOUNTS_FRONTEND_PATH + `/${gid}`)
+        .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
+          gateway_account_id: gid,
+          service_name: `account ${gid}`,
+          type: _.sample(['test', 'live'])
+        }).getPlain())
+    })
+
+    const newServiceName = 'My New Service'
+    const newServiceExternalId = 'service-external-id-2'
+
+    const req = {
+      correlationId: 'correlationId',
+      user: userFixtures.validUserResponse({
+        username: 'bob',
+        service_roles: [
+          {
+            service: {
+              name: 'My Service 1',
+              external_id: 'service-external-id-1',
+              gateway_account_ids: service1gatewayAccountIds
+            },
+            role: {
+              name: 'admin',
+              permissions: [{name: 'blah-blah:blah'}]
+            }
+          },
+          {
+            service: {
+              name: newServiceName,
+              external_id: newServiceExternalId,
+              gateway_account_ids: newServiceGatewayAccountIds
+            },
+            role: {
+              name: 'admin',
+              permissions: [{name: 'blah-blah:blah'}]
+            }
+          }]
+      }).getAsObject(),
+      session: {},
+      query: {
+        s: newServiceExternalId
+      }
+    }
+
+    const res = {
+      render: renderSpy
+    }
+
+
+    serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
+      expect(renderSpy.calledOnce).to.be.equal(true)
+
+      const path = renderSpy.getCall(0).args[0]
+      const renderData = renderSpy.getCall(0).args[1]
+
+      expect(path).to.equal('services/index')
+      expect(renderData.navigation).to.equal(false)
+
+      expect(renderData.new_service_name).to.be.equal(newServiceName)
+    }).should.notify(done)
+  })
+})
