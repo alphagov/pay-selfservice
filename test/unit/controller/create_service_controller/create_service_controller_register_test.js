@@ -106,7 +106,7 @@ describe('Error handler register service', function () {
       }).should.notify(done)
   })
 
-  it('should handle 409 as 303 redirect to index', function (done) {
+  it('should handle 409 as 303 redirect to confirmation page', function (done) {
     email = 'be@mail.com'
     const errorMessage = `email [${email}] already exists`
     const error = {
@@ -118,8 +118,7 @@ describe('Error handler register service', function () {
 
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
-        expect(flashStub.calledWith('genericError', errorMessage)).to.equal(true)
-        expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true)
+        expect(redirectStub.calledWith(303, paths.selfCreateService.confirm)).to.equal(true)
       }).should.notify(done)
   })
 
