@@ -12,9 +12,6 @@ const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login_controller')
 const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateServiceNamingInputs} = require('../utils/registration_validations')
 
-// Constants
-const serviceRegistrationEnabled = process.env.SERVICE_REGISTRATION_ENABLED === 'true'
-
 module.exports = {
 
   /**
@@ -24,17 +21,13 @@ module.exports = {
    * @param res
    */
   showRegistration: (req, res) => {
-    if (serviceRegistrationEnabled) {
-      const email = _.get(req, 'session.pageData.submitRegistration.email', '')
-      const telephoneNumber = _.get(req, 'session.pageData.submitRegistration.telephoneNumber', '')
-      _.unset(req, 'session.pageData.submitRegistration')
-      res.render('self_create_service/register', {
-        email,
-        telephoneNumber
-      })
-    } else {
-      errorResponse(req, res, 'Invalid route', 404)
-    }
+    const email = _.get(req, 'session.pageData.submitRegistration.email', '')
+    const telephoneNumber = _.get(req, 'session.pageData.submitRegistration.telephoneNumber', '')
+    _.unset(req, 'session.pageData.submitRegistration')
+    res.render('self_create_service/register', {
+      email,
+      telephoneNumber
+    })
   },
 
   /**
@@ -94,13 +87,9 @@ module.exports = {
         }).catch((err) => handleError(err))
     }
 
-    if (serviceRegistrationEnabled) {
-      return validateServiceRegistrationInputs(email, telephoneNumber, password)
-        .then(proceedToRegistration)
-        .catch(err => handleError(err))
-    } else {
-      return errorResponse(req, res, 'Invalid route', 404)
-    }
+    return validateServiceRegistrationInputs(email, telephoneNumber, password)
+      .then(proceedToRegistration)
+      .catch(err => handleError(err))
   },
 
   /**
