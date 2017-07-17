@@ -77,9 +77,14 @@ module.exports = {
    */
   subscribeService: (req, res) => {
     const inviteCode = req.register_invite.code
-    const correlationId = req.correlationId;
+    const correlationId = req.correlationId
 
-    registrationService.completeInvite(inviteCode, correlationId)
+    if (!inviteCode) {
+      handleError(req, res, {errorCode: 404})
+      return
+    }
+
+    return registrationService.completeInvite(inviteCode, correlationId)
       .then(completeResponse => res.redirect(303, `${paths.serviceSwitcher.index}?s=${completeResponse.service_external_id}`))
       .catch(err => handleError(req, res, err))
   },
