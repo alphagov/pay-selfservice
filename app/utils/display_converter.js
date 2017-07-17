@@ -2,6 +2,8 @@ let _ = require('lodash')
 const getHeldPermissions = require('./get_held_permissions')
 
 const hideNavBarTemplates = [
+  'transactions/index',
+  'login/logged_in',
   'services/index',
   'services/team_members',
   'services/team_member_details',

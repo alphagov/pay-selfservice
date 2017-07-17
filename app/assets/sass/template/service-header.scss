@@ -1,0 +1,35 @@
+.service-info {
+  float: left;
+
+  &--name, p {
+    display: inline;
+  }
+
+  &--name {
+    margin-right: $gutter;
+  }
+}
+
+.service-navigation {
+  float: right;
+
+  &--list {
+    list-style-type: none;
+  } 
+
+  &--list-item {
+    display: inline-block;
+    margin: 0 0 0 $gutter;
+    padding-bottom: 5px;
+    border-bottom: 5px solid transparent;
+
+    a:link,
+    a:visited {
+      text-decoration: none;
+    }
+
+    &-active {
+      border-bottom-color: $text-colour;
+    } 
+  }
+}

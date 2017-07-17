@@ -15,13 +15,11 @@
     {{$bodyClasses}}{{$classesOnBodyTag}}{{/classesOnBodyTag}} {{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
 
     {{$homepageUrl}}/{{/homepageUrl}}
-    {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
+    {{$globalHeaderText}}GOV.UK <span>Pay</span>{{/globalHeaderText}}
 
     {{$content}}
         {{>includes/flash}}
-        {{#navigation}}
-            {{> includes/phase_banner }}
-        {{/navigation}}
+        {{> includes/phase_banner }}
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
             {{$full_width_content}}{{/full_width_content}}
             {{#navigation}}

@@ -2,13 +2,9 @@
   <div class="inner">
       <nav role="navigation">
           <ul>
-              <li><a id="navigation-menu-home" href="/">Homepage</a></li>
               {{#permissions.tokens_read}}
               <li><a id="navigation-menu-api-keys" href="{{ routes.devTokens.index }}">API keys</a></li>
               {{/permissions.tokens_read}}
-              {{#permissions.transactions_read}}
-              <li><a id="navigation-menu-transactions" href="{{ routes.transactions.index }}" data-qa-transaction-link>Transactions</a></li>
-              {{/permissions.transactions_read}}
               {{#permissions.gateway_credentials_read}}
               <li><a id="navigation-menu-gateway-credentials" href="{{ routes.credentials.index }}">Account credentials</a></li>
               {{/permissions.gateway_credentials_read}}
@@ -23,5 +19,5 @@
               {{/permissions.email_notification_template_read}}
           </ul>
       </nav>
-</div>
+  </div>
 </div>

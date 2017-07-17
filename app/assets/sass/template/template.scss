@@ -1,4 +1,5 @@
 @import "header";
+@import "service-header";
 
 // Content
 // ==========================================================================
@@ -99,18 +100,16 @@
 .navigation {
 
   .inner {
-    padding: 11px 30px 30px 0;
+    padding: 11px 0 30px;
   }
   ul {
     li {
-      @include bold-16;
-      border-bottom: 1px solid $border-colour;
       list-style: none;
 
       a {
         color: $link-colour;
         display: block;
-        padding: 10px 0;
+        padding: 5px 0;
         text-decoration: none;
         &:active {
           color: $black;

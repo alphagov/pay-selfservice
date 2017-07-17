@@ -5,7 +5,7 @@
 }
 
 #global-header .header-wrapper {
-  max-width:1260px;
+  max-width: 1260px;
 }
 
 /* Allow the menu link to sit on the same line as the logo */
@@ -24,6 +24,12 @@
   }
 }
 
+.header-logo span {
+  font-size: 24px;
+  font-weight: normal;
+  margin-left: $gutter / 2;
+}
+
 #global-header .header-proposition {
   /* Trick to align the proposition menu to the right of the header */
   @include media(desktop) {
@@ -39,7 +45,9 @@
     padding: 2px 6px 1px;
     margin-bottom: 12px;
 
-    &:focus { background: transparent; }
+    &:focus {
+      background: transparent;
+    }
   }
 
   #proposition-menu {
@@ -118,8 +126,12 @@
 }
 
 .phase-banner {
-  @include phase-banner();
+  display: block;
+  margin-top: 10px;
   margin-bottom: $gutter;
+  padding: 10px 0 0;
+  border-bottom: 1px solid $border-colour;
+  @extend %contain-floats;
 
   @include media(tablet) {
     margin-bottom: $gutter;

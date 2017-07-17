@@ -1,5 +1,17 @@
 <div class="phase-banner">
-  <p>
-    <strong class="phase-tag">{{currentGatewayAccount.full_type}}</strong>
-  </p>
+  <div class="service-info">
+    <h4 class="service-info--name heading-small">*Service Name*</h4>
+    <p>
+      <strong class="phase-tag">{{currentGatewayAccount.full_type}}</strong>
+    </p>
+  </div>
+  <nav role="navigation" class="service-navigation">
+	  <ul class="service-navigation--list">
+	    <li class="service-navigation--list-item"><a href="{{ routes.user.loggedIn }}">Dashboard</a></li>
+      {{#permissions.transactions_read}}
+	    <li class="service-navigation--list-item service-navigation--list-item-active"><a href="{{ routes.transactions.index }}">Transactions</a></li>
+      {{/permissions.transactions_read}}
+	    <li class="service-navigation--list-item"><a href="{{ routes.devTokens.index }}">Settings</a></li>
+	  </ul>
+	</nav>
 </div>
