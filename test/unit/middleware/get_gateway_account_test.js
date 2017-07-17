@@ -46,12 +46,5 @@ describe('middleware: getGatewayAccount', () => {
     })
   })
 
-  it('should redirect to service switcher if the user has no services', () => {
-    currentGatewayAccountID = 1
-    lodash.set(req,'user.serviceRoles',[])
-    getGatewayAccount(req,res,next)
-    expect(res.redirect.called).to.equal(true)
-    expect(res.redirect.calledWith(paths.serviceSwitcher.index))
-  })
 
 })

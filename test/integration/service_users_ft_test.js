@@ -75,27 +75,6 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('should redirect to an error page when user does not belong to any service', function (done) {
-
-    const notAllowedServiceId = '47835y3478thew'
-    const user = session.getUser({
-      external_id: EXTERNAL_ID_LOGGED_IN,
-      username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
-      service_roles: []
-    })
-
-    app = session.getAppWithLoggedInUser(getApp(), user)
-
-    supertest(app)
-      .get(formattedPathFor(paths.teamMembers.index, notAllowedServiceId))
-      .set('Accept', 'application/json')
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.message).to.equal('This user does not belong to any service. Ask your service administrator to invite you to GOV.UK Pay.')
-      })
-      .end(done)
-  })
 
   it('get list of service users should link to a users view details for other users', function (done) {
 
