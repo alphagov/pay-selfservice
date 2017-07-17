@@ -198,13 +198,13 @@ module.exports = {
     const inviteInvitee = 'random@example.com'
     const inviteType = 'user'
     const inviteDisabled = opts.invite.disabled === true
-    const inviteUserExist = opts.invite.userExist === true
+    const inviteUserExist = opts.invite.user_exist === true
     const invite = {
       code: opts.invite.code || random.randomUuid(),
       email: opts.invite.email || inviteInvitee,
       type: opts.invite.type || inviteType,
       disabled: inviteDisabled,
-      userExist: inviteUserExist
+      user_exist: inviteUserExist
     }
     if (opts.invite.telephone_number) {
       invite.invite.telephone_number = opts.invite.telephone_number
@@ -212,8 +212,8 @@ module.exports = {
 
     const data = {
       invite,
-      userExternalId: opts.userExternalId || random.randomUuid(),
-      serviceExternalId: opts.serviceExternalId || random.randomUuid()
+      user_external_id: opts.user_external_id || random.randomUuid(),
+      service_external_id: opts.service_external_id || random.randomUuid()
     }
 
     return {

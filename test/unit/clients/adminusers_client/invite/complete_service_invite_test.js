@@ -61,8 +61,8 @@ describe('adminusers client - complete an invite', function () {
           type: 'service',
           disabled: true
         },
-        userExternalId,
-        serviceExternalId
+        user_external_id: userExternalId,
+        service_external_id: serviceExternalId
       })
 
       beforeEach((done) => {
@@ -90,8 +90,8 @@ describe('adminusers client - complete an invite', function () {
         const expectedData = validInviteCompleteResponse.getPlain()
         adminusersClient.completeServiceInvite(inviteCode, gatewayAccountIds).should.be.fulfilled.then(response => {
           expect(response.invite).to.deep.equal(expectedData.invite)
-          expect(response.userExternalId).to.equal(userExternalId)
-          expect(response.serviceExternalId).to.equal(serviceExternalId)
+          expect(response.user_external_id).to.equal(userExternalId)
+          expect(response.service_external_id).to.equal(serviceExternalId)
         }).should.notify(done)
       })
     })
