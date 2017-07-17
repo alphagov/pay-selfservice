@@ -50,11 +50,16 @@ module.exports = {
     const password = req.body['password']
 
     const handleServerError = (err) => {
-      if ((err.errorCode === 400) ||
-        (err.errorCode === 403) ||
-        (err.errorCode === 409)) {
+      if ((err.errorCode === 400) || (err.errorCode === 403)) {
         const error = (err.message && err.message.errors) ? err.message.errors : 'Invalid input'
         handleInvalidUserInput(error)
+      } else if (err.errorCode === 409) {
+        // we should redirect in all cases regardless whether the user exists, disabled or new
+        _.set(req, 'session.pageData.submitRegistration', {
+          email,
+          telephoneNumber
+        })
+        res.redirect(303, paths.selfCreateService.confirm)
       } else {
         errorResponse(req, res, 'Unable to process registration at this time', err.errorCode)
       }
