@@ -152,7 +152,7 @@ module.exports = {
         return pactInvites.pactify(data)
       },
       getPlain: () => {
-        return data
+        return _.clone(data)
       }
     }
   },
