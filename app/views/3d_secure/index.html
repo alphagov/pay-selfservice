@@ -8,6 +8,7 @@ GOV.UK Pay - 3D Secure
 
 <div class="column-two-thirds">
 
+{{#supports3ds}}
 {{#permissions.toggle_3ds_read}}
 {{#justToggled}}
 <div id="3ds-toggled" class="govuk-box-highlight">
@@ -67,6 +68,12 @@ GOV.UK Pay - 3D Secure
 </form>
 {{/permissions.toggle_3ds_update}}
 {{/requires3ds}}
+{{/supports3ds}}
+
+{{^supports3ds}}
+<h1 class="page-title">3D Secure</h1>
+<p>3D Secure is not currently supported for this Payment Service Provider.</p>
+{{/supports3ds}}
 
 </div>
 
