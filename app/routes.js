@@ -86,6 +86,7 @@ module.exports.bind = function (app) {
   app.get(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone)
   app.post(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone)
   app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, loginCtrl.loggedIn)
+
   // LOGIN
   app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet)
   app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.logUserin, getAccount, loginCtrl.postLogin)
@@ -133,7 +134,8 @@ module.exports.bind = function (app) {
     ...lodash.values(t3ds)
   ] // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices) // Enforce authentication on all get requests
+  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf); // Enforce authentication on all get requests
+  app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS
   app.get(transactions.index, permission('transactions:read'), getAccount, transactionsCtrl.index)
