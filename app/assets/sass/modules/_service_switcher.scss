@@ -1,18 +1,18 @@
 input.service_switcher {
-  /* Remove all decorations to look like normal text */
-  background: none;
+  // Remove all decorations to look like normal text
   display: inline-block;
-  font: inherit;
   margin: 0 0 5px;
-  border: none;
+  border: 0;
   outline: none;
   outline-offset: 0;
-  /* Additional styles to look like a link */
-  color: $link-colour;
-  cursor: pointer;
-  text-decoration: underline;
-  padding:0;
+  font: inherit;
+  background: none;
 
+  // Additional styles to look like a link
+  color: $link-colour;
+  text-decoration: underline;
+  padding: 0;
+  cursor: pointer;
 }
 
 .service_list_item {

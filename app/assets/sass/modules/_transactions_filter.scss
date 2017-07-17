@@ -1,21 +1,23 @@
 .transactions-filter {
-
   padding: 15px;
+
   form {
     background: $panel-colour;
   }
+
   .filter-submit {
-    float: right;
     display: block;
-    width: auto;
+    width: 200px;
     margin-top: 65px;
     padding-right: 20px;
-    width:200px;
+    float: right;
+
     @include respond-to-max(860px) {
       margin-top: 0;
       margin-right: 15px;
       padding-right: 0;
     }
+
     @include respond-to-max(640px) {
       width: 100%;
       margin: 15px 15px 15px;
@@ -23,15 +25,14 @@
   }
 
   .button {
-    padding-top: 5px;
-    padding-bottom:1px;
-    float: left;
-    margin-right: 0;
     width: auto;
+    margin-right: 0;
+    padding-top: 5px;
+    padding-bottom: 1px;
+    float: left;
     @include respond-to-max(860px) {
       float: right;
     }
-
   }
 
   legend {
@@ -40,10 +41,10 @@
 
   .clear-filter {
     @include core-14;
-    float: right;
-    margin-left: 15px;
-    margin-right: 0;
     margin-top: 4px;
+    margin-right: 0;
+    margin-left: 15px;
+    float: right;
 
     @include respond-to-max(860px) {
       margin-right: 15px;
@@ -51,11 +52,10 @@
   }
 
   .column-half {
-
     margin: 15px 0;
   }
-  .column-third {
 
+  .column-third {
     margin: 15px 0;
   }
 
@@ -73,8 +73,8 @@
   }
 
   .column-half.date-from,
-  .column-half.date-to  {
-    width:50%;
+  .column-half.date-to {
+    width: 50%;
     float: left;
     @include respond-to-max(mobile) {
       margin-bottom: $gutter-half;
@@ -107,7 +107,7 @@
     }
 
     .selector {
-      width:47.5%;
+      width: 47.5%;
       margin: 0 2.5%;
       float: left;
 
@@ -116,10 +116,9 @@
       }
 
       &:last-of-type {
-        float: right;
         margin-right: 0;
+        float: right;
       }
-
     }
   }
 
@@ -140,9 +139,9 @@
   }
 
   .datetime-separator {
-    text-align: left;
-    line-height: 32px;
     font-weight: normal;
+    line-height: 32px;
+    text-align: left;
 
     @include media(tablet) {
       width: 10%;
@@ -153,15 +152,16 @@
   }
 
   .datetime-filter input + .form-hint {
-      margin-top: 5px;
+    margin-top: 5px;
   }
 }
 
 // bootstrap datepicker overides :s
 .datepicker .datepicker-days table tr td.day.focused,
 .datepicker .datepicker-days table tr td.day:hover {
-    background: $yellow;
+  background: $yellow;
 }
+
 .datepicker .datepicker-days table tr td.active:active,
 .datepicker .datepicker-days table tr td.active.highlighted:active,
 .datepicker .datepicker-days table tr td.active.active,

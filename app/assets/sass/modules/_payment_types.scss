@@ -1,8 +1,7 @@
 #payment-types {
-
   table {
-    margin-top: 30px;
     max-width: 600px;
+    margin-top: 30px;
   }
 
   .table-header-accept {
@@ -29,18 +28,17 @@
   }
 
   .table-data-accept {
-    text-align: right;
     font-size: 16px;
+    text-align: right;
   }
 
   .payment-types-not-available {
-
     .table-data-accept {
-      color: grey;
+      color: $secondary-text-colour;
     }
 
     .table-data-label {
-      color: grey;
+      color: $secondary-text-colour;
     }
   }
 
@@ -49,11 +47,11 @@
   }
 
   #payment-types-card-brand-selection-form .form-group {
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 
   #payment-types-card-summary {
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 
   #payment-types-card-brand-selection-form .form-group.error {

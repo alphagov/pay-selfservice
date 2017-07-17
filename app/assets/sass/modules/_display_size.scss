@@ -1,35 +1,36 @@
 #displaySize {
-    font-size: 14px;
+  display: inline-block;
+  margin-left: $gutter;
+  font-size: 14px;
+
+  .displaySizeForm {
     display: inline-block;
-    margin-left: $gutter;
 
-    .displaySizeForm {
+    &.small::after {
+      content: "|";
+    }
+
+    input.displaySize {
+      // Remove all decorations to look like normal text
       display: inline-block;
+      margin: 0;
+      border: 0;
+      outline: none;
+      outline-offset: 0;
+      font: inherit;
+      background: none;
 
-      &.small::after {
-        content: "|";
-      }
-      input.displaySize {
-        /* Remove all decorations to look like normal text */
-        background: none;
-        display: inline-block;
-        font: inherit;
-        margin: 0;
-        border: none;
-        outline: none;
-        outline-offset: 0;
-        /* Additional styles to look like a link */
-        color: $link-colour;
-        cursor: pointer;
-        text-transform: capitalize;
-        line-height: 30px;
+      // Additional styles to look like a link
+      color: $link-colour;
+      line-height: 30px;
+      text-transform: capitalize;
+      cursor: pointer;
 
-
-        &.active {
-            pointer-events: none;
-            cursor: default;
-            color: black;
-        }
+      &.active {
+        color: $text-colour;
+        cursor: default;
+        pointer-events: none;
       }
     }
+  }
 }
