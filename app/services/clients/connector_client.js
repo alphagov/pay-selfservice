@@ -8,6 +8,7 @@ const q = require('q')
 
 var dates = require('../../utils/dates.js')
 const baseClient = require('./base_client')
+const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
 const SERVICE_NAME = 'connector'
@@ -422,25 +423,43 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Updates the service name for to the given gateway account
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            payload (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function for successful patching of service name
+   * @param gatewayAccountId
+   * @param serviceName
+   * @param correlationId
+   * @returns {Promise<Object>}
    */
-  patchServiceName: function (params, successCallback) {
-    var url = _serviceNameUrlFor(params.gatewayAccountId, this.connectorUrl)
-    logger.debug('Calling connector to update service name -', {
-      service: 'connector',
-      method: 'PATCH',
-      url: url
-    })
+  patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
 
-    baseClient.patch(url, params, this.responseHandler(successCallback))
-    return this
+    const params = {
+      gatewayAccountId: gatewayAccountId,
+      payload : {
+        service_name: serviceName
+      },
+      correlationId: correlationId
+    };
+
+    const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'PATCH',
+      description: 'update service name',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.patch(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
   },
 
   /**

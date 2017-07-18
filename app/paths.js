@@ -65,6 +65,10 @@ module.exports = {
     index: '/my-services',
     switch: '/my-services/switch'
   },
+  editServiceName: {
+    index: '/service/:externalServiceId/edit-name',
+    update: '/service/:externalServiceId/edit-name'
+  },
   teamMembers: {
     index: '/service/:externalServiceId',
     show: '/service/:externalServiceId/team-member/:externalUserId',
