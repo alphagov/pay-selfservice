@@ -1,25 +1,25 @@
-var Pact = require('pact');
-var pactProxy = require('../../../../test_helpers/pact_proxy');
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client');
-var serviceFixtures = require('../../../../fixtures/service_fixtures');
-var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+var Pact = require('pact')
+var pactProxy = require('../../../../test_helpers/pact_proxy')
+var chai = require('chai')
+var chaiAsPromised = require('chai-as-promised')
+var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+var serviceFixtures = require('../../../../fixtures/service_fixtures')
+var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
-const expect = chai.expect;
-const SERVICES_PATH = '/v1/api/services';
-var mockPort = Math.floor(Math.random() * 65535);
-var mockServer = pactProxy.create('localhost', mockPort);
+const expect = chai.expect
+const SERVICES_PATH = '/v1/api/services'
+var mockPort = Math.floor(Math.random() * 65535)
+var mockServer = pactProxy.create('localhost', mockPort)
 
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - service users', function () {
 
-  let adminUsersMock;
-  let serviceExternalId = "12345";
-  let non_existing_service_id = "500";
+  let adminUsersMock
+  let serviceExternalId = '12345'
+  let non_existing_service_id = '500'
   let response_params = {
     service_roles: [{
       service: {
@@ -28,29 +28,29 @@ describe('adminusers client - service users', function () {
         gateway_account_ids: []
       },
       role: {
-        name: "admin",
-        description: "Administrator",
-        permissions: ["perm-1", "perm-2", "perm-3"],
-        "_links": [{
-          "href": `http://adminusers.service/v1/api/users/${serviceExternalId}`,
-          "rel": "self",
-          "method": "GET"
+        name: 'admin',
+        description: 'Administrator',
+        permissions: ['perm-1', 'perm-2', 'perm-3'],
+        '_links': [{
+          'href': `http://adminusers.service/v1/api/users/${serviceExternalId}`,
+          'rel': 'self',
+          'method': 'GET'
         }]
       },
     }]
-  };
-  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([response_params]);
+  }
+  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([response_params])
 
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-service-users', provider: 'adminusers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-service-users', provider: 'adminusers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -58,8 +58,8 @@ describe('adminusers client - service users', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('service user API', function () {
 
@@ -73,24 +73,24 @@ describe('adminusers client - service users', function () {
             .withResponseBody(getServiceUsersResponse.getPactified())
             .withStatusCode(200)
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should return service users successfully', function (done) {
 
         adminusersClient.getServiceUsers(serviceExternalId).should.be.fulfilled.then(
           function (users) {
-            let expectedResponse = getServiceUsersResponse.getPlain();
-            expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length);
-            expect(users[0].hasService(serviceExternalId)).to.be.equal(true);
+            let expectedResponse = getServiceUsersResponse.getPlain()
+            expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length)
+            expect(users[0].hasService(serviceExternalId)).to.be.equal(true)
           }
-        ).should.notify(done);
-      });
-    });
+        ).should.notify(done)
+      })
+    })
 
     context('service user - failure', () => {
 
@@ -102,21 +102,21 @@ describe('adminusers client - service users', function () {
             .withResponseBody(serviceFixtures.getServiceUsersNotFoundResponse().getPactified())
             .withStatusCode(404)
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should return service not found', function (done) {
 
         adminusersClient.getServiceUsers(non_existing_service_id).should.be.rejected.then(
           function (err) {
-            expect(err.errorCode).to.equal(404);
+            expect(err.errorCode).to.equal(404)
           }
-        ).should.notify(done);
-      });
-    });
-  });
-});
+        ).should.notify(done)
+      })
+    })
+  })
+})
