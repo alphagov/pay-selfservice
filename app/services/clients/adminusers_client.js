@@ -443,6 +443,40 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Generate OTP code for an invite
+   *
+   * @param inviteCode
+   * @returns {*|Constructor}
+   */
+  const inviteGenerateOtpCode = (inviteCode) => {
+    const params = {
+      correlationId: correlationId
+    }
+
+    const url = `${inviteResource}/${inviteCode}/otp/generate`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'generate otp code for invite',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
    * Complete a service invite
    *
    * @param inviteCode
@@ -863,6 +897,7 @@ module.exports = function (clientOptions = {}) {
     verifyOtpForServiceInvite,
     inviteUser,
     getValidatedInvite,
+    inviteGenerateOtpCode,
     completeInvite,
     submitServiceRegistration,
     submitUserRegistration,

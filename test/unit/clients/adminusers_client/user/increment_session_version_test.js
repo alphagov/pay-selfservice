@@ -1,33 +1,33 @@
-var Pact = require('pact');
-var pactProxy = require('../../../../test_helpers/pact_proxy');
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client');
-var userFixtures = require('../../../../fixtures/user_fixtures');
-var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+var Pact = require('pact')
+var pactProxy = require('../../../../test_helpers/pact_proxy')
+var chai = require('chai')
+var chaiAsPromised = require('chai-as-promised')
+var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+var userFixtures = require('../../../../fixtures/user_fixtures')
+var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
-const expect = chai.expect;
-const USER_PATH = '/v1/api/users';
-var mockPort = Math.floor(Math.random() * 65535);
-var mockServer = pactProxy.create('localhost', mockPort);
+const expect = chai.expect
+const USER_PATH = '/v1/api/users'
+var mockPort = Math.floor(Math.random() * 65535)
+var mockServer = pactProxy.create('localhost', mockPort)
 
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - session', function () {
 
-  var adminUsersMock;
+  var adminUsersMock
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-session', provider: 'AdminUsers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-session', provider: 'adminusers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -35,14 +35,14 @@ describe('adminusers client - session', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('increment session version API', function () {
 
     context('increment session version  API - success', () => {
-      let request = userFixtures.validIncrementSessionVersionRequest();
-      let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3';
+      let request = userFixtures.validIncrementSessionVersionRequest()
+      let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -52,22 +52,22 @@ describe('adminusers client - session', function () {
             .withMethod('PATCH')
             .withRequestBody(request.getPactified())
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should increment session version successfully', function (done) {
 
-        adminusersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done);
-      });
-    });
+        adminusersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done)
+      })
+    })
 
     context('increment session version API - user not found', () => {
-      let nonExistentExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-      let request = userFixtures.validIncrementSessionVersionRequest();
+      let nonExistentExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+      let request = userFixtures.validIncrementSessionVersionRequest()
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -79,21 +79,21 @@ describe('adminusers client - session', function () {
             .withResponseHeaders({})
             .withStatusCode(404)
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should return not found if user not exist', function (done) {
 
         adminusersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(404);
-        }).should.notify(done);
-      });
-    });
+          expect(response.errorCode).to.equal(404)
+        }).should.notify(done)
+      })
+    })
 
-  });
+  })
 
-});
+})

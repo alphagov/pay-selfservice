@@ -24,7 +24,7 @@ describe('adminusers client - create forgotten password', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-create-forgotten-password', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-create-forgotten-password', provider: 'adminusers', port: mockPort});
       done();
     });
   });
