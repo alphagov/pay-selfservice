@@ -4,6 +4,7 @@
 const lodash = require('lodash')
 const passport = require('passport')
 const querystring = require('querystring')
+const AWSXRay = require('aws-xray-sdk');
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -202,4 +203,6 @@ module.exports.bind = function (app) {
   app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm)
   app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on)
   app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off)
+
+  app.use(AWSXRay.express.closeSegment());
 }

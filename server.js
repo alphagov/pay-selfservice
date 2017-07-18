@@ -14,6 +14,7 @@ const logger = require('winston');
 const loggingMiddleware = require('morgan');
 const argv = require('minimist')(process.argv.slice(2));
 const flash = require('connect-flash');
+const AWSXRay = require('aws-xray-sdk');
 
 // Custom dependencies
 const router = require(__dirname + '/app/routes');
@@ -46,11 +47,11 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(function (req, res, next) {
     res.locals.assetPath  = '/public/';
-    res.locals.routes     = router.paths;    
+    res.locals.routes     = router.paths;
     noCache(res);
     next();
   });
-  
+
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], function(req, res, next) {
     // flash requires sessions which also excludes healthcheck endpoint (see below)
     res.locals.flash      = req.flash();
@@ -122,6 +123,7 @@ function listen() {
 function initialise() {
   const app = unconfiguredApp;
 
+  app.use(AWSXRay.express.openSegment('pay-selfservice'));
   app.use(flash());
   initialiseTLS(app);
   initialiseProxy(app);
