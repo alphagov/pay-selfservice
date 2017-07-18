@@ -5,7 +5,7 @@ let expect = chai.expect;
 describe('roles module', function () {
 
   it('should find get role by role id', function (done) {
-    let role = roles.getRoleByExtId('200');
+    let role = roles.getRoleByExtId(200);
 
     expect(role).to.deep.equal({extId: 200, name: 'admin', description: 'Administrator'});
     done();

@@ -1,5 +1,5 @@
-let _ = require('lodash');
-const getHeldPermissions = require('./get_held_permissions');
+let _ = require('lodash')
+const getHeldPermissions = require('./get_held_permissions')
 
 const hideNavBarTemplates = [
   'services/index',
@@ -10,7 +10,7 @@ const hideNavBarTemplates = [
   'services/team_member_invite',
   'error_logged_in',
   'self_create_service/set_name'
-];
+]
 
 /**
  * converts users permission array of form
@@ -33,55 +33,50 @@ const hideNavBarTemplates = [
  * @returns {object}
  */
 const getPermissions = (user, service) => {
-
   if (service) {
-    let userPermissions;
-    const permissionsForService = user.getPermissionsForService(service.externalId);
+    let userPermissions
+    const permissionsForService = user.getPermissionsForService(service.externalId)
     if (user && permissionsForService) {
-      userPermissions = _.clone(permissionsForService);
-      return getHeldPermissions(userPermissions);
+      userPermissions = _.clone(permissionsForService)
+      return getHeldPermissions(userPermissions)
     }
   }
-
-};
+}
 
 const showNavigationBar = template => {
-  return hideNavBarTemplates.indexOf(template) === -1;
-};
+  return hideNavBarTemplates.indexOf(template) === -1
+}
 
 const addGatewayAccountProviderDisplayNames = data => {
-  let gatewayAccounts = _.get(data, 'gatewayAccounts', null);
+  let gatewayAccounts = _.get(data, 'gatewayAccounts', null)
   if (gatewayAccounts) {
-
     let convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
       if (gatewayAccount.payment_provider) {
-        gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider);
+        gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider)
       }
-      return gatewayAccount;
-    });
-    data.gatewayAccounts = convertedGateWayAccounts;
-
+      return gatewayAccount
+    })
+    data.gatewayAccounts = convertedGateWayAccounts
   }
-
-};
+}
 
 const getAccount = account => {
   if (account) {
-    account.full_type = account.type === 'test' ?
-      [account.payment_provider, account.type].join(' ') :
-      account.type;
+    account.full_type = account.type === 'test'
+      ? [account.payment_provider, account.type].join(' ')
+      : account.type
   }
 
-  return account;
-};
+  return account
+}
 
 module.exports = function (req, data, template) {
-  let user = req.user;
-  let account = req.account;
-  let convertedData = _.clone(data);
-  convertedData.permissions = getPermissions(user, req.service);
-  convertedData.navigation = showNavigationBar(template);
-  addGatewayAccountProviderDisplayNames(convertedData);
-  convertedData.currentGatewayAccount = getAccount(account);
-  return convertedData;
-};
+  let user = req.user
+  let account = req.account
+  let convertedData = _.clone(data)
+  convertedData.permissions = getPermissions(user, req.service)
+  convertedData.navigation = showNavigationBar(template)
+  addGatewayAccountProviderDisplayNames(convertedData)
+  convertedData.currentGatewayAccount = getAccount(account)
+  return convertedData
+}

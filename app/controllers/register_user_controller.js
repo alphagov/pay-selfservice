@@ -31,7 +31,6 @@ const withValidatedRegistrationCookie = (req, res, next) => {
       logger.warn(`[requestId=${correlationId}] unable to validate required cookie for registration - ${err.errorCode}`)
       errorResponse(req, res, messages.missingCookie, 404)
     })
-
 }
 
 const handleError = (req, res, err) => {

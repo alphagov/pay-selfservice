@@ -1,7 +1,6 @@
 'use strict'
 
 const q = require('q')
-const _ = require('lodash')
 const requestLogger = require('../../utils/request_logger')
 const baseClient = require('./base_client')
 const User = require('../../models/User.class')
@@ -20,7 +19,6 @@ const responseBodyToUserListTransformer = body => body.map(userData => new User(
 const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
-
   const baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL
   const correlationId = clientOptions.correlationId || ''
   const userResource = `${baseUrl}/v1/api/users`
@@ -179,7 +177,7 @@ module.exports = function (clientOptions = {}) {
    */
   const getForgottenPassword = (code) => {
     const params = {
-      correlationId: correlationId,
+      correlationId: correlationId
     }
     const url = `${forgottenPasswordResource}/${code}`
     const defer = q.defer()
@@ -248,7 +246,7 @@ module.exports = function (clientOptions = {}) {
    */
   const sendSecondFactor = (externalId) => {
     const params = {
-      correlationId: correlationId,
+      correlationId: correlationId
     }
 
     const url = `${userResource}/${externalId}/second-factor/`
@@ -453,7 +451,7 @@ module.exports = function (clientOptions = {}) {
    */
   const completeInvite = (inviteCode, gatewayAccountIds) => {
     const params = {
-      correlationId: correlationId,
+      correlationId: correlationId
     }
     if (gatewayAccountIds) {
       params.payload = {

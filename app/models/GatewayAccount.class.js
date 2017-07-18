@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @class GatewayAccount
@@ -10,7 +10,6 @@
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
  */
 class GatewayAccount {
-
   /**
    * Create an instance of Service
    * @param {Object} gatewayAccountData - raw 'gateway account' object from server
@@ -22,21 +21,21 @@ class GatewayAccount {
    * @param {string} gatewayAccountData.analytics_id - Google analytics_id of the gateway account
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
    **/
-  constructor(gatewayAccountData) {
-    this.id = gatewayAccountData.gateway_account_id;
-    this.name = gatewayAccountData.service_name;
-    this.type = gatewayAccountData.type;
-    this.paymentProvider = gatewayAccountData.payment_provider;
-    this.description = gatewayAccountData.description;
-    this.analyticsId = gatewayAccountData.analytics_id;
-    this.toggle3ds = gatewayAccountData.toggle_3ds;
+  constructor (gatewayAccountData) {
+    this.id = gatewayAccountData.gateway_account_id
+    this.name = gatewayAccountData.service_name
+    this.type = gatewayAccountData.type
+    this.paymentProvider = gatewayAccountData.payment_provider
+    this.description = gatewayAccountData.description
+    this.analyticsId = gatewayAccountData.analytics_id
+    this.toggle3ds = gatewayAccountData.toggle_3ds
   }
 
   /**
    * @method toJson
    * @returns {Object} A minimal representation of the gateway account
    */
-  toMinimalJson() {
+  toMinimalJson () {
     return {
       id: this.id,
       payment_provider: this.paymentProvider,
@@ -46,4 +45,4 @@ class GatewayAccount {
   }
 }
 
-module.exports = GatewayAccount;
+module.exports = GatewayAccount

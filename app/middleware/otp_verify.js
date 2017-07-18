@@ -5,7 +5,7 @@ const logger = require('winston')
 
 // Custom dependencies
 const paths = require('../paths')
-const errorResponse = require('../utils/response').renderErrorView;
+const errorResponse = require('../utils/response').renderErrorView
 const registrationService = require('../services/service_registration_service')
 const {validateOtp} = require('../utils/registration_validations')
 

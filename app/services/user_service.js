@@ -5,7 +5,6 @@ const q = require('q')
 const commonPassword = require('common-password')
 
 // Custom dependencies
-const paths = require('../paths.js')
 const getAdminUsersClient = require('./clients/adminusers_client')
 
 // Constants
@@ -90,12 +89,12 @@ module.exports = {
   },
 
   /**
-   * @param service_id
+   * @param serviceId
    * @param correlationId
    * @returns {Promise}
    */
-  getServiceUsers: function (service_id, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(service_id)
+  getServiceUsers: function (serviceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(serviceId)
   },
 
   /**
