@@ -448,7 +448,7 @@ module.exports = function (clientOptions = {}) {
    * @param inviteCode
    * @returns {*|Constructor}
    */
-  const inviteGenerateOtpCode = (inviteCode) => {
+  const generateInviteOtpCode = (inviteCode) => {
     const params = {
       correlationId: correlationId
     }
@@ -897,7 +897,7 @@ module.exports = function (clientOptions = {}) {
     verifyOtpForServiceInvite,
     inviteUser,
     getValidatedInvite,
-    inviteGenerateOtpCode,
+    generateInviteOtpCode,
     completeInvite,
     submitServiceRegistration,
     submitUserRegistration,

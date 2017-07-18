@@ -30,7 +30,7 @@ describe('adminusers client - generate otp code for invite', function () {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-invite-generate-otp-code', provider: 'adminusers', port: mockPort})
+      adminUsersMock = Pact({consumer: 'Selfservice-generate-invite-otp-code', provider: 'adminusers', port: mockPort})
       done()
     })
   })
@@ -44,15 +44,15 @@ describe('adminusers client - generate otp code for invite', function () {
       .then(() => done())
   })
 
-  describe('invite generate otp code', function () {
-    context('invite generate otp code - 200 OK', () => {
+  describe('generate invite otp code', function () {
+    context('generate invite otp code - 200 OK', () => {
       const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/otp/generate`)
             .withState('a valid invite exists with the given invite code')
-            .withUponReceiving('a valid invite generate otp code request')
+            .withUponReceiving('a valid generate invite otp code request')
             .withMethod('POST')
             .withStatusCode(200)
             .build()
@@ -67,8 +67,8 @@ describe('adminusers client - generate otp code for invite', function () {
         adminUsersMock.finalize().then(() => done())
       })
 
-      it('should complete an invite generate otp code successfully', function (done) {
-        adminusersClient.inviteGenerateOtpCode(inviteCode).should.be.fulfilled.notify(done)
+      it('should complete an generate invite otp code successfully', function (done) {
+        adminusersClient.generateInviteOtpCode(inviteCode).should.be.fulfilled.notify(done)
       })
     })
 
@@ -79,7 +79,7 @@ describe('adminusers client - generate otp code for invite', function () {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_RESOURCE}/${nonExistingInviteCode}/otp/generate`)
             .withState('invite not exists for the given invite code')
-            .withUponReceiving('a valid invite generate otp code of a non existing invite')
+            .withUponReceiving('a valid generate invite otp code of a non existing invite')
             .withMethod('POST')
             .withStatusCode(404)
             .build()
@@ -91,7 +91,7 @@ describe('adminusers client - generate otp code for invite', function () {
       })
 
       it('should 404 NOT FOUND if invite code not found', function (done) {
-        adminusersClient.inviteGenerateOtpCode(nonExistingInviteCode).should.be.rejected.then(function (response) {
+        adminusersClient.generateInviteOtpCode(nonExistingInviteCode).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404)
         }).should.notify(done)
       })
