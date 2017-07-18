@@ -1,11 +1,12 @@
 'use strict'
 
+const path = require('path')
 const nock = require('nock')
 const supertest = require('supertest')
-const paths = require(__dirname + '/../../app/paths.js')
-const getApp = require(__dirname + '/../../server.js').getApp
-const session = require(__dirname + '/../test_helpers/mock_session.js')
-const userFixtures = require(__dirname + '/../fixtures/user_fixtures')
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+const userFixtures = require(path.join(__dirname, '/../fixtures/user_fixtures'))
 const csrf = require('csrf')
 
 const chai = require('chai')
@@ -20,7 +21,6 @@ let app
 let mockRegisterAccountCookie
 
 describe('register user controller', function () {
-
   beforeEach((done) => {
     mockRegisterAccountCookie = {}
     app = session.getAppWithRegisterInvitesCookie(getApp(), mockRegisterAccountCookie)
@@ -37,9 +37,7 @@ describe('register user controller', function () {
    *  ENDPOINT showRegistration
    */
   describe('show registration view endpoint', function () {
-
     it('should display create account form', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -52,11 +50,9 @@ describe('register user controller', function () {
           expect(res.body.email).to.equal('invitee@example.com')
         })
         .end(done)
-
     })
 
     it('should display create account form with telephone populated, if invite has been attempted', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
       mockRegisterAccountCookie.telephone_number = '123456789'
@@ -71,7 +67,6 @@ describe('register user controller', function () {
           expect(res.body.telephone_number).to.equal('123456789')
         })
         .end(done)
-
     })
 
     it('should display error when email and/or code is not in the cookie', function (done) {
@@ -92,9 +87,7 @@ describe('register user controller', function () {
    */
 
   describe('submit registration details endpoint', function () {
-
     it('should error if cookie details are missing', function (done) {
-
       supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -108,11 +101,9 @@ describe('register user controller', function () {
           expect(res.body.message).to.equal('Unable to process registration at this time')
         })
         .end(done)
-
     })
 
     it('should redirect back to registration form if error in phone number', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -133,11 +124,9 @@ describe('register user controller', function () {
           expect(mockRegisterAccountCookie.telephone_number).to.equal(invalidPhone)
         })
         .end(done)
-
     })
 
     it('should redirect to phone verification page', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -157,11 +146,9 @@ describe('register user controller', function () {
         .expect(303, {})
         .expect('Location', paths.registerUser.otpVerify)
         .end(done)
-
     })
 
     it('should error for valid registration data, if code not found', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -183,18 +170,14 @@ describe('register user controller', function () {
           expect(res.body.message).to.equal('Unable to process registration at this time')
         })
         .end(done)
-
     })
-
   })
 
   /**
    *  ENDPOINT showOtpVerify
    */
   describe('show otp verify endpoint', function () {
-
     it('should error if cookie details are missing', function (done) {
-
       supertest(app)
         .get(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
@@ -204,11 +187,9 @@ describe('register user controller', function () {
           expect(res.body.message).to.equal('Unable to process registration at this time')
         })
         .end(done)
-
     })
 
     it('should display verify otp page successfully', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -218,7 +199,6 @@ describe('register user controller', function () {
         .set('x-request-id', 'bob')
         .expect(200)
         .end(done)
-
     })
   })
 
@@ -226,7 +206,6 @@ describe('register user controller', function () {
    *  ENDPOINT submitOtpVerify
    */
   describe('validate otp code endpoint', function () {
-
     it('should validate otp code successfully', function (done) {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
@@ -251,11 +230,9 @@ describe('register user controller', function () {
           expect(mockRegisterAccountCookie.userExternalId).to.equal(newUserExtId)
         })
         .end(done)
-
     })
 
     it('should error if cookie details are missing', function (done) {
-
       supertest(app)
         .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
@@ -273,7 +250,6 @@ describe('register user controller', function () {
     })
 
     it('should error and allow user to reenter otp if invalid otp code entry', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -283,7 +259,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'verify-code': 'hfwe67q', //non-numeric
+          'verify-code': 'hfwe67q', // non-numeric
           csrfToken: csrf().create('123')
         })
         .expect(303)
@@ -292,7 +268,6 @@ describe('register user controller', function () {
     })
 
     it('should error if error during otp code verification', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -320,9 +295,7 @@ describe('register user controller', function () {
    *  ENDPOINT showReVerifyPhone
    */
   describe('show re-verify phone endpoint', function () {
-
     it('should display re verify otp code form with pre-populated telephone number', function (done) {
-
       const telephoneNumber = '12345678901'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -338,7 +311,6 @@ describe('register user controller', function () {
           expect(res.body.telephone_number).to.equal(telephoneNumber)
         })
         .end(done)
-
     })
 
     it('should display error when email and/or code is not in the cookie', function (done) {
@@ -358,9 +330,7 @@ describe('register user controller', function () {
    *  ENDPOINT submitReVerifyPhone
    */
   describe('submit re-verify phone endpoint', function () {
-
     it('should proceed to verify otp upon successful telephone number re-entry', function (done) {
-
       const telephoneNumber = '12345678901'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -384,7 +354,6 @@ describe('register user controller', function () {
     })
 
     it('should error on an error during resend otp', function (done) {
-
       const telephoneNumber = '12345678901'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -410,7 +379,6 @@ describe('register user controller', function () {
     })
 
     it('should redirect back to re verify phone view if error in phone number', function (done) {
-
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -450,21 +418,19 @@ describe('register user controller', function () {
         })
         .end(done)
     })
-
   })
 
   /**
    * ENDPOINT subscribeService
    */
   describe('subscribe existing user to a service endpoint', () => {
-    
     it('should redirect user to my-services page and display added to new service message', (done) => {
       const inviteCode = 'nfjkh438rf3901jqf'
       mockRegisterAccountCookie.code = inviteCode
 
       const serviceExternalId = '378y235y8234y5'
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/${inviteCode}/complete`)
-        .reply(200, {service_external_id:serviceExternalId})
+        .reply(200, {service_external_id: serviceExternalId})
 
       supertest(app)
         .get(paths.registerUser.subscribeService)
@@ -476,7 +442,6 @@ describe('register user controller', function () {
     })
 
     it('should error if cookie details are missing', function (done) {
-
       supertest(app)
         .get(paths.registerUser.subscribeService)
         .set('Accept', 'application/json')
@@ -486,7 +451,6 @@ describe('register user controller', function () {
           expect(res.body.message).to.equal('Unable to process registration at this time')
         })
         .end(done)
-
     })
 
     it('should error if invitation is expired', function (done) {
@@ -505,7 +469,6 @@ describe('register user controller', function () {
           expect(res.body.message).to.equal('This invitation is no longer valid')
         })
         .end(done)
-
     })
   })
 })

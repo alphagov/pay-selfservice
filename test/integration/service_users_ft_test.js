@@ -1,11 +1,11 @@
+const path = require('path')
 const nock = require('nock')
-const session = require(__dirname + '/../test_helpers/mock_session.js')
-const getApp = require(__dirname + '/../../server.js').getApp
+const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const supertest = require('supertest')
-const serviceFixtures = require(__dirname + '/../fixtures/service_fixtures')
-const userFixtures = require(__dirname + '/../fixtures/user_fixtures')
-const paths = require(__dirname + '/../../app/paths.js')
-const roles = require('../../app/utils/roles').roles
+const serviceFixtures = require(path.join(__dirname, '/../fixtures/service_fixtures'))
+const userFixtures = require(path.join(__dirname, '/../fixtures/user_fixtures'))
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const csrf = require('csrf')
 const chai = require('chai')
 const expect = chai.expect
@@ -20,7 +20,6 @@ chai.use(chaiAsPromised)
 const formattedPathFor = require('../../app/utils/replace_params_in_path')
 
 describe('service users resource', function () {
-
   let EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3'
   let USERNAME_LOGGED_IN = 'existing-user'
   let EXTERNAL_ID_OTHER_USER = '393266e872594f1593558549caad95ec'
@@ -33,7 +32,6 @@ describe('service users resource', function () {
   })
 
   it('get list of service users should link to my profile for my user', function (done) {
-
     const externalServiceId = '734rgw76jhka'
     const serviceRoles = [{
       service: {
@@ -46,7 +44,7 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_roles: serviceRoles,
+      service_roles: serviceRoles
     })
 
     const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
@@ -75,9 +73,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-
   it('get list of service users should link to a users view details for other users', function (done) {
-
     const externalServiceId = '734rgw76jhka'
 
     const serviceRoles = [{
@@ -85,13 +81,13 @@ describe('service users resource', function () {
         name: 'System Generated',
         external_id: externalServiceId
       },
-      role: {name: 'admin', description: 'Administrator', permissions: [{name:'users-service:create'}]}
+      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
     }]
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
-      service_roles: serviceRoles,
+      service_roles: serviceRoles
     })
 
     const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{
@@ -117,9 +113,8 @@ describe('service users resource', function () {
   })
 
   it('view team member details', function (done) {
-
     const externalServiceId = '734rgw76jhka'
-    const user_in_session = session.getUser({
+    const userInSession = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
@@ -132,7 +127,7 @@ describe('service users resource', function () {
       }]
     })
 
-    const user_to_view = {
+    const userToView = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
       service_roles: [{
@@ -141,14 +136,14 @@ describe('service users resource', function () {
           external_id: externalServiceId
         },
         role: {name: 'view-only', description: 'View only'}
-      }],
+      }]
     }
-    const getUserResponse = userFixtures.validUserResponse(user_to_view)
+    const getUserResponse = userFixtures.validUserResponse(userToView)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200, getUserResponse.getPlain())
 
-    app = session.getAppWithLoggedInUser(getApp(), user_in_session)
+    app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
       .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
@@ -165,25 +160,24 @@ describe('service users resource', function () {
   })
 
   it('should show my profile', function (done) {
-
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
-      //TODO: fix to use serviceRoles
+      // TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: '8348754ihuwk'
-      }],
+      }]
     }
-    const user_in_session = session.getUser(user)
+    const userInSession = session.getUser(user)
     const getUserResponse = userFixtures.validUserResponse(user)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}`)
       .reply(200, getUserResponse.getPlain())
 
-    app = session.getAppWithLoggedInUser(getApp(), user_in_session)
+    app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
       .get('/my-profile')
@@ -198,25 +192,24 @@ describe('service users resource', function () {
   })
 
   it('should not show my profile without second factor', function (done) {
-
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN + '@example.com',
       telephone_number: '+447876548778',
-      //TODO: fix to use serviceRoles
+      // TODO: fix to use serviceRoles
       services: [{
         name: 'System Generated',
         external_id: '3894hewfui'
-      }],
+      }]
     }
-    const user_in_session = session.getUser(user)
+    const userInSession = session.getUser(user)
     const getUserResponse = userFixtures.validUserResponse(user)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_LOGGED_IN}`)
       .reply(200, getUserResponse.getPlain())
 
-    app = session.getAppWithSessionWithoutSecondFactor(getApp(), user_in_session)
+    app = session.getAppWithSessionWithoutSecondFactor(getApp(), userInSession)
 
     supertest(app)
       .get('/my-profile')
@@ -227,13 +220,13 @@ describe('service users resource', function () {
   })
 
   it('should redirect to my profile when trying to access my user through team members path', function (done) {
-    const user_in_session = session.getUser({
+    const userInSession = session.getUser({
       permissions: [{name: 'users-service:read'}]
     })
-    const externalServiceId = user_in_session.serviceRoles[0].service.externalId
-    EXTERNAL_ID_LOGGED_IN = user_in_session.externalId
+    const externalServiceId = userInSession.serviceRoles[0].service.externalId
+    EXTERNAL_ID_LOGGED_IN = userInSession.externalId
 
-    app = session.getAppWithLoggedInUser(getApp(), user_in_session)
+    app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
       .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_LOGGED_IN))
@@ -244,7 +237,6 @@ describe('service users resource', function () {
   })
 
   it('error when accessing an user from other service profile (cheeky!)', function (done) {
-
     const externalServiceId1 = '48753g874tg'
     const externalServiceId2 = '7huh4y7tu6g'
     const user = session.getUser({
@@ -269,12 +261,12 @@ describe('service users resource', function () {
         },
         role: {name: 'view-only', description: 'View only', permissions: [{name: 'users-service:read'}]}
       }],
-      //TODO: fix to use serviceRoles
+      // TODO: fix to use serviceRoles
 
       services: [{
         name: 'System Generated',
         external_id: externalServiceId2
-      }],
+      }]
     })
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
@@ -293,19 +285,19 @@ describe('service users resource', function () {
   })
 
   it('remove a team member successfully should redirect user to team member', function (done) {
-    let user_in_session = session.getUser({
-      permissions: [{name: 'users-service:delete'}],
+    let userInSession = session.getUser({
+      permissions: [{name: 'users-service:delete'}]
     })
-    const externalServiceId = user_in_session.serviceRoles[0].service.externalId
-    EXTERNAL_ID_LOGGED_IN = user_in_session.externalId
+    const externalServiceId = userInSession.serviceRoles[0].service.externalId
+    EXTERNAL_ID_LOGGED_IN = userInSession.externalId
 
-    let user_to_delete = {
+    let userToDelete = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
       role: {'name': 'view-only'}
     }
 
-    let getUserResponse = userFixtures.validUserResponse(user_to_delete)
+    let getUserResponse = userFixtures.validUserResponse(userToDelete)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200, getUserResponse.getPlain())
@@ -313,7 +305,7 @@ describe('service users resource', function () {
     adminusersMock.delete(`${SERVICE_RESOURCE}/${externalServiceId}/users/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200)
 
-    app = session.getAppWithLoggedInUser(getApp(), user_in_session)
+    app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
       .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
@@ -324,17 +316,17 @@ describe('service users resource', function () {
   })
 
   it('when remove a team member fails when user does not exist should redirect user to error view with link to view team members', function (done) {
-    let user_in_session = session.getUser({
+    let userInSession = session.getUser({
       permissions: [{name: 'users-service:delete'}]
     })
 
-    const externalServiceId = user_in_session.serviceRoles[0].service.externalId
-    EXTERNAL_ID_LOGGED_IN = user_in_session.externalId
+    const externalServiceId = userInSession.serviceRoles[0].service.externalId
+    EXTERNAL_ID_LOGGED_IN = userInSession.externalId
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
       .reply(404)
 
-    app = session.getAppWithLoggedInUser(getApp(), user_in_session)
+    app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
     supertest(app)
       .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))

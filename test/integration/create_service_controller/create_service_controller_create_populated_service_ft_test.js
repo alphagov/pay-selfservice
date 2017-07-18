@@ -2,8 +2,6 @@
 
 // NPM dependencies
 const nock = require('nock')
-const csrf = require('csrf')
-const supertest = require('supertest')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -11,7 +9,6 @@ const chaiAsPromised = require('chai-as-promised')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const inviteFixtures = require('../../fixtures/invite_fixtures')
 const serviceRegistrationService = require('../../../app/services/service_registration_service')
-const paths = require('../../../app/paths')
 
 // Constants
 const CONNECTOR_ACCOUNTS_URL = '/v1/api/accounts'
@@ -24,7 +21,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('create populated service', function () {
-
   afterEach((done) => {
     nock.cleanAll()
     done()
@@ -61,8 +57,8 @@ describe('create populated service', function () {
       .reply(200, mockAdminUsersInviteCompleteResponse)
 
     serviceRegistrationService.createPopulatedService(inviteCode).should.be.fulfilled.then(completeServiceInviteResponse => {
-      expect(createGatewayAccountMock.isDone()).to.be.true
-      expect(completeServiceInviteMock.isDone()).to.be.true
+      expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
+      expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(completeServiceInviteResponse.invite.code).to.equal(mockAdminUsersInviteCompleteResponse.invite.code)
       expect(completeServiceInviteResponse.invite.type).to.equal(mockAdminUsersInviteCompleteResponse.invite.type)
       expect(completeServiceInviteResponse.invite.disabled).to.equal(mockAdminUsersInviteCompleteResponse.invite.disabled)
@@ -78,7 +74,7 @@ describe('create populated service', function () {
       .reply(500)
 
     serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
-      expect(mockConnectorCreateGatewayAccountResponse.isDone()).to.be.true
+      expect(mockConnectorCreateGatewayAccountResponse.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(500)
     }).should.notify(done)
   })
@@ -102,8 +98,8 @@ describe('create populated service', function () {
       .reply(500)
 
     serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
-      expect(createGatewayAccountMock.isDone()).to.be.true
-      expect(completeServiceInviteMock.isDone()).to.be.true
+      expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
+      expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(500)
     }).should.notify(done)
   })
@@ -127,8 +123,8 @@ describe('create populated service', function () {
       .reply(409)
 
     serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
-      expect(createGatewayAccountMock.isDone()).to.be.true
-      expect(completeServiceInviteMock.isDone()).to.be.true
+      expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
+      expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(409)
     }).should.notify(done)
   })

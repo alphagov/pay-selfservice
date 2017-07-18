@@ -1,80 +1,77 @@
-require(__dirname + '/../test_helpers/serialize_mock.js');
-var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
-var request = require('supertest');
-var nock = require('nock');
-var getApp = require(__dirname + '/../../server.js').getApp;
-var dates = require('../../app/utils/dates.js');
-var paths = require(__dirname + '/../../app/paths.js');
-var session = require(__dirname + '/../test_helpers/mock_session.js');
+var path = require('path')
+require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
+var request = require('supertest')
+var nock = require('nock')
+var getApp = require(path.join(__dirname, '/../../server.js')).getApp
+var paths = require(path.join(__dirname, '/../../app/paths.js'))
+var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 
-var CONNECTOR_DATE = "2016-02-10T12:44:01.000Z";
-var DISPLAY_DATE = "10 Feb 2016 — 12:44:01";
-var gatewayAccountId = 651342;
+var CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
+var DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
+var gatewayAccountId = 651342
 
-var app;
+var app
 
-var searchParameters = {};
-var CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
+var searchParameters = {}
+var CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 
 var ALL_CARD_TYPES = {
-  "card_types": [
-    {"id": "1", "brand": "mastercard", "label": "Mastercard", "type": "CREDIT"},
-    {"id": "2", "brand": "mastercard", "label": "Mastercard", "type": "DEBIT"},
-    {"id": "3", "brand": "discover", "label": "Discover", "type": "CREDIT"},
-    {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
-};
-var requestId = 'unique-request-id';
+  'card_types': [
+    {'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT'},
+    {'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT'},
+    {'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT'},
+    {'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT'}]
+}
+var requestId = 'unique-request-id'
 var aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
-};
+}
 
-var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader);
+var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
 
-function connectorMock_responds(code, data, searchParameters) {
-  var queryStr = '?';
+function connectorMockResponds (code, data, searchParameters) {
+  var queryStr = '?'
   queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
     '&email=' + (searchParameters.email ? searchParameters.email : '') +
     '&state=' + (searchParameters.state ? searchParameters.state : '') +
     '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
     '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
     '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-    '&page=' + (searchParameters.page ? searchParameters.page : "1") +
-    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : "100");
+    '&page=' + (searchParameters.page ? searchParameters.page : '1') +
+    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
 
   return connectorMock.get(CONNECTOR_CHARGES_API_PATH + encodeURI(queryStr))
-    .reply(code, data);
+    .reply(code, data)
 }
 
-function get_transaction_list() {
+function getTransactionList () {
   return request(app)
     .get(paths.transactions.index)
     .set('Accept', 'application/json')
-    .set('x-request-id', requestId);
+    .set('x-request-id', requestId)
 }
 
 describe('The /transactions endpoint', function () {
-
   afterEach(function () {
-    nock.cleanAll();
-    app = null;
-  });
+    nock.cleanAll()
+    app = null
+  })
 
   beforeEach(function (done) {
-    let permissions = 'transactions:read';
+    let permissions = 'transactions:read'
     var user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
-    });
-    app = session.getAppWithLoggedInUser(getApp(), user);
+    })
+    app = session.getAppWithLoggedInUser(getApp(), user)
 
-    userCreator.mockUserResponse(user.toJson(), done);
-  });
-
+    userCreator.mockUserResponse(user.toJson(), done)
+  })
 
   it('should return a list of transactions for the gateway account', function (done) {
-
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES);
+      .reply(200, ALL_CARD_TYPES)
 
     var connectorData = {
       'results': [
@@ -109,9 +106,9 @@ describe('The /transactions endpoint', function () {
 
         }
       ]
-    };
+    }
 
-    connectorMock_responds(200, connectorData, searchParameters);
+    connectorMockResponds(200, connectorData, searchParameters)
 
     var expectedData = {
       'results': [
@@ -130,7 +127,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
         },
         {
           'charge_id': '101',
@@ -147,23 +144,22 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
         }
       ]
-    };
+    }
 
-    get_transaction_list()
+    getTransactionList()
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account', function (done) {
-
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES);
+      .reply(200, ALL_CARD_TYPES)
 
     var connectorData = {
       'results': [
@@ -198,25 +194,23 @@ describe('The /transactions endpoint', function () {
 
         }
       ]
-    };
+    }
 
-    connectorMock_responds(200, connectorData, {state: "started"});
+    connectorMockResponds(200, connectorData, {state: 'started'})
     request(app)
-      .get(paths.transactions.index + "?state=started")
+      .get(paths.transactions.index + '?state=started')
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        res.body.downloadTransactionLink.should.eql("/transactions/download?state=started");
+        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started')
       })
-      .end(done);
-  });
-
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account with reference missing', function (done) {
-
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES);
+      .reply(200, ALL_CARD_TYPES)
 
     var connectorData = {
       'results': [
@@ -249,9 +243,9 @@ describe('The /transactions endpoint', function () {
           'created_date': CONNECTOR_DATE
         }
       ]
-    };
+    }
 
-    connectorMock_responds(200, connectorData, searchParameters);
+    connectorMockResponds(200, connectorData, searchParameters)
 
     var expectedData = {
       'results': [
@@ -269,7 +263,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
 
         },
         {
@@ -287,63 +281,60 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
         }
       ]
-    };
+    }
 
-    get_transaction_list()
+    getTransactionList()
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should display page with empty list of transactions if no records returned by connector', function (done) {
-
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES);
+      .reply(200, ALL_CARD_TYPES)
 
     var connectorData = {
       'results': []
-    };
-    connectorMock_responds(200, connectorData, searchParameters);
+    }
+    connectorMockResponds(200, connectorData, searchParameters)
 
-    get_transaction_list()
+    getTransactionList()
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql([]);
+        res.body.results.should.eql([])
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {
+    var errorMessage = 'Unable to retrieve list of transactions.'
+    connectorMockResponds(400, {'message': errorMessage}, searchParameters)
 
-    var errorMessage = 'Unable to retrieve list of transactions.';
-    connectorMock_responds(400, {'message': errorMessage}, searchParameters);
-
-    get_transaction_list()
+    getTransactionList()
       .expect(500, {'message': errorMessage})
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should show a generic error message on a connector service error while retrieving the list of transactions', function (done) {
+    connectorMockResponds(500, {'message': 'some error from connector'}, searchParameters)
 
-    connectorMock_responds(500, {'message': 'some error from connector'}, searchParameters);
-
-    get_transaction_list()
+    getTransactionList()
       .expect(500, {'message': 'Unable to retrieve list of transactions.'})
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should show internal error message if any error happens while retrieving the list of transactions', function (done) {
     // No connectorMock defined on purpose to mock a network failure
 
-    get_transaction_list()
+    getTransactionList()
       .expect(500, {'message': 'Unable to retrieve list of transactions.'})
-      .end(done);
-  });
+      .end(done)
+  })
 
   //
   // PP-1158 Fix 3 selfservice problematic tests in transaction_list_ft_tests
@@ -359,47 +350,44 @@ describe('The /transactions endpoint', function () {
   // tests resulting in the response being rendered more than once.
   //
 
-  //it('should show error message on a bad request while retrieving the list of card brands', function (done) {
+  // it('should show error message on a bad request while retrieving the list of card brands', function (done) {
   //  var connectorData = {
   //    'results': []
   //  };
-  //  connectorMock_responds(200, connectorData, searchParameters);
+  //  connectorMockResponds(200, connectorData, searchParameters);
   //
   //  var errorMessage = 'Unable to retrieve list of card brands.';
   //  connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
   //    .reply(400, {'message': errorMessage});
   //
-  //  get_transaction_list()
+  //  getTransactionList()
   //    .expect(500, {'message': errorMessage})
   //    .end(done);
-  //});
+  // });
 
-
-  //it('should show a generic error message on a connector service error while retrieving the list of card brands', function (done) {
+  // it('should show a generic error message on a connector service error while retrieving the list of card brands', function (done) {
   //  var connectorData = {
   //    'results': []
   //  };
-  //  connectorMock_responds(200, connectorData, searchParameters);
+  //  connectorMockResponds(200, connectorData, searchParameters);
   //
   //  connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
   //    .reply(500, {'message': 'some error from connector'});
   //
-  //  get_transaction_list()
+  //  getTransactionList()
   //    .expect(500, {'message': 'Unable to retrieve list of transactions.'})
   //    .end(done);
-  //});
+  // });
 
-  //it('should show internal error message if any error happens while retrieving the list of card brands', function (done) {
+  // it('should show internal error message if any error happens while retrieving the list of card brands', function (done) {
   //
   //  var connectorData = {
   //    'results': []
   //  };
-  //  connectorMock_responds(200, connectorData, searchParameters);
+  //  connectorMockResponds(200, connectorData, searchParameters);
   //
-  //  get_transaction_list()
+  //  getTransactionList()
   //    .expect(500, {'message': 'Unable to retrieve list of transactions.'})
   //    .end(done);
-  //});
-
-});
-
+  // });
+})

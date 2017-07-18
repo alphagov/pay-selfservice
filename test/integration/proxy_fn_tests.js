@@ -1,12 +1,12 @@
-process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk';
+process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk'
 
-var assert = require('assert');
-var portfinder = require('portfinder');
-var request = require('request');
-var winston = require('winston');
+var assert = require('assert')
+var portfinder = require('portfinder')
+var request = require('request')
+var winston = require('winston')
 
-var http = require('http'),
-  httpProxy = require('http-proxy');
+var http = require('http')
+var httpProxy = require('http-proxy')
 
 /**
  * This test actually tests if request.js honour HTTP_PROXY, NO_PROXY var's as per the documentation.
@@ -19,97 +19,88 @@ var http = require('http'),
  */
 
 describe('request.js client', function () {
-
   var proxiedServer, proxyServer, nonProxiedServer,
     proxiedServerUrl, proxyUrl, nonProxiedServerUrl,
-    nonProxiedServerPort;
+    nonProxiedServerPort
 
   before(function () {
     // Disable logging.
-    winston.level = 'none';
+    winston.level = 'none'
 
     // create proxied server
     portfinder.getPort(function (err, aPort) {
-
+      if (err) { throw err }
       proxiedServer = http.createServer(function (req, res) {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write('{"message":"server-response"}');
-        res.end();
-      }).listen(aPort, function() {
-
+        res.writeHead(200, {'Content-Type': 'application/json'})
+        res.write('{"message":"server-response"}')
+        res.end()
+      }).listen(aPort, function () {
         // create non proxied server
         portfinder.getPort(function (err, aPort) {
-
+          if (err) { throw err }
           nonProxiedServer = http.createServer(function (req, res) {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.write('{"message":"non-proxied-server-response"}');
-            res.end();
-          }).listen(aPort, function() {
-
+            res.writeHead(200, {'Content-Type': 'application/json'})
+            res.write('{"message":"non-proxied-server-response"}')
+            res.end()
+          }).listen(aPort, function () {
             // create proxy server
             portfinder.getPort(function (err, aPort) {
-
+              if (err) { throw err }
               proxyServer = httpProxy
                   .createProxyServer({target: {host: 'localhost', port: proxiedServer.address().port}})
-                  .listen(aPort);
-              proxyUrl = "http://localhost:" + aPort;
+                  .listen(aPort)
+              proxyUrl = 'http://localhost:' + aPort
 
               proxyServer.on('proxyRes', function (proxyRes, req, res) {
-                proxyRes.headers['X-Proxy-Header'] = 'touched by proxy';
-              });
-            });
+                proxyRes.headers['X-Proxy-Header'] = 'touched by proxy'
+              })
+            })
+          })
 
-          });
+          nonProxiedServerPort = aPort
+          nonProxiedServerUrl = 'http://localhost:' + aPort
+        })
+      })
 
-          nonProxiedServerPort = aPort;
-          nonProxiedServerUrl = "http://localhost:" + aPort;
-
-        });
-
-      });
-
-      proxiedServerUrl = "http://localhost:" + aPort;
-    });
-
-  });
+      proxiedServerUrl = 'http://localhost:' + aPort
+    })
+  })
 
   beforeEach(function () {
-    process.env.HTTP_PROXY = proxyUrl;
-    process.env.NO_PROXY = 'localhost:' + nonProxiedServerPort;
-  });
+    process.env.HTTP_PROXY = proxyUrl
+    process.env.NO_PROXY = 'localhost:' + nonProxiedServerPort
+  })
 
   afterEach(function () {
-    delete process.env.HTTP_PROXY;
-    delete process.env.NO_PROXY;
-  });
+    delete process.env.HTTP_PROXY
+    delete process.env.NO_PROXY
+  })
 
   after(function () {
-    proxyServer.close();
-    proxiedServer.close();
-    nonProxiedServer.close();
-  });
+    proxyServer.close()
+    proxiedServer.close()
+    nonProxiedServer.close()
+  })
 
   it('should proxy requests when HTTP_PROXY enabled', function (done) {
-    var client = request.defaults({json: true});
+    var client = request.defaults({json: true})
 
     client(proxiedServerUrl, function (error, response, body) {
-      assert.equal(response.headers['x-proxy-header'], 'touched by proxy');
-      assert.equal(body.message, 'server-response');
-      done();
-    });
-
-  });
+      if (error) { done(error) }
+      assert.equal(response.headers['x-proxy-header'], 'touched by proxy')
+      assert.equal(body.message, 'server-response')
+      done()
+    })
+  })
 
   it('should not proxy requests for NO_PROXY hosts', function (done) {
-    var client = request.defaults({json: true});
+    var client = request.defaults({json: true})
 
     client(nonProxiedServerUrl, function (error, response, body) {
-      assert.notEqual(response.headers['x-proxy-header'], 'touched by proxy');
-      assert.equal(body.message, 'non-proxied-server-response');
-      done();
-    });
-
-  });
-
-});
-
+      if (error) { done(error) }
+      assert.notEqual(response.headers['x-proxy-header'], 'touched by proxy')
+      assert.equal(body.message, 'non-proxied-server-response')
+      done()
+    })
+  })
+})
