@@ -1,27 +1,25 @@
-'use strict';
+'use strict'
 
-const session = require('client-sessions'),
-  _ = require('lodash'),
-  logger = require('winston');
+const session = require('client-sessions')
 
-let _30_DAYS = 2592000000; // 30 days in ms
-let _1_HOUR = 60 * 60 * 1000;
-let COOKIE_MAX_AGE_GATEWAY_ACCOUNT = process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT ?
-  parseInt(process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT) : _30_DAYS;
-let COOKIE_MAX_AGE_REGISTRATION = process.env.COOKIE_MAX_AGE_REGISTRATION ?
-  parseInt(process.env.COOKIE_MAX_AGE_REGISTRATION) : _1_HOUR;
+let _30_DAYS = 2592000000 // 30 days in ms
+let _1_HOUR = 60 * 60 * 1000
+let COOKIE_MAX_AGE_GATEWAY_ACCOUNT = process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT
+  ? parseInt(process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT) : _30_DAYS
+let COOKIE_MAX_AGE_REGISTRATION = process.env.COOKIE_MAX_AGE_REGISTRATION
+  ? parseInt(process.env.COOKIE_MAX_AGE_REGISTRATION) : _1_HOUR
 
-function checkEnv() {
+function checkEnv () {
   if (process.env.SESSION_ENCRYPTION_KEY === undefined) {
-    throw new Error('cookie encryption key is not set');
+    throw new Error('cookie encryption key is not set')
   }
   if (process.env.COOKIE_MAX_AGE === undefined) {
-    throw new Error('cookie max age is not set');
+    throw new Error('cookie max age is not set')
   }
 }
 
-function sessionCookie() {
-  checkEnv();
+function sessionCookie () {
+  checkEnv()
   return session({
     cookieName: 'session', // cookie name dictates the key name added to the request object
     secret: process.env.SESSION_ENCRYPTION_KEY,
@@ -32,11 +30,11 @@ function sessionCookie() {
       httpOnly: true, // when true, cookie is not accessible from javascript
       secureProxy: true
     }
-  });
+  })
 }
 
-function gatewayAccountCookie() {
-  checkEnv();
+function gatewayAccountCookie () {
+  checkEnv()
   return session({
     cookieName: 'gateway_account', // cookie name dictates the key name added to the request object
     secret: process.env.SESSION_ENCRYPTION_KEY,
@@ -47,11 +45,11 @@ function gatewayAccountCookie() {
       httpOnly: true, // when true, cookie is not accessible from javascript
       secureProxy: true // when true, cookie will only be sent over SSL. use key 'secureProxy' instead if you handle SSL not in your node process
     }
-  });
+  })
 }
 
-function registrationCookie(){
-  checkEnv();
+function registrationCookie () {
+  checkEnv()
   return session({
     cookieName: 'register_invite', // cookie name dictates the key name added to the request object
     secret: process.env.SESSION_ENCRYPTION_KEY,
@@ -62,11 +60,11 @@ function registrationCookie(){
       httpOnly: true, // when true, cookie is not accessible from javascript
       secureProxy: true // when true, cookie will only be sent over SSL. use key 'secureProxy' instead if you handle SSL not in your node process
     }
-  });
+  })
 }
 
 module.exports = {
   sessionCookie: sessionCookie,
   gatewayAccountCookie: gatewayAccountCookie,
   registrationCookie: registrationCookie
-};
+}

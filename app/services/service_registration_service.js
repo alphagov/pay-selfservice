@@ -8,9 +8,6 @@ const logger = require('winston')
 const getAdminUsersClient = require('./clients/adminusers_client')
 const ConnectorClient = require('../services/clients/connector_client').ConnectorClient
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
-const paths = require('../paths')
-const userService = require('./user_service')
-
 // Global functions
 const completeServiceInvite = function (inviteCode, gatewayAccountIds, correlationId) {
   return getAdminUsersClient({correlationId}).completeInvite(inviteCode, gatewayAccountIds)

@@ -139,18 +139,18 @@ describe('auth service', function () {
     });
   });
 
-  describe('no_access', function () {
+  describe('noAccess', function () {
 
     it("call next when on no access", function (done) {
       const invalid = _.cloneDeep(validRequest());
       invalid.url = paths.user.noAccess;
-      auth.no_access(invalid, response, next);
+      auth.noAccess(invalid, response, next);
       expect(next.calledOnce).to.be.true;
       done();
     });
 
     it("call redirect to no access", function (done) {
-      auth.no_access(validRequest(), response, next);
+      auth.noAccess(validRequest(), response, next);
       assert(redirect.calledWith(paths.user.noAccess));
       done();
     });

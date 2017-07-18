@@ -1,4 +1,4 @@
-var environment = require(__dirname + '/app/services/environment.js')
+const path = require('path')
 
 module.exports = function (grunt) {
   grunt.initConfig({
@@ -176,7 +176,7 @@ module.exports = function (grunt) {
     'convert_template',
     'Converts the govuk_template to use mustache inheritance',
     function () {
-      var script = require(__dirname + '/lib/template-conversion.js')
+      const script = require(path.join(__dirname, '/lib/template-conversion.js'))
 
       script.convert()
       grunt.log.writeln('govuk_template converted')
@@ -193,7 +193,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['env:test', 'mochaTest'])
 
-  var defaultTasks = ['generate-assets', 'concurrent:target']
+  const defaultTasks = ['generate-assets', 'concurrent:target']
 
   if (process.env.LOCAL_ENV) {
     defaultTasks.unshift('env:dev')
@@ -204,7 +204,7 @@ module.exports = function (grunt) {
   grunt.event.on('watch', function (action, filepath, target) {
     // just copy the asset that was changed, not all of them
 
-    if (target == 'assets') {
+    if (target === 'assets') {
       grunt.config(
         'copy.assets.files.0.src',
         filepath.replace('app/assets/', '')

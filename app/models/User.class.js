@@ -1,7 +1,6 @@
-'use strict';
+'use strict'
 
-const _ = require('lodash');
-const Service = require('./Service.class')
+const _ = require('lodash')
 const ServiceRole = require('./ServiceRole.class')
 
 /**
@@ -32,50 +31,50 @@ class User {
    * @param {Object} userData.service_roles[].service - A raw service object see {@link Service.constructor}
    * @param {Object} userData.service_roles[].role - A raw role object
    **/
-  constructor(userData) {
+  constructor (userData) {
     if (!userData) {
-      throw Error('Must provide username');
+      throw Error('Must provide username')
     }
-    this.externalId = userData.external_id;
-    this.username = userData.username;
-    this.email = userData.email || '';
-    this.serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData));
-    this.otpKey = userData.otp_key || '';
-    this.telephoneNumber = userData.telephone_number || '';
-    this.disabled = userData.disabled ? userData.disabled : false;
-    this.sessionVersion = userData.session_version || 0;
+    this.externalId = userData.external_id
+    this.username = userData.username
+    this.email = userData.email || ''
+    this.serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData))
+    this.otpKey = userData.otp_key || ''
+    this.telephoneNumber = userData.telephone_number || ''
+    this.disabled = userData.disabled ? userData.disabled : false
+    this.sessionVersion = userData.session_version || 0
   }
 
   /**
    * @method toJson
    * @returns an 'adminusers' compatible representation of the user object
    **/
-  toJson() {
-    let json = this.toMinimalJson();
+  toJson () {
+    let json = this.toMinimalJson()
 
     return _.merge(json, {
       disabled: this.disabled,
       session_version: this.sessionVersion
-    });
+    })
   }
 
   /**
    * @method toJson
    * @returns an minimal 'adminusers' compatible representation of the user object
    **/
-  toMinimalJson() {
+  toMinimalJson () {
     let json = {
       external_id: this.externalId,
       username: this.username,
       email: this.email,
       gateway_account_ids: this.gatewayAccountIds,
-      telephone_number: this.telephoneNumber,
-    };
+      telephone_number: this.telephoneNumber
+    }
 
     if (this.otpKey) {
-      json.otp_key = this.otpKey;
+      json.otp_key = this.otpKey
     }
-    return json;
+    return json
   }
 
   /**
@@ -83,10 +82,10 @@ class User {
    * @param {String} permissionName name of permission
    * @returns {boolean} Whether or not the user has the given permission
    */
-  hasPermission(serviceExternalId, permissionName) {
+  hasPermission (serviceExternalId, permissionName) {
     return _.get(this.getRoleForService(serviceExternalId), 'permissions', [])
       .map(permission => permission.name)
-      .includes(permissionName);
+      .includes(permissionName)
   }
 
   /**
@@ -94,9 +93,9 @@ class User {
    * @param externalServiceId
    * @return {Object | undefined} Either the user's role in the service or undefined if they have no role
    */
-  getRoleForService(externalServiceId) {
-    const serviceRole = this.serviceRoles.find(serviceRole => serviceRole.service.externalId === externalServiceId);
-    return _.get(serviceRole, 'role');
+  getRoleForService (externalServiceId) {
+    const serviceRole = this.serviceRoles.find(serviceRole => serviceRole.service.externalId === externalServiceId)
+    return _.get(serviceRole, 'role')
   }
 
   /**
@@ -104,7 +103,7 @@ class User {
    * @param externalServiceId
    * @returns {boolean}
    */
-  hasService(externalServiceId) {
+  hasService (externalServiceId) {
     return this.serviceRoles.map(serviceRole => serviceRole.service.externalId).includes(externalServiceId)
   }
 
@@ -113,10 +112,9 @@ class User {
    * @param serviceExternalId
    * @returns {String[]} permission names for the given serviceId
    */
-  getPermissionsForService(serviceExternalId) {
-    return _.get(this.getRoleForService(serviceExternalId), 'permissions', []).map(permission => permission.name);
+  getPermissionsForService (serviceExternalId) {
+    return _.get(this.getRoleForService(serviceExternalId), 'permissions', []).map(permission => permission.name)
   }
-
 }
 
-module.exports = User;
+module.exports = User

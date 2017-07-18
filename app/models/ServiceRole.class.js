@@ -1,5 +1,5 @@
-'use strict';
-const Service = require('./Service.class');
+'use strict'
+const Service = require('./Service.class')
 
 /**
  * @class ServiceRole
@@ -7,7 +7,6 @@ const Service = require('./Service.class');
  * @property {Object} role - the role the user has on this service
  */
 class ServiceRole {
-
   /**
    * @constructor
    * Create an instance of a ServiceRole
@@ -15,10 +14,10 @@ class ServiceRole {
    * @param {Object} serviceRoleData.service - see params for {@link Service.constructor}
    * @param {Object} serviceRoleData.role - raw 'role' object from server
    */
-  constructor(serviceRoleData) {
-    this.service = new Service(serviceRoleData.service);
-    this.role = serviceRoleData.role;
+  constructor (serviceRoleData) {
+    this.service = new Service(serviceRoleData.service)
+    this.role = serviceRoleData.role
   }
 }
 
-module.exports = ServiceRole;
+module.exports = ServiceRole

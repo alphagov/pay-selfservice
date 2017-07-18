@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  @class Service
@@ -14,17 +14,17 @@ class Service {
    * @param {string} serviceData.name - The name of the service
    * @param {string[]} serviceData.gateway_account_ids - list of gateway account id's that belong to this service
    **/
-  constructor(serviceData) {
-    this.externalId = serviceData.external_id;
-    this.name = serviceData.name;
-    this.gatewayAccountIds = serviceData.gateway_account_ids;
+  constructor (serviceData) {
+    this.externalId = serviceData.external_id
+    this.name = serviceData.name
+    this.gatewayAccountIds = serviceData.gateway_account_ids
   }
 
   /**
    * @method toJson
    * @returns {Object} An 'adminusers' compatible representation of the service
    */
-  toJson() {
+  toJson () {
     return {
       external_id: this.externalId,
       name: this.name,
@@ -33,4 +33,4 @@ class Service {
   }
 }
 
-module.exports = Service;
+module.exports = Service

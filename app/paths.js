@@ -1,5 +1,7 @@
 'use strict'
 
+const path = require('path')
+
 module.exports = {
   transactions: {
     index: '/transactions',
@@ -71,7 +73,7 @@ module.exports = {
     invite: '/service/:externalServiceId/team-members/invite'
   },
   inviteValidation: {
-    validateInvite: '/invites/:code',
+    validateInvite: '/invites/:code'
   },
   registerUser: {
     registration: '/register',
@@ -100,5 +102,5 @@ module.exports = {
   staticPaths: {
     naxsiError: '/request-denied'
   },
-  generateRoute: require(__dirname + '/utils/generate_route.js')
+  generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
 }

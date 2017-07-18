@@ -2,8 +2,6 @@
 
 // NPM Dependencies
 const lodash = require('lodash')
-const passport = require('passport')
-const querystring = require('querystring')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -54,7 +52,6 @@ module.exports.generateRoute = generateRoute
 module.exports.paths = paths
 
 module.exports.bind = function (app) {
-
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
   // APPLY GENERIC MIDDLEWARE
@@ -75,7 +72,7 @@ module.exports.bind = function (app) {
   // STATIC
   app.all(staticPaths.naxsiError, staticCtrl.naxsiError)
 
-  //VALIDATE INVITE
+  // VALIDATE INVITE
   app.get(inviteValidation.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationCtrl.validateInvite)
 
   // REGISTER USER
@@ -135,7 +132,7 @@ module.exports.bind = function (app) {
     ...lodash.values(t3ds)
   ] // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf); // Enforce authentication on all get requests
+  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS

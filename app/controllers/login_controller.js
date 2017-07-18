@@ -13,7 +13,6 @@ const router = require('../routes')
 const paths = require('../paths')
 const errorView = require('../utils/response').renderErrorView
 const CORRELATION_HEADER = require('../utils/correlation_header').CORRELATION_HEADER
-const csrf = require('csrf')
 
 const processError = function (req, res, err) {
   errorView(req, res)
@@ -33,7 +32,6 @@ module.exports.loggedIn = function (req, res) {
 }
 
 module.exports.logOut = function (req, res) {
-
   if (req.user) {
     userService.logOut(req.user, req.correlationId)
   }
@@ -51,8 +49,8 @@ module.exports.noAccess = function (req, res) {
 }
 
 module.exports.logInGet = function (req, res) {
-  const setError = function (error_messages) {
-    res.locals.flash.error = {'messages': error_messages}
+  const setError = function (errorMessages) {
+    res.locals.flash.error = {'messages': errorMessages}
   }
   if (res.locals.flash.hasOwnProperty('error')) {
     switch (res.locals.flash.error[0]) {
@@ -121,11 +119,11 @@ module.exports.otpLogIn = function (req, res) {
   if (!req.session.sentCode) {
     const correlationId = req.headers[CORRELATION_HEADER] || ''
     userService.sendOTP(req.user, correlationId).then(function () {
-        req.session.sentCode = true
-        res.render('login/otp-login')
-      }, function (err) {
-        processError(req, res, err)
-      }
+      req.session.sentCode = true
+      res.render('login/otp-login')
+    }, function (err) {
+      processError(req, res, err)
+    }
     )
   } else {
     res.render('login/otp-login')
@@ -134,11 +132,11 @@ module.exports.otpLogIn = function (req, res) {
 
 module.exports.afterOTPLogin = function (req, res) {
   req.session.secondFactor = 'totp'
-  const redirect_url = req.session.last_url || '/'
+  const redirectUrl = req.session.last_url || '/'
   delete req.session.last_url
   logLoginAction(req, 'successfully entered a valid 2fa token')
   setSessionVersion(req)
-  res.redirect(redirect_url)
+  res.redirect(redirectUrl)
 }
 
 module.exports.sendAgainGet = function (req, res) {
