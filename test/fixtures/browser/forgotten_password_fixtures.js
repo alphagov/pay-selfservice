@@ -1,28 +1,16 @@
-var _ = require('lodash');
-var sinon = require('sinon');
+var _ = require('lodash')
+var sinon = require('sinon')
 
-function randomString() {
-  return Math.random().toString(36).substring(7);
+function randomString () {
+  return Math.random().toString(36).substring(7)
 }
 
-function validPassword() {
-  return "G0VUkPay2017Rocks";
+function validPassword () {
+  return 'G0VUkPay2017Rocks'
 }
 
-function randomUsername() {
-  return randomString();
-}
-
-function randomOtpKey() {
-  return String(Math.floor(Math.random() * 100000))
-}
-
-function randomAccountId() {
-  return String(Math.floor(Math.random() * 10));
-}
-
-function randomTelephoneNumber() {
-  return String(Math.floor(Math.random() * 1000000));
+function randomUsername () {
+  return randomString()
 }
 
 var baseReq = {
@@ -30,7 +18,7 @@ var baseReq = {
   session: {
     destroy: sinon.stub()
   }
-};
+}
 
 module.exports = {
   validForgottenPasswordPost: (username) => {
@@ -38,9 +26,9 @@ module.exports = {
       body: {
         username: username || randomUsername()
       }
-    };
+    }
 
-    return _.merge(baseReq, req);
+    return _.merge(baseReq, req)
   },
 
   validForgottenPasswordGet: (token) => {
@@ -48,9 +36,9 @@ module.exports = {
       params: {
         id: token || randomString()
       }
-    };
+    }
 
-    return _.merge(baseReq, req);
+    return _.merge(baseReq, req)
   },
 
   validUpdatePasswordPost: (username, token, password) => {
@@ -62,8 +50,8 @@ module.exports = {
         password: password || validPassword(),
         username: username || randomUsername()
       }
-    };
+    }
 
-    return _.merge(baseReq, req);
+    return _.merge(baseReq, req)
   }
-};
+}
