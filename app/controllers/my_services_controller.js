@@ -29,7 +29,8 @@ module.exports = {
     const displayMyServices = servicesData => {
       const data = {
         navigation: false,
-        services: servicesData
+        services: servicesData,
+        services_singular: servicesData.length === 1
       }
 
       if (newServiceId) {
