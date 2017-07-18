@@ -20,7 +20,6 @@
     ],
     "ignore": [
       "app/assets/**/*.js",
-      "test/test_helpers/**/*.js",
       "test/ui/**/*.js",
       "test/unit/**/*.js"
     ]
