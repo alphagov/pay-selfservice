@@ -1,6 +1,9 @@
 let _ = require('lodash')
 const getHeldPermissions = require('./get_held_permissions')
 
+const paths = require('./../paths')
+const pathLookup = require('./pathLookup')
+
 const hideNavBarTemplates = [
   'transactions/index',
   'login/logged_in',
@@ -15,6 +18,33 @@ const hideNavBarTemplates = [
   'services/add_service',
   'self_create_service/set_name'
 ]
+
+const serviceNavigationItems = originalUrl => {
+    return [
+      {
+        name: 'Dashboard',
+        url: paths.user.loggedIn,
+        current: pathLookup(originalUrl, paths.user.loggedIn)
+      },
+      {
+        name: 'Transactions',
+        url: paths.transactions.index,
+        current: pathLookup(originalUrl, paths.transactions.index)
+      },
+      {
+        name: 'Settings',
+        url: paths.devTokens.index,
+        current: pathLookup(originalUrl, [
+          paths.credentials,
+          paths.notificationCredentials,
+          paths.serviceName,
+          paths.toggle3ds,
+          paths.devTokens,
+          paths.emailNotifications
+        ])
+      }
+    ]
+}
 
 /**
  * converts users permission array of form
@@ -78,8 +108,10 @@ module.exports = function (req, data, template) {
   let user = req.user
   let account = req.account
   let convertedData = _.clone(data)
+  let originalUrl = req.originalUrl
   convertedData.permissions = getPermissions(user, req.service)
   convertedData.navigation = showNavigationBar(template)
+  convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl)
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
   return convertedData

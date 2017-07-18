@@ -7,11 +7,15 @@
   </div>
   <nav role="navigation" class="service-navigation">
 	  <ul class="service-navigation--list">
-	    <li class="service-navigation--list-item"><a href="{{ routes.user.loggedIn }}">Dashboard</a></li>
-      {{#permissions.transactions_read}}
-	    <li class="service-navigation--list-item service-navigation--list-item-active"><a href="{{ routes.transactions.index }}">Transactions</a></li>
-      {{/permissions.transactions_read}}
-	    <li class="service-navigation--list-item"><a href="{{ routes.devTokens.index }}">Settings</a></li>
+      {{#serviceNavigationItems}}
+        {{#current}}
+          <li class="service-navigation--list-item service-navigation--list-item-active"><a href="{{url}}">{{name}}</a></li>
+        {{/current}}
+        {{^current}}
+          <li class="service-navigation--list-item"><a href="{{url}}">{{name}}</a></li>
+        {{/current}}
+      {{/serviceNavigationItems}}
 	  </ul>
 	</nav>
+{{currentURL}}
 </div>
