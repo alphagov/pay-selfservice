@@ -24,7 +24,6 @@ chai.use(chaiAsPromised)
 let app
 
 describe('create service otp validation', function () {
-
   afterEach((done) => {
     nock.cleanAll()
     app = null

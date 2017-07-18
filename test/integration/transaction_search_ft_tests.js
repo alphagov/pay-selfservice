@@ -1,35 +1,35 @@
-require(__dirname + '/../test_helpers/serialize_mock.js');
-var userCreator = require(__dirname + '/../test_helpers/user_creator.js');
-var request = require('supertest');
-var csrf = require('csrf');
-var nock = require('nock');
-var getApp = require(__dirname + '/../../server.js').getApp;
-var dates = require('../../app/utils/dates.js');
-var paths = require(__dirname + '/../../app/paths.js');
-var session = require(__dirname + '/../test_helpers/mock_session.js');
-var querystring = require('querystring');
-var _ = require('lodash');
+var path = require('path')
+require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
+var request = require('supertest')
+var nock = require('nock')
+var getApp = require(path.join(__dirname, '/../../server.js')).getApp
+var dates = require('../../app/utils/dates.js')
+var paths = require(path.join(__dirname, '/../../app/paths.js'))
+var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+var querystring = require('querystring')
+var _ = require('lodash')
 
-var gatewayAccountId = 452345;
+var gatewayAccountId = 452345
 
-var app;
+var app
 
-var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges';
-var CONNECTOR_ALL_CARD_TYPES_API_PATH = "/v1/api/card-types";
+var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 
-var connectorMock = nock(process.env.CONNECTOR_URL);
-var CONNECTOR_DATE = new Date();
-var DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE);
+var connectorMock = nock(process.env.CONNECTOR_URL)
+var CONNECTOR_DATE = new Date()
+var DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE)
 
 var ALL_CARD_TYPES = {
-  "card_types": [
-    {"id": "1", "brand": "mastercard", "label": "Mastercard", "type": "CREDIT"},
-    {"id": "2", "brand": "mastercard", "label": "Mastercard", "type": "DEBIT"},
-    {"id": "3", "brand": "discover", "label": "Discover", "type": "CREDIT"},
-    {"id": "4", "brand": "maestro", "label": "Maestro", "type": "DEBIT"}]
-};
+  'card_types': [
+    {'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT'},
+    {'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT'},
+    {'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT'},
+    {'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT'}]
+}
 
-function connectorMock_responds(data, searchParameters) {
+function connectorMockResponds (data, searchParameters) {
   var queryString = querystring.stringify({
     reference: searchParameters.reference ? searchParameters.reference : '',
     email: searchParameters.email ? searchParameters.email : '',
@@ -37,40 +37,39 @@ function connectorMock_responds(data, searchParameters) {
     card_brand: searchParameters.brand ? searchParameters.brand : '',
     from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
     to_date: searchParameters.toDate ? searchParameters.toDate : '',
-    page: searchParameters.page ? searchParameters.page : "1",
-    display_size: searchParameters.pageSize ? searchParameters.pageSize : "100"
-  });
+    page: searchParameters.page ? searchParameters.page : '1',
+    display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
+  })
 
   return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + '?' + queryString)
-    .reply(200, data);
+    .reply(200, data)
 }
 
-function search_transactions(data) {
-  var query = querystring.stringify(data);
+function searchTransactions (data) {
+  var query = querystring.stringify(data)
 
-  return request(app).get(paths.transactions.index + "?" + query)
-    .set('Accept', 'application/json').send();
+  return request(app).get(paths.transactions.index + '?' + query)
+    .set('Accept', 'application/json').send()
 }
 
 describe('The search transactions endpoint', function () {
-
   afterEach(function () {
-    nock.cleanAll();
-    app = null;
-  });
+    nock.cleanAll()
+    app = null
+  })
 
   beforeEach(function (done) {
-    let permissions = 'transactions:read';
+    let permissions = 'transactions:read'
     var user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
-    });
-    app = session.getAppWithLoggedInUser(getApp(), user);
+    })
+    app = session.getAppWithLoggedInUser(getApp(), user)
 
-    userCreator.mockUserResponse(user.toJson(), done);
+    userCreator.mockUserResponse(user.toJson(), done)
 
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES);
-  });
+      .reply(200, ALL_CARD_TYPES)
+  })
 
   it('should return a list of transactions for the gateway account when searching by partial reference', function (done) {
     var connectorData = {
@@ -102,12 +101,12 @@ describe('The search transactions endpoint', function () {
           'card_brand': 'Visa',
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
         }
       ]
-    };
-    var searchParameters = {'reference': 'ref'};
-    connectorMock_responds(connectorData, searchParameters);
+    }
+    var searchParameters = {'reference': 'ref'}
+    connectorMockResponds(connectorData, searchParameters)
 
     var expectedData = {
       'results': [
@@ -126,7 +125,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
 
         },
         {
@@ -144,24 +143,21 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
 
         }
       ]
-    };
+    }
 
-
-    search_transactions(searchParameters)
+    searchTransactions(searchParameters)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
-
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account when searching by full reference', function (done) {
-
     var connectorData = {
       'results': [
         {
@@ -180,9 +176,9 @@ describe('The search transactions endpoint', function () {
 
         }
       ]
-    };
-    var data = {'reference': 'ref1'};
-    connectorMock_responds(connectorData, data);
+    }
+    var data = {'reference': 'ref1'}
+    connectorMockResponds(connectorData, data)
 
     var expectedData = {
       'results': [
@@ -201,21 +197,20 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
         }
       ]
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account when searching by partial email', function (done) {
-
     var connectorData = {
       'results': [
         {
@@ -233,9 +228,9 @@ describe('The search transactions endpoint', function () {
           'created_date': CONNECTOR_DATE
         }
       ]
-    };
-    var data = {'email': 'alice'};
-    connectorMock_responds(connectorData, data);
+    }
+    var data = {'email': 'alice'}
+    connectorMockResponds(connectorData, data)
 
     var expectedData = {
       'results': [
@@ -254,23 +249,21 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
 
         }
       ]
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
-
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account when searching by full email', function (done) {
-
     var connectorData = {
       'results': [
         {
@@ -289,9 +282,9 @@ describe('The search transactions endpoint', function () {
 
         }
       ]
-    };
-    var data = {'email': 'alice.111@mail.fake'};
-    connectorMock_responds(connectorData, data);
+    }
+    var data = {'email': 'alice.111@mail.fake'}
+    connectorMockResponds(connectorData, data)
 
     var expectedData = {
       'results': [
@@ -310,21 +303,20 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
         }
       ]
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account when searching by card brand', function (done) {
-
     var connectorData = {
       'results': [
         {
@@ -343,9 +335,9 @@ describe('The search transactions endpoint', function () {
 
         }
       ]
-    };
-    var data = {'brand': 'visa'};
-    connectorMock_responds(connectorData, data);
+    }
+    var data = {'brand': 'visa'}
+    connectorMockResponds(connectorData, data)
 
     var expectedData = {
       'results': [
@@ -364,21 +356,20 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
         }
       ]
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account when searching by partial reference, status and brand', function (done) {
-
     var connectorData = {
       'results': [
         {
@@ -397,9 +388,9 @@ describe('The search transactions endpoint', function () {
           'created_date': CONNECTOR_DATE
         }
       ]
-    };
-    var data = {'reference': 'ref1', 'state': 'TEST_STATUS', 'brand': 'visa'};
-    connectorMock_responds(connectorData, data);
+    }
+    var data = {'reference': 'ref1', 'state': 'TEST_STATUS', 'brand': 'visa'}
+    connectorMockResponds(connectorData, data)
 
     var expectedData = {
       'results': [
@@ -418,21 +409,20 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
         }
       ]
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should return a list of transactions for the gateway account when searching by partial reference, status, fromDate and toDate', function (done) {
-
     var connectorData = {
       'results': [
         {
@@ -450,7 +440,7 @@ describe('The search transactions endpoint', function () {
           'created_date': '2016-01-11 01:01:01'
         }
       ]
-    };
+    }
 
     var data = {
       'reference': 'ref1',
@@ -460,14 +450,14 @@ describe('The search transactions endpoint', function () {
       'fromTime': '13:04:45',
       'toDate': '22/01/2016',
       'toTime': '14:12:18'
-    };
+    }
 
     var queryStringParams = _.extend({}, data, {
       'fromDate': '2016-01-21T13:04:45.000Z',
       'toDate': '2016-01-22T14:12:19.000Z'
-    });
+    })
 
-    connectorMock_responds(connectorData, queryStringParams);
+    connectorMockResponds(connectorData, queryStringParams)
 
     var expectedData = {
       'results': [
@@ -486,39 +476,36 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
-          "link": paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
         }
       ]
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
+      .end(done)
+  })
 
   it('should return no transactions', function (done) {
-
     var connectorData = {
       'results': []
-    };
+    }
 
-    var data = {'reference': 'test'};
-    connectorMock_responds(connectorData, data);
+    var data = {'reference': 'test'}
+    connectorMockResponds(connectorData, data)
 
     var expectedData = {
       'results': []
-    };
+    }
 
-    search_transactions(data)
+    searchTransactions(data)
       .expect(200)
       .expect(function (res) {
-        res.body.results.should.eql(expectedData.results);
+        res.body.results.should.eql(expectedData.results)
       })
-      .end(done);
-  });
-
-
-});
+      .end(done)
+  })
+})

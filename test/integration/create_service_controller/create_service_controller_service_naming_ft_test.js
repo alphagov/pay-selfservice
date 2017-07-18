@@ -16,7 +16,6 @@ const paths = require('../../../app/paths')
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
-const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -24,7 +23,6 @@ chai.use(chaiAsPromised)
 let app
 
 describe('create service - service naming', function () {
-
   afterEach((done) => {
     nock.cleanAll()
     app = null

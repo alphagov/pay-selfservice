@@ -18,7 +18,12 @@
       "it",
       "expect"
     ],
-    "ignore": ["app/assets/**/*.js", "test/integration/**/*.js", "test/test_helpers/**/*.js", "test/ui/**/*.js", "test/unit/**/*.js"]
+    "ignore": [
+      "app/assets/**/*.js",
+      "test/test_helpers/**/*.js",
+      "test/ui/**/*.js",
+      "test/unit/**/*.js"
+    ]
   },
   "scripts": {
     "compile": "grunt generate-assets",
@@ -27,7 +32,7 @@
     "stop": "node_modules/forever/bin/forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
-    "lint": "standard",
+    "lint": "./node_modules/.bin/standard",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "npm run lint && npm run grunt-test",
     "grunt-test": "node ./node_modules/.bin/grunt test",

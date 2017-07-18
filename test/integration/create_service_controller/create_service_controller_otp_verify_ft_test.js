@@ -28,7 +28,6 @@ chai.use(chaiAsPromised)
 let app
 
 describe('create service otp validation', function () {
-
   afterEach((done) => {
     nock.cleanAll()
     app = null
@@ -91,7 +90,7 @@ describe('create service otp validation', function () {
         .post(paths.selfCreateService.otpVerify)
         .send({
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,
-          csrfToken: csrf().create('123'),
+          csrfToken: csrf().create('123')
         })
         .expect(303)
         .expect('Location', paths.selfCreateService.logUserIn)
@@ -107,7 +106,7 @@ describe('create service otp validation', function () {
         .send({
           code: validServiceInviteOtpRequest.getPlain().code,
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,
-          csrfToken: csrf().create('123'),
+          csrfToken: csrf().create('123')
         })
         .expect(404)
         .end(done)
@@ -129,7 +128,7 @@ describe('create service otp validation', function () {
         .send({
           code: validServiceInviteOtpRequest.getPlain().code,
           'verify-code': validServiceInviteOtpRequest.getPlain().otp,
-          csrfToken: csrf().create('123'),
+          csrfToken: csrf().create('123')
         })
         .expect(303)
         .expect('Location', paths.selfCreateService.otpVerify)
