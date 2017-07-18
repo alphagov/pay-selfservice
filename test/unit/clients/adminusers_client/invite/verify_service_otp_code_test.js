@@ -25,7 +25,7 @@ describe('adminusers client - validate otp code for a service', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-verify-service-otp-code', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-verify-service-otp-code', provider: 'adminusers', port: mockPort});
       done();
     });
   });

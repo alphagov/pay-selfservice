@@ -26,7 +26,7 @@ describe('adminusers client - get user', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-get-user', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-get-user', provider: 'adminusers', port: mockPort});
       done();
     });
   });

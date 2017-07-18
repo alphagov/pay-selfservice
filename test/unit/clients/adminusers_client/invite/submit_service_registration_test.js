@@ -34,7 +34,7 @@ describe('adminusers client - self register service', function () {
   before(function (done) {
     this.timeout(5000);
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-self-register-service', provider: 'AdminUsers', port: mockPort});
+      adminUsersMock = Pact({consumer: 'Selfservice-self-register-service', provider: 'adminusers', port: mockPort});
       done();
     });
   });
