@@ -5,18 +5,21 @@ const getAdminUsersClient = require('./clients/adminusers_client')
 module.exports = {
 
   /**
-   * submit the user details for new user creation
+   * Submit the user details for new user creation
+   *
    * @param code
-   * @param phoneNumber
+   * @param telephoneNumber
    * @param password
    * @param correlationId
+   * @returns {*|Constructor}
    */
-  submitRegistration: function (code, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).submitUserRegistration(code, phoneNumber, password)
+  submitRegistration: function (code, telephoneNumber, password, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).generateInviteOtpCode(code, telephoneNumber, password)
   },
 
   /**
-   * validates the verification code
+   * Validates the verification code
+   *
    * @param code
    * @param verifyCode
    * @param correlationId

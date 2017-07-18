@@ -130,7 +130,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/generate`)
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/${mockRegisterAccountCookie.code}/otp/generate`)
         .reply(200)
 
       supertest(app)
@@ -152,7 +152,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/generate`)
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/${mockRegisterAccountCookie.code}/otp/generate`)
         .reply(404)
 
       supertest(app)

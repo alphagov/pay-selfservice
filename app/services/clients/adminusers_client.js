@@ -446,11 +446,20 @@ module.exports = function (clientOptions = {}) {
    * Generate OTP code for an invite
    *
    * @param inviteCode
+   * @param telephoneNumber
+   * @param password
    * @returns {*|Constructor}
    */
-  const generateInviteOtpCode = (inviteCode) => {
+  const generateInviteOtpCode = (inviteCode, telephoneNumber, password) => {
     const params = {
       correlationId: correlationId
+    }
+
+    if (telephoneNumber || password) {
+      params.payload = {
+        telephone_number: telephoneNumber,
+        password: password
+      }
     }
 
     const url = `${inviteResource}/${inviteCode}/otp/generate`
@@ -503,44 +512,6 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'POST',
       description: 'complete invite',
-      service: SERVICE_NAME
-    }
-
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-    requestLogger.logRequestStart(context)
-
-    baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
-
-    return defer.promise
-  }
-
-  /**
-   * Submit user registration details
-   * @param code
-   * @param phoneNumber
-   * @param password
-   */
-  const submitUserRegistration = (code, phoneNumber, password) => {
-    const params = {
-      correlationId: correlationId,
-      payload: {
-        telephone_number: phoneNumber,
-        password: password,
-        code: code
-      }
-    }
-    const url = `${inviteResource}/otp/generate`
-    const defer = q.defer()
-    const startTime = new Date()
-    const context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'POST',
-      description: 'submit registration details',
       service: SERVICE_NAME
     }
 
@@ -900,7 +871,6 @@ module.exports = function (clientOptions = {}) {
     generateInviteOtpCode,
     completeInvite,
     submitServiceRegistration,
-    submitUserRegistration,
 
     // Service-related Methods
     createService,
