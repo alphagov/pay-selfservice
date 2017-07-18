@@ -75,6 +75,7 @@ module.exports = {
   },
   registerUser: {
     registration: '/register',
+    subscribeService: '/subscribe',
     otpVerify: '/verify-otp',
     reVerifyPhone: '/re-verify-phone',
     logUserIn: '/proceed-to-login'

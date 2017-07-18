@@ -64,7 +64,7 @@ module.exports = {
       switch (invite.type) {
         case 'user':
           req.register_invite.email = invite.email
-          redirectTarget = paths.registerUser.registration
+          redirectTarget = invite.user_exist ? paths.registerUser.subscribeService : paths.registerUser.registration
           break
         case 'service':
           redirectTarget = paths.selfCreateService.otpVerify

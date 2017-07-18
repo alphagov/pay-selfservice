@@ -21,7 +21,7 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-describe('adminusers client - complete an invite', function () {
+describe('adminusers client - complete a user invite', function () {
 
   let adminUsersMock
 
@@ -31,7 +31,7 @@ describe('adminusers client - complete an invite', function () {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-complete-service-invite', provider: 'AdminUsers', port: mockPort})
+      adminUsersMock = Pact({consumer: 'Selfservice-complete-user-invite', provider: 'AdminUsers', port: mockPort})
       done()
     })
   })
@@ -45,20 +45,15 @@ describe('adminusers client - complete an invite', function () {
       .then(() => done())
   })
 
-  describe('complete service invite', function () {
-    context('complete service invite - 200 OK', () => {
+  describe('complete user invite', function () {
+    context('complete user invite - 200 OK', () => {
       const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
       const userExternalId = 'f84b8210f93d455e97baeaf3fea72cf4'
       const serviceExternalId = '43a6818b522b4a628a14355614665ca3'
-
-      const gatewayAccountIds = ['1']
-      const validInviteCompleteRequest = inviteFixtures.validInviteCompleteRequest({
-        gateway_account_ids: gatewayAccountIds
-      })
       const validInviteCompleteResponse = inviteFixtures.validInviteCompleteResponse({
         invite: {
           code: inviteCode,
-          type: 'service',
+          type: 'user',
           disabled: true
         },
         user_external_id: userExternalId,
@@ -68,10 +63,9 @@ describe('adminusers client - complete an invite', function () {
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
-            .withState('a valid service invite exists with the given invite code')
-            .withUponReceiving('a valid complete service invite request')
+            .withState('a valid user invite exists with the given invite code')
+            .withUponReceiving('a valid complete user invite request')
             .withMethod('POST')
-            .withRequestBody(validInviteCompleteRequest.getPactified())
             .withStatusCode(200)
             .withResponseBody(validInviteCompleteResponse.getPactified())
             .build()
@@ -88,7 +82,7 @@ describe('adminusers client - complete an invite', function () {
 
       it('should complete a service invite successfully', function (done) {
         const expectedData = validInviteCompleteResponse.getPlain()
-        adminusersClient.completeInvite(inviteCode, gatewayAccountIds).should.be.fulfilled.then(response => {
+        adminusersClient.completeInvite(inviteCode).should.be.fulfilled.then(response => {
           expect(response.invite).to.deep.equal(expectedData.invite)
           expect(response.user_external_id).to.equal(userExternalId)
           expect(response.service_external_id).to.equal(serviceExternalId)
@@ -96,21 +90,15 @@ describe('adminusers client - complete an invite', function () {
       })
     })
 
-    context('complete service invite - 404 NOT FOUND', () => {
+    context('complete user invite - 404 NOT FOUND', () => {
       const nonExistingInviteCode = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-
-      const gatewayAccountIds = ['1']
-      const validInviteCompleteRequest = inviteFixtures.validInviteCompleteRequest({
-        gateway_account_ids: gatewayAccountIds
-      })
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_RESOURCE}/${nonExistingInviteCode}/complete`)
             .withState('invite not exists for the given invite code')
-            .withUponReceiving('a valid complete service invite request of a non existing invite')
+            .withUponReceiving('a valid complete user invite request of a non existing invite')
             .withMethod('POST')
-            .withRequestBody(validInviteCompleteRequest.getPactified())
             .withStatusCode(404)
             .build()
         ).then(() => done())
@@ -121,61 +109,22 @@ describe('adminusers client - complete an invite', function () {
       })
 
       it('should 404 NOT FOUND if invite code not found', function (done) {
-        adminusersClient.completeInvite(nonExistingInviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
+        adminusersClient.completeInvite(nonExistingInviteCode).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404)
         }).should.notify(done)
       })
     })
 
-    context('complete service invite - 409 CONFLICT', () => {
+    context('complete service invite - 410 GONE', () => {
       const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
-
-      const gatewayAccountIds = ['1']
-      const validInviteCompleteRequest = inviteFixtures.validInviteCompleteRequest({
-        gateway_account_ids: gatewayAccountIds
-      })
-
-      beforeEach((done) => {
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
-            .withState('invite conflict for the given invite code')
-            .withUponReceiving('a valid complete service invite request with the user with same email exists')
-            .withMethod('POST')
-            .withRequestBody(validInviteCompleteRequest.getPactified())
-            .withStatusCode(409)
-            .build()
-        ).then(() => done())
-      })
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
-
-      it('should 409 CONFLICT if user with same email exists', function (done) {
-        adminusersClient.completeInvite(inviteCode, gatewayAccountIds).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(409)
-        }).should.notify(done)
-      })
-    })
-
-    context('complete service invite - 400 BAD REQUEST', () => {
-      const inviteCode = '7d19aff33f8948deb97ed16b2912dcd3'
-
-      const invalidGatewayAccountIds = ['non-numeric-id']
-      const invalidInviteCompleteRequest = inviteFixtures.validInviteCompleteRequest({
-        gateway_account_ids: invalidGatewayAccountIds
-      })
-      const errorResponse = inviteFixtures.badRequestResponseWhenNonNumericGatewayAccountIds(invalidGatewayAccountIds)
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${INVITE_RESOURCE}/${inviteCode}/complete`)
             .withState('invite expired for the given invite code')
-            .withUponReceiving('a valid complete service invite request of an expired invite')
+            .withUponReceiving('a valid complete service invite request with the user with same email exists')
             .withMethod('POST')
-            .withRequestBody(invalidInviteCompleteRequest.getPactified())
-            .withStatusCode(400)
-            .withResponseBody(errorResponse.getPactified())
+            .withStatusCode(410)
             .build()
         ).then(() => done())
       })
@@ -184,9 +133,9 @@ describe('adminusers client - complete an invite', function () {
         adminUsersMock.finalize().then(() => done())
       })
 
-      it('should 400 BAD REQUEST if gateway accounts are non numeric', function (done) {
-        adminusersClient.completeInvite(inviteCode, invalidGatewayAccountIds).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(400)
+      it('should 410 GONE if invite is expired', function (done) {
+        adminusersClient.completeInvite(inviteCode).should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(410)
         }).should.notify(done)
       })
     })

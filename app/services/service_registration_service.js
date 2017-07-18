@@ -13,7 +13,7 @@ const userService = require('./user_service')
 
 // Global functions
 const completeServiceInvite = function (inviteCode, gatewayAccountIds, correlationId) {
-  return getAdminUsersClient({correlationId}).completeServiceInvite(inviteCode, gatewayAccountIds)
+  return getAdminUsersClient({correlationId}).completeInvite(inviteCode, gatewayAccountIds)
 }
 
 const createGatewayAccount = function (correlationId) {

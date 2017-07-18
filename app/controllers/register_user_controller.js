@@ -71,6 +71,25 @@ module.exports = {
   },
 
   /**
+   * subscribe existing user to a service
+   * @param req
+   * @param res
+   */
+  subscribeService: (req, res) => {
+    const inviteCode = req.register_invite.code
+    const correlationId = req.correlationId
+
+    if (!inviteCode) {
+      handleError(req, res, {errorCode: 404})
+      return
+    }
+
+    return registrationService.completeInvite(inviteCode, correlationId)
+      .then(completeResponse => res.redirect(303, `${paths.serviceSwitcher.index}?s=${completeResponse.service_external_id}`))
+      .catch(err => handleError(req, res, err))
+  },
+
+  /**
    * process submission of user registration details. Issues a OTP for verifying phone
    * @param req
    * @param res

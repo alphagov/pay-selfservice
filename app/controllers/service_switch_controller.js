@@ -24,6 +24,24 @@ module.exports = {
    */
   index: (req, res) => {
     const servicesRoles = _.get(req, 'user.serviceRoles', []);
+    const newServiceId = _.get(req, 'query.s');
+
+    const displayMyServices = servicesData => {
+      const data = {
+        navigation: false,
+        services: servicesData
+      };
+
+      if (newServiceId) {
+        servicesData.filter(serviceData => {
+          return serviceData.external_id === newServiceId
+        }).forEach(service => {
+          data.new_service_name = service.name;
+        })
+      }
+
+      return successResponse(req, res, 'services/index', data);
+    }
 
     return q.allSettled(servicesRoles.map(serviceRole => {
       let defer = q.defer();
@@ -44,13 +62,7 @@ module.exports = {
         serviceDataPromises
           .filter(promise => promise.state === 'fulfilled')
           .map(promise => promise.value))
-      .then(servicesData => {
-        return successResponse(req, res, 'services/index', {
-            navigation: false,
-            services: servicesData
-          }
-        );
-      });
+      .then(displayMyServices);
   },
 
   /**
