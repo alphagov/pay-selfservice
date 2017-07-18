@@ -1,11 +1,11 @@
 'use strict'
 
 // NPM dependencies
+const path = require('path')
 const _ = require('lodash')
 
 // Custom dependencies
-const random = require(__dirname + '/../../app/utils/random')
-const pactBase = require(__dirname + '/pact_base')
+const pactBase = require(path.join(__dirname, '/pact_base'))
 
 // Global setup
 const pactRegister = pactBase()

@@ -138,7 +138,6 @@ module.exports = {
         return response
       }
     }
-
   },
 
   validVerifyOtpCodeRequest: (opts = {}) => {

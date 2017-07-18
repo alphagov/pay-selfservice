@@ -18,7 +18,7 @@
       "it",
       "expect"
     ],
-    "ignore": ["app/assets/**/*.js", "test/**/*.js"]
+    "ignore": ["app/assets/**/*.js", "test/integration/**/*.js", "test/test_helpers/**/*.js", "test/ui/**/*.js", "test/unit/**/*.js"]
   },
   "scripts": {
     "compile": "grunt generate-assets",

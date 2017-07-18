@@ -78,10 +78,10 @@ module.exports = {
   },
 
   validUser: (opts = {}) => {
-    let newExternalId = random.randomUuid();
-    let newUsername = randomUsername();
-    let defaultServiceId = opts.default_service_id || randomServiceId();
-    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()];
+    let newExternalId = random.randomUuid()
+    let newUsername = randomUsername()
+    let defaultServiceId = opts.default_service_id || randomServiceId()
+    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()]
 
     let data = {
       external_id: opts.external_id || newExternalId,
@@ -125,15 +125,15 @@ module.exports = {
    */
   validUserResponse: (request = {}) => {
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let req_external_id = request.external_id || existingExternalId
-    let req_username = request.username || 'existing-user'
+    let reqExternalId = request.external_id || existingExternalId
+    let reqUsername = request.username || 'existing-user'
     let defaultServiceId = randomString()
     const gatewayAccountIds = request.gateway_account_ids || [randomAccountId()]
 
     let data = {
-      external_id: req_external_id,
-      username: req_username,
-      email: request.email || `${req_username}@example.com`,
+      external_id: reqExternalId,
+      username: reqUsername,
+      email: request.email || `${reqUsername}@example.com`,
       service_roles: request.service_roles || [{
         service: {
           name: 'System Generated',
@@ -145,16 +145,16 @@ module.exports = {
           description: 'Administrator',
           permissions: request.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}],
           '_links': [{
-            'href': `http://adminusers.service/v1/api/users/${req_external_id}`,
+            'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
             'rel': 'self',
             'method': 'GET'
           }]
-        },
+        }
       }],
       otp_key: request.otp_key || '43c3c4t',
       telephone_number: request.telephone_number || '0123441',
       '_links': [{
-        'href': `http://adminusers.service/v1/api/users/${req_external_id}`,
+        'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
         'rel': 'self',
         'method': 'GET'
       }]
