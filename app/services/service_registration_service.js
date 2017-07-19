@@ -66,6 +66,17 @@ module.exports = {
   },
 
   /**
+   * Generate OTP code for service invite
+   *
+   * @param inviteCode
+   * @param correlationId
+   * @returns {*|Constructor}
+   */
+  generateServiceInviteOtpCode: function (inviteCode, correlationId) {
+    return getAdminUsersClient({correlationId}).generateInviteOtpCode(inviteCode)
+  },
+
+  /**
    * Resend otp code
    *
    * @param code

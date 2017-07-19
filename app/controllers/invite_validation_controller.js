@@ -6,7 +6,8 @@ const logger = require('winston')
 // Custom dependencies
 const response = require('../utils/response')
 const errorResponse = response.renderErrorView
-const registrationService = require('../services/validate_invite_service')
+const validateInviteService = require('../services/validate_invite_service')
+const serviceRegistrationService = require('../services/service_registration_service')
 const paths = require('../paths')
 
 // Constants
@@ -28,15 +29,17 @@ const handleError = (req, res, err) => {
       errorResponse(req, res, messages.linkExpired, 410)
       break
     default:
-      errorResponse(req, res, messages.missingCookie, 500)
+      errorResponse(req, res, messages.internalError, 500)
   }
 }
 
 module.exports = {
 
   /**
-   * intermediate endpoint which captures the invite code and validate.
-   * Upon success this forwards the request to proceed with registration
+   * Intermediate endpoint which captures the invite code and validate.
+   * Upon success this forwards the request to proceed with registration.
+   * In case of service invite it also sends the otp verification code.
+   *
    * @param req
    * @param res
    * @returns {Promise.<T>}
@@ -44,9 +47,7 @@ module.exports = {
   validateInvite: (req, res) => {
     const code = req.params.code
     const correlationId = req.correlationId
-    const redirect = (invite) => {
-      let redirectTarget
-
+    const processAndRedirect = (invite) => {
       if (!req.register_invite) {
         req.register_invite = {}
       }
@@ -61,22 +62,26 @@ module.exports = {
         req.register_invite.email = invite.email
       }
 
-      switch (invite.type) {
-        case 'user':
-          req.register_invite.email = invite.email
-          redirectTarget = invite.user_exist ? paths.registerUser.subscribeService : paths.registerUser.registration
-          break
-        case 'service':
-          redirectTarget = paths.selfCreateService.otpVerify
-          break
-        default:
-          handleError(req, res, 'Unrecognised invite type')
+      if (invite.type === 'user') {
+        req.register_invite.email = invite.email
+        const redirectTarget = invite.user_exist ? paths.registerUser.subscribeService : paths.registerUser.registration
+        res.redirect(302, redirectTarget)
+      } else if (invite.type === 'service') {
+        serviceRegistrationService.generateServiceInviteOtpCode(code, correlationId)
+          .then(() => {
+            const redirectTarget = paths.selfCreateService.otpVerify
+            res.redirect(302, redirectTarget)
+          })
+          .catch((err) => {
+            handleError(req, res, err)
+          })
+      } else {
+        handleError(req, res, 'Unrecognised invite type')
       }
-      res.redirect(302, redirectTarget)
     }
 
-    return registrationService.getValidatedInvite(code, correlationId)
-      .then(redirect)
+    return validateInviteService.getValidatedInvite(code, correlationId)
+      .then(processAndRedirect)
       .catch((err) => handleError(req, res, err))
   }
 }
