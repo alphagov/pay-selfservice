@@ -1,19 +1,11 @@
 'use strict'
 
-// NPM dependencies
-const chai = require('chai')
-
 // Custom dependencies
 const renderTemplate = require('../test_helpers/html_assertions').render
 const paths = require('../../app/paths')
 
-// Constants
-const should = chai.should()
-
 describe('Self-create service view', function () {
-
   it('should render create an account form', function (done) {
-
     const templateData = {}
 
     const body = renderTemplate('self_create_service/register', templateData)
@@ -29,7 +21,6 @@ describe('Self-create service view', function () {
   })
 
   it('should render email sent page', function (done) {
-
     const email = 'bob@example.com'
     const templateData = {
       requesterEmail: email
@@ -45,7 +36,6 @@ describe('Self-create service view', function () {
   })
 
   it('should render otp verify form', function (done) {
-
     const templateData = {}
 
     const body = renderTemplate('self_create_service/verify_otp', templateData)
@@ -62,7 +52,6 @@ describe('Self-create service view', function () {
   })
 
   it('should render name your service form', function (done) {
-
     const serviceName = 'My Service name'
     const templateData = {
       serviceName
@@ -79,7 +68,6 @@ describe('Self-create service view', function () {
   })
 
   it('should render otp resend form', function (done) {
-
     const telephoneNumber = '07812345678'
     const templateData = {
       telephoneNumber: telephoneNumber
