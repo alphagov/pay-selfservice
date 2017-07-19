@@ -90,7 +90,6 @@ module.exports = {
 
   validRegistrationRequest: (opts = {}) => {
     const data = {
-      code: opts.code || random.randomUuid(),
       telephone_number: opts.telephone_number || '12345678901',
       password: opts.password || 'password1234'
     }
