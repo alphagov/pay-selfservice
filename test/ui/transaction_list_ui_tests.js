@@ -1,12 +1,10 @@
-require(__dirname + '/../test_helpers/html_assertions.js');
-var should = require('chai').should();
+var path = require('path')
 
-var renderTemplate = require(__dirname + '/../test_helpers/html_assertions.js').render;
+require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
+var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
 
 describe('The transaction list view', function () {
-
   it('should render all transactions', function () {
-
     var templateData = {
       'results': [
         {
@@ -90,24 +88,23 @@ describe('The transaction list view', function () {
         'transactions_amount_read': true,
         'transactions_card_type_read': true
       }
-    };
+    }
 
-    var body = renderTemplate('transactions/index', templateData);
+    var body = renderTemplate('transactions/index', templateData)
 
     templateData.results.forEach(function (transactionData, ix) {
       body.should.containSelector('table#transactions-list')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].reference)
         .withTableDataAt(2, templateData.results[ix].email)
-        .withTableDataAt(3, "£" + templateData.results[ix].amount)
+        .withTableDataAt(3, '£' + templateData.results[ix].amount)
         .withTableDataAt(4, templateData.results[ix].card_details.card_brand)
         .withTableDataAt(5, templateData.results[ix].state_friendly)
-        .withTableDataAt(6, templateData.results[ix].created);
-    });
-  });
+        .withTableDataAt(6, templateData.results[ix].created)
+    })
+  })
 
   it('should not render amount if no permission', function () {
-
     var templateData = {
       'results': [
         {
@@ -165,16 +162,15 @@ describe('The transaction list view', function () {
         'transactions_email_read': true,
         'transactions_card_type_read': true
       }
-    };
+    }
 
-    var body = renderTemplate('transactions/index', templateData);
+    var body = renderTemplate('transactions/index', templateData)
 
-    body.should.not.containSelector('#transactions-list .amount');
-    body.should.not.containSelector('#amount-header');
-  });
+    body.should.not.containSelector('#transactions-list .amount')
+    body.should.not.containSelector('#amount-header')
+  })
 
   it('should not render email if no permission', function () {
-
     var templateData = {
       'results': [
         {
@@ -232,16 +228,15 @@ describe('The transaction list view', function () {
         'transactions_amount_read': true,
         'transactions_card_type_read': true
       }
-    };
+    }
 
-    var body = renderTemplate('transactions/index', templateData);
+    var body = renderTemplate('transactions/index', templateData)
 
-    body.should.not.containSelector('#transactions-list .email');
-    body.should.not.containSelector('#email-header');
-  });
+    body.should.not.containSelector('#transactions-list .email')
+    body.should.not.containSelector('#email-header')
+  })
 
   it('should not render card brand if no permission', function () {
-
     var templateData = {
       'results': [
         {
@@ -299,11 +294,11 @@ describe('The transaction list view', function () {
         'transactions_email_read': true,
         'transactions_amount_read': true
       }
-    };
+    }
 
-    var body = renderTemplate('transactions/index', templateData);
+    var body = renderTemplate('transactions/index', templateData)
 
-    body.should.not.containSelector('#transactions-list .brand');
-    body.should.not.containSelector('#brand-header');
-  });
-});
+    body.should.not.containSelector('#transactions-list .brand')
+    body.should.not.containSelector('#brand-header')
+  })
+})
