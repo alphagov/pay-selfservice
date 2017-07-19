@@ -13,11 +13,9 @@ const paths = require('../../../../app/paths.js')
 const expect = chai.expect
 
 describe('Error handler register service', function () {
-
   let correlationId, req, res, flashStub, redirectStub, renderStub, statusStub, email, telephoneNumber, password
 
   beforeEach(() => {
-
     process.env.SERVICE_REGISTRATION_ENABLED = true
 
     correlationId = 'abcde12345'

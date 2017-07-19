@@ -1,5 +1,6 @@
-var assert = require('assert');
-var withCorrelationHeader = require(__dirname + '/../../app/utils/correlation_header.js').withCorrelationHeader;
+var path = require('path')
+var assert = require('assert')
+var withCorrelationHeader = require(path.join(__dirname, '/../../app/utils/correlation_header.js')).withCorrelationHeader
 
 describe('correlation header', function () {
   it('add correlation id header if args exists', function () {
@@ -8,7 +9,7 @@ describe('correlation header', function () {
         parameters: {foo: 'bar'},
         headers: {'Content-Type': 'application/json'}
       },
-      "some-unique-id");
+      'some-unique-id')
 
     assert.deepEqual(argsWithCorrelationHeader,
       {
@@ -17,29 +18,29 @@ describe('correlation header', function () {
           'Content-Type': 'application/json',
           'x-request-id': 'some-unique-id'
         }
-      });
-  });
+      })
+  })
 
   it('add correlation id header if args.header does not exist', function () {
     var argsWithCorrelationHeader = withCorrelationHeader(
       {
         parameters: {foo: 'bar'}
       },
-      "some-unique-id");
+      'some-unique-id')
 
     assert.deepEqual(argsWithCorrelationHeader,
       {
         parameters: {foo: 'bar'},
         headers: {'x-request-id': 'some-unique-id'}
-      });
-  });
+      })
+  })
 
   it('add correlation id header if args does not exist', function () {
-    var argsWithCorrelationHeader = withCorrelationHeader(null, "some-unique-id");
+    var argsWithCorrelationHeader = withCorrelationHeader(null, 'some-unique-id')
 
     assert.deepEqual(argsWithCorrelationHeader,
       {
         headers: {'x-request-id': 'some-unique-id'}
-      });
-  });
-});
+      })
+  })
+})

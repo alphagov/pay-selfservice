@@ -19,8 +19,7 @@
       "expect"
     ],
     "ignore": [
-      "app/assets/**/*.js",
-      "test/unit/**/*.js"
+      "app/assets/**/*.js"
     ]
   },
   "scripts": {

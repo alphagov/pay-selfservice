@@ -16,11 +16,10 @@ var mockServer = pactProxy.create('localhost', mockPort)
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - service users', function () {
-
   let adminUsersMock
   let serviceExternalId = '12345'
-  let non_existing_service_id = '500'
-  let response_params = {
+  let nonExistingServiceId = '500'
+  let responseParams = {
     service_roles: [{
       service: {
         name: 'System Generated',
@@ -36,10 +35,10 @@ describe('adminusers client - service users', function () {
           'rel': 'self',
           'method': 'GET'
         }]
-      },
+      }
     }]
   }
-  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([response_params])
+  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([responseParams])
 
   /**
    * Start the server and set up Pact
@@ -62,9 +61,7 @@ describe('adminusers client - service users', function () {
   })
 
   describe('service user API', function () {
-
     context('service user - success', () => {
-
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICES_PATH}/${serviceExternalId}/users`)
@@ -81,7 +78,6 @@ describe('adminusers client - service users', function () {
       })
 
       it('should return service users successfully', function (done) {
-
         adminusersClient.getServiceUsers(serviceExternalId).should.be.fulfilled.then(
           function (users) {
             let expectedResponse = getServiceUsersResponse.getPlain()
@@ -93,10 +89,9 @@ describe('adminusers client - service users', function () {
     })
 
     context('service user - failure', () => {
-
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${non_existing_service_id}/users`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${nonExistingServiceId}/users`)
             .withState('a service doesnt exists with the given id')
             .withUponReceiving('a valid get service users request with non-existing service id')
             .withResponseBody(serviceFixtures.getServiceUsersNotFoundResponse().getPactified())
@@ -110,8 +105,7 @@ describe('adminusers client - service users', function () {
       })
 
       it('should return service not found', function (done) {
-
-        adminusersClient.getServiceUsers(non_existing_service_id).should.be.rejected.then(
+        adminusersClient.getServiceUsers(nonExistingServiceId).should.be.rejected.then(
           function (err) {
             expect(err.errorCode).to.equal(404)
           }

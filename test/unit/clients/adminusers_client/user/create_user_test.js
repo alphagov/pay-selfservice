@@ -4,7 +4,6 @@
 const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const _ = require('lodash')
 
 // Custom dependencies
 const pactProxy = require('../../../../test_helpers/pact_proxy')
@@ -23,7 +22,6 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('adminusers client - create a new user', function () {
-
   let adminUsersMock
 
   /**
@@ -47,7 +45,6 @@ describe('adminusers client - create a new user', function () {
   })
 
   describe('creating a user', function () {
-
     context('create a user - success', () => {
       const validRequest = userFixtures.validCreateUserRequest()
       const validCreateUserResponse = userFixtures.validUserResponse(validRequest.getPlain())
@@ -81,12 +78,12 @@ describe('adminusers client - create a new user', function () {
           userData.service_ids,
           userData.role_name,
           userData.telephone_number).should.be.fulfilled.then(user => {
-          expect(user.username).to.be.equal(userData.username)
-          expect(user.email).to.be.equal(userData.email)
-          expect(user.serviceRoles[0].service.gatewayAccountIds).to.deep.equal(userData.gateway_account_ids)
-          expect(user.telephoneNumber).to.be.equal(userData.telephone_number)
-          expect(user.serviceRoles[0].role.name).to.be.equal(userData.role_name)
-        }).should.notify(done)
+            expect(user.username).to.be.equal(userData.username)
+            expect(user.email).to.be.equal(userData.email)
+            expect(user.serviceRoles[0].service.gatewayAccountIds).to.deep.equal(userData.gateway_account_ids)
+            expect(user.telephoneNumber).to.be.equal(userData.telephone_number)
+            expect(user.serviceRoles[0].role.name).to.be.equal(userData.role_name)
+          }).should.notify(done)
       })
     })
 

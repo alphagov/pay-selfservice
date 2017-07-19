@@ -16,7 +16,6 @@ var mockServer = pactProxy.create('localhost', mockPort)
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - session', function () {
-
   var adminUsersMock
   /**
    * Start the server and set up Pact
@@ -39,7 +38,6 @@ describe('adminusers client - session', function () {
   })
 
   describe('increment session version API', function () {
-
     context('increment session version  API - success', () => {
       let request = userFixtures.validIncrementSessionVersionRequest()
       let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -60,7 +58,6 @@ describe('adminusers client - session', function () {
       })
 
       it('should increment session version successfully', function (done) {
-
         adminusersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done)
       })
     })
@@ -87,13 +84,10 @@ describe('adminusers client - session', function () {
       })
 
       it('should return not found if user not exist', function (done) {
-
         adminusersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404)
         }).should.notify(done)
       })
     })
-
   })
-
 })

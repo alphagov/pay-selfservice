@@ -1,35 +1,36 @@
-'use strict';
+'use strict'
 
 // Node.js core dependencies
-const assert = require('assert');
+const path = require('path')
+const assert = require('assert')
 
 // NPM dependencies
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
+const proxyquire = require('proxyquire')
+const sinon = require('sinon')
 
 describe('error_handler middleware', function () {
-  const winstonErrorSpy = sinon.spy();
-  const errorHandler = proxyquire(__dirname + '/../../../app/middleware/error_handler', {
+  const winstonErrorSpy = sinon.spy()
+  const errorHandler = proxyquire(path.join(__dirname, '/../../../app/middleware/error_handler'), {
     'winston': {
       error: winstonErrorSpy
     }
-  });
+  })
 
   afterEach(() => {
-    winstonErrorSpy.reset();
-  });
+    winstonErrorSpy.reset()
+  })
 
   it('should log string error', function (done) {
-    const err = 'Error text';
+    const err = 'Error text'
     const req = {
       originalUrl: 'originalUrl',
       url: 'url',
-      correlationId: 'correlationId',
-    };
-    const res = {};
-    const next = sinon.spy();
+      correlationId: 'correlationId'
+    }
+    const res = {}
+    const next = sinon.spy()
 
-    errorHandler(err, req, res, next);
+    errorHandler(err, req, res, next)
 
     const errorPayload = {
       request: {
@@ -39,27 +40,27 @@ describe('error_handler middleware', function () {
       error: {
         message: err
       }
-    };
-    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload));
-    assert(next.calledWith(err));
+    }
+    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
+    assert(next.calledWith(err))
 
-    done();
-  });
+    done()
+  })
 
   it('should log object error', function (done) {
     const err = {
       message: 'error message',
-      stack: 'error stack',
-    };
+      stack: 'error stack'
+    }
     const req = {
       originalUrl: 'originalUrl',
       url: 'url',
-      correlationId: 'correlationId',
-    };
-    const res = {};
-    const next = sinon.spy();
+      correlationId: 'correlationId'
+    }
+    const res = {}
+    const next = sinon.spy()
 
-    errorHandler(err, req, res, next);
+    errorHandler(err, req, res, next)
 
     const errorPayload = {
       request: {
@@ -70,10 +71,10 @@ describe('error_handler middleware', function () {
         message: err.message,
         stack: err.stack
       }
-    };
-    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload));
-    assert(next.calledWith(err));
+    }
+    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
+    assert(next.calledWith(err))
 
-    done();
-  });
-});
+    done()
+  })
+})

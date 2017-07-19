@@ -22,7 +22,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('adminusers client - complete a user invite', function () {
-
   let adminUsersMock
 
   /**
@@ -140,5 +139,4 @@ describe('adminusers client - complete a user invite', function () {
       })
     })
   })
-
 })

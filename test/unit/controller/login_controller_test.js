@@ -4,9 +4,7 @@
 const assert = require('assert')
 
 // NPM dependencies
-const _ = require('lodash')
 const sinon = require('sinon')
-const chai = require('chai')
 
 // Custom dependencies
 const loginController = require('../../../app/controllers/login_controller.js')
@@ -52,19 +50,17 @@ describe('Log out', function () {
 })
 
 describe('Direct login after register', function () {
-
   it('should populate user request Id in register_invite cookie', function () {
     let req = {
       register_invite: {}
     }
 
     let user = {
-      externalId: 'hd329chjqkdna89',
+      externalId: 'hd329chjqkdna89'
     }
 
     loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
     assert.deepEqual(req.register_invite.userExternalId, user.externalId)
-
   })
 
   it('should redirect to login', function () {

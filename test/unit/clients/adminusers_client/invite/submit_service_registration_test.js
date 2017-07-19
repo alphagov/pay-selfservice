@@ -25,7 +25,6 @@ const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockP
 const INVITE_PATH = '/v1/api/invites'
 
 describe('adminusers client - self register service', function () {
-
   let adminUsersMock
 
   /**
@@ -49,7 +48,6 @@ describe('adminusers client - self register service', function () {
   })
 
   describe('self register service API', function () {
-
     context('send service registration notification API - success', () => {
       const validRegistration = registerFixtures.validRegisterRequest()
 

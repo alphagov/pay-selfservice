@@ -1,33 +1,32 @@
-var Pact = require('pact');
-var pactProxy = require('../../../../test_helpers/pact_proxy');
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client');
-var userFixtures = require('../../../../fixtures/user_fixtures');
-var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
+var Pact = require('pact')
+var pactProxy = require('../../../../test_helpers/pact_proxy')
+var chai = require('chai')
+var chaiAsPromised = require('chai-as-promised')
+var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+var userFixtures = require('../../../../fixtures/user_fixtures')
+var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
-const expect = chai.expect;
-const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords';
-var mockPort = Math.floor(Math.random() * 65535);
-var mockServer = pactProxy.create('localhost', mockPort);
+const expect = chai.expect
+const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
+var mockPort = Math.floor(Math.random() * 65535)
+var mockServer = pactProxy.create('localhost', mockPort)
 
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - get forgotten password', function () {
-
-  var adminUsersMock;
+  var adminUsersMock
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-get-forgotten-password', provider: 'adminusers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-get-forgotten-password', provider: 'adminusers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -35,16 +34,14 @@ describe('adminusers client - get forgotten password', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('Forgotten Password API', function () {
-
     context('GET forgotten password - success', () => {
-
-      let code = "existing-code";
-      let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: code});
-      let expectedForgottenPassword = validForgottenPasswordResponse.getPlain();
+      let code = 'existing-code'
+      let validForgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: code})
+      let expectedForgottenPassword = validForgottenPasswordResponse.getPlain()
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -53,28 +50,25 @@ describe('adminusers client - get forgotten password', function () {
             .withUponReceiving('forgotten password get request')
             .withResponseBody(validForgottenPasswordResponse.getPactified())
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should GET a forgotten password entry', function (done) {
-
         adminusersClient.getForgottenPassword(code).should.be.fulfilled.then(function (forgottenPassword) {
-          expect(forgottenPassword.code).to.be.equal(expectedForgottenPassword.code);
-          expect(forgottenPassword.date).to.be.equal(expectedForgottenPassword.date);
-          expect(forgottenPassword.username).to.be.equal(expectedForgottenPassword.username);
-          expect(forgottenPassword._links.length).to.be.equal(expectedForgottenPassword._links.length);
-
-        }).should.notify(done);
-      });
-    });
-
+          expect(forgottenPassword.code).to.be.equal(expectedForgottenPassword.code)
+          expect(forgottenPassword.date).to.be.equal(expectedForgottenPassword.date)
+          expect(forgottenPassword.username).to.be.equal(expectedForgottenPassword.username)
+          expect(forgottenPassword._links.length).to.be.equal(expectedForgottenPassword._links.length)
+        }).should.notify(done)
+      })
+    })
 
     context('GET forgotten password API - not found', () => {
-      let code = "non-existent-code";
+      let code = 'non-existent-code'
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -84,21 +78,18 @@ describe('adminusers client - get forgotten password', function () {
             .withStatusCode(404)
             .withResponseHeaders({})
             .build()
-        ).then(() => done());
-      });
+        ).then(() => done())
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should error if no valid forgotten password entry', function (done) {
-
         adminusersClient.getForgottenPassword(code).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(404);
-        }).should.notify(done);
-      });
-    });
-
-  });
-
-});
+          expect(response.errorCode).to.equal(404)
+        }).should.notify(done)
+      })
+    })
+  })
+})

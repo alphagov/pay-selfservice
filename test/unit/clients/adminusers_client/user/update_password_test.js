@@ -16,7 +16,6 @@ var mockServer = pactProxy.create('localhost', mockPort)
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - update password', function () {
-
   var adminUsersMock
   /**
    * Start the server and set up Pact
@@ -39,7 +38,6 @@ describe('adminusers client - update password', function () {
   })
 
   describe('update password API', function () {
-
     context('update password for user API - success', () => {
       let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
 
@@ -61,7 +59,6 @@ describe('adminusers client - update password', function () {
       })
 
       it('should update password successfully', function (done) {
-
         let requestData = request.getPlain()
         adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done)
       })
@@ -87,13 +84,11 @@ describe('adminusers client - update password', function () {
       })
 
       it('should error if forgotten password code is not found/expired', function (done) {
-
         let requestData = request.getPlain()
         adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404)
         }).should.notify(done)
       })
     })
-
   })
 })

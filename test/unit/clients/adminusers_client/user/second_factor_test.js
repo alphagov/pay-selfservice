@@ -16,7 +16,6 @@ let mockServer = pactProxy.create('localhost', mockPort)
 let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client', function () {
-
   let adminUsersMock
 
   /**
@@ -40,7 +39,6 @@ describe('adminusers client', function () {
   })
 
   describe('send new second factor API', function () {
-
     context('send new second factor API - success', () => {
       let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
@@ -87,11 +85,9 @@ describe('adminusers client', function () {
         }).should.notify(done)
       })
     })
-
   })
 
   describe('authenticate second factor API', function () {
-
     context('authenticate a second factor API - success', () => {
       let token = '121212'
       let request = userFixtures.validAuthenticateSecondFactorRequest(token)
@@ -176,7 +172,5 @@ describe('adminusers client', function () {
         }).should.notify(done)
       })
     })
-
   })
-
 })

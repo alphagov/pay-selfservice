@@ -1,30 +1,29 @@
-const Pact = require('pact');
-const pactProxy = require('../../../../test_helpers/pact_proxy');
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client');
-const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder;
-const SERVICES_PATH = '/v1/api/services';
-const mockPort = Math.floor(Math.random() * 65535);
-const mockServer = pactProxy.create('localhost', mockPort);
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`});
-const expect = chai.expect;
+const Pact = require('pact')
+const pactProxy = require('../../../../test_helpers/pact_proxy')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
+const SERVICES_PATH = '/v1/api/services'
+const mockPort = Math.floor(Math.random() * 65535)
+const mockServer = pactProxy.create('localhost', mockPort)
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
+const expect = chai.expect
 
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised)
 
 describe('adminusers client - delete user', function () {
-
-  let adminUsersMock;
+  let adminUsersMock
   /**
    * Start the server and set up Pact
    */
   before(function (done) {
-    this.timeout(5000);
+    this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-delete-user', provider: 'adminusers', port: mockPort});
-      done();
-    });
-  });
+      adminUsersMock = Pact({consumer: 'Selfservice-delete-user', provider: 'adminusers', port: mockPort})
+      done()
+    })
+  })
 
   /**
    * Remove the server and publish pacts to broker
@@ -32,17 +31,15 @@ describe('adminusers client - delete user', function () {
   after(function (done) {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
-      .then(() => done());
-  });
+      .then(() => done())
+  })
 
   describe('delete user API', function () {
-
-    const serviceId = "pact-delete-service-id";
-    const removerId = "pact-delete-remover-id";
-    const userId = "pact-delete-user-id";
+    const serviceId = 'pact-delete-service-id'
+    const removerId = 'pact-delete-remover-id'
+    const userId = 'pact-delete-user-id'
 
     context('delete user API - success', () => {
-
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
@@ -57,23 +54,22 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(204)
             .build())
           .then(() => done())
-          .catch(e => console.log(e));
-      });
+          .catch(e => console.log(e))
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should delete a user successfully', function (done) {
         adminusersClient.deleteUser(serviceId, removerId, userId).should.be.fulfilled
           .then(() => {
           })
-          .should.notify(done);
-      });
-    });
+          .should.notify(done)
+      })
+    })
 
     context('delete user API - remove user itself - conflict', () => {
-
       beforeEach((done) => {
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${removerId}`)
@@ -87,29 +83,28 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(409)
             .build())
           .then(() => done())
-          .catch(e => console.log(e));
-      });
+          .catch(e => console.log(e))
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should conflict when remover and user to delete coincide', function (done) {
         adminusersClient.deleteUser(serviceId, removerId, removerId).should.be.rejected
           .then((response) => {
-            expect(response.errorCode).to.equal(409);
+            expect(response.errorCode).to.equal(409)
           })
-          .should.notify(done);
-      });
-    });
+          .should.notify(done)
+      })
+    })
 
     context('delete user API - user does not exist - not found', () => {
-
-      const other_user_id = "user-does-not-exist";
+      const otherUserId = 'user-does-not-exist'
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${other_user_id}`)
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${otherUserId}`)
             .withUponReceiving('an invalid delete user from service request as user does not exist')
             .withMethod('DELETE')
             .withRequestHeaders({
@@ -120,27 +115,26 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(404)
             .build())
           .then(() => done())
-          .catch(e => console.log(e));
-      });
+          .catch(e => console.log(e))
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should return not found when resource is not found (user or service)', function (done) {
-        adminusersClient.deleteUser(serviceId, removerId, other_user_id).should.be.rejected
+        adminusersClient.deleteUser(serviceId, removerId, otherUserId).should.be.rejected
           .then((response) => {
-            expect(response.errorCode).to.equal(404);
+            expect(response.errorCode).to.equal(404)
           })
-          .should.notify(done);
-      });
-    });
+          .should.notify(done)
+      })
+    })
 
     context('delete user API - user context (remover) does not exist - forbidden', () => {
-
-      const nonExistentRemoverId = "user-does-not-exist";
-      const serviceId = "pact-service-no-remover-test";
-      const userId = "pact-user-no-remover-test";
+      const nonExistentRemoverId = 'user-does-not-exist'
+      const serviceId = 'pact-service-no-remover-test'
+      const userId = 'pact-user-no-remover-test'
 
       beforeEach((done) => {
         adminUsersMock.addInteraction(
@@ -156,20 +150,20 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(403)
             .build())
           .then(() => done())
-          .catch(e => console.log(e));
-      });
+          .catch(e => console.log(e))
+      })
 
       afterEach((done) => {
         adminUsersMock.finalize().then(() => done())
-      });
+      })
 
       it('should return forbidden when remover dos not ex', function (done) {
         adminusersClient.deleteUser(serviceId, nonExistentRemoverId, userId).should.be.rejected
           .then((response) => {
-            expect(response.errorCode).to.equal(403);
+            expect(response.errorCode).to.equal(403)
           })
-          .should.notify(done);
-      });
-    });
-  });
-});
+          .should.notify(done)
+      })
+    })
+  })
+})

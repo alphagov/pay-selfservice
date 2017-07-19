@@ -16,9 +16,7 @@ chai.use(chaiAsPromised)
 let mockRegisterAccountCookie
 
 describe('registration_validation module', function () {
-
   describe('validate registration inputs', function () {
-
     it('should find the provided details valid', function (done) {
       const validPhoneNumber = '01234567890'
       const validPassword = 'dnvlkHdPlfw8e_+@!'
@@ -40,8 +38,8 @@ describe('registration_validation module', function () {
       const validPassword = 'dnvlkHdPlfw8e_+@!'
       validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Invalid phone number')
-      })
+          expect(response).to.equal('Invalid phone number')
+        })
         .should.notify(done)
     })
 
@@ -50,8 +48,8 @@ describe('registration_validation module', function () {
       const password = undefined
       validation.validateUserRegistrationInputs(validPhoneNumber, password)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
-      })
+          expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
+        })
         .should.notify(done)
     })
 
@@ -60,8 +58,8 @@ describe('registration_validation module', function () {
       const password = '1234567890'
       validation.validateUserRegistrationInputs(validPhoneNumber, password)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
-      })
+          expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
+        })
         .should.notify(done)
     })
 
@@ -70,14 +68,13 @@ describe('registration_validation module', function () {
       const validPassword = '2se45&s'
       validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
-      })
+          expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
+        })
         .should.notify(done)
     })
   })
 
   describe('validate data needed to proceed with user registration', function () {
-
     beforeEach((done) => {
       mockRegisterAccountCookie = {}
       done()
@@ -116,7 +113,6 @@ describe('registration_validation module', function () {
   })
 
   describe('validate telephone number input', function () {
-
     it('should find the provided details valid', function (done) {
       const validPhoneNumber = '01234567890'
 
@@ -130,14 +126,13 @@ describe('registration_validation module', function () {
 
       validation.validateRegistrationTelephoneNumber(validPhoneNumber)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Invalid phone number')
-      })
+          expect(response).to.equal('Invalid phone number')
+        })
         .should.notify(done)
     })
   })
 
   describe('validate otp input', function () {
-
     it('should find otp valid', function (done) {
       const validOtp = '123456'
 
@@ -151,8 +146,8 @@ describe('registration_validation module', function () {
 
       validation.validateOtp(otp)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Invalid verification code')
-      }).should.notify(done)
+          expect(response).to.equal('Invalid verification code')
+        }).should.notify(done)
     })
 
     it('should error if otp is not a number', function (done) {
@@ -160,13 +155,12 @@ describe('registration_validation module', function () {
 
       validation.validateOtp(otp)
         .should.be.rejected.then((response) => {
-        expect(response).to.equal('Invalid verification code')
-      }).should.notify(done)
+          expect(response).to.equal('Invalid verification code')
+        }).should.notify(done)
     })
   })
 
   describe('validate data needed to proceed with service registration', function () {
-
     it('should success if email, telephone_number and password are present', function (done) {
       const email = 'me@gov.uk'
       const telephoneNumber = '07512345678'
@@ -239,7 +233,6 @@ describe('registration_validation module', function () {
   })
 
   describe('validate service naming input', function () {
-
     it('should success if service name is valid', function (done) {
       const validServiceName = 'My Service name'
 

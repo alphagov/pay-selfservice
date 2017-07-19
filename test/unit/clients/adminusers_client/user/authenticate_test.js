@@ -17,7 +17,6 @@ var mockServer = pactProxy.create('localhost', mockPort)
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - authenticate', function () {
-
   var adminUsersMock
   /**
    * Start the server and set up Pact
@@ -40,9 +39,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API', function () {
-
     context('authenticate user API - success', () => {
-
       let request = userFixtures.validAuthenticateRequest({username: 'existing-user'})
       let validUserResponse = userFixtures.validUserResponse(request.getPlain())
 
@@ -57,7 +54,6 @@ describe('adminusers client - authenticate', function () {
             .withResponseBody(validUserResponse.getPactified())
             .build()
         ).then(() => done())
-
       })
 
       afterEach((done) => {
@@ -65,11 +61,9 @@ describe('adminusers client - authenticate', function () {
       })
 
       it('should authenticate a user successfully', function (done) {
-
         let requestData = request.getPlain()
 
         adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.fulfilled.then(function (user) {
-
           let expectedUser = validUserResponse.getPlain()
           expect(user.username).to.be.equal(expectedUser.username)
           expect(user.email).to.be.equal(expectedUser.email)
@@ -88,7 +82,6 @@ describe('adminusers client - authenticate', function () {
       let unauthorizedResponse = userFixtures.unauthorizedUserResponse()
 
       beforeEach((done) => {
-
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${USER_PATH}/authenticate`)
             .withState('a user not exists with a given username password')
@@ -106,7 +99,6 @@ describe('adminusers client - authenticate', function () {
       })
 
       it('should fail authentication if invalid username / password', function (done) {
-
         let requestData = request.getPlain()
         adminusersClient.authenticateUser(requestData.username, requestData.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(401)
@@ -139,7 +131,6 @@ describe('adminusers client - authenticate', function () {
       })
 
       it('should error bad request if mandatory fields are missing', function (done) {
-
         adminusersClient.authenticateUser(request.username, request.password).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400)
           expect(response.message.errors.length).to.equal(2)
@@ -147,7 +138,5 @@ describe('adminusers client - authenticate', function () {
         }).should.notify(done)
       })
     })
-
   })
-
 })
