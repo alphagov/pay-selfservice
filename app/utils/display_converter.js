@@ -4,19 +4,20 @@ const getHeldPermissions = require('./get_held_permissions')
 const paths = require('./../paths')
 const pathLookup = require('./pathLookup')
 
-const hideNavBarTemplates = [
-  'transactions/index',
-  'login/logged_in',
-  'services/index',
-  'services/team_members',
-  'services/team_member_details',
-  'services/team_member_profile',
-  'services/team_member_permissions',
-  'services/team_member_invite',
-  'error_logged_in',
-  'services/edit_service_name',
-  'services/add_service',
-  'self_create_service/set_name'
+const showNavBarTemplates = [
+  'token',
+  'token_generate',
+  'provider_credentials/sandbox',
+  'service_name',
+  'payment_types_summary',
+  'payment_types_select_type',
+  'payment_types_select_brand',
+  '3d_secure/index',
+  '3d_secure/on_confirm',
+  'email_notifications/index',
+  'email_notifications/off_confirm',
+  'email_notifications/edit',
+  'email_notifications/confirm'
 ]
 
 const serviceNavigationItems = originalUrl => {
@@ -124,7 +125,7 @@ const getPermissions = (user, service) => {
 }
 
 const showNavigationBar = template => {
-  return hideNavBarTemplates.indexOf(template) === -1
+  return showNavBarTemplates.indexOf(template) !== -1
 }
 
 const addGatewayAccountProviderDisplayNames = data => {
@@ -159,6 +160,8 @@ module.exports = function (req, data, template) {
   let permissions = getPermissions(user, req.service)
   convertedData.serviceName = serviceName
   convertedData.permissions = permissions
+  console.log(template)
+  console.log(showNavigationBar(template))
   convertedData.navigation = showNavigationBar(template)
   convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl)
   convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)

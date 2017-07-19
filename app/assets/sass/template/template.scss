@@ -7,15 +7,13 @@
 // Content wraps the entire site content block
 #content {
   @extend %contain-floats;
-  padding: $gutter 0;
   width: 100%;
-  max-width:1200px;
+  max-width: 960px;
   margin: 0 auto;
-  @include media(desktop) {
-    padding: $gutter 0 $gutter*3;
-  }
-  @include respond-to-max(1260px) {
-    padding: 30px;
+  padding: $gutter $gutter / 2;
+
+  @include media(tablet) {
+    padding: $gutter $gutter $gutter * 3;
   }
 
   &.full-width {
@@ -25,7 +23,7 @@
 
 .content-wrapper {
   position: relative;
-  min-height: $gutter*10;
+  min-height: $gutter * 10;
 }
 
 // Grid layout
@@ -100,7 +98,7 @@
 .navigation {
 
   .inner {
-    padding: 11px 0 30px;
+    padding: 2px 0 30px;
   }
   ul {
     li {
@@ -113,7 +111,7 @@
       a {
         // color: $link-colour;
         display: block;
-        padding: 5px 0;
+        padding: 0 0 10px;
         text-decoration: none;
         &:active {
           color: $black;

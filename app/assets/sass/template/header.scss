@@ -5,7 +5,7 @@
 }
 
 #global-header .header-wrapper {
-  max-width: 1260px;
+  max-width: 1020px;
 }
 
 /* Allow the menu link to sit on the same line as the logo */
@@ -21,13 +21,17 @@
 
   .header-global {
     float: left;
+
+    .header-logo {
+      margin-top: 0;
+    }
   }
 }
 
 .header-logo span {
+  margin-left: 5px;
   font-size: 24px;
   font-weight: normal;
-  margin-left: $gutter / 2;
 }
 
 #global-header .header-proposition {
@@ -52,6 +56,7 @@
 
   #proposition-menu {
     clear: left;
+    margin-bottom: 5px;
 
     @include media(desktop) {
       clear: none;
@@ -64,14 +69,13 @@
     margin-bottom: 0;
 
     @include media(desktop) {
-      margin: ($gutter-half - 2px) 0 2px;
       border: none;
-      padding: 0;
+      padding: 3px 0;
     }
 
     li {
       border: none;
-      padding: 8px 0;
+      padding: 5px 0;
       line-height: 1.25;
       float: none;
       width: 100%;
@@ -107,20 +111,17 @@
 /* Styles for banner showing environment (test or live) */
 .phase-banner,
 .flash-container {
-  /* Corrections to phase-banner styles to allow 1200px width */
-  max-width: 1200px;
-
-  @include ie-lte(8) {
-    width: 1200px;
-  }
-
+  max-width: 960px;
   margin: 0 $gutter-half;
 
+  @include ie-lte(8) {
+    width: 960px;
+  }
   @include media(tablet) {
     margin: 0 $gutter;
   }
 
-  @include media($min-width: (1200px + $gutter * 2)) {
+  @include media($min-width: (1020px + $gutter * 2)) {
     margin: 0 auto;
   }
 }
@@ -128,16 +129,11 @@
 .phase-banner {
   display: block;
   margin-top: 10px;
-  margin-bottom: $gutter;
   padding: 10px 0 0;
   border-bottom: 1px solid $border-colour;
   @extend %contain-floats;
 
-  @include media(tablet) {
-    margin-bottom: $gutter;
-  }
-
-  @include media($min-width: (1200px + $gutter * 2)) {
+  @include media($min-width: (1020px + $gutter * 2)) {
     margin-bottom: $gutter;
   }
 
@@ -145,6 +141,8 @@
     /* Set text for lowercase (phase banner defaults to uppercase) */
     text-transform: none;
     letter-spacing: inherit;
+    float: right;
+    margin-right: 0;
 
     &:first-letter {
       text-transform: capitalize;
@@ -163,11 +161,10 @@
 }
 
 #global-header-bar {
-  /* Corrections to header-bar styles to allow 1200px width */
-  max-width: 1200px;
+  max-width: 960px;
 
   @include ie-lte(8) {
-    width: 1200px;
+    width: 1020px;
   }
 
   .env-live & {
