@@ -1,6 +1,6 @@
 <div class="phase-banner">
   <div class="service-info">
-    <h4 class="service-info--name heading-small">*Service Name*</h4>
+    <h4 class="service-info--name heading-small">{{serviceName}}</h4>
     <p>
       <strong class="phase-tag">{{currentGatewayAccount.full_type}}</strong>
     </p>
@@ -8,12 +8,14 @@
   <nav role="navigation" class="service-navigation">
 	  <ul class="service-navigation--list">
       {{#serviceNavigationItems}}
-        {{#current}}
-          <li class="service-navigation--list-item service-navigation--list-item-active"><a href="{{url}}">{{name}}</a></li>
-        {{/current}}
-        {{^current}}
-          <li class="service-navigation--list-item"><a href="{{url}}">{{name}}</a></li>
-        {{/current}}
+        {{#permissions}}
+          {{#current}}
+            <li class="service-navigation--list-item service-navigation--list-item-active"><a href="{{url}}">{{name}}</a></li>
+          {{/current}}
+          {{^current}}
+            <li class="service-navigation--list-item"><a href="{{url}}">{{name}}</a></li>
+          {{/current}}
+        {{/permissions}}
       {{/serviceNavigationItems}}
 	  </ul>
 	</nav>

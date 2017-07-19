@@ -20,31 +20,77 @@ const hideNavBarTemplates = [
 ]
 
 const serviceNavigationItems = originalUrl => {
-    return [
-      {
-        name: 'Dashboard',
-        url: paths.user.loggedIn,
-        current: pathLookup(originalUrl, paths.user.loggedIn)
-      },
-      {
-        name: 'Transactions',
-        url: paths.transactions.index,
-        current: pathLookup(originalUrl, paths.transactions.index)
-      },
-      {
-        name: 'Settings',
-        url: paths.devTokens.index,
-        current: pathLookup(originalUrl, [
-          paths.credentials,
-          paths.notificationCredentials,
-          paths.serviceName,
-          paths.toggle3ds,
-          paths.devTokens,
-          paths.emailNotifications
-        ])
-      }
-    ]
+  return [
+    {
+      name: 'Dashboard',
+      url: paths.user.loggedIn,
+      current: pathLookup(originalUrl, paths.user.loggedIn),
+      permissions: true
+    },
+    {
+      name: 'Transactions',
+      url: paths.transactions.index,
+      current: pathLookup(originalUrl, paths.transactions.index),
+      permissions: true
+    },
+    {
+      name: 'Settings',
+      url: paths.devTokens.index,
+      current: pathLookup(originalUrl, [
+        paths.credentials,
+        paths.notificationCredentials,
+        paths.serviceName,
+        paths.toggle3ds,
+        paths.devTokens,
+        paths.emailNotifications,
+        paths.paymentTypes
+      ]),
+      permissions: true
+    }
+  ]
 }
+
+const adminNavigationItems = (originalUrl, permissions) => {
+  return [
+    {
+      name: 'API Keys',
+      url: paths.devTokens.index,
+      current: pathLookup(originalUrl, paths.devTokens.index),
+      permissions: permissions.tokens_read
+    },
+    {
+      name: 'Account credentials',
+      url: paths.credentials.index,
+      current: pathLookup(originalUrl, paths.credentials.index),
+      permissions: permissions.gateway_credentials_read
+    },
+    {
+      name: 'Change service name',
+      url: paths.serviceName.index,
+      current: pathLookup(originalUrl, paths.serviceName.index),
+      permissions: permissions.service_name_read
+    },
+    {
+      name: 'Payment types',
+      url: paths.paymentTypes.summary,
+      current: pathLookup(originalUrl, paths.paymentTypes.summary),
+      permissions: permissions.payment_types_read
+    },
+    {
+      name: '3D Secure',
+      url: paths.toggle3ds.index,
+      current: pathLookup(originalUrl, paths.toggle3ds.index),
+      permissions: permissions.toggle_3ds_read
+    },
+    {
+      name: 'Email notifications',
+      url: paths.emailNotifications.index,
+      current: pathLookup(originalUrl, paths.emailNotifications.index),
+      permissions: permissions.email_notification_template_read
+    }
+  ]
+}
+
 
 /**
  * converts users permission array of form
@@ -109,9 +155,13 @@ module.exports = function (req, data, template) {
   let account = req.account
   let convertedData = _.clone(data)
   let originalUrl = req.originalUrl
-  convertedData.permissions = getPermissions(user, req.service)
+  let serviceName = req.account.service_name
+  let permissions = getPermissions(user, req.service)
+  convertedData.serviceName = serviceName
+  convertedData.permissions = permissions
   convertedData.navigation = showNavigationBar(template)
   convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl)
+  convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
   return convertedData

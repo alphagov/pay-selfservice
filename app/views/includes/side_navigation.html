@@ -2,21 +2,16 @@
   <div class="inner">
       <nav role="navigation">
           <ul>
-              {{#permissions.tokens_read}}
-              <li><a id="navigation-menu-api-keys" href="{{ routes.devTokens.index }}">API keys</a></li>
-              {{/permissions.tokens_read}}
-              {{#permissions.gateway_credentials_read}}
-              <li><a id="navigation-menu-gateway-credentials" href="{{ routes.credentials.index }}">Account credentials</a></li>
-              {{/permissions.gateway_credentials_read}}
-              {{#permissions.payment_types_read}}
-              <li><a id="navigation-menu-payment-types" href="{{ routes.paymentTypes.summary }}">Payment types</a></li>
-              {{/permissions.payment_types_read}}
-              {{#permissions.toggle_3ds_read}}
-              <li><a id="navigation-menu-3d-secure" href="{{ routes.toggle3ds.index }}">3D Secure</a></li>
-              {{/permissions.toggle_3ds_read}}
-              {{#permissions.email_notification_template_read}}
-              <li><a id="navigation-menu-email-notifications" href="{{ routes.emailNotifications.index }}">Email notifications</a></li>
-              {{/permissions.email_notification_template_read}}
+            {{#adminNavigationItems}}
+              {{#permissions}}
+                {{#current}}
+                  <li class="active"><a href="{{url}}">{{name}}</a></li>
+                {{/current}}
+                {{^current}}
+                  <li class=""><a href="{{url}}">{{name}}</a></li>
+                {{/current}}
+              {{/permissions}}
+            {{/adminNavigationItems}}
           </ul>
       </nav>
   </div>
