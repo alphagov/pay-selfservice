@@ -106,8 +106,12 @@
     li {
       list-style: none;
 
+      &.active {
+        font-weight: bold;
+      }
+
       a {
-        color: $link-colour;
+        // color: $link-colour;
         display: block;
         padding: 5px 0;
         text-decoration: none;
