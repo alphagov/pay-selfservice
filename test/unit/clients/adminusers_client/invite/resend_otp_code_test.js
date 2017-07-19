@@ -22,7 +22,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('submit resend otp code API', function () {
-
   let adminUsersMock
 
   /**

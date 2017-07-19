@@ -17,7 +17,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('otp_verify middleware', function () {
-
   const winstonDebugSpy = sinon.spy()
   const winstonWarnSpy = sinon.spy()
   const renderErrorViewSpy = sinon.spy()
@@ -75,7 +74,7 @@ describe('otp_verify middleware', function () {
     const next = sinon.spy()
 
     otpVerify.verifyOtpForServiceInvite(req, res, next).should.be.fulfilled.then(result => {
-      expect(next.called).to.be.true
+      expect(next.called).to.be.true // eslint-disable-line
     }).should.notify(done)
   })
 
@@ -87,7 +86,7 @@ describe('otp_verify middleware', function () {
       expect(winstonDebugSpy.calledWith(`[requestId=${req.correlationId}] invalid user input - otp code`)).to.equal(true)
       expect(reqFlashSpy.calledWith('genericError', 'Invalid verification code')).to.equal(true)
       expect(resRedirectSpy.calledWith(303, paths.selfCreateService.otpVerify)).to.equal(true)
-      expect(next.called).to.be.false
+      expect(next.called).to.be.false // eslint-disable-line
     }).should.notify(done)
   })
 
@@ -106,7 +105,7 @@ describe('otp_verify middleware', function () {
       expect(winstonDebugSpy.calledWith(`[requestId=${req.correlationId}] invalid user input - otp code`)).to.equal(true)
       expect(reqFlashSpy.calledWith('genericError', 'Invalid verification code')).to.equal(true)
       expect(resRedirectSpy.calledWith(303, paths.selfCreateService.otpVerify)).to.equal(true)
-      expect(next.called).to.be.false
+      expect(next.called).to.be.false // eslint-disable-line
     }).should.notify(done)
   })
 
@@ -123,7 +122,7 @@ describe('otp_verify middleware', function () {
 
     otpVerify.verifyOtpForServiceInvite(req, res, next).should.be.fulfilled.then(result => {
       expect(renderErrorViewSpy.calledWith(req, res, 'Unable to process registration at this time', 404)).to.equal(true)
-      expect(next.called).to.be.false
+      expect(next.called).to.be.false // eslint-disable-line
     }).should.notify(done)
   })
 
@@ -140,7 +139,7 @@ describe('otp_verify middleware', function () {
 
     otpVerify.verifyOtpForServiceInvite(req, res, next).should.be.fulfilled.then(result => {
       expect(renderErrorViewSpy.calledWith(req, res, 'This invitation is no longer valid', 410)).to.equal(true)
-      expect(next.called).to.be.false
+      expect(next.called).to.be.false // eslint-disable-line
     }).should.notify(done)
   })
 
@@ -157,7 +156,7 @@ describe('otp_verify middleware', function () {
 
     otpVerify.verifyOtpForServiceInvite(req, res, next).should.be.fulfilled.then(result => {
       expect(renderErrorViewSpy.calledWith(req, res, 'Unable to process registration at this time', 500)).to.equal(true)
-      expect(next.called).to.be.false
+      expect(next.called).to.be.false // eslint-disable-line
     }).should.notify(done)
   })
 })

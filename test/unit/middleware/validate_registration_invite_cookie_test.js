@@ -13,7 +13,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('validate registration invite cookie middleware', function () {
-
   it('should call next when called with valid register_invite object', function (done) {
     const validateRegistrationInviteCookie = require('../../../app/middleware/validate_registration_invite_cookie')
 
@@ -28,7 +27,7 @@ describe('validate registration invite cookie middleware', function () {
     const next = sinon.spy()
 
     validateRegistrationInviteCookie(req, res, next).should.be.fulfilled.then(valid => {
-      expect(next.called).to.be.true
+      expect(next.called).to.be.true // eslint-disable-line
     }).should.notify(done)
   })
 
@@ -48,8 +47,9 @@ describe('validate registration invite cookie middleware', function () {
     const next = sinon.spy()
 
     validateRegistrationInviteCookie(req, res, next).should.be.fulfilled.then(error => {
-      expect(renderErrorViewSpy.calledWith(req, res, 'Unable to process registration at this time', 404)).to.be.true
-      expect(next.called).to.be.false
+      if (error) { done(error) }
+      expect(renderErrorViewSpy.calledWith(req, res, 'Unable to process registration at this time', 404)).to.be.true // eslint-disable-line
+      expect(next.called).to.be.false // eslint-disable-line
     }).should.notify(done)
   })
 })

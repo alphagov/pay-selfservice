@@ -22,7 +22,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('adminusers client - generate otp code for user invite', function () {
-
   let adminUsersMock
 
   /**
@@ -145,5 +144,4 @@ describe('adminusers client - generate otp code for user invite', function () {
       })
     })
   })
-
 })

@@ -1,12 +1,13 @@
 'use strict'
 
+const path = require('path')
 const sinon = require('sinon')
 const chai = require('chai')
 const nock = require('nock')
 const _ = require('lodash')
 
-const serviceSwitchController = require(__dirname + '/../../../app/controllers/service_switch_controller')
-const userFixtures = require(__dirname + '/../../fixtures/user_fixtures')
+const serviceSwitchController = require(path.join(__dirname, '/../../../app/controllers/service_switch_controller'))
+const userFixtures = require(path.join(__dirname, '/../../fixtures/user_fixtures'))
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -17,7 +18,6 @@ const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 
 const renderSpy = sinon.spy()
 const redirectSpy = sinon.spy()
-
 
 describe('service switch controller: list of accounts', function () {
   beforeEach(() => {
@@ -56,7 +56,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions:[{name:'blah-blah:blah'}]
+              permissions: [{name: 'blah-blah:blah'}]
             }
           },
           {
@@ -67,7 +67,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions:[{name:'blah-blah:blah'}]
+              permissions: [{name: 'blah-blah:blah'}]
             }
           },
           {
@@ -78,7 +78,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions:[{name:'blah-blah:blah'}]
+              permissions: [{name: 'blah-blah:blah'}]
             }
           }]
       }).getAsObject(),
@@ -88,7 +88,6 @@ describe('service switch controller: list of accounts', function () {
     const res = {
       render: renderSpy
     }
-
 
     const gatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.map(g => g.service_name)
 
@@ -106,7 +105,6 @@ describe('service switch controller: list of accounts', function () {
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
-
     }).should.notify(done)
   })
 
@@ -148,7 +146,7 @@ describe('service switch controller: switching', function () {
 
   it('should redirect to / with correct account id set', function () {
     const session = {}
-    const gateway_account = {}
+    const gatewayAccount = {}
 
     const req = {
       originalUrl: 'http://bob.com?accountId=6',
@@ -157,7 +155,7 @@ describe('service switch controller: switching', function () {
         gateway_account_ids: ['6', '5']
       }).getAsObject(),
       session: session,
-      gateway_account: gateway_account,
+      gateway_account: gatewayAccount,
       body: {
         gatewayAccountId: '6'
       }
@@ -169,7 +167,7 @@ describe('service switch controller: switching', function () {
 
     serviceSwitchController.switch(req, res)
 
-    expect(gateway_account.currentGatewayAccountId).to.be.equal('6')
+    expect(gatewayAccount.currentGatewayAccountId).to.be.equal('6')
     expect(redirectSpy.calledWith(302, '/')).to.be.equal(true)
   })
 
@@ -259,7 +257,6 @@ describe('service switch controller: display added to the new service msg', func
     const res = {
       render: renderSpy
     }
-
 
     serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
       expect(renderSpy.calledOnce).to.be.equal(true)

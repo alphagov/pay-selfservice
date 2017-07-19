@@ -18,7 +18,7 @@ const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
 const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 const expect = chai.expect
-let adminUsersMock, serviceExternalId, result, request;
+let adminUsersMock, serviceExternalId, result, request
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -50,12 +50,10 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
   })
 
   describe('addGatewayAccountToService', () => {
-
     describe('when the service id relates to a service that exists and the gatewayAccountIds refer to gateway accounts that are not currently assigned to a service', () => {
-
       beforeEach(done => {
         request = serviceFixtures.addGatewayAccountsRequest()
-        serviceExternalId = random.randomUuid();
+        serviceExternalId = random.randomUuid()
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
             .withUponReceiving('a valid request to add a gateway account to a service')
@@ -76,22 +74,20 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
       })
 
       it('should update service name', () => {
-        const gatewayAccountIds = request.getPlain().value;
-        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds);
+        const gatewayAccountIds = request.getPlain().value
+        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
         return expect(result)
           .to.be.fulfilled
-          .and.to.eventually.include({externalId:serviceExternalId})
+          .and.to.eventually.include({externalId: serviceExternalId})
           .and.to.have.property('gatewayAccountIds').to.include(...gatewayAccountIds)
       })
-
     })
 
     describe('when the service id relates to a service that exists and the gatewayAccountIds refer to at least one gateway account that is already assigned to a service', () => {
-
       beforeEach(done => {
-        request = serviceFixtures.addGatewayAccountsRequest({gatewayAccountIds:['222','111']})
-        serviceExternalId = random.randomUuid();
+        request = serviceFixtures.addGatewayAccountsRequest({gatewayAccountIds: ['222', '111']})
+        serviceExternalId = random.randomUuid()
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
             .withUponReceiving('a invalid request to add a gateway account to a service with a conflicting gateway account id')
@@ -99,7 +95,7 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
             .withRequestBody(request.getPactified())
             .withStatusCode(409)
             .withResponseBody({
-              errors:[
+              errors: [
                 'One or more of the following gateway account ids has already assigned to another service: [111]'
               ]
             })
@@ -113,30 +109,26 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
       })
 
       it('should reject with an error detailing the conflicting', () => {
-        const gatewayAccountIds = request.getPlain().value;
-        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds);
+        const gatewayAccountIds = request.getPlain().value
+        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
         return expect(result)
           .to.be.rejected
           .and.to.eventually.deep.equal({
-            errorCode:409,
+            errorCode: 409,
             message: {
               errors: [
                 'One or more of the following gateway account ids has already assigned to another service: [111]'
               ]
             }
           })
-
       })
-
     })
 
-
     describe('when the service id relates to a service that exists and the gatewayAccountIds includes at least one string with non-numeric values', () => {
-
       beforeEach(done => {
-        request = serviceFixtures.addGatewayAccountsRequest({gatewayAccountIds:['222','ABC']})
-        serviceExternalId = random.randomUuid();
+        request = serviceFixtures.addGatewayAccountsRequest({gatewayAccountIds: ['222', 'ABC']})
+        serviceExternalId = random.randomUuid()
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
             .withUponReceiving('an invalid request to add a gateway account to a service with a non-numeric gateway account id')
@@ -144,7 +136,7 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
             .withRequestBody(request.getPactified())
             .withStatusCode(400)
             .withResponseBody({
-              errors:[
+              errors: [
                 'Field [gateway_account_ids] must contain numeric values'
               ]
             })
@@ -158,29 +150,26 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
       })
 
       it('should reject with an error detailing the conflicting', () => {
-        const gatewayAccountIds = request.getPlain().value;
-        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds);
+        const gatewayAccountIds = request.getPlain().value
+        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
         return expect(result)
           .to.be.rejected
           .and.to.eventually.deep.equal({
-            errorCode:400,
+            errorCode: 400,
             message: {
               errors: [
                 'Field [gateway_account_ids] must contain numeric values'
               ]
             }
           })
-
       })
-
     })
 
     describe('when the service id relates to a service that does not exist', () => {
-
       beforeEach(done => {
         request = serviceFixtures.addGatewayAccountsRequest()
-        serviceExternalId = random.randomUuid();
+        serviceExternalId = random.randomUuid()
         adminUsersMock.addInteraction(
           new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
             .withUponReceiving('a invalid request to add a gateway account to a service with a non-extant service external id')
@@ -197,16 +186,13 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
       })
 
       it('should reject with an error detailing the conflicting', () => {
-        const gatewayAccountIds = request.getPlain().value;
-        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds);
+        const gatewayAccountIds = request.getPlain().value
+        result = adminusersClient.addGatewayAccountsToService(serviceExternalId, gatewayAccountIds)
 
         return expect(result)
           .to.be.rejected
           .and.to.eventually.have.property('errorCode').to.equal(404)
-
       })
-
     })
   })
-
 })

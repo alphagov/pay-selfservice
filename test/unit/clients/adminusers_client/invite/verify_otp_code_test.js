@@ -16,7 +16,6 @@ var mockServer = pactProxy.create('localhost', mockPort)
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - submit verification details', function () {
-
   let adminUsersMock
 
   /**
@@ -40,7 +39,6 @@ describe('adminusers client - submit verification details', function () {
   })
 
   describe('verify otp code API', function () {
-
     context('verify otp code - success', () => {
       let validRequest = registrationFixtures.validVerifyOtpCodeRequest()
 
@@ -169,5 +167,4 @@ describe('adminusers client - submit verification details', function () {
       })
     })
   })
-
 })

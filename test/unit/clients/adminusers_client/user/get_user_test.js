@@ -1,7 +1,6 @@
 let Pact = require('pact')
 let pactProxy = require('../../../../test_helpers/pact_proxy')
 let chai = require('chai')
-let _ = require('lodash')
 let chaiAsPromised = require('chai-as-promised')
 let userFixtures = require('../../../../fixtures/user_fixtures')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
@@ -17,7 +16,6 @@ let mockServer = pactProxy.create('localhost', mockPort)
 let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
 
 describe('adminusers client - get user', function () {
-
   let adminUsersMock
 
   /**
@@ -41,9 +39,7 @@ describe('adminusers client - get user', function () {
   })
 
   describe('GET user api', () => {
-
     context('GET user api - success', () => {
-
       let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
       let params = {
@@ -84,7 +80,6 @@ describe('adminusers client - get user', function () {
     })
 
     context('GET user api - not found', () => {
-
       let params = {
         external_id: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
       }
@@ -105,12 +100,10 @@ describe('adminusers client - get user', function () {
       })
 
       it('should respond 404 if user not found', function (done) {
-
         adminusersClient.getUserByExternalId(params.external_id).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(404)
         }).should.notify(done)
       })
     })
-
   })
 })
