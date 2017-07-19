@@ -1,10 +1,11 @@
-var TemplateEngine = require(__dirname + '/../../lib/template-engine.js');
+var path = require('path')
+var TemplateEngine = require(path.join(__dirname, '/../../lib/template-engine.js'))
 
-function render(templateName, templateData) {
-  var templates = TemplateEngine._getTemplates([__dirname + '/../../app/views', __dirname + '/../../govuk_modules/govuk_template/views/layouts']);
-  return templates[templateName].render(templateData, templates);
+function render (templateName, templateData) {
+  var templates = TemplateEngine._getTemplates([path.join(__dirname, '/../../app/views'), path.join(__dirname, '/../../govuk_modules/govuk_template/views/layouts')])
+  return templates[templateName].render(templateData, templates)
 }
 
 module.exports = {
   render: render
-};
+}
