@@ -39,7 +39,11 @@ describe('register user controller', function () {
   describe('verify invitation endpoint', function () {
     it('should redirect to register view on a valid invite code for user', function (done) {
       const code = '23rer87t8shjkaf'
-      const validInviteResponse = inviteFixtures.validInviteResponse().getPlain()
+      const type = 'user'
+      const opts = {
+        type
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
@@ -68,6 +72,8 @@ describe('register user controller', function () {
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
+      adminusersMock.post(`${INVITE_RESOURCE_PATH}/${code}/otp/generate`)
+        .reply(200)
 
       supertest(app)
         .get(`/invites/${code}`)
