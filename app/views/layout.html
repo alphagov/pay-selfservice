@@ -19,7 +19,9 @@
 
     {{$content}}
         {{>includes/flash}}
-        {{> includes/phase_banner }}
+        {{#currentGatewayAccount.full_type}}
+          {{> includes/phase_banner }}
+        {{/currentGatewayAccount.full_type}}
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
             {{$full_width_content}}{{/full_width_content}}
             {{#navigation}}

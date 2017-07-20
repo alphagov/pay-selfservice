@@ -8,9 +8,9 @@ describe('navigation menu', function () {
       navigation: true
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation ul > li > a').withExactText('Homepage')
+    body.should.containSelector('.service-navigation ul > li > a').withExactText('Dashboard')
     body.should.containNoSelectorWithText('.navigation ul > li > a', 'API keys')
     body.should.containNoSelectorWithText('.navigation ul > li > a', 'Transactions')
     body.should.containNoSelectorWithText('.navigation ul > li > a', 'Account credentials')
@@ -27,10 +27,9 @@ describe('navigation menu', function () {
       navigation: true
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('API keys')
+    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('API keys')
   })
 
   it('should render Transactions navigation link when user have transactions read permission', function () {
@@ -41,10 +40,9 @@ describe('navigation menu', function () {
       navigation: true
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Transactions')
+    body.should.containSelector('.service-navigation nav > ul > li:nth-child(2) > a').withExactText('Transactions')
   })
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission', function () {
@@ -55,10 +53,22 @@ describe('navigation menu', function () {
       navigation: true
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
     body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Account credentials')
+  })
+
+  it('should render Change service name navigation link when user have service name read permission', function () {
+    let templateData = {
+      permissions: {
+        service_name_read: true
+      },
+      navigation: true
+    }
+
+    let body = renderTemplate('token', templateData)
+
+    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Change service name')
   })
 
   it('should render Payment types navigation link when user have payment types read permission', function () {
@@ -69,9 +79,8 @@ describe('navigation menu', function () {
       navigation: true
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
     body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Payment types')
   })
 
@@ -83,9 +92,8 @@ describe('navigation menu', function () {
       navigation: true
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
     body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Email notifications')
   })
 })
