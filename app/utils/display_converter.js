@@ -92,7 +92,6 @@ const adminNavigationItems = (originalUrl, permissions) => {
   ]
 }
 
-
 /**
  * converts users permission array of form
  *

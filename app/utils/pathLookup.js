@@ -5,7 +5,7 @@ let _ = require('lodash')
 module.exports = function (currentURL, url) {
   if (_.isArray(url)) {
     let found = false
-    url.forEach (function(urls) {
+    url.forEach(function (urls) {
       if (_.includes(urls, currentURL)) {
         found = true
       }
