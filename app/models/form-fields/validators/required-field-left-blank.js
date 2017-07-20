@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
 module.exports = value => {
   console.log(value)
-  return value && value !== ""
+  return value && value !== ''
 }

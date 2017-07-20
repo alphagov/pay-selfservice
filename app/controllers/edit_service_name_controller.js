@@ -1,8 +1,7 @@
-'use strict';
+'use strict'
 
 // NPM Dependencies
 const lodash = require('lodash')
-const log = require('winston')
 
 // Local Dependencies
 const responses = require('../utils/response')
@@ -11,9 +10,7 @@ const formatPath = require('../utils/replace_params_in_path')
 const serviceService = require('../services/service_service')
 const ServiceNameField = require('../models/form-fields/ServiceNameField.class')
 
-
 exports.get = (req, res) => {
-
   let pageData = lodash.get(req, 'session.pageData.editServiceName')
 
   if (pageData) {
@@ -27,12 +24,9 @@ exports.get = (req, res) => {
   pageData.my_services = paths.serviceSwitcher.index
 
   return responses.response(req, res, 'edit_service_name', pageData)
-
-};
+}
 
 exports.post = (req, res) => {
-
-
   const correlationId = lodash.get(req, 'correlationId')
   const serviceExternalId = lodash.get(req, 'service.externalId')
   const serviceName = new ServiceNameField(lodash.get(req, 'body.service-name'))
@@ -48,12 +42,10 @@ exports.post = (req, res) => {
   } else {
     lodash.set(req, 'session.pageData.editServiceName', {
       errors: {
-        service_name: serviceName.errors,
+        service_name: serviceName.errors
       },
       current_name: serviceName.value
     })
     res.redirect(formatPath(paths.editServiceName.index, req.service.externalId))
   }
-
-
 }

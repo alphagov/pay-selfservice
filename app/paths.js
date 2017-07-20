@@ -43,10 +43,6 @@ module.exports = {
     update: '/tokens',
     delete: '/tokens'
   },
-  serviceName: {
-    index: '/service-name',
-    edit: '/service-name?edit'
-  },
   paymentTypes: {
     selectType: '/payment-types/select-type',
     selectBrand: '/payment-types/select-brand',

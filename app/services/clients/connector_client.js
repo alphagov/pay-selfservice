@@ -429,14 +429,13 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
-
     const params = {
       gatewayAccountId: gatewayAccountId,
-      payload : {
+      payload: {
         service_name: serviceName
       },
       correlationId: correlationId
-    };
+    }
 
     const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
     const defer = q.defer()
@@ -452,7 +451,6 @@ ConnectorClient.prototype = {
     }
 
     const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
 
     requestLogger.logRequestStart(context)
 

@@ -47,7 +47,7 @@ const inviteValidationCtrl = require('./controllers/invite_validation_controller
 const {
   healthcheck, registerUser, user, selfCreateService, transactions, credentials,
   devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName,
-  notificationCredentials: nc, serviceName: sn, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -126,7 +126,6 @@ module.exports.bind = function (app) {
     ...lodash.values(credentials),
     ...lodash.values(nc),
     ...lodash.values(devTokens),
-    ...lodash.values(sn),
     ...lodash.values(pt),
     ...lodash.values(en),
     ...lodash.values(editServiceName),
@@ -160,10 +159,6 @@ module.exports.bind = function (app) {
   app.post(devTokens.create, permission('tokens:create'), getAccount, devTokensCtrl.create)
   app.put(devTokens.update, permission('tokens:update'), getAccount, devTokensCtrl.update)
   app.delete(devTokens.delete, permission('tokens:delete'), getAccount, devTokensCtrl.destroy)
-
-  // // SERVICE NAME
-  // app.get(sn.index, permission('service-name:read'), getAccount, serviceNameCtrl.index)
-  // app.post(sn.index, permission('service-name:update'), getAccount, serviceNameCtrl.update)
 
   // PAYMENT TYPES
   app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentTypesSelectType.selectType)

@@ -1,6 +1,6 @@
 'use strict'
 
-const proxyquire = require('proxyquire');
+const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const {expect} = require('chai')
 const Service = require('../../../../app/models/Service.class')
@@ -11,11 +11,8 @@ const editServiceNameCtrl = proxyquire('../../../../app/controllers/edit_service
 })
 let req, res
 
-
 describe('Controller: editServiceName, Method: get', () => {
-
   describe('when there is no pre-existing pageData, but the service has an existing name', () => {
-
     before(() => {
       mockResponses.response = sinon.spy()
       res = {}
@@ -47,11 +44,9 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('submit_link').to.equal(`/service/${req.service.externalId}/edit-name`)
       expect(mockResponses.response.args[0][3]).to.have.property('my_services').to.equal('/my-services')
     })
-
   })
 
   describe('when there is no pre-existing pageData, but the service has no existing name', () => {
-
     before(() => {
       mockResponses.response = sinon.spy()
       res = {}
@@ -66,22 +61,19 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.called).to.equal(true)
     })
 
-
     it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name of 'req.service'`, () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('')
     })
-
   })
 
   describe('when there is pre-existing pageData', () => {
-
     before(() => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
         service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
         session: {
-          pageData:{
+          pageData: {
             editServiceName: {
               current_name: 'Blah',
               errors: {
@@ -100,7 +92,6 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.called).to.equal(true)
     })
 
-
     it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name in the pre-existing pageData`, () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('Blah')
     })
@@ -116,10 +107,5 @@ describe('Controller: editServiceName, Method: get', () => {
     it(`should delete the pre-existing pageData from the session`, () => {
       expect(req.session.pageData).to.not.have.property('editServiceName')
     })
-
   })
-
-
-
-
 })

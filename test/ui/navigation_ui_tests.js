@@ -61,20 +61,6 @@ describe('navigation menu', function () {
     body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Account credentials')
   })
 
-  it('should render Change service name navigation link when user have service name read permission', function () {
-    let templateData = {
-      permissions: {
-        service_name_read: true
-      },
-      navigation: true
-    }
-
-    let body = renderTemplate('transactions/index', templateData)
-
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Change service name')
-  })
-
   it('should render Payment types navigation link when user have payment types read permission', function () {
     let templateData = {
       permissions: {

@@ -3,10 +3,9 @@
 const FormField = require('./FormField.class')
 
 class ServiceNameField extends FormField {
-  constructor(value) {
+  constructor (value) {
     super('service-name', true)
-    if(value !== undefined) this.value = value;
-
+    if (value !== undefined) this.value = value
   }
 }
 

@@ -1,48 +1,44 @@
-'use strict';
+'use strict'
 const {expect} = require('chai')
 const FormField = require('../../../../app/models/form-fields/FormField.class')
-let err, result;
+let err, result
 
 describe('Class: FormField', () => {
-
   beforeEach(() => {
     err = result = undefined
   })
 
   describe('Constructor', () => {
-
     it(`should instantiate if provided a 'name'`, () => {
       try {
         result = new FormField('test')
-      } catch(e) {
+      } catch (e) {
         err = e
       }
-      expect(err).to.be.undefined
+      expect(err).to.equal(undefined)
       expect(result instanceof FormField).to.equal(true)
     })
 
     it(`should not instantiate if not provided a 'name'`, () => {
       try {
         result = new FormField()
-      } catch(e) {
+      } catch (e) {
         err = e
       }
       expect(err instanceof TypeError).to.equal(true)
-      expect(result).to.be.undefined
+      expect(result).to.equal(undefined)
     })
-
   })
 
   describe('Method: addValidator', () => {
-
     it('should add the validation function if the name is unique', () => {
       try {
         result = new FormField('test')
         result.addValidator('new-validator', () => true)
-      } catch(e) {
+      } catch (e) {
         err = e
       }
-      expect(err).to.be.undefined
+      expect(err).to.equal(undefined)
       expect(result.___.validators).to.have.property('new-validator')
     })
 
@@ -51,7 +47,7 @@ describe('Class: FormField', () => {
         result = new FormField('test')
         result.addValidator('new-validator', () => true)
         result.addValidator('new-validator', () => false)
-      } catch(e) {
+      } catch (e) {
         err = e
       }
       expect(err instanceof Error).to.equal(true)
@@ -59,9 +55,7 @@ describe('Class: FormField', () => {
   })
 
   describe('Method: validate', () => {
-
     it('should return true if valid and set the errors object to be an empty object', () => {
-
       result = new FormField('test')
       result.addValidator('new-validator', () => true)
       result.errors = {'error-example': true}
@@ -71,7 +65,6 @@ describe('Class: FormField', () => {
     })
 
     it('should return false if invalid and add the keys of any errors to the errors object', () => {
-
       result = new FormField('test')
       result.addValidator('new-error', () => false)
 
@@ -81,7 +74,4 @@ describe('Class: FormField', () => {
       })
     })
   })
-
-
-
 })

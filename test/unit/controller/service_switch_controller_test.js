@@ -1,17 +1,17 @@
 'use strict'
 
-const expect = chai.expect;
-const connectorMock = nock(process.env.CONNECTOR_URL);
-const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts';
+const chai = require('chai')
+const sinon = require('sinon')
+const nock = require('nock')
+const _ = require('lodash')
+const connectorMock = nock(process.env.CONNECTOR_URL)
+const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const serviceSwitchController = require('../../../app/controllers/my_services_controller')
 const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const chaiAsPromised = require('chai-as-promised')
+const {expect} = require('chai')
 chai.use(chaiAsPromised)
-
-const expect = chai.expect
-const connectorMock = nock(process.env.CONNECTOR_URL)
-const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 
 const renderSpy = sinon.spy()
 const redirectSpy = sinon.spy()

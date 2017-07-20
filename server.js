@@ -118,7 +118,7 @@ function listen () {
  */
 function initialise () {
   const app = unconfiguredApp
-
+  app.disable('x-powered-by')
   app.use(flash())
   initialiseTLS(app)
   initialiseProxy(app)
