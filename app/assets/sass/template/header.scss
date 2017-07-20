@@ -121,7 +121,7 @@
     margin: 0 $gutter;
   }
 
-  @include media($min-width: (1020px + $gutter * 2)) {
+  @include media($min-width: (960px + $gutter * 2)) {
     margin: 0 auto;
   }
 }
@@ -132,10 +132,6 @@
   padding: 10px 0 0;
   border-bottom: 1px solid $border-colour;
   @extend %contain-floats;
-
-  @include media($min-width: (1020px + $gutter * 2)) {
-    margin-bottom: $gutter;
-  }
 
   .phase-tag {
     /* Set text for lowercase (phase banner defaults to uppercase) */
