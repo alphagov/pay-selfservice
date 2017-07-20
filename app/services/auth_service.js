@@ -90,6 +90,7 @@ function localStrategy2Fa (req, done) {
 function localDirectStrategy (req, done) {
   return userService.findByExternalId(req.register_invite.userExternalId, req.headers[CORRELATION_HEADER] || '')
     .then((user) => {
+      lodash.set(req, 'gateway_account.currentGatewayAccountId', lodash.get(user, 'serviceRoles[0].service.gatewayAccountIds[0]'))
       req.session.secondFactor = 'totp'
       setSessionVersion(req)
       req.register_invite.destroy()
