@@ -40,7 +40,8 @@ const inviteUserController = require('./controllers/invite_user_controller')
 const registerCtrl = require('./controllers/register_user_controller')
 const serviceRolesUpdateController = require('./controllers/service_roles_update_controller')
 const toggle3ds = require('./controllers/toggle_3ds_controller')
-const selfCreateServiceCtrl = require('./controllers/create_service_controller')
+const selfCreateServiceCtrl = require('./controllers/register_service_controller')
+const createServiceCtrl = require('./controllers/create_service_controller')
 const inviteValidationCtrl = require('./controllers/invite_validation_controller')
 
 // Assignments
@@ -179,6 +180,8 @@ module.exports.bind = function (app) {
   // MY SERVICES
   app.get(serviceSwitcher.index, myServicesCtrl.index)
   app.post(serviceSwitcher.switch, myServicesCtrl.switch)
+  app.get(serviceSwitcher.create, createServiceCtrl.get)
+  app.post(serviceSwitcher.create, createServiceCtrl.post)
 
   // EDIT SERVICE NAME
   app.get(editServiceName.index, permission('service-name:update'), editServiceNameCtrl.get)

@@ -59,7 +59,8 @@ module.exports = {
   },
   serviceSwitcher: {
     index: '/my-services',
-    switch: '/my-services/switch'
+    switch: '/my-services/switch',
+    create: '/my-services/create'
   },
   editServiceName: {
     index: '/service/:externalServiceId/edit-name',

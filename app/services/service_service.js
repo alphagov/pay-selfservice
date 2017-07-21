@@ -10,7 +10,8 @@ const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 // Exports
 module.exports = {
   getGatewayAccounts,
-  updateServiceName
+  updateServiceName,
+  createService
 }
 
 /**
@@ -58,4 +59,19 @@ function updateServiceName (serviceExternalId, serviceName, correlationId) {
         return q.resolve(new Service(result))
       }
     })
+}
+
+/**
+ * Create a new service with a sandbox account
+ * @param serviceName
+ * @param correlationId
+ * @returns {*|Promise|Promise<Service>} the created service
+ */
+function createService (serviceName, correlationId) {
+  if (!serviceName) serviceName = 'System Generated'
+
+  return connectorClient().createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
+    .then(gatewayAccount =>
+      getAdminUsersClient({correlationId}).createService(serviceName, [gatewayAccount.gateway_account_id])
+    )
 }

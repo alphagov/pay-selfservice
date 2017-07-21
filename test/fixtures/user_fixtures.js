@@ -258,6 +258,15 @@ module.exports = {
     return pactUsers.withPactified(request)
   },
 
+  validAssignServiceRoleRequest: (serviceExternalId, role) => {
+    let request = {
+      service_external_id: serviceExternalId || randomString(),
+      role_name: role || 'admin'
+    }
+
+    return pactUsers.withPactified(request)
+  },
+
   validForgottenPasswordCreateRequest: (username) => {
     let request = {
       username: username || 'username'
