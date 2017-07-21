@@ -67,14 +67,17 @@ module.exports = {
         const redirectTarget = invite.user_exist ? paths.registerUser.subscribeService : paths.registerUser.registration
         res.redirect(302, redirectTarget)
       } else if (invite.type === 'service') {
-        serviceRegistrationService.generateServiceInviteOtpCode(code, correlationId)
-          .then(() => {
-            const redirectTarget = paths.selfCreateService.otpVerify
-            res.redirect(302, redirectTarget)
-          })
-          .catch((err) => {
-            handleError(req, res, err)
-          })
+        if (invite.user_exist) {
+          res.redirect(302, paths.serviceSwitcher.index)
+        } else {
+          serviceRegistrationService.generateServiceInviteOtpCode(code, correlationId)
+            .then(() => {
+              res.redirect(302, paths.selfCreateService.otpVerify)
+            })
+            .catch((err) => {
+              handleError(req, res, err)
+            })
+        }
       } else {
         handleError(req, res, 'Unrecognised invite type')
       }

@@ -38,11 +38,13 @@ module.exports = {
     const invitee = 'random@example.com'
     const type = 'user'
     const disabled = opts.disabled === true
+    const userExist = opts.user_exist === true
 
     const data = {
       email: opts.email || invitee,
       type: opts.type || type,
-      disabled
+      disabled,
+      user_exist: userExist
     }
 
     if (opts.telephone_number) {
