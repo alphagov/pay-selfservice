@@ -37,11 +37,12 @@ describe('register user controller', function () {
    *  ENDPOINT validateInvite
    */
   describe('verify invitation endpoint', function () {
-    it('should redirect to register view on a valid invite code for user', function (done) {
+    it('should redirect to register view on a valid user invite with non existing user', function (done) {
       const code = '23rer87t8shjkaf'
       const type = 'user'
       const opts = {
-        type
+        type,
+        user_exist: false
       }
       const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
 
@@ -60,13 +61,38 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to register view on a valid invite code for service', function (done) {
+    it('should redirect to subscribe service view on a valid user invite with existing user', function (done) {
+      const code = '23rer87t8shjkaf'
+      const type = 'user'
+      const opts = {
+        type,
+        user_exist: true
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse)
+
+      supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.registerUser.subscribeService)
+        .expect(() => {
+          expect(mockRegisterAccountCookie.code).to.equal(code)
+          expect(mockRegisterAccountCookie.email).to.equal(validInviteResponse.email)
+        })
+        .end(done)
+    })
+
+    it('should redirect to otp verify view on a valid service invite with non existing user', function (done) {
       const code = '23rer87t8shjkaf'
       const type = 'service'
       const telephoneNumber = '07562327123'
       const opts = {
         type,
-        telephone_number: telephoneNumber
+        telephone_number: telephoneNumber,
+        user_exist: false
       }
       const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
 
@@ -84,6 +110,26 @@ describe('register user controller', function () {
           expect(mockRegisterAccountCookie.code).to.equal(code)
           expect(mockRegisterAccountCookie.telephone_number).to.equal(telephoneNumber)
         })
+        .end(done)
+    })
+
+    it('should redirect to my services view on a valid service invite with existing user', function (done) {
+      const code = '23rer87t8shjkaf'
+      const type = 'service'
+      const opts = {
+        type,
+        user_exist: true
+      }
+      const validInviteResponse = inviteFixtures.validInviteResponse(opts).getPlain()
+
+      adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
+        .reply(200, validInviteResponse)
+
+      supertest(app)
+        .get(`/invites/${code}`)
+        .set('x-request-id', 'bob')
+        .expect(302)
+        .expect('Location', paths.serviceSwitcher.index)
         .end(done)
     })
 
