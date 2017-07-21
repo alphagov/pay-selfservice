@@ -24,7 +24,18 @@ pipeline {
     }
     stage('Test') {
       steps {
-        runEndToEnd("selfservice")
+        script {
+          try {
+            sh 'git diff --name-only origin/master | grep -v docs/ | grep -v Jenkinsfile | grep -e ^[docs/|Jenkinsfile]'
+            HAS_CODE_CHANGES = true
+          }
+          catch (error) {
+            HAS_CODE_CHANGES = false
+          }
+          if (HAS_CODE_CHANGES) {
+            runEndToEnd("selfservice")
+          }
+        }
       }
     }
     stage('Docker Tag') {
