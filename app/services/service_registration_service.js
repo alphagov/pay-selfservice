@@ -85,16 +85,5 @@ module.exports = {
    */
   resendOtpCode: function (code, phoneNumber, correlationId) {
     return getAdminUsersClient({correlationId}).resendOtpCode(code, phoneNumber)
-  },
-
-  /**
-   * Update service name
-   *
-   * @param serviceId
-   * @param serviceName
-   * @param correlationId
-   */
-  updateServiceName: function (serviceId, serviceName, correlationId) {
-    return getAdminUsersClient({correlationId}).updateServiceName(serviceId, serviceName)
   }
 }
