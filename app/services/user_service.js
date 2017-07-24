@@ -130,6 +130,18 @@ module.exports = {
   },
 
   /**
+   *
+   * @param externalId
+   * @param externalServiceId
+   * @param roleName
+   * @param correlationId
+   * @returns {Promise.<User>}
+   */
+  assignServiceRole: function (externalId, externalServiceId, roleName, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).assignServiceRole(externalId, externalServiceId, roleName)
+  },
+
+  /**
    * @param invitee
    * @param senderId
    * @param serviceId

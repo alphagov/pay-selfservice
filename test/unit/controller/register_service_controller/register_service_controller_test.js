@@ -53,7 +53,7 @@ describe('Error handler register service', function () {
   })
 
   const controller = function (error) {
-    return proxyquire('../../../../app/controllers/create_service_controller.js',
+    return proxyquire('../../../../app/controllers/register_service_controller.js',
       {
         '../services/service_registration_service': {
           submitRegistration: () => {

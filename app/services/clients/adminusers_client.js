@@ -334,6 +334,44 @@ module.exports = function (clientOptions = {}) {
 
   /**
    *
+   * @param userExternalId
+   * @param serviceExternalId
+   * @param roleName
+   */
+  const assignServiceRole = (userExternalId, serviceExternalId, roleName) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        service_external_id: serviceExternalId,
+        role_name: roleName
+      }
+    }
+
+    const url = `${userResource}/${userExternalId}/services`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'assigns user to a new service',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
+   *
    * @param externalId
    * @param serviceExternalId
    * @param roleName
@@ -356,7 +394,7 @@ module.exports = function (clientOptions = {}) {
       startTime: startTime,
       correlationId: correlationId,
       method: 'PUT',
-      description: 'authenticate a second factor auth token entered by user',
+      description: 'update role of a service that currently belongs to a user',
       service: SERVICE_NAME
     }
 
@@ -862,6 +900,7 @@ module.exports = function (clientOptions = {}) {
 
     // UserServiceRole-related Methods
     updateServiceRole,
+    assignServiceRole,
     getServiceUsers,
 
     // Invite-related Methods
