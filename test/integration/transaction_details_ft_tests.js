@@ -8,7 +8,7 @@ var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js
 var getApp = require(path.join(__dirname, '/../../server.js')).getApp
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-
+var {expect} = require('chai')
 var gatewayAccountId = 15486734
 
 var app
@@ -29,10 +29,6 @@ function whenGetTransactionHistory (chargeId, baseApp) {
 
 function connectorChargePathFor (chargeId) {
   return CONNECTOR_CHARGE_PATH.replace('{chargeId}', chargeId)
-}
-
-function asTemplate (data) {
-  return _.merge(data, {navigation: true})
 }
 
 describe('The transaction view scenarios', function () {
@@ -145,13 +141,13 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = asTemplate({
+      var expectedEventsView = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'refundable': true,
-        'net_amount': 50,
+        'net_amount': '50.00',
         'net_amount_display': '£50.00',
         'refunded_amount': '£0.00',
         'refunded': false,
@@ -237,13 +233,16 @@ describe('The transaction view scenarios', function () {
         'permissions': {
           'transactions_details_read': true
         }
-      })
+      }
 
       connectorMockResponds(connectorChargePathFor(chargeId), mockChargeResponse)
       connectorMockResponds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse)
 
       whenGetTransactionHistory(chargeId, app)
-        .expect(200, expectedEventsView)
+        .expect(200)
+        .expect(response => {
+          expect(response.body).to.deep.contain(expectedEventsView)
+        })
         .end(done)
     })
 
@@ -302,7 +301,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = asTemplate({
+      var expectedEventsView = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -356,13 +355,16 @@ describe('The transaction view scenarios', function () {
         'permissions': {
           'transactions_details_read': true
         }
-      })
+      }
 
       connectorMockResponds(connectorChargePathFor(chargeId), mockChargeResponse)
       connectorMockResponds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse)
 
       whenGetTransactionHistory(chargeId, app)
-        .expect(200, expectedEventsView)
+        .expect(200)
+        .expect(response => {
+          expect(response.body).to.deep.contain(expectedEventsView)
+        })
         .end(done)
     })
 
@@ -428,7 +430,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = asTemplate({
+      var expectedEventsView = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -483,13 +485,16 @@ describe('The transaction view scenarios', function () {
         'permissions': {
           'transactions_details_read': true
         }
-      })
+      }
 
       connectorMockResponds(connectorChargePathFor(chargeId), mockChargeResponse)
       connectorMockResponds('/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeId + '/events', mockEventsResponse)
 
       whenGetTransactionHistory(chargeId, app)
-        .expect(200, expectedEventsView)
+        .expect(200)
+        .expect(response => {
+          expect(response.body).to.deep.contain(expectedEventsView)
+        })
         .end(done)
     })
 
@@ -586,7 +591,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = asTemplate({
+      var expectedEventsView = {
         'charge_id': chargeWithRefund,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -617,7 +622,7 @@ describe('The transaction view scenarios', function () {
           'amount_submitted': 5000
         },
         'net_amount_display': '£0.00',
-        'net_amount': 0.00,
+        'net_amount': '0.00',
         'refundable': false,
         'refunded_amount': '£50.00',
         'refunded': true,
@@ -678,14 +683,17 @@ describe('The transaction view scenarios', function () {
         'permissions': {
           'transactions_details_read': true
         }
-      })
+      }
 
       var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events'
       connectorMockResponds(connectorChargePathFor(chargeWithRefund), mockChargeResponse)
       connectorMockResponds(events, mockEventsResponse)
 
       whenGetTransactionHistory(chargeWithRefund, app)
-        .expect(200, expectedEventsView)
+        .expect(200)
+        .expect(response => {
+          expect(response.body).to.deep.contain(expectedEventsView)
+        })
         .end(done)
     })
 

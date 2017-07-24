@@ -8,7 +8,7 @@ var csrf = require('csrf')
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var app
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-
+var {expect} = require('chai')
 var ACCOUNT_ID = 182364
 var CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
 var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + '/credentials'
@@ -59,33 +59,6 @@ describe('Credentials endpoints', () => {
       userCreator.mockUserResponse(user.toJson(), done)
     })
 
-    it('should display payment provider name in title case', function (done) {
-      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-        .reply(200, {
-          'payment_provider': 'sandbox',
-          'gateway_account_id': '1',
-          'credentials': {}
-        })
-
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {}
-        },
-        'editMode': false,
-        'editNotificationCredentialsMode': false,
-        'permissions': {
-          gateway_credentials_read: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.credentials.index, app)
-        .expect(200, expectedData)
-        .end(done)
-    })
-
     it('should display empty credential values when no gateway credentials are set', function (done) {
       connectorMock.get(CONNECTOR_ACCOUNT_PATH)
         .reply(200, {
@@ -94,22 +67,11 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'payment_provider': 'sandbox',
-          'credentials': {},
-          'gateway_account_id': '1'
-        },
-        'editMode': false,
-        'editNotificationCredentialsMode': false,
-        'permissions': {
-          gateway_credentials_read: true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.credentials.index, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.credentials).to.be.empty
+        })
         .end(done)
     })
 
@@ -121,25 +83,12 @@ describe('Credentials endpoints', () => {
           'credentials': {'username': 'a-username'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'payment_provider': 'sandbox',
-          'credentials': {
-            'username': 'a-username'
-          },
-          'gateway_account_id': '1'
-        },
-        'editNotificationCredentialsMode': false,
-        'editMode': false,
-        'permissions': {
-          gateway_credentials_read: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.credentials.index, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.credentials.index, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.credentials).to.deep.equal({'username': 'a-username'})
+          })
+          .end(done)
     })
 
     it('should return the account', function (done) {
@@ -150,26 +99,12 @@ describe('Credentials endpoints', () => {
           'credentials': {username: 'a-username', merchant_id: 'a-merchant-id'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'payment_provider': 'sandbox',
-          'credentials': {
-            'username': 'a-username',
-            merchant_id: 'a-merchant-id'
-          },
-          'gateway_account_id': '1'
-        },
-        'editMode': false,
-        'editNotificationCredentialsMode': false,
-        'permissions': {
-          gateway_credentials_read: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.credentials.index, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.credentials.index, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
+          })
+          .end(done)
     })
 
     it('should display an error if the account does not exist', function (done) {
@@ -219,7 +154,7 @@ describe('Credentials endpoints', () => {
       userCreator.mockUserResponse(user.toJson(), done)
     })
 
-    it('should display payment provider name in title case', function (done) {
+    it('should display payment provider name', function (done) {
       connectorMock.get(CONNECTOR_ACCOUNT_PATH)
         .reply(200, {
           'payment_provider': 'sandbox',
@@ -227,22 +162,11 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {}
-        },
-        'editMode': true,
-        'editNotificationCredentialsMode': false,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.credentials.edit, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.payment_provider).to.equal('sandbox')
+        })
         .end(done)
     })
 
@@ -254,22 +178,11 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {}
-        },
-        'editMode': true,
-        'editNotificationCredentialsMode': false,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.credentials.edit, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.credentials).to.be.empty
+        })
         .end(done)
     })
 
@@ -281,22 +194,11 @@ describe('Credentials endpoints', () => {
           'credentials': {'username': 'a-username'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {'username': 'a-username'}
-        },
-        'editNotificationCredentialsMode': false,
-        'editMode': true,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.credentials.edit, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.credentials).to.deep.equal({'username': 'a-username'})
+        })
         .end(done)
     })
 
@@ -308,23 +210,12 @@ describe('Credentials endpoints', () => {
           'credentials': {username: 'a-username'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {'username': 'a-username'}
-        },
-        'editMode': true,
-        'editNotificationCredentialsMode': false,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.credentials.edit, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.credentials.edit, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
+          })
+          .end(done)
     })
 
     it('should display an error if the account does not exist', function (done) {
@@ -374,7 +265,7 @@ describe('Credentials endpoints', () => {
       userCreator.mockUserResponse(user.toJson(), done)
     })
 
-    it('should display payment provider name in title case', function (done) {
+    it('should display payment provider name', function (done) {
       connectorMock.get(CONNECTOR_ACCOUNT_PATH)
         .reply(200, {
           'payment_provider': 'sandbox',
@@ -382,23 +273,12 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {}
-        },
-        'editMode': false,
-        'editNotificationCredentialsMode': true,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.notificationCredentials.edit, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.payment_provider).to.equal('sandbox')
+          })
+          .end(done)
     })
 
     it('should display empty credential values when no gateway credentials are set', function (done) {
@@ -409,23 +289,12 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {}
-        },
-        'editMode': false,
-        'editNotificationCredentialsMode': true,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.notificationCredentials.edit, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.credentials).to.be.empty
+          })
+          .end(done)
     })
 
     it('should display received credentials from connector', function (done) {
@@ -436,25 +305,12 @@ describe('Credentials endpoints', () => {
           'credentials': {'username': 'a-username'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {
-            'username': 'a-username'
-          }
-        },
-        'editNotificationCredentialsMode': true,
-        'editMode': false,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.notificationCredentials.edit, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.credentials).to.be.deep.equal({'username': 'a-username'})
+          })
+          .end(done)
     })
 
     it('should return the account', function (done) {
@@ -465,26 +321,12 @@ describe('Credentials endpoints', () => {
           'credentials': {username: 'a-username', merchant_id: 'a-merchant-id'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'sandbox',
-          'credentials': {
-            'username': 'a-username',
-            'merchant_id': 'a-merchant-id'
-          }
-        },
-        'editMode': false,
-        'editNotificationCredentialsMode': true,
-        'permissions': {
-          gateway_credentials_update: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(200, expectedData)
-        .end(done)
+        buildGetRequest(paths.notificationCredentials.edit, app)
+          .expect(200)
+          .expect(response => {
+            expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
+          })
+          .end(done)
     })
 
     it('should display an error if the account does not exist', function (done) {
@@ -546,28 +388,11 @@ describe('Credentials endpoints', () => {
           'notification_credentials': {username: 'a-notification-username'}
         })
 
-      var expectedData = {
-        currentGatewayAccount: {
-          'gateway_account_id': '1',
-          'payment_provider': 'smartpay',
-          'credentials': {
-            'username': 'a-username',
-            'merchant_id': 'a-merchant-id'
-          },
-          'notification_credentials': {username: 'a-notification-username'}
-        },
-        'editNotificationCredentialsMode': false,
-
-        'editMode': false,
-
-        'permissions': {
-          gateway_credentials_read: true
-        },
-        navigation: true
-      }
-
-      buildGetRequest(paths.credentials.index, app)
-        .expect(200, expectedData)
+      buildGetRequest(paths.notificationCredentials.index, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.notification_credentials).to.deep.equal({username: 'a-notification-username'})
+        })
         .end(done)
     })
   })

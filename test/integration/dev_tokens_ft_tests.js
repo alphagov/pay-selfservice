@@ -7,6 +7,7 @@ var nock = require('nock')
 var csrf = require('csrf')
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+var {expect} = require('chai')
 
 var gatewayAccountId = 98344
 var TOKEN = '00112233'
@@ -83,16 +84,9 @@ describe('Dev Tokens Endpoints', function () {
         })
 
       buildGetRequest(paths.devTokens.revoked)
-        .expect(200, {
-          'active': false,
-          'header': 'revoked-tokens',
-          'token_state': 'revoked',
-          'tokens': [],
-          'tokens_singular': false,
-          'permissions': {
-            'tokens_revoked_read': true
-          },
-          navigation: true
+        .expect(200)
+        .expect(response => {
+          expect(response.body.tokens).to.be.empty
         })
         .end(done)
     })
@@ -113,20 +107,12 @@ describe('Dev Tokens Endpoints', function () {
           if (!res.body.tokens[0].csrfToken) throw new Error('no token')
           delete res.body.tokens[0].csrfToken
         })
-        .expect(200, {
-          'active': false,
-          'header': 'revoked-tokens',
-          'token_state': 'revoked',
-          'tokens': [{
+        .expect(response => {
+          expect(response.body.tokens).to.be.deep.equal([{
             'token_link': '550e8400-e29b-41d4-a716-446655440000',
             'description': 'token 1',
             'revoked': '18 Oct 2015'
-          }],
-          'tokens_singular': true,
-          'permissions': {
-            'tokens_revoked_read': true
-          },
-          navigation: true
+          }])
         })
         .end(done)
     })
@@ -154,11 +140,8 @@ describe('Dev Tokens Endpoints', function () {
           if (!res.body.tokens[1].csrfToken) throw new Error('no token')
           delete res.body.tokens[1].csrfToken
         })
-        .expect(200, {
-          'active': false,
-          'header': 'revoked-tokens',
-          'token_state': 'revoked',
-          'tokens': [{
+        .expect(response => {
+          expect(response.body.tokens).to.be.deep.equal([{
             'token_link': '550e8400-e29b-41d4-a716-446655440000',
             'description': 'description token 1',
             'revoked': '18 Oct 2015'
@@ -167,12 +150,7 @@ describe('Dev Tokens Endpoints', function () {
             'token_link': '550e8400-e29b-41d4-a716-446655441234',
             'description': 'description token 2',
             'revoked': '19 Oct 2015'
-          }],
-          'tokens_singular': false,
-          'permissions': {
-            'tokens_revoked_read': true
-          },
-          navigation: true
+          }])
         })
         .end(done)
     })
@@ -201,16 +179,8 @@ describe('Dev Tokens Endpoints', function () {
         })
 
       buildGetRequest(paths.devTokens.index)
-        .expect(200, {
-          'active': true,
-          'header': 'available-tokens',
-          'token_state': 'active',
-          'tokens': [],
-          'tokens_singular': false,
-          'permissions': {
-            'tokens_active_read': true
-          },
-          navigation: true
+        .expect(response => {
+          expect(response.body.tokens).to.be.empty
         })
         .end(done)
     })
@@ -227,16 +197,11 @@ describe('Dev Tokens Endpoints', function () {
           if (!res.body.tokens[0].csrfToken) throw new Error('no token')
           delete res.body.tokens[0].csrfToken
         })
-        .expect(200, {
-          'active': true,
-          'header': 'available-tokens',
-          'token_state': 'active',
-          'tokens': [{'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': 'token 1'}],
-          'tokens_singular': true,
-          'permissions': {
-            'tokens_active_read': true
-          },
-          navigation: true
+        .expect(response => {
+          expect(response.body.tokens).to.be.deep.equal([{
+            'token_link': '550e8400-e29b-41d4-a716-446655440000',
+            'description': 'token 1'
+          }])
         })
         .end(done)
     })
@@ -256,17 +221,11 @@ describe('Dev Tokens Endpoints', function () {
           if (!res.body.tokens[1].csrfToken) throw new Error('no token')
           delete res.body.tokens[1].csrfToken
         })
-        .expect(200, {
-          'active': true,
-          'header': 'available-tokens',
-          'token_state': 'active',
-          'tokens': [{'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': 'description token 1'},
-            {'token_link': '550e8400-e29b-41d4-a716-446655441234', 'description': 'description token 2'}],
-          'tokens_singular': false,
-          'permissions': {
-            'tokens_active_read': true
-          },
-          navigation: true
+        .expect(response => {
+          expect(response.body.tokens).to.be.deep.equal([
+            {'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': 'description token 1'},
+            {'token_link': '550e8400-e29b-41d4-a716-446655441234', 'description': 'description token 2'}
+          ])
         })
         .end(done)
     })
@@ -305,16 +264,8 @@ describe('Dev Tokens Endpoints', function () {
           if (!res.body.csrfToken) throw new Error('no token')
           delete res.body.csrfToken
         })
-        .expect(200, {
-          'token_link': '550e8400-e29b-41d4-a716-446655440000',
-          'description': 'token description',
-          'created_by': 'test-user',
-          'issued_date': '18 Feb 2016 - 12:44',
-          'last_used': '23 Feb 2016 - 19:44',
-          'permissions': {
-            'tokens_update': true
-          },
-          navigation: true
+        .expect(result => {
+          expect(result.body.description).to.equal('token description')
         })
         .end(done)
     })
@@ -448,13 +399,9 @@ describe('Dev Tokens Endpoints', function () {
       }).reply(200, {'token': TOKEN})
 
       buildFormPostRequest(paths.devTokens.create, {'description': 'description'}, true)
-        .expect(200, {
-          'token': TOKEN,
-          'description': 'description',
-          'permissions': {
-            'tokens_create': true
-          },
-          navigation: true
+        .expect(200)
+        .expect(response => {
+          expect(response.body.token).to.equal(TOKEN)
         })
         .end(done)
     })
@@ -463,12 +410,9 @@ describe('Dev Tokens Endpoints', function () {
       connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
 
       buildGetRequest(paths.devTokens.show)
-        .expect(200, {
-          'account_id': gatewayAccountId,
-          'permissions': {
-            'tokens_create': true
-          },
-          navigation: true
+        .expect(200)
+        .expect(response => {
+          expect(response.body.account_id).to.be.deep.equal(gatewayAccountId)
         })
         .end(done)
     })
@@ -495,12 +439,9 @@ describe('Dev Tokens Endpoints', function () {
       connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
 
       buildGetRequest(paths.devTokens.show)
-        .expect(200, {
-          'account_id': gatewayAccountId,
-          'permissions': {
-            'tokens_create': true
-          },
-          navigation: true
+        .expect(200)
+        .expect(response => {
+          expect(response.body.account_id).to.be.deep.equal(gatewayAccountId)
         })
         .end(done)
     })

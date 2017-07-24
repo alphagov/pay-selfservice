@@ -7,6 +7,7 @@ var nock = require('nock')
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var csrf = require('csrf')
+var {expect} = require('chai')
 
 var ACCOUNT_ID = 182364
 
@@ -65,22 +66,11 @@ describe('The 3D Secure index endpoint', function () {
         'requires3ds': false
       })
 
-    var expectedData = {
-      supports3ds: false,
-      requires3ds: false,
-      justToggled: false,
-      permissions: {
-        'toggle_3ds_read': true
-      },
-      navigation: true,
-      currentGatewayAccount: {
-        'payment_provider': 'sandbox',
-        'requires3ds': false
-      }
-    }
-
     buildGetRequest(paths.toggle3ds.index, app)
-      .expect(200, expectedData)
+      .expect(200)
+      .expect(response => {
+        expect(response.body.requires3ds).to.be.false
+      })
       .end(done)
   })
 
@@ -91,22 +81,11 @@ describe('The 3D Secure index endpoint', function () {
         'requires3ds': true
       })
 
-    var expectedData = {
-      supports3ds: true,
-      requires3ds: true,
-      justToggled: false,
-      permissions: {
-        'toggle_3ds_read': true
-      },
-      navigation: true,
-      currentGatewayAccount: {
-        'payment_provider': 'worldpay',
-        'requires3ds': true
-      }
-    }
-
     buildGetRequest(paths.toggle3ds.index, app)
-      .expect(200, expectedData)
+    .expect(200)
+    .expect(response => {
+      expect(response.body.requires3ds).to.be.true
+    })
       .end(done)
   })
 
@@ -118,22 +97,11 @@ describe('The 3D Secure index endpoint', function () {
         'requires3ds': true
       })
 
-    var expectedData = {
-      supports3ds: true,
-      requires3ds: true,
-      justToggled: true,
-      permissions: {
-        'toggle_3ds_read': true
-      },
-      navigation: true,
-      currentGatewayAccount: {
-        'payment_provider': 'worldpay',
-        'requires3ds': true
-      }
-    }
-
     buildGetRequest(paths.toggle3ds.index + '?toggled', app)
-      .expect(200, expectedData)
+      .expect(200)
+      .expect(response => {
+        expect(response.body.requires3ds).to.be.true
+      })
       .end(done)
   })
 
@@ -144,23 +112,12 @@ describe('The 3D Secure index endpoint', function () {
          'requires3ds': false
        })
 
-    var expectedData = {
-      supports3ds: true,
-      requires3ds: false,
-      justToggled: false,
-      permissions: {
-        'toggle_3ds_read': true
-      },
-      navigation: true,
-      currentGatewayAccount: {
-        'payment_provider': 'worldpay',
-        'requires3ds': false
-      }
-    }
-
     buildGetRequest(paths.toggle3ds.index, app)
-       .expect(200, expectedData)
-       .end(done)
+      .expect(200)
+      .expect(response => {
+        expect(response.body.requires3ds).to.be.false
+      })
+      .end(done)
   })
 
   it('should display if 3D Secure is off and has just been toggled', function (done) {
@@ -185,8 +142,11 @@ describe('The 3D Secure index endpoint', function () {
     }
 
     buildGetRequest(paths.toggle3ds.index + '?toggled', app)
-       .expect(200, expectedData)
-       .end(done)
+      .expect(200)
+      .expect(response => {
+        expect(response.body.requires3ds).to.be.false
+      })
+      .end(done)
   })
 
   it('should display an error if the account does not exist', function (done) {

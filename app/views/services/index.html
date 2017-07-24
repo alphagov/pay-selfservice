@@ -13,14 +13,12 @@ GOV.UK Pay - My services
 <h1 class="heading-large">My services</h1>
 <div class="grid-row grid-row-align-to-edges">
     <div class="column-two-thirds">
-      {{#services.length}}
-        {{#services_singular}}
-          <p class="lede service-count">You have {{services.length}} service</p>
-        {{/services_singular}}
-        {{^services_singular}}
-          <p class="lede service-count">You have {{services.length}} services</p>
-        {{/services_singular}}
-      {{/services.length}}
+      {{#services_singular}}
+        <p class="lede service-count">You have {{services.length}} service</p>
+      {{/services_singular}}
+      {{^services_singular}}
+        <p class="lede service-count">You have {{services.length}} services</p>
+      {{/services_singular}}
     </div>
     <div class="column-one-third">
         <a href="{{routes.serviceSwitcher.create}}" class="button create-service">

@@ -43,7 +43,7 @@ const serviceNavigationItems = (originalUrl, permissions) => {
 const adminNavigationItems = (originalUrl, permissions) => {
   return [
     {
-      name: 'API Keys',
+      name: 'API keys',
       url: paths.devTokens.index,
       current: pathLookup(originalUrl, paths.devTokens.index),
       permissions: permissions.tokens_read
