@@ -13,15 +13,12 @@ GOV.UK Pay - My services
 
         {{#errors}}
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
                 There was a problem with the details you gave for:
-            </h1>
+            </h2>
             <ul class="error-summary-list">
                 {{#errors.service_name}}
                 <li><a href="#service-name">Service name</a></li>
-
-
-
                 {{/errors.service_name}}
             </ul>
         </div>
