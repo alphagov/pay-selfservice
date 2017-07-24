@@ -1,6 +1,7 @@
 'use strict'
 
 const q = require('q')
+const lodash = require('lodash')
 const getAdminUsersClient = require('./clients/adminusers_client')
 const {ConnectorClient} = require('../services/clients/connector_client')
 const GatewayAccount = require('../models/GatewayAccount.class')
@@ -47,7 +48,7 @@ function updateServiceName (serviceExternalId, serviceName, correlationId) {
 
   return getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName)
     .then(result => {
-      const gatewayAccountIds = result.gateway_account_ids || []
+      const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
       // Update gateway account service names
       if (gatewayAccountIds.length > 0) {
         return q.all([].concat(gatewayAccountIds).map(gatewayAccountId => {

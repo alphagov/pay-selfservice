@@ -8,6 +8,7 @@ const _ = require('lodash')
 const paths = require('../paths')
 const response = require('../utils/response')
 const errorResponse = response.renderErrorView
+const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login_controller')
 const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateServiceNamingInputs} = require('../utils/registration_validations')
@@ -230,7 +231,7 @@ module.exports = {
 
     return validateServiceNamingInputs(serviceName)
       .then(() => {
-        return registrationService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, correlationId)
+        return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, correlationId)
       })
       .then((updatedService) => {
         _.unset(req, 'session.pageData.submitYourServiceName')
