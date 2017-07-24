@@ -29,7 +29,7 @@ describe('Controller: editServiceName, Method: get', () => {
     it('should pass req, res and \'edit_service_name\' to the responses.response method', () => {
       expect(mockResponses.response.args[0]).to.include(req)
       expect(mockResponses.response.args[0]).to.include(res)
-      expect(mockResponses.response.args[0]).to.include('edit_service_name')
+      expect(mockResponses.response.args[0]).to.include('services/edit_service_name')
     })
 
     it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name of 'req.service'`, () => {

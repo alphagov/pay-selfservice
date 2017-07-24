@@ -23,7 +23,7 @@ exports.get = (req, res) => {
   pageData.submit_link = formatPath(paths.editServiceName.update, req.service.externalId)
   pageData.my_services = paths.serviceSwitcher.index
 
-  return responses.response(req, res, 'edit_service_name', pageData)
+  return responses.response(req, res, 'services/edit_service_name', pageData)
 }
 
 exports.post = (req, res) => {
