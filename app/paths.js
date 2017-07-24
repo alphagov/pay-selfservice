@@ -43,10 +43,6 @@ module.exports = {
     update: '/tokens',
     delete: '/tokens'
   },
-  serviceName: {
-    index: '/service-name',
-    edit: '/service-name?edit'
-  },
   paymentTypes: {
     selectType: '/payment-types/select-type',
     selectBrand: '/payment-types/select-brand',
@@ -64,6 +60,10 @@ module.exports = {
   serviceSwitcher: {
     index: '/my-services',
     switch: '/my-services/switch'
+  },
+  editServiceName: {
+    index: '/service/:externalServiceId/edit-name',
+    update: '/service/:externalServiceId/edit-name'
   },
   teamMembers: {
     index: '/service/:externalServiceId',

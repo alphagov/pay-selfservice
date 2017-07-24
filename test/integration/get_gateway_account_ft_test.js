@@ -21,8 +21,18 @@ describe('get account', function () {
 
   it('should get account', function (done) {
     const user = session.getUser({
-      gateway_account_ids: ['1', '2', '5'],
-      permissions: [{name: 'service-name:read'}]
+      service_roles: [
+        {
+          service: {
+            external_id: '1234',
+            gateway_account_ids: ['1', '2', '5']
+          },
+          role: {
+            permissions: [{name: 'transactions:read'}]
+          }
+        }
+      ]
+
     })
     const mockSession = session.getMockSession(user)
     session.currentGatewayAccountId = '2'
@@ -36,7 +46,7 @@ describe('get account', function () {
     })
 
     supertest(app)
-      .get('/service-name')
+      .get('/')
       .set('Accept', 'application/json')
       .expect(200)
       .expect(data => {

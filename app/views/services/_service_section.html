@@ -1,10 +1,17 @@
 <div class="grid-row service_list_item">
     <div class="heading-group">
-        <h2 class="heading-medium service-name">{{name}}</h2>
+        <h2 class="heading-medium service-name">
+            {{name}}
+            {{#permissions.service_name_update}}
+            <a href="/service/{{external_id}}/edit-name" class="edit-service-name">
+                Edit name
+            </a>
+            {{/permissions.service_name_update}}
+        </h2>
     </div>
     <div class="column-half">
         <ul class="list">
-        {{#gateway_accounts}}
+            {{#gateway_accounts}}
             <li>
                 <form method="post" action="{{routes.serviceSwitcher.switch}}">
                     <input name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -13,7 +20,7 @@
                     <input class="service_switcher" type="submit" role="link" value="{{payment_provider}} {{type}}">
                 </form>
             </li>
-        {{/gateway_accounts}}
+            {{/gateway_accounts}}
         </ul>
     </div>
     <div id="team-members" class="column-half">

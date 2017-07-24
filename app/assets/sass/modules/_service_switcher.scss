@@ -15,6 +15,14 @@ input.service_switcher {
 
 }
 
+.service-name a {
+  @include core-14;
+  text-decoration: none;
+  padding-left: 10px;
+
+
+}
+
 .service_list_item {
   margin-top:30px;
 }

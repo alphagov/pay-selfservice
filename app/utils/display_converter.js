@@ -9,6 +9,7 @@ const hideNavBarTemplates = [
   'services/team_member_permissions',
   'services/team_member_invite',
   'error_logged_in',
+  'edit_service_name',
   'self_create_service/set_name'
 ]
 

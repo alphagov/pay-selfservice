@@ -28,13 +28,13 @@ const credentialsCtrl = require('./controllers/credentials_controller')
 const loginCtrl = require('./controllers/login_controller')
 const healthcheckCtrl = require('./controllers/healthcheck_controller')
 const devTokensCtrl = require('./controllers/dev_tokens_controller')
-const serviceNameCtrl = require('./controllers/service_name_controller')
 const paymentTypesSelectType = require('./controllers/payment_types_select_type_controller')
 const paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller')
 const paymentTypesSummary = require('./controllers/payment_types_summary_controller')
 const emailNotifications = require('./controllers/email_notifications_controller')
 const forgotPassword = require('./controllers/forgotten_password_controller')
-const serviceSwitchController = require('./controllers/service_switch_controller')
+const myServicesCtrl = require('./controllers/my_services_controller')
+const editServiceNameCtrl = require('./controllers/edit_service_name_controller')
 const serviceUsersController = require('./controllers/service_users_controller')
 const inviteUserController = require('./controllers/invite_user_controller')
 const registerCtrl = require('./controllers/register_user_controller')
@@ -44,8 +44,10 @@ const selfCreateServiceCtrl = require('./controllers/create_service_controller')
 const inviteValidationCtrl = require('./controllers/invite_validation_controller')
 
 // Assignments
-const {healthcheck, registerUser, user, selfCreateService, transactions, credentials, devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation} = paths
-const {notificationCredentials: nc, serviceName: sn, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
+const {
+  healthcheck, registerUser, user, selfCreateService, transactions, credentials,
+  devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName,
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -124,9 +126,9 @@ module.exports.bind = function (app) {
     ...lodash.values(credentials),
     ...lodash.values(nc),
     ...lodash.values(devTokens),
-    ...lodash.values(sn),
     ...lodash.values(pt),
     ...lodash.values(en),
+    ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
     ...lodash.values(t3ds)
@@ -158,10 +160,6 @@ module.exports.bind = function (app) {
   app.put(devTokens.update, permission('tokens:update'), getAccount, devTokensCtrl.update)
   app.delete(devTokens.delete, permission('tokens:delete'), getAccount, devTokensCtrl.destroy)
 
-  // SERVICE NAME
-  app.get(sn.index, permission('service-name:read'), getAccount, serviceNameCtrl.index)
-  app.post(sn.index, permission('service-name:update'), getAccount, serviceNameCtrl.update)
-
   // PAYMENT TYPES
   app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentTypesSelectType.selectType)
   app.post(pt.selectType, permission('payment-types:update'), getAccount, paymentTypesSelectType.updateType)
@@ -178,9 +176,13 @@ module.exports.bind = function (app) {
   app.get(en.offConfirm, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.offConfirm)
   app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.on)
 
-  // SERVICE SWITCHER
-  app.get(serviceSwitcher.index, serviceSwitchController.index)
-  app.post(serviceSwitcher.switch, serviceSwitchController.switch)
+  // MY SERVICES
+  app.get(serviceSwitcher.index, myServicesCtrl.index)
+  app.post(serviceSwitcher.switch, myServicesCtrl.switch)
+
+  // EDIT SERVICE NAME
+  app.get(editServiceName.index, permission('service-name:update'), editServiceNameCtrl.get)
+  app.post(editServiceName.update, permission('service-name:update'), editServiceNameCtrl.post)
 
   // TEAM MEMBERS - USER PROFILE
   app.get(teamMembers.index, resolveService, serviceUsersController.index)
