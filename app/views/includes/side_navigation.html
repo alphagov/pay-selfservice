@@ -5,10 +5,10 @@
             {{#adminNavigationItems}}
               {{#permissions}}
                 {{#current}}
-                  <li class="active"><a href="{{url}}">{{name}}</a></li>
+                  <li class="active"><a id="{{id}}" href="{{url}}">{{name}}</a></li>
                 {{/current}}
                 {{^current}}
-                  <li class=""><a href="{{url}}">{{name}}</a></li>
+                  <li><a id="{{id}}" href="{{url}}">{{name}}</a></li>
                 {{/current}}
               {{/permissions}}
             {{/adminNavigationItems}}

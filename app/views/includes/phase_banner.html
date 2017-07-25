@@ -12,10 +12,10 @@
       {{#serviceNavigationItems}}
         {{#permissions}}
           {{#current}}
-            <li class="service-navigation--list-item service-navigation--list-item-active"><a href="{{url}}">{{name}}</a></li>
+            <li class="service-navigation--list-item service-navigation--list-item-active"><a id="{{id}}" href="{{url}}">{{name}}</a></li>
           {{/current}}
           {{^current}}
-            <li class="service-navigation--list-item"><a href="{{url}}">{{name}}</a></li>
+            <li class="service-navigation--list-item"><a id="{{id}}" href="{{url}}">{{name}}</a></li>
           {{/current}}
         {{/permissions}}
       {{/serviceNavigationItems}}
