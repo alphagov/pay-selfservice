@@ -73,7 +73,7 @@ describe('connector client - create gateway account', function () {
         connectorClient.createGatewayAccount(
           createGatewayAccount.payment_provider,
           createGatewayAccount.type,
-          createGatewayAccount.description,
+          createGatewayAccount.service_name,
           createGatewayAccount.analytics_id
         ).should.be.fulfilled.should.notify(done)
       })
@@ -113,7 +113,7 @@ describe('connector client - create gateway account', function () {
         connectorClient.createGatewayAccount(
           createGatewayAccount.payment_provider,
           createGatewayAccount.type,
-          createGatewayAccount.description,
+          createGatewayAccount.service_name,
           createGatewayAccount.analytics_id
         ).should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400)
