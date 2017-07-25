@@ -12,7 +12,7 @@ describe('navigation menu', function () {
         full_type: 'test'
       },
       permissions: testPermissions,
-      navigation: true,
+      hideServiceNav: false,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions)
     }
 
@@ -30,7 +30,7 @@ describe('navigation menu', function () {
         full_type: 'test'
       },
       permissions: testPermissions,
-      navigation: true,
+      hideServiceNav: false,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions)
     }
 
@@ -45,7 +45,7 @@ describe('navigation menu', function () {
     }
     let templateData = {
       permissions: testPermissions,
-      navigation: true,
+      showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
@@ -65,7 +65,7 @@ describe('navigation menu', function () {
     }
     let templateData = {
       permissions: testPermissions,
-      navigation: true,
+      showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
@@ -85,7 +85,7 @@ describe('navigation menu', function () {
     }
     let templateData = {
       permissions: testPermissions,
-      navigation: true,
+      showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
@@ -105,7 +105,7 @@ describe('navigation menu', function () {
     }
     let templateData = {
       permissions: testPermissions,
-      navigation: true,
+      showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
@@ -125,7 +125,7 @@ describe('navigation menu', function () {
     }
     let templateData = {
       permissions: testPermissions,
-      navigation: true,
+      showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 

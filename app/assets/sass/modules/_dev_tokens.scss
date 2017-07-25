@@ -75,7 +75,7 @@
 }
 
 // Hide edit options for tokens
-.js-enabled .js-edit-description,
+.js-enabled div.js-edit-description,
 .js-enabled .js-revoke-confirmation,
 .js-enabled .js-revoke-confirmed {
   display: none;

@@ -19,14 +19,15 @@
 
     {{$content}}
         {{>includes/flash}}
-        {{#currentGatewayAccount.full_type}}
-          {{> includes/phase_banner }}
-        {{/currentGatewayAccount.full_type}}
+        {{^hideServiceNav}}
+        {{> includes/phase_banner }}
+        {{/hideServiceNav}}
+
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
             {{$full_width_content}}{{/full_width_content}}
-            {{#navigation}}
+            {{#showSettingsNav}}
                 {{> includes/side_navigation }}
-            {{/navigation}}
+            {{/showSettingsNav}}
             <div class="main-content">
                 <div class="inner">
                     {{$mainContent}}{{/mainContent}}
