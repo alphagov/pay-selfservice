@@ -14,6 +14,7 @@ const logger = require('winston')
 const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
+const staticify = require('staticify')(path.join(__dirname, 'public'))
 
 // Custom dependencies
 const router = require(path.join(__dirname, '/app/routes'))
@@ -41,6 +42,7 @@ function initialiseGlobalMiddleware (app) {
       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'))
   }
   app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')))
+  app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
     res.locals.assetPath = '/public/'
@@ -149,6 +151,6 @@ if (argv.i) {
 
 module.exports = {
   start: start,
-  getApp: initialise
-
+  getApp: initialise,
+  staticify: staticify
 }

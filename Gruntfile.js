@@ -114,6 +114,21 @@ module.exports = function (grunt) {
       }
     },
 
+    browserify: {
+      'public/js/application.js': ['app/browsered.js'],
+      options: {
+        browserifyOptions: { standalone: 'module' },
+        transform: [
+          [
+            'babelify',
+            {
+              presets: ['es2015']
+            }
+          ]
+        ]
+      }
+    },
+
     // nodemon watches for changes and restarts app
     nodemon: {
       dev: {
@@ -164,6 +179,7 @@ module.exports = function (grunt) {
     'grunt-contrib-clean',
     'grunt-sass',
     'grunt-nodemon',
+    'grunt-browserify',
     'grunt-text-replace',
     'grunt-concurrent',
     'grunt-mocha-test',
@@ -188,6 +204,7 @@ module.exports = function (grunt) {
     'copy',
     'convert_template',
     'replace',
+    'browserify',
     'sass'
   ])
 
