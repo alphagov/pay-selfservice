@@ -74,8 +74,8 @@ describe('The payment types endpoint,', function () {
       buildGetRequest(paths.paymentTypes.summary, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.isAcceptedTypeAll).to.be.true
-          expect(response.body.isAcceptedTypeDebit).to.be.false
+          expect(response.body.isAcceptedTypeAll).to.be.true // eslint-disable-line
+          expect(response.body.isAcceptedTypeDebit).to.be.false // eslint-disable-line
           expect(response.body.brands).to.be.deep.equal([
             buildAcceptedCardType('mastercard', true, 'checked'),
             buildAcceptedCardType('discover', true, 'checked'),

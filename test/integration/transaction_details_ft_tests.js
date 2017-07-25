@@ -1,7 +1,6 @@
 var path = require('path')
 var request = require('supertest')
 var nock = require('nock')
-var _ = require('lodash')
 
 require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
 var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))

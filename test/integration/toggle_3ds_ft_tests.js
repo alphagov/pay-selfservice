@@ -69,7 +69,7 @@ describe('The 3D Secure index endpoint', function () {
     buildGetRequest(paths.toggle3ds.index, app)
       .expect(200)
       .expect(response => {
-        expect(response.body.requires3ds).to.be.false
+        expect(response.body.requires3ds).to.be.false // eslint-disable-line
       })
       .end(done)
   })
@@ -84,7 +84,7 @@ describe('The 3D Secure index endpoint', function () {
     buildGetRequest(paths.toggle3ds.index, app)
     .expect(200)
     .expect(response => {
-      expect(response.body.requires3ds).to.be.true
+      expect(response.body.requires3ds).to.be.true // eslint-disable-line
     })
       .end(done)
   })
@@ -100,7 +100,7 @@ describe('The 3D Secure index endpoint', function () {
     buildGetRequest(paths.toggle3ds.index + '?toggled', app)
       .expect(200)
       .expect(response => {
-        expect(response.body.requires3ds).to.be.true
+        expect(response.body.requires3ds).to.be.true // eslint-disable-line
       })
       .end(done)
   })
@@ -115,7 +115,7 @@ describe('The 3D Secure index endpoint', function () {
     buildGetRequest(paths.toggle3ds.index, app)
       .expect(200)
       .expect(response => {
-        expect(response.body.requires3ds).to.be.false
+        expect(response.body.requires3ds).to.be.false // eslint-disable-line
       })
       .end(done)
   })
@@ -127,24 +127,10 @@ describe('The 3D Secure index endpoint', function () {
          'requires3ds': false
        })
 
-    var expectedData = {
-      supports3ds: true,
-      requires3ds: false,
-      justToggled: true,
-      permissions: {
-        'toggle_3ds_read': true
-      },
-      navigation: true,
-      currentGatewayAccount: {
-        'payment_provider': 'worldpay',
-        'requires3ds': false
-      }
-    }
-
     buildGetRequest(paths.toggle3ds.index + '?toggled', app)
       .expect(200)
       .expect(response => {
-        expect(response.body.requires3ds).to.be.false
+        expect(response.body.requires3ds).to.be.false // eslint-disable-line
       })
       .end(done)
   })

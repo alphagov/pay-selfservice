@@ -74,26 +74,6 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
 
-  it('should render Change service name navigation link when user have service name read permission', function () {
-    let testPermissions = {
-      tokens_read: false,
-      gateway_credentials_read: false,
-      service_name_read: true,
-      payment_types_read: false,
-      toggle_3ds_read: false,
-      email_notification_template_read: false
-    }
-    let templateData = {
-      permissions: testPermissions,
-      navigation: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
-    }
-
-    let body = renderTemplate('token', templateData)
-
-    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Change service name')
-  })
-
   it('should render Payment types navigation link when user have payment types read permission', function () {
     let testPermissions = {
       tokens_read: false,

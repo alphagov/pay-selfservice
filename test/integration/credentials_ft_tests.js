@@ -70,7 +70,7 @@ describe('Credentials endpoints', () => {
       buildGetRequest(paths.credentials.index, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.credentials).to.be.empty
+          expect(response.body.currentGatewayAccount.credentials).to.be.empty // eslint-disable-line
         })
         .end(done)
     })
@@ -83,12 +83,12 @@ describe('Credentials endpoints', () => {
           'credentials': {'username': 'a-username'}
         })
 
-        buildGetRequest(paths.credentials.index, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.credentials).to.deep.equal({'username': 'a-username'})
-          })
-          .end(done)
+      buildGetRequest(paths.credentials.index, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.credentials).to.deep.equal({'username': 'a-username'})
+        })
+        .end(done)
     })
 
     it('should return the account', function (done) {
@@ -99,12 +99,12 @@ describe('Credentials endpoints', () => {
           'credentials': {username: 'a-username', merchant_id: 'a-merchant-id'}
         })
 
-        buildGetRequest(paths.credentials.index, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
-          })
-          .end(done)
+      buildGetRequest(paths.credentials.index, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
+        })
+        .end(done)
     })
 
     it('should display an error if the account does not exist', function (done) {
@@ -181,7 +181,7 @@ describe('Credentials endpoints', () => {
       buildGetRequest(paths.credentials.edit, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.credentials).to.be.empty
+          expect(response.body.currentGatewayAccount.credentials).to.be.empty // eslint-disable-line
         })
         .end(done)
     })
@@ -210,12 +210,12 @@ describe('Credentials endpoints', () => {
           'credentials': {username: 'a-username'}
         })
 
-        buildGetRequest(paths.credentials.edit, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
-          })
-          .end(done)
+      buildGetRequest(paths.credentials.edit, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
+        })
+        .end(done)
     })
 
     it('should display an error if the account does not exist', function (done) {
@@ -273,12 +273,12 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-        buildGetRequest(paths.notificationCredentials.edit, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.payment_provider).to.equal('sandbox')
-          })
-          .end(done)
+      buildGetRequest(paths.notificationCredentials.edit, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.payment_provider).to.equal('sandbox')
+        })
+        .end(done)
     })
 
     it('should display empty credential values when no gateway credentials are set', function (done) {
@@ -289,12 +289,12 @@ describe('Credentials endpoints', () => {
           'credentials': {}
         })
 
-        buildGetRequest(paths.notificationCredentials.edit, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.credentials).to.be.empty
-          })
-          .end(done)
+      buildGetRequest(paths.notificationCredentials.edit, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.credentials).to.be.empty // eslint-disable-line
+        })
+        .end(done)
     })
 
     it('should display received credentials from connector', function (done) {
@@ -305,12 +305,12 @@ describe('Credentials endpoints', () => {
           'credentials': {'username': 'a-username'}
         })
 
-        buildGetRequest(paths.notificationCredentials.edit, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.credentials).to.be.deep.equal({'username': 'a-username'})
-          })
-          .end(done)
+      buildGetRequest(paths.notificationCredentials.edit, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.credentials).to.be.deep.equal({'username': 'a-username'})
+        })
+        .end(done)
     })
 
     it('should return the account', function (done) {
@@ -321,12 +321,12 @@ describe('Credentials endpoints', () => {
           'credentials': {username: 'a-username', merchant_id: 'a-merchant-id'}
         })
 
-        buildGetRequest(paths.notificationCredentials.edit, app)
-          .expect(200)
-          .expect(response => {
-            expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
-          })
-          .end(done)
+      buildGetRequest(paths.notificationCredentials.edit, app)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.currentGatewayAccount.gateway_account_id).to.equal('1')
+        })
+        .end(done)
     })
 
     it('should display an error if the account does not exist', function (done) {

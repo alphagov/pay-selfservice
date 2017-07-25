@@ -86,7 +86,7 @@ describe('Dev Tokens Endpoints', function () {
       buildGetRequest(paths.devTokens.revoked)
         .expect(200)
         .expect(response => {
-          expect(response.body.tokens).to.be.empty
+          expect(response.body.tokens).to.be.empty // eslint-disable-line
         })
         .end(done)
     })
@@ -180,7 +180,7 @@ describe('Dev Tokens Endpoints', function () {
 
       buildGetRequest(paths.devTokens.index)
         .expect(response => {
-          expect(response.body.tokens).to.be.empty
+          expect(response.body.tokens).to.be.empty // eslint-disable-line
         })
         .end(done)
     })

@@ -55,12 +55,6 @@ const adminNavigationItems = (originalUrl, permissions) => {
       permissions: permissions.gateway_credentials_read
     },
     {
-      name: 'Change service name',
-      url: paths.serviceName.index,
-      current: pathLookup(originalUrl, paths.serviceName.index),
-      permissions: permissions.service_name_read
-    },
-    {
       name: 'Payment types',
       url: paths.paymentTypes.summary,
       current: pathLookup(originalUrl, paths.paymentTypes.summary),
