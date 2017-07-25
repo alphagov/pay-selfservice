@@ -35,7 +35,7 @@ module.exports = {
   validCreateGatewayAccountRequest: (opts = {}) => {
     const data = {
       payment_provider: opts.payment_provider || 'sandbox',
-      description: opts.description || 'This is an account for the GOV.UK Pay team',
+      service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
       analytics_id: opts.analytics_id || 'PAY-GA-123',
       type: opts.type || 'test'
     }

@@ -276,13 +276,13 @@ ConnectorClient.prototype = {
    *
    * @param paymentProvider
    * @param type
-   * @param description
+   * @param serviceName
    * @param analyticsId
    * @param correlationId
    *
    * @returns {*|Constructor|promise}
    */
-  createGatewayAccount: function (paymentProvider, type, description, analyticsId, correlationId) {
+  createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, correlationId) {
     const url = this.connectorUrl + ACCOUNTS_API_PATH
     const defer = q.defer()
     const startTime = new Date()
@@ -306,8 +306,8 @@ ConnectorClient.prototype = {
     if (type) {
       params.payload.type = type
     }
-    if (description) {
-      params.payload.description = description
+    if (serviceName) {
+      params.payload.service_name = serviceName
     }
     if (analyticsId) {
       params.payload.analytics_id = analyticsId
