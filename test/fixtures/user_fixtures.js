@@ -128,7 +128,7 @@ module.exports = {
     let reqExternalId = request.external_id || existingExternalId
     let reqUsername = request.username || 'existing-user'
     let defaultServiceId = randomString()
-    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId()]
+    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId(), randomAccountId()]
 
     let data = {
       external_id: reqExternalId,
@@ -143,12 +143,7 @@ module.exports = {
         role: {
           name: 'admin',
           description: 'Administrator',
-          permissions: request.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}],
-          '_links': [{
-            'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
-            'rel': 'self',
-            'method': 'GET'
-          }]
+          permissions: request.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
         }
       }],
       otp_key: request.otp_key || '43c3c4t',
