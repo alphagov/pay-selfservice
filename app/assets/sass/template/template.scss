@@ -113,6 +113,10 @@
     li {
       list-style: none;
 
+      &:first-child {
+        margin-top: -5px;
+      }
+
       &.active {
         font-weight: bold;
       }
@@ -120,7 +124,7 @@
       a {
         // color: $link-colour;
         display: block;
-        padding: 0 0 10px;
+        padding: 5px 0;
         text-decoration: none;
         &:active {
           color: $black;
