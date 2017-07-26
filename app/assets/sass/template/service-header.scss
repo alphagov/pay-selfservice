@@ -1,0 +1,60 @@
+.service-info {
+  width: 100%;
+  float: left;
+
+  @include media(tablet) {
+    width: inherit;
+    margin-bottom: 5px;
+  }
+
+  &--name,
+  p {
+    display: inline;
+  }
+
+  &--name {
+    margin-right: $gutter;
+  }
+}
+
+.service-navigation {
+  margin: $gutter / 2 0;
+  float: left;
+
+  @include media(tablet) {
+    margin: 0;
+    float: right;
+  }
+
+  &--list {
+    list-style-type: none;
+  }
+
+  &--list-item {
+    margin-top: 10px;
+
+    @include media(tablet) {
+      display: inline-block;
+      margin: 0 0 0 $gutter;
+      padding-bottom: 5px;
+      border-bottom: 5px solid transparent;
+      border-left: 0;
+    }
+
+    a:link,
+    a:visited {
+      text-decoration: none;
+    }
+
+    &-active {
+      padding-left: 5px;
+      border-left: 5px solid $text-colour;
+
+      @include media(tablet) {
+        padding-left: 0;
+        border-left: 0;
+        border-color: $text-colour;
+      }
+    }
+  }
+}

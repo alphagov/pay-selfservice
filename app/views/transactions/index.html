@@ -19,7 +19,7 @@ GOV.UK Pay - View transactions
 <script src="/public/js/components/datetime-picker.js"></script>
 {{/pageSpecificJS}}
 
-{{$mainContent}}
+{{$full_width_content}}
 <h1 class="heading-large page-title tuck-bottom-sml">Transactions</h1>
 <h2 class="heading-medium pull-top pull-bottom">Filter transactions list</h2>
 
@@ -58,7 +58,6 @@ GOV.UK Pay - View transactions
 {{>transactions/list}}
 
 {{>transactions/paginator}}
-
-{{/mainContent}}
+{{/full_width_content}}
 
 {{/layout}}

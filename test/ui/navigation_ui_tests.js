@@ -1,91 +1,136 @@
 let path = require('path')
 let renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const {serviceNavigationItems, adminNavigationItems} = require(path.join(__dirname, '../../app/utils/navBuilder'))
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
-    let templateData = {
-      permissions: {},
-      navigation: true
+    let testPermissions = {
+      tokens_read: true
     }
-
-    let body = renderTemplate('transactions/index', templateData)
-
-    body.should.containSelector('.navigation ul > li > a').withExactText('Homepage')
-    body.should.containNoSelectorWithText('.navigation ul > li > a', 'API keys')
-    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Transactions')
-    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Account credentials')
-    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Change service name')
-    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Payment types')
-    body.should.containNoSelectorWithText('.navigation ul > li > a', 'Email notifications')
-  })
-
-  it('should render API keys navigation link when user have tokens read permission', function () {
     let templateData = {
-      permissions: {
-        tokens_read: true
+      currentGatewayAccount: {
+        full_type: 'test'
       },
-      navigation: true
+      permissions: testPermissions,
+      hideServiceNav: false,
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions)
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('login/logged_in', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('API keys')
+    body.should.containSelector('.service-navigation--list-item:nth-child(1)').withExactText('Dashboard')
   })
 
   it('should render Transactions navigation link when user have transactions read permission', function () {
+    let testPermissions = {
+      transactions_read: true
+    }
     let templateData = {
-      permissions: {
-        transactions_read: true
+      currentGatewayAccount: {
+        full_type: 'test'
       },
-      navigation: true
+      permissions: testPermissions,
+      hideServiceNav: false,
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions)
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('login/logged_in', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Transactions')
+    body.should.containSelector('.service-navigation--list-item:nth-child(2)').withExactText('Transactions')
+  })
+
+  it('should render API keys navigation link when user have tokens read permission', function () {
+    let testPermissions = {
+      tokens_read: true
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+    }
+
+    let body = renderTemplate('token', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
   })
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission', function () {
+    let testPermissions = {
+      tokens_read: false,
+      gateway_credentials_read: true,
+      service_name_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: false
+    }
     let templateData = {
-      permissions: {
-        gateway_credentials_read: true
-      },
-      navigation: true
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Account credentials')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
 
   it('should render Payment types navigation link when user have payment types read permission', function () {
+    let testPermissions = {
+      tokens_read: false,
+      gateway_credentials_read: false,
+      service_name_read: false,
+      payment_types_read: true,
+      toggle_3ds_read: false,
+      email_notification_template_read: false
+    }
     let templateData = {
-      permissions: {
-        payment_types_read: true
-      },
-      navigation: true
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Payment types')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Payment types')
+  })
+
+  it('should render 3D Secure navigation link when user have email notification template read permission', function () {
+    let testPermissions = {
+      tokens_read: false,
+      gateway_credentials_read: false,
+      service_name_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: true,
+      email_notification_template_read: false
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+    }
+
+    let body = renderTemplate('token', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('3D Secure')
   })
 
   it('should render Email notifications navigation link when user have email notification template read permission', function () {
+    let testPermissions = {
+      tokens_read: false,
+      gateway_credentials_read: false,
+      service_name_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: true
+    }
     let templateData = {
-      permissions: {
-        email_notification_template_read: true
-      },
-      navigation: true
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('transactions/index', templateData)
+    let body = renderTemplate('token', templateData)
 
-    body.should.containSelector('.navigation nav > ul > li:nth-child(1) > a').withExactText('Homepage')
-    body.should.containSelector('.navigation nav > ul > li:nth-child(2) > a').withExactText('Email notifications')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Email notifications')
   })
 })

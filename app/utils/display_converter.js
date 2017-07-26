@@ -1,17 +1,29 @@
 let _ = require('lodash')
 const getHeldPermissions = require('./get_held_permissions')
+const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
 
-const hideNavBarTemplates = [
+const showSettingsNavTemplates = [
+  'token',
+  'token_generate',
+  'provider_credentials/sandbox',
+  'service_name',
+  'payment_types_summary',
+  'payment_types_select_type',
+  'payment_types_select_brand',
+  '3d_secure/index',
+  '3d_secure/on_confirm',
+  'email_notifications/index',
+  'email_notifications/off_confirm',
+  'email_notifications/edit',
+  'email_notifications/confirm'
+]
+
+const hideServiceNavTemplates = [
   'services/index',
-  'services/team_members',
-  'services/team_member_details',
-  'services/team_member_profile',
-  'services/team_member_permissions',
-  'services/team_member_invite',
-  'error_logged_in',
   'services/edit_service_name',
   'services/add_service',
-  'self_create_service/set_name'
+  'services/team_members',
+  'services/team_member_invite'
 ]
 
 /**
@@ -45,8 +57,12 @@ const getPermissions = (user, service) => {
   }
 }
 
-const showNavigationBar = template => {
-  return hideNavBarTemplates.indexOf(template) === -1
+const showSettingsNav = template => {
+  return showSettingsNavTemplates.indexOf(template) !== -1
+}
+
+const hideServiceNav = template => {
+  return hideServiceNavTemplates.indexOf(template) !== -1
 }
 
 const addGatewayAccountProviderDisplayNames = data => {
@@ -73,12 +89,20 @@ const getAccount = account => {
 }
 
 module.exports = function (req, data, template) {
+  let convertedData = _.clone(data)
   let user = req.user
   let account = req.account
-  let convertedData = _.clone(data)
-  convertedData.permissions = getPermissions(user, req.service)
-  convertedData.navigation = showNavigationBar(template)
+  let originalUrl = req.originalUrl
+  let permissions = getPermissions(user, req.service)
+  convertedData.permissions = permissions
+  convertedData.showSettingsNav = showSettingsNav(template)
+  convertedData.hideServiceNav = hideServiceNav(template)
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
+  convertedData.currentServiceName = _.get(req, 'account.service_name')
+  if (permissions) {
+    convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions)
+    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)
+  }
   return convertedData
 }

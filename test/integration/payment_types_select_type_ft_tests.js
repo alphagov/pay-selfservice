@@ -75,8 +75,7 @@ describe('The payment types endpoint,', function () {
         },
         permissions: {
           'payment_types_read': true
-        },
-        navigation: true
+        }
       }
 
       buildGetRequest(paths.paymentTypes.selectType, app)
@@ -85,7 +84,6 @@ describe('The payment types endpoint,', function () {
           expect(res.body.allCardOption).to.deep.equal(expectedData.allCardOption)
           expect(res.body.debitCardOption).to.deep.equal(expectedData.debitCardOption)
           expect(res.body.permissions).to.include(expectedData.permissions)
-          expect(res.body.navigation).to.equal(expectedData.navigation)
         })
         .end(done)
     })
@@ -107,8 +105,7 @@ describe('The payment types endpoint,', function () {
         },
         permissions: {
           'payment_types_read': true
-        },
-        navigation: true
+        }
       }
 
       buildGetRequest(paths.paymentTypes.selectType, app)
@@ -117,7 +114,6 @@ describe('The payment types endpoint,', function () {
           expect(res.body.allCardOption).to.deep.equal(expectedData.allCardOption)
           expect(res.body.debitCardOption).to.deep.equal(expectedData.debitCardOption)
           expect(res.body.permissions).to.include(expectedData.permissions)
-          expect(res.body.navigation).to.equal(expectedData.navigation)
         })
         .end(done)
     })
@@ -139,8 +135,7 @@ describe('The payment types endpoint,', function () {
         },
         permissions: {
           'payment_types_read': true
-        },
-        navigation: true
+        }
       }
 
       buildGetRequest(paths.paymentTypes.selectType, app)
@@ -149,7 +144,6 @@ describe('The payment types endpoint,', function () {
           expect(res.body.allCardOption).to.deep.equal(expectedData.allCardOption)
           expect(res.body.debitCardOption).to.deep.equal(expectedData.debitCardOption)
           expect(res.body.permissions).to.include(expectedData.permissions)
-          expect(res.body.navigation).to.equal(expectedData.navigation)
         })
         .end(done)
     })

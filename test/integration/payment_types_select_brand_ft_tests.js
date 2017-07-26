@@ -84,23 +84,11 @@ describe('The payment types endpoint,', function () {
           'card_types': [{'id': '1'}]
         })
 
-      var expectedData = {
-        acceptedType: 'ALL',
-        isAcceptedTypeAll: true,
-        isAcceptedTypeDebit: false,
-        brands: [
-          buildAcceptedCardType('mastercard', true, 'checked'),
-          buildAcceptedCardType('discover', true),
-          buildAcceptedCardType('maestro', true)
-        ],
-        permissions: {
-          'payment_types_read': true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.paymentTypes.selectBrand + '?acceptedType=ALL', app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.acceptedType).to.equal('ALL')
+        })
         .end(done)
     })
 
@@ -112,23 +100,11 @@ describe('The payment types endpoint,', function () {
           'card_types': [{'id': '1'}]
         })
 
-      var expectedData = {
-        acceptedType: 'DEBIT',
-        isAcceptedTypeAll: false,
-        isAcceptedTypeDebit: true,
-        brands: [
-          buildAcceptedCardType('mastercard', true, 'checked'),
-          buildAcceptedCardType('maestro', true),
-          buildAcceptedCardType('discover', false)
-        ],
-        permissions: {
-          'payment_types_read': true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.paymentTypes.selectBrand + '?acceptedType=DEBIT', app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.acceptedType).to.equal('DEBIT')
+        })
         .end(done)
     })
 
@@ -140,23 +116,15 @@ describe('The payment types endpoint,', function () {
           'card_types': [{'id': '1'}, {'id': '3'}, {'id': '4'}]
         })
 
-      var expectedData = {
-        acceptedType: 'ALL',
-        isAcceptedTypeAll: true,
-        isAcceptedTypeDebit: false,
-        brands: [
-          buildAcceptedCardType('mastercard', true, 'checked'),
-          buildAcceptedCardType('discover', true, 'checked'),
-          buildAcceptedCardType('maestro', true, 'checked')
-        ],
-        permissions: {
-          'payment_types_read': true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.paymentTypes.selectBrand + '?acceptedType=ALL', app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.brands).to.be.deep.equal([
+            buildAcceptedCardType('mastercard', true, 'checked'),
+            buildAcceptedCardType('discover', true, 'checked'),
+            buildAcceptedCardType('maestro', true, 'checked')
+          ])
+        })
         .end(done)
     })
 
@@ -168,23 +136,15 @@ describe('The payment types endpoint,', function () {
           'card_types': []
         })
 
-      var expectedData = {
-        acceptedType: 'ALL',
-        isAcceptedTypeAll: true,
-        isAcceptedTypeDebit: false,
-        brands: [
-          buildAcceptedCardType('mastercard', true, 'checked'),
-          buildAcceptedCardType('discover', true, 'checked'),
-          buildAcceptedCardType('maestro', true, 'checked')
-        ],
-        permissions: {
-          'payment_types_read': true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.paymentTypes.selectBrand + '?acceptedType=ALL', app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.brands).to.be.deep.equal([
+            buildAcceptedCardType('mastercard', true, 'checked'),
+            buildAcceptedCardType('discover', true, 'checked'),
+            buildAcceptedCardType('maestro', true, 'checked')
+          ])
+        })
         .end(done)
     })
 
@@ -196,24 +156,11 @@ describe('The payment types endpoint,', function () {
           'card_types': [{'id': '1'}]
         })
 
-      var expectedData = {
-        acceptedType: 'ALL',
-        isAcceptedTypeAll: true,
-        isAcceptedTypeDebit: false,
-        error: 'Error',
-        brands: [
-          buildAcceptedCardType('mastercard', true, 'checked'),
-          buildAcceptedCardType('discover', true),
-          buildAcceptedCardType('maestro', true)
-        ],
-        permissions: {
-          'payment_types_read': true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.paymentTypes.selectBrand + '?acceptedType=ALL&error=Error', app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.error).to.equal('Error')
+        })
         .end(done)
     })
 

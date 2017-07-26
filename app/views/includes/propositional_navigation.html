@@ -1,11 +1,13 @@
 <div class="header-proposition">
-    <div class="content">
-        <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
-        <nav id="proposition-menu">
-            <ul id="proposition-links">
-                <li><a href="{{ routes.serviceSwitcher.index }}" title="My Services" id="my-services" class="content logout">My Services</a></li>
-                <li><a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a></li>
-            </ul>
-        </nav>
-    </div>
+  <div class="content">
+    <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
+    <nav id="proposition-menu" aria-label="Top Level Navigation" aria-hidden="true">
+      <ul id="proposition-links">
+        <li><a href="https://www.payments.service.gov.uk/getstarted/" title="Getting Started">Getting started</a></li>
+        <li><a href="https://gds-payments.gelato.io/docs/versions/1.0.0" title="Read the GOV.UK Pay Documentation">Documentation</a></li>
+        <li><a href="{{ routes.serviceSwitcher.index }}" title="My Services" id="my-services">My Services</a></li>
+        <li><a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a></li>
+      </ul>
+    </nav>
+  </div>
 </div>

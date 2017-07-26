@@ -7,6 +7,7 @@ var nock = require('nock')
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var _ = require('lodash')
+var {expect} = require('chai')
 
 var ACCOUNT_ID = 182364
 var app
@@ -70,22 +71,17 @@ describe('The payment types endpoint,', function () {
           'card_types': [{'id': '1'}, {'id': '3'}, {'id': '4'}]
         })
 
-      var expectedData = {
-        isAcceptedTypeAll: true,
-        isAcceptedTypeDebit: false,
-        brands: [
-          buildAcceptedCardType('mastercard', true, 'checked'),
-          buildAcceptedCardType('discover', true, 'checked'),
-          buildAcceptedCardType('maestro', true, 'checked')
-        ],
-        'permissions': {
-          'payment_types_read': true
-        },
-        navigation: true
-      }
-
       buildGetRequest(paths.paymentTypes.summary, app)
-        .expect(200, expectedData)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.isAcceptedTypeAll).to.be.true // eslint-disable-line
+          expect(response.body.isAcceptedTypeDebit).to.be.false // eslint-disable-line
+          expect(response.body.brands).to.be.deep.equal([
+            buildAcceptedCardType('mastercard', true, 'checked'),
+            buildAcceptedCardType('discover', true, 'checked'),
+            buildAcceptedCardType('maestro', true, 'checked')
+          ])
+        })
         .end(done)
     })
 
