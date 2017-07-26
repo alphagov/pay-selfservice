@@ -3,6 +3,20 @@ const paths = require('./../paths')
 const pathLookup = require('./pathLookup')
 
 const serviceNavigationItems = (originalUrl, permissions) => {
+  var settingsPath
+  // Settings doesn't exist as a page so need to link to the first available setting
+  if (permissions.tokens_read) {
+    settingsPath = paths.devTokens.index
+  } else if (permissions.gateway_credentials_read) {
+    settingsPath = paths.credentials.index
+  } else if (permissions.payment_types_read) {
+    settingsPath = paths.paymentTypes.summary
+  } else if (permissions.toggle_3ds_read) {
+    settingsPath = paths.toggle3ds.index
+  } else if (permissions.email_notification_template_read) {
+    settingsPath = paths.emailNotifications.index
+  }
+
   return [
     {
       id: 'navigation-menu-home',
@@ -21,11 +35,10 @@ const serviceNavigationItems = (originalUrl, permissions) => {
     {
       id: 'navigation-menu-settings',
       name: 'Settings',
-      url: paths.devTokens.index,
+      url: settingsPath,
       current: pathLookup(originalUrl, [
         paths.credentials,
         paths.notificationCredentials,
-        paths.serviceName,
         paths.toggle3ds,
         paths.devTokens,
         paths.emailNotifications,
@@ -34,7 +47,6 @@ const serviceNavigationItems = (originalUrl, permissions) => {
       permissions: _.some([
         permissions.tokens_read,
         permissions.gateway_credentials_read,
-        permissions.service_name_read,
         permissions.payment_types_read,
         permissions.toggle_3ds_read,
         permissions.email_notification_template_read
