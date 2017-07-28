@@ -1,5 +1,5 @@
-<div class="grid-row service_list_item">
-    <div class="heading-group">
+<div class="marked-grid--row service_list_item">
+    <div class="marked-grid--heading-group">
         <h2 class="heading-medium service-name">
             {{name}}
             {{#permissions.service_name_update}}
@@ -9,22 +9,20 @@
             {{/permissions.service_name_update}}
         </h2>
     </div>
-    <div class="column-half">
+    <div class="marked-grid--column-half">
         <ul class="list">
             {{#gateway_accounts}}
             <li>
                 <form method="post" action="{{routes.serviceSwitcher.switch}}">
                     <input name="csrfToken" type="hidden" value="{{csrf}}" />
                     <input name="gatewayAccountId" type="hidden" value="{{id}}"/>
-
-                    <input class="service_switcher" type="submit" role="link" value="{{payment_provider}} {{type}}">
+                    <input class="service-switcher" type="submit" role="link" value="{{payment_provider}} {{type}}">
                 </form>
             </li>
             {{/gateway_accounts}}
         </ul>
     </div>
-    <div id="team-members" class="column-half">
-
+    <div id="team-members" class="marked-grid--column-half">
         <p>
             {{#permissions.users_service_create}}
             <a href="/service/{{external_id}}" class="manage-team-members">Manage team members</a>

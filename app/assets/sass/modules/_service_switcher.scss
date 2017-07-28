@@ -1,18 +1,16 @@
-input.service_switcher {
-  /* Remove all decorations to look like normal text */
-  background: none;
+.service-switcher {
+  // Remove all decorations to look like normal text link
   display: inline-block;
-  font: inherit;
   margin: 0 0 5px;
-  border: none;
+  padding: 0;
+  border: 0;
   outline: none;
   outline-offset: 0;
-  /* Additional styles to look like a link */
   color: $link-colour;
-  cursor: pointer;
+  background: none;
+  font: inherit;
   text-decoration: underline;
-  padding:0;
-
+  cursor: pointer;
 }
 
 .service-name a {
@@ -23,14 +21,10 @@ input.service_switcher {
 
 }
 
-.service_list_item {
-  margin-top:30px;
-}
-
-input.service_switcher.active {
+.service-switcher.active {
   background-color: $highlight-colour;
 }
 
-input.service_switcher::first-letter {
+.service-switcher::first-letter {
   text-transform: capitalize;
 }

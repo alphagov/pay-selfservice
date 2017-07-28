@@ -1,4 +1,4 @@
-<table id="transactions-list">
+<table id="transactions-list" class="transactions-list">
   <thead>
     <tr>
       <th id="reference-header">Reference number</th>
@@ -17,23 +17,23 @@
   </thead>
   <tbody>
   {{#results}}
-    <tr data-follow-link data-link="{{link}}">
-      <th scope="row" class="charge-column reference" data-gateway-transaction-id="{{gateway_transaction_id}}">
+    <tr data-follow-link data-link="{{link}}" class="transactions-list--row">
+      <th scope="row" class="charge-column reference transactions-list--item" data-gateway-transaction-id="{{gateway_transaction_id}}">
         <a class="reference" id="charge-id-{{charge_id}}" data-charge-id="{{charge_id}}" href="{{link}}">
           {{reference}}
         </a>
       </th>
       {{#permissions.transactions_email_read}}
-      <td class="email">{{email}}</td>
+      <td class="transactions-list--item email">{{email}}</td>
       {{/permissions.transactions_email_read}}
       {{#permissions.transactions_amount_read}}
-      <td class="amount">£{{amount}}</td>
+      <td class="transactions-list--item amount">£{{amount}}</td>
       {{/permissions.transactions_amount_read}}
       {{#permissions.transactions_card_type_read}}
-      <td class="brand">{{card_details.card_brand}}</td>
+      <td class="transactions-list--item brand">{{card_details.card_brand}}</td>
       {{/permissions.transactions_card_type_read}}
-      <td class="state">{{state_friendly}}</td>
-      <td class="time">{{created}}</td>
+      <td class="transactions-list--item state">{{state_friendly}}</td>
+      <td class="transactions-list--item time">{{created}}</td>
     </tr>
   {{/results}}
   </tbody>
