@@ -5,3 +5,5 @@ release.alpha_release-283.date=2017-07-31:11:09:34
 staging-2.tag=alpha_staging-2-283
 
 staging-2.alpha_staging-2-283.date=2017-07-31:15:51:34
+
+staging-2.alpha_staging-2-283.status=success
