@@ -1,19 +1,35 @@
 .marked-grid {
-  .grid-row {
-    .heading-group {
-      margin: 0 $gutter-half;
-      border-top: solid 1px $grey-2;
-    }
+  &--row {
+    @extend .grid-row;
+    display: flex;
+    flex-flow: row wrap;
 
-    /* Adjustments to heading vertical spacing */
-    .heading-medium {
-      margin: 1.25em 0 0.8333em;
+    & + & {
+      margin-top: 30px;
     }
   }
 
-  .column-half:nth-child(even) {
+  &--heading-group {
+    margin: 0 $gutter-half;
+    border-top: solid 1px $grey-2;
+    flex: 2 100%;
+
+    h2 {
+      margin-top: 1.25em;
+    }
+
+  }
+
+  &--column-half {
+    @extend .column-half;
+    flex: 1 100%;
+
     @include media(tablet) {
-      border-right: solid 1px $grey-2;
+      flex: 1;
+
+      &:nth-child(even) {
+        border-right: solid 1px $grey-2;
+      }
     }
   }
 }
