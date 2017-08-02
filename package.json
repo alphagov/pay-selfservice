@@ -80,7 +80,7 @@
     "serve-favicon": "2.4.3",
     "sleep": "^5.1.1",
     "snyk": "^1.36.1",
-    "staticify": "0.0.7",
+    "staticify": "0.0.8",
     "thirty-two": "^1.0.2",
     "throng": "4.0.x",
     "tunnel": "0.0.5",
