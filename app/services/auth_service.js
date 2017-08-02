@@ -26,7 +26,8 @@ module.exports = {
   localDirectStrategy,
   noAccess,
   getCurrentGatewayAccountId,
-  setSessionVersion
+  setSessionVersion,
+  redirectLoggedInUser
 }
 
 // Middleware
@@ -72,6 +73,13 @@ function enforceUserAuthenticated (req, res, next) {
     return redirectToLogin(req, res)
   }
   enforceUserBothFactors(req, res, next)
+}
+
+function redirectLoggedInUser (req, res, next) {
+  if (hasValidSession(req)) {
+    return res.redirect(paths.user.loggedIn)
+  }
+  next()
 }
 
 // Other Methods

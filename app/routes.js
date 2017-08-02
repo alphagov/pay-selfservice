@@ -10,7 +10,7 @@ const paths = require('./paths.js')
 const CORRELATION_HEADER = require('./utils/correlation_header').CORRELATION_HEADER
 
 // - Middleware
-const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor} = require('./services/auth_service')
+const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser} = require('./services/auth_service')
 const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf')
 const getEmailNotification = require('./middleware/get_email_notification')
 const getAccount = require('./middleware/get_gateway_account')
@@ -89,7 +89,7 @@ module.exports.bind = function (app) {
   app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, loginCtrl.loggedIn)
 
   // LOGIN
-  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.logInGet)
+  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.logInGet)
   app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.logUserin, getAccount, loginCtrl.postLogin)
   app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, loginCtrl.loggedIn)
   app.get(user.noAccess, loginCtrl.noAccess)
