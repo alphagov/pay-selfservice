@@ -160,7 +160,8 @@ describe('auth service', function () {
       }
       const user = {username: 'user@example.com'}
       const password = 'correctPassword'
-      const doneSpy = sinon.spy(() => {})
+      const doneSpy = sinon.spy(() => {
+      })
       const userServiceMock = {
         authenticate: (username, password, correlationId) => {
           expect(username).to.be.equal(user.username)
@@ -189,7 +190,8 @@ describe('auth service', function () {
       }
       const username = 'user@example.com'
       const password = 'imagineThisIsInvalid'
-      const doneSpy = sinon.spy(() => {})
+      const doneSpy = sinon.spy(() => {
+      })
       const userServiceMock = {
         authenticate: (username, password, correlationId) => {
           expect(username).to.be.equal('user@example.com')
@@ -332,6 +334,24 @@ describe('auth service', function () {
       assert.equal(test2, null)
       assert.equal(test3, null)
       assert.equal(test4, null)
+      done()
+    })
+  })
+
+  describe.only('redirectLoggedInUser', function (done) {
+    it('should redirect a user with a valid session to the user.loggedIn path', function (done) {
+      const req = _.cloneDeep(validRequest())
+      auth.redirectLoggedInUser(req, response, next)
+      expect(next.called).to.be.false // eslint-disable-line
+      assert(redirect.calledWith(paths.user.loggedIn))
+      done()
+    })
+
+    it('should call next if user is not logged in', function (done) {
+      let invalidSession = validRequest()
+      invalidSession.session.version = 1
+      auth.redirectLoggedInUser(invalidSession, response, next)
+      expect(next.calledOnce).to.be.true // eslint-disable-line
       done()
     })
   })
