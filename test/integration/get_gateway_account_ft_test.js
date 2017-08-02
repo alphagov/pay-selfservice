@@ -54,6 +54,7 @@ describe('get account', function () {
           bob: 'bob',
           type: 'test',
           payment_provider: 'sandbox',
+          supports3ds: false,
           full_type: 'sandbox test'
         })
       })

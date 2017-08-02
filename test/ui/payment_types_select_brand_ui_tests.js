@@ -68,7 +68,8 @@ describe('The payment select brand view', function () {
   it('should grey out unavailable options', function () {
     var model = _.extend({}, templateData)
     model['brands'] = _.extend({}, templateData['brands'], {
-      'available': false
+      'available': false,
+      'unavailabilityReason': 'Not available'
     })
 
     var body = renderTemplate('payment_types_select_brand', model)

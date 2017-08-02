@@ -11,7 +11,7 @@ module.exports.index = function (req, res) {
   }
 
   var model = {
-    supports3ds: req.account.payment_provider === 'worldpay',
+    supports3ds: req.account.supports3ds,
     requires3ds: req.account.requires3ds,
     justToggled: typeof req.query.toggled !== 'undefined'
   }

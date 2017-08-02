@@ -60,7 +60,8 @@ describe('The payment types summary view', function () {
   it('should grey out unavailable options', function () {
     var model = _.extend({}, templateData)
     model['brands'] = _.extend({}, templateData['brands'], {
-      'available': false
+      'available': false,
+      'unavailabilityReason': 'Not available'
     })
 
     var body = renderTemplate('payment_types_summary', model)
