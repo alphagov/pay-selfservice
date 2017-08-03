@@ -1,5 +1,11 @@
 .transactions-filter {
 
+  .form-label {
+    strong {
+      font-weight: bold;
+    }
+  }
+
   padding: 0 15px;
   form {
     background: $panel-colour;
