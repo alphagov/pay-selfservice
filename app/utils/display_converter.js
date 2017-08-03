@@ -5,7 +5,11 @@ const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
 const showSettingsNavTemplates = [
   'token',
   'token_generate',
+  'credentials',
+  'provider_credentials/epdq',
   'provider_credentials/sandbox',
+  'provider_credentials/smartpay',
+  'provider_credentials/worldpay',
   'service_name',
   'payment_types_summary',
   'payment_types_select_type',
