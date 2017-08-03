@@ -13,8 +13,7 @@ module.exports.connectorClient = function () {
 
 module.exports.reconcileCardsByBrand = function (acceptedType, acceptedCards, allCards, accountRequires3ds) {
   var isCardAvailableRegarding3dsRequirements = card => {
-    if (card['requires3ds'] && !accountRequires3ds) return false
-    return true
+    return !card['requires3ds'] || accountRequires3ds
   }
 
   var isCardAvailableRegardingTypeRequirements = card => {
