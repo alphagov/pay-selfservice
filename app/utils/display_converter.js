@@ -23,7 +23,9 @@ const hideServiceNavTemplates = [
   'services/edit_service_name',
   'services/add_service',
   'services/team_members',
-  'services/team_member_invite'
+  'services/team_member_invite',
+  'services/team_member_profile',
+  'services/team_member_permissions'
 ]
 
 /**
