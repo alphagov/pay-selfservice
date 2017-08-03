@@ -125,6 +125,25 @@ describe('The toggle 3D Secure page when 3D Secure is on', function () {
     body.should.containNoSelector('#3ds-status')
   })
 
+  it('should say that 3D Secure is on but show the toggle button disabled if at least one card type still has 3DS required', function () {
+    let templateData = {
+      'supports3ds': true,
+      'requires3ds': true,
+      'hasAnyCardTypeRequiring3dsSelected': true,
+      permissions: {
+        toggle_3ds_read: true,
+        toggle_3ds_update: true
+      }
+    }
+
+    let body = renderTemplate('3d_secure/index', templateData)
+
+    body.should.containSelector('#3ds-status').withExactText('3D Secure is activated')
+    body.should.containSelector('#info-message .bold-small').withText('You must disable Maestro to turn on 3D Secure')
+    body.should.containNoSelector('#3ds-off-button')
+    body.should.containSelector('#3ds-off-button-disabled')
+  })
+
   it('should show the toggle button if the user also has update permission', function () {
     let templateData = {
       'supports3ds': true,
@@ -139,6 +158,8 @@ describe('The toggle 3D Secure page when 3D Secure is on', function () {
 
     body.should.containSelector('#3ds-off-button')
     body.should.containNoSelector('#3ds-on-button')
+    body.should.containNoSelector('#info-message .bold-small')
+    body.should.containNoSelector('#3ds-off-button-disabled')
   })
 
   it('should show the highlight if the permission has just been toggled and the user has read permission', function () {

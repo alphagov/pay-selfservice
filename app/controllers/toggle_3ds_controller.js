@@ -4,19 +4,46 @@ var router = require('../routes.js')
 var renderErrorView = require('../utils/response.js').renderErrorView
 var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+var _ = require('lodash')
+
+var renderConnectorError = function (request, response, errorMessage) {
+  return function (connectorError) {
+    if (connectorError) {
+      renderErrorView(request, response, 'Internal server error')
+      return
+    }
+
+    renderErrorView(request, response, errorMessage)
+  }
+}
 
 module.exports.index = function (req, res) {
+  var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
+    var model = {
+      supports3ds: req.account.supports3ds,
+      requires3ds: req.account.requires3ds,
+      hasAnyCardTypeRequiring3dsSelected: _.some(acceptedCards['card_types'], {'requires3ds': true}),
+      justToggled: typeof req.query.toggled !== 'undefined'
+    }
+
+    show(req, res, 'index', model)
+  }
+
   if (!req.account) {
     return renderErrorView(req, res, 'Unable to retrieve the 3D Secure setting.')
   }
 
-  var model = {
-    supports3ds: req.account.supports3ds,
-    requires3ds: req.account.requires3ds,
-    justToggled: typeof req.query.toggled !== 'undefined'
+  var accountId = auth.getCurrentGatewayAccountId(req)
+  var correlationId = req.headers[CORRELATION_HEADER] || ''
+
+  var params = {
+    gatewayAccountId: accountId,
+    correlationId: correlationId
   }
 
-  show(req, res, 'index', model)
+  connectorClient()
+    .getAcceptedCardsForAccount(params, onSuccessGetAccountAcceptedCards)
+    .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'))
 }
 
 module.exports.onConfirm = (req, res) => {
