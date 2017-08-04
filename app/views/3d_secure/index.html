@@ -41,7 +41,7 @@
 <form class="permission-main" method="post" action="{{routes.toggle3ds.onConfirm}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
-        <input id="3ds-on-button" class="button" type="submit" value="Turn on 3D Secure">
+        <input id="threeds-on-button" class="button" type="submit" value="Turn on 3D Secure">
     </div>
 </form>
 {{/permissions.toggle_3ds_update}}
@@ -74,10 +74,10 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
         {{^hasAnyCardTypeRequiring3dsSelected}}
-        <input id="3ds-off-button" class="button" type="submit" value="Turn off 3D Secure">
+        <input id="threeds-off-button" class="button" type="submit" value="Turn off 3D Secure">
         {{/hasAnyCardTypeRequiring3dsSelected}}
         {{#hasAnyCardTypeRequiring3dsSelected}}
-        <input id="3ds-off-button-disabled" class="button disabled" type="submit" value="Turn off 3D Secure">
+        <input id="threeds-off-button-disabled" disabled class="button disabled" type="submit" value="Turn off 3D Secure">
         {{/hasAnyCardTypeRequiring3dsSelected}}
     </div>
 </form>
