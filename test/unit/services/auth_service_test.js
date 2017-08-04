@@ -338,7 +338,7 @@ describe('auth service', function () {
     })
   })
 
-  describe.only('redirectLoggedInUser', function (done) {
+  describe('redirectLoggedInUser', function (done) {
     it('should redirect a user with a valid session to the user.loggedIn path', function (done) {
       const req = _.cloneDeep(validRequest())
       auth.redirectLoggedInUser(req, response, next)
