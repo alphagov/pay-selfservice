@@ -9,7 +9,8 @@ var {
   connectorClient,
   renderConnectorError,
   redirectTo,
-  reconcileCardsByBrand} = require('./payment_types_controller.js')
+  reconcileCardsByBrand,
+  filter3dsRequiredCardTypesIfNotSupported} = require('./payment_types_controller.js')
 
 module.exports.showBrands = function (req, res) {
   var acceptedType = req.query.acceptedType
@@ -33,7 +34,12 @@ module.exports.showBrands = function (req, res) {
         isAcceptedTypeAll: acceptedType === TYPES.ALL,
         isAcceptedTypeDebit: acceptedType === TYPES.DEBIT,
         error: error,
-        brands: reconcileCardsByBrand(acceptedType, acceptedCards['card_types'], allCards['card_types'])
+        brands: reconcileCardsByBrand(
+          acceptedType,
+          acceptedCards['card_types'],
+          filter3dsRequiredCardTypesIfNotSupported(req.account.supports3ds, allCards['card_types']),
+          req.account.requires3ds
+        )
       }
 
       response(req, res, 'payment_types_select_brand', model)

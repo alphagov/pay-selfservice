@@ -41,7 +41,7 @@
 <form class="permission-main" method="post" action="{{routes.toggle3ds.onConfirm}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
-        <input id="3ds-on-button" class="button" type="submit" value="Turn on 3D Secure">
+        <input id="threeds-on-button" class="button" type="submit" value="Turn on 3D Secure">
     </div>
 </form>
 {{/permissions.toggle_3ds_update}}
@@ -57,11 +57,28 @@
 </div>
 {{/permissions.toggle_3ds_read}}
 
+{{#hasAnyCardTypeRequiring3dsSelected}}
+<div id="info-message" class="notice">
+    <i class="icon info">
+        <span class="visually-hidden">Warning</span>
+    </i>
+
+    <strong class="bold-small">
+        You must disable Maestro to turn on 3D Secure
+    </strong>
+</div>
+{{/hasAnyCardTypeRequiring3dsSelected}}
+
 {{#permissions.toggle_3ds_update}}
 <form class="permission-main" method="post" action="{{routes.toggle3ds.off}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
-        <input id="3ds-off-button" class="button" type="submit" value="Turn off 3D Secure">
+        {{^hasAnyCardTypeRequiring3dsSelected}}
+        <input id="threeds-off-button" class="button" type="submit" value="Turn off 3D Secure">
+        {{/hasAnyCardTypeRequiring3dsSelected}}
+        {{#hasAnyCardTypeRequiring3dsSelected}}
+        <input id="threeds-off-button-disabled" disabled class="button disabled" type="submit" value="Turn off 3D Secure">
+        {{/hasAnyCardTypeRequiring3dsSelected}}
     </div>
 </form>
 {{/permissions.toggle_3ds_update}}

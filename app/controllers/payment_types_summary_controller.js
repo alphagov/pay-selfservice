@@ -7,7 +7,8 @@ var {
   connectorClient,
   renderConnectorError,
   reconcileCardsByBrand,
-  inferAcceptedCardType} = require('./payment_types_controller.js')
+  inferAcceptedCardType,
+  filter3dsRequiredCardTypesIfNotSupported} = require('./payment_types_controller.js')
 
 module.exports.showSummary = function (req, res) {
   var correlationId = req.headers[CORRELATION_HEADER] || ''
@@ -29,7 +30,12 @@ module.exports.showSummary = function (req, res) {
       var model = {
         isAcceptedTypeAll: acceptedType === TYPES.ALL,
         isAcceptedTypeDebit: acceptedType === TYPES.DEBIT,
-        brands: reconcileCardsByBrand(acceptedType, acceptedCards['card_types'], allCards['card_types'])
+        brands: reconcileCardsByBrand(
+          acceptedType,
+          acceptedCards['card_types'],
+          filter3dsRequiredCardTypesIfNotSupported(req.account.supports3ds, allCards['card_types']),
+          req.account.requires3ds
+        )
       }
 
       response(req, res, 'payment_types_summary', model)
