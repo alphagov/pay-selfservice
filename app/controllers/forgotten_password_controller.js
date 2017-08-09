@@ -2,6 +2,7 @@ var paths = require('../paths.js')
 var errorView = require('../utils/response.js').renderErrorView
 var userService = require('../services/user_service.js')
 var e = module.exports
+var emailTools = require('../utils/email_tools')()
 
 e.emailGet = (req, res) => {
   res.render('forgotten_password/username_get')
@@ -10,10 +11,19 @@ e.emailGet = (req, res) => {
 e.emailPost = (req, res) => {
   let correlationId = req.correlationId
   let username = req.body.username
-  return userService.sendPasswordResetToken(username, correlationId)
-    .finally(() => {
-      res.redirect(paths.user.passwordRequested)
-    })
+
+  if (emailTools.validateEmail(username)) {
+    return userService.sendPasswordResetToken(username, correlationId)
+      .finally(() => {
+        res.redirect(paths.user.passwordRequested)
+      })
+  } else if (!username) {
+    req.flash('error', 'You must enter an email address')
+    res.redirect(paths.user.forgottenPassword)
+  } else {
+    req.flash('error', 'You must enter a valid email address')
+    res.redirect(paths.user.forgottenPassword)
+  }
 }
 
 e.passwordRequested = (req, res) => {
