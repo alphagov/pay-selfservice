@@ -44,7 +44,7 @@ describe('Login view', function () {
   it('should render send otp code form with error message', function (done) {
     let templateData = {
       flash: {
-        error: 'Invalid code'
+        error: 'Invalid security code'
       }
     }
 
@@ -52,7 +52,7 @@ describe('Login view', function () {
 
     body.should.containSelector('h1').withExactText('Check your phone')
 
-    body.should.containSelector('.error').withExactText('Invalid code')
+    body.should.containSelector('.error-message').withExactText('Invalid security code')
 
     body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
     body.should.containSelector('input#sms_code').withAttribute('value', '')
