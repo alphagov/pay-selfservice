@@ -13,7 +13,7 @@ describe('The service role update view', function () {
 
     let body = renderTemplate('services/team_member_permissions', templateData)
 
-    body.should.containSelector('dd#email').withExactText('oscar.smith@example.com')
+    body.should.containSelector('#email').withExactText('oscar.smith@example.com')
     body.should.containSelector('form#role-update-form').withAttribute('action', 'some-link')
     body.should.containSelector('input#role-admin-input')
       .withAttribute('type', 'radio')

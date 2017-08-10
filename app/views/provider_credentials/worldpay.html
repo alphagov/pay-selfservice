@@ -1,26 +1,29 @@
 {{< credentials}}
 
 {{$providerContent}}
-
 <p>
 <h4 class="heading-small" id="view-title">Your {{currentGatewayAccount.payment_provider}} Credentials</h4>
 </p>
 
 {{#permissions.gateway_credentials_read}}
 {{^editMode}}
-<dl id="credentials">
-    <dt id="merchant-id-key" class="font-xsmall"><p>Merchant ID</p></dt>
-    <dd id="merchant-id-value"><b>{{currentGatewayAccount.credentials.merchant_id}}</b></dd>
-
-    <dt id="username-key" class="font-xsmall"><p>Username</p></dt>
-    <dd id="username-value"><b>{{currentGatewayAccount.credentials.username}}</b></dd>
-
-    <dt id="password-key" class="font-xsmall"><p>Password</p></dt>
-    <dd id="password-value"><b>{{#currentGatewayAccount.credentials.username}}****{{/currentGatewayAccount.credentials.username}}</b></dd>
-</dl>
-<a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">
-    Edit credentials
-</a>
+  <table id="credentials">
+    <tbody>
+      <tr>
+        <th id="merchant-id-key">Merchant ID</th>
+        <td id="merchant-id-value" class="font-small">{{currentGatewayAccount.credentials.merchant_id}}</td>
+      </tr>
+      <tr>
+        <th id="username-key">Username</th>
+        <td id="username-value" class="font-small">{{currentGatewayAccount.credentials.username}}</td>
+      </tr>
+      <tr>
+        <th id="password-key">Password</th>
+        <td id="password-value" class="font-small">{{#currentGatewayAccount.credentials.username}}****{{/currentGatewayAccount.credentials.username}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">Edit credentials</a>
 {{/editMode}}
 {{/permissions.gateway_credentials_read}}
 

@@ -27,16 +27,16 @@ describe('The credentials view in normal mode', function () {
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
-    body.should.containSelector('dl#credentials')
+    body.should.containSelector('#credentials')
 
-    body.should.containSelector('dt#merchant-id-key').withExactText('Merchant ID')
-    body.should.containSelector('dd#merchant-id-value').withExactText('a-merchant-id')
+    body.should.containSelector('#merchant-id-key').withExactText('Merchant ID')
+    body.should.containSelector('#merchant-id-value').withExactText('a-merchant-id')
 
-    body.should.containSelector('dt#username-key').withExactText('Username')
-    body.should.containSelector('dd#username-value').withExactText('a-username')
+    body.should.containSelector('#username-key').withExactText('Username')
+    body.should.containSelector('#username-value').withExactText('a-username')
 
-    body.should.containSelector('dt#password-key').withExactText('Password')
-    body.should.containSelector('dd#password-value').withExactText('****')
+    body.should.containSelector('#password-key').withExactText('Password')
+    body.should.containSelector('#password-value').withExactText('****')
   })
 
   it('should not display notification credentials for worldpay', function () {
@@ -81,16 +81,16 @@ describe('The credentials view in normal mode', function () {
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
-    body.should.containSelector('dl#credentials')
+    body.should.containSelector('#credentials')
 
-    body.should.containSelector('dt#merchant-id-key')
-    body.should.containSelector('dd#merchant-id-value')
+    body.should.containSelector('#merchant-id-key')
+    body.should.containSelector('#merchant-id-value')
 
-    body.should.containSelector('dt#username-key').withExactText('Username')
-    body.should.containSelector('dd#username-value').withExactText('a-username')
+    body.should.containSelector('#username-key').withExactText('Username')
+    body.should.containSelector('#username-value').withExactText('a-username')
 
-    body.should.containSelector('dt#password-key').withExactText('Password')
-    body.should.containSelector('dd#password-value').withExactText('****')
+    body.should.containSelector('#password-key').withExactText('Password')
+    body.should.containSelector('#password-value').withExactText('****')
   })
 
   it('should display notification credentials view for a smartpay account', function () {
@@ -120,16 +120,16 @@ describe('The credentials view in normal mode', function () {
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
-    body.should.containSelector('dl#credentials')
+    body.should.containSelector('#credentials')
 
-    body.should.containSelector('dt#merchant-id-key')
-    body.should.containSelector('dd#merchant-id-value')
+    body.should.containSelector('#merchant-id-key')
+    body.should.containSelector('#merchant-id-value')
 
-    body.should.containSelector('dt#notification-username-key').withExactText('Username')
-    body.should.containSelector('dd#notification-username-value').withExactText('a-notification-username')
+    body.should.containSelector('#notification-username-key').withExactText('Username')
+    body.should.containSelector('#notification-username-value').withExactText('a-notification-username')
 
-    body.should.containSelector('dt#notification-password-key').withExactText('Password')
-    body.should.containSelector('dd#notification-password-value').withExactText('****')
+    body.should.containSelector('#notification-password-key').withExactText('Password')
+    body.should.containSelector('#notification-password-value').withExactText('****')
   })
 
   it('should display credentials view for an ePDQ account', function () {
@@ -156,22 +156,22 @@ describe('The credentials view in normal mode', function () {
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
-    body.should.containSelector('dl#credentials')
+    body.should.containSelector('#credentials')
 
-    body.should.containSelector('dt#merchant-id-key').withExactText('PSP ID')
-    body.should.containSelector('dd#merchant-id-value').withExactText('a-psp-id')
+    body.should.containSelector('#merchant-id-key').withExactText('PSP ID')
+    body.should.containSelector('#merchant-id-value').withExactText('a-psp-id')
 
-    body.should.containSelector('dt#username-key').withExactText('Username')
-    body.should.containSelector('dd#username-value').withExactText('a-username')
+    body.should.containSelector('#username-key').withExactText('Username')
+    body.should.containSelector('#username-value').withExactText('a-username')
 
-    body.should.containSelector('dt#password-key').withExactText('Password')
-    body.should.containSelector('dd#password-value').withExactText('****')
+    body.should.containSelector('#password-key').withExactText('Password')
+    body.should.containSelector('#password-value').withExactText('****')
 
-    body.should.containSelector('dt#sha-in-passphrase-key').withExactText('SHA-IN passphrase')
-    body.should.containSelector('dd#sha-in-passphrase-value').withExactText('****')
+    body.should.containSelector('#sha-in-passphrase-key').withExactText('SHA-IN passphrase')
+    body.should.containSelector('#sha-in-passphrase-value').withExactText('****')
 
-    body.should.containSelector('dt#sha-out-passphrase-key').withExactText('SHA-OUT passphrase')
-    body.should.containSelector('dd#sha-out-passphrase-value').withExactText('****')
+    body.should.containSelector('#sha-out-passphrase-key').withExactText('SHA-OUT passphrase')
+    body.should.containSelector('#sha-out-passphrase-value').withExactText('****')
   })
 
   it('should not display notification credentials for ePDQ', function () {
@@ -208,16 +208,16 @@ describe('The credentials view in normal mode', function () {
 
     body.should.not.containSelector('a#edit-credentials-link')
 
-    body.should.not.containSelector('dl#credentials')
+    body.should.not.containSelector('#credentials')
 
-    body.should.not.containSelector('dt#merchant-id-key')
-    body.should.not.containSelector('dd#merchant-id-value')
+    body.should.not.containSelector('#merchant-id-key')
+    body.should.not.containSelector('#merchant-id-value')
 
-    body.should.not.containSelector('dt#username-key')
-    body.should.not.containSelector('dd#username-value')
+    body.should.not.containSelector('#username-key')
+    body.should.not.containSelector('#username-value')
 
-    body.should.not.containSelector('dt#password-key')
-    body.should.not.containSelector('dd#password-value')
+    body.should.not.containSelector('#password-key')
+    body.should.not.containSelector('#password-value')
   })
 })
 
