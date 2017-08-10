@@ -11,3 +11,5 @@ staging-2.FAILED-293.status=failed
 staging-2.tag=alpha_staging-2-293
 
 staging-2.alpha_staging-2-293.date=2017-08-10:12:24:24
+
+staging-2.alpha_staging-2-293.status=success
