@@ -25,14 +25,13 @@ pipeline {
     stage('Test') {
       steps {
         script {
-          try {
-            sh 'git diff --name-only origin/master | grep -v docs/ | grep -v Jenkinsfile | grep -e ^[docs/|Jenkinsfile]'
-            HAS_CODE_CHANGES = true
-          }
-          catch (error) {
-            HAS_CODE_CHANGES = false
-          }
-          if (HAS_CODE_CHANGES) {
+          sh 'echo $\'git diff --name-only origin/master |\' $(cat .buildignore | awk \'{ print "grep -v " $1 " | " }\' | tr -d \'\\n\\r\' | rev | cut -c3- | rev)  \' | wc -l\'  > cmd.tmp'
+          FILES_WITH_TESTABLE_CODE = sh (
+                  script: 'source cmd.tmp',
+                  returnStdout: true
+          ).trim()
+
+          if (FILES_WITH_TESTABLE_CODE > 0) {
             runEndToEnd("selfservice")
           }
         }
