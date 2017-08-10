@@ -40,7 +40,6 @@
     "appmetrics": "1.1.2",
     "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
-    "bcrypt": "^1.0.2",
     "body-parser": "1.17.x",
     "chalk": "1.1.x",
     "change-case": "3.0.1",
