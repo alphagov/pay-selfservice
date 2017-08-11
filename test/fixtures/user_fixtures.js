@@ -264,7 +264,7 @@ module.exports = {
 
   validForgottenPasswordCreateRequest: (username) => {
     let request = {
-      username: username || 'username'
+      username: username || 'username@email.com'
     }
 
     return pactUsers.withPactified(request)

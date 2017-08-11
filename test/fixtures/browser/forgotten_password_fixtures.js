@@ -10,7 +10,9 @@ function validPassword () {
 }
 
 function randomUsername () {
-  return randomString()
+  var name = randomString()
+  var domain = 'example.gov.uk'
+  return name + '@' + domain
 }
 
 var baseReq = {
