@@ -127,7 +127,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         },
         {
           'charge_id': '101',
@@ -144,7 +144,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
         }
       ]
     }
@@ -263,7 +263,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
 
         },
         {
@@ -281,7 +281,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
         }
       ]
     }

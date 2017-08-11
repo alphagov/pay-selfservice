@@ -53,7 +53,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
     body.should.not.containSelector('#show-refund')
     body.should.not.containSelector('#refunded-amount')
@@ -152,7 +152,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
     body.should.not.containSelector('#show-refund')
     body.should.not.containSelector('#refunded-amount')
@@ -251,7 +251,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
     body.should.containSelector('#show-refund')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
@@ -348,7 +348,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
     body.should.not.containSelector('#amount')
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
@@ -406,7 +406,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('table.transaction-events')
   })
@@ -451,7 +451,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('#description')
   })
@@ -496,7 +496,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('#brand')
   })
@@ -541,7 +541,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transactions/show', templateData)
+    let body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('#email')
   })

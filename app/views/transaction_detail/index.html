@@ -17,16 +17,16 @@ Transaction details {{reference}} - {{currentServiceName}} {{currentGatewayAccou
   {{/permissions.refunds_create}}
   {{/refundable}}
 </div>
-{{>transactions/_refund}}
+{{>transaction_detail/_refund}}
 <h2 class="heading-small pull-top push-bottom-sml">Transaction details</h2>
-{{>transactions/_details}}
+{{>transaction_detail/_details}}
 
 <h3 class="heading-small pull-top push-bottom-sml">Payment method</h3>
-{{>transactions/_payment}}
+{{>transaction_detail/_payment}}
 
 {{#permissions.transactions_events_read}}
 <h3 class="heading-small pull-top push-bottom-sml">Transaction Events</h3>
-{{>transactions/_events}}
+{{>transaction_detail/_events}}
 {{/permissions.transactions_events_read}}
 
 {{/full_width_content}}

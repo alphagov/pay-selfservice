@@ -1,18 +1,18 @@
-var response = require('../utils/response.js').response
-var renderErrorView = require('../utils/response.js').renderErrorView
-var transactionView = require('../utils/transaction_view.js')
-var jsonToCsv = require('../utils/json_to_csv.js')
-var auth = require('../services/auth_service.js')
-var date = require('../utils/dates.js')
+var response = require('../../utils/response.js').response
+var renderErrorView = require('../../utils/response.js').renderErrorView
+var transactionView = require('../../utils/transaction_view.js')
+var jsonToCsv = require('../../utils/json_to_csv.js')
+var auth = require('../../services/auth_service.js')
+var date = require('../../utils/dates.js')
 var logger = require('winston')
-var router = require('../routes.js')
-var Transaction = require('../models/transaction.js')
-var Charge = require('../models/charge.js')
-var getFilters = require('../utils/filters.js').getFilters
+var router = require('../../routes.js')
+var Transaction = require('../../models/transaction.js')
+var Charge = require('../../models/charge.js')
+var getFilters = require('../../utils/filters.js').getFilters
 var url = require('url')
-var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
+var ConnectorClient = require('../../services/clients/connector_client.js').ConnectorClient
 var client = new ConnectorClient(process.env.CONNECTOR_URL)
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+var CORRELATION_HEADER = require('../../utils/correlation_header.js').CORRELATION_HEADER
 
 module.exports = {
 
@@ -86,34 +86,10 @@ module.exports = {
     init()
   },
 
-  show: function (req, res) {
-    var accountId = auth.getCurrentGatewayAccountId(req)
-    var chargeId = req.params.chargeId
-    var defaultMsg = 'Error processing transaction view'
-    var notFound = 'Charge not found'
-    var init = function () {
-      var chargeModel = Charge(req.headers[CORRELATION_HEADER])
-      chargeModel.findWithEvents(accountId, chargeId)
-          .then(render, error)
-    }
-
-    var render = function (data) {
-      data.indexFilters = req.session.filters
-      response(req, res, 'transactions/show', data)
-    }
-
-    var error = function (err) {
-      var msg = (err === 'NOT_FOUND') ? notFound : defaultMsg
-      renderErrorView(req, res, msg)
-    }
-
-    init()
-  },
-
   refund: function (req, res) {
     var accountId = auth.getCurrentGatewayAccountId(req)
     var chargeId = req.params.chargeId
-    var show = router.generateRoute(router.paths.transactions.show, {
+    var show = router.generateRoute(router.paths.transactions.detail, {
       chargeId: chargeId
     })
 

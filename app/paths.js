@@ -6,7 +6,7 @@ module.exports = {
   transactions: {
     index: '/transactions',
     download: '/transactions/download',
-    show: '/transactions/:chargeId',
+    detail: '/transactions/:chargeId',
     refund: '/transactions/:chargeId/refund'
   },
   credentials: {

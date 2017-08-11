@@ -1,11 +1,11 @@
-var path = require('path')
+
 var request = require('supertest')
 var nock = require('nock')
 var csrf = require('csrf')
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
-var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
+var getApp = require('../../server.js').getApp
+var paths = require('../../app/paths.js')
+var session = require('../test_helpers/mock_session.js')
+var userCreator = require('../test_helpers/user_creator.js')
 
 var ACCOUNT_ID = 15486734
 var app

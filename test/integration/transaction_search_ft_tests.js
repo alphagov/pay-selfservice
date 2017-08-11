@@ -101,7 +101,7 @@ describe('The search transactions endpoint', function () {
           'card_brand': 'Visa',
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
         }
       ]
     }
@@ -125,7 +125,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
 
         },
         {
@@ -143,7 +143,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
 
         }
       ]
@@ -197,7 +197,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -249,7 +249,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
 
         }
       ]
@@ -303,7 +303,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -356,7 +356,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -409,7 +409,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -476,7 +476,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }

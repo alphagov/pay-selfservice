@@ -2,11 +2,11 @@ var path = require('path')
 var request = require('supertest')
 var nock = require('nock')
 
-require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
-var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
-var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+require('../test_helpers/serialize_mock.js')
+var userCreator = require('../test_helpers/user_creator.js')
+var getApp = require('../../server.js').getApp
+var paths = require('../../app/paths.js')
+var session = require('../test_helpers/mock_session.js')
 var {expect} = require('chai')
 var gatewayAccountId = 15486734
 
@@ -22,7 +22,7 @@ function connectorMockResponds (path, data) {
 
 function whenGetTransactionHistory (chargeId, baseApp) {
   return request(baseApp)
-    .get(paths.generateRoute(paths.transactions.show, {chargeId: chargeId}))
+    .get(paths.generateRoute(paths.transactions.detail, {chargeId: chargeId}))
     .set('Accept', 'application/json')
 }
 

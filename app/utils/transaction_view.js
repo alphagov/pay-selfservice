@@ -97,7 +97,7 @@ module.exports = {
       element.updated = dates.utcToDisplay(element.updated)
       element.created = dates.utcToDisplay(element.created_date)
       element.gateway_account_id = gatewayAccountId
-      element.link = router.generateRoute(router.paths.transactions.show, {
+      element.link = router.generateRoute(router.paths.transactions.detail, {
         chargeId: element.charge_id
       })
       delete element.created_date
