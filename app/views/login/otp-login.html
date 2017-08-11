@@ -4,16 +4,28 @@
 Enter security code - GOV.UK Pay
 {{/pageTitle}}
 {{$mainContent}}
+{{#flash.error}}
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+  <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+    There was a problem with the details you gave for:
+  </h2>
+  <ul class="error-summary-list">
+      <li><a href="#sms_code">Security code</a></li>
+  </ul>
+</div>
+{{/flash.error}}
 <div class="column-half no-padding" id="display-otp-login">
   <h1 class="form-title heading-large">Check your phone</h1>
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    <p>We've sent you a text message with a verification code</p>
-    {{#flash.error}}
-      <p class="error">{{flash.error}}</p>
-    {{/flash.error}}
-    <div class="form-group">
-      <label class="form-label" for="sms_code">Text message code</label>
+    <p>We’ve sent you a text message with a security code</p>
+    <div class="form-group{{#flash.error}} error{{/flash.error}}">
+      <label class="form-label" for="sms_code">
+        Security code
+        {{#flash.error}}
+        <span class="error-message">{{flash.error}}</span>
+        {{/flash.error}}
+      </label>
       <input class="form-control form-control-5em" data-module="" id="sms_code" name="code" rows="6" type="text" value="">
     </div>
     <div class="form-group">
