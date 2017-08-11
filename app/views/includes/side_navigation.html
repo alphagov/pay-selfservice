@@ -1,18 +1,16 @@
-<div class="navigation">
-  <div class="inner">
-      <nav role="navigation" class="settings-navigation">
-          <ul>
-            {{#adminNavigationItems}}
-              {{#permissions}}
-                {{#current}}
-                  <li class="active"><a id="{{id}}" href="{{url}}">{{name}}</a></li>
-                {{/current}}
-                {{^current}}
-                  <li><a id="{{id}}" href="{{url}}">{{name}}</a></li>
-                {{/current}}
-              {{/permissions}}
-            {{/adminNavigationItems}}
-          </ul>
-      </nav>
-  </div>
+<div class="navigation column-one-third">
+    <nav role="navigation" class="settings-navigation">
+        <ul>
+          {{#adminNavigationItems}}
+            {{#permissions}}
+              {{#current}}
+                <li class="active"><a id="{{id}}" href="{{url}}">{{name}}</a></li>
+              {{/current}}
+              {{^current}}
+                <li><a id="{{id}}" href="{{url}}">{{name}}</a></li>
+              {{/current}}
+            {{/permissions}}
+          {{/adminNavigationItems}}
+        </ul>
+    </nav>
 </div>

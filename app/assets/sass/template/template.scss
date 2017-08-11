@@ -89,22 +89,10 @@
   }
 }
 
-system
-.navigation,
-.main-content {
-  width: $full-width;
-  .inner {
-    padding: 0;
-  }
-}
-
 // Navigation styles
 .navigation {
-
-  .inner {
-    padding: 2px 0 30px;
-  }
   ul {
+    padding: 2px 0 30px;
     li {
       list-style: none;
 
@@ -125,28 +113,6 @@ system
           color: $black;
         }
       }
-    }
-  }
-
-  @include respond-to(tablet) {
-    float: left;
-    width: 20%;
-  }
-}
-
-// Main content styles
-.main-content {
-
-  .tokens {
-    @include bold-27;
-    margin-bottom: $gutter;
-  }
-
-  &.settings-content {
-    @include media(tablet) {
-      float: left;
-      width: 80%;
-      padding-left: $gutter;
     }
   }
 }

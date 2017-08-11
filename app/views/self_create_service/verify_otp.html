@@ -5,7 +5,7 @@ Enter security code - GOV.UK Pay
 {{/pageTitle}}
 
 {{$mainContent}}
-<div id="display_otp_verify" class="column-half no-padding">
+<div id="display_otp_verify" class="column-two-thirds">
   <form action="{{routes.selfCreateService.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title heading-large">Check your phone</h1>

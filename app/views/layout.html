@@ -25,13 +25,13 @@
 
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
             {{$full_width_content}}{{/full_width_content}}
-            {{#showSettingsNav}}
-                {{> includes/side_navigation }}
-            {{/showSettingsNav}}
-            <div class="main-content {{#showSettingsNav}}settings-content{{/showSettingsNav}}">
-                <div class="inner">
-                    {{$mainContent}}{{/mainContent}}
-                </div>
+            <div class="grid-row">
+              {{#showSettingsNav}}
+                  {{> includes/side_navigation }}
+              {{/showSettingsNav}}
+              <div class="column-two-thirds">
+                  {{$mainContent}}{{/mainContent}}
+              </div>
             </div>
         </main>
     {{/content}}

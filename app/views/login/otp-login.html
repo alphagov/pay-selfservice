@@ -14,7 +14,7 @@ Enter security code - GOV.UK Pay
   </ul>
 </div>
 {{/flash.error}}
-<div class="column-half no-padding" id="display-otp-login">
+<div class="column-two-thirds" id="display-otp-login">
   <h1 class="form-title heading-large">Check your phone</h1>
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
