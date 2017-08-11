@@ -294,48 +294,6 @@ describe.only('The /transactions endpoint', function () {
       .end(done)
   })
 
-  it('should display page with empty list of transactions if no records returned by connector', function (done) {
-    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES)
-
-    const connectorData = {
-      'results': []
-    }
-    connectorMockResponds(200, connectorData, searchParameters)
-
-    getTransactionList()
-      .expect(200)
-      .expect(function (res) {
-        res.body.results.should.eql([])
-      })
-      .end(done)
-  })
-
-  it('should show error message on a bad request while retrieving the list of transactions', function (done) {
-    const errorMessage = 'Unable to retrieve list of transactions.'
-    connectorMockResponds(400, {'message': errorMessage}, searchParameters)
-
-    getTransactionList()
-      .expect(500, {'message': errorMessage})
-      .end(done)
-  })
-
-  it('should show a generic error message on a connector service error while retrieving the list of transactions', function (done) {
-    connectorMockResponds(500, {'message': 'some error from connector'}, searchParameters)
-
-    getTransactionList()
-      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
-      .end(done)
-  })
-
-  it('should show internal error message if any error happens while retrieving the list of transactions', function (done) {
-    // No connectorMock defined on purpose to mock a network failure
-
-    getTransactionList()
-      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
-      .end(done)
-  })
-
   it('should return a transaction type refund for the gateway account', function (done) {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
@@ -388,6 +346,49 @@ describe.only('The /transactions endpoint', function () {
       })
       .end(done)
   })
+
+  it('should display page with empty list of transactions if no records returned by connector', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    const connectorData = {
+      'results': []
+    }
+    connectorMockResponds(200, connectorData, searchParameters)
+
+    getTransactionList()
+      .expect(200)
+      .expect(function (res) {
+        res.body.results.should.eql([])
+      })
+      .end(done)
+  })
+
+  it('should show error message on a bad request while retrieving the list of transactions', function (done) {
+    const errorMessage = 'Unable to retrieve list of transactions.'
+    connectorMockResponds(400, {'message': errorMessage}, searchParameters)
+
+    getTransactionList()
+      .expect(500, {'message': errorMessage})
+      .end(done)
+  })
+
+  it('should show a generic error message on a connector service error while retrieving the list of transactions', function (done) {
+    connectorMockResponds(500, {'message': 'some error from connector'}, searchParameters)
+
+    getTransactionList()
+      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+      .end(done)
+  })
+
+  it('should show internal error message if any error happens while retrieving the list of transactions', function (done) {
+    // No connectorMock defined on purpose to mock a network failure
+
+    getTransactionList()
+      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+      .end(done)
+  })
+
   //
   // PP-1158 Fix 3 selfservice problematic tests in transaction_list_ft_tests
   //
