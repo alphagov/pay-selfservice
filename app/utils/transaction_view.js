@@ -10,14 +10,20 @@ var url = require('url')
 const DATA_UNAVAILABLE = 'Data unavailable'
 const PAGINATION_SPREAD = 2
 const CURRENCY = '£'
-const eventStates = {
+const paymentStates = {
   'created': 'Service created payment of AMOUNT',
   'started': 'User started payment of AMOUNT',
   'submitted': 'User submitted payment details for payment of AMOUNT',
   'success': 'Payment of AMOUNT succeeded',
   'error': 'Error processing payment of AMOUNT',
   'failed': 'User failed to complete payment of AMOUNT',
-  'cancelled': 'Service cancelled payment of AMOUNT'
+  'cancelled': 'Service cancelled payment of AMOUNT',
+}
+
+const refundStates = {
+  'submitted': 'Refund submitted of AMOUNT',
+  'success': 'Refund success of AMOUNT',
+  'error': 'Error processing refund of AMOUNT'
 }
 
 function getPaginationLinks (connectorData) {
@@ -71,7 +77,7 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
-    connectorData.eventStates = Object.keys(eventStates).map(function (str) {
+    connectorData.eventStates = Object.keys(paymentStates).map(function (str) {
       var value = {}
       value.text = changeCase.upperCaseFirst(str.toLowerCase())
       if (str === filters.state) {
@@ -79,6 +85,16 @@ module.exports = {
       }
       return {'key': str, 'value': value}
     })
+
+    connectorData.eventStates.concat(Object.keys(refundStates).map(function (str) {
+      var value = {}
+      value.text = changeCase.upperCaseFirst(str.toLowerCase())
+      if (str === filters.state) {
+        value.selected = true
+      }
+      return {'key': str, 'value': value}
+    }))
+
 
     connectorData.cardBrands = _.uniqBy(allCards.card_types, 'brand')
       .map((card) => {
@@ -121,7 +137,7 @@ module.exports = {
 
   buildPaymentView: function (chargeData, eventsData) {
     eventsData.events.forEach(function (event) {
-      event.state_friendly = eventStates[event.state.status]
+      event.state_friendly = paymentStates[event.state.status]
       if (event.state_friendly) {
         event.state_friendly = event.state_friendly.replace('AMOUNT', CURRENCY + (chargeData.amount / 100).toFixed(2))
       }
