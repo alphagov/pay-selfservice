@@ -23,4 +23,3 @@ module.exports = (req, res) => {
       renderErrorView(req, res, err === 'NOT_FOUND' ? notFound : defaultMsg)
     })
 }
-

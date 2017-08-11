@@ -1,5 +1,12 @@
+'use strict'
+
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+
 let path = require('path')
 let cheerio = require('cheerio')
+chai.should()
+chai.use(chaiAsPromised)
 
 require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
 let renderTemplate = require(path.join(__dirname, '/../test_helpers/test_renderer.js')).render
@@ -33,13 +40,15 @@ describe('The transaction details view', function () {
           'chargeId': 1,
           'state:': {'status': 'started', 'finished': false},
           'state_friendly': 'User started payment of AMOUNT',
+          'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         },
         {
           'chargeId': 1,
           'state:': {'status': 'created', 'finished': false},
-          'state_friendly': 'Service created payment of £10.00',
+          'state_friendly': 'Service created payment',
+          'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         }
@@ -56,7 +65,6 @@ describe('The transaction details view', function () {
     let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
     body.should.not.containSelector('#show-refund')
-    body.should.not.containSelector('#refunded-amount')
     $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
@@ -64,18 +72,19 @@ describe('The transaction details view', function () {
     $('#amount').text().should.equal(templateData.amount)
     $('#payment-id').text().should.equal(templateData.charge_id)
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id)
-    $('#refunded').text().should.equal('✖')
+    $('#refunded-amount').text().should.contain('£0.00')
     $('#state').text().should.equal(templateData.state_friendly)
     $('#brand').text().should.equal('Data unavailable')
     $('#cardholder_name').text().should.equal('Data unavailable')
     $('#card_number').text().should.equal('**** **** **** ****')
     $('#card_expiry_date').text().should.equal('Data unavailable')
-
-    templateData.events.forEach(function (transactionData, ix) {
+    //
+    templateData.events.forEach((transactionData, ix) => {
       body.should.containSelector('table.transaction-events')
           .havingRowAt(ix + 1)
           .withTableDataAt(1, templateData.events[ix].state_friendly)
-          .withTableDataAt(2, templateData.events[ix].updated_friendly)
+          .withTableDataAt(2, templateData.events[ix].amount_friendly)
+          .withTableDataAt(3, templateData.events[ix].updated_friendly)
     })
   })
 
@@ -114,7 +123,8 @@ describe('The transaction details view', function () {
         {
           'chargeId': 1,
           'state:': {'status': 'success', 'finished': true},
-          'state_friendly': 'Payment of £10.00 succeeded',
+          'state_friendly': 'Payment succeeded',
+          'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         },
@@ -122,7 +132,8 @@ describe('The transaction details view', function () {
         {
           'chargeId': 1,
           'state:': {'status': 'submitted', 'finished': false},
-          'state_friendly': 'User submitted payment details for payment of £10.00',
+          'state_friendly': 'User submitted payment details for payment',
+          'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         },
@@ -131,6 +142,7 @@ describe('The transaction details view', function () {
           'chargeId': 1,
           'state:': {'status': 'started', 'finished': false},
           'state_friendly': 'User started payment of AMOUNT',
+          'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         },
@@ -138,7 +150,8 @@ describe('The transaction details view', function () {
         {
           'chargeId': 1,
           'state:': {'status': 'created', 'finished': false},
-          'state_friendly': 'Service created payment of £10.00',
+          'state_friendly': 'Service created payment',
+          'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         }
@@ -155,7 +168,6 @@ describe('The transaction details view', function () {
     let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
     body.should.not.containSelector('#show-refund')
-    body.should.not.containSelector('#refunded-amount')
     $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
@@ -163,9 +175,9 @@ describe('The transaction details view', function () {
     $('#amount').text().should.equal(templateData.amount)
     $('#payment-id').text().should.equal(templateData.charge_id)
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id)
-    $('#refunded').text().should.equal('✖')
     $('#state').text().should.equal(templateData.state_friendly)
     $('#brand').text().should.equal(templateData.card_brand)
+    $('#refunded-amount').text().should.contain('£0.00')
     $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name)
     $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number)
     $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date)
@@ -174,7 +186,8 @@ describe('The transaction details view', function () {
       body.should.containSelector('table.transaction-events')
           .havingRowAt(ix + 1)
           .withTableDataAt(1, templateData.events[ix].state_friendly)
-          .withTableDataAt(2, templateData.events[ix].updated_friendly)
+          .withTableDataAt(2, templateData.events[ix].amount_friendly)
+          .withTableDataAt(3, templateData.events[ix].updated_friendly)
     })
   })
 
@@ -211,18 +224,30 @@ describe('The transaction details view', function () {
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
         {
+          'type': 'REFUND',
+          'chargeId': 1,
+          'refund_reference': 'refund001',
+          'state:': {'status': 'success', 'finished': true},
+          'state_friendly': 'Payment succeeded',
+          'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '-£10.00',
+          'updated_friendly': '24 January 2015 13:21:05'
+        },
+        {
           'chargeId': 1,
           'state:': {'status': 'success', 'finished': true},
-          'state_friendly': 'Payment of £10.00 succeeded',
+          'state_friendly': 'Payment succeeded',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         },
 
         {
           'chargeId': 1,
           'state:': {'status': 'submitted', 'finished': false},
-          'state_friendly': 'User submitted payment details for payment of £10.00',
+          'state_friendly': 'User submitted payment details for payment',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         },
 
@@ -231,14 +256,16 @@ describe('The transaction details view', function () {
           'state:': {'status': 'started', 'finished': false},
           'state_friendly': 'User started payment of AMOUNT',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         },
 
         {
           'chargeId': 1,
           'state:': {'status': 'created', 'finished': false},
-          'state_friendly': 'Service created payment of £10.00',
+          'state_friendly': 'Service created payment',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         }
       ],
@@ -260,8 +287,7 @@ describe('The transaction details view', function () {
     $('#amount').text().should.equal(templateData.amount)
     $('#payment-id').text().should.equal(templateData.charge_id)
     $('#transaction-id').text().should.equal(templateData.gateway_transaction_id)
-    $('#refunded').text().should.equal('✔')
-    $('#refunded-amount').text().should.equal('£5.00')
+    $('#refunded-amount').text().should.equal('–£5.00')
     $('#state').text().should.equal(templateData.state_friendly)
     $('#brand').text().should.equal(templateData.card_brand)
     $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name)
@@ -272,7 +298,12 @@ describe('The transaction details view', function () {
       body.should.containSelector('table.transaction-events')
           .havingRowAt(ix + 1)
           .withTableDataAt(1, templateData.events[ix].state_friendly)
-          .withTableDataAt(2, templateData.events[ix].updated_friendly)
+          .withTableDataAt(2, templateData.events[ix].amount_friendly)
+          .withTableDataAt(3, templateData.events[ix].updated_friendly)
+
+      if (templateData.events[ix].type === 'REFUND') {
+        body.should.containSelector(`tr[data-gateway-refund-id="${templateData.events[ix].refund_reference}"]`)
+      }
     })
   })
 
@@ -311,16 +342,18 @@ describe('The transaction details view', function () {
         {
           'chargeId': 1,
           'state:': {'status': 'success', 'finished': true},
-          'state_friendly': 'Payment of £10.00 succeeded',
+          'state_friendly': 'Payment succeeded',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         },
 
         {
           'chargeId': 1,
           'state:': {'status': 'submitted', 'finished': false},
-          'state_friendly': 'User submitted payment details for payment of £10.00',
+          'state_friendly': 'User submitted payment details for payment',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         },
 
@@ -329,14 +362,16 @@ describe('The transaction details view', function () {
           'state:': {'status': 'started', 'finished': false},
           'state_friendly': 'User started payment of AMOUNT',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         },
 
         {
           'chargeId': 1,
           'state:': {'status': 'created', 'finished': false},
-          'state_friendly': 'Service created payment of £10.00',
+          'state_friendly': 'Service created payment',
           'updated': '2015-12-24 13:21:05',
+          'amount_friendly': '£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
         }
       ],
@@ -354,7 +389,8 @@ describe('The transaction details view', function () {
       body.should.containSelector('table.transaction-events')
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.events[ix].state_friendly)
-        .withTableDataAt(2, templateData.events[ix].updated_friendly)
+        .withTableDataAt(2, templateData.events[ix].amount_friendly)
+        .withTableDataAt(3, templateData.events[ix].updated_friendly)
     })
   })
 
@@ -393,7 +429,7 @@ describe('The transaction details view', function () {
         {
           'chargeId': 1,
           'state:': {'status': 'success', 'finished': true},
-          'state_friendly': 'Payment of £10.00 succeeded',
+          'state_friendly': 'Payment succeeded',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         }

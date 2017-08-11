@@ -1,16 +1,21 @@
-var path = require('path')
-require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
-var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
-var request = require('supertest')
-var nock = require('nock')
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
-var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+'use strict'
 
-var CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
-var DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
-var gatewayAccountId = 651342
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+require('../test_helpers/serialize_mock.js')
+const userCreator = require('../test_helpers/user_creator.js')
+const request = require('supertest')
+const nock = require('nock')
+const getApp = require('../../server.js').getApp
+const paths = require('../../app/paths.js')
+const session = require('../test_helpers/mock_session.js')
 
+const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
+const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
+const gatewayAccountId = 651342
+
+chai.use(chaiAsPromised)
+chai.should()
 var app
 
 var searchParameters = {}
@@ -115,7 +120,7 @@ describe('The /transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
           'state': {
@@ -132,7 +137,7 @@ describe('The /transactions endpoint', function () {
         {
           'charge_id': '101',
           'gateway_transaction_id': 'tnx-id-2',
-          'amount': '20.00',
+          'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -252,7 +257,7 @@ describe('The /transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'email': 'alice.111@mail.fake',
           'state': {
             'status': 'testing',
@@ -269,7 +274,7 @@ describe('The /transactions endpoint', function () {
         {
           'charge_id': '101',
           'gateway_transaction_id': 'tnx-id-2',
-          'amount': '20.00',
+          'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
           'state': {

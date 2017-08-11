@@ -8,26 +8,43 @@ Transaction details {{reference}} - {{currentServiceName}} {{currentGatewayAccou
 {{/pageSpecificJS}}
 
 {{$full_width_content}}
-<h1 class="page-title pull-bottom">Transactions</h1>
-<div class="actions">
-  <a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="arrowed"> &#9664; Back to transactions list </a>
-  {{#refundable}}
-  {{#permissions.refunds_create}}
-  <a href="#show-refund" class="button show-refund-button delete"> Refund Payment </a>
-  {{/permissions.refunds_create}}
-  {{/refundable}}
+<a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="arrowed"> &#9664; Transactions list</a>
+
+
+
+
+<div class="column-three-quarters">
+
+
+
+  {{>transaction_detail/_refund}}
+  <h1 class="page-title heading-large">Transaction detail</h1>
+  {{>transaction_detail/_details}}
+
+  <h2 class="heading-medium">Payment method</h2>
+  {{>transaction_detail/_payment}}
+
+  {{#permissions.transactions_events_read}}
+  <h2 class="heading-medium">Transaction events</h2>
+  {{>transaction_detail/_events}}
+  {{/permissions.transactions_events_read}}
+
 </div>
-{{>transaction_detail/_refund}}
-<h2 class="heading-small pull-top push-bottom-sml">Transaction details</h2>
-{{>transaction_detail/_details}}
 
-<h3 class="heading-small pull-top push-bottom-sml">Payment method</h3>
-{{>transaction_detail/_payment}}
+<div class="column-one-quarter">
+  <div class="actions">
 
-{{#permissions.transactions_events_read}}
-<h3 class="heading-small pull-top push-bottom-sml">Transaction Events</h3>
-{{>transaction_detail/_events}}
-{{/permissions.transactions_events_read}}
+    {{#refundable}}
+    {{#permissions.refunds_create}}
+    <a href="#show-refund" class="button show-refund-button delete"> Refund Payment </a>
+    <p class="small">
+      You can also give partial refunds
+    </p>
+    {{/permissions.refunds_create}}
+    {{/refundable}}
+  </div>
+</div>
+
 
 {{/full_width_content}}
 

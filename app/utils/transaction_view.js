@@ -1,23 +1,36 @@
-var _ = require('lodash')
-var changeCase = require('change-case')
-var dates = require('../utils/dates.js')
-var router = require('../routes.js')
-var qs = require('qs')
-var Paginator = require('./paginator')
-var check = require('check-types')
-var url = require('url')
+'usr strict'
+
+const _ = require('lodash')
+const changeCase = require('change-case')
+const dates = require('../utils/dates.js')
+const router = require('../routes.js')
+const qs = require('qs')
+const currencyFormatter = require('currency-formatter')
+const Paginator = require('./paginator')
+const check = require('check-types')
+const url = require('url')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
 const PAGINATION_SPREAD = 2
-const CURRENCY = '£'
-const eventStates = {
-  'created': 'Service created payment of AMOUNT',
-  'started': 'User started payment of AMOUNT',
-  'submitted': 'User submitted payment details for payment of AMOUNT',
-  'success': 'Payment of AMOUNT succeeded',
-  'error': 'Error processing payment of AMOUNT',
-  'failed': 'User failed to complete payment of AMOUNT',
-  'cancelled': 'Service cancelled payment of AMOUNT'
+const paymentEventStates = {
+  'created': 'Service created payment',
+  'started': 'User entering card details',
+  'submitted': 'User submitted card details',
+  'success': 'Payment successful',
+  'error': 'Error processing payment',
+  'failed': 'User failed to complete payment',
+  'cancelled': 'Service cancelled payment'
+}
+const refundEventStates = {
+  'submitted': 'Refund submitted',
+  'error': 'Error processing refund',
+  'success': 'Refund successful'
+}
+
+function asGBP (amountInPence) {
+  return currencyFormatter.format((amountInPence / 100).toFixed(2), {
+    code: 'GBP'
+  })
 }
 
 function getPaginationLinks (connectorData) {
@@ -57,6 +70,15 @@ function hasPageSizeLinks (connectorData) {
   return paginator.showDisplaySizeLinks()
 }
 
+function stateToSelectorObject (str) {
+  return {
+    key: str,
+    value: {
+      text: changeCase.upperCaseFirst(str.toLowerCase())
+    }
+  }
+}
+
 module.exports = {
   /** prepares the transaction list view */
   buildPaymentList: function (connectorData, allCards, gatewayAccountId, filters) {
@@ -71,14 +93,13 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
-    connectorData.eventStates = Object.keys(eventStates).map(function (str) {
-      var value = {}
-      value.text = changeCase.upperCaseFirst(str.toLowerCase())
-      if (str === filters.state) {
-        value.selected = true
-      }
-      return {'key': str, 'value': value}
-    })
+    connectorData.eventStates = []
+      .concat(Object.keys(paymentEventStates).map(stateToSelectorObject))
+      .concat(Object.keys(refundEventStates).map(stateToSelectorObject))
+
+    if (filters.state && connectorData.eventStates[filters.state]) {
+      connectorData.eventStates[filters.state].value.selected = true
+    }
 
     connectorData.cardBrands = _.uniqBy(allCards.card_types, 'brand')
       .map((card) => {
@@ -92,7 +113,7 @@ module.exports = {
 
     connectorData.results.forEach(function (element) {
       element.state_friendly = changeCase.upperCaseFirst(element.state.status.toLowerCase())
-      element.amount = (element.amount / 100).toFixed(2)
+      element.amount = asGBP(element.amount)
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
       element.updated = dates.utcToDisplay(element.updated)
       element.created = dates.utcToDisplay(element.created_date)
@@ -120,20 +141,24 @@ module.exports = {
   },
 
   buildPaymentView: function (chargeData, eventsData) {
-    eventsData.events = eventsData.events.filter(event => event.type !== 'REFUND')
-
     eventsData.events.forEach(function (event) {
-      event.state_friendly = eventStates[event.state.status]
-      if (event.state_friendly) {
-        event.state_friendly = event.state_friendly.replace('AMOUNT', CURRENCY + (chargeData.amount / 100).toFixed(2))
-      }
       event.updated_friendly = dates.utcToDisplay(event.updated)
+
+      const state = `${_.get(event, 'state.status')}`.toLowerCase()
+      const amount = _.get(event, 'amount', 0)
+
+      if (!event.type || event.type === 'PAYMENT') {
+        event.state_friendly = _.get(paymentEventStates, state, '')
+        event.amount_friendly = event.amount ? asGBP(amount) : ''
+      } else if (event.type === 'REFUND') {
+        event.state_friendly = _.get(refundEventStates, state, '')
+        event.amount_friendly = event.amount ? `–${asGBP(amount)}` : ''
+      }
     })
 
     chargeData.state_friendly = changeCase.upperCaseFirst(chargeData.state.status.toLowerCase())
 
-    var amount = (chargeData.amount / 100).toFixed(2)
-    chargeData.amount = CURRENCY + amount
+    chargeData.amount = asGBP(chargeData.amount)
 
     if (chargeData.card_details) {
       if (chargeData.card_details.card_brand == null) chargeData.card_details.card_brand = DATA_UNAVAILABLE
@@ -151,9 +176,9 @@ module.exports = {
 
     chargeData.refundable = chargeData.refund_summary.status === 'available'
     chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
-    chargeData.refunded_amount = CURRENCY + (chargeData.refund_summary.amount_submitted / 100).toFixed(2)
+    chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted)
     chargeData.refunded = chargeData.refund_summary.amount_submitted !== 0
-    chargeData.net_amount_display = CURRENCY + chargeData.net_amount
+    chargeData.net_amount_display = asGBP(chargeData.refund_summary.amount_available)
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)

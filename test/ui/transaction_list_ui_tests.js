@@ -1,4 +1,11 @@
+'use strict'
+
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+
 var path = require('path')
+chai.use(chaiAsPromised)
+chai.should()
 
 require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
 var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
@@ -97,7 +104,7 @@ describe('The transaction list view', function () {
         .havingRowAt(ix + 1)
         .withTableDataAt(1, templateData.results[ix].reference)
         .withTableDataAt(2, templateData.results[ix].email)
-        .withTableDataAt(3, '£' + templateData.results[ix].amount)
+        .withTableDataAt(3, templateData.results[ix].amount)
         .withTableDataAt(4, templateData.results[ix].card_details.card_brand)
         .withTableDataAt(5, templateData.results[ix].state_friendly)
         .withTableDataAt(6, templateData.results[ix].created)

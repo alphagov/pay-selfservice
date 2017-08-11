@@ -22,7 +22,7 @@ const serviceNavigationItems = (originalUrl, permissions) => {
       id: 'navigation-menu-home',
       name: 'Dashboard',
       url: paths.user.loggedIn,
-      current: pathLookup(originalUrl, paths.user.loggedIn),
+      current: originalUrl === paths.user.loggedIn,
       permissions: true
     },
     {
