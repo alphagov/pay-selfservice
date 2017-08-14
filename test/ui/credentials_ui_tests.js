@@ -203,8 +203,7 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/sandbox', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your Sandbox Credentials')
-    body.should.containSelector('div#message').withExactText('This is a sandbox account')
+    body.should.containSelector('#message p:first-of-type').withExactText('This is a test account. Account credentials only exist in live services, and relate to your payment service providers.')
 
     body.should.not.containSelector('a#edit-credentials-link')
 
@@ -364,8 +363,7 @@ describe('The credentials view in edit mode', function () {
 
     var body = renderTemplate('provider_credentials/sandbox', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your Sandbox Credentials')
-    body.should.containSelector('div#message').withExactText('This is a sandbox account')
+    body.should.containSelector('#message p:first-of-type').withExactText('This is a test account. Account credentials only exist in live services, and relate to your payment service providers.')
 
     body.should.not.containSelector('form#credentials-form')
     body.should.not.containSelector('a#edit-credentials-link')
