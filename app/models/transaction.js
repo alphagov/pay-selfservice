@@ -1,4 +1,5 @@
 var q = require('q')
+var _ = require('lodash')
 var logger = require('winston')
 
 var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
@@ -38,6 +39,11 @@ module.exports = function (correlationId) {
     var params = filters
     params.gatewayAccountId = accountID
     params.correlationId = correlationId
+
+    if (params.state && params.state.indexOf('-') !== -1) {
+      params.transaction_type = _.split(params.state, '-')[0]
+      params.state = _.split(params.state, '-')[1]
+    }
 
     connectorClient().searchTransactions(params, function (data, response) {
       successfulSearch(data, response, defer)

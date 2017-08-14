@@ -17,7 +17,7 @@ const paymentStates = {
   'success': 'Payment of AMOUNT succeeded',
   'error': 'Error processing payment of AMOUNT',
   'failed': 'User failed to complete payment of AMOUNT',
-  'cancelled': 'Service cancelled payment of AMOUNT',
+  'cancelled': 'Service cancelled payment of AMOUNT'
 }
 
 const refundStates = {
@@ -106,10 +106,11 @@ module.exports = {
       })
 
     connectorData.results.forEach(function (element) {
-      if(element.transaction_type === 'refund') {
+      if (element.transaction_type === 'refund') {
         element.state_friendly = 'Refund ' + element.state.status.toLowerCase()
       } else {
         element.state_friendly = changeCase.upperCaseFirst(element.state.status.toLowerCase())
+        element.updated = dates.utcToDisplay(element.updated)
       }
       element.amount = (element.amount / 100).toFixed(2)
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email

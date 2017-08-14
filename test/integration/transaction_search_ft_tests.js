@@ -389,8 +389,11 @@ describe('The search transactions endpoint', function () {
         }
       ]
     }
-    var data = {'reference': 'ref1', 'state': 'TEST_STATUS', 'brand': 'visa'}
-    connectorMockResponds(connectorData, data)
+
+    var data = {'reference': 'ref1', 'state': 'payment-testing', 'brand': 'visa'}
+    var connectorParams = {'reference': 'ref1', 'state': 'testing', 'transaction-type': 'charge', 'brand': 'visa'}
+
+    connectorMockResponds(connectorData, connectorParams)
 
     var expectedData = {
       'results': [
@@ -499,6 +502,118 @@ describe('The search transactions endpoint', function () {
 
     var expectedData = {
       'results': []
+    }
+
+    searchTransactions(data)
+      .expect(200)
+      .expect(function (res) {
+        res.body.results.should.eql(expectedData.results)
+      })
+      .end(done)
+  })
+
+  it('should return a list of transactions for the gateway account when searching by malformed status with expected state and transaction-type as empty', function (done) {
+    var connectorData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': 5000,
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Testing',
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
+        }
+      ]
+    }
+
+    var data = {'reference': 'ref1', 'state': '-', 'brand': 'visa'}
+    var connectorParams = {'reference': 'ref1', 'state': '', 'transaction-type': '', 'brand': 'visa'}
+
+    connectorMockResponds(connectorData, connectorParams)
+
+    var expectedData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': '50.00',
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Testing',
+          'gateway_account_id': 452345,
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+        }
+      ]
+    }
+
+    searchTransactions(data)
+      .expect(200)
+      .expect(function (res) {
+        res.body.results.should.eql(expectedData.results)
+      })
+      .end(done)
+  })
+
+  it('should return a list of transactions for the gateway account when searching ignoring unrecognised status format "transaction-type + - + state"', function (done) {
+    var connectorData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': 5000,
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Testing',
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
+        }
+      ]
+    }
+
+    var data = {'reference': 'ref1', 'state': 'whatever', 'brand': 'visa'}
+    var connectorParams = {'reference': 'ref1', 'state': 'whatever', 'brand': 'visa'}
+
+    connectorMockResponds(connectorData, connectorParams)
+
+    var expectedData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': '50.00',
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Testing',
+          'gateway_account_id': 452345,
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+        }
+      ]
     }
 
     searchTransactions(data)

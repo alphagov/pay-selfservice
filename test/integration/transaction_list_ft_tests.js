@@ -53,7 +53,7 @@ function getTransactionList () {
     .set('x-request-id', requestId)
 }
 
-describe.only('The /transactions endpoint', function () {
+describe('The /transactions endpoint', function () {
   afterEach(function () {
     nock.cleanAll()
     app = null
@@ -331,7 +331,7 @@ describe.only('The /transactions endpoint', function () {
             'status': 'testing',
             'finished': false
           },
-          'state_friendly': 'Testing',
+          'state_friendly': 'Refund testing',
           'gateway_account_id': gatewayAccountId,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
