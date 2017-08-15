@@ -139,7 +139,7 @@ describe('The toggle 3D Secure page when 3D Secure is on', function () {
     let body = renderTemplate('3d_secure/index', templateData)
 
     body.should.containSelector('#3ds-status').withExactText('3D Secure is activated')
-    body.should.containSelector('#info-message .bold-small').withText('You must disable Maestro to turn on 3D Secure')
+    body.should.containSelector('#info-message .bold-small').withText('You must disable Maestro to turn off 3D Secure')
     body.should.containNoSelector('#threeds-off-button')
     body.should.containSelector('#threeds-off-button-disabled')
   })
