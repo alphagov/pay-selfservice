@@ -120,6 +120,8 @@ module.exports = {
   },
 
   buildPaymentView: function (chargeData, eventsData) {
+    eventsData.events = eventsData.events.filter(event => event.type !== 'REFUND')
+
     eventsData.events.forEach(function (event) {
       event.state_friendly = eventStates[event.state.status]
       if (event.state_friendly) {
