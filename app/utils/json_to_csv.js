@@ -27,7 +27,13 @@ module.exports = function (data) {
                     {label: 'Cardholder Name', value: 'card_details.cardholder_name'},
                     {label: 'Card Expiry Date', value: 'card_details.expiry_date'},
                     {label: 'Card Number', value: 'card_details.last_digits_card_number'},
-                    {label: 'State', value: 'state.status'},
+
+        ]),
+        {
+            label: 'State',
+            value: row => { return (row.transaction_type == 'refund') ? 'refund_'+row.state.status : row.state.status }
+        },
+        ...getSanitisableFields([
                     {label: 'Finished', value: 'state.finished'},
                     {label: 'Error Code', value: 'state.code'},
                     {label: 'Error Message', value: 'state.message'},
