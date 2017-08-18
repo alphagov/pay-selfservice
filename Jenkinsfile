@@ -9,7 +9,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@PP-2497_decrease_frontend_image_size")
+    lib("pay-jenkins-library@master")
   }
 
   stages {
