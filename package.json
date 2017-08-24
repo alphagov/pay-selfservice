@@ -19,7 +19,8 @@
       "expect"
     ],
     "ignore": [
-      "app/assets/**/*.js"
+      "app/assets/**/*.js",
+      "node_modules_local/**/*.*"
     ]
   },
   "scripts": {

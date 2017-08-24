@@ -9,7 +9,8 @@
 config/dev-env.json
 public
 govuk_modules
-node_modules/*
+node_modules
+node_modules_local
 */node_modules/*
 pacts/
 
