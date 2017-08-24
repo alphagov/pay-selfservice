@@ -30,6 +30,7 @@ class User {
    * @param {Object[]} userData.service_roles - An array of the user's serviceRoles
    * @param {Object} userData.service_roles[].service - A raw service object see {@link Service.constructor}
    * @param {Object} userData.service_roles[].role - A raw role object
+   * @param {String[]} userData.features - An array of the user's active feature flags
    **/
   constructor (userData) {
     if (!userData) {
@@ -43,6 +44,7 @@ class User {
     this.telephoneNumber = userData.telephone_number || ''
     this.disabled = userData.disabled ? userData.disabled : false
     this.sessionVersion = userData.session_version || 0
+    this.features = (userData.features || '').split(',')
   }
 
   /**
