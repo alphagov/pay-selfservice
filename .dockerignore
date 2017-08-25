@@ -6,9 +6,11 @@ docs
 .sass-lint.yml
 CONTRIBUTING.md
 env.sh
+node_modules_local
 docker/build_and_test.Dockerfile
 Dockerfile
 Gruntfile.js
+Jenkinsfile
 .snyk
 build-local.sh
 pacts
