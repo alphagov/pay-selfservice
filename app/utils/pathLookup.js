@@ -11,7 +11,7 @@ module.exports = function (currentURL, url) {
       }
     })
     return found
-  } else if (currentURL === url) {
+  } else if (currentURL.includes(url)) {
     return true
   } else {
     return false

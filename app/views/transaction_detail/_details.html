@@ -1,50 +1,57 @@
 <table class="transaction-details">
   <tbody>
+
     <tr>
       <td>Reference number:</td>
       <td id="reference">{{reference}}</td>
     </tr>
+
     {{#permissions.transactions_description_read}}
     <tr>
       <td>Description:</td>
       <td id="description">{{description}}</td>
     </tr>
     {{/permissions.transactions_description_read}}
-    {{#permissions.transactions_amount_read}}
+
     <tr>
-      <td>Amount:</td>
-      <td id="amount">{{amount}}</td>
-    </tr>
-    {{/permissions.transactions_amount_read}}
-    <tr>
-      <td>State:</td>
+      <td>Payment status:</td>
       <td id="state">{{state_friendly}}{{#state.message}} ({{state.code}} - {{state.message}}){{/state.message}}</td>
     </tr>
+
+    {{#permissions.transactions_amount_read}}
+    <tr>
+      <td>Payment amount:</td>
+      <td id="amount">{{amount}}</td>
+    </tr>
+
+
+
+    <tr>
+      <td>Refunded amount:</td>
+      <td id="refunded-amount" class="qa-refunded-amount ">{{#refunded}}–{{refunded_amount}}{{/refunded}}{{^refunded}}£0.00{{/refunded}}</td>
+    </tr>
+
+    {{/permissions.transactions_amount_read}}
+
     <tr>
       <td>Date created:</td>
       <td>{{updated}}</td>
     </tr>
+
     <tr>
       <td>Provider:</td>
       <td>{{payment_provider}}</td>
     </tr>
-    <tr>
-      <td>Refunded:</td>
-      <td id="refunded">{{#refunded}}&#10004;{{/refunded}}{{^refunded}}&#10006;{{/refunded}}</td>
-    </tr>
-    {{#refunded}}
-    <tr>
-      <td>Refunded amount:</td>
-      <td id="refunded-amount" class="qa-refunded-amount">{{refunded_amount}}</td>
-    </tr>
-    {{/refunded}}
+
     <tr>
       <td>Provider ID:</td>
       <td id="transaction-id">{{gateway_transaction_id}}</td>
     </tr>
+
     <tr>
       <td>GOV.UK payment ID:</td>
       <td id="payment-id">{{charge_id}}</td>
     </tr>
+
   </tbody>
 </table>

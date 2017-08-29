@@ -1,9 +1,10 @@
 a {
-  color: $link-colour;
+  color: $black;
+
   &.arrowed {
     text-decoration: none;
     display: block;
-    @include core-14;
+    @include core-16;
     padding: $gutter-half 0 $gutter*1.5;
   }
 

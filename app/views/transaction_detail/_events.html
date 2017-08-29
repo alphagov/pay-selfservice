@@ -1,9 +1,10 @@
   <table class="transaction-events">
     <tbody>
     {{#events}}
-    <tr>
+    <tr {{#refund_reference}} data-gateway-refund-id="{{refund_reference}}" {{/refund_reference}}>
       <td><span class="state">{{state_friendly}}</span>{{#state.message}}<br>{{state.code}} - {{state.message}}{{/state.message}} </td>
-      <td align="right">{{updated_friendly}}</td>
+        <td class="amount" align="right">{{amount_friendly}}</td>
+        <td class="date" align="right">{{updated_friendly}}</td>
     </tr>
     {{/events}}
     </tbody>

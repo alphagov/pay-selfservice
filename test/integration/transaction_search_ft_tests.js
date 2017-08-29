@@ -1,3 +1,7 @@
+'use strict'
+
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
 var path = require('path')
 require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
 var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
@@ -9,6 +13,8 @@ var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var querystring = require('querystring')
 var _ = require('lodash')
+chai.use(chaiAsPromised)
+chai.should()
 
 var gatewayAccountId = 452345
 
@@ -101,7 +107,7 @@ describe('The search transactions endpoint', function () {
           'card_brand': 'Visa',
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
         }
       ]
     }
@@ -113,7 +119,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -125,13 +131,13 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
 
         },
         {
           'charge_id': '101',
           'gateway_transaction_id': 'tnx-id-2',
-          'amount': '20.00',
+          'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -143,7 +149,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
 
         }
       ]
@@ -185,7 +191,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -197,7 +203,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -237,7 +243,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -249,7 +255,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
 
         }
       ]
@@ -291,7 +297,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -303,7 +309,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -344,7 +350,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -356,7 +362,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -397,7 +403,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -409,7 +415,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }
@@ -464,7 +470,7 @@ describe('The search transactions endpoint', function () {
         {
           'charge_id': '100',
           'gateway_transaction_id': 'tnx-id-1',
-          'amount': '50.00',
+          'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
@@ -476,7 +482,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': 452345,
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
-          'link': paths.generateRoute(paths.transactions.show, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
         }
       ]
     }

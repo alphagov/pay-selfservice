@@ -1,0 +1,51 @@
+{{< layout}}
+
+{{$pageTitle}}
+Transaction details {{reference}} - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{{/pageTitle}}
+{{$pageSpecificJS}}
+<script src="/public/js/components/refund.js"></script>
+{{/pageSpecificJS}}
+
+{{$full_width_content}}
+<a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="arrowed"> &#9664; Transactions list</a>
+
+
+
+
+<div class="column-three-quarters">
+
+
+
+  {{>transaction_detail/_refund}}
+  <h1 class="page-title heading-large">Transaction detail</h1>
+  {{>transaction_detail/_details}}
+
+  <h2 class="heading-medium">Payment method</h2>
+  {{>transaction_detail/_payment}}
+
+  {{#permissions.transactions_events_read}}
+  <h2 class="heading-medium">Transaction events</h2>
+  {{>transaction_detail/_events}}
+  {{/permissions.transactions_events_read}}
+
+</div>
+
+<div class="column-one-quarter">
+  <div class="actions">
+
+    {{#refundable}}
+    {{#permissions.refunds_create}}
+    <a href="#show-refund" class="button show-refund-button delete"> Refund Payment </a>
+    <p class="small">
+      You can also give partial refunds
+    </p>
+    {{/permissions.refunds_create}}
+    {{/refundable}}
+  </div>
+</div>
+
+
+{{/full_width_content}}
+
+{{/layout}}

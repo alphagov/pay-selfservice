@@ -1,0 +1,23 @@
+.show-refund-button {
+  margin: 15px 0;
+}
+
+.transaction-details, .transaction-events {
+  margin-top:30px;
+  * {
+    @include core-16;
+  }
+
+  tr td:first-child {
+    width:40%;
+  }
+
+}
+
+
+.transaction-events {
+  td.amount {
+    text-align: left;
+    @include core-16($tabular-numbers: true);
+  }
+}
