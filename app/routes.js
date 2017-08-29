@@ -20,6 +20,7 @@ const trimUsername = require('./middleware/trim_username')
 const permission = require('./middleware/permission')
 const validateRegistrationInviteCookie = require('./middleware/validate_registration_invite_cookie')
 const otpVerify = require('./middleware/otp_verify')
+const getRequestContext = require('./middleware/get_request_context').middleware
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -57,11 +58,11 @@ module.exports.paths = paths
 module.exports.bind = function (app) {
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
-  // APPLY GENERIC MIDDLEWARE
+  // APPLY CORRELATION MIDDLEWARE
   app.use('*', (req, res, next) => {
     req.correlationId = req.headers[CORRELATION_HEADER] || ''
     next()
-  })
+  }, getRequestContext)
 
   app.all(lockOutDisabledUsers) // On all requests, if there is a user, and its disabled, lock out.
 

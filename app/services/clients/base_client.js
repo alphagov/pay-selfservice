@@ -5,8 +5,10 @@ const urlParse = require('url').parse
 const _ = require('lodash')
 const logger = require('winston')
 const request = require('requestretry')
-const customCertificate = require(path.join(__dirname, '/../../utils/custom_certificate'))
+const customCertificate = require('../../utils/custom_certificate')
+const getRequestContext = require('../../middleware/get_request_context').getRequestContext
 const CORRELATION_HEADER_NAME = require(path.join(__dirname, '/../../utils/correlation_header')).CORRELATION_HEADER
+const FEATURE_FLAGS_HEADER_NAME = 'features'
 
 const agentOptions = {
   keepAlive: true,
@@ -40,10 +42,14 @@ const client = request
   })
 
 const getHeaders = function getHeaders (args) {
+  const requestContext = getRequestContext(args.correlationId || '') || {}
+
   let headers = {}
   headers['Content-Type'] = 'application/json'
   headers[CORRELATION_HEADER_NAME] = args.correlationId || ''
+  headers[FEATURE_FLAGS_HEADER_NAME] = (requestContext.features || []).toString()
   _.merge(headers, args.headers)
+
   return headers
 }
 /**
