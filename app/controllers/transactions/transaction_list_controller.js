@@ -14,38 +14,29 @@ const CORRELATION_HEADER = require('../../utils/correlation_header.js').CORRELAT
 
 
 module.exports = (req, res) => {
-  var accountId = auth.getCurrentGatewayAccountId(req)
-  var filters = getFilters(req)
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+  const accountId = auth.getCurrentGatewayAccountId(req)
+  const filters = getFilters(req)
+  const correlationId = req.headers[CORRELATION_HEADER] || ''
+  const transactionModel = Transaction(correlationId)
 
   req.session.filters = url.parse(req.url).query
-  var init = function () {
-    if (!filters.valid) return error('Invalid search')
-    var transactionModel = Transaction(req.headers[CORRELATION_HEADER])
-    transactionModel
-      .search(accountId, filters.result)
-      .then(onSuccessSearchTransactions, () => error('Unable to retrieve list of transactions.'))
-  }
 
-  var onSuccessSearchTransactions = function (transactions) {
-    var onSuccessGetAllCards = function (allCards) {
-      transactions.search_path = router.paths.transactions.index
-      var model = transactionView.buildPaymentList(transactions, allCards, accountId, filters.result)
-      response(req, res, 'transactions/index', model)
-    }
+  if (!filters.valid) return error('Invalid search')
+  transactionModel
+    .search(accountId, filters.result)
+    .then(transactions => {
+      client
+        .getAllCardTypes({correlationId}, allCards => {
+          transactions.search_path = router.paths.transactions.index
+          var model = transactionView.buildPaymentList(transactions, allCards, accountId, filters.result)
+          response(req, res, 'transactions/index', model)
+        })
+        .on('connectorError', () => error('Unable to retrieve card types.'))
+    })
+    .catch(() => error('Unable to retrieve list of transactions.'))
 
-    var params = {
-      correlationId: correlationId
-    }
 
-    client
-      .getAllCardTypes(params, onSuccessGetAllCards)
-      .on('connectorError', () => error('Unable to retrieve card types.'))
-  }
-
-  var error = function (msg) {
+  function error (msg) {
     renderErrorView(req, res, msg)
   }
-
-  init()
 }
