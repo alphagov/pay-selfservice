@@ -26,6 +26,7 @@ const getRequestContext = require('./middleware/get_request_context').middleware
 const staticCtrl = require('./controllers/static_controller')
 const transactionsCtrl = require('./controllers/transactions/transaction_controller')
 const transactionDetailCtrl = require('./controllers/transactions/transaction_detail_controller')
+const transactionRefundCtrl = require('./controllers/transactions/transaction_refund_controller')
 const credentialsCtrl = require('./controllers/credentials_controller')
 const loginCtrl = require('./controllers/login_controller')
 const healthcheckCtrl = require('./controllers/healthcheck_controller')
@@ -144,7 +145,7 @@ module.exports.bind = function (app) {
   app.get(transactions.index, permission('transactions:read'), getAccount, transactionsCtrl.index)
   app.get(transactions.download, permission('transactions-download:read'), getAccount, transactionsCtrl.download)
   app.get(transactions.detail, permission('transactions-details:read'), getAccount, transactionDetailCtrl)
-  app.post(transactions.refund, permission('refunds:create'), getAccount, transactionsCtrl.refund)
+  app.post(transactions.refund, permission('refunds:create'), getAccount, transactionRefundCtrl)
 
   // CREDENTIALS
   app.get(credentials.index, permission('gateway-credentials:read'), getAccount, credentialsCtrl.index)

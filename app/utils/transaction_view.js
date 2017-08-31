@@ -95,7 +95,6 @@ module.exports = {
 
     connectorData.eventStates = []
       .concat(Object.keys(paymentEventStates).map(stateToSelectorObject))
-      .concat(Object.keys(refundEventStates).map(stateToSelectorObject))
 
     if (filters.state && connectorData.eventStates[filters.state]) {
       connectorData.eventStates[filters.state].value.selected = true
