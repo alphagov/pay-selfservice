@@ -25,6 +25,7 @@ const getRequestContext = require('./middleware/get_request_context').middleware
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
 const transactionsCtrl = require('./controllers/transactions/transaction_controller')
+const transactionsListCtrl = require('./controllers/transactions/transaction_list_controller')
 const transactionDetailCtrl = require('./controllers/transactions/transaction_detail_controller')
 const transactionRefundCtrl = require('./controllers/transactions/transaction_refund_controller')
 const credentialsCtrl = require('./controllers/credentials_controller')
@@ -142,7 +143,7 @@ module.exports.bind = function (app) {
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS
-  app.get(transactions.index, permission('transactions:read'), getAccount, transactionsCtrl.index)
+  app.get(transactions.index, permission('transactions:read'), getAccount, transactionsListCtrl)
   app.get(transactions.download, permission('transactions-download:read'), getAccount, transactionsCtrl.download)
   app.get(transactions.detail, permission('transactions-details:read'), getAccount, transactionDetailCtrl)
   app.post(transactions.refund, permission('refunds:create'), getAccount, transactionRefundCtrl)
