@@ -6,7 +6,7 @@ const url = require('url')
 // Local Dependencies
 const auth = require('../../services/auth_service.js')
 const router = require('../../routes.js')
-const Transaction = require('../../models/transaction.js')
+const transactionService = require('../../services/transaction_service')
 const {ConnectorClient} = require('../../services/clients/connector_client.js')
 const {buildPaymentList} = require('../../utils/transaction_view.js')
 const {response} = require('../../utils/response.js')
@@ -20,13 +20,12 @@ module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const filters = getFilters(req)
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  const transactionModel = Transaction(correlationId)
 
   req.session.filters = url.parse(req.url).query
   if (!filters.valid) return error('Invalid search')
 
-  transactionModel
-    .search(accountId, filters.result)
+  transactionService
+    .search(accountId, filters.result, correlationId)
     .then(transactions => {
       client
         .getAllCardTypes({correlationId}, allCards => {

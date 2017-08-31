@@ -4,7 +4,7 @@
 const logger = require('winston')
 
 // Local Dependencies
-const Transaction = require('../../models/transaction.js')
+const transactionService = require('../../services/transaction_service')
 const jsonToCsv = require('../../utils/json_to_csv.js')
 const auth = require('../../services/auth_service.js')
 const date = require('../../utils/dates.js')
@@ -16,9 +16,8 @@ module.exports = (req, res) => {
   const filters = req.query
   const name = `GOVUK Pay ${date.dateToDefaultFormat(new Date())}.csv`
   const correlationId = req.headers[CORRELATION_HEADER]
-  const transaction = Transaction(correlationId)
 
-  transaction.searchAll(accountId, filters)
+  transactionService.searchAll(accountId, filters, correlationId)
     .then(json => jsonToCsv(json.results))
     .then(csv => {
       logger.debug('Sending csv attachment download -', {'filename': name})
