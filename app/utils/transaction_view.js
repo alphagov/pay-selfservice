@@ -7,77 +7,13 @@ const router = require('../routes.js')
 const qs = require('qs')
 const currencyFormatter = require('currency-formatter')
 const Paginator = require('./paginator')
+const states = require('./states')
 const check = require('check-types')
 const url = require('url')
+const TransactionEvent = require('../models/TransactionEvent.class')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
 const PAGINATION_SPREAD = 2
-const paymentEventStates = {
-  'created': 'Service created payment',
-  'started': 'User entering card details',
-  'submitted': 'User submitted card details',
-  'success': 'Payment successful',
-  'error': 'Error processing payment',
-  'failed': 'User failed to complete payment',
-  'cancelled': 'Service cancelled payment'
-}
-const refundEventStates = {
-  'submitted': 'Refund submitted',
-  'error': 'Error processing refund',
-  'success': 'Refund successful'
-}
-
-function asGBP (amountInPence) {
-  return currencyFormatter.format((amountInPence / 100).toFixed(2), {
-    code: 'GBP'
-  })
-}
-
-function getPaginationLinks (connectorData) {
-  if (connectorData.total) {
-    var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
-    return paginator.getLast() > 1 ? paginator.getNamedCentredRange(PAGINATION_SPREAD, true, true) : null
-  }
-}
-
-function getPageSizeLinks (connectorData) {
-  if (getCurrentPageSize(connectorData)) {
-    var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
-    return paginator.getDisplaySizeOptions()
-  }
-}
-
-function getCurrentPageNumber (connectorData) {
-  return connectorData.page
-}
-
-function getCurrentPageSize (connectorData) {
-  var selfLink = connectorData._links && connectorData._links.self
-  var queryString
-  var limit
-
-  if (selfLink) {
-    queryString = url.parse(selfLink.href).query
-    limit = Number(qs.parse(queryString).display_size)
-    if (check.number(limit) && limit > 0) {
-      return limit
-    }
-  }
-}
-
-function hasPageSizeLinks (connectorData) {
-  var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
-  return paginator.showDisplaySizeLinks()
-}
-
-function stateToSelectorObject (str) {
-  return {
-    key: str,
-    value: {
-      text: changeCase.upperCaseFirst(str.toLowerCase())
-    }
-  }
-}
 
 module.exports = {
   /** prepares the transaction list view */
@@ -93,8 +29,7 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
-    connectorData.eventStates = []
-      .concat(Object.keys(paymentEventStates).map(stateToSelectorObject))
+    connectorData.eventStates = states.paymentStates
 
     if (filters.state && connectorData.eventStates[filters.state]) {
       connectorData.eventStates[filters.state].value.selected = true
@@ -140,20 +75,7 @@ module.exports = {
   },
 
   buildPaymentView: function (chargeData, eventsData) {
-    eventsData.events.forEach(function (event) {
-      event.updated_friendly = dates.utcToDisplay(event.updated)
 
-      const state = `${_.get(event, 'state.status')}`.toLowerCase()
-      const amount = _.get(event, 'amount', 0)
-
-      if (!event.type || event.type === 'PAYMENT') {
-        event.state_friendly = _.get(paymentEventStates, state, '')
-        event.amount_friendly = event.amount ? asGBP(amount) : ''
-      } else if (event.type === 'REFUND') {
-        event.state_friendly = _.get(refundEventStates, state, '')
-        event.amount_friendly = event.amount ? `–${asGBP(amount)}` : ''
-      }
-    })
 
     chargeData.state_friendly = changeCase.upperCaseFirst(chargeData.state.status.toLowerCase())
 
@@ -181,9 +103,51 @@ module.exports = {
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
-    chargeData['events'] = eventsData.events.reverse()
+    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
     delete chargeData['links']
     delete chargeData['return_url']
     return chargeData
   }
 }
+
+function asGBP (amountInPence) {
+  return currencyFormatter.format((amountInPence / 100).toFixed(2), {code: 'GBP'})
+}
+
+function getPaginationLinks (connectorData) {
+  if (connectorData.total) {
+    var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+    return paginator.getLast() > 1 ? paginator.getNamedCentredRange(PAGINATION_SPREAD, true, true) : null
+  }
+}
+
+function getPageSizeLinks (connectorData) {
+  if (getCurrentPageSize(connectorData)) {
+    var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+    return paginator.getDisplaySizeOptions()
+  }
+}
+
+function getCurrentPageNumber (connectorData) {
+  return connectorData.page
+}
+
+function getCurrentPageSize (connectorData) {
+  var selfLink = connectorData._links && connectorData._links.self
+  var queryString
+  var limit
+
+  if (selfLink) {
+    queryString = url.parse(selfLink.href).query
+    limit = Number(qs.parse(queryString).display_size)
+    if (check.number(limit) && limit > 0) {
+      return limit
+    }
+  }
+}
+
+function hasPageSizeLinks (connectorData) {
+  var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+  return paginator.showDisplaySizeLinks()
+}
+
