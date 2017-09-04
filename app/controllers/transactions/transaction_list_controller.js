@@ -11,7 +11,8 @@ const {ConnectorClient} = require('../../services/clients/connector_client.js')
 const {buildPaymentList} = require('../../utils/transaction_view.js')
 const {response} = require('../../utils/response.js')
 const {renderErrorView} = require('../../utils/response.js')
-const {getFilters} = require('../../utils/filters.js')
+const {getFilters, describeFilters} = require('../../utils/filters.js')
+const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
@@ -29,8 +30,14 @@ module.exports = (req, res) => {
     .then(transactions => {
       client
         .getAllCardTypes({correlationId}, allCards => {
-          transactions.search_path = router.paths.transactions.index
-          let model = buildPaymentList(transactions, allCards, accountId, filters.result)
+          const model = buildPaymentList(transactions, allCards, accountId, filters.result)
+          model.search_path = router.paths.transactions.index
+          model.filtersDescription = describeFilters(filters.result)
+          model.eventStates = req.user.hasFeature('REFUNDS_IN_TX_LIST') ? states.states() : states.payment_states()
+          model.eventStates.forEach(state => {
+            const relevantFilter = (state.type === 'payment' ? filters.result.payment_states : filters.result.refund_states) || []
+            state.value.selected = relevantFilter.includes(state.name)
+          })
           response(req, res, 'transactions/index', model)
         })
         .on('connectorError', () => error('Unable to retrieve card types.'))

@@ -12,9 +12,35 @@ function validateFilters (filters) {
          (pageIsNull || pageIsPositive)
 }
 
+function describeFilters (filters) {
+  let description = ``
+  if (filters.fromDate) description += ` from ${filters.fromDate}`
+  if (filters.toDate) description += ` to ${filters.toDate}`
+
+  const paymentStates = filters.payment_states || []
+  const refundStates = filters.refund_states ? filters.refund_states.map(state => `refund ${state}`) : []
+  const selectedStates = [...paymentStates, ...refundStates].map(state => `'${state}'`)
+  if (filters.state && selectedStates.length === 0) {
+    description += ` with '${filters.state}' state`
+  } else if (selectedStates.length === 1) {
+    description += ` with ${selectedStates[0]} state`
+  } else if (selectedStates.length > 1) {
+    description += ` with states: ${selectedStates.join(', ').replace(/,([^,]*)$/, ' and$1')}`
+  }
+
+  if (filters.brand) description += ` with '${filters.brand}' card brand`
+
+  return description
+}
+
 function getFilters (req) {
-  var all = qs.parse(req.query)
-  var filters = _.omitBy(all, _.isEmpty)
+  let filters = qs.parse(req.query)
+  if (filters.state && filters.state.includes('-')) {
+    let [type, state] = filters.state.split('-')
+    filters.state = state
+    filters[`${type}_states`] = [state]
+  }
+  filters = _.omitBy(filters, _.isEmpty)
   return {
     valid: validateFilters(filters),
     result: filters
@@ -22,5 +48,6 @@ function getFilters (req) {
 }
 
 module.exports = {
-  getFilters: getFilters
+  getFilters: getFilters,
+  describeFilters: describeFilters
 }

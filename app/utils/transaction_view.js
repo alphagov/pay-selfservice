@@ -29,12 +29,6 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
-    connectorData.eventStates = states.paymentStates
-
-    if (filters.state && connectorData.eventStates[filters.state]) {
-      connectorData.eventStates[filters.state].value.selected = true
-    }
-
     connectorData.cardBrands = _.uniqBy(allCards.card_types, 'brand')
       .map((card) => {
         var value = {}
@@ -45,8 +39,8 @@ module.exports = {
         return {'key': card.brand, 'value': value}
       })
 
-    connectorData.results.forEach(function (element) {
-      element.state_friendly = changeCase.upperCaseFirst(element.state.status.toLowerCase())
+    connectorData.results.forEach(element => {
+      element.state_friendly = states.getDisplayName(element.type, element.state.status)
       element.amount = asGBP(element.amount)
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
       element.updated = dates.utcToDisplay(element.updated)
@@ -75,8 +69,6 @@ module.exports = {
   },
 
   buildPaymentView: function (chargeData, eventsData) {
-
-
     chargeData.state_friendly = changeCase.upperCaseFirst(chargeData.state.status.toLowerCase())
 
     chargeData.amount = asGBP(chargeData.amount)
@@ -150,4 +142,3 @@ function hasPageSizeLinks (connectorData) {
   var paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
   return paginator.showDisplaySizeLinks()
 }
-

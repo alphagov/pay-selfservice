@@ -7,6 +7,7 @@ describe('The transaction list view', function () {
   it('should render all transactions', function () {
     var templateData = {
       'total': 2,
+      'filtersDescription': '  from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'Testing2\' state\n    with \'Visa\' card brand',
       'results': [
         {
           'charge_id': '100',
@@ -62,7 +63,7 @@ describe('The transaction list view', function () {
       'filters': {'reference': 'ref1', 'state': 'Testing2', 'brand': 'Visa', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
       'hasResults': true,
       'downloadTransactionLink':
-                '/transactions/download?reference=ref1&state=Testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01',
+                '/transactions/download?reference=ref1&state=payment-testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01',
       permissions: {
         'transactions_amount_read': true,
         'transactions_email_read': true,

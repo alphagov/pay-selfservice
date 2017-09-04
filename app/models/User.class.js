@@ -79,6 +79,10 @@ class User {
     return json
   }
 
+  hasFeature(featureName) {
+    return this.features.includes(featureName)
+  }
+
   /**
    * @method hasPermission
    * @param {String} permissionName name of permission

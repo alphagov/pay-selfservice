@@ -28,18 +28,7 @@ Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.
 <div>
 <h3 class="heading-small" id="total-results">
   {{total}} transactions
-  {{#filters.fromDate}}
-    from {{filters.fromDate}}
-  {{/filters.fromDate}}
-  {{#filters.toDate}}
-    to {{filters.toDate}}
-  {{/filters.toDate}}
-  {{#filters.state}}
-    with '{{filters.state }}' state
-  {{/filters.state}}
-  {{#filters.brand}}
-    with '{{filters.brand }}' card brand
-  {{/filters.brand}}
+  {{filtersDescription}}
 </h3>
 
 {{>transactions/display_size}}
