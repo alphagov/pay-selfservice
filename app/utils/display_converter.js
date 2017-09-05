@@ -22,10 +22,13 @@ const showSettingsNavTemplates = [
   'email_notifications/confirm'
 ]
 
-const hideServiceNavTemplates = [
+const hideServiceHeaderTemplates = [
   'services/index',
   'services/edit_service_name',
-  'services/add_service',
+  'services/add_service'
+]
+
+const hideServiceNavTemplates = [
   'services/team_members',
   'services/team_member_invite',
   'services/team_member_details',
@@ -68,6 +71,10 @@ const showSettingsNav = template => {
   return showSettingsNavTemplates.indexOf(template) !== -1
 }
 
+const hideServiceHeader = template => {
+  return hideServiceHeaderTemplates.indexOf(template) !== -1
+}
+
 const hideServiceNav = template => {
   return hideServiceNavTemplates.indexOf(template) !== -1
 }
@@ -103,10 +110,11 @@ module.exports = function (req, data, template) {
   let permissions = getPermissions(user, req.service)
   convertedData.permissions = permissions
   convertedData.showSettingsNav = showSettingsNav(template)
+  convertedData.hideServiceHeader = hideServiceHeader(template)
   convertedData.hideServiceNav = hideServiceNav(template)
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
-  convertedData.currentServiceName = _.get(req, 'account.service_name')
+  convertedData.currentServiceName = _.get(req, 'service.name')
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions)
     convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)

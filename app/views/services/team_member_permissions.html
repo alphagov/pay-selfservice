@@ -29,10 +29,10 @@ Edit team member permissions - GOV.UK Pay
                     <input id="role-admin-input" type="radio" name="role-input" value="{{admin.id}}" {{admin.checked}}>
                     <label for="role-admin-input">
                         <span class="heading-small">Administrator</span>
-                        <ul class="question-advice">
-                            <li>View and change settings</li>
-                            <li>Edit data, e.g. refund a payment</li>
-                            <li>View data, e.g. transactions</li>
+                        <ul class="question-advice form-hint">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Manage settings</li>
                         </ul>
                     </label>
                 </div>
@@ -40,20 +40,20 @@ Edit team member permissions - GOV.UK Pay
                     <input id="role-view-and-refund-input" type="radio" name="role-input" value="{{viewAndRefund.id}}" {{viewAndRefund.checked}}>
                     <label for="role-view-and-refund-input">
                         <span class="heading-small">View and refund</span>
-                        <ul class="question-advice">
-                            <li>Edit data, e.g. refund a payment</li>
-                            <li>View data, e.g. transactions</li>
-                            <li>Cannot view or edit settings</li>
+                        <ul class="question-advice form-hint">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Cannot manage settings</li>
                         </ul>
                     </label>
                 </div>
                 <div class="multiple-choice">
                     <input id="role-view-input" type="radio" name="role-input" value="{{view.id}}" {{view.checked}}>
                     <label for="role-view-input"><span class="heading-small">View only</span>
-                        <ul class="question-advice">
-                            <li>View data, e.g. transactions</li>
-                            <li>Cannot edit data</li>
-                            <li>Cannot view or edit settings</li>
+                        <ul class="question-advice form-hint">
+                          <li>View transactions</li>
+                          <li>Cannot refund payments</li>
+                          <li>Cannot manage settings</li>
                         </ul>
                     </label>
                 </div>
@@ -68,7 +68,7 @@ Edit team member permissions - GOV.UK Pay
             </div>
         </div>
         <div class="form-group call-to-action-group">
-            <input type="submit" class="button" value="Submit">
+            <input type="submit" class="button" value="Save changes">
             <a id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
                 Cancel
             </a>
