@@ -8,6 +8,7 @@ var session = require('../test_helpers/mock_session.js')
 var userCreator = require('../test_helpers/user_creator.js')
 
 var ACCOUNT_ID = 15486734
+var USER_EXTERNAL_ID = 'efc2e588d92e42969d1fc32f61f5653b'
 var app
 var connectorMock = nock(process.env.CONNECTOR_URL)
 
@@ -20,7 +21,7 @@ describe('The transaction view - refund scenarios', function () {
   beforeEach(function (done) {
     let permissions = 'refunds:create'
     var user = session.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}], external_id: USER_EXTERNAL_ID
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -32,7 +33,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeWithRefund = 12345
     var expectedRefundRequestToConnector = {
       'amount': 1990,
-      'refund_amount_available': 5000
+      'refund_amount_available': 5000,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'refund_id': 'Just looking the status code of the response at the moment'
@@ -60,7 +62,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeWithRefund = 12345
     var expectedRefundRequestToConnector = {
       'amount': 1000,
-      'refund_amount_available': 5000
+      'refund_amount_available': 5000,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'refund_id': 'Just looking the status code of the response at the moment'
@@ -106,7 +109,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeId = 12345
     var expectedRefundRequestToConnector = {
       'amount': 99999,
-      'refund_amount_available': 5000
+      'refund_amount_available': 5000,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'reason': 'amount_not_available'
@@ -134,7 +138,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeId = 12345
     var expectedRefundRequestToConnector = {
       'amount': 0,
-      'refund_amount_available': 5000
+      'refund_amount_available': 5000,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'reason': 'amount_min_validation'
@@ -162,7 +167,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeId = 12345
     var expectedRefundRequestToConnector = {
       'amount': 1000,
-      'refund_amount_available': 0
+      'refund_amount_available': 0,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'reason': 'full'
@@ -190,7 +196,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeId = 12345
     var expectedRefundRequestToConnector = {
       'amount': 1000,
-      'refund_amount_available': 5000
+      'refund_amount_available': 5000,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'message': 'what happeneeed!'
@@ -218,7 +225,8 @@ describe('The transaction view - refund scenarios', function () {
     var chargeId = 12345
     var expectedRefundRequestToConnector = {
       'amount': 1000,
-      'refund_amount_available': 5000
+      'refund_amount_available': 5000,
+      'user_external_id': USER_EXTERNAL_ID
     }
     var mockRefundResponse = {
       'message': 'Precondition Failed!'

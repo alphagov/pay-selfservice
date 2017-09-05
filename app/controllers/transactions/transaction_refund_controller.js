@@ -17,6 +17,7 @@ const errReasonMessages = {
 
 module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
+  const userExternalId = req.user.externalId
   const charge = Charge(correlationId)
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
@@ -33,7 +34,7 @@ module.exports = (req, res) => {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
-  charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence)
+  charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId)
     .then(() => res.redirect(show))
     .catch(err => {
       renderErrorView(req, res, errReasonMessages[err] ? errReasonMessages[err] : errReasonMessages.REFUND_FAILED)
