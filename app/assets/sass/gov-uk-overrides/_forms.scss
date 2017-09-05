@@ -22,11 +22,6 @@ select.form-control {
   }
 }
 
-.form-hint {
-  @include core-14;
-  color: $black;
-}
-
 textarea {
   width: 100%;
   max-width: 600px;
