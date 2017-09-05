@@ -28,18 +28,20 @@ module.exports = function (correlationId) {
     return defer.promise
   }
 
-  var refund = function (accountId, chargeId, amount, refundAmountAvailable) {
+  var refund = function (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
     var defer = q.defer()
 
     var payload = {
       amount: amount,
-      refund_amount_available: refundAmountAvailable
+      refund_amount_available: refundAmountAvailable,
+      user_external_id: userExternalId
     }
 
     logger.log('info', 'Submitting a refund for a charge', {
       'chargeId': chargeId,
       'amount': amount,
-      'refundAmountAvailable': refundAmountAvailable
+      'refundAmountAvailable': refundAmountAvailable,
+      'userExternalId': userExternalId
     })
 
     var params = {
