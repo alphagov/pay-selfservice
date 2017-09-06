@@ -3,10 +3,13 @@
     {{#currentServiceName}}
     <h4 class="service-info--name heading-small">{{currentServiceName}}</h4>
     {{/currentServiceName}}
+    {{#currentGatewayAccount}}
     <p>
       <strong class="phase-tag">{{currentGatewayAccount.full_type}}</strong>
     </p>
+    {{/currentGatewayAccount}}
   </div>
+  {{^hideServiceNav}}
   <nav role="navigation" class="service-navigation">
 	  <ul class="service-navigation--list">
       {{#serviceNavigationItems}}
@@ -21,5 +24,5 @@
       {{/serviceNavigationItems}}
 	  </ul>
 	</nav>
-{{currentURL}}
+  {{/hideServiceNav}}
 </div>

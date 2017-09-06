@@ -1,4 +1,8 @@
 .transactions-filter {
+  .form-hint {
+    @include core-14;
+    color: $black;
+  }
 
   .form-label {
     strong {
