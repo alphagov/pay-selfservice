@@ -3,7 +3,12 @@
     {{$pageTitle}}GOV.UK Pay Self Service{{/pageTitle}}
 
     {{$homepageUrl}}/{{/homepageUrl}}
-    {{$globalHeaderText}}GOV.UK Pay{{/globalHeaderText}}
+    {{$globalHeaderText}}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{{/globalHeaderText}}
+
+    {{$propositionHeader}}
+      {{>includes/propositional_navigation_logged_out}}
+    {{/propositionHeader}}
+    {{$headerClass}}with-proposition{{/headerClass}}
 
     {{$head}}
       {{>includes/head}}

@@ -89,12 +89,7 @@
   }
 }
 
-.main-content {
-  @include respond-to(tablet) {
-    padding-left: $gutter;
-  }
-}
-
+system
 .navigation,
 .main-content {
   width: $full-width;
@@ -147,9 +142,11 @@
     margin-bottom: $gutter;
   }
 
-  @include media(tablet) {
-    float: left;
-    width: 80%;
-
+  &.settings-content {
+    @include media(tablet) {
+      float: left;
+      width: 80%;
+      padding-left: $gutter;
+    }
   }
 }
