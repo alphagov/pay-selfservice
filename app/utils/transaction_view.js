@@ -40,7 +40,7 @@ module.exports = {
       })
 
     connectorData.results.forEach(element => {
-      element.state_friendly = states.getDisplayName(element.type, element.state.status)
+      element.state_friendly = states.getDisplayName(element.transaction_type, element.state.status)
       element.amount = asGBP(element.amount)
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
       element.updated = dates.utcToDisplay(element.updated)

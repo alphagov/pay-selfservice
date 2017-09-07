@@ -127,7 +127,7 @@ function getQueryStringForParams (params) {
     display_size: params.pageSize || 100
   }
   if (params.payment_states) queryStrings.payment_states = params.payment_states.join(',')
-  if (params.refund_stated) queryStrings.refund_stated = params.refund_stated.join(',')
+  if (params.refund_states) queryStrings.refund_states = params.refund_states.join(',')
   return querystring.stringify(queryStrings)
 }
 

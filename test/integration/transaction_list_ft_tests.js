@@ -13,50 +13,26 @@ const session = require('../test_helpers/mock_session.js')
 const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
 const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
 const gatewayAccountId = 651342
-
-chai.use(chaiAsPromised)
-chai.should()
-var app
-
-var searchParameters = {}
-var CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
-var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
-
-var ALL_CARD_TYPES = {
+const {expect} = chai
+const searchParameters = {}
+const CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
+const ALL_CARD_TYPES = {
   'card_types': [
     {'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT'},
     {'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT'},
     {'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT'},
     {'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT'}]
 }
-var requestId = 'unique-request-id'
-var aCorrelationHeader = {
+const requestId = 'unique-request-id'
+const aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
 }
+const connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
 
-var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
-
-function connectorMockResponds (code, data, searchParameters) {
-  var queryStr = '?'
-  queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-    '&email=' + (searchParameters.email ? searchParameters.email : '') +
-    '&state=' + (searchParameters.state ? searchParameters.state : '') +
-    '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
-    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-    '&page=' + (searchParameters.page ? searchParameters.page : '1') +
-    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
-
-  return connectorMock.get(CONNECTOR_CHARGES_API_PATH + encodeURI(queryStr))
-    .reply(code, data)
-}
-
-function getTransactionList () {
-  return request(app)
-    .get(paths.transactions.index)
-    .set('Accept', 'application/json')
-    .set('x-request-id', requestId)
-}
+chai.use(chaiAsPromised)
+chai.should()
+let app
 
 describe('The /transactions endpoint', function () {
   afterEach(function () {
@@ -341,6 +317,33 @@ describe('The /transactions endpoint', function () {
       .end(done)
   })
 
+  it('should only allow filtering by charge states', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    var connectorData = {
+      'results': []
+    }
+
+    connectorMockResponds(200, connectorData, searchParameters)
+
+    getTransactionList()
+      .expect(200)
+      .expect(function (res) {
+        expect(res.body.eventStates).property('length').to.equal(7)
+        expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
+          'Created',
+          'Started',
+          'Submitted',
+          'Success',
+          'Error',
+          'Failed',
+          'Cancelled'
+        ])
+      })
+      .end(done)
+  })
+
   //
   // PP-1158 Fix 3 selfservice problematic tests in transaction_list_ft_tests
   //
@@ -396,3 +399,73 @@ describe('The /transactions endpoint', function () {
   //    .end(done);
   // });
 })
+
+describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' is enabled)', () => {
+  afterEach(function () {
+    nock.cleanAll()
+    app = null
+  })
+
+  beforeEach(function (done) {
+    let permissions = 'transactions:read'
+    var user = session.getUser({
+      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
+    })
+    user.features = ['REFUNDS_IN_TX_LIST']
+    app = session.getAppWithLoggedInUser(getApp(), user)
+
+    userCreator.mockUserResponse(user.toJson(), done)
+  })
+
+  it('should allow filtering by charge and refund states', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    var connectorData = {
+      'results': []
+    }
+
+    connectorMockResponds(200, connectorData, searchParameters)
+
+    getTransactionList()
+      .expect(200)
+      .expect(function (res) {
+        expect(res.body.eventStates).property('length').to.equal(10)
+        expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
+          'Created',
+          'Started',
+          'Submitted',
+          'Success',
+          'Error',
+          'Failed',
+          'Cancelled',
+          'Refund submitted',
+          'Refund error',
+          'Refund success'
+        ])
+      })
+      .end(done)
+  })
+})
+
+function connectorMockResponds (code, data, searchParameters) {
+  var queryStr = '?'
+  queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
+    '&email=' + (searchParameters.email ? searchParameters.email : '') +
+    '&state=' + (searchParameters.state ? searchParameters.state : '') +
+    '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
+    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
+    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
+    '&page=' + (searchParameters.page ? searchParameters.page : '1') +
+    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
+
+  return connectorMock.get(CONNECTOR_CHARGES_API_PATH + encodeURI(queryStr))
+    .reply(code, data)
+}
+
+function getTransactionList () {
+  return request(app)
+    .get(paths.transactions.index)
+    .set('Accept', 'application/json')
+    .set('x-request-id', requestId)
+}

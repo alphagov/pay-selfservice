@@ -79,7 +79,7 @@ class User {
     return json
   }
 
-  hasFeature(featureName) {
+  hasFeature (featureName) {
     return this.features.includes(featureName)
   }
 
