@@ -49,6 +49,9 @@ module.exports = {
       element.link = router.generateRoute(router.paths.transactions.detail, {
         chargeId: element.charge_id
       })
+      if (element.transaction_type && element.transaction_type.toLowerCase() === 'refund') {
+        element.amount = `–${element.amount}`
+      }
       delete element.created_date
     })
 
