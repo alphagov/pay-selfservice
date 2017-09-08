@@ -14,7 +14,7 @@ Enter security code - GOV.UK Pay
   </ul>
 </div>
 {{/flash.error}}
-<div class="column-half no-padding" id="display-otp-login">
+<div class="column-two-thirds" id="display-otp-login">
   <h1 class="form-title heading-large">Check your phone</h1>
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -26,7 +26,7 @@ Enter security code - GOV.UK Pay
         <span class="error-message">{{flash.error}}</span>
         {{/flash.error}}
       </label>
-      <input class="form-control form-control-5em" data-module="" id="sms_code" name="code" rows="6" type="text" value="">
+      <input class="form-control" data-module="" id="sms_code" name="code" rows="6" type="text" value="">
     </div>
     <div class="form-group">
       <input class="button" type="submit" value="Continue">

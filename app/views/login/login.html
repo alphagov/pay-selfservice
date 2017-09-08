@@ -11,7 +11,7 @@ Sign in to GOV.UK Pay
 
 {{$mainContent}}
 
-<div class="column-two-thirds no-padding">
+<div class="column-two-thirds">
   {{#flash.error}}
   <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
     <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
@@ -29,7 +29,7 @@ Sign in to GOV.UK Pay
     </ul>
   </div>
   {{/flash.error}}
-  
+
   <h1 class="heading-large">Sign in</h1>
 
   <form action="/login" method="post" name="userLoginForm" class="push-bottom">

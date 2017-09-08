@@ -5,7 +5,7 @@ Enter security code - GOV.UK Pay
 {{/pageTitle}}
 
 {{$mainContent}}
-<div class="column-half no-padding">
+<div class="column-two-thirds">
   <form action="{{routes.registerUser.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title heading-large">
@@ -14,7 +14,7 @@ Enter security code - GOV.UK Pay
     <p>We've sent you a text message with a security code</p>
     <div class="form-group">
       <label class="form-label" for="verify-code">Text message code</label>
-      <input class="form-control form-control-5em" data-module="" id="verify-code" name="verify-code" rows="6" type="text" value="">
+      <input class="form-control" data-module="" id="verify-code" name="verify-code" rows="6" type="text" value="">
     </div>
     <div class="form-group">
       <input class="button" type="submit" value="Continue">

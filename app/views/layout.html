@@ -15,7 +15,7 @@
     {{$bodyClasses}}{{$classesOnBodyTag}}{{/classesOnBodyTag}} {{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
 
     {{$homepageUrl}}/{{/homepageUrl}}
-    {{$globalHeaderText}}GOV.UK <span>Pay</span>{{/globalHeaderText}}
+    {{$globalHeaderText}}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{{/globalHeaderText}}
 
     {{$content}}
         {{>includes/flash}}
@@ -25,13 +25,13 @@
 
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
             {{$full_width_content}}{{/full_width_content}}
-            {{#showSettingsNav}}
-                {{> includes/side_navigation }}
-            {{/showSettingsNav}}
-            <div class="main-content">
-                <div class="inner">
-                    {{$mainContent}}{{/mainContent}}
-                </div>
+            <div class="grid-row">
+              {{#showSettingsNav}}
+                  {{> includes/side_navigation }}
+              {{/showSettingsNav}}
+              <div class="column-two-thirds">
+                  {{$mainContent}}{{/mainContent}}
+              </div>
             </div>
         </main>
     {{/content}}

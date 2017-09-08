@@ -89,27 +89,10 @@
   }
 }
 
-.main-content {
-  @include respond-to(tablet) {
-    padding-left: $gutter;
-  }
-}
-
-.navigation,
-.main-content {
-  width: $full-width;
-  .inner {
-    padding: 0;
-  }
-}
-
 // Navigation styles
 .navigation {
-
-  .inner {
-    padding: 2px 0 30px;
-  }
   ul {
+    padding: 2px 0 30px;
     li {
       list-style: none;
 
@@ -131,25 +114,5 @@
         }
       }
     }
-  }
-
-  @include respond-to(tablet) {
-    float: left;
-    width: 20%;
-  }
-}
-
-// Main content styles
-.main-content {
-
-  .tokens {
-    @include bold-27;
-    margin-bottom: $gutter;
-  }
-
-  @include media(tablet) {
-    float: left;
-    width: 80%;
-
   }
 }
