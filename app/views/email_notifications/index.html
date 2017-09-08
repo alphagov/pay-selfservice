@@ -6,6 +6,10 @@ Email notifications - {{currentServiceName}} {{currentGatewayAccount.full_type}}
 
 {{$mainContent}}
 
+{{^permissions.email_notification_toggle_update}}
+  {{>settings_read_only}}
+{{/permissions.email_notification_toggle_update}}
+
 <h1 class="page-title">
   Email notifications
 </h1>

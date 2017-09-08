@@ -1,0 +1,10 @@
+.info-box {
+  margin-bottom: $gutter;
+  padding: $gutter / 2;
+  border-left: 10px solid $yellow;
+  background-color: transparentize($yellow, .75);
+
+  p {
+    margin-bottom: 0;
+  }
+}

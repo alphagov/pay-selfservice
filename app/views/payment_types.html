@@ -10,9 +10,15 @@ Payment types - GOV.UK Pay
 
 {{$mainContent}}
 
+{{^permissions.payment_types_update}}
+  {{>settings_read_only}}
+{{/permissions.payment_types_update}}
+
 <h1 class="page-title">Payment types</h1>
 
+{{#permissions.payment_types_update}}
 <h2 class="heading-medium remove-top-margin">Manage accepted payment types</h2>
+{{/permissions.payment_types_update}}
 
 <div id="payment-types">
 {{$page_content}}{{/page_content}}

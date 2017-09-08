@@ -55,9 +55,9 @@ Payment types - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV
         </tbody>
     </table>
 </div>
-<a id="payment-types-manage-button" href="{{routes.paymentTypes.selectType}}" class="button">
-    Manage
-</a>
+{{#permissions.payment_types_update}}
+<a id="payment-types-manage-button" href="{{routes.paymentTypes.selectType}}" class="button">Manage</a>
+{{/permissions.payment_types_update}}
 
 {{/permissions.payment_types_read}}
 {{/page_content}}

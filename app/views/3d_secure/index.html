@@ -6,6 +6,10 @@
 
 {{$mainContent}}
 
+{{^permissions.toggle_3ds_update}}
+  {{>settings_read_only}}
+{{/permissions.toggle_3ds_update}}
+
 {{#supports3ds}}
 {{#permissions.toggle_3ds_read}}
 {{#justToggled}}
@@ -87,7 +91,7 @@
 
 {{^supports3ds}}
 <h1 class="page-title">3D Secure</h1>
-<p>3D Secure is not currently supported for this Payment Service Provider.</p>
+<p>3D Secure is not currently supported for this payment service provider (PSP).</p>
 {{/supports3ds}}
 
 {{/mainContent}}
