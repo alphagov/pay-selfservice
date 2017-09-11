@@ -220,7 +220,7 @@ describe('The toggle 3D Secure page when 3D Secure is not supported', function (
 
     let body = renderTemplate('3d_secure/index', templateData)
 
-    body.should.contain('3D Secure is not currently supported for this Payment Service Provider.')
+    body.should.contain('3D Secure is not currently supported for this payment service provider (PSP).')
   })
 
   it('should not say that 3D Secure is on or off', function () {

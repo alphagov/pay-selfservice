@@ -41,7 +41,7 @@ describe('navigation menu', function () {
 
   it('should render API keys navigation link when user have tokens read permission', function () {
     let testPermissions = {
-      tokens_read: true
+      tokens_update: true
     }
     let templateData = {
       permissions: testPermissions,
@@ -56,8 +56,8 @@ describe('navigation menu', function () {
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission', function () {
     let testPermissions = {
-      tokens_read: false,
-      gateway_credentials_read: true,
+      tokens_update: false,
+      gateway_credentials_update: true,
       service_name_read: false,
       payment_types_read: false,
       toggle_3ds_read: false,
@@ -76,8 +76,8 @@ describe('navigation menu', function () {
 
   it('should render Payment types navigation link when user have payment types read permission', function () {
     let testPermissions = {
-      tokens_read: false,
-      gateway_credentials_read: false,
+      tokens_update: false,
+      gateway_credentials_update: false,
       service_name_read: false,
       payment_types_read: true,
       toggle_3ds_read: false,
@@ -96,8 +96,8 @@ describe('navigation menu', function () {
 
   it('should render 3D Secure navigation link when user have email notification template read permission', function () {
     let testPermissions = {
-      tokens_read: false,
-      gateway_credentials_read: false,
+      tokens_update: false,
+      gateway_credentials_update: false,
       service_name_read: false,
       payment_types_read: false,
       toggle_3ds_read: true,
@@ -116,8 +116,8 @@ describe('navigation menu', function () {
 
   it('should render Email notifications navigation link when user have email notification template read permission', function () {
     let testPermissions = {
-      tokens_read: false,
-      gateway_credentials_read: false,
+      tokens_update: false,
+      gateway_credentials_update: false,
       service_name_read: false,
       payment_types_read: false,
       toggle_3ds_read: false,

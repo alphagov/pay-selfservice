@@ -17,7 +17,8 @@ var templateData = {
     'selected': true
   },
   permissions: {
-    'payment_types_read': true
+    'payment_types_read': true,
+    'payment_types_update': true
   }
 }
 

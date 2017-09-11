@@ -9,10 +9,10 @@ const serviceNavigationItems = (originalUrl, permissions) => {
     settingsPath = paths.devTokens.index
   } else if (permissions.gateway_credentials_read) {
     settingsPath = paths.credentials.index
-  } else if (permissions.payment_types_read) {
-    settingsPath = paths.paymentTypes.summary
   } else if (permissions.toggle_3ds_read) {
     settingsPath = paths.toggle3ds.index
+  } else if (permissions.payment_types_read) {
+    settingsPath = paths.paymentTypes.summary
   } else if (permissions.email_notification_template_read) {
     settingsPath = paths.emailNotifications.index
   }
@@ -62,21 +62,14 @@ const adminNavigationItems = (originalUrl, permissions) => {
       name: 'API keys',
       url: paths.devTokens.index,
       current: pathLookup(originalUrl, paths.devTokens.index),
-      permissions: permissions.tokens_read
+      permissions: permissions.tokens_update || false
     },
     {
       id: 'navigation-menu-gateway-credentials',
       name: 'Account credentials',
       url: paths.credentials.index,
       current: pathLookup(originalUrl, paths.credentials.index),
-      permissions: permissions.gateway_credentials_read
-    },
-    {
-      id: 'navigation-menu-payment-types',
-      name: 'Payment types',
-      url: paths.paymentTypes.summary,
-      current: pathLookup(originalUrl, paths.paymentTypes.summary),
-      permissions: permissions.payment_types_read
+      permissions: permissions.gateway_credentials_update || false
     },
     {
       id: 'navigation-menu-3d-secure',
@@ -84,6 +77,13 @@ const adminNavigationItems = (originalUrl, permissions) => {
       url: paths.toggle3ds.index,
       current: pathLookup(originalUrl, paths.toggle3ds.index),
       permissions: permissions.toggle_3ds_read
+    },
+    {
+      id: 'navigation-menu-payment-types',
+      name: 'Payment types',
+      url: paths.paymentTypes.summary,
+      current: pathLookup(originalUrl, paths.paymentTypes.summary),
+      permissions: permissions.payment_types_read
     },
     {
       id: 'navigation-menu-email-notifications',
