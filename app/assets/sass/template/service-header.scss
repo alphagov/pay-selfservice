@@ -43,7 +43,11 @@
 
     a:link,
     a:visited {
+      color: $link-colour;
       text-decoration: none;
+    }
+    a:focus {
+      color: $black;
     }
 
     &-active {
