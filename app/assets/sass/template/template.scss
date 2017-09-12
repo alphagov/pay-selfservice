@@ -105,11 +105,13 @@
       }
 
       a {
-        // color: $link-colour;
         display: block;
         padding: 5px 0;
         text-decoration: none;
-        &:active {
+        &:link, &:visited {
+          color: $link-colour;
+        }
+        &:focus, &:active {
           color: $black;
         }
       }
