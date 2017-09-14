@@ -36,7 +36,7 @@ module.exports = (req, res) => {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
-  charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId)
+  return charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId)
     .then(
       () => {
         req.flash('generic', reasonMessages['refund_complete'])
