@@ -1,6 +1,14 @@
-{{#flash.genericError}}
-<div class="flash-container"><p class="notification generic-error"> {{flash.genericError}} </p></div>
-{{/flash.genericError}}
-{{#flash.generic}}
-<div class="flash-container"><p class="notification generic-flash">{{flash.generic}}</p></div>
-{{/flash.generic}}
+{{#flash}}
+<div class="grid-row">
+  {{#flash.genericError}}
+  <div class="column-two-thirds flash-container">
+    <p class="notification generic-error"> {{{flash.genericError}}} </p>
+  </div>
+  {{/flash.genericError}}
+  {{#flash.generic}}
+  <div class="column-two-thirds flash-container">
+    <p class="notification generic-flash">{{{flash.generic}}}</p>
+  </div>
+  {{/flash.generic}}
+</div>
+{{/flash}}

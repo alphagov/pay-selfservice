@@ -1,10 +1,9 @@
 .notification {
-  margin-top: $gutter;
+  @include core-19;
   padding: $gutter $gutter / 2;
   border: 5px solid $green;
   color: $green;
   font-weight: bold;
-  text-align: center;
 }
 
 .generic-error {
