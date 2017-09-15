@@ -26,8 +26,9 @@ const logLoginAction = function (req, message) {
 
 module.exports.loggedIn = function (req, res) {
   logLoginAction(req, 'successfully logged in')
-  response(req, res, 'login/logged_in', {
-    name: req.user.username
+  response(req, res, 'dashboard/index', {
+    name: req.user.username,
+    serviceId: req.service.externalId
   })
 }
 

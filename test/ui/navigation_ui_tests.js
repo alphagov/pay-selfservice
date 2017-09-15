@@ -16,7 +16,7 @@ describe('navigation menu', function () {
       serviceNavigationItems: serviceNavigationItems('/', testPermissions)
     }
 
-    let body = renderTemplate('login/logged_in', templateData)
+    let body = renderTemplate('dashboard/index', templateData)
 
     body.should.containSelector('.service-navigation--list-item:nth-child(1)').withExactText('Dashboard')
   })
@@ -34,7 +34,7 @@ describe('navigation menu', function () {
       serviceNavigationItems: serviceNavigationItems('/', testPermissions)
     }
 
-    let body = renderTemplate('login/logged_in', templateData)
+    let body = renderTemplate('dashboard/index', templateData)
 
     body.should.containSelector('.service-navigation--list-item:nth-child(2)').withExactText('Transactions')
   })

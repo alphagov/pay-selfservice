@@ -1,3 +1,11 @@
+.form-control {
+  &.large {
+    @include respond-to(tablet) {
+      width: 100%;
+    }
+  }
+}
+
 /********** Spacing **********/
 
 %form-module-spacing {

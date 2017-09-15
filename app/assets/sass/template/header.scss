@@ -142,7 +142,7 @@
 
 .phase-banner {
   display: block;
-  margin-top: 10px;
+  margin: $gutter / 3 auto $gutter;
   padding: 10px 0 0;
   border-bottom: 1px solid $border-colour;
   @extend %contain-floats;

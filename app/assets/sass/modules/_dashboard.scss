@@ -1,0 +1,31 @@
+.first-steps {
+  &__title {
+    margin-bottom: $gutter;
+  }
+
+  &-box {
+    display: flex;
+
+    a {
+      display: block;
+      position: relative;
+      top: 0;
+      bottom: 0;
+      padding: $gutter / 2;
+      border-left: 5px solid $govuk-blue;
+      background-color: lighten($govuk-blue, 61%);
+      text-decoration: none;
+    }
+
+    &__heading {
+      margin-top: 0;
+      text-decoration: underline;
+    }
+
+    p {
+      @include core-16;
+      margin-bottom: 0;
+      color: $black;
+    }
+  }
+}

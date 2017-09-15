@@ -41,7 +41,7 @@ describe('The logged in endpoint', function () {
       .get('/')
       .expect(200)
       .expect(function (res) {
-        assert(res.text.indexOf(user.username) !== -1)
+        assert(res.text.indexOf('Welcome') !== -1)
       })
       .end(done)
   })

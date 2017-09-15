@@ -1,4 +1,4 @@
-.marked-grid {
+.flex-grid {
   &--row {
     @extend .grid-row;
     display: flex;
@@ -27,7 +27,20 @@
     @include media(tablet) {
       flex: 1;
 
-      &:nth-child(even) {
+      &.marked:nth-child(even) {
+        border-right: solid 1px $grey-2;
+      }
+    }
+  }
+
+  &--column-third {
+    @extend .column-third;
+    flex: 1 100%;
+
+    @include media(tablet) {
+      flex: 1;
+
+      &.marked:nth-child(even) {
         border-right: solid 1px $grey-2;
       }
     }
