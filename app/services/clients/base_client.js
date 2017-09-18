@@ -73,6 +73,9 @@ const _request = function request (methodName, url, args, callback) {
     headers: getHeaders(args)
   }
 
+  if (args.qs) {
+    requestOptions.qs = args.qs
+  }
   if (args.payload) {
     requestOptions.body = args.payload
   }

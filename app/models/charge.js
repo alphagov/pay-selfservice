@@ -1,9 +1,12 @@
-var q = require('q')
-var logger = require('winston')
-var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
-var connector = new ConnectorClient(process.env.CONNECTOR_URL)
+'use strict';
 
-var transactionView = require('../utils/transaction_view.js')
+const q = require('q')
+const logger = require('winston')
+const lodash = require('lodash')
+const userService = require('../services/user_service')
+const transactionView = require('../utils/transaction_view.js')
+const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
@@ -16,9 +19,20 @@ module.exports = function (correlationId) {
       correlationId: correlationId
     }
 
-    connector.getCharge(params, function (charge) {
-      connector.getChargeEvents(params, function (events) {
-        defer.resolve(transactionView.buildPaymentView(charge, events))
+    connector.getCharge(params, function (chargeData) {
+      connector.getChargeEvents(params, function (eventsData) {
+        let user_ids = eventsData.events.filter(event => event.submitted_by)
+          .map(event => event.submitted_by)
+        user_ids = lodash.uniq(user_ids)
+        if (user_ids.length <= 0) {
+          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData))
+        } else {
+          userService.findMultipleByExternalIds(user_ids, correlationId)
+            .then(users => {
+              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
+            })
+            .catch(err => findWithEventsError(err, undefined, defer))
+        }
       }).on('connectorError', (err, response) => {
         findWithEventsError(err, response, defer)
       })
@@ -74,9 +88,10 @@ module.exports = function (correlationId) {
   }
 
   var findWithEventsError = function (err, response, defer) {
+
+    if (response && response.statusCode === 404 || err && err.errorCode === 404) return defer.reject('NOT_FOUND')
+    if (response && response.statusCode !== 200 || err && err.errorCode > 200) return defer.reject('GET_FAILED')
     if (err) defer.reject('CLIENT_UNAVAILABLE')
-    if (response && response.statusCode === 404) return defer.reject('NOT_FOUND')
-    if (response && response.statusCode !== 200) return defer.reject('GET_FAILED')
 
     defer.reject('CLIENT_UNAVAILABLE')
   }

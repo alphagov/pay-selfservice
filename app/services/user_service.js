@@ -54,6 +54,15 @@ module.exports = {
   },
 
   /**
+   * @param {Array} externalId
+   * @param {String} correlationId
+   * @returns {Promise<User>}
+   */
+  findMultipleByExternalIds: function (externalIds, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getUsersByExternalIds(externalIds)
+  },
+
+  /**
    * @param {User} user
    * @param correlationId
    * @returns {Promise}

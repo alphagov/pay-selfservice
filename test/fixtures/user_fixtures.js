@@ -34,7 +34,7 @@ function randomServiceId () {
 }
 
 function randomTelephoneNumber () {
-  return String(Math.floor(Math.random() * 1000000) + 1)
+  return `07700 9${String(Math.floor(Math.random() * 10000) + 1)}`
 }
 
 module.exports = {
@@ -161,6 +161,59 @@ module.exports = {
       },
       getAsObject: () => {
         return new User(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
+  },
+
+  /**
+   * @param request Params override response
+   * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
+   */
+  validMultipleUserResponse: (opts = []) => {
+    if(opts.length === 0) opts.push({})
+    const data = [];
+
+    opts.forEach(intendedUser => {
+
+      const externalId = intendedUser.external_id || random.randomUuid()
+      const username = intendedUser.username || randomUsername()
+      const gatewayAccountIds = intendedUser.gateway_account_ids || [randomAccountId(), randomAccountId()]
+
+      data.push({
+        external_id: externalId,
+        username: username,
+        email: intendedUser.email || `${username}@example.com`,
+        service_roles: intendedUser.service_roles || [{
+          service: {
+            name: 'System Generated',
+            external_id: random.randomUuid(),
+            gateway_account_ids: gatewayAccountIds
+          },
+          role: {
+            name: 'admin',
+            description: 'Administrator',
+            permissions: intendedUser.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
+          }
+        }],
+        otp_key: intendedUser.otp_key || random.randomUuid(),
+        telephone_number: intendedUser.telephone_number || randomTelephoneNumber(),
+        '_links': [{
+          'href': `http://adminusers.service/v1/api/users/${externalId}`,
+          'rel': 'self',
+          'method': 'GET'
+        }]
+      })
+    })
+
+    return {
+      getPactified: () => {
+        return data.map(pactUsers.pactify)
+      },
+      getAsObject: () => {
+        return data.map(datum => new User(datum))
       },
       getPlain: () => {
         return data
