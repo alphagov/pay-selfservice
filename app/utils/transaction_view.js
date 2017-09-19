@@ -1,6 +1,6 @@
 'usr strict'
 
-const _ = require('lodash')
+const lodash = require('lodash')
 const changeCase = require('change-case')
 const dates = require('../utils/dates.js')
 const router = require('../routes.js')
@@ -29,7 +29,7 @@ module.exports = {
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
-    connectorData.cardBrands = _.uniqBy(allCards.card_types, 'brand')
+    connectorData.cardBrands = lodash.uniqBy(allCards.card_types, 'brand')
       .map((card) => {
         var value = {}
         value.text = card.label
@@ -71,7 +71,7 @@ module.exports = {
     return connectorData
   },
 
-  buildPaymentView: function (chargeData, eventsData) {
+  buildPaymentView: function (chargeData, eventsData, users = []) {
     chargeData.state_friendly = changeCase.upperCaseFirst(chargeData.state.status.toLowerCase())
 
     chargeData.amount = asGBP(chargeData.amount)
@@ -99,6 +99,11 @@ module.exports = {
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
     chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
+    chargeData.events.forEach(event => {
+      if (event.submitted_by && event.state_friendly === 'Refund submitted') {
+        event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')
+      }
+    })
     delete chargeData['links']
     delete chargeData['return_url']
     return chargeData

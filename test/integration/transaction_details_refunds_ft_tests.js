@@ -13,7 +13,6 @@ var app
 var connectorMock = nock(process.env.CONNECTOR_URL)
 
 describe('The transaction view - refund scenarios', function () {
-
   afterEach(function () {
     nock.cleanAll()
     app = null

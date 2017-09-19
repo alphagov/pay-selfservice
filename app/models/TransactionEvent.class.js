@@ -13,6 +13,7 @@ class TransactionEvent {
     this.amount = eventData.amount
     this.updated = eventData.updated
     this.refund_reference = eventData.refund_reference
+    this.submitted_by = eventData.submitted_by
     this.state = {
       status: lodash.get(eventData, 'state.status'),
       code: lodash.get(eventData, 'state.code'),

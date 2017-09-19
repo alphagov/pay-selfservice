@@ -173,11 +173,10 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validMultipleUserResponse: (opts = []) => {
-    if(opts.length === 0) opts.push({})
-    const data = [];
+    if (opts.length === 0) opts.push({})
+    const data = []
 
     opts.forEach(intendedUser => {
-
       const externalId = intendedUser.external_id || random.randomUuid()
       const username = intendedUser.username || randomUsername()
       const gatewayAccountIds = intendedUser.gateway_account_ids || [randomAccountId(), randomAccountId()]

@@ -8,7 +8,7 @@ let cheerio = require('cheerio')
 chai.should()
 chai.use(chaiAsPromised)
 
-require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
+require('../test_helpers/html_assertions.js')
 let renderTemplate = require(path.join(__dirname, '/../test_helpers/test_renderer.js')).render
 
 describe('The transaction details view', function () {
@@ -191,7 +191,7 @@ describe('The transaction details view', function () {
     })
   })
 
-  it('should render transaction details when payment has been refunded', function () {
+  it.only('should render transaction details when payment has been refunded', function () {
     let templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
@@ -227,8 +227,9 @@ describe('The transaction details view', function () {
           'type': 'REFUND',
           'chargeId': 1,
           'refund_reference': 'refund001',
-          'state:': {'status': 'success', 'finished': true},
-          'state_friendly': 'Payment succeeded',
+          'state:': {'status': 'submitted', 'finished': false},
+          'state_friendly': 'Refund submitted',
+          'submitted_by_friendly': 'bob@example.com',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '-£10.00',
           'updated_friendly': '24 January 2015 13:21:05'
@@ -294,17 +295,36 @@ describe('The transaction details view', function () {
     $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number)
     $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date)
 
-    templateData.events.forEach(function (transactionData, ix) {
-      body.should.containSelector('table.transaction-events')
-          .havingRowAt(ix + 1)
-          .withTableDataAt(1, templateData.events[ix].state_friendly)
-          .withTableDataAt(2, templateData.events[ix].amount_friendly)
-          .withTableDataAt(3, templateData.events[ix].updated_friendly)
+    body.should.containSelector(`tr[data-gateway-refund-id="${templateData.events[0].refund_reference}"]`)
+    body.should.containSelector('table.transaction-events')
+      .havingRowAt(1)
+      .withTableDataAt(1, templateData.events[0].state_friendly + `\n            \n            by  ${templateData.events[0].submitted_by_friendly}`)
+      .withTableDataAt(2, templateData.events[0].amount_friendly)
+      .withTableDataAt(3, templateData.events[0].updated_friendly)
 
-      if (templateData.events[ix].type === 'REFUND') {
-        body.should.containSelector(`tr[data-gateway-refund-id="${templateData.events[ix].refund_reference}"]`)
-      }
-    })
+    body.should.containSelector('table.transaction-events')
+      .havingRowAt(2)
+      .withTableDataAt(1, templateData.events[1].state_friendly)
+      .withTableDataAt(2, templateData.events[1].amount_friendly)
+      .withTableDataAt(3, templateData.events[1].updated_friendly)
+
+    body.should.containSelector('table.transaction-events')
+      .havingRowAt(3)
+      .withTableDataAt(1, templateData.events[2].state_friendly)
+      .withTableDataAt(2, templateData.events[2].amount_friendly)
+      .withTableDataAt(3, templateData.events[2].updated_friendly)
+
+    body.should.containSelector('table.transaction-events')
+      .havingRowAt(4)
+      .withTableDataAt(1, templateData.events[3].state_friendly)
+      .withTableDataAt(2, templateData.events[3].amount_friendly)
+      .withTableDataAt(3, templateData.events[3].updated_friendly)
+
+    body.should.containSelector('table.transaction-events')
+      .havingRowAt(5)
+      .withTableDataAt(1, templateData.events[4].state_friendly)
+      .withTableDataAt(2, templateData.events[4].amount_friendly)
+      .withTableDataAt(3, templateData.events[4].updated_friendly)
   })
 
   it('should not render transaction amount if no permission', function () {

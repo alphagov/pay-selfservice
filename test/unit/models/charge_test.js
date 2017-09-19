@@ -1,17 +1,16 @@
-var path = require('path')
+const path = require('path')
 require(path.join(__dirname, '/../../test_helpers/html_assertions.js'))
-var assert = require('assert')
-var proxyquire = require('proxyquire')
+const assert = require('assert')
+const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-var _ = require('lodash')
-var expect = require('chai').expect
+const expect = require('chai').expect
 const userFixtures = require('../../fixtures/user_fixtures')
-var nock = require('nock')
+const nock = require('nock')
 const User = require('../../../app/models/User.class')
-var wrongPromise = function (data) {
+const wrongPromise = function (data) {
   throw new Error('Promise was unexpectedly fulfilled.')
 }
-var Charge, buildPaymentView, user;
+let Charge, buildPaymentView, user
 
 describe('charge model', function () {
   beforeEach(() => {
@@ -31,13 +30,13 @@ describe('charge model', function () {
       })
 
       it('should return client unavailable', function () {
-          var chargeModel = Charge('correlation-id')
-          return chargeModel.findWithEvents(1, 1).then(wrongPromise,
+        var chargeModel = Charge('correlation-id')
+        return chargeModel.findWithEvents(1, 1).then(wrongPromise,
             function rejected (error) {
               assert.equal(error, 'CLIENT_UNAVAILABLE')
             }
           )
-        }
+      }
       )
     })
 
@@ -64,13 +63,8 @@ describe('charge model', function () {
     })
 
     describe('when adminusers returns incorrect response code', function () {
-      var defaultCorrelationHeader = {
-        reqheaders: {'x-request-id': 'some-unique-id'}
-      }
-
       before(function () {
         nock.cleanAll()
-
 
         nock(process.env.CONNECTOR_URL)
           .get('/v1/api/accounts/1/charges/2')
@@ -78,12 +72,11 @@ describe('charge model', function () {
 
         nock(process.env.CONNECTOR_URL)
           .get('/v1/api/accounts/1/charges/2/events')
-          .reply(200, {events:[{ submitted_by: 'abc123' }]})
+          .reply(200, {events: [{ submitted_by: 'abc123' }]})
 
         nock(process.env.ADMINUSERS_URL)
           .get('/v1/api/users?ids=abc123')
           .reply(405)
-
       })
 
       it('should return get_failed', function () {
@@ -102,11 +95,11 @@ describe('charge model', function () {
 
         nock(process.env.CONNECTOR_URL)
           .get('/v1/api/accounts/1/charges/2')
-          .reply(200, { foo: 'bar'})
+          .reply(200, {foo: 'bar'})
 
         nock(process.env.CONNECTOR_URL)
           .get('/v1/api/accounts/1/charges/2/events')
-          .reply(200, {events:[{ submitted_by: user.external_id }]})
+          .reply(200, {events: [{submitted_by: user.external_id}]})
 
         nock(process.env.ADMINUSERS_URL)
           .get(`/v1/api/users?ids=${user.external_id}`)
@@ -120,7 +113,7 @@ describe('charge model', function () {
           expect(buildPaymentView.args.length).to.equal(1)
           expect(buildPaymentView.args[0].length).to.equal(3)
           expect(buildPaymentView.args[0][0]).to.deep.equal({foo: 'bar'})
-          expect(buildPaymentView.args[0][1]).to.deep.equal({events:[{submitted_by: user.external_id}]})
+          expect(buildPaymentView.args[0][1]).to.deep.equal({events: [{submitted_by: user.external_id}]})
           expect(buildPaymentView.args[0][2]).to.deep.equal([new User(user)])
         }, wrongPromise)
       })

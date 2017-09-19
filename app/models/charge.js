@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const q = require('q')
 const logger = require('winston')
@@ -11,7 +11,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
 
-  var findWithEvents = function (accountId, chargeId) {
+  function findWithEvents (accountId, chargeId) {
     var defer = q.defer()
     var params = {
       gatewayAccountId: accountId,
@@ -21,13 +21,13 @@ module.exports = function (correlationId) {
 
     connector.getCharge(params, function (chargeData) {
       connector.getChargeEvents(params, function (eventsData) {
-        let user_ids = eventsData.events.filter(event => event.submitted_by)
+        let userIds = eventsData.events.filter(event => event.submitted_by)
           .map(event => event.submitted_by)
-        user_ids = lodash.uniq(user_ids)
-        if (user_ids.length <= 0) {
+        userIds = lodash.uniq(userIds)
+        if (userIds.length <= 0) {
           defer.resolve(transactionView.buildPaymentView(chargeData, eventsData))
         } else {
-          userService.findMultipleByExternalIds(user_ids, correlationId)
+          userService.findMultipleByExternalIds(userIds, correlationId)
             .then(users => {
               defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
             })
@@ -42,7 +42,7 @@ module.exports = function (correlationId) {
     return defer.promise
   }
 
-  var refund = function (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
+  function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
     var defer = q.defer()
 
     var payload = {
@@ -87,10 +87,10 @@ module.exports = function (correlationId) {
     return defer.promise
   }
 
-  var findWithEventsError = function (err, response, defer) {
-
-    if (response && response.statusCode === 404 || err && err.errorCode === 404) return defer.reject('NOT_FOUND')
-    if (response && response.statusCode !== 200 || err && err.errorCode > 200) return defer.reject('GET_FAILED')
+  function findWithEventsError (err, response, defer) {
+    const code = (response || {}).statusCode || (err || {}).errorCode
+    if (code === 404) return defer.reject('NOT_FOUND')
+    if (code > 200) return defer.reject('GET_FAILED')
     if (err) defer.reject('CLIENT_UNAVAILABLE')
 
     defer.reject('CLIENT_UNAVAILABLE')
