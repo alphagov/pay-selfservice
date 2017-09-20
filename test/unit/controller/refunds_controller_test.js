@@ -54,7 +54,7 @@ describe('Refund scenario:', function () {
 
     refundController(req, res).then(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('generic', 'Refund successful<br/> It may take up to 6 days to process.')).to.equal(true)
+      expect(req.flash.calledWith('generic', '<h2>Refund successful</h2> It may take up to 6 days to process.')).to.equal(true)
     }).should.notify(done)
   })
 
@@ -71,7 +71,7 @@ describe('Refund scenario:', function () {
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', 'Select another amount<br/> The amount you tried to refund is greater than the transaction total')).to.equal(true)
+      expect(req.flash.calledWith('genericError', '<h2>Select another amount</h2> The amount you tried to refund is greater than the transaction total')).to.equal(true)
     }).should.notify(done)
   })
 
@@ -88,7 +88,7 @@ describe('Refund scenario:', function () {
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', 'Select another amount<br/> The amount you tried to refund is less than the accepted minimum for this transaction.')).to.equal(true)
+      expect(req.flash.calledWith('genericError', '<h2>Select another amount</h2> The amount you tried to refund is less than the accepted minimum for this transaction.')).to.equal(true)
     }).should.notify(done)
   })
 
@@ -105,7 +105,7 @@ describe('Refund scenario:', function () {
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', 'Repeat request<br/> This refund request has already been submitted. Refresh your transactions list.')).to.equal(true)
+      expect(req.flash.calledWith('genericError', '<h2>Repeat request</h2> This refund request has already been submitted. Refresh your transactions list.')).to.equal(true)
     }).should.notify(done)
   })
 
@@ -122,7 +122,7 @@ describe('Refund scenario:', function () {
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('Repeat request<br/> This refund request has already been submitted. Refresh your transactions list.')).to.equal(true)
+      expect(req.flash.calledWith('Repeat request<h2> This </h2>refund request has already been submitted. Refresh your transactions list.')).to.equal(true)
     }).should.notify(done)
   })
 
@@ -139,7 +139,7 @@ describe('Refund scenario:', function () {
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
-      expect(req.flash.calledWith('genericError', 'Refund failed<br/> We couldn’t process this refund. Try again later.')).to.equal(true)
+      expect(req.flash.calledWith('genericError', '<h2>Refund failed</h2> We couldn’t process this refund. Try again later.')).to.equal(true)
     }).should.notify(done)
   })
 })
