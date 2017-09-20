@@ -191,7 +191,7 @@ describe('The transaction details view', function () {
     })
   })
 
-  it.only('should render transaction details when payment has been refunded', function () {
+  it('should render transaction details when payment has been refunded', function () {
     let templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
