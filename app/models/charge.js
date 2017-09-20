@@ -1,14 +1,17 @@
-var q = require('q')
-var logger = require('winston')
-var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
-var connector = new ConnectorClient(process.env.CONNECTOR_URL)
+'use strict'
 
-var transactionView = require('../utils/transaction_view.js')
+const q = require('q')
+const logger = require('winston')
+const lodash = require('lodash')
+const userService = require('../services/user_service')
+const transactionView = require('../utils/transaction_view.js')
+const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
 
-  var findWithEvents = function (accountId, chargeId) {
+  function findWithEvents (accountId, chargeId) {
     var defer = q.defer()
     var params = {
       gatewayAccountId: accountId,
@@ -16,9 +19,20 @@ module.exports = function (correlationId) {
       correlationId: correlationId
     }
 
-    connector.getCharge(params, function (charge) {
-      connector.getChargeEvents(params, function (events) {
-        defer.resolve(transactionView.buildPaymentView(charge, events))
+    connector.getCharge(params, function (chargeData) {
+      connector.getChargeEvents(params, function (eventsData) {
+        let userIds = eventsData.events.filter(event => event.submitted_by)
+          .map(event => event.submitted_by)
+        userIds = lodash.uniq(userIds)
+        if (userIds.length <= 0) {
+          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData))
+        } else {
+          userService.findMultipleByExternalIds(userIds, correlationId)
+            .then(users => {
+              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
+            })
+            .catch(err => findWithEventsError(err, undefined, defer))
+        }
       }).on('connectorError', (err, response) => {
         findWithEventsError(err, response, defer)
       })
@@ -28,7 +42,7 @@ module.exports = function (correlationId) {
     return defer.promise
   }
 
-  var refund = function (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
+  function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
     var defer = q.defer()
 
     var payload = {
@@ -73,10 +87,11 @@ module.exports = function (correlationId) {
     return defer.promise
   }
 
-  var findWithEventsError = function (err, response, defer) {
+  function findWithEventsError (err, response, defer) {
+    const code = (response || {}).statusCode || (err || {}).errorCode
+    if (code === 404) return defer.reject('NOT_FOUND')
+    if (code > 200) return defer.reject('GET_FAILED')
     if (err) defer.reject('CLIENT_UNAVAILABLE')
-    if (response && response.statusCode === 404) return defer.reject('NOT_FOUND')
-    if (response && response.statusCode !== 200) return defer.reject('GET_FAILED')
 
     defer.reject('CLIENT_UNAVAILABLE')
   }

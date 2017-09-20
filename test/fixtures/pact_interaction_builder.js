@@ -32,6 +32,12 @@ class PactInteractionBuilder {
     return this
   }
 
+  withQuery (name, value) {
+    this.query = this.query || {}
+    this.query[name] = value
+    return this
+  }
+
   withMethod (method) {
     this.method = method
     return this

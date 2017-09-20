@@ -9,6 +9,7 @@ const createCallbackToPromiseConverter = require('../../utils/response_converter
 
 const SERVICE_NAME = 'adminusers'
 const HEADER_USER_CONTEXT = 'GovUkPay-User-Context'
+const ADMINUSERS_URL = process.env.ADMINUSERS_URL
 
 /**
  * @private
@@ -19,7 +20,7 @@ const responseBodyToUserListTransformer = body => body.map(userData => new User(
 const responseBodyToServiceTransformer = body => new Service(body)
 
 module.exports = function (clientOptions = {}) {
-  const baseUrl = clientOptions.baseUrl || process.env.ADMINUSERS_URL
+  const baseUrl = clientOptions.baseUrl || ADMINUSERS_URL
   const correlationId = clientOptions.correlationId || ''
   const userResource = `${baseUrl}/v1/api/users`
   const forgottenPasswordResource = `${baseUrl}/v1/api/forgotten-passwords`
@@ -51,6 +52,42 @@ module.exports = function (clientOptions = {}) {
     }
 
     const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
+   * Get a User by external id
+   *
+   * @param {string} externalId
+   * @return {Promise<User>} A promise of a User
+   */
+  const getUsersByExternalIds = (externalIds = []) => {
+    const params = {
+      correlationId: correlationId,
+      qs: {
+        ids: externalIds.join()
+      }
+    }
+    const url = userResource
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'GET',
+      description: 'find a user',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserListTransformer)
 
     requestLogger.logRequestStart(context)
 
@@ -889,6 +926,7 @@ module.exports = function (clientOptions = {}) {
     createForgottenPassword,
     incrementSessionVersionForUser,
     getUserByExternalId,
+    getUsersByExternalIds,
     authenticateUser,
     updatePasswordForUser,
     sendSecondFactor,
