@@ -15,4 +15,4 @@ ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 WORKDIR /app
 
-CMD mkdir -p /app && cp -a /tmp/node_modules /app/ && npm run compile && npm test && npm prune --production
+CMD ./docker/build_and_test.sh
