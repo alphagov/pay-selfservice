@@ -47,7 +47,7 @@ Sign in to GOV.UK Pay
         {{/messages}}
         {{/flash.error}}
       </label>
-      <input class="form-control form-control-2-3" data-module="" id="username" name="username" rows="8" type="text" value="">
+      <input class="form-control form-control-2-3" data-module="" id="username" name="username" rows="8" type="email" value="">
     </div>
     <div class="form-group{{#flash.error}}{{#messages}}{{#password}} error{{/password}}{{/messages}}{{/flash.error}}">
       <label for="password" class="form-label">
@@ -66,7 +66,7 @@ Sign in to GOV.UK Pay
     <input type="submit" class="button" value="Continue">
     </div>
   </form>
-  <a href="/reset-password" class="reset-password clear"> reset your password </a>
+  <a href="/reset-password" class="reset-password clear">Reset your password</a>
 </div>
 
 {{/mainContent}}
