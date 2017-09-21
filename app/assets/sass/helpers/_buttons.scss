@@ -1,8 +1,4 @@
 @mixin self-service-button {
-  padding: 0.3em 1em 0.4em;
-  min-width: 5em;
-  text-align: center;
-
   .button-group & {
     margin-right: 1em;
   }

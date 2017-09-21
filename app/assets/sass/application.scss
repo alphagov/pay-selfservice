@@ -19,7 +19,7 @@ $grey-8: #fff;
   @content;
 }
 
-@import 'govuk-elements';
+@import "govuk-elements";
 
 // Application mixins and helpers
 @import "helpers/_margins";
@@ -49,14 +49,15 @@ $grey-8: #fff;
 @import "modules/_flash";
 @import "modules/service_type";
 @import "modules/_related_information";
-@import "modules/_marked_grid";
+@import "modules/_flex_grid";
 @import "modules/_toggle_3ds";
 @import "modules/_info_box";
+@import "modules/_dashboard";
 
-@import 'gov-uk-overrides/_forms';
-@import 'gov-uk-overrides/_icons';
-@import 'gov-uk-overrides/_footer-categories';
-@import 'gov-uk-overrides/_grid';
+@import "gov-uk-overrides/_forms";
+@import "gov-uk-overrides/_icons";
+@import "gov-uk-overrides/_footer-categories";
+@import "gov-uk-overrides/_grid";
 
 @import "template/template";
 @import "template/fonts";

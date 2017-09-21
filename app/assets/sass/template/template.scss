@@ -10,11 +10,11 @@
   // width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  padding: $gutter $gutter / 2;
+  padding: 0 $gutter / 2;
 
   @include media(tablet) {
     margin: 0 30px;
-    padding: $gutter 0 $gutter * 3;
+    padding: 0 0 $gutter * 3;
   }
 
   // @include media(desktop) {

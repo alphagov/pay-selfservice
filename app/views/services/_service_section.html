@@ -1,5 +1,5 @@
-<div class="marked-grid--row service_list_item">
-    <div class="marked-grid--heading-group">
+<div class="flex-grid--row service_list_item">
+    <div class="flex-grid--heading-group">
         <h2 class="heading-medium service-name">
             {{name}}
             {{#permissions.service_name_update}}
@@ -9,7 +9,7 @@
             {{/permissions.service_name_update}}
         </h2>
     </div>
-    <div class="marked-grid--column-half">
+    <div class="flex-grid--column-half marked">
         <ul class="list">
             {{#gateway_accounts}}
             <li>
@@ -22,7 +22,7 @@
             {{/gateway_accounts}}
         </ul>
     </div>
-    <div id="team-members" class="marked-grid--column-half">
+    <div id="team-members" class="flex-grid--column-half marked">
         <p>
             {{#permissions.users_service_create}}
             <a href="/service/{{external_id}}" class="manage-team-members">Manage team members</a>
