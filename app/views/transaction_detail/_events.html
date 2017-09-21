@@ -5,7 +5,8 @@
     <td>
         <span class="state">{{state_friendly}}</span>
         {{#state.message}}<br>{{state.code}} - {{state.message}}{{/state.message}}
-        <span class="submitted-by">{{#submitted_by_friendly}}by <br>{{submitted_by_friendly}}{{/submitted_by_friendly}}</span>
+        {{#submitted_by_friendly}}by <br>{{/submitted_by_friendly}}
+        <span class="submitted-by">{{#submitted_by_friendly}}{{submitted_by_friendly}}{{/submitted_by_friendly}}</span>
     </td>
     <td class="amount" align="right">{{amount_friendly}}</td>
     <td class="date" align="right">{{updated_friendly}}</td>
