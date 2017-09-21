@@ -295,36 +295,14 @@ describe('The transaction details view', function () {
     $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number)
     $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date)
 
-    body.should.containSelector(`tr[data-gateway-refund-id="${templateData.events[0].refund_reference}"]`)
-    body.should.containSelector('table.transaction-events')
-      .havingRowAt(1)
-      .withTableDataAt(1, templateData.events[0].state_friendly + `\n            \n            by  ${templateData.events[0].submitted_by_friendly}`)
-      .withTableDataAt(2, templateData.events[0].amount_friendly)
-      .withTableDataAt(3, templateData.events[0].updated_friendly)
+    templateData.events.forEach((event, index) => {
+      const tableRow = $('.transaction-events tr').eq(index)
+      tableRow.find('td.amount').text().should.equal(event.amount_friendly)
+      tableRow.find('span.state').text().should.equal(event.state_friendly)
 
-    body.should.containSelector('table.transaction-events')
-      .havingRowAt(2)
-      .withTableDataAt(1, templateData.events[1].state_friendly)
-      .withTableDataAt(2, templateData.events[1].amount_friendly)
-      .withTableDataAt(3, templateData.events[1].updated_friendly)
-
-    body.should.containSelector('table.transaction-events')
-      .havingRowAt(3)
-      .withTableDataAt(1, templateData.events[2].state_friendly)
-      .withTableDataAt(2, templateData.events[2].amount_friendly)
-      .withTableDataAt(3, templateData.events[2].updated_friendly)
-
-    body.should.containSelector('table.transaction-events')
-      .havingRowAt(4)
-      .withTableDataAt(1, templateData.events[3].state_friendly)
-      .withTableDataAt(2, templateData.events[3].amount_friendly)
-      .withTableDataAt(3, templateData.events[3].updated_friendly)
-
-    body.should.containSelector('table.transaction-events')
-      .havingRowAt(5)
-      .withTableDataAt(1, templateData.events[4].state_friendly)
-      .withTableDataAt(2, templateData.events[4].amount_friendly)
-      .withTableDataAt(3, templateData.events[4].updated_friendly)
+      if (event.submitted_by_friendly) tableRow.find('span.submitted-by').text().should.equal('by ' + event.submitted_by_friendly)
+      if (event.type === 'REFUND') tableRow.attr('data-gateway-refund-id').should.equal(event.refund_reference)
+    })
   })
 
   it('should not render transaction amount if no permission', function () {
