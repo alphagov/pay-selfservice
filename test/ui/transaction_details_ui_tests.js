@@ -300,7 +300,7 @@ describe('The transaction details view', function () {
       tableRow.find('td.amount').text().should.equal(event.amount_friendly)
       tableRow.find('span.state').text().should.equal(event.state_friendly)
 
-      if (event.submitted_by_friendly) tableRow.find('span.submitted-by').text().should.equal('by ' + event.submitted_by_friendly)
+      if (event.submitted_by_friendly) tableRow.find('span.submitted-by').text().should.equal(event.submitted_by_friendly)
       if (event.type === 'REFUND') tableRow.attr('data-gateway-refund-id').should.equal(event.refund_reference)
     })
   })
