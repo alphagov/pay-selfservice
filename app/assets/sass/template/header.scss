@@ -141,10 +141,18 @@
 
 .phase-banner {
   display: block;
-  margin: $gutter / 3 auto $gutter;
+  margin: $gutter / 3 15px;
   padding: 10px 0 0;
   border-bottom: 1px solid $border-colour;
   @extend %contain-floats;
+
+  @include media(tablet) {
+    margin: $gutter / 3 $gutter;
+  }
+
+  @include media($min-width: (960px + $gutter * 2)) {
+    margin: $gutter / 3 auto;
+  }
 
   .phase-tag {
     /* Set text for lowercase (phase banner defaults to uppercase) */
