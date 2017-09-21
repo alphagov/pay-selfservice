@@ -5,6 +5,7 @@
 
   &-box {
     display: flex;
+    margin-bottom: $gutter / 2;
 
     a {
       display: block;
@@ -15,6 +16,11 @@
       border-left: 5px solid $govuk-blue;
       background-color: lighten($govuk-blue, 61%);
       text-decoration: none;
+
+      &:hover {
+        background-color: lighten($govuk-blue, 59%);
+        color: $govuk-blue;
+      }
     }
 
     &__heading {
