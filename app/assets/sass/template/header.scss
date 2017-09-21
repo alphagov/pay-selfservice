@@ -141,17 +141,17 @@
 
 .phase-banner {
   display: block;
-  margin: $gutter / 3 15px;
+  margin: $gutter / 3 15px $gutter;
   padding: 10px 0 0;
   border-bottom: 1px solid $border-colour;
   @extend %contain-floats;
 
   @include media(tablet) {
-    margin: $gutter / 3 $gutter;
+    margin: $gutter / 3 $gutter $gutter;
   }
 
   @include media($min-width: (960px + $gutter * 2)) {
-    margin: $gutter / 3 auto;
+    margin: $gutter / 3 auto $gutter;
   }
 
   .phase-tag {
