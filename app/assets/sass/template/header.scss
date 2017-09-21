@@ -24,12 +24,12 @@
 
 #global-header{
   .header-global {
-    margin-bottom: 1px;
+    margin-bottom: -5px;
   }
+
   #logo {
-    img {
-      margin: 3px 0 0;
-    }
+    background-position: 0 2px;
+    line-height: 1.375;
   }
 }
 
@@ -70,7 +70,6 @@
 
   #proposition-menu {
     clear: left;
-    margin-bottom: 2px;
 
     @include media(desktop) {
       clear: none;
