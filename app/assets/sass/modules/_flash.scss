@@ -1,15 +1,17 @@
 .notification {
-  margin-top: $gutter;
+  @include core-19;
   padding: $gutter $gutter / 2;
   border: 5px solid $green;
-  color: $green;
-  font-weight: bold;
-  text-align: center;
+
+  h2 {
+    margin: 0 0 em(20, 24);
+    @include core-24;
+    font-weight: bold;
+  }
 }
 
 .generic-error {
   border-color: $red;
-  color: $red;
 }
 
 .error-summary ul {

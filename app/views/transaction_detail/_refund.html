@@ -1,42 +1,52 @@
-{{#refundable}}
-
-<div id="show-refund">
-  <form action="/transactions/{{charge_id}}/refund" method="post" class="refund-form">
-      <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    <div class="container">
-      <h2 class="heading-medium">Refund payment</h2>
-      <input id="full-amount" type="hidden" name="full-amount" value="{{ net_amount }}" >
+<form action="/transactions/{{charge_id}}/refund" method="post" class="refund__form {{#flash.genericError}}active{{/flash.genericError}}">
+  <input id="full-amount" type="hidden" name="full-amount" value="{{ net_amount }}" >
+  <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
+  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+  <div class="form-group">
+    <fieldset>
+      <legend>
+        <h2 class="heading-medium">Refund payment</h2>
+      </legend>
 
       {{#refunded}}
-      <label class="block-label" for="full">
+      <div class="multiple-choice">
         <input id="full" type="radio" name="refund-type" value="full" checked="checked">
-        Remaining amount
-        <span class="form-hint">refund the remaining £{{ net_amount }}, ({{refunded_amount}} has already been refunded) </span>
-      </label>
+        <label class="block-label" for="full">Remaining amount
+          <span class="form-hint">refund the remaining £{{ net_amount }}, ({{refunded_amount}} has already been refunded) </span>
+        </label>
+      </div>
       {{/refunded}}
-
       {{^refunded}}
-      <label class="block-label" for="full">
-          <input id="full" type="radio" name="refund-type" value="full" checked="checked">
-        Full refund
-        <span class="form-hint">refund the full amount of {{ amount }}</span>
-      </label>
+      <div class="multiple-choice">
+        <input id="full" type="radio" name="refund-type" value="full" checked="checked">
+        <label class="block-label" for="full">Full refund
+          <span class="form-hint">refund the full amount of {{ amount }}</span>
+        </label>
+      </div>
       {{/refunded}}
 
-      <label class="block-label" for="partial">
-        <input id="partial" type="radio" name="refund-type" value="partial" id="partial-refund">
-        Partial refund
-        <span class="form-hint">refund a partial amount</span>
-      </label>
-      <div class="panel panel-border-wide refund-amount">
-       <p>refund amount</p>
-       <span class="currency">£</span>
-       <input class="form-control refund-amount-input" name="refund-amount" type="number" step="any">
-     </div>
-     <input type="submit" value="Refund" class="button delete" />
-     <a href="#" class="close">cancel</a>
-   </div>
- </form>
-</div>
-{{/refundable}}
+      <div class="multiple-choice">
+        <input id="partial" type="radio" name="refund-type" value="partial">
+        <label class="block-label" for="partial">Partial refund
+          <span class="form-hint">refund a partial amount</span>
+        </label>
+      </div>
+      <div class="panel panel-border-wide refund__amount">
+        <div class="currency-input">
+          <label class="form-label" for="refund-amount">
+            Refund amount
+            <span class="visually-hidden">in £</span>
+          </label>
+          <div class="currency-input__inner">
+            <span class="currency-input__inner__unit">£</span>
+            <input class="form-control" aria-label="Enter amount in pounds" name="refund-amount" data-non-numeric type="text" id="refund-amount" pattern="[0-9]\d*(\.\d+)?">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Refund payment" class="button refund__submit-button delete" />
+      <a href="#" class="button-link refund__cancel-button">cancel</a>
+    </div>
+  </fieldset>
+</form>
