@@ -16,7 +16,15 @@ describe('session', function () {
     var filter = filters.getFilters({ query: query })
     expect(filter.valid).to.equal(true)
     expect(filter.result).to.not.equal(query)
-    expect(filter.result).to.deep.equal(query)
+    expect(filter.result).to.deep.equal({
+      reference: 'ref1',
+      state: 'TEST_STATUS',
+      payment_states:['TEST_STATUS'],
+      fromDate: '21/01/2016',
+      fromTime: '13:04:45',
+      toDate: '22/01/2016',
+      toTime: '14:12:18'
+    })
   })
 
   it('should return filters from query string with empty omitted', function () {

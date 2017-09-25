@@ -119,5 +119,12 @@ module.exports = function (req, data, template) {
     convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions)
     convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)
   }
+  convertedData._features = {}
+  if (req.user && req.user.features) {
+    req.user.features.forEach(feature => {
+      convertedData._features[feature.trim()] = true
+    })
+  }
+
   return convertedData
 }

@@ -9,7 +9,7 @@ function validateFilters (filters) {
   var pageIsNull = !check.assigned(filters.page)
   var pageIsPositive = check.positive(Number(filters.page))
   return (pageSizeIsNull || pageSizeInRange) &&
-         (pageIsNull || pageIsPositive)
+    (pageIsNull || pageIsPositive)
 }
 
 function describeFilters (filters) {
@@ -35,11 +35,14 @@ function describeFilters (filters) {
 
 function getFilters (req) {
   let filters = qs.parse(req.query)
-  if (filters.state && filters.state.includes('-')) {
-    let [type, state] = filters.state.split('-')
-    filters.state = state
-    filters[`${type}_states`] = [state]
+
+  if (filters.state) {
+    const states = typeof filters.state === 'string' ? [filters.state] : filters.state
+    filters.payment_states = states.filter(state => !state.includes('refund-')).map(state => state.replace('payment-', ''))
+    filters.refund_states = states.filter(state => state.includes('refund-')).map(state => state.replace('refund-', ''))
+    filters.state = [...filters.payment_states, ...filters.refund_states][0]
   }
+
   filters = _.omitBy(filters, _.isEmpty)
   return {
     valid: validateFilters(filters),

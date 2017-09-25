@@ -1,46 +1,61 @@
 <div class="grid-row transactions-filter">
   <form class="form" method="get" action="{{search_path}}">
     <fieldset>
-        <div class="column-quarter reference-number">
-          <label class="form-label" for="reference">
-            <strong>Reference number</strong>
-            <span class="form-hint">Enter full or partial number</span>
-          </label>
-          <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
-        </div>
+      <div class="column-quarter reference-number">
+        <label class="form-label" for="reference">
+          <strong>Reference number</strong>
+          <span class="form-hint">Enter full or partial number</span>
+        </label>
+        <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
+      </div>
 
-        <div class="column-quarter email">
-          <label class="form-label" for="email">
-            <strong>Email address</strong>
-            <span class="form-hint">Enter full or partial email</span>
-          </label>
-          <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
-        </div>
-        <div class="column-quarter">
-          <label class="form-label" for="card-brand">
-            <strong>Card brand</strong>
-            <span class="form-hint">Select a brand</span>
-          </label>
-          <select class="form-control large" id="card-brand" name="brand">
-            <option value="">All brands</option>
-            {{#cardBrands}}
-              <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
-            {{/cardBrands}}
-          </select>
-        </div>
-        <div class="column-quarter">
-          <label class="form-label" for="state">
-            <strong>State</strong>
-            <span class="form-hint">Select an option</span>
-          </label>
-          <select class="form-control large" id="state" name="state">
-            <option value="">Any</option>
-            {{#eventStates}}
-            <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
-            {{/eventStates}}
-          </select>
-        </div>
-
+      <div class="column-quarter email">
+        <label class="form-label" for="email">
+          <strong>Email address</strong>
+          <span class="form-hint">Enter full or partial email</span>
+        </label>
+        <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
+      </div>
+      {{#_features.REFUNDS_IN_TX_LIST}}
+      <div class="column-quarter">
+        <label class="form-label" for="state">
+          <strong>State</strong>
+          <span class="form-hint">Select an option</span>
+        </label>
+        <select class="form-control large" id="state" name="state" multiple>
+          <option value="">Any</option>
+          {{#eventStates}}
+          <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
+          {{/eventStates}}
+        </select>
+      </div>
+      {{/_features.REFUNDS_IN_TX_LIST}}
+      <div class="column-quarter">
+        <label class="form-label" for="card-brand">
+          <strong>Card brand</strong>
+          <span class="form-hint">Select a brand</span>
+        </label>
+        <select class="form-control large" id="card-brand" name="brand">
+          <option value="">All brands</option>
+          {{#cardBrands}}
+          <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
+          {{/cardBrands}}
+        </select>
+      </div>
+      {{^_features.REFUNDS_IN_TX_LIST}}
+      <div class="column-quarter">
+        <label class="form-label" for="state">
+          <strong>State</strong>
+          <span class="form-hint">Select an option</span>
+        </label>
+        <select class="form-control large" id="state" name="state">
+          <option value="">Any</option>
+          {{#eventStates}}
+          <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
+          {{/eventStates}}
+        </select>
+      </div>
+      {{/_features.REFUNDS_IN_TX_LIST}}
       <fieldset class="column-half datetime-pair">
         <legend>
           Date range
