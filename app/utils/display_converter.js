@@ -115,6 +115,7 @@ module.exports = function (req, data, template) {
   convertedData.hideServiceNav = hideServiceNav(template)
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
+  convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
   convertedData.currentServiceName = _.get(req, 'service.name')
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions)
