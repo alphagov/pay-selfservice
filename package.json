@@ -41,7 +41,7 @@
     "appmetrics": "1.1.2",
     "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
-    "body-parser": "1.17.x",
+    "body-parser": "1.18.2",
     "chalk": "1.1.x",
     "change-case": "3.0.1",
     "check-types": "^7.1.x",
@@ -83,14 +83,14 @@
     "throng": "4.0.x",
     "tunnel": "0.0.5",
     "winston": "2.3.x",
-    "yargs": "8.0.x"
+    "yargs": "8.0.x",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "@pact-foundation/pact-node": "4.6.0",
     "babel-preset-es2015": "^6.24.1",
     "jquery": "^3.2.1",
     "babelify": "^7.3.0",
-    "snyk": "^1.36.1",
     "node-sass": "4.5.x",
     "chai": "^4.0.2",
     "chai-as-promised": "^7.0.0",
