@@ -34,8 +34,10 @@ $grey-8: #fff;
 @import "helpers/_links";
 @import "helpers/_text_treatment";
 @import "helpers/_forms";
+@import "helpers/_script_support";
 
 @import "modules/_service_switcher";
+@import "modules/_multi_select";
 @import "modules/_transactions_filter";
 @import "modules/_dev_tokens";
 @import "modules/_transactions_list";

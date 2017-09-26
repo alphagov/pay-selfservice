@@ -22,8 +22,8 @@
           <strong>State</strong>
           <span class="form-hint">Select an option</span>
         </label>
-        <select class="form-control large" id="state" name="state" multiple>
-          <option value="">Any</option>
+        <select class="form-control large" id="state" name="state" data-enhance-multiple>
+          <option value="">All states</option>
           {{#eventStates}}
           <option value="{{key}}" {{#value.selected}} selected {{/value.selected}}>{{value.text}}</option>
           {{/eventStates}}

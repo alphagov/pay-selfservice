@@ -119,12 +119,8 @@ module.exports = function (grunt) {
       options: {
         browserifyOptions: { standalone: 'module' },
         transform: [
-          [
-            'babelify',
-            {
-              presets: ['es2015']
-            }
-          ]
+          ['babelify', {presets: ['es2015']}],
+          [ 'hoganify', {ext: '.html'}]
         ]
       }
     },
