@@ -22,12 +22,12 @@
     {{/cookieMessage}}
 
     {{$content}}
-        {{>includes/flash}}
         {{^hideServiceHeader}}
         {{> includes/phase_banner }}
         {{/hideServiceHeader}}
 
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
+            {{>includes/flash}}
             {{$full_width_content}}{{/full_width_content}}
             <div class="grid-row">
               {{#showSettingsNav}}
