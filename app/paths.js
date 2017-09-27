@@ -107,5 +107,19 @@ module.exports = {
   staticPaths: {
     naxsiError: '/request-denied'
   },
+  prototyping: {
+    demoService: {
+      index: '/test-with-your-users',
+      links: '/test-with-your-users/links',
+      create: '/test-with-your-users/create',
+      confirm: '/test-with-your-users/confirm'
+    },
+    demoPayment: {
+      index: '/make-a-demo-payment',
+      editDescription: '/make-a-demo-payment/edit-description',
+      editAmount: '/make-a-demo-payment/edit-amount',
+      mockCardDetails: '/make-a-demo-payment/mock-card-numbers'
+    }
+  },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
 }

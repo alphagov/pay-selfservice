@@ -98,7 +98,6 @@
     "chai-string": "^1.4.0",
     "cheerio": "^1.0.0-rc.1",
     "chokidar-cli": "latest",
-    "crypto": "0.0.3",
     "errorhandler": "^1.5.0",
     "express-writer": "0.0.4",
     "fresh-require": "^1.0.3",

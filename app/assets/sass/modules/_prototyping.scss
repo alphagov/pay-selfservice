@@ -1,0 +1,46 @@
+.prototyping {
+  &__heading {
+    margin-top: $gutter;
+  }
+
+  &__tabs {
+    margin-top: $gutter * 2;
+  }
+
+  &__links-list-item {
+    h3 {
+      margin-top: 0;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+  }
+
+  &__hint {
+    color: $secondary-text-colour;
+  }
+
+  &__settings-table {
+    td {
+      @include core-19;
+    }
+  }
+
+  &__edit-cell {
+    text-align: right;
+  }
+
+  &__edit-button {
+    font-weight: bold;
+
+    &:visited {
+      color: $link-colour;
+    }
+  }
+
+}
+
+.mock-card-block + .mock-card-block {
+  margin-left: .5em;
+}

@@ -42,7 +42,7 @@ module.exports = {
  * @returns {Promise<Product>}
  */
 function createProduct (options) {
-  return baseClient.post({
+  const opts = {
     headers,
     baseUrl,
     url: `/products`,
@@ -57,7 +57,8 @@ function createProduct (options) {
     },
     description: 'create a product for a service',
     service: SERVICE_NAME
-  }).then(product => new Product(product))
+  }
+  return baseClient.post(opts).then(product => new Product(product))
 }
 
 /**

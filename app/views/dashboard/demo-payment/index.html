@@ -1,0 +1,44 @@
+{{<layout}}
+{{$pageTitle}}
+Make a demo payment - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{{/pageTitle}}
+
+{{$mainContent}}
+  <a href="/" class="link-back">Back to dashboard</a>
+  <h1 class="heading-large prototyping__heading">Make a demo payment</h1>
+  <p>Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK Pay.</p>
+  <form action="{{nextPage}}" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input type="hidden" name="prototype-payment-descrition" value="{{protoPaymentDescription}}">
+    <input type="hidden" name="prototype-payment-amount" value="{{protoPaymentAmount}}">
+    <table class="prototyping__settings-table">
+      <thead>
+        <tr>
+          <h2 class="heading-small">Payment description</h2>
+          <p class="prototyping__hint">Tell users what they are paying for</p>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{protoPaymentDescription}}</td>
+          <td class="prototyping__edit-cell"><a class="prototyping__edit-button" href="{{editDescription}}">Edit</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="prototyping__settings-table">
+      <thead>
+        <tr>
+          <h2 class="heading-small">Payment amount</h2>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>&pound;{{protoPaymentAmount}}</td>
+          <td class="prototyping__edit-cell"><a class="prototyping__edit-button" href="{{editAmount}}">Edit</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <input class="button" type="submit" value="Continue">
+  </form>
+{{/mainContent}}
+{{/layout}}

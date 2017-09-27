@@ -34,7 +34,9 @@ module.exports = function (method, verb) {
       } else if (response && SUCCESS_CODES.includes(response.statusCode)) {
         resolve(body)
       } else {
-        const err = new Error(response.body)
+        let errors = lodash.get(body, 'message') || lodash.get(body, 'errors')
+        if (errors && errors.constructor.name === 'Array') errors = errors.join(', ')
+        const err = new Error(errors || body || 'Unknown error')
         err.errorCode = response.statusCode
         reject(err)
       }

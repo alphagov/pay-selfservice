@@ -1,0 +1,19 @@
+{{<layout}}
+{{$pageTitle}}
+Your prototype link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{{/pageTitle}}
+
+{{$mainContent}}
+  <a href="{{linksPage}}" class="link-back">Back to prototype links</a>
+  <h1 class="heading-large prototyping__heading">Your prototype link</h1>
+  <p>This link will send the user to our payment pages. Use it in a “pay now” button, for example, to integrate it with your prototype.</p>
+
+  <div class="panel panel-border-wide">
+    <p class="heading-small"><a href="{{prototypeLink}}">{{prototypeLink}}</a></p>
+  </div>
+  <p>Links will be saved for as long as you need them in the prototype links tab.</p>
+
+  <a class="button" href="{{linksPage}}">See prototype links</a>
+
+{{/mainContent}}
+{{/layout}}
