@@ -11,6 +11,16 @@
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+
+  &.live {
+   @include core-24;
+   font-weight: bold;
+   margin-bottom: $gutter / 2;
+  }
 }
 
 .service-name a {
@@ -23,10 +33,6 @@
 
 .service-switcher.active {
   background-color: $highlight-colour;
-}
-
-.service-switcher::first-letter {
-  text-transform: capitalize;
 }
 
 .create-service {
