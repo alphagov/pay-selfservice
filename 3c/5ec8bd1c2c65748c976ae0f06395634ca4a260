@@ -5,3 +5,5 @@ release.alpha_release-333.date=2017-09-28:10:33:13
 release.tag=alpha_release-334
 
 release.alpha_release-334.date=2017-09-28:11:16:23
+
+staging-2.tag=alpha_staging-2-333
