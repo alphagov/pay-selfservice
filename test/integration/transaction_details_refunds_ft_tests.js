@@ -1,4 +1,4 @@
-
+var chai = require('chai')
 var request = require('supertest')
 var nock = require('nock')
 var csrf = require('csrf')
@@ -6,6 +6,7 @@ var getApp = require('../../server.js').getApp
 var paths = require('../../app/paths.js')
 var session = require('../test_helpers/mock_session.js')
 var userCreator = require('../test_helpers/user_creator.js')
+var expect = chai.expect
 
 var ACCOUNT_ID = 15486734
 var USER_EXTERNAL_ID = 'efc2e588d92e42969d1fc32f61f5653b'
@@ -97,12 +98,16 @@ describe('The transaction view - refund scenarios', function () {
     }
 
     request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Accept', 'application/json')
-      .send(viewFormData)
-      .expect(500, {'message': "Can't do refund: amount must be pounds (10) or pounds and pence (10.10)"})
-      .end(done)
+    .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .set('Accept', 'application/json')
+    .send(viewFormData)
+    .expect(302)
+    .end((err, res) => {
+      expect(err).to.equal(null)
+      expect(res.header.location).to.equal('/transactions/12345')
+      done()
+    })
   })
 
   it('should redirect to error view issuing a refund when amount is not available for refund', function (done) {
@@ -130,123 +135,11 @@ describe('The transaction view - refund scenarios', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
-      .expect(500, {'message': "Can't do refund: The requested amount is bigger than the amount available for refund"})
-      .end(done)
-  })
-
-  it('should redirect to error view issuing a refund when amount is less than the minimum accepted for a refund', function (done) {
-    var chargeId = 12345
-    var expectedRefundRequestToConnector = {
-      'amount': 0,
-      'refund_amount_available': 5000,
-      'user_external_id': USER_EXTERNAL_ID
-    }
-    var mockRefundResponse = {
-      'reason': 'amount_min_validation'
-    }
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
-      .reply(400, mockRefundResponse)
-
-    var viewFormData = {
-      'refund-amount': '0',
-      'refund-amount-available-in-pence': '5000',
-      'csrfToken': csrf().create('123')
-    }
-
-    request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Accept', 'application/json')
-      .send(viewFormData)
-      .expect(500, {'message': "Can't do refund: The requested amount is less than the minimum accepted for issuing a refund for this charge"})
-      .end(done)
-  })
-
-  it('should redirect to error view issuing a refund when refund amount has been fully refunded', function (done) {
-    var chargeId = 12345
-    var expectedRefundRequestToConnector = {
-      'amount': 1000,
-      'refund_amount_available': 0,
-      'user_external_id': USER_EXTERNAL_ID
-    }
-    var mockRefundResponse = {
-      'reason': 'full'
-    }
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
-      .reply(400, mockRefundResponse)
-
-    var viewFormData = {
-      'refund-amount': '10',
-      'refund-amount-available-in-pence': '000',
-      'csrfToken': csrf().create('123')
-    }
-
-    request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Accept', 'application/json')
-      .send(viewFormData)
-      .expect(500, {'message': "Can't do refund: This charge has been already fully refunded"})
-      .end(done)
-  })
-
-  it('should redirect to error view when unexpected error issuing a refund', function (done) {
-    var chargeId = 12345
-    var expectedRefundRequestToConnector = {
-      'amount': 1000,
-      'refund_amount_available': 5000,
-      'user_external_id': USER_EXTERNAL_ID
-    }
-    var mockRefundResponse = {
-      'message': 'what happeneeed!'
-    }
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
-      .reply(400, mockRefundResponse)
-
-    var viewFormData = {
-      'refund-amount': '10',
-      'refund-amount-available-in-pence': '5000',
-      'csrfToken': csrf().create('123')
-    }
-
-    request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Accept', 'application/json')
-      .send(viewFormData)
-      .expect(500, {'message': "Can't process refund"})
-      .end(done)
-  })
-
-  it('should redirect to error view if connector returns a 412 error code when issuing a refund', function (done) {
-    var chargeId = 12345
-    var expectedRefundRequestToConnector = {
-      'amount': 1000,
-      'refund_amount_available': 5000,
-      'user_external_id': USER_EXTERNAL_ID
-    }
-    var mockRefundResponse = {
-      'message': 'Precondition Failed!'
-    }
-
-    connectorMock.post('/v1/api/accounts/' + ACCOUNT_ID + '/charges/' + chargeId + '/refunds', expectedRefundRequestToConnector)
-      .reply(412, mockRefundResponse)
-
-    var viewFormData = {
-      'refund-amount': '10',
-      'refund-amount-available-in-pence': '5000',
-      'csrfToken': csrf().create('123')
-    }
-
-    request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Accept', 'application/json')
-      .send(viewFormData)
-      .expect(500, {'message': 'Refund failed. This refund request has already been submitted.'})
-      .end(done)
+      .expect(302)
+      .end((err, res) => {
+        expect(err).to.equal(null)
+        expect(res.header.location).to.equal('/transactions/12345')
+        done()
+      })
   })
 })

@@ -64,7 +64,7 @@ describe('The transaction details view', function () {
 
     let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
-    body.should.not.containSelector('#show-refund')
+    body.should.not.containSelector('.refund__toggle-container')
     $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
@@ -167,7 +167,7 @@ describe('The transaction details view', function () {
 
     let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
-    body.should.not.containSelector('#show-refund')
+    body.should.not.containSelector('.refund__toggle-container')
     $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
@@ -281,7 +281,7 @@ describe('The transaction details view', function () {
 
     let body = renderTemplate('transaction_detail/index', templateData)
     let $ = cheerio.load(body)
-    body.should.containSelector('#show-refund')
+    body.should.not.containSelector('.refund__toggle-container')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
     $('#email').html().should.equal('alice.111@mail.fake')
