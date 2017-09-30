@@ -3,6 +3,8 @@
   "PUBLIC_AUTH_BASE":"http://localhost:8003",
   "PUBLIC_AUTH_URL": "http://localhost:8003/v1/frontend/auth",
   "ADMINUSERS_URL": "http://localhost:8002",
+  "PRODUCTS_URL": "http://localhost:8004",
+  "PRODUCTS_API_KEY": "anfnuh7hufsf74hfsuni7nsjhfiurjdnjsfhushrufs8yrg0jfnuaeirg",
   "DISABLE_INTERNAL_HTTPS": "true",
   "SECURE_COOKIE_OFF": "true",
   "COOKIE_MAX_AGE": "10800000",
