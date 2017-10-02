@@ -1,0 +1,26 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+API Keys - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block pageSpecificJS %}
+<script src="/public/js/devtokens.js"></script>
+{% endblock %}
+
+{% block mainContent %}
+
+  <h1 class="page-title">API Keys</h1>
+  <ul class="tabs">
+    {% if active %}
+    <li class="current">Active keys</li>
+    <li><a href="{{ routes.apiKeys.revoked }}">Revoked keys</a></li>
+    {% else %}
+    <li><a href="{{ routes.apiKeys.index }}">Active keys</a></li>
+    <li class="current">Revoked keys</li>
+    {% endif %}
+  </ul>
+
+  {% include "api-keys/_api-keys.njk" %}
+
+{% endblock %}

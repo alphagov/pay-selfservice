@@ -18,7 +18,7 @@ describe('The token view', function () {
 
     body.should.containSelector('h1').withText('API Keys')
     body.should.containSelector('#available-tokens').withText('There are no active API keys')
-    body.should.containSelector('a[href="' + paths.devTokens.create + '"]').withText('Generate a new key')
+    body.should.containSelector('a[href="' + paths.apiKeys.create + '"]').withText('Generate a new key')
     body.should.containNoSelector('.key-list-item')
   })
 
@@ -222,7 +222,7 @@ describe('The generate token view', function () {
       body.should.containSelector('.page-title').withText('API keys')
 
       body.should.containSelector('form')
-        .withAttribute('action', paths.devTokens.create)
+        .withAttribute('action', paths.apiKeys.create)
         .withAttribute('method', 'post')
 
       body.should.containTextarea('description')
@@ -237,7 +237,7 @@ describe('The generate token view', function () {
 
       body.should.containNoSelector('textarea#token')
 
-      body.should.containSelector('a[href="' + paths.devTokens.index + '"]')
+      body.should.containSelector('a[href="' + paths.apiKeys.index + '"]')
         .withText('Cancel')
     })
   })
@@ -275,7 +275,7 @@ describe('The generate token view', function () {
 
       let body = renderTemplate('token_generate', templateData)
       body.should.containSelector('.button')
-        .withAttribute('href', paths.devTokens.index)
+        .withAttribute('href', paths.apiKeys.index)
         .withText('Finish')
     })
   })

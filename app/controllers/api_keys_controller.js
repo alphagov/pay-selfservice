@@ -7,8 +7,8 @@ var auth = require('../services/auth_service.js')
 const publicAuthClient = require('../services/clients/public_auth_client')
 
 // TODO remove these and make them proper i.e. show update destroy etc
-const TOKEN_VIEW = 'token'
-const TOKEN_GENERATE_VIEW = 'token_generate'
+const API_KEYS_INDEX = 'api-keys/index'
+const API_KEY_GENERATE = 'api-keys/generate'
 
 module.exports.index = function (req, res) {
   var accountId = auth.getCurrentGatewayAccountId(req)
@@ -27,7 +27,7 @@ module.exports.index = function (req, res) {
           view: 'token'
         })
 
-        response(req, res, TOKEN_VIEW, {
+        response(req, res, API_KEYS_INDEX, {
           'active': true,
           'header': 'available-tokens',
           'token_state': 'active',
@@ -52,9 +52,9 @@ module.exports.revoked = function (req, res) {
           token.csrfToken = csrf().create(req.session.csrfSecret)
         })
         logger.info('Showing tokens view -', {
-          view: TOKEN_VIEW
+          view: API_KEYS_INDEX
         })
-        response(req, res, TOKEN_VIEW, {
+        response(req, res, API_KEYS_INDEX, {
           'active': false,
           'header': 'revoked-tokens',
           'token_state': 'revoked',
@@ -69,7 +69,7 @@ module.exports.revoked = function (req, res) {
 
 module.exports.show = function (req, res) {
   var accountId = auth.getCurrentGatewayAccountId(req)
-  response(req, res, TOKEN_GENERATE_VIEW, {'account_id': accountId})
+  response(req, res, API_KEY_GENERATE, {'account_id': accountId})
 }
 
 module.exports.create = function (req, res) {
@@ -88,7 +88,7 @@ module.exports.create = function (req, res) {
     accountId: accountId,
     correlationId: correlationId
   })
-    .then(publicAuthData => response(req, res, TOKEN_GENERATE_VIEW, {
+    .then(publicAuthData => response(req, res, API_KEY_GENERATE, {
       token: publicAuthData.token,
       description: description
     }))
