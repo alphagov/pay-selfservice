@@ -1,8 +1,5 @@
 'use strict'
 
-/**
- @class Product
- */
 class Product {
   /**
    * Create an instance of Product
