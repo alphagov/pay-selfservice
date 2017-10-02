@@ -28,6 +28,15 @@ function connectorMockResponds (code, data, searchParameters) {
     '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
     '&page=' + (searchParameters.page ? searchParameters.page : '1') +
     '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
+
+  if (searchParameters.payment_states) {
+    queryStr += '&payment_states=' + searchParameters.payment_states
+  }
+
+  if (searchParameters.refund_states) {
+    queryStr += '&refund_states=' + searchParameters.refund_states
+  }
+
   return connectorMock.get(CHARGES_API_PATH + queryStr)
     .reply(code, data)
 }
@@ -102,7 +111,7 @@ describe('Transaction download endpoints', function () {
         })
     })
 
-      // @see https://payments-platform.atlassian.net/browse/PP-2254
+    // @see https://payments-platform.atlassian.net/browse/PP-2254
     it('should download a csv file comprising a list of transactions and preventing Spreadsheet Formula Injection', function (done) {
       var results = require('./json/transaction_download_spreadsheet_formula_injection.json')
 
@@ -116,24 +125,94 @@ describe('Transaction download endpoints', function () {
       var secondPageMock = nock('http://localhost:8000')
 
       secondPageMock.get('/bar')
-              .reply(200, {
-                results: results
-              })
+        .reply(200, {
+          results: results
+        })
 
       connectorMockResponds(200, mockJson, {})
 
       downloadTransactionList()
-              .expect(200)
-              .expect('Content-Type', 'text/csv; charset=utf-8')
-              .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
-              .end(function (err, res) {
-                if (err) return done(err)
-                var csvContent = res.text
-                var arrayOfLines = csvContent.split('\n')
-                expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created"')
-                expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","succeeded",false,"","","transaction-1","charge1","12 May 2016 — 17:37:29"')
-                done()
-              })
+        .expect(200)
+        .expect('Content-Type', 'text/csv; charset=utf-8')
+        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .end(function (err, res) {
+          if (err) return done(err)
+          var csvContent = res.text
+          var arrayOfLines = csvContent.split('\n')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","succeeded",false,"","","transaction-1","charge1","12 May 2016 — 17:37:29"')
+          done()
+        })
+    })
+
+    it('should download a csv file with expected refund states filtering', function (done) {
+      var results = require('./json/transaction_download_refunds.json')
+
+      var mockJson = {
+        results: results,
+        _links: {
+          next_page: {href: 'http://localhost:8000/bar'}
+        }
+      }
+
+      var secondPageMock = nock('http://localhost:8000')
+
+      secondPageMock.get('/bar')
+        .reply(200, {
+          results: results
+        })
+
+      connectorMockResponds(200, mockJson, {state: 'success', refund_states: 'success'})
+
+      request(app)
+        .get(paths.transactions.download + '?state=success&refund_states=success')
+        .set('Accept', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'text/csv; charset=utf-8')
+        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .end(function (err, res) {
+          if (err) return done(err)
+          var csvContent = res.text
+          var arrayOfLines = csvContent.split('\n')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund succeeded",false,"","","transaction-1","charge1","12 May 2016 — 17:37:29"')
+          done()
+        })
+    })
+
+    it('should download a csv file with expected payment states filtering', function (done) {
+      var results = require('./json/transaction_download_spreadsheet_formula_injection.json')
+
+      var mockJson = {
+        results: results,
+        _links: {
+          next_page: {href: 'http://localhost:8000/bar'}
+        }
+      }
+
+      var secondPageMock = nock('http://localhost:8000')
+
+      secondPageMock.get('/bar')
+        .reply(200, {
+          results: results
+        })
+
+      connectorMockResponds(200, mockJson, {state: 'success', payment_states: 'success'})
+
+      request(app)
+        .get(paths.transactions.download + '?state=success&payment_states=success')
+        .set('Accept', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'text/csv; charset=utf-8')
+        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .end(function (err, res) {
+          if (err) return done(err)
+          var csvContent = res.text
+          var arrayOfLines = csvContent.split('\n')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","succeeded",false,"","","transaction-1","charge1","12 May 2016 — 17:37:29"')
+          done()
+        })
     })
 
     it('should show error message on a bad request', function (done) {

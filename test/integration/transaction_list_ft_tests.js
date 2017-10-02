@@ -446,6 +446,74 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
       })
       .end(done)
   })
+
+  it('should allow filtering by charge states', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    var connectorData = {
+      'results': []
+    }
+
+    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started'})
+
+    request(app)
+      .get(paths.transactions.index + '?state=payment-started')
+      .set('Accept', 'application/json')
+      .set('x-request-id', requestId)
+      .expect(200)
+      .expect(function (res) {
+        expect(res.body.eventStates).property('length').to.equal(10)
+        expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
+          'Created',
+          'Started',
+          'Submitted',
+          'Success',
+          'Error',
+          'Failed',
+          'Cancelled',
+          'Refund submitted',
+          'Refund error',
+          'Refund success'
+        ])
+        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&payment_states=started')
+      })
+      .end(done)
+  })
+
+  it('should allow filtering by refund states', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    var connectorData = {
+      'results': []
+    }
+
+    connectorMockResponds(200, connectorData, {state: 'started', refund_states: 'started'})
+
+    request(app)
+      .get(paths.transactions.index + '?state=refund-started')
+      .set('Accept', 'application/json')
+      .set('x-request-id', requestId)
+      .expect(200)
+      .expect(function (res) {
+        expect(res.body.eventStates).property('length').to.equal(10)
+        expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
+          'Created',
+          'Started',
+          'Submitted',
+          'Success',
+          'Error',
+          'Failed',
+          'Cancelled',
+          'Refund submitted',
+          'Refund error',
+          'Refund success'
+        ])
+        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&refund_states=started')
+      })
+      .end(done)
+  })
 })
 
 function connectorMockResponds (code, data, searchParameters) {
@@ -458,6 +526,14 @@ function connectorMockResponds (code, data, searchParameters) {
     '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
     '&page=' + (searchParameters.page ? searchParameters.page : '1') +
     '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
+
+  if (searchParameters.payment_states) {
+    queryStr += '&payment_states=' + searchParameters.payment_states
+  }
+
+  if (searchParameters.refund_states) {
+    queryStr += '&refund_states=' + searchParameters.refund_states
+  }
 
   return connectorMock.get(CONNECTOR_CHARGES_API_PATH + encodeURI(queryStr))
     .reply(code, data)
