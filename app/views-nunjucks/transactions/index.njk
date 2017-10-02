@@ -1,0 +1,49 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block classesOnBodyTag %}transactions index{% endblock %}
+
+{% block pageSpecificStyle %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.standalone.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css">
+{% endblock %}
+
+{% block pageSpecificJS %}
+<script src="/public/js/components/link-follower.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepair.js/0.4.15/jquery.datepair.min.js"></script>
+<script src="/public/js/components/datetime-picker.js"></script>
+{% endblock %}
+
+{% block full_width_content %}
+  <h1 class="heading-large page-title">Transactions</h1>
+
+  {% include "transactions/filter.njk" %}
+
+
+  <div>
+  <h3 class="heading-small" id="total-results">
+    {{total}} transactions
+    {{filtersDescription}}
+  </h3>
+
+  {% include "transactions/display_size.njk" %}
+
+
+  {% if hasResults %}
+    {% if permissions.transactions_download_read %}
+    <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
+    {% endif %}
+  {% endif %}
+  </div>
+
+  {% include "transactions/paginator.njk" %}
+
+  {% include "transactions/list.njk" %}
+
+  {% include "transactions/paginator.njk" %}
+{% endblock %}

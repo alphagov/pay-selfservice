@@ -1,0 +1,26 @@
+<div class="flex-grid">
+  <div class="flex-grid--row">
+    <article class="flex-grid--column-third first-steps-box">
+      <a href="https://govukpay-docs.cloudapps.digital/#payment-flow-making-a-payment">
+        <h2 class="heading-small first-steps-box__heading">See the payment flow</h2>
+        <p>Get an overview of payment pages in our documentation.</p>
+      </a>
+    </article>
+
+    <article class="flex-grid--column-third first-steps-box">
+      <a href="/my-services/">
+      {% if permissions.users_service_create %}
+        <h2 class="heading-small first-steps-box__heading">Manage your service</h2>
+        <p>Add a new service and view team members in My&nbsp;Services.</p>
+      {% endif %}
+      </a>
+    </article>
+
+    <article class="flex-grid--column-third first-steps-box">
+      <a href="https://govukpay-docs.cloudapps.digital/#switching-to-live">
+        <h2 class="heading-small first-steps-box__heading">Next steps to go live</h2>
+        <p>Read our documentation to see how your service can go live with GOV.UK&nbsp;Pay.</p>
+      </a>
+    </article>
+  </div>
+</div>

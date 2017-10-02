@@ -6,12 +6,12 @@
     {% block globalHeaderText %}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{% endblock %}
 
     {% block propositionHeader %}
-      {% include "includes/propositional_navigation_logged_out.html" %}
+      {% include "includes/propositional_navigation_logged_out.njk" %}
     {% endblock %}
     {% block headerClass %}with-proposition{% endblock %}
 
     {% block head %}
-      {% include "includes/head.html" %}
+      {% include "includes/head.njk" %}
       {% block pageSpecificStyle %}
       {% endblock %}
     {% endblock %}
@@ -21,7 +21,7 @@
     {% endblock %}
 
     {% block content %}
-            {% include "includes/flash.html" %}
+            {% include "includes/flash.njk" %}
         <main id="content" role="main" class="{% block mainClasses %}{% endblock %}">
           <div class="main-content">
             <div class="grid-row">
@@ -32,7 +32,7 @@
     {% endblock %}
 
     {% block footerTop %}
-      {% include "includes/footer-categories.html" %}
+      {% include "includes/footer-categories.njk" %}
     {% endblock %}
 
     {% block footerSupportLinks %}
@@ -45,15 +45,15 @@
     {% endblock %}
 
     {% block licenceMessage %}
-      {% include "includes/license-message.html" %}
+      {% include "includes/license-message.njk" %}
     {% endblock %}
 
     {% block crownCopyrightMessage %}
-      {% include "includes/crown-copyright.html" %}
+      {% include "includes/crown-copyright.njk" %}
     {% endblock %}
 
     {% block bodyEnd %}
-      {% include "includes/scripts.html" %}
+      {% include "includes/scripts.njk" %}
       {% block pageSpecificJS %}
       {% endblock %}
     {% endblock %}
