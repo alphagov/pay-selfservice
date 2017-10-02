@@ -54,7 +54,7 @@ function buildPutRequest (sendCSRF) {
   data.token_link = '550e8400-e29b-41d4-a716-446655440000'
   data.description = 'token description'
   return request(app)
-    .put(paths.devTokens.index)
+    .put(paths.apiKeys.index)
     .set('Accept', 'application/json')
     .set('x-request-id', requestId)
     .send(data)
@@ -83,7 +83,7 @@ describe('Dev Tokens Endpoints', function () {
           'account_id': gatewayAccountId
         })
 
-      buildGetRequest(paths.devTokens.revoked)
+      buildGetRequest(paths.apiKeys.revoked)
         .expect(200)
         .expect(response => {
           expect(response.body.tokens).to.be.empty // eslint-disable-line
@@ -102,7 +102,7 @@ describe('Dev Tokens Endpoints', function () {
           }]
         })
 
-      buildGetRequest(paths.devTokens.revoked)
+      buildGetRequest(paths.apiKeys.revoked)
         .expect(function (res) {
           if (!res.body.tokens[0].csrfToken) throw new Error('no token')
           delete res.body.tokens[0].csrfToken
@@ -133,7 +133,7 @@ describe('Dev Tokens Endpoints', function () {
           }]
         })
 
-      buildGetRequest(paths.devTokens.revoked)
+      buildGetRequest(paths.apiKeys.revoked)
         .expect(function (res) {
           if (!res.body.tokens[0].csrfToken) throw new Error('no token')
           delete res.body.tokens[0].csrfToken
@@ -178,7 +178,7 @@ describe('Dev Tokens Endpoints', function () {
           'account_id': gatewayAccountId
         })
 
-      buildGetRequest(paths.devTokens.index)
+      buildGetRequest(paths.apiKeys.index)
         .expect(response => {
           expect(response.body.tokens).to.be.empty // eslint-disable-line
         })
@@ -192,7 +192,7 @@ describe('Dev Tokens Endpoints', function () {
           'tokens': [{'token_link': '550e8400-e29b-41d4-a716-446655440000', 'description': 'token 1'}]
         })
 
-      buildGetRequest(paths.devTokens.index)
+      buildGetRequest(paths.apiKeys.index)
         .expect(function (res) {
           if (!res.body.tokens[0].csrfToken) throw new Error('no token')
           delete res.body.tokens[0].csrfToken
@@ -214,7 +214,7 @@ describe('Dev Tokens Endpoints', function () {
             {'token_link': '550e8400-e29b-41d4-a716-446655441234', 'description': 'description token 2'}]
         })
 
-      buildGetRequest(paths.devTokens.index)
+      buildGetRequest(paths.apiKeys.index)
         .expect(function (res) {
           if (!res.body.tokens[0].csrfToken) throw new Error('no token')
           delete res.body.tokens[0].csrfToken
@@ -326,7 +326,7 @@ describe('Dev Tokens Endpoints', function () {
       }).reply(200, {'revoked': '15 Oct 2015'})
 
       request(app)
-        .delete(paths.devTokens.index + '?token_link=550e8400-e29b-41d4-a716-446655440000')
+        .delete(paths.apiKeys.index + '?token_link=550e8400-e29b-41d4-a716-446655440000')
         .set('x-request-id', requestId)
         .send({csrfToken: csrf().create('123')})
         .expect(200, {'revoked': '15 Oct 2015'})
@@ -339,7 +339,7 @@ describe('Dev Tokens Endpoints', function () {
       }).reply(200, {'revoked': '15 Oct 2015'})
 
       request(app)
-        .delete(paths.devTokens.index + '?token_link=550e8400-e29b-41d4-a716-446655440000')
+        .delete(paths.apiKeys.index + '?token_link=550e8400-e29b-41d4-a716-446655440000')
         .set('x-request-id', requestId)
         .set('Accept', 'application/json')
         .expect(400, {message: 'There is a problem with the payments platform'})
@@ -352,7 +352,7 @@ describe('Dev Tokens Endpoints', function () {
       }).reply(400, {})
 
       request(app)
-        .delete(paths.devTokens.index + '?token_link=550e8400-e29b-41d4-a716-446655440000')
+        .delete(paths.apiKeys.index + '?token_link=550e8400-e29b-41d4-a716-446655440000')
         .set('x-request-id', requestId)
         .send({csrfToken: csrf().create('123')})
         .expect(400, {})
@@ -362,7 +362,7 @@ describe('Dev Tokens Endpoints', function () {
     it('should send 500 if any error happens while updating the resource', function (done) {
       // No serverMock defined on purpose to mock a network failure
       request(app)
-        .delete(paths.devTokens.index)
+        .delete(paths.apiKeys.index)
         .set('x-request-id', requestId)
         .send({
           token_link: '550e8400-e29b-41d4-a716-446655440000',
@@ -398,7 +398,7 @@ describe('Dev Tokens Endpoints', function () {
         'created_by': user.email
       }).reply(200, {'token': TOKEN})
 
-      buildFormPostRequest(paths.devTokens.create, {'description': 'description'}, true)
+      buildFormPostRequest(paths.apiKeys.create, {'description': 'description'}, true)
         .expect(200)
         .expect(response => {
           expect(response.body.token).to.equal(TOKEN)
@@ -409,7 +409,7 @@ describe('Dev Tokens Endpoints', function () {
     it('should only return the account_id', function (done) {
       connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
 
-      buildGetRequest(paths.devTokens.show)
+      buildGetRequest(paths.apiKeys.show)
         .expect(200)
         .expect(response => {
           expect(response.body.account_id).to.be.deep.equal(gatewayAccountId)
@@ -428,7 +428,7 @@ describe('Dev Tokens Endpoints', function () {
         navigation: true
       })
 
-      buildFormPostRequest(paths.devTokens.create, {})
+      buildFormPostRequest(paths.apiKeys.create, {})
         .expect(500, {
           'message': 'There is a problem with the payments platform'
         })
@@ -438,7 +438,7 @@ describe('Dev Tokens Endpoints', function () {
     it('should return the account_id', function (done) {
       connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
 
-      buildGetRequest(paths.devTokens.show)
+      buildGetRequest(paths.apiKeys.show)
         .expect(200)
         .expect(response => {
           expect(response.body.account_id).to.be.deep.equal(gatewayAccountId)
@@ -457,7 +457,7 @@ describe('Dev Tokens Endpoints', function () {
         navigation: true
       })
 
-      buildFormPostRequest(paths.devTokens.create, {}, true)
+      buildFormPostRequest(paths.apiKeys.create, {}, true)
         .expect(500, {
           'message': 'There is a problem with the payments platform'
         })

@@ -1,0 +1,43 @@
+<table id="transactions-list" class="transactions-list">
+  <thead>
+    <tr>
+      <th id="reference-header">Reference number</th>
+      {% if permissions.transactions_email_read %}
+      <th id="email-header">Email</th>
+      {% endif %}
+      {% if permissions.transactions_amount_read %}
+      <th id="amount-header">Amount</th>
+      {% endif %}
+      {% if permissions.transactions_card_type_read %}
+      <th id="brand-header">Card brand</th>
+      {% endif %}
+      <th id="state-header">State</th>
+      <th id="time-header">Date created</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for result in results %}
+    <tr data-follow-link data-link="{{result.link}}" class="transactions-list--row">
+      <th scope="row" class="charge-column reference transactions-list--item" data-gateway-transaction-id="{{result.gateway_transaction_id}}">
+        <a class="reference" id="charge-id-{{result.charge_id}}" data-charge-id="{{result.charge_id}}" href="{{result.link}}">
+          {{result.reference}}
+        </a>
+      </th>
+      {% if permissions.transactions_email_read %}
+      <td class="transactions-list--item email">{{result.email}}</td>
+      {% endif %}
+      {% if permissions.transactions_amount_read %}
+      <td class="transactions-list--item amount">{{result.amount}}</td>
+      {% endif %}
+      {% if permissions.transactions_card_type_read %}
+      <td class="transactions-list--item brand">{{result.card_details.card_brand}}</td>
+      {% endif %}
+      <td class="transactions-list--item state">{{result.state_friendly}}</td>
+      <td class="transactions-list--item time">{{result.created}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% if not results.length %}
+  <p id="no-results">No results match the search criteria.</p>
+{% endif %}

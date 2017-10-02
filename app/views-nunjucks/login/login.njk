@@ -1,0 +1,68 @@
+{% extends "../layout_logged_out.njk" %}
+
+{% block pageTitle %}
+Sign in to GOV.UK Pay
+{% endblock %}
+
+{% block globalBanner %}
+<div id="global-message">
+</div>
+{% endblock %}
+
+{% block mainContent %}
+
+<div class="column-two-thirds">
+  {% if flash.error %}
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+      There was a problem with the details you gave for:
+    </h2>
+    <ul class="error-summary-list">
+      {% block messages %}
+        {% block username %}
+        <li><a href="#username">Email</a></li>
+        {% endblock %}
+        {% block password %}
+        <li><a href="#password">Password</a></li>
+        {% endblock %}
+      {% endblock %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <h1 class="heading-large">Sign in</h1>
+
+  <p>If you do not have an account, you can <a href="{{ routes.selfCreateService.register }}">create one now</a>.</p>
+
+  <form action="/login" method="post" name="userLoginForm" class="push-bottom">
+  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group{% if flash.error.messages.username %} error{% endif %}">
+      <label for="username" class="form-label">
+        Email address
+        {% if flash.error.messages.username %}
+        <span class="error-message">
+          {{username}}
+        </span>
+        {% endif %}
+      </label>
+      <input class="form-control form-control-2-3" data-module="" id="username" name="username" rows="8" type="email" value="">
+    </div>
+    <div class="form-group{% if flash.error.messages.password %} error{% endif %}">
+      <label for="password" class="form-label">
+        Password
+        {% if flash.error.messages.password %}
+        <span class="error-message">
+          {{password}}
+        </span>
+        {% endif %}
+      </label>
+      <input class="form-control form-control-2-3" data-module="" id="password" name="password" rows="8" type="password" value="">
+    </div>
+    <div>
+    <input type="submit" class="button" value="Continue">
+    </div>
+  </form>
+  <a href="/reset-password" class="reset-password clear">Forgot your password?</a>
+</div>
+
+{% endblock %}

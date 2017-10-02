@@ -6,6 +6,7 @@ require(path.join(__dirname, '/app/utils/metrics')).metrics()
 
 // NPM dependencies
 const express = require('express')
+const nunjucks = require('nunjucks')
 const httpsAgent = require('https').globalAgent
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
@@ -29,6 +30,9 @@ const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler
 // Global constants
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
+const nodeEnv = process.env.NODE_ENV
+const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.css')
+const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.js')
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser())
@@ -45,7 +49,7 @@ function initialiseGlobalMiddleware (app) {
   app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
-    res.locals.assetPath = '/public/'
+    res.locals.asset_path = '/public/'
     res.locals.routes = router.paths
     if (typeof process.env.ANALYTICS_TRACKING_ID === 'undefined') {
       logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
@@ -72,14 +76,39 @@ function initialiseProxy (app) {
   proxy.use()
 }
 
-function initialiseAppVariables (app) {
-  app.set('view engine', 'html')
-  app.set('vendorViews', path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'))
-  app.set('views', path.join(__dirname, '/app/views'))
-}
-
 function initialiseTemplateEngine (app) {
-  app.engine('html', require(path.join(__dirname, '/lib/template-engine.js')).__express)
+  // Define app views
+  const appViews = [
+    path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
+    path.join(__dirname, '/app/views-nunjucks')
+  ]
+
+  // Configure nunjucks
+  // see https://mozilla.github.io/nunjucks/api.html#configure
+  const nunjucksConfiguration = {
+    express: app, // the express app that nunjucks should install to
+    autoescape: true, // controls if output with dangerous characters are escaped automatically
+    throwOnUndefined: false, // throw errors when outputting a null/undefined value
+    trimBlocks: true, // automatically remove trailing newlines from a block/tag
+    lstripBlocks: true, // automatically remove leading whitespace from a block/tag
+    watch: false, // reload templates when they are changed (server-side). To use watch, make sure optional dependency chokidar is installed
+    noCache: false // never use a cache and recompile templates each time (server-side)
+  }
+  if ((!nodeEnv) || (nodeEnv !== 'production')) {
+    nunjucksConfiguration.watch = true
+    nunjucksConfiguration.noCache = true
+  }
+
+  // Initialise nunjucks environment
+  const nunjucksEnvironment = nunjucks.configure(appViews, nunjucksConfiguration)
+
+  // Set view engine
+  app.set('view engine', 'njk')
+
+  // Version static assets on production for better caching
+  // if it's not production we want to re-evaluate the assets on each file change
+  nunjucksEnvironment.addGlobal('css_path', nodeEnv === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
+  nunjucksEnvironment.addGlobal('js_path', nodeEnv === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 }
 
 function initialisePublic (app) {
@@ -134,7 +163,6 @@ function initialise () {
   initialiseCookies(app)
   initialiseAuth(app)
   initialiseGlobalMiddleware(app)
-  initialiseAppVariables(app)
   initialiseTemplateEngine(app)
   initialiseRoutes(app)
   initialisePublic(app)

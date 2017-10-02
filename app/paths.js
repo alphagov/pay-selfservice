@@ -33,15 +33,15 @@ module.exports = {
     passwordRequested: '/reset-password-requested',
     forgottenPasswordReset: '/reset-password/:id'
   },
-  devTokens: {
-    index: '/tokens',
-    revoked: '/tokens/revoked',
+  apiKeys: {
+    index: '/api-keys',
+    revoked: '/api-keys/revoked',
     // we only show the token once, hence strange url
-    show: '/tokens/generate',
-    create: '/tokens/generate',
+    show: '/api-keys/generate',
+    create: '/api-keys/generate',
     // should these two not rely take an id in the url?
-    update: '/tokens',
-    delete: '/tokens'
+    update: '/api-keys',
+    delete: '/api-keys'
   },
   paymentTypes: {
     selectType: '/payment-types/select-type',

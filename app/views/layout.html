@@ -1,69 +1,69 @@
-{{< govuk_template}}
-    {{$pageTitle}}GOV.UK Pay{{/pageTitle}}
+{% extends "base/govuk_template_nunjucks.njk" %}
+    {% block pageTitle %}GOV.UK Pay{% endblock %}
 
-    {{$head}}
-      {{>includes/head}}
-      {{$pageSpecificStyle}}
-      {{/pageSpecificStyle}}
-    {{/head}}
+    {% block head %}
+      {% extends "includes/head" %}
+      {% block pageSpecificStyle %}
+      {% endblock %}
+    {% endblock %}
 
-    {{$propositionHeader}}
-      {{>includes/propositional_navigation}}
-    {{/propositionHeader}}
+    {% block propositionHeader %}
+      {% extends "includes/propositional_navigation" %}
+    {% endblock %}
 
-    {{$headerClass}}with-proposition{{/headerClass}}
-    {{$bodyClasses}}{{$classesOnBodyTag}}{{/classesOnBodyTag}} {{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{{/currentGatewayAccount}}{{/bodyClasses}}
+    {% block headerClass %}with-proposition{% endblock %}
+    {% block bodyClasses %}{% block classesOnBodyTag %}{% endblock %} {{#currentGatewayAccount}}env-{{currentGatewayAccount.type}}{% endblock %}{% endblock %}
 
-    {{$homepageUrl}}/{{/homepageUrl}}
-    {{$globalHeaderText}}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{{/globalHeaderText}}
+    {% block homepageUrl %}/{% endblock %}
+    {% block globalHeaderText %}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{% endblock %}
 
-    {{$cookieMessage}}
+    {% block cookieMessage %}
       <p>GOV.UK Pay uses cookies to make the site simpler. <a href="https://www.payments.service.gov.uk/cookies/">Find out more about cookies</a></p>
-    {{/cookieMessage}}
+    {% endblock %}
 
-    {{$content}}
-        {{^hideServiceHeader}}
-        {{> includes/phase_banner }}
-        {{/hideServiceHeader}}
+    {% block content %}
+        {% if hideServiceHeader %}
+        {% extends "includes/phase_banner" %}
+        {% endif %}
 
-        <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
-            {{>includes/flash}}
-            {{$full_width_content}}{{/full_width_content}}
+        <main id="content" role="main" class="{% block mainClasses %}{% endblock %}">
+            {% extends "includes/flash" %}
+            {% block full_width_content %}{% endblock %}
             <div class="grid-row">
               {{#showSettingsNav}}
-                  {{> includes/side_navigation }}
-              {{/showSettingsNav}}
+                  {% extends "includes/side_navigation.njk" %}
+              {% endblock %}
               <div class="column-two-thirds">
-                  {{$mainContent}}{{/mainContent}}
+                  {% block mainContent %}{% endblock %}
               </div>
             </div>
         </main>
-    {{/content}}
+    {% endblock %}
 
-    {{$footerTop}}
-      {{>includes/footer-categories}}
-    {{/footerTop}}
+    {% block footerTop %}
+      {% extends "includes/footer-categories" %}
+    {% endblock %}
 
-    {{$footerSupportLinks}}
+    {% block footerSupportLinks %}
     <nav class="footer-nav">
       <ul>
         <li>Built by the <a href="https://www.gov.uk/government/organisations/government-digital-service">Government Digital Service</a></li>
         <li><a href="https://www.payments.service.gov.uk/cookies/">Cookies</a></li>
       </ul>
     </nav>
-    {{/footerSupportLinks}}
+    {% endblock %}
 
-    {{$licenceMessage}}
-      {{>includes/license-message}}
-    {{/licenceMessage}}
+    {% block licenceMessage %}
+      {% extends "includes/license-message" %}
+    {% endblock %}
 
-    {{$crownCopyrightMessage}}
-      {{>includes/crown-copyright}}
-    {{/crownCopyrightMessage}}
+    {% block crownCopyrightMessage %}
+      {% extends "includes/crown-copyright" %}
+    {% endblock %}
 
-    {{$bodyEnd}}
-      {{>includes/scripts}}
-      {{$pageSpecificJS}}
-      {{/pageSpecificJS}}
-    {{/bodyEnd}}
-{{/govuk_template}}
+    {% block bodyEnd %}
+      {% extends "includes/scripts" %}
+      {% block pageSpecificJS %}
+      {% endblock %}
+    {% endblock %}
+{% endblock %}

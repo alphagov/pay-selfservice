@@ -1,0 +1,27 @@
+<div class="phase-banner">
+  <div class="service-info">
+    {% if currentServiceName %}
+    <h4 class="service-info--name heading-small">{{currentServiceName}}</h4>
+    {% endif %}
+    {% if currentGatewayAccount %}
+    <p>
+      <strong class="phase-tag">{{currentGatewayAccount.full_type}}</strong>
+    </p>
+    {% endif %}
+  </div>
+  {% if not hideServiceNav %}
+  <nav role="navigation" class="service-navigation">
+    <ul class="service-navigation--list">
+      {% for item in serviceNavigationItems %}
+        {% if item.permissions %}
+          {% if item.current %}
+            <li class="service-navigation--list-item service-navigation--list-item-active"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+          {% else %}
+            <li class="service-navigation--list-item"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>

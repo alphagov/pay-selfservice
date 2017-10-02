@@ -1,0 +1,63 @@
+{% extends "../../govuk_modules/govuk_template/views/layouts/govuk_template.njk" %}
+  {% block page_title %}GOV.UK Pay{% endblock %}
+
+  {% block head %}
+    {% include "includes/head.njk" %}
+    {% block pageSpecificStyle %}
+    {% endblock %}
+  {% endblock %}
+
+  {% block propositionHeader %}
+    {% include "includes/propositional_navigation.njk" %}
+  {% endblock %}
+
+  {% block headerClass %}with-proposition{% endblock %}
+  {% block body_classes %}
+    {% block classesOnBodyTag %}{% endblock %}
+    {% if currentGatewayAccount %}env-{{currentGatewayAccount.type}}{% endif %}
+  {% endblock %}
+
+  {% block homepage_url %}/{% endblock %}
+  {% block global_header_text %}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{% endblock %}
+
+  {% block cookie_message %}
+    {% include "includes/cookie-message.njk" %}
+  {% endblock %}
+
+  {% block content %}
+    {% if not hideServiceHeader %}
+    {% include "includes/phase_banner.njk" %}
+    {% endif %}
+
+    <main id="content" role="main" class="{% block mainClasses %}{% endblock %}">
+      {% include "includes/flash.njk" %}
+      {% block full_width_content %}{% endblock %}
+      <div class="grid-row">
+        {% if showSettingsNav %}
+          {% include "includes/side_navigation.njk" %}
+        {% endif %}
+        <div class="column-two-thirds">
+            {% block mainContent %}{% endblock %}
+        </div>
+      </div>
+    </main>
+  {% endblock %}
+
+  {% block footer_top %}
+    {% include "includes/footer-categories.njk" %}
+  {% endblock %}
+
+  {% block footer_support_links %}
+  <nav class="footer-nav">
+    <ul>
+      <li>Built by the <a href="https://www.gov.uk/government/organisations/government-digital-service">Government Digital Service</a></li>
+      <li><a href="https://www.payments.service.gov.uk/cookies/">Cookies</a></li>
+    </ul>
+  </nav>
+  {% endblock %}
+
+  {% block body_end %}
+    {% include "includes/scripts.njk" %}
+    {% block pageSpecificJS %}
+    {% endblock %}
+  {% endblock %}
