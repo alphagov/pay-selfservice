@@ -45,6 +45,7 @@
     "chalk": "1.1.x",
     "change-case": "3.0.1",
     "check-types": "^7.1.x",
+    "chokidar": "^1.7.0",
     "client-sessions": "^0.8.0",
     "cluster": "0.7.x",
     "common-password": "^0.1.2",
