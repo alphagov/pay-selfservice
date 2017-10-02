@@ -1,0 +1,15 @@
+<div class="navigation column-one-third">
+    <nav role="navigation" class="settings-navigation">
+        <ul>
+          {% if adminNavigationItems %}
+            {% if permissions %}
+              {% if current %}
+                <li class="active"><a id="{{id}}" href="{{url}}">{{name}}</a></li>
+              {% else %}
+                <li><a id="{{id}}" href="{{url}}">{{name}}</a></li>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </ul>
+    </nav>
+</div>

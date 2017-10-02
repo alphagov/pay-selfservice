@@ -1,0 +1,18 @@
+{% block flash %}
+<div class="grid-row">
+  {% if genericError %}
+  <div class="column-two-thirds flash-container">
+    <div class="notification generic-error">
+      {{genericError}}
+    </div>
+  </div>
+  {% endif %}
+  {% if generic %}
+  <div class="column-two-thirds flash-container">
+    <div class="notification generic-flash">
+      {{generic}}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
