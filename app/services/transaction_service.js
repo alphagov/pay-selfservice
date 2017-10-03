@@ -46,6 +46,15 @@ exports.searchAll = (accountId, filters, correlationId) => {
   const params = filters
   params.gatewayAccountId = accountId
   params.correlationId = correlationId
+
+  if (params.payment_states) {
+    params.payment_states = params.payment_states.split(',')
+  }
+
+  if (params.refund_states) {
+    params.refund_states = params.refund_states.split(',')
+  }
+
   connectorClient.getAllTransactions(params, results => defer.resolve({results}))
     .on('connectorError', (err, connectorResponse) => {
       if (connectorResponse) return defer.reject(new Error('GET_FAILED'))

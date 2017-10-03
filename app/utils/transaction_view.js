@@ -61,6 +61,8 @@ module.exports = {
         reference: filters.reference,
         email: filters.email,
         state: filters.state,
+        payment_states: filters.payment_states,
+        refund_states: filters.refund_states,
         brand: filters.brand,
         fromDate: filters.fromDate,
         toDate: filters.toDate,

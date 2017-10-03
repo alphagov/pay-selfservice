@@ -20,7 +20,7 @@ module.exports = function (data) {
         ]),
         {
           label: 'Amount',
-          value: row => { return (parseInt(row.amount) / 100).toFixed(2) }
+          value: row => { return (row.transaction_type === 'refund') ? (parseInt(row.amount) * -1 / 100).toFixed(2) : (parseInt(row.amount) / 100).toFixed(2) }
         },
         ...getSanitisableFields([
                     {label: 'Card Brand', value: 'card_details.card_brand'},
@@ -31,7 +31,7 @@ module.exports = function (data) {
         ]),
         {
           label: 'State',
-          value: row => { return (row.transaction_type === 'refund') ? 'refund_' + row.state.status : row.state.status }
+          value: row => { return (row.transaction_type === 'refund') ? 'Refund ' + row.state.status : row.state.status }
         },
         ...getSanitisableFields([
                     {label: 'Finished', value: 'state.finished'},
