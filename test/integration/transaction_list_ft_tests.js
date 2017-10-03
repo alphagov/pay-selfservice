@@ -185,7 +185,7 @@ describe('The /transactions endpoint', function () {
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&payment_states=started')
       })
       .end(done)
   })
@@ -518,7 +518,6 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
 })
 
 function connectorMockResponds (code, data, searchParameters) {
-
   var toStringify = {
     reference: searchParameters.reference ? searchParameters.reference : '',
     email: searchParameters.email ? searchParameters.email : '',
@@ -529,19 +528,20 @@ function connectorMockResponds (code, data, searchParameters) {
     page: searchParameters.page ? searchParameters.page : '1',
     display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
   }
-  if (searchParameters.state) toStringify.payment_states = [searchParameters.state]
+
+  if (!searchParameters.payment_states && !searchParameters.refund_states && searchParameters.state) {
+    toStringify.payment_states = [searchParameters.state]
+  }
+  if (searchParameters.refund_states) {
+    toStringify.refund_states = searchParameters.refund_states
+  }
+  if (searchParameters.payment_states) {
+    toStringify.payment_states = searchParameters.payment_states
+  }
+
   var queryString = querystring.stringify(toStringify)
 
   return connectorMock.get(CONNECTOR_CHARGES_API_PATH + '?' + queryString)
-  if (searchParameters.payment_states) {
-    queryStr += '&payment_states=' + searchParameters.payment_states
-  }
-
-  if (searchParameters.refund_states) {
-    queryStr += '&refund_states=' + searchParameters.refund_states
-  }
-
-  return connectorMock.get(CONNECTOR_CHARGES_API_PATH + encodeURI(queryStr))
     .reply(code, data)
 }
 

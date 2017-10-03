@@ -120,7 +120,6 @@ module.exports = function (req, data, template) {
     convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)
   }
   convertedData._features = {}
-  convertedData._features.REFUNDS_IN_TX_LIST = true
   if (req.user && req.user.features) {
     req.user.features.forEach(feature => {
       convertedData._features[feature.trim()] = true

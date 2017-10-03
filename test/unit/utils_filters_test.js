@@ -19,7 +19,7 @@ describe('session', function () {
     expect(filter.result).to.deep.equal({
       reference: 'ref1',
       state: 'TEST_STATUS',
-      payment_states:['TEST_STATUS'],
+      payment_states: ['TEST_STATUS'],
       fromDate: '21/01/2016',
       fromTime: '13:04:45',
       toDate: '22/01/2016',

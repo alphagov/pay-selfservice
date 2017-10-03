@@ -44,7 +44,7 @@ class User {
     this.telephoneNumber = userData.telephone_number || ''
     this.disabled = userData.disabled ? userData.disabled : false
     this.sessionVersion = userData.session_version || 0
-    this.features = (userData.features || '').split(',')
+    this.features = (userData.features || '').split(',').map(feature => feature.trim())
   }
 
   /**
