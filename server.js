@@ -71,7 +71,7 @@ function initialiseProxy (app) {
 }
 
 function initialiseAppVariables (app) {
-  app.set('view engine', 'njk')
+  app.set('view engine', 'html')
   app.set('vendorViews', path.join(__dirname, '/app/views-nunjucks/base'))
   app.set('views', path.join(__dirname, '/app/views-nunjucks'))
 }
