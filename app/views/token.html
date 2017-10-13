@@ -14,10 +14,10 @@ API Keys - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK P
 <ul class="tabs">
   {{#active}}
   <li class="current">Active keys</li>
-  <li><a href="{{ routes.devTokens.revoked }}">Revoked keys</a></li>
+  <li><a href="{{ routes.apiKeys.revoked }}">Revoked keys</a></li>
   {{/active}}
   {{^active}}
-  <li><a href="{{ routes.devTokens.index }}">Active keys</a></li>
+  <li><a href="{{ routes.apiKeys.index }}">Active keys</a></li>
   <li class="current">Revoked keys</li>
   {{/active}}
 </ul>

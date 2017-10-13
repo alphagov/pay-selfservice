@@ -1,0 +1,24 @@
+{% if hasPaginationLinks %}
+<div class="pagination">
+	{% for paginationLink in pageSizeLinks %}
+    <form class="paginationForm {{paginationLink.pageName}}" method="get" action="{{paginationLink.search_path}}">
+        <input class="state" name="state" type="hidden" value="{{paginationLink.filters.state}}"/>
+        <input class="reference" name="reference" type="hidden" value="{{paginationLink.filters.reference}}" />
+        <input class="fromDate" name="fromDate" type="hidden" value="{{paginationLink.filters.fromDate}}" />
+        <input class="toDate" name="toDate" type="hidden" value="{{paginationLink.filters.toDate}}"/>
+        <input class="page" name="page" type="hidden" value="{{paginationLink.pageNumber}}"/>
+        <input class="pageSize" name="pageSize" type="hidden" value="{{paginationLink.filters.pageSize}}"/>
+        <input class="fromTime" name="fromTime" type="hidden" value="{{paginationLink.filters.fromTime}}">
+        <input class="toTime" name="toTime" type="hidden" value="{{paginationLink.filters.toTime}}">
+
+        <button class="pagination {{paginationLink.pageName}} {% if activePage %}active{% endif %}" type="submit">
+            {% if hasSymbolicName %}
+                {{pageName}}<span class="visuallyhidden"> page of results</span>
+            {% else %}
+                <span class="visuallyhidden">Results page </span>{{pageName}}
+            {% endif %}
+        </button>
+    </form>
+	{% endfor %}
+</div>
+{% endif %}

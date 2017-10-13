@@ -3,8 +3,8 @@ const getHeldPermissions = require('./get_held_permissions')
 const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
 
 const showSettingsNavTemplates = [
-  'token',
-  'token_generate',
+  'api-keys/index',
+  'api-keys/generate',
   'credentials',
   'provider_credentials/epdq',
   'provider_credentials/sandbox',

@@ -31,7 +31,7 @@ const transactionRefundCtrl = require('./controllers/transactions/transaction_re
 const credentialsCtrl = require('./controllers/credentials_controller')
 const loginCtrl = require('./controllers/login_controller')
 const healthcheckCtrl = require('./controllers/healthcheck_controller')
-const devTokensCtrl = require('./controllers/dev_tokens_controller')
+const apiKeysCtrl = require('./controllers/api_keys_controller')
 const paymentTypesSelectType = require('./controllers/payment_types_select_type_controller')
 const paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller')
 const paymentTypesSummary = require('./controllers/payment_types_summary_controller')
@@ -51,7 +51,7 @@ const inviteValidationCtrl = require('./controllers/invite_validation_controller
 // Assignments
 const {
   healthcheck, registerUser, user, selfCreateService, transactions, credentials,
-  devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName,
+  apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
 
 // Exports
@@ -130,7 +130,7 @@ module.exports.bind = function (app) {
     ...lodash.values(transactions),
     ...lodash.values(credentials),
     ...lodash.values(nc),
-    ...lodash.values(devTokens),
+    ...lodash.values(apiKeys),
     ...lodash.values(pt),
     ...lodash.values(en),
     ...lodash.values(editServiceName),
@@ -157,13 +157,13 @@ module.exports.bind = function (app) {
   app.get(nc.edit, permission('gateway-credentials:update'), getAccount, credentialsCtrl.editNotificationCredentials)
   app.post(nc.update, permission('gateway-credentials:update'), getAccount, credentialsCtrl.updateNotificationCredentials)
 
-  // DEV TOKENS
-  app.get(devTokens.index, permission('tokens-active:read'), getAccount, devTokensCtrl.index)
-  app.get(devTokens.revoked, permission('tokens-revoked:read'), getAccount, devTokensCtrl.revoked)
-  app.get(devTokens.show, permission('tokens:create'), getAccount, devTokensCtrl.show)
-  app.post(devTokens.create, permission('tokens:create'), getAccount, devTokensCtrl.create)
-  app.put(devTokens.update, permission('tokens:update'), getAccount, devTokensCtrl.update)
-  app.delete(devTokens.delete, permission('tokens:delete'), getAccount, devTokensCtrl.destroy)
+  // API KEYS
+  app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysCtrl.index)
+  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.revoked)
+  app.get(apiKeys.show, permission('tokens:create'), getAccount, apiKeysCtrl.show)
+  app.post(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.create)
+  app.put(apiKeys.update, permission('tokens:update'), getAccount, apiKeysCtrl.update)
+  app.delete(apiKeys.delete, permission('tokens:delete'), getAccount, apiKeysCtrl.destroy)
 
   // PAYMENT TYPES
   app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentTypesSelectType.selectType)

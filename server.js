@@ -15,6 +15,7 @@ const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')(path.join(__dirname, 'public'))
+const Nunjucks = require('nunjucks')
 
 // Custom dependencies
 const router = require(path.join(__dirname, '/app/routes'))
@@ -29,6 +30,9 @@ const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler
 // Global constants
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
+const nodeEnv = process.env.NODE_ENV
+const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.css')
+const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.js')
 
 function initialiseGlobalMiddleware (app) {
   app.use(cookieParser())
@@ -68,12 +72,20 @@ function initialiseProxy (app) {
 
 function initialiseAppVariables (app) {
   app.set('view engine', 'html')
-  app.set('vendorViews', path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'))
-  app.set('views', path.join(__dirname, '/app/views'))
+  app.set('vendorViews', path.join(__dirname, '/app/views-nunjucks/base'))
+  app.set('views', path.join(__dirname, '/app/views-nunjucks'))
 }
 
 function initialiseTemplateEngine (app) {
-  app.engine('html', require(path.join(__dirname, '/lib/template-engine.js')).__express)
+  const environment = Nunjucks.configure(path.join(__dirname, '/app/views-nunjucks'), {
+    autoescape: true,
+    watch: nodeEnv !== 'production',
+    noCache: nodeEnv !== 'production',
+    express: app
+  })
+
+  environment.addGlobal('cssPath', nodeEnv === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
+  environment.addGlobal('jsPath', nodeEnv === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 }
 
 function initialisePublic (app) {

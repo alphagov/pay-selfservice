@@ -1,0 +1,72 @@
+<div
+  id="{{token.token_link}}"
+  class="key-list-item js-{% if not revoked %}active{% endif %}" data-csrf="{{ csrfToken }}">
+  <h3 id="description-{{token.token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{token.description}}</h3>
+  <div class="key-list-item-meta">
+    <dl>
+      <div class="qa-created-by" id="created-by-{{token.token_link}}">
+        <dt>Created by: </dt><dd>{{token.created_by}}</dd>
+      </div>
+      <div class="qa-created-date" id="date-created-{{token.token_link}}">
+        <dt>Date created: </dt><dd>{{token.issued_date}}</dd>
+      </div>
+  {% if token.last_used %}
+      <div class="qa-last-used" id="date-used-{{token.token_link}}">
+        <dt>Last used: </dt><dd>{{token.last_used}}</dd>
+      </div>
+    </dl>
+    {% else %}
+    </dl>
+    <p class="qa-last-used">Not used</p>
+  {% endif %}
+  {% if token.revoked %}
+    <p id="revoked-{{token.token_link}}">Key was revoked on {{token.revoked}}.</p>
+  {% endif %}
+  </div>
+  {% if not token.revoked %}
+  <div class="key-list-item-controls js-edit-controls">
+      {% if permissions.tokens_update %}
+      <a href="#{{token.token_link}}" class="js-toggle-description">Edit description<span class="visuallyhidden"> for {{token.description}}</span></a>
+      {% endif %}
+      {% if permissions.tokens_delete %}
+      <a href="#{{token.token_link}}" class="js-toggle-revoke">Revoke key<span class="visuallyhidden"> for {{token.description}}</span></a>
+      {% endif %}
+  </div>
+  {% if permissions.tokens_update %}
+  <div class="js-edit-description form">
+      <div class="form-group">
+        <label class="visually-hidden" for="description-input-{{token.token_link}}">Description</label>
+        <textarea id="description-input-{{token.token_link}}" class="js-new-description form-control">{{token.description}}</textarea>
+      </div>
+      <div class="button-group">
+        <a id="save-description-{{token.token_link}}" href="#{{token.token_link}}" class="button js-save-description">
+          Save changes<span class="visuallyhidden"> to {{token.description}}</span>
+        </a>
+        <a id="cancel-{{token.token_link}}" href="#{{token.token_link}}" class="button-link js-toggle-description">
+          Cancel<span class="visuallyhidden"> edits to {{token.description}}</span>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+  {% if permissions.tokens_delete %}
+  <div class="js-revoke-confirmation">
+      <p>
+        Are you sure you want to revoke this developer key?<br />
+        If revoked it will no longer enable integration with the platform.
+      </p>
+      <div class="button-group">
+        <button id="revoke-token-{{token.token_link}}" type="button" class="button js-revoke-token">
+          Yes<span class="visuallyhidden"> I want to revoke {{token.description}}</span>
+        </button>
+        <button id="cancel-revoke-{{token.token_link}}" type="button" class="button-secondary js-toggle-revoke">
+          No<span class="visuallyhidden"> I don't want to revoke {{token.description}}</span>
+        </button>
+    </div>
+  </div>
+    <p class="js-revoke-confirmed">
+      Key successfully revoked<br />
+      It will no longer enable integration with the platform.
+    </p>
+  {% endif %}
+  {% endif %}
+</div>
