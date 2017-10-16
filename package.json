@@ -27,6 +27,7 @@
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
     "start": "node_modules/forever/bin/forever --minUptime 1000 --spinSleepTime 500 start.js",
+    "start-with-chamber": "AWS_REGION=${ECS_AWS_REGION} ./chamber--linux-amd64 exec ${ECS_SERVICE} -- npm start",
     "stop": "node_modules/forever/bin/forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
