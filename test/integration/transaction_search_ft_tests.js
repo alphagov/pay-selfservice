@@ -36,7 +36,7 @@ var ALL_CARD_TYPES = {
 }
 
 function connectorMockResponds (data, searchParameters) {
-  var queryString = querystring.stringify({
+  var toStringify = {
     reference: searchParameters.reference ? searchParameters.reference : '',
     email: searchParameters.email ? searchParameters.email : '',
     state: searchParameters.state ? searchParameters.state : '',
@@ -45,7 +45,9 @@ function connectorMockResponds (data, searchParameters) {
     to_date: searchParameters.toDate ? searchParameters.toDate : '',
     page: searchParameters.page ? searchParameters.page : '1',
     display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
-  })
+  }
+  if (searchParameters.state) toStringify.payment_states = [searchParameters.state]
+  var queryString = querystring.stringify(toStringify)
 
   return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + '?' + queryString)
     .reply(200, data)

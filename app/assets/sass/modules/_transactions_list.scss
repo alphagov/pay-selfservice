@@ -2,6 +2,8 @@
   margin-bottom: 15px;
   border-collapse: collapse;
 
+
+
   &--row:hover {
     background: $grey-4;
     cursor: pointer;
@@ -9,5 +11,13 @@
 
   &--item {
     @include core-14;
+  }
+}
+
+#total-results {
+  font-weight: normal;
+
+  b {
+    font-weight: bold;
   }
 }

@@ -25,24 +25,31 @@ Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.
 {{>transactions/filter}}
 
 
-<div>
-<h3 class="heading-small" id="total-results">
-  {{total}} transactions
-  {{filtersDescription}}
-</h3>
-
-{{>transactions/display_size}}
 
 
-{{#hasResults}}
-{{#permissions.transactions_download_read}}
-<a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
-{{/permissions.transactions_download_read}}
-{{/hasResults}}
+
+
+
+
+
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <h2 class="heading-small" id="total-results">
+      <b>{{total}}</b> transactions
+      {{{filtersDescription}}}
+    </h2>
+    {{#hasResults}}
+    {{#permissions.transactions_download_read}}
+    <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
+    {{/permissions.transactions_download_read}}
+    {{/hasResults}}
+  </div>
+  <div class="column-one-third">
+    {{>transactions/display_size}}
+  </div>
 </div>
-
 {{>transactions/paginator}}
-
 {{>transactions/list}}
 
 {{>transactions/paginator}}

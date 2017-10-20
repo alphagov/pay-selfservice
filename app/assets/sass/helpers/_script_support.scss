@@ -1,0 +1,11 @@
+body.js-enabled {
+  & .if-js-hide{
+    display: none;
+  }
+}
+
+body:not(.js-enabled) {
+  & .if-js-show{
+    display: none;
+  }
+}

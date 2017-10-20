@@ -38,6 +38,10 @@ module.exports = (req, res) => {
             const relevantFilter = (state.type === 'payment' ? filters.result.payment_states : filters.result.refund_states) || []
             state.value.selected = relevantFilter.includes(state.name)
           })
+          model.stateFiltersFriendly = model.eventStates
+            .filter(state => state.value.selected)
+            .map(state => state.value.text)
+            .join(', ')
           response(req, res, 'transactions/index', model)
         })
         .on('connectorError', () => error('Unable to retrieve card types.'))

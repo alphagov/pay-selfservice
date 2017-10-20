@@ -1,0 +1,102 @@
+
+
+div.multi-select {
+  position: relative;
+  @extend %contain-floats;
+  width:100%;
+}
+
+button.multi-select-title {
+  border-radius: 0;
+  min-height: 38px;
+  background-color: $white;
+  text-align: left;
+  background-image: url("/public/images/dd-arrow.svg");
+  background-repeat: no-repeat;
+  background-position: right 13px top 2px;
+  -webkit-appearance: none;
+  max-width: 100%;
+
+  display: block;
+  cursor: pointer;
+  div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80%;
+    @include respond-to-max(1040px) {
+      width: 20em;
+    }
+    @include respond-to-max(mobile) {
+      width: 15em;
+    }
+
+  }
+}
+
+
+
+.multi-select-dropdown{
+  top: 0;
+  left:0;
+  background-color: $white;
+  z-index:10;
+  position: absolute;
+  border:2px solid $black;
+  width:100%;
+  @extend %contain-floats;
+
+  .multi-select-dropdown-inner-container {
+
+    overflow: scroll;
+  }
+
+  &:focus {
+    outline: 3px solid #ffbf47;
+    outline-offset: 0;
+  }
+
+  .multi-select-dropdown-close-area {
+    width:15%;
+    top:0;
+    right:13px;
+    position:absolute;
+    z-index:14;
+    height: 100%;
+    background-image: url("/public/images/dd-arrow.svg");
+    background-repeat: no-repeat;
+    background-position: right 0px top 2px;
+  }
+
+  .multiple-choice {
+    width:100%;
+    display: block;
+    text-align: left;
+    cursor: pointer;
+    margin: 0;
+    label {
+      padding: 10px 4px 4px;
+      width:100%;
+    }
+    input {
+      z-index: 12;
+      width:100%;
+    }
+  }
+  .multiple-choice [type='checkbox'] + label::before,
+  .multiple-choice [type='checkbox'] + label::after {
+    margin: auto;
+    height: 20px;
+    width: 20px;
+    top: 9px;
+    left: 8px;
+  }
+
+  .multiple-choice [type=checkbox] + label::after {
+    top: 14.5px;
+    left: 12px;
+    height: 5px;
+    width: 13px;
+    border-width: 0 0 3px 3px;
+  }
+}

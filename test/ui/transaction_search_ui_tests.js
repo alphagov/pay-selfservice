@@ -1,13 +1,14 @@
-var path = require('path')
+'use strict'
+const cheerio = require('cheerio')
+const {expect} = require('chai')
 
-require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
-var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const renderTemplate = require('../test_helpers/html_assertions.js').render
 
 describe('The transaction list view', function () {
   it('should render all transactions', function () {
     var templateData = {
       'total': 2,
-      'filtersDescription': '  from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'Testing2\' state\n    with \'Visa\' card brand',
+      'filtersDescription': '  from 2015-01-11 01:01:01   to 2015-01-11 01:01:01   with \'Testing2\' state   with \'Visa\' card brand',
       'results': [
         {
           'charge_id': '100',
@@ -73,21 +74,27 @@ describe('The transaction list view', function () {
     }
 
     var body = renderTemplate('transactions/index', templateData)
+    var $ = cheerio.load(body)
 
-    body.should.containSelector('#download-transactions-link').withAttribute('href', templateData.downloadTransactionLink)
+    expect($('#download-transactions-link').attr('href')).to.equal(templateData.downloadTransactionLink)
+
+    const totalResultsText = $('#total-results').text()
+    expect(totalResultsText).to.contain('2 transactions')
+    expect(totalResultsText).to.contain('from 2015-01-11 01:01:01')
+    expect(totalResultsText).to.contain('to 2015-01-11 01:01:01')
+    expect(totalResultsText).to.contain('with \'Testing2\' state')
+    expect(totalResultsText).to.contain('with \'Visa\' card brand')
+    expect($('input#reference').attr('value')).to.equal('ref1')
+    expect($('input#fromDate').attr('value')).to.equal('2015-01-11 01:01:01')
 
     templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('h3#total-results').withExactText('\n  2 transactions\n    from 2015-01-11 01:01:01\n    to 2015-01-11 01:01:01\n    with \'Testing2\' state\n    with \'Visa\' card brand\n')
-      body.should.containInputField('reference', 'text').withAttribute('value', 'ref1')
-      body.should.containInputField('fromDate', 'text').withAttribute('value', '2015-01-11 01:01:01')
-      body.should.containSelector('table#transactions-list')
-                .havingRowAt(ix + 1)
-                .withTableDataAt(1, templateData.results[ix].reference)
-                .withTableDataAt(2, templateData.results[ix].email)
-                .withTableDataAt(3, templateData.results[ix].amount)
-                .withTableDataAt(4, templateData.results[ix].card_details.card_brand)
-                .withTableDataAt(5, templateData.results[ix].state_friendly)
-                .withTableDataAt(6, templateData.results[ix].created)
+      const rowSelector = `table#transactions-list tr:nth-of-type(${ix + 1})`
+      expect($(`${rowSelector} th a`).text()).to.contain(templateData.results[ix].reference)
+      expect($(`${rowSelector} td:nth-of-type(1)`).text()).to.equal(templateData.results[ix].email)
+      expect($(`${rowSelector} td:nth-of-type(2)`).text()).to.equal(templateData.results[ix].amount)
+      expect($(`${rowSelector} td:nth-of-type(3)`).text()).to.equal(templateData.results[ix].card_details.card_brand)
+      expect($(`${rowSelector} td:nth-of-type(4)`).text()).to.equal(templateData.results[ix].state_friendly)
+      expect($(`${rowSelector} td:nth-of-type(5)`).text()).to.equal(templateData.results[ix].created)
     })
   })
 
@@ -98,11 +105,9 @@ describe('The transaction list view', function () {
     }
 
     var body = renderTemplate('transactions/index', templateData)
+    const $ = cheerio.load(body)
 
-    body.should.not.containSelector('#download-transactions-link')
-
-    templateData.results.forEach(function (transactionData, ix) {
-      body.should.containSelector('p#no-results').withExactText('No results match the search criteria.')
-    })
+    expect($('#download-transactions-link').length).to.equal(0)
+    expect($('p#no-results').text()).to.equal('No results match the search criteria.')
   })
 })

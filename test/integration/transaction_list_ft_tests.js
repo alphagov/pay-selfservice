@@ -9,6 +9,7 @@ const nock = require('nock')
 const getApp = require('../../server.js').getApp
 const paths = require('../../app/paths.js')
 const session = require('../test_helpers/mock_session.js')
+const querystring = require('querystring')
 
 const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
 const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
@@ -184,7 +185,7 @@ describe('The /transactions endpoint', function () {
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&payment_states=started')
       })
       .end(done)
   })
@@ -517,25 +518,30 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
 })
 
 function connectorMockResponds (code, data, searchParameters) {
-  var queryStr = '?'
-  queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-    '&email=' + (searchParameters.email ? searchParameters.email : '') +
-    '&state=' + (searchParameters.state ? searchParameters.state : '') +
-    '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
-    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-    '&page=' + (searchParameters.page ? searchParameters.page : '1') +
-    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
-
-  if (searchParameters.payment_states) {
-    queryStr += '&payment_states=' + searchParameters.payment_states
+  var toStringify = {
+    reference: searchParameters.reference ? searchParameters.reference : '',
+    email: searchParameters.email ? searchParameters.email : '',
+    state: searchParameters.state ? searchParameters.state : '',
+    card_brand: searchParameters.brand ? searchParameters.brand : '',
+    from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
+    to_date: searchParameters.toDate ? searchParameters.toDate : '',
+    page: searchParameters.page ? searchParameters.page : '1',
+    display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
   }
 
+  if (!searchParameters.payment_states && !searchParameters.refund_states && searchParameters.state) {
+    toStringify.payment_states = [searchParameters.state]
+  }
   if (searchParameters.refund_states) {
-    queryStr += '&refund_states=' + searchParameters.refund_states
+    toStringify.refund_states = searchParameters.refund_states
+  }
+  if (searchParameters.payment_states) {
+    toStringify.payment_states = searchParameters.payment_states
   }
 
-  return connectorMock.get(CONNECTOR_CHARGES_API_PATH + encodeURI(queryStr))
+  var queryString = querystring.stringify(toStringify)
+
+  return connectorMock.get(CONNECTOR_CHARGES_API_PATH + '?' + queryString)
     .reply(code, data)
 }
 
