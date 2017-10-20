@@ -1,6 +1,11 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.7.0
-ignore: {}
+version: v1.7.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:timespan:20170907':
+    - '*':
+        reason: No exposure. Transitive dependency pulled from forever dependency.
+        expires: 2018-01-20T00:00:00.000Z
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:ms:20170412':
