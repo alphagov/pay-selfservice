@@ -21,9 +21,9 @@
     {{/cookieMessage}}
 
     {{$content}}
-        {{>includes/flash}}
         <main id="content" role="main" class="{{$mainClasses}}{{/mainClasses}}">
           <div class="main-content">
+            {{>includes/flash}}
             <div class="grid-row">
               {{$mainContent}}{{/mainContent}}
             </div>

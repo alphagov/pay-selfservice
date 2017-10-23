@@ -1,5 +1,7 @@
+
 .notification {
   @include core-19;
+  margin-bottom: $gutter;
   padding: $gutter $gutter / 2;
   border: 5px solid $green;
 
