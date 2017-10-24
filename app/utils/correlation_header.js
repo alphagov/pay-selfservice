@@ -1,5 +1,7 @@
-const CORRELATION_HEADER = 'x-request-id'
-var logger = require('winston')
+'use strict'
+const logger = require('winston')
+
+const {CORRELATION_HEADER} = require('../../config')
 
 module.exports = (function () {
   'use strict'

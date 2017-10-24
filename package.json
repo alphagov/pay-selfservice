@@ -50,6 +50,7 @@
     "common-password": "^0.1.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "1.4.x",
+    "correlation-id": "^2.0.0",
     "csrf": "3.0.x",
     "currency-formatter": "^1.2.1",
     "express": "4.15.x",
