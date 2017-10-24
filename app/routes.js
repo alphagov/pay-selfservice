@@ -7,7 +7,6 @@ const lodash = require('lodash')
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate_route')
 const paths = require('./paths.js')
-const CORRELATION_HEADER = require('./utils/correlation_header').CORRELATION_HEADER
 
 // - Middleware
 const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser} = require('./services/auth_service')

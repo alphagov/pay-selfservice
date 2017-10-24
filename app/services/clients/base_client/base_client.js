@@ -22,7 +22,7 @@ const requestOptions = {
 }
 
 if (process.env.DISABLE_INTERNAL_HTTPS !== 'true') {
-  customCertificate.addCertsToAgent({options:requestOptions.agentOptions})
+  customCertificate.addCertsToAgent({options: requestOptions.agentOptions})
 } else {
   logger.warn('DISABLE_INTERNAL_HTTPS is set.')
 }

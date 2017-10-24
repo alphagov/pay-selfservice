@@ -96,7 +96,7 @@ describe('wrapper: arguments handling', () => {
         })
       })
 
-      describe('when it only passed an options object', () => {
+      describe('when it is only passed an options object', () => {
         let method, opts, cb
 
         before(done => {

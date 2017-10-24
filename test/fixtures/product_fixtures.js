@@ -4,28 +4,22 @@ const pactBase = require('./pact_base')
 // Global setup
 const pactProducts = pactBase()
 
+// Create random values if none provided
+const randomExternalId = () => Math.random().toString(36).substring(7)
+const randomGatewayAccountId = () => Math.round(Math.random() * 1000) + 1
+const randomPrice = () => Math.round(Math.random() * 10000) + 1
+
 module.exports = {
 
-  validCreateProductRequest: (opts) => {
-    opts = opts || {}
-    const externalServiceId = opts.service_external_id || 'service-externalId'
-    const payApiToken = opts.pay_api_token || 'pay-api-token'
-    const name = opts.name || 'A Product Name'
-    const description = opts.description || 'A Product description'
-    const price = opts.price || 1000
-
+  validCreateProductRequest: (opts = {}) => {
     const data = {
-      external_service_id: externalServiceId,
-      pay_api_token: payApiToken,
-      name: name,
-      description: description,
-      price: price
+      gateway_account_id: opts.gatewayAccountId || randomGatewayAccountId(),
+      pay_api_token: opts.payApiToken || 'pay-api-token',
+      name: opts.name || 'A Product Name',
+      price: opts.price || randomPrice()
     }
-
-    if (opts.return_url) {
-      data.return_url = opts.return_url
-    }
-
+    if (opts.description) data.description = opts.description
+    if (opts.returnUrl) data.return_url = opts.returnUrl
     return {
       getPactified: () => {
         return pactProducts.pactify(data)
@@ -36,35 +30,26 @@ module.exports = {
     }
   },
 
-  validCreateProductResponse: (opts) => {
-    opts = opts || {}
-    const externalProductId = opts.external_product_id || 'product-externalId'
-    const externalServiceId = opts.external_service_id || 'service-externalId'
-    const externalCatalogueId = opts.catalogue_external_id || 'catalogue-externalId'
-    const name = opts.name || 'A Product Name'
-    const description = opts.description || 'A Product description'
-    const price = opts.price || 1000
-    const returnUrl = opts.return_url || 'http://some.return.url/'
-    const links = opts.links ||
-      [{
-        href: `http://products.url/v1/api/products/${externalProductId}`,
+  validCreateProductResponse: (opts = {}) => {
+    const data = {
+      external_id: opts.external_id || randomExternalId(),
+      gateway_account_id: opts.gateway_account_id || randomGatewayAccountId(),
+      name: opts.name || 'A Product Name',
+      price: opts.price || randomPrice(),
+      _links: opts.links
+    }
+    if (opts.description) data.description = opts.description
+    if (opts.return_url) data.return_url = opts.return_url
+    if (!data._links) {
+      data._links = [{
+        href: `http://products.url/v1/api/products/${data.external_id}`,
         rel: 'self',
         method: 'GET'
       }, {
-        href: `http://products-ui.url/pay/${externalProductId}`,
+        href: `http://products-ui.url/pay/${data.external_id}`,
         rel: 'pay',
         method: 'GET'
       }]
-
-    const data = {
-      external_product_id: externalProductId,
-      external_service_id: externalServiceId,
-      external_catalogue_id: externalCatalogueId,
-      name: name,
-      description: description,
-      price: price,
-      return_url: returnUrl,
-      _links: links
     }
 
     return {

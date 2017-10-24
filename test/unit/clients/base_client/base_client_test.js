@@ -45,7 +45,7 @@ describe('baseClient', () => {
         .then(() => done())
         .catch(done)
 
-      function captureConnection(err, response) {
+      function captureConnection (ignoreableError, response) {
         connections.push(response.connection)
       }
     })
