@@ -1,12 +1,21 @@
 table {
-  margin-bottom: $gutter*2;
   width: $full-width;
+  margin-bottom: $gutter * 2;
+
   td {
     @include core-14;
-    padding: 0.75em 1.25em 0.5625em 0;
+    padding: .75em 1.25em .5625em 0;
     line-height: 1;
+
     &.details {
       font-weight: bold;
+    }
+
+    &.one-third {
+      width: 33.333%;
+    }
+    &.two-thirds {
+      width: 66.666%;
     }
   }
 

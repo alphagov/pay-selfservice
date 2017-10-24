@@ -1,7 +1,7 @@
 .heading-with-border {
-  border-bottom: 5px solid $black;
-  padding-bottom: $gutter-two-thirds;
   margin-bottom: $gutter;
+  padding-bottom: $gutter-two-thirds;
+  border-bottom: 5px solid $black;
 }
 
 .page-title {
@@ -10,8 +10,13 @@
 }
 
 .heading-group {
-  /* Allow other tags to sit alongside the heading */
-  h1, h2, h3, h4, h5, h6 {
+  // Allow other tags to sit alongside the heading
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @include inline-block;
   }
 
@@ -23,4 +28,8 @@
 
 .sign-in-heading {
   margin-top: $gutter;
+}
+
+.pad-top {
+  margin-top: $gutter * 2;
 }
