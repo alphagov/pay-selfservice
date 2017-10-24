@@ -2,7 +2,7 @@ const q = require('q')
 
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
-const baseClient = require('./base_client')
+const baseClient = require('./old_base_client')
 
 const SERVICE_NAME = 'publicauth'
 

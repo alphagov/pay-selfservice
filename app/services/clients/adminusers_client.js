@@ -2,7 +2,7 @@
 
 const q = require('q')
 const requestLogger = require('../../utils/request_logger')
-const baseClient = require('./base_client')
+const baseClient = require('./old_base_client')
 const User = require('../../models/User.class')
 const Service = require('../../models/Service.class')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter

@@ -7,7 +7,7 @@ var querystring = require('querystring')
 const q = require('q')
 
 var dates = require('../../utils/dates.js')
-const baseClient = require('./base_client')
+const baseClient = require('./old_base_client')
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 
