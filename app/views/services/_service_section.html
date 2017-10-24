@@ -16,7 +16,7 @@
                 <form method="post" action="{{routes.serviceSwitcher.switch}}">
                     <input name="csrfToken" type="hidden" value="{{csrf}}" />
                     <input name="gatewayAccountId" type="hidden" value="{{id}}"/>
-                    <input class="service-switcher" type="submit" role="link" value="{{payment_provider}} {{type}}">
+                    <input class="service-switcher {{type}} {{payment_provider}}" type="submit" role="link" value="{{payment_provider}} {{type}}">
                 </form>
             </li>
             {{/gateway_accounts}}
