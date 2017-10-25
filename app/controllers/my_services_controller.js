@@ -49,6 +49,7 @@ module.exports = {
 
       serviceService.getGatewayAccounts(serviceRole.service.gatewayAccountIds, req.correlationId)
         .then(accounts => {
+          accounts.sort((a, b) => a.type === b.type ? 0 : a.type === 'live' ? -1 : 1)
           defer.resolve({
             name: displayNameOf(serviceRole.service),
             external_id: serviceRole.service.externalId,
