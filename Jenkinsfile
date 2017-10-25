@@ -3,6 +3,10 @@
 pipeline {
   agent any
 
+  parameters {
+    booleanParam(defaultValue: false, description: '', name: 'runEndToEndOnPR')
+  }
+
   options {
     ansiColor('xterm')
     timestamps()
@@ -10,6 +14,10 @@ pipeline {
 
   libraries {
     lib("pay-jenkins-library@master")
+  }
+
+  environment {
+    RUN_END_TO_END_ON_PR = "${params.runEndToEndOnPR}"
   }
 
   stages {
@@ -23,6 +31,12 @@ pipeline {
       }
     }
     stage('Test') {
+      when {
+        anyOf {
+          branch 'master'
+          environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+        }
+      }
       steps {
         runEndToEnd("selfservice")
       }
@@ -41,7 +55,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        deploy("selfservice", "test", null, true, false)
+        deploy("selfservice", "test", null, false)
         deployEcs("selfservice", "test", null, true, true)
       }
     }
