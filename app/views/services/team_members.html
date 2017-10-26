@@ -12,7 +12,12 @@ Team members - GOV.UK Pay
 {{$full_width_content}}
 <a href="/my-services" class="link-back">My Services</a>
 <h1 class="heading-large">Team members</h1>
+{{#permissions.users_service_create}}
 <p class="admin-lede">Team member changes affect both live and test environments.</p>
+{{/permissions.users_service_create}}
+{{^permissions.users_service_create}}
+<p class="admin-lede">Contact an administrator to invite team members and change permissions.</p>
+{{/permissions.users_service_create}}
 <div class="grid-row">
     <div class="column-two-thirds admin-list-group">
         <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
