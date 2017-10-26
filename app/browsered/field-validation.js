@@ -8,7 +8,7 @@ const checks = require('./field-validation-checks')
 const validationErrorsTemplate = require('../views/includes/validation-errors.html')
 
 exports.enableFieldValidation = function () {
-  const allForms = [...document.getElementsByTagName('form')]
+  const allForms = Array.prototype.slice.call(document.getElementsByTagName('form'))
 
   allForms.filter(form => {
     return form.hasAttribute('data-validate')
