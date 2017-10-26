@@ -5,7 +5,7 @@ ignore:
   'npm:timespan:20170907':
     - '*':
         reason: Transitive dependency pulled in by Forever. Vulnerability does not affect us because it requires a specially-crafted input string and Forever only ever uses input from the system clock. See PP-2687.
-        expires: 2018-01-20T00:00:00.000Z
+        expires: 2017-11-20T00:00:00.000Z
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:ms:20170412':
