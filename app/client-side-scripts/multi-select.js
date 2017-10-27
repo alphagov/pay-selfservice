@@ -58,7 +58,7 @@ function progressivelyEnhanceSelects () {
 function onItemBlur () {
   setTimeout(() => {
     const dropdown = $(this).closest(DROPDOWN_SELECTOR)
-    if (![...dropdown.find(`${ITEM_SELECTOR}:focus`)].length > 0) {
+    if ([...dropdown.find(`${ITEM_SELECTOR}:focus`)].length <= 0) {
       dropdown.css('visibility', 'hidden')
     }
   }, 100)
@@ -79,15 +79,21 @@ function onCloseAreaClick () {
 
 function onItemChange () {
   const checked = this.checked
-  const items = [...$(this).closest(TOP_LEVEL_SELECTOR).find(ITEM_SELECTOR)]
+  const items = [...$(this).closest(TOP_LEVEL_SELECTOR)
+    .find(ITEM_SELECTOR)]
     .filter(item => item.value)
 
+   $(this).focus()
+
   if (this.value) {
-    $(this).closest(TOP_LEVEL_SELECTOR).find(ALL_SELECTOR)
+    $(this)
+      .closest(TOP_LEVEL_SELECTOR)
+      .find(ALL_SELECTOR)
       .prop('checked', !items.map(item => item.checked).includes(true))
   } else {
     items.forEach(item => $(item).prop('checked', !checked))
   }
+
 
   updateDisplayedValue.call(this)
 }
