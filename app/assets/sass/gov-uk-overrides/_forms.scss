@@ -1,11 +1,10 @@
 select.form-control {
-  @include webkit-only {
+    // TODO: restrict to webkit only once PP-2835 has been done
     border-radius: 0;
     background-image: url("/public/images/dd-arrow.svg");
     background-repeat: no-repeat;
     background-position: right 4px top 2px;
-    -webkit-appearance: none;
-  }
+    @include appearance(none);
 }
 
 textarea {
