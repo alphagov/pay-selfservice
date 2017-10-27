@@ -3,7 +3,7 @@ select.form-control {
     border-radius: 0;
     background-image: url("/public/images/dd-arrow.svg");
     background-repeat: no-repeat;
-    background-position: right 4px top 2px;
+    background-position: right 4px top 4px;
     @include appearance(none);
 }
 

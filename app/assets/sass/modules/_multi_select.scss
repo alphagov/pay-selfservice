@@ -13,7 +13,7 @@ button.multi-select-title {
   text-align: left;
   background-image: url("/public/images/dd-arrow.svg");
   background-repeat: no-repeat;
-  background-position: right 13px top 2px;
+  background-position: right 13px top 4px;
   -webkit-appearance: none;
   max-width: 100%;
 
@@ -47,8 +47,8 @@ button.multi-select-title {
   @extend %contain-floats;
 
   .multi-select-dropdown-inner-container {
-
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   &:focus {
