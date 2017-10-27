@@ -2,6 +2,7 @@
 
 // Local Dependencies
 const Product = require('../../models/Product.class')
+const Payment = require('../../models/Payment.class')
 const baseClient = require('./base_client/base_client')
 const {PRODUCTS_URL, PRODUCTS_API_TOKEN} = require('../../../config')
 
@@ -16,24 +17,20 @@ const headers = {
 
 // Exports
 module.exports = {
-  createProduct,
-  getProduct
+  product: {
+    create: createProduct,
+    disable: disableProduct,
+    getByProductExternalId: getProductByExternalId,
+    getByGatewayAccountId: getProductsByGatewayAccountId
+  },
+  payment: {
+    create: createPayment,
+    getByPaymentExternalId: getPaymentByPaymentExternalId,
+    getByProductExternalId: getPaymentsByProductExternalId
+  }
 }
 
-/**
- * @param {String} externalProductId: the external id of the product you wish to retrieve
- * @returns {Promise<Product>}
- */
-function getProduct (externalProductId) {
-  return baseClient.get({
-    headers,
-    baseUrl,
-    url: `/products/${externalProductId}`,
-    description: 'find a product',
-    service: SERVICE_NAME
-  }).then(product => new Product(product))
-}
-
+// PRODUCT
 /**
  * @param {Object} options
  * @param {string} options.gatewayAccountId - The id of the gateway account you wish to use to pay for the product
@@ -61,4 +58,92 @@ function createProduct (options) {
     description: 'create a product for a service',
     service: SERVICE_NAME
   }).then(product => new Product(product))
+}
+
+/**
+ * @param {String} externalProductId: the external id of the product you wish to retrieve
+ * @returns {Promise<Product>}
+ */
+function getProductByExternalId (externalProductId) {
+  return baseClient.get({
+    headers,
+    baseUrl,
+    url: `/products/${externalProductId}`,
+    description: `find a product by it's external id`,
+    service: SERVICE_NAME
+  }).then(product => new Product(product))
+}
+
+/**
+ * @param {String} gatewayAccountId - The id of the gateway account to retrieve products associated with
+ * @returns {Promise<Array<Product>>}
+ */
+function getProductsByGatewayAccountId (gatewayAccountId) {
+  return baseClient.get({
+    headers,
+    baseUrl,
+    url: '/products',
+    qs: {
+      gatewayAccountId
+    },
+    description: 'find a list products associated with a gateway account',
+    service: SERVICE_NAME
+  }).then(products => products.map(product => new Product(product)))
+}
+
+/**
+ * @param {String} productExternalId: the external id of the product you wish to disable
+ * @returns {undefined}
+ */
+function disableProduct (productExternalId) {
+  return baseClient.patch({
+    headers,
+    baseUrl,
+    url: `/products/${productExternalId}/disable`,
+    description: `disable a product`,
+    service: SERVICE_NAME
+  })
+}
+
+// PAYMENT
+/**
+ * @param {String} productExternalId The external ID of the product to create a payment for
+ * @returns Promise<Payment>
+ */
+function createPayment (productExternalId) {
+  return baseClient.post({
+    headers,
+    baseUrl,
+    url: `/products/${productExternalId}/payments`,
+    description: 'create a payment for a product',
+    service: SERVICE_NAME
+  }).then(payment => new Payment(payment))
+}
+
+/**
+ * @param {String} paymentExternalId
+ * @returns Promise<Payment>
+ */
+function getPaymentByPaymentExternalId (paymentExternalId) {
+  return baseClient.get({
+    headers,
+    baseUrl,
+    url: `/payments/${paymentExternalId}`,
+    description: `find a payment by it's external id`,
+    service: SERVICE_NAME
+  }).then(charge => new Payment(charge))
+}
+
+/**
+ * @param {String} productExternalId
+ * @returns Promise<Array<Payment>>
+ */
+function getPaymentsByProductExternalId (productExternalId) {
+  return baseClient.get({
+    headers,
+    baseUrl,
+    url: `/products/${productExternalId}/payments`,
+    description: `find a payments associated with a particular product`,
+    service: SERVICE_NAME
+  }).then(payments => payments.map(payment => new Payment(payment)))
 }

@@ -1,5 +1,8 @@
 'use strict'
 
+// NPM Dependencies
+const lodash = require('lodash')
+
 /**
  @class Product
  * @property {string} externalId - The external ID of the product
@@ -37,10 +40,9 @@ class Product {
     this.gatewayAccountId = opts.gateway_account_id
     this.name = opts.name
     this.price = opts.price
-    this.description = opts.description || ''
-    this.returnUrl = opts.return_url || ''
-    this.payLink = opts._links.find(link => link.rel === 'pay')
-    this.selfLink = opts._links.find(link => link.rel === 'self')
+    this.description = opts.description
+    this.returnUrl = opts.return_url
+    opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, {method: link.method, href: link.href}))
   }
 }
 
