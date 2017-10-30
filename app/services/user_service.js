@@ -117,7 +117,7 @@ module.exports = {
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
       defer.reject({message: 'Your password must be at least 10 characters.'})
     } else if (commonPassword(newPassword)) {
-      defer.reject({message: 'Your password is too simple. Choose a password that is harder for people to guess.'})
+      defer.reject({message: 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'})
     } else {
       getAdminUsersClient().updatePasswordForUser(token, newPassword)
         .then(

@@ -57,6 +57,12 @@ function validateField (form, field) {
       case 'currency' :
         result = checks.isCurrency(field.value)
         break
+      case 'email' :
+        result = checks.isValidEmail(field.value)
+        break
+      case 'phone' :
+        result = checks.isPhoneNumber(field.value)
+        break
       default :
         result = checks.isEmpty(field.value)
         break

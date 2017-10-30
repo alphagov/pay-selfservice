@@ -5,7 +5,7 @@ let paths = require('../paths.js')
 let successResponse = response.response
 let errorResponse = response.renderErrorView
 let rolesModule = require('../utils/roles')
-let emailTools = require('../utils/email_tools')()
+const emailValidator = require('../utils/email_tools.js')
 
 const formattedPathFor = require('../../app/utils/replace_params_in_path')
 
@@ -82,7 +82,7 @@ module.exports = {
       }
     }
 
-    if (!emailTools.validateEmail(invitee)) {
+    if (!emailValidator(invitee)) {
       req.flash('genericError', `Invalid email address`)
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
       return
