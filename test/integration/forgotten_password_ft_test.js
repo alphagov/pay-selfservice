@@ -194,7 +194,7 @@ describe('forgotten_password_controller', function () {
 
     aForgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled
       .then(() => {
-        expect(req.flash.calledWith('genericError', 'Your password is too simple. Choose a password that is harder for people to guess.')).to.equal(true)
+        expect(req.flash.calledWith('genericError', 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')).to.equal(true)
         expect(res.redirect.calledWith('/reset-password/' + token)).to.equal(true)
       }).should.notify(done)
   })

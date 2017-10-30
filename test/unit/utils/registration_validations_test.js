@@ -48,7 +48,7 @@ describe('registration_validation module', function () {
       const password = undefined
       validation.validateUserRegistrationInputs(validPhoneNumber, password)
         .should.be.rejected.then((response) => {
-          expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
+          expect(response).to.equal('Your password must be at least 10 characters.')
         })
         .should.notify(done)
     })
@@ -58,7 +58,7 @@ describe('registration_validation module', function () {
       const password = '1234567890'
       validation.validateUserRegistrationInputs(validPhoneNumber, password)
         .should.be.rejected.then((response) => {
-          expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
+          expect(response).to.equal('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
         })
         .should.notify(done)
     })
@@ -68,7 +68,7 @@ describe('registration_validation module', function () {
       const validPassword = '2se45&s'
       validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
         .should.be.rejected.then((response) => {
-          expect(response).to.equal('Your password is too simple. Choose a password that is harder for people to guess')
+          expect(response).to.equal('Your password must be at least 10 characters.')
         })
         .should.notify(done)
     })

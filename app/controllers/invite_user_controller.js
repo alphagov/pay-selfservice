@@ -82,6 +82,7 @@ module.exports = {
       }
     }
 
+    console.log(emailValidator(invitee))
     if (!emailValidator(invitee)) {
       req.flash('genericError', `Invalid email address`)
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
