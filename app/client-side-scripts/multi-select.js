@@ -8,7 +8,9 @@ const $ = require('jquery')
 const multiSelect = require('../views/includes/multi-select.html')
 
 // Variables
-const MAXIMUM_VISIBLE_ITEMS = 5.5 // Maximum amount of items to show in dropdown
+const MAXIMUM_VISIBLE_ITEMS = 8.5 // Maximum amount of items to show in dropdown
+const MINIMUM_VISIBLE_ITEMS = 3.5 // Minimum amount of items to show in dropdown (assuming total is larger than this value)
+
 // Selectors
 const DOCUMENT_SELECTOR = window.document
 const ENHANCEMENT_SELECTOR = 'select[data-enhance-multiple]'
@@ -47,10 +49,10 @@ function progressivelyEnhanceSelects () {
     closeButton.click(onCloseAreaClick)
     items.change(onItemChange)
     items.blur(onItemBlur)
-    const itemsHeight = [...items]
-      .map(item => $(item).parent().height())
-      .reduce((sum, value) => sum + value)
-    scrollContainer.css('max-height', (itemsHeight / items.length) * MAXIMUM_VISIBLE_ITEMS)
+    const itemHeight = ([...items].map(item => $(item).parent().height()).reduce((sum, value) => sum + value) / items.length)
+    const maxVisibleItems = Math.min(Math.floor((($(window).height() - openButton.offset().top) / itemHeight) - 0.5) + 0.5, MAXIMUM_VISIBLE_ITEMS)
+    const visibleItems = Math.max(maxVisibleItems, MINIMUM_VISIBLE_ITEMS)
+    scrollContainer.css('max-height', visibleItems * itemHeight)
     updateDisplayedValue.call(dropdown)
   })
 }
@@ -58,7 +60,7 @@ function progressivelyEnhanceSelects () {
 function onItemBlur () {
   setTimeout(() => {
     const dropdown = $(this).closest(DROPDOWN_SELECTOR)
-    if (![...dropdown.find(`${ITEM_SELECTOR}:focus`)].length > 0) {
+    if ([...dropdown.find(`${ITEM_SELECTOR}:focus`)].length <= 0) {
       dropdown.css('visibility', 'hidden')
     }
   }, 100)
@@ -79,11 +81,16 @@ function onCloseAreaClick () {
 
 function onItemChange () {
   const checked = this.checked
-  const items = [...$(this).closest(TOP_LEVEL_SELECTOR).find(ITEM_SELECTOR)]
+  const items = [...$(this).closest(TOP_LEVEL_SELECTOR)
+    .find(ITEM_SELECTOR)]
     .filter(item => item.value)
 
+  $(this).focus()
+
   if (this.value) {
-    $(this).closest(TOP_LEVEL_SELECTOR).find(ALL_SELECTOR)
+    $(this)
+      .closest(TOP_LEVEL_SELECTOR)
+      .find(ALL_SELECTOR)
       .prop('checked', !items.map(item => item.checked).includes(true))
   } else {
     items.forEach(item => $(item).prop('checked', !checked))
