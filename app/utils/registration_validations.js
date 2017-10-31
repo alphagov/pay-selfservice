@@ -5,8 +5,8 @@ const q = require('q')
 const _ = require('lodash')
 const commonPassword = require('common-password')
 
-// Custom dependencies
-const emailTools = require('../utils/email_tools')()
+// Local dependencies
+const emailValidator = require('../utils/email_tools.js')
 
 // Constants
 const MIN_PHONE_NUMBER_LENGTH = 11
@@ -54,8 +54,10 @@ module.exports = {
       return defer.promise
     }
 
-    if (!password || password.length < MIN_PASSWORD_LENGTH || commonPassword(password)) {
-      defer.reject('Your password is too simple. Choose a password that is harder for people to guess')
+    if (!password || password.length < MIN_PASSWORD_LENGTH) {
+      defer.reject('Your password must be at least 10 characters.')
+    } else if (commonPassword(password)) {
+      defer.reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
     } else {
       defer.resolve()
     }
@@ -90,7 +92,7 @@ module.exports = {
   validateServiceRegistrationInputs: (email, telephoneNumber, password) => {
     const defer = q.defer()
 
-    if (!emailTools.validateEmail(email)) {
+    if (!emailValidator(email)) {
       defer.reject('Invalid email')
       return defer.promise
     }
@@ -100,8 +102,10 @@ module.exports = {
       return defer.promise
     }
 
-    if (!password || password.length < MIN_PASSWORD_LENGTH || commonPassword(password)) {
-      defer.reject('Your password is too simple. Choose a password that is harder for people to guess')
+    if (!password || password.length < MIN_PASSWORD_LENGTH) {
+      defer.reject('Your password must be at least 10 characters.')
+    } else if (commonPassword(password)) {
+      defer.reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
     } else {
       defer.resolve()
     }
