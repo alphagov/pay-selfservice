@@ -11,6 +11,7 @@ const showSettingsNavTemplates = [
   'provider_credentials/smartpay',
   'provider_credentials/worldpay',
   'service_name',
+  'merchant_details/edit_merchant_details',
   'payment_types_summary',
   'payment_types_select_type',
   'payment_types_select_brand',

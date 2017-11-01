@@ -59,6 +59,7 @@ describe('navigation menu', function () {
       tokens_update: false,
       gateway_credentials_update: true,
       service_name_read: false,
+      merchant_details_read: false,
       payment_types_read: false,
       toggle_3ds_read: false,
       email_notification_template_read: false
@@ -79,6 +80,7 @@ describe('navigation menu', function () {
       tokens_update: false,
       gateway_credentials_update: false,
       service_name_read: false,
+      merchant_details_read: false,
       payment_types_read: true,
       toggle_3ds_read: false,
       email_notification_template_read: false
@@ -94,11 +96,33 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Payment types')
   })
 
+  it('should render Merchant details navigation link when user have merchant details read permission', function () {
+    let testPermissions = {
+      tokens_update: false,
+      gateway_credentials_update: false,
+      service_name_read: false,
+      merchant_details_read: true,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: false
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+    }
+
+    let body = renderTemplate('token', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Merchant details')
+  })
+
   it('should render 3D Secure navigation link when user have email notification template read permission', function () {
     let testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
       service_name_read: false,
+      merchant_details_read: false,
       payment_types_read: false,
       toggle_3ds_read: true,
       email_notification_template_read: false
@@ -119,6 +143,7 @@ describe('navigation menu', function () {
       tokens_update: false,
       gateway_credentials_update: false,
       service_name_read: false,
+      merchant_details_read: false,
       payment_types_read: false,
       toggle_3ds_read: false,
       email_notification_template_read: true
