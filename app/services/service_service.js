@@ -12,6 +12,7 @@ const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 module.exports = {
   getGatewayAccounts,
   updateServiceName,
+  updateMerchantDetails,
   createService
 }
 
@@ -59,6 +60,24 @@ function updateServiceName (serviceExternalId, serviceName, correlationId) {
       } else {
         return q.resolve(new Service(result))
       }
+    })
+}
+
+/**
+ * Update merchant details
+ *
+ * @param serviceExternalId
+ * @param merchantDetails
+ * @param correlationId
+ * @returns {Promise<Service>} the updated service
+ */
+function updateMerchantDetails (serviceExternalId, merchantDetails, correlationId) {
+  if (!serviceExternalId) return q.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
+  if (!merchantDetails) return q.reject(new Error(`argument: 'merchantDetails' cannot be undefined`))
+
+  return getAdminUsersClient({correlationId}).updateMerchantDetails(serviceExternalId, merchantDetails)
+    .then(result => {
+      return q.resolve(new Service(result))
     })
 }
 

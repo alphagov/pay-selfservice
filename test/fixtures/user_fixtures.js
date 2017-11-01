@@ -37,6 +37,17 @@ function randomTelephoneNumber () {
   return `07700 9${String(Math.floor(Math.random() * 10000) + 1)}`
 }
 
+function randomMerchantDetails () {
+  return {
+    name: 'name',
+    address_line1: 'line1',
+    address_line2: 'line2',
+    address_city: 'City',
+    address_postcode: 'POSTCODE',
+    address_country: 'GB'
+  }
+}
+
 module.exports = {
 
   validMinimalUser: () => {
@@ -76,7 +87,48 @@ module.exports = {
       }
     }
   },
+  validUserWithMerchantDetails: (opts = {}) => {
+    let newExternalId = random.randomUuid()
+    let newUsername = randomUsername()
+    let defaultServiceId = opts.default_service_id || randomServiceId()
+    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()]
+    let merchantDetails = opts.merchant_details || randomMerchantDetails()
 
+    let data = {
+      external_id: opts.external_id || newExternalId,
+      username: opts.username || newUsername,
+      email: opts.email || `${newUsername}@example.com`,
+      service_roles: opts.service_roles || [{
+        service: {
+          name: 'System Generated',
+          external_id: defaultServiceId,
+          gateway_account_ids: gatewayAccountIds,
+          merchant_details: merchantDetails
+        },
+        role: opts.role || {
+          name: 'admin',
+          description: 'Administrator',
+          permissions: opts.permissions || [{name: 'perm-1'}]
+        }
+      }],
+      telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
+      otp_key: opts.otp_key || randomOtpKey(),
+      disabled: opts.disabled || false,
+      login_counter: opts.login_counter || 0,
+      session_version: opts.session_version || 0
+    }
+    return {
+      getPactified: () => {
+        return pactUsers.pactify(data)
+      },
+      getAsObject: () => {
+        return new User(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
+  },
   validUser: (opts = {}) => {
     let newExternalId = random.randomUuid()
     let newUsername = randomUsername()

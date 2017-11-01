@@ -881,7 +881,43 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
-   * Update service name
+   * Update merchant details
+   *
+   * @param serviceExternalId
+   * @param merchantDetails
+   * @returns {*|Constructor|promise}
+   */
+  const updateMerchantDetails = (serviceExternalId, merchantDetails) => {
+    const params = {
+      correlationId: correlationId,
+      payload: merchantDetails
+    }
+
+    const url = `${serviceResource}/${serviceExternalId}/merchant-details`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'PUT',
+      description: 'update merchant details',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.put(url, params, callbackToPromiseConverter)
+    .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
+   * Add gateway accounts to service
    *
    * @param serviceExternalId
    * @param gatewayAccountIds {String[]} a list of (unassigned) gateway account ids to add to the service
@@ -952,6 +988,7 @@ module.exports = function (clientOptions = {}) {
     // Service-related Methods
     createService,
     updateServiceName,
+    updateMerchantDetails,
     addGatewayAccountsToService
   }
 }
