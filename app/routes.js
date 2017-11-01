@@ -40,7 +40,8 @@ const forgotPassword = require('./controllers/forgotten_password_controller')
 const myServicesCtrl = require('./controllers/my_services_controller')
 const editServiceNameCtrl = require('./controllers/edit_service_name_controller')
 const serviceUsersController = require('./controllers/service_users_controller')
-const editMerchantDetailsCtrl = require('./controllers/edit_merchant_details_controller')
+const editMerchantDetailsCtrlGet = require('./controllers/edit_merchant_details/get')
+const editMerchantDetailsCtrlPost = require('./controllers/edit_merchant_details/post')
 const inviteUserController = require('./controllers/invite_user_controller')
 const registerCtrl = require('./controllers/register_user_controller')
 const serviceRolesUpdateController = require('./controllers/service_roles_update_controller')
@@ -157,8 +158,8 @@ module.exports.bind = function (app) {
   app.post(nc.update, permission('gateway-credentials:update'), getAccount, credentialsCtrl.updateNotificationCredentials)
 
   // MERCHANT DETAILS
-  app.get(merchantDetails.index, permission('merchant-details:read'), editMerchantDetailsCtrl.get)
-  app.post(merchantDetails.update, permission('merchant-details:update'), editMerchantDetailsCtrl.post)
+  app.get(merchantDetails.index, permission('merchant-details:read'), editMerchantDetailsCtrlGet.get)
+  app.post(merchantDetails.update, permission('merchant-details:update'), editMerchantDetailsCtrlPost.post)
 
   // DEV TOKENS
   app.get(devTokens.index, permission('tokens-active:read'), getAccount, devTokensCtrl.index)
