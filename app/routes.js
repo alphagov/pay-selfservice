@@ -40,6 +40,7 @@ const forgotPassword = require('./controllers/forgotten_password_controller')
 const myServicesCtrl = require('./controllers/my_services_controller')
 const editServiceNameCtrl = require('./controllers/edit_service_name_controller')
 const serviceUsersController = require('./controllers/service_users_controller')
+const editMerchantDetailsCtrl = require('./controllers/edit_merchant_details_controller')
 const inviteUserController = require('./controllers/invite_user_controller')
 const registerCtrl = require('./controllers/register_user_controller')
 const serviceRolesUpdateController = require('./controllers/service_roles_update_controller')
@@ -51,7 +52,7 @@ const inviteValidationCtrl = require('./controllers/invite_validation_controller
 // Assignments
 const {
   healthcheck, registerUser, user, selfCreateService, transactions, credentials,
-  devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName,
+  devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
 
 // Exports
@@ -133,7 +134,8 @@ module.exports.bind = function (app) {
     ...lodash.values(editServiceName),
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
-    ...lodash.values(t3ds)
+    ...lodash.values(t3ds),
+    ...lodash.values(merchantDetails)
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
@@ -153,6 +155,10 @@ module.exports.bind = function (app) {
   app.get(nc.index, permission('gateway-credentials:read'), getAccount, credentialsCtrl.index)
   app.get(nc.edit, permission('gateway-credentials:update'), getAccount, credentialsCtrl.editNotificationCredentials)
   app.post(nc.update, permission('gateway-credentials:update'), getAccount, credentialsCtrl.updateNotificationCredentials)
+
+  // MERCHANT DETAILS
+  app.get(merchantDetails.index, permission('merchant-details:read'), editMerchantDetailsCtrl.get)
+  app.post(merchantDetails.update, permission('merchant-details:update'), editMerchantDetailsCtrl.post)
 
   // DEV TOKENS
   app.get(devTokens.index, permission('tokens-active:read'), getAccount, devTokensCtrl.index)
