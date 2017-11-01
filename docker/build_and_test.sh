@@ -9,5 +9,4 @@ grep -rnw './test' -e 'context.only' && echo '' && echo 'ERROR: context.only() f
 mkdir -p /app &&\
 cp -a /tmp/node_modules /app/ &&\
 npm run compile &&\
-npm test &&\
-npm prune --production
+npm test
