@@ -9,6 +9,8 @@ const serviceNavigationItems = (originalUrl, permissions) => {
     settingsPath = paths.devTokens.index
   } else if (permissions.gateway_credentials_read) {
     settingsPath = paths.credentials.index
+  } else if (permissions.merchant_details) {
+    settingsPath = paths.merchantDetails.index
   } else if (permissions.toggle_3ds_read) {
     settingsPath = paths.toggle3ds.index
   } else if (permissions.payment_types_read) {
@@ -39,6 +41,7 @@ const serviceNavigationItems = (originalUrl, permissions) => {
       current: pathLookup(originalUrl, [
         paths.credentials,
         paths.notificationCredentials,
+        paths.merchantDetails,
         paths.toggle3ds,
         paths.devTokens,
         paths.emailNotifications,
@@ -47,6 +50,7 @@ const serviceNavigationItems = (originalUrl, permissions) => {
       permissions: _.some([
         permissions.tokens_read,
         permissions.gateway_credentials_read,
+        permissions.merchant_details_read,
         permissions.payment_types_read,
         permissions.toggle_3ds_read,
         permissions.email_notification_template_read
@@ -70,6 +74,13 @@ const adminNavigationItems = (originalUrl, permissions) => {
       url: paths.credentials.index,
       current: pathLookup(originalUrl, paths.credentials.index),
       permissions: permissions.gateway_credentials_update || false
+    },
+    {
+      id: 'navigation-menu-merchant-details',
+      name: 'Merchant details',
+      url: paths.merchantDetails.index,
+      current: pathLookup(originalUrl, paths.merchantDetails.index),
+      permissions: permissions.merchant_details_read || false
     },
     {
       id: 'navigation-menu-3d-secure',

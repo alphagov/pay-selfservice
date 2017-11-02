@@ -1,0 +1,511 @@
+[
+  {
+    "country":"YE",
+    "aliases": ["اليمن"]
+  },
+  {
+    "country":"VN",
+    "aliases": ["Việt Nam"],
+    "weighting": 1.5
+  },
+  {
+    "country":"VA",
+    "aliases": ["Holy See"],
+    "weighting": 0.5
+  },
+  {
+    "country":"UZ",
+    "aliases": ["Ўзбекистон","O'zbekstan","O‘zbekiston"]
+  },
+  {
+    "country":"US",
+    "aliases": ["USA","United States of America"],
+    "weighting": 1.5
+  },
+  {
+    "country":"AE",
+    "aliases": ["UAE","الإمارات"]
+  },
+  {
+    "country":"UA",
+    "aliases": ["Ukrayina","Україна"]
+  },
+  {
+    "country":"TV",
+    "weighting": 0.5
+  },
+  {
+    "country":"TM",
+    "aliases": ["Türkmenistan"]
+  },
+  {
+    "country":"TR",
+    "aliases": ["Türkiye","Turkiye"]
+  },
+  {
+    "country":"TN",
+    "aliases": ["تونس"]
+  },
+  {
+    "country":"TH",
+    "aliases": ["ประเทศไทย","Prathet Thai"]
+  },
+  {
+    "country":"TJ",
+    "aliases": ["Тоҷикистон","Toçikiston"]
+  },
+  {
+    "country":"SY",
+    "aliases": ["سورية"]
+  },
+  {
+    "country":"CH",
+    "aliases": ["Swiss Confederation","Schweiz","Suisse","Svizzera","Svizra"],
+    "weighting": 1.5
+  },
+  {
+    "country":"SE",
+    "aliases": ["Sverige"],
+    "weighting": 1.5
+  },
+  {
+    "country":"SZ",
+    "aliases": ["weSwatini Swatini Ngwane"]
+  },
+  {
+    "country":"SR",
+    "aliases": ["शर्नम्","Sarnam Sranangron"]
+  },
+  {
+    "country":"SD",
+    "aliases": ["السودان"]
+  },
+  {
+    "country":"LK",
+    "aliases": ["ශ්‍රී ලංකා இலங்கை","Ceylon"]
+  },
+  {
+    "country":"ES",
+    "aliases": ["España"],
+    "weighting": 2
+  },
+  {
+    "country":"ZA",
+    "aliases": ["RSA","Suid-Afrika"]
+  },
+  {
+    "country":"SO",
+    "aliases": ["الصومال"]
+  },
+  {
+    "country":"SI",
+    "aliases": ["Slovenija"]
+  },
+  {
+    "country":"SK",
+    "aliases": ["Slovenská","Slovensko"]
+  },
+  {
+    "country":"SG",
+    "aliases": ["Singapura","சிங்கப்பூர் குடியரசு","新加坡共和国"]
+  },
+  {
+    "country":"SC",
+    "weighting": 0.5
+  },
+  {
+    "country":"RS",
+    "aliases": ["Србија Srbija"]
+  },
+  {
+    "country":"SN",
+    "aliases": ["Sénégal"]
+  },
+  {
+    "country":"SA",
+    "aliases": ["السعودية"]
+  },
+  {
+    "country":"SM",
+    "aliases": ["RSM","Repubblica"]
+  },
+  {
+    "country":"VC",
+    "aliases": ["St. Vincent"]
+  },
+  {
+    "country":"LC",
+    "aliases": ["St. Lucia"]
+  },
+  {
+    "country":"KN",
+    "aliases": ["St. Kitts and Nevis"]
+  },
+  {
+    "country":"RU",
+    "aliases": ["Rossiya","Российская","Россия"],
+    "weighting": 2.5
+  },
+  {
+    "country":"RO",
+    "aliases": ["Rumania","Roumania","România"]
+  },
+  {
+    "country":"QA",
+    "aliases": ["قطر"]
+  },
+  {
+    "country":"PT",
+    "aliases": ["Portuguesa"],
+    "weighting": 1.5
+  },
+  {
+    "country":"PL",
+    "aliases": ["Polska"],
+    "weighting": 1.25
+  },
+  {
+    "country":"PH",
+    "aliases": ["Pilipinas"],
+    "weighting": 1.5
+  },
+  {
+    "country":"PW",
+    "weighting": 0.5
+  },
+  {
+    "country":"PK",
+    "aliases": ["پاکستان"],
+    "weighting": 2
+  },
+  {
+    "country":"OM",
+    "aliases": ["عمان"]
+  },
+  {
+    "country":"NO",
+    "aliases": ["Norge","Noreg"],
+    "weighting": 1.5
+  },
+  {
+    "country":"NG",
+    "aliases": ["Nijeriya","Naíjíríà"],
+    "weighting": 1.5
+  },
+  {
+    "country":"NE",
+    "aliases": ["Nijar"]
+  },
+  {
+    "country":"NL",
+    "aliases": ["Holland","Nederland"],
+    "weighting": 1.5
+  },
+  {
+    "country":"NP",
+    "aliases": ["नेपाल"]
+  },
+  {
+    "country":"NR",
+    "aliases": ["Naoero"],
+    "weighting": 0.5
+  },
+  {
+    "country":"NA",
+    "aliases": ["Namibië"]
+  },
+  {
+    "country":"MZ",
+    "aliases": ["Moçambique"]
+  },
+  {
+    "country":"MA",
+    "aliases": ["المغرب"]
+  },
+  {
+    "country":"MN",
+    "aliases": ["Mongγol ulus","Монгол улс"]
+  },
+  {
+    "country":"MX",
+    "aliases": ["Mexicanos"],
+    "weighting": 1.5
+  },
+  {
+    "country":"MR",
+    "aliases": ["الموريتانية"]
+  },
+  {
+    "country":"MH",
+    "weighting": 0.5
+  },
+  {
+    "country":"MG",
+    "aliases": ["Madagasikara"]
+  },
+  {
+    "country":"MK",
+    "aliases": ["Македонија"]
+  },
+  {
+    "country":"LT",
+    "aliases": ["Lietuva"]
+  },
+  {
+    "country":"LY",
+    "aliases": ["ليبيا"]
+  },
+  {
+    "country":"LB",
+    "aliases": ["لبنان"]
+  },
+  {
+    "country":"LV",
+    "aliases": ["Latvija"]
+  },
+  {
+    "country":"KG",
+    "aliases": ["Кыргызстан"]
+  },
+  {
+    "country":"KW",
+    "aliases": ["الكويت"]
+  },
+  {
+    "country":"KR",
+    "weighting": 1.2
+  },
+  {
+    "country":"KZ",
+    "aliases": ["Қазақстан","Казахстан"]
+  },
+  {
+    "country":"JO",
+    "aliases": ["الأردن"]
+  },
+  {
+    "country":"JP",
+    "aliases": ["Nippon","Nihon","日本"],
+    "weighting": 2.5
+  },
+  {
+    "country":"CI",
+    "aliases": ["Cote dIvoire"]
+  },
+  {
+    "country":"IT",
+    "aliases": ["Italia"],
+    "weighting": 2
+  },
+  {
+    "country":"IL",
+    "aliases": ["إسرائيل ישראל"]
+  },
+  {
+    "country":"IE",
+    "aliases": ["Éire"],
+    "weighting": 1.2
+  },
+  {
+    "country":"IQ",
+    "aliases": ["العراق‎"]
+  },
+  {
+    "country":"IR",
+    "aliases": ["ایران"]
+  },
+  {
+    "country":"ID",
+    "weighting": 2
+  },
+  {
+    "country":"IN",
+    "aliases": ["भारत गणराज्य","Hindustan"],
+    "weighting": 3
+  },
+  {
+    "country":"IS",
+    "aliases": ["Island"]
+  },
+  {
+    "country":"HU",
+    "aliases": ["Magyarország"]
+  },
+  {
+    "country":"GR",
+    "aliases": ["Ελλάδα"],
+    "weighting": 1.5
+  },
+  {
+    "country":"DE",
+    "aliases": ["Bundesrepublik","Deutschland"],
+    "weighting": 3
+  },
+  {
+    "country":"GE",
+    "aliases": ["საქართველო"]
+  },
+  {
+    "country":"GA",
+    "aliases": ["République Gabonaise"]
+  },
+  {
+    "country":"FR",
+    "aliases": ["République française"],
+    "weighting": 2.5
+  },
+  {
+    "country":"FI",
+    "aliases": ["Suomi"]
+  },
+  {
+    "country":"FJ",
+    "aliases": ["Viti","फ़िजी"]
+  },
+  {
+    "country":"ET",
+    "aliases": ["ኢትዮጵያ"]
+  },
+  {
+    "country":"EE",
+    "aliases": ["Eesti"]
+  },
+  {
+    "country":"ER",
+    "aliases": ["إرتريا","ኤርትራ"]
+  },
+  {
+    "country":"EG",
+    "weighting": 1.5
+  },
+  {
+    "country":"TL",
+    "aliases": ["Timor-Leste"]
+  },
+  {
+    "country":"DM",
+    "aliases": ["Dominique"],
+    "weighting": 0.5
+  },
+  {
+    "country":"DJ",
+    "aliases": ["جيبوتي‎","Jabuuti","Gabuuti"]
+  },
+  {
+    "country":"DK",
+    "aliases": ["Danmark"],
+    "weighting": 1.5
+  },
+  {
+    "country":"CZ",
+    "aliases": ["Česká","Ceska"]
+  },
+  {
+    "country":"CY",
+    "aliases": ["Κύπρος","Kýpros","Kıbrıs"]
+  },
+  {
+    "country":"HR",
+    "aliases": ["Hrvatska"]
+  },
+  {
+    "country":"CD",
+    "aliases": ["Congo-Brazzaville","Repubilika ya Kongo"]
+  },
+  {
+    "country":"KM",
+    "aliases": ["جزر القمر"]
+  },
+  {
+    "country":"CN",
+    "aliases": ["Zhongguo","Zhonghua Peoples Republic","中国/中华"]
+  },
+  {
+    "country":"TD",
+    "aliases": ["تشاد‎","Tchad"]
+  },
+  {
+    "country":"CV",
+    "aliases": ["Cabo"]
+  },
+  {
+    "country":"CA",
+    "weighting": 2
+  },
+  {
+    "country":"KH",
+    "aliases": ["កម្ពុជា"]
+  },
+  {
+    "country":"MM",
+    "aliases": ["Myanmar"]
+  },
+  {
+    "country":"BG",
+    "aliases": ["България"]
+  },
+  {
+    "country":"BR",
+    "aliases": ["Brasil"],
+    "weighting": 2
+  },
+  {
+    "country":"BA",
+    "aliases": ["BiH","Bosna i Hercegovina","Босна и Херцеговина"]
+  },
+  {
+    "country":"BT",
+    "aliases": ["भूटान"]
+  },
+  {
+    "country":"BE",
+    "aliases": ["België","Belgie","Belgien","Belgique"],
+    "weighting": 1.5
+  },
+  {
+    "country":"BY",
+    "aliases": ["Беларусь"]
+  },
+  {
+    "country":"BD",
+    "aliases": ["বাংলাদেশ"],
+    "weighting": 2
+  },
+  {
+    "country":"BH",
+    "aliases": ["البحرين"]
+  },
+  {
+    "country":"AT",
+    "aliases": ["Österreich","Osterreich","Oesterreich"]
+  },
+  {
+    "country":"",
+    "weighting": 1.5
+  },
+  {
+    "country":"AM",
+    "aliases": ["Հայաստան"]
+  },
+  {
+    "country":"AO",
+    "weighting": 0.5
+  },
+  {
+    "country":"AD",
+    "weighting": 0.5
+  },
+  {
+    "country":"DZ",
+    "aliases": ["الجزائر"]
+  },
+  {
+    "country":"AF",
+    "aliases": ["افغانستان"]
+  },
+  {
+    "country":"GB",
+    "aliases": ["Great Britain","England","UK","Wales","Scotland","Northern Ireland"],
+    "weighting":"2"
+  }
+]
