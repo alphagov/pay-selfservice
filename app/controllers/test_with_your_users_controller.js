@@ -34,7 +34,8 @@ module.exports.links = function (req, res) {
 module.exports.create = function (req, res) {
   let params = {
     indexPage: paths.prototyping.demoService.index,
-    confirmPage: paths.prototyping.demoService.confirm
+    confirmPage: paths.prototyping.demoService.confirm,
+    linksPage: paths.prototyping.demoService.links
   }
 
   response(req, res, 'dashboard/demo-service/create', params)
@@ -52,7 +53,7 @@ module.exports.submit = function (req, res) {
 
   if (!amountFormatCheck) {
     req.flash('genericError', '<h2>Use valid characters only</h2> Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”')
-    response(req, res, 'dashboard/demo-service/create', params)
+    return res.redirect(paths.prototyping.demoService.create)
   } else {
     price = parseInt(amountFormatCheck[1]) * 100
     if (amountFormatCheck[2]) price += parseInt(amountFormatCheck[2])
@@ -74,13 +75,11 @@ module.exports.submit = function (req, res) {
       price
     }))
     .then(product => {
-      console.log('CREATING LINK', product)
       params.prototypeLink = product.links.pay.href
-      response(req, res, 'dashboard/demo-service/confirm', params)
+      return response(req, res, 'dashboard/demo-service/confirm', params)
     })
     .catch(error => {
-      console.log('>>>>>>', error)
-      params.error = error.message
-      response(req, res, 'dashboard/demo-service/create', params)
+      req.flash('genericError', `<h2>There were errors</h2> ${error}`)
+      return res.redirect(paths.prototyping.demoService.create)
     })
 }

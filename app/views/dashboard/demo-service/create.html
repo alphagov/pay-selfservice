@@ -4,12 +4,6 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
 {{/pageTitle}}
 
 {{$mainContent}}
-  
-  {{#error}}
-    <h2>There were errors mate</h2>
-    {{error.errors}}
-  {{/error}}
-  
   <a href="{{linksPage}}" class="link-back">Back to prototype links</a>
   <h1 class="heading-large prototyping__heading">Create a prototype link</h1>
   <form method="post" action="{{confirmPage}}" data-validate>
@@ -19,7 +13,7 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
         Payment description
         <span class="form-hint">Tell users what they are paying for</span>
       </label>
-      <input class="form-control form-control-full" name="payment-description" id="payment-description" rows="2" autofocus value="{{protoPaymentDescription}}"  data-validate/>
+      <input class="form-control form-control-full" name="payment-description" id="payment-description" rows="2" autofocus value="{{protoPaymentDescription}}" data-validate/>
     </div>
     <div class="currency-input form-group">
       <label class="form-label-bold" for="payment-amount">
@@ -36,7 +30,7 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
         Confirmation page
         <span class="form-hint">Enter the URL users will go to after they have completed the test payment</span>
       </label>
-      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{protoPaymentDescription}}" />
+      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{protoPaymentDescription}}" data-validate data-trim />
     </div>
     <input class="button" type="submit" value="Create prototype link">
   </form>
