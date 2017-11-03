@@ -28,9 +28,9 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
     <div class="form-group">
       <label class="form-label-bold" for="confirmation-page">
         Confirmation page
-        <span class="form-hint">Enter the URL users will go to after they have completed the test payment</span>
+        <span class="form-hint">Enter the secure URL users will go to after they have completed the test payment</span>
       </label>
-      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{protoPaymentDescription}}" data-validate data-trim />
+      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{protoPaymentDescription}}" data-validate="required https" data-trim />
     </div>
     <input class="button" type="submit" value="Create prototype link">
   </form>

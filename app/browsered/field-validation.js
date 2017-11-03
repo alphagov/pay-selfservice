@@ -63,6 +63,9 @@ function validateField (form, field) {
       case 'phone' :
         result = checks.isPhoneNumber(field.value)
         break
+      case 'https' :
+        result = checks.isHttps(field.value)
+        break
       default :
         result = checks.isEmpty(field.value)
         break

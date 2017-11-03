@@ -7,6 +7,7 @@ const lodash = require('lodash')
 const {response} = require('../utils/response.js')
 const paths = require('../paths')
 const productsClient = require('../services/clients/products_client.js')
+const publicAuthClient = require('../services/clients/public_auth_client')
 const auth = require('../services/auth_service.js')
 
 module.exports.index = function (req, res) {
@@ -38,8 +39,6 @@ module.exports.index = function (req, res) {
     protoPaymentAmount
   })
 
-  console.log('index function')
-
   response(req, res, 'dashboard/demo-payment/index', params)
 }
 
@@ -61,29 +60,36 @@ module.exports.confirm = function (req, res) {
   let protoData = lodash.get(req, 'session.pageData.protoData')
   let gatewayAccountId = auth.getCurrentGatewayAccountId(req)
 
-  console.log('confirm function')
-
   if (protoData) {
-    let data = {
+    let params = {
+      indexPage: paths.user.loggedIn,
       name: protoData.protoPaymentDescription,
       price: protoData.protoPaymentAmount,
       gateway_account_id: gatewayAccountId
     }
 
-    productsClient.product.create(data)
-    .then(product => {
-      console.log('CREATING LINK', product)
-      let params = {
-        prototypeLink: product.payLink.href
+    publicAuthClient.createTokenForAccount({
+      accountId: gatewayAccountId,
+      correlationId: req.correlationId,
+      payload: {
+        account_id: gatewayAccountId,
+        created_by: req.user.email,
+        description: `Token for Prototype: ${req.body['payment-description']}`
       }
-      response(req, res, 'dashboard/demo-payment/confirm', params)
+    })
+    .then(publicAuthData => productsClient.product.create({
+      payApiToken: publicAuthData.token,
+      gatewayAccountId,
+      name: protoData.protoPaymentDescription,
+      price: protoData.protoPaymentAmount
+    }))
+    .then(product => {
+      params.prototypeLink = product.links.pay.href
+      return response(req, res, 'dashboard/demo-payment/confirm', params)
     })
     .catch(error => {
-      console.log('>>>>>>', error)
-      let params = {
-        error: error.message
-      }
-      response(req, res, 'dashboard/demo-payment/index', params)
+      req.flash('genericError', `<h2>There were errors</h2> ${error}`)
+      return res.redirect(paths.prototyping.demoPayment.index)
     })
   } else {
     res.redirect(paths.prototyping.demoPayment.index)

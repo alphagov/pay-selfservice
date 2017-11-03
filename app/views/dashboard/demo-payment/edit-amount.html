@@ -15,7 +15,7 @@ Edit payment amount for demo payment - {{currentServiceName}} {{currentGatewayAc
       </label>
       <div class="currency-input__inner">
         <span class="currency-input__inner__unit">&pound;</span>
-        <input class="form-control" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{protoPaymentAmount}}" data-validate="required currency">
+        <input class="form-control" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{protoPaymentAmount}}" data-validate="required currency" data-trim>
       </div>
     </div>
     <input class="button" type="submit" value="Save changes">
