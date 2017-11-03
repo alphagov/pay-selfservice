@@ -112,7 +112,8 @@ module.exports = {
       index: '/test-with-your-users',
       links: '/test-with-your-users/links',
       create: '/test-with-your-users/create',
-      confirm: '/test-with-your-users/confirm'
+      confirm: '/test-with-your-users/confirm',
+      disable: '/test-with-your-users/links/disable/:productExternalId'
     },
     demoPayment: {
       index: '/make-a-demo-payment',

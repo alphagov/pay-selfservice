@@ -12,6 +12,10 @@
       margin-top: 0;
     }
 
+    p {
+      @include core-16;
+    }
+
     strong {
       font-weight: bold;
     }
@@ -38,7 +42,6 @@
       color: $link-colour;
     }
   }
-
 }
 
 .mock-card-block + .mock-card-block {

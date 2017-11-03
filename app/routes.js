@@ -222,6 +222,7 @@ module.exports.bind = function (app) {
   app.get(prototyping.demoService.links, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.links)
   app.get(prototyping.demoService.create, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.create)
   app.post(prototyping.demoService.confirm, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.submit)
+  app.get(prototyping.demoService.disable, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.disable)
 
   app.get(prototyping.demoPayment.index, permission('transactions:read'), getAccount, makeADemoPayment.index)
   app.post(prototyping.demoPayment.index, permission('transactions:read'), getAccount, makeADemoPayment.index)

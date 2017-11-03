@@ -11,7 +11,7 @@ const amountFormat = /^([0-9]+)(?:\.([0-9]{2}))?$/
 
 module.exports.index = function (req, res) {
   let params = {
-    showLinks: false,
+    productsTab: false,
     createPage: paths.prototyping.demoService.create,
     indexPage: paths.prototyping.demoService.index,
     linksPage: paths.prototyping.demoService.links
@@ -21,14 +21,44 @@ module.exports.index = function (req, res) {
 }
 
 module.exports.links = function (req, res) {
+  const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
+
   let params = {
-    showLinks: true,
+    productsTab: true,
     createPage: paths.prototyping.demoService.create,
     indexPage: paths.prototyping.demoService.index,
     linksPage: paths.prototyping.demoService.links
   }
 
-  response(req, res, 'dashboard/demo-service/index', params)
+  productsClient.product.getByGatewayAccountId(gatewayAccountId)
+    .then(products => {
+      params.productsLength = products.length
+      params.productsSingular = products.length === 1
+      products.forEach(function (product) {
+        product.price = (product.price / 100).toFixed(2)
+      })
+      console.log(products)
+      params.products = products
+      return response(req, res, 'dashboard/demo-service/index', params)
+    })
+    .catch(error => {
+      console.log(error)
+      return response(req, res, 'dashboard/demo-service/index', params)
+    })
+}
+
+module.exports.disable = function (req, res) {
+  const productExternalId = req.params.productExternalId
+
+  productsClient.product.disable(productExternalId)
+  .then(() => {
+    req.flash('genericError', '<p>Prototype link deleted</p>')
+    res.redirect(paths.prototyping.demoService.links)
+  })
+  .catch(error => {
+    req.flash('genericError', error)
+    res.redirect(paths.prototyping.demoService.disable)
+  })
 }
 
 module.exports.create = function (req, res) {

@@ -10,18 +10,18 @@ Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}
   <a class="button" href="{{createPage}}">Create prototype link</a>
 
   <ul class="tabs prototyping__tabs">
-    {{#showLinks}}
+    {{#productsTab}}
     <li><a href="{{indexPage}}">Mock card numbers</a></li>
     <li class="current">Prototype links</li>
-    {{/showLinks}}
-    {{^showLinks}}
+    {{/productsTab}}
+    {{^productsTab}}
     <li class="current">Mock card numbers</li>
     <li><a href="{{linksPage}}">Prototype links</a></li>
-    {{/showLinks}}
+    {{/productsTab}}
   </ul>
 
   <div class="tab-content current">
-    {{^showLinks}}
+    {{^productsTab}}
       <p>Use this card number to test a successful payment. Don’t use real card numbers.</p>
       <div class="panel panel-border-wide">
         <h2 class="heading-medium"><span class="mock-card-block">4242</span><span class="mock-card-block">4242</span><span class="mock-card-block">4242</span><span class="mock-card-block">4242</span></h2>
@@ -30,38 +30,33 @@ Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}
       You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but it must be in the future.
       </p>
       <p>You can also use other card types and see errors. <a href="https://govukpay-docs.cloudapps.digital/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
-    {{/showLinks}}
-    {{#showLinks}}
+    {{/productsTab}}
+    {{#productsTab}}
       <h2 id="{{header}}" class="heading-medium remove-top-margin">
-          {{#tokens.length}}
-          {{#tokens_singular}}
+          {{#productsLength}}
+          {{#productsSingular}}
           There is 1 {{token_state}} prototype link
-          {{/tokens_singular}}
-          {{^tokens_singular}}
-          There are {{tokens.length}} {{token_state}} prototype links
-          {{/tokens_singular}}
-          {{/tokens.length}}
-          {{^tokens.length}}
-          There are no {{token_state}} prototype links
-          {{/tokens.length}}
+          {{/productsSingular}}
+          {{^productsSingular}}
+          There are {{productsLength}} prototype links
+          {{/productsSingular}}
+          {{/productsLength}}
+          {{^productsLength}}
+          There are no prototype links
+          {{/productsLength}}
       </h2>
       <div class="key-list prototyping__links-list">
+        {{#products}}
         <div class="key-list-item prototyping__links-list-item">
-          <h3 class="heading-small"><a href="#">http://payments.service.gov.uk</a></h3>
-          <p>Payment description: <strong>A test parking permit</strong> <br/>
-          Payment amount: <strong>&pound;20.00</strong>  <br/>
-          Success page: <strong>http://payments.service.gov.uk/succes</strong></p>
-          <p><a href="#">Delete prototype link</a></p>
+          <h3 class="heading-small"><a href="{{links.pay.href}}">{{links.pay.href}}</a></h3>
+          <p>Payment description: <strong>{{name}}</strong> <br/>
+          Payment amount: <strong>&pound;{{price}}</strong> <br/>
+          {{#returnUrl}}Success page: <strong>{{returnUrl}}</strong></p>{{/returnUrl}}
+          <p><a href="links/disable/{{externalId}}">Delete prototype link</a></p>
         </div>
-        <div class="key-list-item prototyping__links-list-item">
-          <h3 class="heading-small"><a href="#">http://events.service.gov.uk</a></h3>
-          <p>Payment description: <strong>A test event license</strong> <br/>
-          Payment amount: <strong>&pound;50.00</strong>  <br/>
-          Success page: <strong>http://events.service.gov.uk/succes</strong></p>
-          <p><a href="#">Delete prototype link</a></p>
-        </div>
+        {{/products}}
       </div>
-    {{/showLinks}}
+    {{/productsTab}}
   </div>
 {{/mainContent}}
 {{/layout}}
