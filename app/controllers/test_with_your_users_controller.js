@@ -71,7 +71,7 @@ module.exports.submit = function (req, res) {
       payApiToken: publicAuthData.token,
       gatewayAccountId,
       name: req.body['payment-description'],
-      return_url: req.body['confirmation-page'],
+      returnUrl: req.body['confirmation-page'],
       price
     }))
     .then(product => {
