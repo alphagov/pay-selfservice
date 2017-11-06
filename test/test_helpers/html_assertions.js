@@ -140,16 +140,6 @@ chai.use(function (_chai, utils) {
     utils.flag(this, 'inputId', idAndName)
   })
 
-  chai.Assertion.addMethod('containSelect', function (idAndName) {
-    this.containSelector('select#' + idAndName).withAttributes({name: idAndName})
-    utils.flag(this, 'inputId', idAndName)
-  })
-
-  chai.Assertion.addMethod('containSelectedOption', function (idAndName, optionValue) {
-    this.containSelector('select#' + idAndName + ' option[selected]').withAttributes({value: optionValue})
-    utils.flag(this, 'inputId', idAndName)
-  })
-
   chai.Assertion.addMethod('withLabel', function (labelText) {
     let inputId = utils.flag(this, 'inputId')
     let subAssertion = new chai.Assertion(utils.flag(this, 'rawHtml'))

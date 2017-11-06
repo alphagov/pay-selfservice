@@ -149,7 +149,7 @@ describe('edit merchant details controller - get', () => {
       expect($('.error-summary').length).to.equal(0)
     })
   })
-  describe('when errors are set in the session', () => {
+  describe('when errors and merchant details are set in the session', () => {
     before(done => {
       user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
@@ -166,6 +166,14 @@ describe('edit merchant details controller - get', () => {
         pageData: {
           editMerchantDetails: {
             success: false,
+            merchant_details: {
+              name: 'name',
+              address_line1: 'line1',
+              address_line2: 'line2',
+              address_city: 'City',
+              address_postcode: 'POSTCODE',
+              address_country: 'GB'
+            },
             errors: {
               'merchant-name': true,
               'address-country': true
@@ -197,6 +205,14 @@ describe('edit merchant details controller - get', () => {
     })
     it(`should not show an updated successful banner`, () => {
       expect($('.notification').length).to.equal(0)
+    })
+    it(`should show prefilled inputs`, () => {
+      expect($('#merchant-name').val()).to.equal('name')
+      expect($('#address-line1').val()).to.equal('line1')
+      expect($('#address-line2').val()).to.equal('line2')
+      expect($('#address-city').val()).to.equal('City')
+      expect($('#address-postcode').val()).to.equal('POSTCODE')
+      expect($('#address-country').val()).to.equal('GB')
     })
   })
 })
