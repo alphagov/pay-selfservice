@@ -15,19 +15,21 @@ const ADDRESS_COUNTRY = 'address-country'
 exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceExternalId = lodash.get(req, 'service.externalId')
+  const reqMerchantDetails = {
+    name: req.body[MERCHANT_NAME],
+    address_line1: req.body[ADDRESS_LINE1],
+    address_line2: req.body[ADDRESS_LINE2],
+    address_city: req.body[ADDRESS_CITY],
+    address_postcode: req.body[ADDRESS_POSTCODE],
+    address_country: req.body[ADDRESS_COUNTRY]
+  }
   const errors = isValidForm(req)
   if (lodash.isEmpty(errors)) {
-    return serviceService.updateMerchantDetails(serviceExternalId, {
-      name: req.body[MERCHANT_NAME],
-      address_line1: req.body[ADDRESS_LINE1],
-      address_line2: req.body[ADDRESS_LINE2],
-      address_city: req.body[ADDRESS_CITY],
-      address_postcode: req.body[ADDRESS_POSTCODE],
-      address_country: req.body[ADDRESS_COUNTRY]
-    }, correlationId)
+    return serviceService.updateMerchantDetails(serviceExternalId, reqMerchantDetails, correlationId)
       .then(() => {
         lodash.set(req, 'session.pageData.editMerchantDetails', {
-          success: true
+          success: true,
+          merchant_details: reqMerchantDetails
         })
         res.redirect(paths.merchantDetails.index)
       })
@@ -37,7 +39,8 @@ exports.post = (req, res) => {
   } else {
     lodash.set(req, 'session.pageData.editMerchantDetails', {
       success: false,
-      errors: errors
+      errors: errors,
+      merchant_details: reqMerchantDetails
     })
     res.redirect(paths.merchantDetails.index)
   }
