@@ -22,3 +22,6 @@ pacts/
 *.iml
 *.ipr
 *.iws
+
+# ADDED TEMPORARY: Remove following rule when upgraded to Node.js 8
+package-lock.json
