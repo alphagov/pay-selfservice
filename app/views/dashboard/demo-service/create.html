@@ -13,7 +13,7 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
         Payment description
         <span class="form-hint">Tell users what they are paying for</span>
       </label>
-      <input class="form-control form-control-full" name="payment-description" id="payment-description" rows="2" autofocus value="{{protoPaymentDescription}}" data-validate/>
+      <input class="form-control form-control-full" name="payment-description" id="payment-description" rows="2" autofocus value="{{paymentDescription}}" data-validate/>
     </div>
     <div class="currency-input form-group">
       <label class="form-label-bold" for="payment-amount">
@@ -22,7 +22,7 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
       </label>
       <div class="currency-input__inner">
         <span class="currency-input__inner__unit">&pound;</span>
-        <input class="form-control form-control-1-4 " aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{protoPaymentAmount}}"  data-validate="required currency">
+        <input class="form-control form-control-1-4 " aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{paymentAmount}}"  data-validate="required currency">
       </div>
     </div>
     <div class="form-group">
@@ -30,7 +30,7 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
         Confirmation page
         <span class="form-hint">Enter the secure URL users will go to after they have completed the test payment</span>
       </label>
-      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{protoPaymentDescription}}" data-validate="required https" data-trim />
+      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{confirmationPage}}" data-validate="required https" data-trim />
     </div>
     <input class="button" type="submit" value="Create prototype link">
   </form>

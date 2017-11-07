@@ -12,7 +12,7 @@ function mockUserResponse (userData, cb) {
   adminusersMock.get(`${USER_RESOURCE}?username=${userData.username}`).times(5)
     .reply(200, userFixtures.validUserResponse(userData).getPlain())
 
-  cb()
+  if (cb) cb()
 }
 
 module.exports = {

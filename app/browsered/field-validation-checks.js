@@ -48,7 +48,7 @@ module.exports.isPhoneNumber = function (value) {
 }
 
 module.exports.isHttps = function (value) {
-  if (!value.startsWith('https://')) {
+  if (value.substr(0, 8) !== 'https://') {
     return validationErrors.isHttps
   } else {
     return false

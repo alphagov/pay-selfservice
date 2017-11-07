@@ -28,6 +28,7 @@ function errorResponse (req, res, msg, status) {
 function render (req, res, template, data) {
   if (process.env.NODE_ENV !== 'production' && _.get(req, 'headers.accept') === 'application/json') {
     res.setHeader('Content-Type', 'application/json')
+
     res.json(data)
   } else {
     res.render(template, data)
