@@ -68,7 +68,7 @@ describe('products client - disable a product', () => {
       productsMock.finalize().then(() => done())
     })
 
-    it('should create a new product', () => {
+    it('should disable the product', () => {
       expect(result).to.equal(undefined)
     })
   })

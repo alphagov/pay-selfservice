@@ -10,8 +10,8 @@ module.exports = (req, res) => {
       req.flash('genericError', '<p>Prototype link deleted</p>')
       res.redirect(paths.prototyping.demoService.links)
     })
-    .catch(error => {
-      req.flash('genericError', error)
-      res.redirect(paths.prototyping.demoService.disable)
+    .catch(() => {
+      req.flash('genericError', '<p>Unable to delete prototype link</p>')
+      res.redirect(paths.prototyping.demoService.links)
     })
 }

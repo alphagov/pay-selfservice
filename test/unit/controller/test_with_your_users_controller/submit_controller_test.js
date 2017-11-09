@@ -39,13 +39,13 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
-describe.only('test with your users - submit controller', () => {
+describe('test with your users - submit controller', () => {
   describe('when it is called with valid inputs', () => {
     describe('and it successfully creates both an API token and a product', () => {
       let session, response, $
       before(done => {
         session = getMockSession(VALID_USER)
-        nock(PUBLIC_AUTH_URL).post('',VALID_CREATE_TOKEN_REQUEST)
+        nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, {token: API_TOKEN})
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .reply(201, VALID_CREATE_PRODUCT_RESPONSE)
@@ -82,7 +82,7 @@ describe.only('test with your users - submit controller', () => {
       let session, response
       before(done => {
         session = getMockSession(VALID_USER)
-        nock(PUBLIC_AUTH_URL).post('',VALID_CREATE_TOKEN_REQUEST)
+        nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .replyWithError('Somet nasty happened')
         supertest(createAppWithSession(getApp(), session))
           .post(paths.prototyping.demoService.confirm)
@@ -109,13 +109,12 @@ describe.only('test with your users - submit controller', () => {
         expect(session.flash.genericError.length).to.equal(1)
         expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating product')
       })
-
     })
     describe('but it is unable to create a product', () => {
       let session, response
       before(done => {
         session = getMockSession(VALID_USER)
-        nock(PUBLIC_AUTH_URL).post('',VALID_CREATE_TOKEN_REQUEST)
+        nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, {token: API_TOKEN})
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .replyWithError('Somet went wrong')

@@ -60,7 +60,7 @@ module.exports = (req, res) => {
       lodash.set(req, 'session.pageData.createPrototypeLink', {})
       return response(req, res, 'dashboard/demo-service/confirm', params)
     })
-    .catch(error => {
+    .catch(() => {
       req.flash('genericError', `<h2>There were errors</h2> Error while creating product`)
       return res.redirect(paths.prototyping.demoService.create)
     })
