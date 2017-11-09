@@ -13,6 +13,6 @@ RUN cd /tmp && npm install --production
 WORKDIR /app
 ADD . /app
 
-RUN cp -a /tmp/node_modules /app/
+RUN ln -s /tmp/node_modules /app/node_modules
 
 CMD npm start
