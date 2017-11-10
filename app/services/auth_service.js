@@ -7,6 +7,14 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
 
+// TODO: Remove when issue solved
+/*
+ This is in because otherwise the correlationID stored in using the correlation-id library gets lost while passing through one of the
+ functions in this file. When we have either stopped this happening, or have removed usage of the correlation-id library,
+ we can remove this
+ */
+require('correlation-id')
+
 // Local Dependencies
 const sessionValidator = require('./session_validator.js')
 const paths = require('../paths.js')
