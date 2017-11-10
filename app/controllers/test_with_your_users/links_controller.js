@@ -17,7 +17,7 @@ module.exports = (req, res) => {
   productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))
     .then(products => {
       params.productsLength = products.length
-      params.productsSingular = products.length < 1
+      params.productsSingular = products.length < 2
       products.forEach(function (product) {
         product.price = (product.price / 100).toFixed(2)
       })

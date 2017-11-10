@@ -9,11 +9,25 @@ const paths = require('../../../../app/paths')
 const {expect} = require('chai')
 
 const ACCOUNT_ID = 182364
-const PAYMENT = {
-  external_id: 'product-external-id',
-  gateway_account_id: 'product-gateway-account-id',
-  description: 'product-description',
-  name: 'payment-name',
+const PAYMENT_1 = {
+  external_id: 'product-external-id-1',
+  gateway_account_id: 'product-gateway-account-id-1',
+  description: 'product-description-1',
+  name: 'payment-name-1',
+  price: '150',
+  return_url: 'http://return.url',
+  _links: [{
+    rel: 'pay',
+    href: 'http://pay.url',
+    method: 'GET'
+  }]
+}
+
+const PAYMENT_2 = {
+  external_id: 'product-external-id-2',
+  gateway_account_id: 'product-gateway-account-id-2',
+  description: 'product-description-2',
+  name: 'payment-name-2',
   price: '150',
   return_url: 'http://return.url',
   _links: [{
@@ -71,10 +85,10 @@ describe('Show the prototype links', () => {
     })
   })
 
-  describe('when at least one link exist', () => {
+  describe('when at least one link exists', () => {
     let response
     before(function (done) {
-      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).reply(200, [PAYMENT])
+      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).reply(200, [PAYMENT_1])
 
       supertest(app)
         .get(paths.prototyping.demoService.links)
@@ -101,12 +115,12 @@ describe('Show the prototype links', () => {
 
     it('should display all the links', () => {
       expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.property('productsSingular', false)
+      expect(response.body).to.have.property('productsSingular', true)
       expect(response.body).to.have.deep.property('products', [{
-        description: 'product-description',
-        externalId: 'product-external-id',
-        gatewayAccountId: 'product-gateway-account-id',
-        name: 'payment-name',
+        description: 'product-description-1',
+        externalId: 'product-external-id-1',
+        gatewayAccountId: 'product-gateway-account-id-1',
+        name: 'payment-name-1',
         price: '1.50',
         returnUrl: 'http://return.url',
         links: {
@@ -119,7 +133,68 @@ describe('Show the prototype links', () => {
     })
   })
 
-  describe('when at least one link exist', () => {
+  describe('when more than one link exist', () => {
+    let response
+    before(function (done) {
+      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_2])
+
+      supertest(app)
+        .get(paths.prototyping.demoService.links)
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          response = res
+          done(err)
+        })
+    })
+
+    after(() => {
+      nock.cleanAll()
+    })
+
+    it('should toggle the product tab', () => {
+      expect(response.body).to.have.property('productsTab', true)
+    })
+
+    it('should display the correct page links', () => {
+      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
+      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
+      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+    })
+
+    it('should display all the links', () => {
+      expect(response.body).to.have.property('productsLength', 2)
+      expect(response.body).to.have.property('productsSingular', false)
+      expect(response.body).to.have.deep.property('products', [{
+        description: 'product-description-1',
+        externalId: 'product-external-id-1',
+        gatewayAccountId: 'product-gateway-account-id-1',
+        name: 'payment-name-1',
+        price: '1.50',
+        returnUrl: 'http://return.url',
+        links: {
+          pay: {
+            href: 'http://pay.url',
+            method: 'GET'
+          }
+        }
+      }, {
+        description: 'product-description-2',
+        externalId: 'product-external-id-2',
+        gatewayAccountId: 'product-gateway-account-id-2',
+        name: 'payment-name-2',
+        price: '1.50',
+        returnUrl: 'http://return.url',
+        links: {
+          pay: {
+            href: 'http://pay.url',
+            method: 'GET'
+          }
+        }
+      }])
+    })
+  })
+
+  describe('when there is a problem retrieving the products', () => {
     let response
     before(function (done) {
       mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).replyWithError('an error')
