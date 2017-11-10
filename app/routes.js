@@ -49,8 +49,8 @@ const toggle3ds = require('./controllers/toggle_3ds_controller')
 const selfCreateServiceCtrl = require('./controllers/register_service_controller')
 const createServiceCtrl = require('./controllers/create_service_controller')
 const inviteValidationCtrl = require('./controllers/invite_validation_controller')
-const testWithYourUsers = require('./controllers/test_with_your_users/index')
-const makeADemoPayment = require('./controllers/make_a_demo_payment_controller')
+const testWithYourUsers = require('./controllers/test_with_your_users')
+const makeADemoPayment = require('./controllers/make_a_demo_payment')
 
 // Assignments
 const {

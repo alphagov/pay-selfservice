@@ -23,7 +23,6 @@ module.exports = (req, res) => {
   const paymentDescription = req.body['payment-description']
   let paymentAmount = req.body['payment-amount']
   lodash.set(req, 'session.pageData.createPrototypeLink', {paymentAmount, paymentDescription, confirmationPage})
-  const amountFormatCheck = AMOUNT_FORMAT.exec(paymentAmount)
 
   if (!paymentDescription) {
     req.flash('genericError', `<h2>Enter a description</h2> Tell users what they are paying for`)
@@ -33,6 +32,7 @@ module.exports = (req, res) => {
     req.flash('genericError', `<h2>Enter a valid secure URL</h2>${isHttps(confirmationPage)}`)
   }
 
+  const amountFormatCheck = AMOUNT_FORMAT.exec(paymentAmount)
   if (lodash.get(req, 'session.flash.genericError.length')) {
     return res.redirect(paths.prototyping.demoService.create)
   } else {
@@ -56,7 +56,7 @@ module.exports = (req, res) => {
       price: paymentAmount
     }))
     .then(product => {
-      params.prototypeLink = product.links.pay.href
+      params.prototypeLink = lodash.get(product, 'links.pay.href')
       lodash.set(req, 'session.pageData.createPrototypeLink', {})
       return response(req, res, 'dashboard/demo-service/confirm', params)
     })
