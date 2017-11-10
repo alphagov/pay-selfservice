@@ -49,12 +49,14 @@ const toggle3ds = require('./controllers/toggle_3ds_controller')
 const selfCreateServiceCtrl = require('./controllers/register_service_controller')
 const createServiceCtrl = require('./controllers/create_service_controller')
 const inviteValidationCtrl = require('./controllers/invite_validation_controller')
+const testWithYourUsers = require('./controllers/test_with_your_users')
+const makeADemoPayment = require('./controllers/make_a_demo_payment')
 
 // Assignments
 const {
   healthcheck, registerUser, user, selfCreateService, transactions, credentials,
   devTokens, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds} = paths
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -136,7 +138,9 @@ module.exports.bind = function (app) {
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
     ...lodash.values(t3ds),
-    ...lodash.values(merchantDetails)
+    ...lodash.values(merchantDetails),
+    ...lodash.values(prototyping.demoPayment),
+    ...lodash.values(prototyping.demoService)
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
@@ -212,4 +216,18 @@ module.exports.bind = function (app) {
   app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm)
   app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on)
   app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off)
+
+  // Prototyping
+  app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.index)
+  app.get(prototyping.demoService.links, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.links)
+  app.get(prototyping.demoService.create, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.create)
+  app.post(prototyping.demoService.confirm, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.submit)
+  app.get(prototyping.demoService.disable, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.disable)
+
+  app.get(prototyping.demoPayment.index, permission('transactions:read'), getAccount, makeADemoPayment.index)
+  app.post(prototyping.demoPayment.index, permission('transactions:read'), getAccount, makeADemoPayment.index)
+  app.get(prototyping.demoPayment.editDescription, permission('transactions:read'), getAccount, makeADemoPayment.edit)
+  app.get(prototyping.demoPayment.editAmount, permission('transactions:read'), getAccount, makeADemoPayment.edit)
+  app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, makeADemoPayment.confirm)
+  app.post(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, makeADemoPayment.confirm)
 }

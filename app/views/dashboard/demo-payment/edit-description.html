@@ -1,0 +1,21 @@
+{{<layout}}
+{{$pageTitle}}
+Edit payment description for demo payment - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{{/pageTitle}}
+
+{{$mainContent}}
+  <a href="{{nextPage}}" class="link-back">Back to make a demo payment</a>
+  <h1 class="heading-large prototyping__heading">Edit payment description</h1>
+  <form method="post" action="{{nextPage}}" data-validate="true">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+      <label class="form-label" for="payment-description">
+        Payment description
+        <span class="form-hint">Tell users what they are paying for</span>
+      </label>
+      <textarea class="form-control form-control-3-4" name="payment-description" id="payment-description" rows="2" autofocus data-validate data-trim>{{protoPaymentDescription}}</textarea>
+    </div>
+    <input class="button" type="submit" value="Save changes">
+  </form>
+{{/mainContent}}
+{{/layout}}

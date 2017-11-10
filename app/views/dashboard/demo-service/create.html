@@ -1,0 +1,39 @@
+{{<layout}}
+{{$pageTitle}}
+Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{{/pageTitle}}
+
+{{$mainContent}}
+  <a href="{{linksPage}}" class="link-back">Back to prototype links</a>
+  <h1 class="heading-large prototyping__heading">Create a prototype link</h1>
+  <form method="post" action="{{confirmPage}}" data-validate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+      <label class="form-label-bold" for="payment-description">
+        Payment description
+        <span class="form-hint">Tell users what they are paying for</span>
+      </label>
+      <input class="form-control form-control-full" name="payment-description" id="payment-description" rows="2" autofocus value="{{paymentDescription}}" data-validate/>
+    </div>
+    <div class="currency-input form-group">
+      <label class="form-label-bold" for="payment-amount">
+        Payment amount
+        <span class="visually-hidden">in &pound;</span>
+      </label>
+      <div class="currency-input__inner">
+        <span class="currency-input__inner__unit">&pound;</span>
+        <input class="form-control form-control-1-4 " aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{paymentAmount}}"  data-validate="required currency">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label-bold" for="confirmation-page">
+        Confirmation page
+        <span class="form-hint">Enter the secure URL users will go to after they have completed the test payment</span>
+      </label>
+      <input class="form-control form-control-full" name="confirmation-page" id="confirmation-page" rows="2" autofocus value="{{confirmationPage}}" data-validate="required https" data-trim />
+    </div>
+    <input class="button" type="submit" value="Create prototype link">
+  </form>
+
+{{/mainContent}}
+{{/layout}}

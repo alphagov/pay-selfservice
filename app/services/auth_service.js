@@ -162,9 +162,9 @@ function initialise (app) {
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
   passport.use('localDirect', new CustomStrategy(localDirectStrategy))
 
-  passport.serializeUser(this.serializeUser)
+  passport.serializeUser(serializeUser)
 
-  passport.deserializeUser(this.deserializeUser)
+  passport.deserializeUser(deserializeUser)
 }
 
 function deserializeUser (req, externalId, done) {
@@ -172,6 +172,7 @@ function deserializeUser (req, externalId, done) {
     .then((user) => {
       done(null, user)
     })
+    .catch(err => done(err, null))
 }
 
 function serializeUser (user, done) {

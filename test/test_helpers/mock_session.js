@@ -16,7 +16,7 @@ const createAppWithSession = function (app, sessionData, gatewayAccountData, reg
   var proxyApp = express()
   proxyApp.all('*', function (req, res, next) {
     sessionData.destroy = sinon.stub()
-    req.session = sessionData || {}
+    req.session = req.session || sessionData || {}
     req.gateway_account = gatewayAccountData || {
       currentGatewayAccountId: _.get(sessionData, 'passport.user.serviceRoles[0].service.gatewayAccountIds[0]')
     }

@@ -1,0 +1,24 @@
+{{<layout}}
+{{$pageTitle}}
+Edit payment amount for demo payment - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{{/pageTitle}}
+
+{{$mainContent}}
+  <a href="{{nextPage}}" class="link-back">Back to make a demo payment</a>
+  <h1 class="heading-large prototyping__heading">Edit payment amount</h1>
+  <form method="post" action="{{nextPage}}" data-validate="true">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="currency-input form-group">
+      <label class="form-label" for="payment-amount">
+        Payment amount
+        <span class="visually-hidden">in &pound;</span>
+      </label>
+      <div class="currency-input__inner">
+        <span class="currency-input__inner__unit">&pound;</span>
+        <input class="form-control" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{protoPaymentAmount}}" data-validate="required currency" data-trim>
+      </div>
+    </div>
+    <input class="button" type="submit" value="Save changes">
+  </form>
+{{/mainContent}}
+{{/layout}}
