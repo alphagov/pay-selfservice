@@ -4,6 +4,7 @@ const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const authService = require('../../services/auth_service.js')
+const errorView = require('../../utils/response.js').renderErrorView
 
 module.exports = (req, res) => {
   const params = {
@@ -16,16 +17,15 @@ module.exports = (req, res) => {
   productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))
     .then(products => {
       params.productsLength = products.length
-      params.productsSingular = products.length === 1
+      params.productsSingular = products.length < 1
       products.forEach(function (product) {
         product.price = (product.price / 100).toFixed(2)
       })
-      console.log(products)
       params.products = products
       return response(req, res, 'dashboard/demo-service/index', params)
     })
     .catch(error => {
-      console.log(error)
-      return response(req, res, 'dashboard/demo-service/index', params)
+      console.error(error)
+      errorView(req, res, 'Internal server error')
     })
 }
