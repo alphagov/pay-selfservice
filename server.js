@@ -47,6 +47,12 @@ function initialiseGlobalMiddleware (app) {
   app.use(function (req, res, next) {
     res.locals.assetPath = '/public/'
     res.locals.routes = router.paths
+    if (typeof process.env.ANALYTICS_TRACKING_ID === 'undefined') {
+      logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
+      res.locals.analyticsTrackingId = '' // to not break the app
+    } else {
+      res.locals.analyticsTrackingId = process.env.ANALYTICS_TRACKING_ID
+    }
     noCache(res)
     next()
   })
