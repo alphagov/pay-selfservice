@@ -1,8 +1,9 @@
 <div id="{{id}}" class="multi-select">
     <button type="button"
             class="form-control large multi-select-title"
+            aria-describedby="state-select-box"
             id="option-select-title-state">
-        <div></div>
+        <div><span class="visually-hidden">Currently selected: </span></div>
     </button>
     <div role="group" aria-labelledby="option-select-title-state"
          class="multi-select-dropdown"
@@ -14,10 +15,8 @@
                 <input class="multi-select-item" name="state" value="{{value}}" id="{{id}}" type="checkbox" {{#checked}}checked{{/checked}}>
                 <label for="{{id}}">{{text}}</label>
             </div>
-
             {{/items}}
         </div>
         <div class="multi-select-dropdown-close-area"></div>
-
     </div>
 </div>

@@ -52,7 +52,9 @@ function progressivelyEnhanceSelects () {
     const itemHeight = ([...items].map(item => $(item).parent().height()).reduce((sum, value) => sum + value) / items.length)
     const maxVisibleItems = Math.min(Math.floor((($(window).height() - openButton.offset().top) / itemHeight) - 0.5) + 0.5, MAXIMUM_VISIBLE_ITEMS)
     const visibleItems = Math.max(maxVisibleItems, MINIMUM_VISIBLE_ITEMS)
-    scrollContainer.css('max-height', visibleItems * itemHeight)
+    if (($(window).height() - openButton.offset().top) - itemHeight * items.length < 0) {
+      scrollContainer.css('max-height', visibleItems * itemHeight)
+    }
     updateDisplayedValue.call(dropdown)
   })
 }
@@ -106,7 +108,7 @@ function updateDisplayedValue () {
     .map(item => $(item).parent().text().trim())
     .join(', ')
 
-  TOP_LEVEL.find(`${OPEN_BUTTON_SELECTOR} div`).text(buttonText)
+  TOP_LEVEL.find(`${OPEN_BUTTON_SELECTOR} div span`).after(buttonText)
 }
 
 function randomElementId () {

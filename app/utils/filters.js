@@ -14,21 +14,21 @@ function validateFilters (filters) {
 
 function describeFilters (filters) {
   let description = ``
-  if (filters.fromDate) description += ` from <b>'${filters.fromDate}'</b>`
-  if (filters.toDate) description += ` to <b>'${filters.toDate}'</b>`
+  if (filters.fromDate) description += ` from <strong>${filters.fromDate}</strong>`
+  if (filters.toDate) description += ` to <strong>${filters.toDate}</strong>`
 
-  const paymentStates = filters.payment_states || []
-  const refundStates = filters.refund_states ? filters.refund_states.map(state => `refund ${state}`) : []
-  const selectedStates = [...paymentStates, ...refundStates].map(state => `'${state}'`)
+  const paymentStates = filters.payment_states ? filters.payment_states.map(state => state.charAt(0).toUpperCase() + state.slice(1)) : []
+  const refundStates = filters.refund_states ? filters.refund_states.map(state => `Refund ${state}`) : []
+  const selectedStates = [...paymentStates, ...refundStates].map(state => `${state}`)
   if (filters.state && selectedStates.length === 0) {
-    description += ` with <b>'${filters.state}'</b> state`
+    description += ` with <strong>${filters.state}</strong> state`
   } else if (selectedStates.length === 1) {
-    description += ` with <b>'${selectedStates[0]}'</b> state`
+    description += ` with <strong>${selectedStates[0]}</strong> state`
   } else if (selectedStates.length > 1) {
-    description += ` with <b>${selectedStates.join('</b>, <b>').replace(/,([^,]*)$/, ' or$1')}</b> states`
+    description += ` with <strong>${selectedStates.join('</strong>, <strong>').replace(/,([^,]*)$/, ' or$1')}</strong> states`
   }
 
-  if (filters.brand) description += ` with <b>'${filters.brand}'</b> card brand`
+  if (filters.brand) description += ` with <strong>'${filters.brand}'</strong> card brand`
 
   return description
 }
