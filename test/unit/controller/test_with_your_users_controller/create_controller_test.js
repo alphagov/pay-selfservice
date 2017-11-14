@@ -4,19 +4,25 @@
 const supertest = require('supertest')
 const {expect} = require('chai')
 const cheerio = require('cheerio')
+const nock = require('nock')
 const lodash = require('lodash')
 
 // Local dependencies
 const {getApp} = require('../../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
+const {CONNECTOR_URL} = process.env
+const GATEWAY_ACCOUNT_ID = 929
 
 describe('test with your users - create controller', () => {
   let result, $, session
   before(done => {
     const user = getUser({
-      gateway_account_ids: [929],
+      gateway_account_ids: [GATEWAY_ACCOUNT_ID],
       permissions: [{name: 'transactions:read'}]
+    })
+    nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
+      payment_provider: 'sandbox'
     })
     session = getMockSession(user)
     lodash.set(session, 'pageData.createPrototypeLink', {
@@ -31,6 +37,9 @@ describe('test with your users - create controller', () => {
         $ = cheerio.load(res.text)
         done(err)
       })
+  })
+  after(() => {
+    nock.cleanAll()
   })
 
   it('should return a statusCode of 200', () => {

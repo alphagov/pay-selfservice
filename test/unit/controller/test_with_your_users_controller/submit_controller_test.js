@@ -14,7 +14,7 @@ const paths = require('../../../../app/paths')
 const {randomUuid} = require('../../../../app/utils/random')
 const {validCreateProductRequest, validCreateProductResponse} = require('../../../fixtures/product_fixtures')
 
-const {PUBLIC_AUTH_URL, PRODUCTS_URL} = process.env
+const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = 929
 const API_TOKEN = randomUuid()
 const VALID_USER = getUser({gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{name: 'transactions:read'}]})
@@ -40,6 +40,40 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
 describe('test with your users - submit controller', () => {
+  describe('when it is called on a gateway account that is from a payment provider other than sandbox', () => {
+    let session, response, $
+    before(done => {
+      session = getMockSession(VALID_USER)
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
+        payment_provider: 'worldpay'
+      })
+      supertest(createAppWithSession(getApp(), session))
+        .post(paths.prototyping.demoService.confirm)
+        .send(VALID_PAYLOAD)
+        .end((err, res) => {
+          response = res
+
+          $ = cheerio.load(res.text)
+          done(err)
+        })
+    })
+    after(() => {
+      nock.cleanAll()
+    })
+
+    it('should respond with a code of 403: forbidden', () => {
+      expect(response.statusCode).to.equal(403)
+    })
+
+    it('should show the error page', () => {
+      expect($('.page-title').text()).to.equal('An error occurred:')
+    })
+
+    it('should inform the user that this page is only available via sandbox', () => {
+      expect($('#errorMsg').text()).to.equal('This page is only available on Sandbox accounts')
+    })
+  })
+
   describe('when it is called with valid inputs', () => {
     describe('and it successfully creates both an API token and a product', () => {
       let session, response, $
@@ -47,6 +81,9 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, {token: API_TOKEN})
+        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
+          payment_provider: 'sandbox'
+        })
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .reply(201, VALID_CREATE_PRODUCT_RESPONSE)
         supertest(createAppWithSession(getApp(), session))
@@ -84,6 +121,9 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .replyWithError('Somet nasty happened')
+        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
+          payment_provider: 'sandbox'
+        })
         supertest(createAppWithSession(getApp(), session))
           .post(paths.prototyping.demoService.confirm)
           .send(VALID_PAYLOAD)
@@ -116,6 +156,10 @@ describe('test with your users - submit controller', () => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
           .reply(201, {token: API_TOKEN})
+        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+          .reply(200, {
+            payment_provider: 'sandbox'
+          })
         nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST)
           .replyWithError('Somet went wrong')
         supertest(createAppWithSession(getApp(), session))
@@ -149,11 +193,11 @@ describe('test with your users - submit controller', () => {
     describe('and the amount is invalid', () => {
       let session, response
       before(done => {
-        const user = getUser({
-          gateway_account_ids: [929],
-          permissions: [{name: 'transactions:read'}]
-        })
-        session = getMockSession(user)
+        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+          .reply(200, {
+            payment_provider: 'sandbox'
+          })
+        session = getMockSession(VALID_USER)
         const app = createAppWithSession(getApp(), session)
         supertest(app)
           .post(paths.prototyping.demoService.confirm)
@@ -162,6 +206,9 @@ describe('test with your users - submit controller', () => {
             response = res
             done(err)
           })
+      })
+      after(() => {
+        nock.cleanAll()
       })
 
       it('should redirect with code 302', () => {
@@ -184,6 +231,10 @@ describe('test with your users - submit controller', () => {
       before(done => {
         session = getMockSession(VALID_USER)
         const app = createAppWithSession(getApp(), session)
+        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+          .reply(200, {
+            payment_provider: 'sandbox'
+          })
         supertest(app)
           .post(paths.prototyping.demoService.confirm)
           .send(Object.assign({}, VALID_PAYLOAD, {'confirmation-page': 'http://example.com'}))
@@ -215,6 +266,10 @@ describe('test with your users - submit controller', () => {
         const app = createAppWithSession(getApp(), session)
         const payload = Object.assign({}, VALID_PAYLOAD)
         delete payload['payment-description']
+        nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+          .reply(200, {
+            payment_provider: 'sandbox'
+          })
         supertest(app)
           .post(paths.prototyping.demoService.confirm)
           .send(payload)
@@ -222,6 +277,9 @@ describe('test with your users - submit controller', () => {
             response = res
             done(err)
           })
+      })
+      after(() => {
+        nock.cleanAll()
       })
 
       it('should redirect with code 302', () => {

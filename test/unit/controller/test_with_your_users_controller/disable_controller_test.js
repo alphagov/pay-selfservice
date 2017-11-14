@@ -11,7 +11,8 @@ const {getMockSession, createAppWithSession, getUser} = require('../../../test_h
 const paths = require('../../../../app/paths')
 const {randomUuid} = require('../../../../app/utils/random')
 
-const {PRODUCTS_URL} = process.env
+const GATEWAY_ACCOUNT_ID = 929
+const {PRODUCTS_URL, CONNECTOR_URL} = process.env
 
 describe('test with your users - disable controller', () => {
   describe('when the prototype link is successfully disabled', () => {
@@ -19,8 +20,11 @@ describe('test with your users - disable controller', () => {
     before(done => {
       const productExternalId = randomUuid()
       const user = getUser({
-        gateway_account_ids: [929],
+        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{name: 'transactions:read'}]
+      })
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
+        payment_provider: 'sandbox'
       })
       nock(PRODUCTS_URL).patch(`/v1/api/products/${productExternalId}/disable`).reply(200)
       session = getMockSession(user)
@@ -30,6 +34,9 @@ describe('test with your users - disable controller', () => {
           response = res
           done(err)
         })
+    })
+    after(() => {
+      nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
@@ -52,8 +59,11 @@ describe('test with your users - disable controller', () => {
     before(done => {
       const productExternalId = randomUuid()
       const user = getUser({
-        gateway_account_ids: [929],
+        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
         permissions: [{name: 'transactions:read'}]
+      })
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
+        payment_provider: 'sandbox'
       })
       nock(PRODUCTS_URL).patch(`/v1/api/products/${productExternalId}/disable`)
         .replyWithError('Ruhroh! Something terrible has happened Shaggy!')
@@ -64,6 +74,9 @@ describe('test with your users - disable controller', () => {
           response = res
           done(err)
         })
+    })
+    after(() => {
+      nock.cleanAll()
     })
 
     it('should redirect with code 302', () => {
