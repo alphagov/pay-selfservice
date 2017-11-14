@@ -15,6 +15,12 @@ module.exports = (req, res) => {
   let gatewayAccountId = auth.getCurrentGatewayAccountId(req)
 
   if (protoData) {
+    let paymentAmount = protoData.protoPaymentAmount * 100
+    let index = protoData.protoPaymentAmount.indexOf('.')
+    if (index !== -1) {
+      paymentAmount = paymentAmount.substr(0, index)
+    }
+
     let params = {
       indexPage: paths.user.loggedIn,
       name: protoData.protoPaymentDescription,
@@ -35,7 +41,7 @@ module.exports = (req, res) => {
         payApiToken: publicAuthData.token,
         gatewayAccountId,
         name: protoData.protoPaymentDescription,
-        price: protoData.protoPaymentAmount
+        price: paymentAmount
       }))
       .then(product => {
         params.prototypeLink = lodash.get(product, 'links.pay.href')
