@@ -21,6 +21,7 @@ const validateRegistrationInviteCookie = require('./middleware/validate_registra
 const otpVerify = require('./middleware/otp_verify')
 const correlationIdMiddleware = require('./middleware/correlation_id')
 const getRequestContext = require('./middleware/get_request_context').middleware
+const restrictToSandbox = require('./middleware/restrict_to_sandbox')
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -218,16 +219,16 @@ module.exports.bind = function (app) {
   app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off)
 
   // Prototyping
-  app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.index)
-  app.get(prototyping.demoService.links, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.links)
-  app.get(prototyping.demoService.create, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.create)
-  app.post(prototyping.demoService.confirm, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.submit)
-  app.get(prototyping.demoService.disable, permission('transactions:read'), resolveService, getAccount, testWithYourUsers.disable)
+  app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.index)
+  app.get(prototyping.demoService.links, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.links)
+  app.get(prototyping.demoService.create, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.create)
+  app.post(prototyping.demoService.confirm, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.submit)
+  app.get(prototyping.demoService.disable, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.disable)
 
-  app.get(prototyping.demoPayment.index, permission('transactions:read'), getAccount, makeADemoPayment.index)
-  app.post(prototyping.demoPayment.index, permission('transactions:read'), getAccount, makeADemoPayment.index)
-  app.get(prototyping.demoPayment.editDescription, permission('transactions:read'), getAccount, makeADemoPayment.edit)
-  app.get(prototyping.demoPayment.editAmount, permission('transactions:read'), getAccount, makeADemoPayment.edit)
-  app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, makeADemoPayment.confirm)
-  app.post(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, makeADemoPayment.confirm)
+  app.get(prototyping.demoPayment.index, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
+  app.post(prototyping.demoPayment.index, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
+  app.get(prototyping.demoPayment.editDescription, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
+  app.get(prototyping.demoPayment.editAmount, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
+  app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.confirm)
+  app.post(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.confirm)
 }

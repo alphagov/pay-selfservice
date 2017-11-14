@@ -8,7 +8,9 @@ const userCreator = require('../../../test_helpers/user_creator')
 const paths = require('../../../../app/paths')
 const {expect} = require('chai')
 
-const ACCOUNT_ID = 182364
+const {PRODUCTS_URL, CONNECTOR_URL} = process.env
+
+const GATEWAY_ACCOUNT_ID = 182364
 const PAYMENT_1 = {
   external_id: 'product-external-id-1',
   gateway_account_id: 'product-gateway-account-id-1',
@@ -38,14 +40,14 @@ const PAYMENT_2 = {
 }
 
 function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
-  return nock(process.env.PRODUCTS_URL).get('/v1/api/products?gatewayAccountId=' + gatewayAccountId)
+  return nock(PRODUCTS_URL).get('/v1/api/products?gatewayAccountId=' + gatewayAccountId)
 }
 
 describe('Show the prototype links', () => {
   let app
   before(function () {
     const user = mockSession.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: 'transactions:read'}]
+      gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{name: 'transactions:read'}]
     })
     app = mockSession.getAppWithLoggedInUser(getApp(), user)
     userCreator.mockUserResponse(user.toJson())
@@ -54,7 +56,11 @@ describe('Show the prototype links', () => {
   describe('when no links exist', () => {
     let response
     before(function (done) {
-      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).reply(200, [])
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
+      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [])
 
       supertest(app)
         .get(paths.prototyping.demoService.links)
@@ -88,7 +94,11 @@ describe('Show the prototype links', () => {
   describe('when at least one link exists', () => {
     let response
     before(function (done) {
-      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).reply(200, [PAYMENT_1])
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
+      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1])
 
       supertest(app)
         .get(paths.prototyping.demoService.links)
@@ -136,7 +146,11 @@ describe('Show the prototype links', () => {
   describe('when more than one link exist', () => {
     let response
     before(function (done) {
-      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_2])
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
+      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_2])
 
       supertest(app)
         .get(paths.prototyping.demoService.links)
@@ -197,7 +211,11 @@ describe('Show the prototype links', () => {
   describe('when there is a problem retrieving the products', () => {
     let response
     before(function (done) {
-      mockGetProductsByGatewayAccountEndpoint(ACCOUNT_ID).replyWithError('an error')
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
+      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).replyWithError('an error')
 
       supertest(app)
         .get(paths.prototyping.demoService.links)
