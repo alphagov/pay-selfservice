@@ -15,4 +15,4 @@ ADD . /app
 
 RUN ln -s /tmp/node_modules /app/node_modules
 
-CMD npm start
+CMD docker-startup.sh
