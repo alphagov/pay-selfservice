@@ -7,7 +7,7 @@ Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}
   <a href="/" class="link-back">Back to dashboard</a>
   <h1 class="heading-large prototyping__heading">Test with your users</h1>
   <p>Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.</p>
-  <a class="button" href="{{createPage}}">Create prototype link</a>
+  <a id="prototyping__links-button-create" class="button" href="{{createPage}}">Create prototype link</a>
 
   <ul class="tabs prototyping__tabs">
     {{#productsTab}}
@@ -32,7 +32,7 @@ Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}
       <p>You can also use other card types and see errors. <a href="https://govukpay-docs.cloudapps.digital/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
     {{/productsTab}}
     {{#productsTab}}
-      <h2 id="{{header}}" class="heading-medium remove-top-margin">
+      <h2 id="prototyping__links-header" class="heading-medium remove-top-margin">
           {{#productsLength}}
           {{#productsSingular}}
           There is 1 {{token_state}} prototype link
@@ -49,10 +49,10 @@ Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}
         {{#products}}
         <div class="key-list-item prototyping__links-list-item">
           <h3 class="heading-small"><a href="{{links.pay.href}}">{{links.pay.href}}</a></h3>
-          <p>Payment description: <strong>{{name}}</strong> <br/>
-          Payment amount: <strong>&pound;{{price}}</strong> <br/>
-          {{#returnUrl}}Success page: <strong>{{returnUrl}}</strong></p>{{/returnUrl}}
-          <p><a href="links/disable/{{externalId}}">Delete prototype link</a></p>
+          <p>Payment description: <strong class="prototyping__links-list-item-description">{{name}}</strong> <br/>
+          Payment amount: <strong class="prototyping__links-list-item-amount">&pound;{{price}}</strong> <br/>
+          {{#returnUrl}}Success page: <strong class="prototyping__links-list-item-success-page">{{returnUrl}}</strong></p>{{/returnUrl}}
+          <p><a class="prototyping__links-list-item-delete-link" href="links/disable/{{externalId}}">Delete prototype link</a></p>
         </div>
         {{/products}}
       </div>
