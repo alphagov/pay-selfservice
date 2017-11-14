@@ -45,7 +45,6 @@ describe('middleware: getGatewayAccount', () => {
       expect(connectorGetAccountMock.calledWith({gatewayAccountId: 1, correlationId: 'sdfghjk'})).to.equal(true)
       expect(next.called).to.equal(true)
       expect(res.redirect.called).to.equal(false)
-      console.log(req)
       done()
     })
   })

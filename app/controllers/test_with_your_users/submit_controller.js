@@ -32,12 +32,14 @@ module.exports = (req, res) => {
     req.flash('genericError', `<h2>Enter a valid secure URL</h2>${isHttps(confirmationPage)}`)
   }
 
-  const amountFormatCheck = AMOUNT_FORMAT.exec(paymentAmount)
   if (lodash.get(req, 'session.flash.genericError.length')) {
     return res.redirect(paths.prototyping.demoService.create)
-  } else {
-    paymentAmount = parseInt(amountFormatCheck[1]) * 100
-    if (amountFormatCheck[2]) paymentAmount += parseInt(amountFormatCheck[2])
+  }
+
+  paymentAmount = paymentAmount.replace(/[^0-9.-]+/g, '')
+  const currencyMatch = AMOUNT_FORMAT.exec(paymentAmount)
+  if (!currencyMatch[2]) {
+    paymentAmount = paymentAmount + '.00'
   }
 
   publicAuthClient.createTokenForAccount({
@@ -53,7 +55,7 @@ module.exports = (req, res) => {
       gatewayAccountId,
       name: req.body['payment-description'],
       returnUrl: req.body['confirmation-page'],
-      price: paymentAmount
+      price: Math.trunc(paymentAmount * 100)
     }))
     .then(product => {
       params.prototypeLink = lodash.get(product, 'links.pay.href')

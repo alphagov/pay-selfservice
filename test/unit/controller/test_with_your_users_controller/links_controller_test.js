@@ -131,7 +131,7 @@ describe('Show the prototype links', () => {
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
         name: 'payment-name-1',
-        price: '1.50',
+        price: '150',
         returnUrl: 'http://return.url',
         links: {
           pay: {
@@ -183,7 +183,7 @@ describe('Show the prototype links', () => {
         externalId: 'product-external-id-1',
         gatewayAccountId: 'product-gateway-account-id-1',
         name: 'payment-name-1',
-        price: '1.50',
+        price: '150',
         returnUrl: 'http://return.url',
         links: {
           pay: {
@@ -196,7 +196,7 @@ describe('Show the prototype links', () => {
         externalId: 'product-external-id-2',
         gatewayAccountId: 'product-gateway-account-id-2',
         name: 'payment-name-2',
-        price: '1.50',
+        price: '150',
         returnUrl: 'http://return.url',
         links: {
           pay: {

@@ -5,18 +5,15 @@ const lodash = require('lodash')
 
 // Local dependencies
 const {response} = require('../../utils/response.js')
-const paths = require('../../paths')
+const {editDescription, index} = require('../../paths').prototyping.demoPayment
 
 module.exports = (req, res) => {
-  let params = {
-    protoPaymentDescription: lodash.get(req, 'session.pageData.protoData.protoPaymentDescription'),
-    protoPaymentAmount: lodash.get(req, 'session.pageData.protoData.protoPaymentAmount'),
-    nextPage: paths.prototyping.demoPayment.index
-  }
+  const pageData = lodash.get(req, 'session.pageData.makeADemoPayment', {})
+  const template = req.path === editDescription ? 'dashboard/demo-payment/edit-description' : 'dashboard/demo-payment/edit-amount'
 
-  if (req.path === paths.prototyping.demoPayment.editDescription) {
-    response(req, res, 'dashboard/demo-payment/edit-description', params)
-  } else {
-    response(req, res, 'dashboard/demo-payment/edit-amount', params)
-  }
+  response(req, res, template, {
+    paymentDescription: pageData.paymentDescription,
+    paymentAmount: pageData.paymentAmount,
+    nextPage: index
+  })
 }
