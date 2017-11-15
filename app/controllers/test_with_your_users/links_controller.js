@@ -18,9 +18,6 @@ module.exports = (req, res) => {
     .then(products => {
       params.productsLength = products.length
       params.productsSingular = products.length < 2
-      products.forEach(function (product) {
-        product.price = (product.price / 100).toFixed(2)
-      })
       params.products = products
       return response(req, res, 'dashboard/demo-service/index', params)
     })

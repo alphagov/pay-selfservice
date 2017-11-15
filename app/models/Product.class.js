@@ -8,7 +8,8 @@ const lodash = require('lodash')
  * @property {string} externalId - The external ID of the product
  * @property {string} gatewayAccountId
  * @property {string} name
- * @property {number} price
+ * @property {number} price - The price of the product in pence
+ * @property {number} priceInPounds - The price of the products in pounds
  * @property {string} description
  * @property {string} returnUrl
  * @property {object} payLink
@@ -43,6 +44,9 @@ class Product {
     this.description = opts.description
     this.returnUrl = opts.return_url
     opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, {method: link.method, href: link.href}))
+  }
+  get priceInPounds () {
+    if (this.price) return (this.price / 100).toFixed(2)
   }
 }
 
