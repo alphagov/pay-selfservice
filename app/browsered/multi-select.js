@@ -21,6 +21,7 @@ const DROPDOWN_SELECTOR = '.multi-select-dropdown'
 const SCROLL_CONTAINER_SELECTOR = '.multi-select-dropdown-inner-container'
 const ITEM_SELECTOR = '.multi-select-item'
 const ALL_SELECTOR = `${ITEM_SELECTOR}[value=""]`
+const CURRENT_SELECTIONS = '.multi-select-current-selections'
 
 exports.enableMultiSelects = () => $(DOCUMENT_SELECTOR).ready(progressivelyEnhanceSelects)
 
@@ -108,7 +109,7 @@ function updateDisplayedValue () {
     .map(item => $(item).parent().text().trim())
     .join(', ')
 
-  TOP_LEVEL.find(`${OPEN_BUTTON_SELECTOR} div span`).after(buttonText)
+  TOP_LEVEL.find(`${CURRENT_SELECTIONS}`).text(buttonText)
 }
 
 function randomElementId () {
