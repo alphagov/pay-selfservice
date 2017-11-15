@@ -1,0 +1,54 @@
+<div class="grid-row">
+  <form class="column-half">
+    <fieldset class="form-group">
+      <label for="range" class="visually-hidden">Select a date range</label>
+      <select name="range" class="form-control">
+        <option>Today</option>
+        <option>Yesterday</option>
+        <option>Last 7 days</option>
+        <option>Last 30 days</option>
+      </select>
+    </fieldset>
+  </form>
+</div>
+
+<div class="flex-grid">
+  <div class="flex-grid--row">
+    <article class="dashboard-total-group flex-grid--column-third">
+      <header class="dashboard-total-group__heading">
+        <h2 class="dashboard-total-group__title">Successful payments</h2>
+      </header>
+      <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
+        <dt class="visually-hidden">Count</dt>
+        <dd class="dashboard-total-group__count">478</dd>
+        <dt class="visually-hidden">Amount</dt>
+        <dd class="dashboard-total-group__amount">&pound;45,000</dd>
+      </dl>
+    </article>
+    <article class="dashboard-total-group flex-grid--column-third">
+      <header class="dashboard-total-group__heading">
+        <h2 class="dashboard-total-group__title">Successful refunds</h2>
+      </header>
+      <dl class="dashboard-total-group__values dashboard-total-group__values--red">
+        <dt class="visually-hidden">Count</dt>
+        <dd class="dashboard-total-group__count">36</dd>
+        <dt class="visually-hidden">Amount</dt>
+        <dd class="dashboard-total-group__amount">&pound;1,294</dd>
+      </dl>
+    </article>
+    <article class="dashboard-total-group flex-grid--column-third">
+      <header class="dashboard-total-group__heading">
+        <h2 class="dashboard-total-group__title">Net income</h2>
+      </header>
+      <dl class="dashboard-total-group__values">
+        <dt class="visually-hidden">Amount</dt>
+        <dd class="dashboard-total-group__amount">&pound;43,706</dd>
+      </dl>
+      <details class="dashboard-total-explainer">
+        <summary>How these numbers are calculated</summary>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et <a href="#">dolore magna aliqua</a>.</p>
+      </details>
+    </article>
+  </div>
+</div>

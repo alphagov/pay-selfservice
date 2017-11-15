@@ -5,8 +5,9 @@ Dashboard - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK 
 {% endblock %}
 
 {% block full_width_content %}
-<h1 class="page-title first-steps__title">Welcome to GOV.UK&nbsp;Pay</h1>
+  <h1 class="page-title first-steps__title">Dashboard</h1>
 
-  {% include "dashboard/_first-steps.njk" %}
+  {% include "./_activity.njk" %}
+  {% include "./_first-steps.njk" %}
 
 {% endblock %}
