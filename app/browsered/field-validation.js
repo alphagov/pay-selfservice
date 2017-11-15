@@ -33,15 +33,15 @@ function initValidation (e) {
 }
 
 function clearPreviousErrors () {
-  let previousErrorsMessages = [...document.querySelectorAll('.error-message, .error-summary')]
-  let previousErrorsFields = [...document.querySelectorAll('.form-group.error')]
+  let previousErrorsMessages = Array.prototype.slice.call(document.querySelectorAll('.error-message, .error-summary'))
+  let previousErrorsFields = Array.prototype.slice.call(document.querySelectorAll('.form-group.error'))
 
   previousErrorsMessages.map(error => error.remove())
   previousErrorsFields.map(errorField => errorField.classList.remove('error'))
 }
 
 function findFields (form) {
-  const formFields = [...form.querySelectorAll('input, textarea, select')]
+  const formFields = Array.prototype.slice.call(form.querySelectorAll('input, textarea, select'))
 
   return formFields.filter(field => {
     return field.hasAttribute('data-validate')
@@ -52,7 +52,7 @@ function validateField (form, field) {
   let result
   let validationTypes = field.getAttribute('data-validate').split(' ')
 
-  for (let validationType of validationTypes) {
+  validationTypes.forEach(validationType => {
     switch (validationType) {
       case 'currency' :
         result = checks.isCurrency(field.value)
@@ -73,7 +73,7 @@ function validateField (form, field) {
     if (result) {
       applyErrorMessaging(form, field, result)
     }
-  }
+  })
 
   if (!result) {
     return true
@@ -90,7 +90,7 @@ function applyErrorMessaging (form, field, result) {
 }
 
 function populateErrorSummary (form) {
-  let erroringFields = [...form.querySelectorAll('.form-group.error label')]
+  let erroringFields = Array.prototype.slice.call(form.querySelectorAll('.form-group.error label'))
   let configuration = {
     field: erroringFields.map(field => {
       let label = field.innerHTML.split('<')[0].trim()
