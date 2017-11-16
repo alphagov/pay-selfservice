@@ -1,4 +1,4 @@
-FROM node:6.11.1-alpine
+FROM node:6.12.0-alpine
 
 ARG CHAMBER_URL=https://github.com/segmentio/chamber/releases/download/v1.9.0/chamber-v1.9.0-linux-amd64
 
