@@ -19,7 +19,7 @@ ADD package.json /tmp/package.json
 RUN apk add --no-cache bash python make g++ libc6-compat && \
     cd /tmp && \
     npm install --production && \
-    apk del --purge make g++ libc6-compat musl-dev libc-dev pkgconfig python make pkgconf binutils
+    apk del --purge make g++ musl-dev libc-dev pkgconfig python make pkgconf binutils
 
 ADD . /app
 
