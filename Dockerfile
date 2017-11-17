@@ -1,4 +1,4 @@
-FROM node:6.11.1-alpine
+FROM node:6.12.0-alpine
 
 RUN apk update &&\
     apk upgrade &&\
