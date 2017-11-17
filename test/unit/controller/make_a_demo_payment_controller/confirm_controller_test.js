@@ -77,7 +77,7 @@ describe('make a demo payment - confirm controller', () => {
 
         it(`should have a 'Make a demo payment' button that points at the pay url of the product`, () => {
           const expectedHref = VALID_CREATE_PRODUCT_RESPONSE._links.find(link => link.rel === 'pay').href
-          expect($('#make-demo-payment').attr('href')).to.equal(expectedHref)
+          expect($('#prototyping__make-demo-payment').attr('href')).to.equal(expectedHref)
         })
 
         it(`should clear the values stored in the session`, () => {
