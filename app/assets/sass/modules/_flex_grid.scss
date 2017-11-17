@@ -2,7 +2,10 @@
   &--row {
     @extend .grid-row;
     display: flex;
+    flex: 0 1 auto;
     flex-flow: row wrap;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     & + & {
       margin-top: 30px;
@@ -17,15 +20,16 @@
     h2 {
       margin-top: 1.25em;
     }
-
   }
 
   &--column-half {
     @extend .column-half;
-    flex: 1 100%;
+    margin-bottom: $gutter;
 
     @include media(tablet) {
-      flex: 1;
+      min-width: 50%;
+      flex: 0 0 auto;
+      flex-basis: 50%;
 
       &.marked:nth-child(even) {
         border-right: solid 1px $grey-2;
@@ -35,10 +39,10 @@
 
   &--column-third {
     @extend .column-third;
-    flex: 1 100%;
+    margin-bottom: $gutter;
 
     @include media(tablet) {
-      flex: 1;
+      flex-basis: 33%;
 
       &.marked:nth-child(even) {
         border-right: solid 1px $grey-2;
