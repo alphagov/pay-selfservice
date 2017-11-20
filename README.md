@@ -13,6 +13,7 @@ setup
 cd $WORKSPACE/pay-selfservice/config
 cp dev-env.json.example dev-env.json
 echo 'do not merge'
+echo 'Really.  DO NOT MERGE!!!'
 ```
 
 
