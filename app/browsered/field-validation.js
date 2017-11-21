@@ -66,6 +66,9 @@ function validateField (form, field) {
       case 'https' :
         result = checks.isHttps(field.value)
         break
+      case 'belowMaxAmount' :
+        result = checks.isBelowMaxAmount(field.value)
+        break
       default :
         result = checks.isEmpty(field.value)
         break

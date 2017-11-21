@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
-const {isCurrency} = require('../../browsered/field-validation-checks')
+const {isCurrency, isBelowMaxAmount} = require('../../browsered/field-validation-checks')
 
 const DEFAULTS = {
   paymentDescription: 'An example payment description',
@@ -22,6 +22,10 @@ module.exports = (req, res) => {
   if (!paymentAmount || isCurrency(paymentAmount)) {
     lodash.set(req, 'session.pageData.makeADemoPayment.paymentAmount', paymentAmount)
     req.flash('genericError', `<h2>Use valid characters only</h2> ${isCurrency(paymentAmount)}`)
+    return res.redirect(paths.prototyping.demoPayment.editAmount)
+  } else if (isBelowMaxAmount(paymentAmount)) {
+    lodash.set(req, 'session.pageData.makeADemoPayment.paymentAmount', paymentAmount)
+    req.flash('genericError', `<h2>Enter a valid amount</h2> ${isBelowMaxAmount(paymentAmount)}`)
     return res.redirect(paths.prototyping.demoPayment.editAmount)
   }
 
