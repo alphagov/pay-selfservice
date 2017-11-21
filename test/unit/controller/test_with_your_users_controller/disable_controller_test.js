@@ -47,10 +47,10 @@ describe('test with your users - disable controller', () => {
       expect(response.header).to.have.property('location').to.equal(paths.prototyping.demoService.links)
     })
 
-    it('should add a relevant error message to the session \'flash\'', () => {
-      expect(session.flash).to.have.property('genericError')
-      expect(session.flash.genericError.length).to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<p>Prototype link deleted</p>')
+    it('should add a relevant generic message to the session \'flash\'', () => {
+      expect(session.flash).to.have.property('generic')
+      expect(session.flash.generic.length).to.equal(1)
+      expect(session.flash.generic[0]).to.equal('<p>Prototype link deleted</p>')
     })
   })
 

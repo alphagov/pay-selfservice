@@ -7,7 +7,7 @@ const productsClient = require('../../services/clients/products_client.js')
 module.exports = (req, res) => {
   productsClient.product.disable(req.params.productExternalId)
     .then(() => {
-      req.flash('genericError', '<p>Prototype link deleted</p>')
+      req.flash('generic', '<p>Prototype link deleted</p>')
       res.redirect(paths.prototyping.demoService.links)
     })
     .catch(() => {
