@@ -122,7 +122,13 @@ module.exports = function (grunt) {
           [
             'babelify',
             {
-              presets: ['es2015']
+              presets: [
+                ['env', {
+                  'targets': {
+                    'browsers': ['last 2 versions', 'safari >= 7', 'ie >= 10']
+                  }
+                }]
+              ]
             }], [
               'hoganify',
               {

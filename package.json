@@ -92,6 +92,8 @@
   },
   "devDependencies": {
     "@pact-foundation/pact-node": "4.6.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^7.3.0",
     "chai": "^4.0.2",
