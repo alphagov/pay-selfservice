@@ -7,6 +7,13 @@ RUN apk update &&\
 ENV PORT 9000
 EXPOSE 9000
 
+# This section fixes sec vuls introduced by the installation of libc6-compat
+RUN set -x \
+        && apk add --no-cache \
+                # fixes CVE-2017-14930, CVE-2017-13716 and CVE-2017-8421
+                binutils="2.28-r3" \
+           --repository http://dl-cdn.alpinelinux.org/alpine/edge/main
+
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install --production
 
