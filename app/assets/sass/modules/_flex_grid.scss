@@ -27,7 +27,6 @@
     margin-bottom: $gutter;
 
     @include media(tablet) {
-      min-width: 50%;
       flex: 0 0 auto;
 
       &.marked:nth-child(even) {
@@ -41,8 +40,6 @@
     margin-bottom: $gutter;
 
     @include media(tablet) {
-      flex-basis: 33%;
-
       &.marked:nth-child(even) {
         border-right: solid 1px $grey-2;
       }
