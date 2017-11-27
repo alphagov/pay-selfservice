@@ -18,7 +18,7 @@
     {{/isSandbox}}
 
     {{^isSandbox}}
-    <article class="flex-grid--column-half first-steps__box">
+    <article class="flex-grid--column-{{#isTestGateway}}third{{/isTestGateway}}{{^isTestGateway}}half{{/isTestGateway}} first-steps__box">
       <a href="https://govukpay-docs.cloudapps.digital/#payment-flow-making-a-payment">
         <h2 class="heading-small">See the payment flow</h2>
         <p>Get an overview of payment pages in our documentation.</p>
@@ -26,7 +26,7 @@
     </article>
     {{/isSandbox}}
 
-    <article class="flex-grid--column-half first-steps__box">
+    <article class="flex-grid--column-{{#isSandbox}}half{{/isSandbox}}{{^isSandbox}}{{#isTestGateway}}third{{/isTestGateway}}{{^isTestGateway}}half{{/isTestGateway}}{{/isSandbox}} first-steps__box">
       <a href="/my-services/">
       {{#permissions.users_service_create}}
         <h2 class="heading-small">Manage team members</h2>
@@ -40,7 +40,7 @@
     </article>
 
     {{#isTestGateway}}
-    <article class="flex-grid--column-half first-steps__box">
+    <article class="flex-grid--column-{{#isSandbox}}half{{/isSandbox}}{{^isSandbox}}third{{/isSandbox}} first-steps__box">
       <a href="https://govukpay-docs.cloudapps.digital/#switching-to-live">
         <h2 class="heading-small">Next steps to go live</h2>
         <p>Read our documentation to see how your service can go live with GOV.UK&nbsp;Pay.</p>
