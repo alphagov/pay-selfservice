@@ -116,6 +116,7 @@ module.exports = function (req, data, template) {
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
+  convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.currentServiceName = _.get(req, 'service.name')
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions)
