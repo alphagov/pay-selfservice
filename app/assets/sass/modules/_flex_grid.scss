@@ -29,7 +29,6 @@
     @include media(tablet) {
       min-width: 50%;
       flex: 0 0 auto;
-      flex-basis: 50%;
 
       &.marked:nth-child(even) {
         border-right: solid 1px $grey-2;
