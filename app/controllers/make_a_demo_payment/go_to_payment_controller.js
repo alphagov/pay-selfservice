@@ -4,7 +4,6 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const publicAuthClient = require('../../services/clients/public_auth_client')
@@ -12,7 +11,7 @@ const auth = require('../../services/auth_service.js')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const {paymentAmount, paymentDescription} = lodash.get(req, 'session.pageData.makeADemoPayment')
+  const {paymentAmount, paymentDescription} = lodash.get(req, 'session.pageData.makeADemoPayment', {})
 
   if (!paymentAmount || !paymentDescription) {
     return res.redirect(paths.prototyping.demoPayment.index)
@@ -34,11 +33,8 @@ module.exports = (req, res) => {
       price: Math.trunc(paymentAmount * 100)
     }))
     .then(product => {
-      response(req, res, 'dashboard/demo-payment/confirm', {
-        prototypeLink: lodash.get(product, 'links.pay.href'),
-        indexPage: paths.user.loggedIn
-      })
       lodash.unset(req, 'session.pageData.makeADemoPayment')
+      res.redirect(product.links.pay.href)
     })
     .catch(() => {
       req.flash('genericError', `<h2>There were errors</h2> Error while creating demo payment`)

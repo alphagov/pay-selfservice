@@ -229,5 +229,6 @@ module.exports.bind = function (app) {
   app.post(prototyping.demoPayment.index, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
   app.get(prototyping.demoPayment.editDescription, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
   app.get(prototyping.demoPayment.editAmount, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
-  app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.confirm)
+  app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.mockCardDetails)
+  app.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.goToPayment)
 }
