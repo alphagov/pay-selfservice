@@ -5,7 +5,7 @@
 const $ = require('jquery')
 
 // Local Dependencies
-const multiSelect = require('../views-nunjucks/includes/multi-select.njk')
+const multiSelect = require('../views/includes/multi-select.njk')
 
 // Variables
 const MAXIMUM_VISIBLE_ITEMS = 8.5 // Maximum amount of items to show in dropdown

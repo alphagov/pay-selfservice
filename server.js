@@ -80,7 +80,7 @@ function initialiseTemplateEngine (app) {
   // Define app views
   const appViews = [
     path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
-    path.join(__dirname, '/app/views-nunjucks')
+    path.join(__dirname, '/app/views')
   ]
 
   // Configure nunjucks

@@ -1,0 +1,45 @@
+{% extends "../layout.njk" %}
+{% block pageTitle %}
+Generate API key - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block pageSpecificJS %}
+<script src="/public/js/devtokens.js"></script>
+{% endblock %}
+
+{% block mainContent %}
+  <h1 class="page-title">API keys</h1>
+
+  {% if not token %}
+    <h2 class="heading-medium remove-top-margin">Generate a new API key</h2>
+    <form class="form" method="post" action="{{routes.apiKeys.create}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      <div class="form-group">
+        <label class="form-label-bold" for="description">
+          Add a description for the key
+          <span class="form-hint">For example, ‘John Smith’s API key’</span>
+        </label>
+        <textarea id="description" name="description" type="text" maxlength="100" size="150" class="form-control"></textarea>
+      </div>
+      <p>When generated the key will only be shown once.</p>
+      <input id="generate-button" type="submit" class="button" value="Generate key">
+    </form>
+    <p class="add-top-margin">
+      <a href="{{routes.apiKeys.index}}">Cancel</a>
+    </p>
+  {% else %}
+    <h2 class="heading-medium remove-top-margin">New key generated</h2>
+    <p>Please copy this key now as it won’t be shown again</p>
+
+    <div class="form-group">
+      <label class="form-label-bold" for="token">
+        {{description}}
+      </label>
+      <textarea id="token" name="token" class="form-control">{{token}}</textarea>
+    </div>
+
+    <a id="finish-link" class="button" href="{{routes.apiKeys.index}}">
+      Finish
+    </a>
+  {% endif %}
+{% endblock %}

@@ -7,7 +7,7 @@ const lodash = require('lodash')
 const checks = require('./field-validation-checks')
 
 // Global constants
-const validationErrorsTemplate = require('../views-nunjucks/includes/validation-errors.njk')
+const validationErrorsTemplate = require('../views/includes/validation-errors.njk')
 
 exports.enableFieldValidation = function () {
   const allForms = Array.prototype.slice.call(document.getElementsByTagName('form'))
