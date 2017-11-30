@@ -5,7 +5,7 @@
 const $ = require('jquery')
 
 // Local Dependencies
-const multiSelect = require('../views/includes/multi-select.html')
+const multiSelect = require('../views-nunjucks/includes/multi-select.njk')
 
 // Variables
 const MAXIMUM_VISIBLE_ITEMS = 8.5 // Maximum amount of items to show in dropdown
@@ -39,7 +39,7 @@ function progressivelyEnhanceSelects () {
         return {value, id, checked, text}
       })
     }
-    select.replaceWith(multiSelect.render(configuration))
+    select.replaceWith(multiSelect(configuration))
     const newMultiSelect = $(`${TOP_LEVEL_SELECTOR}#${configuration.id}`)
     const openButton = newMultiSelect.find(OPEN_BUTTON_SELECTOR)
     const closeButton = newMultiSelect.find(CLOSE_BUTTON_SELECTOR)

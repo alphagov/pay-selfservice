@@ -5,7 +5,9 @@ const lodash = require('lodash')
 
 // Local Dependencies
 const checks = require('./field-validation-checks')
-const validationErrorsTemplate = require('../views/includes/validation-errors.html')
+
+// Global constants
+const validationErrorsTemplate = require('../views-nunjucks/includes/validation-errors.njk')
 
 exports.enableFieldValidation = function () {
   const allForms = Array.prototype.slice.call(document.getElementsByTagName('form'))
@@ -104,7 +106,7 @@ function populateErrorSummary (form) {
 
   form.parentNode.insertAdjacentHTML(
     'afterbegin',
-    validationErrorsTemplate.render(configuration)
+    validationErrorsTemplate(configuration)
   )
   window.scroll(0, 0)
 }

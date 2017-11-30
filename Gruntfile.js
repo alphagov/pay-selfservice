@@ -132,11 +132,13 @@ module.exports = function (grunt) {
                   }
                 }]
               ]
-            }], [
-              'hoganify',
-              {
-                ext: '.html'
-              }]
+            }
+          ],
+          [
+            'nunjucksify',
+            {
+              extension: '.njk'
+            }]
         ]
       }
     },

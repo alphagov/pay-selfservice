@@ -72,6 +72,7 @@
     "morgan": "1.8.x",
     "notp": "^2.0.3",
     "nunjucks": "^3.0.1",
+    "nunjucksify": "^2.2.0",
     "passport": "0.3.x",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
