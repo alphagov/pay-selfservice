@@ -3,9 +3,9 @@
 // NPM dependencies
 const supertest = require('supertest')
 const {expect} = require('chai')
-const cheerio = require('cheerio')
 const lodash = require('lodash')
 const nock = require('nock')
+const csrf = require('csrf')
 
 // Local dependencies
 const {getApp} = require('../../../../server')
@@ -18,6 +18,9 @@ const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = 929
 const PAYMENT_DESCRIPTION = 'Pay your window tax'
 const PAYMENT_AMOUNT = '20.00'
+const VALID_PAYLOAD = {
+  'csrfToken': csrf().create('123')
+}
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
   permissions: [{name: 'transactions:read'}]
@@ -39,23 +42,26 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 }).getPlain()
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
-describe('make a demo payment - confirm controller', () => {
+describe('make a demo payment - go to payment controller', () => {
   describe(`when both paymentDescription and paymentAmount exist in the session`, () => {
     describe(`when the API token is successfully created`, () => {
       describe(`and the product is successfully created`, () => {
-        let result, $, session
-        before(done => {
+        let result, session, app
+        before('Arrange', () => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
           nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST).reply(201, VALID_CREATE_PRODUCT_RESPONSE)
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
           lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
-          supertest(createAppWithSession(getApp(), session))
-            .get(paths.prototyping.demoPayment.mockCardDetails)
+          app = createAppWithSession(getApp(), session)
+        })
+        before('Act', done => {
+          supertest(app)
+            .post(paths.prototyping.demoPayment.goToPaymentScreens)
+            .send(VALID_PAYLOAD)
             .end((err, res) => {
               result = res
-              $ = cheerio.load(res.text)
               done(err)
             })
         })
@@ -63,38 +69,31 @@ describe('make a demo payment - confirm controller', () => {
           nock.cleanAll()
         })
 
-        it('should respond with statusCode 200', () => {
-          expect(result.statusCode).to.equal(200)
+        it('should redirect with status code 302', () => {
+          expect(result.statusCode).to.equal(302)
         })
 
-        it('should show the mock card details page', () => {
-          expect($('h1').text()).to.equal('Mock card numbers')
-        })
-
-        it('should have a back button that takes the user back to the landing page for a logged in user', () => {
-          expect($('.link-back').attr('href')).to.equal(paths.user.loggedIn)
-        })
-
-        it(`should have a 'Make a demo payment' button that points at the pay url of the product`, () => {
-          const expectedHref = VALID_CREATE_PRODUCT_RESPONSE._links.find(link => link.rel === 'pay').href
-          expect($('#prototyping__make-demo-payment').attr('href')).to.equal(expectedHref)
-        })
-
-        it(`should clear the values stored in the session`, () => {
-          expect(session.pageData).not.to.have.property('makeADemoPayment')
+        it('should redirect to the products pay link', () => {
+          const paylink = VALID_CREATE_PRODUCT_RESPONSE._links.find(link => link.rel === 'pay').href
+          expect(result.headers).to.have.property('location').to.equal(paylink)
         })
       })
       describe(`but the product creation fails`, () => {
-        let result, session
-        before(done => {
+        let result, session, app
+
+        before('Arrange', () => {
           nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
           nock(PRODUCTS_URL).post('/v1/api/products', VALID_CREATE_PRODUCT_REQUEST).replyWithError('Something went wrong')
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
           lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
-          supertest(createAppWithSession(getApp(), session))
-            .get(paths.prototyping.demoPayment.mockCardDetails)
+          app = createAppWithSession(getApp(), session)
+        })
+        before('Act', done => {
+          supertest(app)
+            .post(paths.prototyping.demoPayment.goToPaymentScreens)
+            .send(VALID_PAYLOAD)
             .end((err, res) => {
               result = res
               done(err)
@@ -120,15 +119,21 @@ describe('make a demo payment - confirm controller', () => {
       })
     })
     describe(`when the API token creation fails`, () => {
-      let result, session
-      before(done => {
+      let result, session, app
+      before('Arrange', () => {
         nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).replyWithError('Something went wrong')
         session = getMockSession(VALID_USER)
         lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
         lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
-        supertest(createAppWithSession(getApp(), session))
-          .get(paths.prototyping.demoPayment.mockCardDetails)
+        app = createAppWithSession(getApp(), session)
+      })
+      before('Act', done => {
+        supertest(app)
+          .post(paths.prototyping.demoPayment.goToPaymentScreens)
+          .send({
+            'csrfToken': csrf().create('123')
+          })
           .end((err, res) => {
             result = res
             done(err)
@@ -154,13 +159,20 @@ describe('make a demo payment - confirm controller', () => {
     })
   })
   describe(`when paymentDescription is missing from the session`, () => {
-    let result
-    before(done => {
+    let result, app
+
+    before('Arrange', () => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       const session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', PAYMENT_AMOUNT)
-      supertest(createAppWithSession(getApp(), session))
-        .get(paths.prototyping.demoPayment.mockCardDetails)
+      app = createAppWithSession(getApp(), session)
+    })
+    before('Act', done => {
+      supertest(app)
+        .post(paths.prototyping.demoPayment.goToPaymentScreens)
+        .send({
+          'csrfToken': csrf().create('123')
+        })
         .end((err, res) => {
           result = res
           done(err)
@@ -180,17 +192,28 @@ describe('make a demo payment - confirm controller', () => {
     })
   })
   describe(`when paymentAmount is missing from the session`, () => {
-    let result
-    before(done => {
+    let result, app
+
+    before('Arrange', () => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       const session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentDescription', PAYMENT_DESCRIPTION)
-      supertest(createAppWithSession(getApp(), session))
-        .get(paths.prototyping.demoPayment.mockCardDetails)
+      app = createAppWithSession(getApp(), session)
+    })
+    before('Act', done => {
+      supertest(app)
+        .post(paths.prototyping.demoPayment.goToPaymentScreens)
+        .send({
+          'csrfToken': csrf().create('123')
+        })
         .end((err, res) => {
           result = res
           done(err)
         })
+    })
+
+    after(() => {
+      nock.cleanAll()
     })
 
     it('should redirect with status code 302', () => {

@@ -119,7 +119,8 @@ module.exports = {
       index: '/make-a-demo-payment',
       editDescription: '/make-a-demo-payment/edit-description',
       editAmount: '/make-a-demo-payment/edit-amount',
-      mockCardDetails: '/make-a-demo-payment/mock-card-numbers'
+      mockCardDetails: '/make-a-demo-payment/mock-card-numbers',
+      goToPaymentScreens: '/make-a-demo-payment/go-to-payment'
     }
   },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
