@@ -1,77 +1,75 @@
-{{< layout}}
+{% extends "../layout.njk" %}
 
-{{$pageTitle}}
+{% block page_title %}
 Invite a new team member - GOV.UK Pay
-{{/pageTitle}}
+{% endblock %}
 
-{{$pageSpecificJS}}
-<script src="/public/js/components/link-follower.js"></script>
-{{/pageSpecificJS}}
+{% block pageSpecificJS %}
+  <script src="/public/js/components/link-follower.js"></script>
+{% endblock %}
 
-{{$mainClasses}}full-width{{/mainClasses}}
-{{$full_width_content}}
-<a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
-<div>
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
+  <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
+  <div>
     <h1 class="heading-large underline">
-        <span class="heading-secondary">Team members</span>
-        Invite a team member</h1>
-</div>
+      <span class="heading-secondary">Team members</span>
+      Invite a team member</h1>
+  </div>
 
-<div class="column-full remove-left-margin">
-
+  <div class="column-full remove-left-margin">
     <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}">
-        <div class="form-group">
-            <label class="form-label" for="invitee-email">
-                Email address
+      <div class="form-group">
+        <label class="form-label" for="invitee-email">
+            Email address
+        </label>
+        <input type="text" class="form-control" id="invitee-email" name="invitee-email">
+      </div>
+      <div class="form-group">
+        <fieldset>
+          <legend class="heading-small">Permission level</legend>
+          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+          <div class="multiple-choice">
+            <input id="role-admin-input" type="radio" name="role-input" value="{{admin.id}}">
+            <label for="role-admin-input">
+              <span class="heading-small">Administrator</span>
+              <ul class="question-advice form-hint">
+                <li>View transactions</li>
+                <li>Refund payments</li>
+                <li>Manage settings</li>
+              </ul>
             </label>
-            <input type="text" class="form-control" id="invitee-email" name="invitee-email">
-        </div>
-        <div class="form-group">
-            <fieldset>
-                <legend class="heading-small">Permission level</legend>
-                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-                <div class="multiple-choice">
-                    <input id="role-admin-input" type="radio" name="role-input" value="{{admin.id}}">
-                    <label for="role-admin-input">
-                        <span class="heading-small">Administrator</span>
-                        <ul class="question-advice form-hint">
-                            <li>View transactions</li>
-                            <li>Refund payments</li>
-                            <li>Manage settings</li>
-                        </ul>
-                    </label>
-                </div>
-                <div class="multiple-choice">
-                    <input id="role-view-and-refund-input" type="radio" name="role-input" value="{{viewAndRefund.id}}">
-                    <label for="role-view-and-refund-input">
-                        <span class="heading-small">View and refund</span>
-                        <ul class="question-advice form-hint">
-                            <li>View transactions</li>
-                            <li>Refund payments</li>
-                            <li>Cannot manage settings</li>
-                        </ul>
-                    </label>
-                </div>
-                <div class="multiple-choice">
-                    <input id="role-view-input" type="radio" name="role-input" value="{{view.id}}" checked>
-                    <label for="role-view-input"><span class="heading-small">View only</span>
-                        <ul class="question-advice form-hint">
-                          <li>View transactions</li>
-                          <li>Cannot refund payments</li>
-                          <li>Cannot manage settings</li>
-                        </ul>
-                    </label>
-                </div>
-            </fieldset>
-        </div>
-        <div class="form-group call-to-action-group">
-            <input type="submit" class="button" value="Send invitation email">
-            <a id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
-                Cancel
-            </a>
-        </div>
+          </div>
+          <div class="multiple-choice">
+            <input id="role-view-and-refund-input" type="radio" name="role-input" value="{{viewAndRefund.id}}">
+            <label for="role-view-and-refund-input">
+              <span class="heading-small">View and refund</span>
+              <ul class="question-advice form-hint">
+                <li>View transactions</li>
+                <li>Refund payments</li>
+                <li>Cannot manage settings</li>
+             </ul>
+            </label>
+          </div>
+          <div class="multiple-choice">
+            <input id="role-view-input" type="radio" name="role-input" value="{{view.id}}" checked>
+            <label for="role-view-input"><span class="heading-small">View only</span>
+              <ul class="question-advice form-hint">
+                <li>View transactions</li>
+                <li>Cannot refund payments</li>
+                <li>Cannot manage settings</li>
+              </ul>
+            </label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="form-group call-to-action-group">
+        <input type="submit" class="button" value="Send invitation email">
+        <a id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
+            Cancel
+        </a>
+      </div>
     </form>
-</div>
-{{/full_width_content}}
-
-{{/layout}}
+  </div>
+{% endblock %}

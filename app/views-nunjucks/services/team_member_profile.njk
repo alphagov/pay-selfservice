@@ -1,11 +1,12 @@
-{{< layout}}
+{% extends "../layout.njk" %}
 
-{{$pageTitle}}
+{% block page_title %}
 My profile - GOV.UK Pay
-{{/pageTitle}}
+{% endblock %}
 
-{{$mainClasses}}full-width{{/mainClasses}}
-{{$full_width_content}}
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
 <h1 id="details-for" class="heading-large">
     My profile
 </h1>
@@ -36,6 +37,4 @@ My profile - GOV.UK Pay
         </div>
     </div>
 </div>
-{{/full_width_content}}
-
-{{/layout}}
+{% endblock %}
