@@ -1,0 +1,21 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Confirm email notifications - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <h1 class="page-title">Confirm new email template</h1>
+  <p>This email will be sent to users when they successfully complete a payment within your service.</p>
+
+  <h2 class="heading-medium">New email template</h2>
+  {% include "./email_body.njk" %}
+
+  <form method="post" action="{{routes.emailNotifications.update}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    <input type="hidden" value="{{customEmailText}}" name="custom-email-text" class="qa-custom-p" />
+    <input name="email-confirm" type="submit" class="button push-top qa-confirm-submit" value="Confirm">
+    <a class="push-top-sml" href="{{routes.emailNotifications.index}}">cancel</a>
+  </form>
+{% endblock %}

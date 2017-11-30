@@ -1,0 +1,80 @@
+{{< layout}}
+
+{{$pageTitle}}
+Edit team member permissions - GOV.UK Pay
+{{/pageTitle}}
+
+{{$mainClasses}}full-width{{/mainClasses}}
+{{$full_width_content}}
+<a href="{{teamMemberProfileLink}}" class="link-back">Back to team member profile</a>
+<div>
+    <h1 class="heading-large underline">
+        <span class="heading-secondary">Team members</span>
+        Edit permissions</h1>
+</div>
+
+<div class="column-full remove-left-margin">
+
+    <dl class="read-only-fields">
+        <dt class="heading-small">Email address</dt>
+        <dd id="email">{{email}}</dd>
+    </dl>
+
+    <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
+        <div class="form-group">
+            <fieldset>
+                <legend class="heading-small">Permission level</legend>
+                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                <div class="multiple-choice">
+                    <input id="role-admin-input" type="radio" name="role-input" value="{{admin.id}}" {{admin.checked}}>
+                    <label for="role-admin-input">
+                        <span class="heading-small">Administrator</span>
+                        <ul class="question-advice form-hint">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Manage settings</li>
+                        </ul>
+                    </label>
+                </div>
+                <div class="multiple-choice">
+                    <input id="role-view-and-refund-input" type="radio" name="role-input" value="{{viewAndRefund.id}}" {{viewAndRefund.checked}}>
+                    <label for="role-view-and-refund-input">
+                        <span class="heading-small">View and refund</span>
+                        <ul class="question-advice form-hint">
+                          <li>View transactions</li>
+                          <li>Refund payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>
+                    </label>
+                </div>
+                <div class="multiple-choice">
+                    <input id="role-view-input" type="radio" name="role-input" value="{{view.id}}" {{view.checked}}>
+                    <label for="role-view-input"><span class="heading-small">View only</span>
+                        <ul class="question-advice form-hint">
+                          <li>View transactions</li>
+                          <li>Cannot refund payments</li>
+                          <li>Cannot manage settings</li>
+                        </ul>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="notice">
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <strong class="bold-small">
+                    This change affects both live and test environments
+                </strong>
+            </div>
+        </div>
+        <div class="form-group call-to-action-group">
+            <input type="submit" class="button" value="Save changes">
+            <a id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{{/full_width_content}}
+
+{{/layout}}

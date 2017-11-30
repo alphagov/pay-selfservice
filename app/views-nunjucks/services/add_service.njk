@@ -1,0 +1,57 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+GOV.UK Pay - My services
+{% endblock %}
+
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
+  <div class="grid-row grid-row-align-to-edges">
+    <div class="column-two-thirds">
+      {% if errors %}
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+            There was a problem with the details you gave for:
+        </h1>
+        <ul class="error-summary-list">
+          {% if errors.service_name %}
+          <li><a href="#service-name">Service name</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <h1 class="heading-large">What service will you be taking payments for?</h1>
+      <p>
+        This is what your users will see when making a payment. You can change this later.
+      </p>
+
+      <form id="add-service-form" method="post" action="{{submit_link}}">
+        <div class="form-group {% if errors.service_name %}error{% endif %}">
+          <label class="form-label" for="service-name">
+            Service name
+          </label>
+          {% if errors.service_name %}
+          <span class="error-message">
+            Please enter a valid service name
+          </span>
+          {% endif %}
+          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+          <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{current_name}}">
+        </div>
+
+        <div class="form-group call-to-action-group">
+            <input class="button" type="submit" value="Add Service">
+            <a id="service-name-cancel-link" href="{{my_services}}">
+                Cancel
+            </a>
+            <a id="service-nam-guidance" href="https://www.gov.uk/service-manual/design/naming-your-service">
+                Get guidance on choosing a name for your service
+            </a>
+        </div>
+      </form>
+    </div>
+    <div class="column-one-third"></div>
+  </div>
+{% endblock %}

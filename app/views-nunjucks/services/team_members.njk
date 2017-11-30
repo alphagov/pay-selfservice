@@ -1,0 +1,79 @@
+{{< layout}}
+
+{{$pageTitle}}
+Team members - GOV.UK Pay
+{{/pageTitle}}
+
+{{$pageSpecificJS}}
+<script src="/public/js/components/link-follower.js"></script>
+{{/pageSpecificJS}}
+
+{{$mainClasses}}full-width{{/mainClasses}}
+{{$full_width_content}}
+<a href="/my-services" class="link-back">My services</a>
+<h1 class="heading-large">Team members</h1>
+{{#permissions.users_service_create}}
+<p class="admin-lede">Team member changes affect both live and test environments.</p>
+{{/permissions.users_service_create}}
+{{^permissions.users_service_create}}
+<p class="admin-lede">Contact an administrator to invite team members and change permissions.</p>
+{{/permissions.users_service_create}}
+<div class="grid-row">
+    <div class="column-two-thirds admin-list-group">
+        <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
+
+        <div class="admin-list" id="team-members-admin-list">
+            <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{number_admin_members}})</h3>
+            <ul>
+                {{#team_members.admin}}
+                <li>
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
+                    {{^permissions.users_service_read}}<span>{{/permissions.users_service_read}}
+                    {{username}} {{#is_current}}(you){{/is_current}}
+                    {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
+                    {{^permissions.users_service_read}}</span>{{/permissions.users_service_read}}
+                </li>
+                {{/team_members.admin}}
+            </ul>
+        </div>
+
+        <div class="admin-list" id="team-members-view-and-refund-list">
+            <h3 id="view-and-refund-role-header" class="admin-list-heading">View and refund ({{number_view-and-refund_members}})</h3>
+            <ul>
+                {{#team_members.view-and-refund}}
+                <li>
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
+                    {{^permissions.users_service_read}}<span>{{/permissions.users_service_read}}
+                    {{username}} {{#is_current}}(you){{/is_current}}
+                    {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
+                    {{^permissions.users_service_read}}</span>{{/permissions.users_service_read}}
+                </li>
+                {{/team_members.view-and-refund}}
+            </ul>
+        </div>
+
+        <div class="admin-list" id="team-members-view-only-list">
+            <h3 id="view-only-role-header" class="admin-list-heading">View only ({{number_view-only_members}})</h3>
+            <ul>
+                {{#team_members.view-only}}
+                <li>
+                    {{#permissions.users_service_read}}<a href="{{link}}">{{/permissions.users_service_read}}
+                    {{^permissions.users_service_read}}<span>{{/permissions.users_service_read}}
+                    {{username}} {{#is_current}}(you){{/is_current}}
+                    {{#permissions.users_service_read}}</a>{{/permissions.users_service_read}}
+                    {{^permissions.users_service_read}}</span>{{/permissions.users_service_read}}
+                </li>
+                {{/team_members.view-only}}
+            </ul>
+        </div>
+    </div>
+        {{#permissions.users_service_create}}
+            <a id="invite-team-member-link" class="button" href="{{inviteTeamMemberLink}}">
+                Invite a team member
+            </a>
+        {{/permissions.users_service_create}}
+</div>
+
+{{/full_width_content}}
+
+{{/layout}}

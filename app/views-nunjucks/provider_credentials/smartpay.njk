@@ -51,7 +51,7 @@
     {% endif %}
   {% endif %}
 
-  <h4 class="heading-small" id="view-notification-title">Your {{currentGatewayAccount.payment_provider}} Notification Credentials</h4>
+  <h4 class="heading-small pad-top" id="view-notification-title">Your {{currentGatewayAccount.payment_provider}} Notification Credentials</h4>
   {% if permissions.gateway_credentials_read %}
     {% if not editNotificationCredentialsMode %}
       {% if not currentGatewayAccount.notificationCredentials.userName %}

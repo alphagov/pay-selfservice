@@ -1,0 +1,26 @@
+{% extends "layout.njk" %}
+
+{% block page_title %}
+Payment types - GOV.UK Pay
+{% endblock %}
+
+{% block pageSpecificJS %}
+  <script src="/public/js/components/checkbox-row-selection.js"></script>
+{% endblock %}
+
+{% block mainContent %}
+  {% if not permissions.payment_types_update %}
+    {% include "includes/settings_read_only.njk" %}
+  {% endif %}
+
+  <h1 class="page-title">Payment types</h1>
+
+  {% if permissions.payment_types_update %}
+  <h2 class="heading-medium remove-top-margin">Manage accepted payment types</h2>
+  {% endif %}
+
+  <div id="payment-types">
+    {% block page_content %}
+    {% endblock %}
+  </div>
+{% endblock %}

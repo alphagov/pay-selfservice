@@ -1,0 +1,60 @@
+{% extends "payment_types.njk" %}
+
+{% block page_title %}
+Payment types - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block page_content %}
+  {% if permissions.payment_types_read %}
+    <div id="payment-types-card-summary" class="form-group">
+      <div class="panel panel-border-wide">
+        {% if isAcceptedTypeAll %}
+        <p id="payment-types-accept-all-types-message">Debit and credit cards are currently accepted</p>
+        {% endif %}
+        {% if isAcceptedTypeDebit %}
+        <p id="payment-types-accept-debit-types-message">Debit cards only accepted</p>
+        {% endif %}
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Card brand</th>
+            <th class="table-header-accept">Accepted</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for brand in brands %}
+          {% if available %}
+            <tr id="{{ brand.id }}">
+          {% else %}
+            <tr id="{{ brand.id }}" class="payment-types-not-available">
+          {% endif %}
+              <td class="table-data-label">
+                {% if brand.available %}
+                  <img src="/public/images/{{ brand.value }}-color.png" alt="" height="34" width="50" />
+                {% else %}
+                  <img src="/public/images/{{ brand.value }}-bw.png" alt="" height="34" width="50" />
+                {% endif %}
+                <span class="payment-types-label {{ brand.value }}">{{ brand.label }}</span>
+              </td>
+              <td class="table-data-accept">
+                {% if brand.available %}
+                  {% if brand.selected %}
+                    <span class="payment-types-selected">Yes</span>
+                  {% else %}
+                    <span class="payment-types-not-selected">No</span>
+                  {% endif %}
+                {% else %}
+                    <span>{{ brand.unavailabilityReason }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if permissions.payment_types_update %}
+      <a id="payment-types-manage-button" href="{{routes.paymentTypes.selectType}}" class="button">Manage</a>
+    {% endif %}
+  {% endif %}
+{% endblock %}

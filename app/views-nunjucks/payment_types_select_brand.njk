@@ -1,0 +1,66 @@
+{% extends "payment_types.njk" %}
+
+{% block page_content %}
+  {% if permissions.payment_types_update %}
+  <form id="payment-types-card-brand-selection-form" method="post" action="{{routes.paymentTypes.selectBrand}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="accepted-card-type" name="acceptedType" type="hidden" value="{{acceptedType}}"/>
+
+    <div class="panel panel-border-wide">
+      {% if isAcceptedTypeAll %}
+      <p id="payment-types-accept-all-types-message">You have chosen to accept debit and credit cards</p>
+      {% else %}
+      <p id="payment-types-accept-debit-types-message">You have chosen to only accept debit cards</p>
+      {% endif %}
+    </div>
+    <h2 class="heading-small">Now choose the card brands you want to accept?</h2>
+    <div class="form-group">
+      <fieldset>
+        <legend class="visuallyhidden">Now choose the card brands you want to accept?</legend>
+        <table class="checkbox-row-selection">
+          <thead>
+          <tr>
+            <th>Card brand</th>
+            <th class="table-header-accept">Accept</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for brand in brands %}
+          {% if available %}
+            <tr id="{{ brand.id }}">
+          {% else %}
+            <tr id="{{ brand.id }}" class="payment-types-not-available">
+          {% endif %}
+              <td class="table-data-label">
+                {% if brand.available %}
+                  <img src="/public/images/{{ brand.value }}-color.png" alt="" height="34" width="50" />
+                {% else %}
+                  <img src="/public/images/{{ brand.value }}-bw.png" alt="" height="34" width="50" />
+                {% endif %}
+                <span class="payment-types-label {{ brand.value }}">{{ brand.label }}</span>
+              </td>
+              <td class="table-data-accept">
+                {% if brand.available %}
+                  <input class="payment-types-checkbox" type="checkbox" name="acceptedBrands" value="{{ brand.value }}" {{ brand.selected }}>
+                {% else %}
+                  <span>{{ brand.unavailabilityReason }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </fieldset>
+      {% if error %}
+      <div class="form-group error">
+          <span class="error-message" id="payment-types-error-message">{{error}}</span>
+      </div>
+      {% endif %}
+    </div>
+    <input id="payment-types-save-button" type="submit" class="button" value="Save changes">
+    <a id="payment-types-cancel-link" href="{{routes.paymentTypes.summary}}">
+        Cancel
+    </a>
+  </form>
+  {% endif %}
+{% endblock %}

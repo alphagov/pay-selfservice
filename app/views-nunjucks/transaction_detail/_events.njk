@@ -1,0 +1,16 @@
+<table class="transaction-events">
+  <tbody>
+  {% for event in events %}
+  <tr {% if refund_reference %} data-gateway-refund-id="{{ event.refund_reference }}" {% endif %}>
+  <td>
+    <span class="state">{{ event.state_friendly }}</span>
+    {% if state.message %}<br>{{ event.state .code}} - {{ event.state .message}}{% endif %}
+    {% if submitted_by_friendly %}by <br>{% endif %}
+    <span class="submitted-by">{% if submitted_by_friendly %}{{ event.submitted_by_friendly }}{% endif %}</span>
+  </td>
+  <td class="amount" align="right">{{ event.amount_friendly }}</td>
+  <td class="date" align="right">{{ event.updated_friendly }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
