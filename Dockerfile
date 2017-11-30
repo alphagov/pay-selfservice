@@ -2,7 +2,7 @@ FROM node:6.12.0-alpine
 
 RUN apk update &&\
     apk upgrade &&\
-    apk add --update bash python make g++ libc6-compat
+    apk add --update bash libc6-compat
 
 ENV PORT 9000
 EXPOSE 9000
