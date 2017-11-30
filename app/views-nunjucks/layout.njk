@@ -7,11 +7,11 @@
     {% endblock %}
   {% endblock %}
 
-  {% block propositionHeader %}
+  {% block proposition_header %}
     {% include "includes/propositional_navigation.njk" %}
   {% endblock %}
 
-  {% block headerClass %}with-proposition{% endblock %}
+  {% block header_class %}with-proposition{% endblock %}
   {% block body_classes %}
     {% block classesOnBodyTag %}{% endblock %}
     {% if currentGatewayAccount %}env-{{currentGatewayAccount.type}}{% endif %}
