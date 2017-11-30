@@ -1,0 +1,22 @@
+<div id="{{id}}" class="multi-select">
+  <button type="button"
+    class="form-control large multi-select-title"
+    aria-describedby="state-select-box"
+    id="option-select-title-state">
+    <div><span class="visually-hidden">Currently selected: </span><span class="multi-select-current-selections"></span></div>
+  </button>
+  <div role="group" aria-labelledby="option-select-title-state"
+     class="multi-select-dropdown"
+     id="list_of_sectors"
+     style="visibility:hidden;">
+    <div class="multi-select-dropdown-inner-container">
+      {% for item in items %}
+      <div class="multiple-choice">
+        <input class="multi-select-item" name="state" value="{{ item.value }}" id="{{ item.id }}" type="checkbox" {% if checked %}checked{% endif %}>
+        <label for="{{ item.id }}">{{ item.text }}</label>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="multi-select-dropdown-close-area"></div>
+  </div>
+</div>

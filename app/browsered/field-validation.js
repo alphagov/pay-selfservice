@@ -95,7 +95,7 @@ function applyErrorMessaging (form, field, result) {
 function populateErrorSummary (form) {
   let erroringFields = Array.prototype.slice.call(form.querySelectorAll('.form-group.error label'))
   let configuration = {
-    field: erroringFields.map(field => {
+    fields: erroringFields.map(field => {
       let label = field.innerHTML.split('<')[0].trim()
       let id = field.getAttribute('for')
       return {label, id}
