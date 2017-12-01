@@ -17,8 +17,8 @@
     {% if currentGatewayAccount %}env-{{currentGatewayAccount.type}}{% endif %}
   {% endblock %}
 
-  {% block homepage_url %}/{% endblock %}
-  {% block global_header_text %}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{% endblock %}
+{% set homepage_url = '/' %}
+{% set global_header_text = 'GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>' | safe %}
 
   {% block cookie_message %}
     {% include "includes/cookie-message.njk" %}
