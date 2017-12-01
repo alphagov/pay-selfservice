@@ -61,7 +61,6 @@
     "http-proxy": "1.16.x",
     "json2csv": "3.7.x",
     "lodash": "4.17.x",
-    "luhn": "2.1.x",
     "minimist": "1.2.x",
     "moment-timezone": "^0.5.14",
     "morgan": "1.8.x",
