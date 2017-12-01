@@ -77,7 +77,7 @@
     "tunnel": "0.0.5",
     "uk-postcode": "0.1.x",
     "url-join": "^2.0.2",
-    "winston": "2.3.x"
+    "winston": "2.4.x"
   },
   "devDependencies": {
     "@pact-foundation/pact-node": "4.6.0",
