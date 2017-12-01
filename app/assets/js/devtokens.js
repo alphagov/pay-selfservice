@@ -44,7 +44,7 @@ $(document).ready(function(){
 
     $.ajax({
         type: 'PUT',
-        url: '/tokens',
+        url: '/api-keys',
         data: {
             'token_link': tokenLink,
             'description': newDescription,
@@ -65,7 +65,7 @@ $(document).ready(function(){
         accountId   = $('#accountId').text(),
         tokenLink   = $container.attr('id'),
         csrf        = $container.attr('data-csrf'),
-        deleteUrl   = '/tokens/?token_link=' + tokenLink;
+        deleteUrl   = '/api-keys/?token_link=' + tokenLink;
 
     evt.preventDefault();
     $container.find('.error').removeClass('error');

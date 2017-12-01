@@ -41,7 +41,7 @@ Sign in to GOV.UK Pay
         Email address
         {% if flash.error.messages.username %}
         <span class="error-message">
-          {{username}}
+          {{flash.error.messages.username}}
         </span>
         {% endif %}
       </label>
@@ -52,7 +52,7 @@ Sign in to GOV.UK Pay
         Password
         {% if flash.error.messages.password %}
         <span class="error-message">
-          {{password}}
+          {{flash.error.messages.password}}
         </span>
         {% endif %}
       </label>

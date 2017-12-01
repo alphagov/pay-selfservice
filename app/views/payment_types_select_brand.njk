@@ -26,12 +26,12 @@
           </thead>
           <tbody>
           {% for brand in brands %}
-          {% if available %}
+          {% if brand.available %}
             <tr id="{{ brand.id }}">
           {% else %}
             <tr id="{{ brand.id }}" class="payment-types-not-available">
           {% endif %}
-              <td class="table-data-label">
+            <td class="table-data-label">
                 {% if brand.available %}
                   <img src="/public/images/{{ brand.value }}-color.png" alt="" height="34" width="50" />
                 {% else %}

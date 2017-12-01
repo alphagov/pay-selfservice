@@ -22,7 +22,7 @@ Team members - GOV.UK Pay
     <div class="column-two-thirds admin-list-group">
       <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
       <div class="admin-list" id="team-members-admin-list">
-        <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{number_admin_members}})</h3>
+        <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{team_members["admin"].length}})</h3>
         <ul>
           {% for admin in team_members["admin"] %}
             <li>
@@ -42,7 +42,7 @@ Team members - GOV.UK Pay
         </ul>
       </div>
       <div class="admin-list" id="team-members-view-and-refund-list">
-        <h3 id="view-and-refund-role-header" class="admin-list-heading">View and refund ({% if number_view-and-refund_members %}{{number_view-and-refund_members}}{% else %}0{% endif %})</h3>
+        <h3 id="view-and-refund-role-header" class="admin-list-heading">View and refund ({{team_members["view-and-refund"].length}})</h3>
         <ul>
           {% for team_member in team_members["view-and-refund"] %}
             <li>
@@ -62,7 +62,7 @@ Team members - GOV.UK Pay
         </ul>
       </div>
       <div class="admin-list" id="team-members-view-only-list">
-        <h3 id="view-only-role-header" class="admin-list-heading">View only ({% if number_view-only_members %}{{number_view-only_members}}{% else %}0{% endif %})</h3>
+        <h3 id="view-only-role-header" class="admin-list-heading">View only ({{team_members["view-only"].length}})</h3>
         <ul>
           {% for team_member in team_members["view-only"] %}
             <li>

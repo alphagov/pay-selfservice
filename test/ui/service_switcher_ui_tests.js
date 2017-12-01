@@ -35,7 +35,7 @@ const serviceTwo = {
 }
 
 describe('The account switcher link', () => {
-  it('should display My Services link', () => {
+  it('should display My services link', () => {
     body = render('layout', {})
 
     body.should.containSelector('#my-services').withExactText('My services')

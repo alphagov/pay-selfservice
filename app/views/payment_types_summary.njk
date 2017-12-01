@@ -24,7 +24,7 @@ Payment types - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV
         </thead>
         <tbody>
           {% for brand in brands %}
-          {% if available %}
+          {% if brand.available %}
             <tr id="{{ brand.id }}">
           {% else %}
             <tr id="{{ brand.id }}" class="payment-types-not-available">

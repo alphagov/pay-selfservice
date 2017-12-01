@@ -6,7 +6,7 @@
 
 {% block mainContent %}
   {% if not permissions.email_notification_toggle_update %}
-    {% include "includes/settings_read_only.njk" %}
+    {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
   <h1 class="page-title">

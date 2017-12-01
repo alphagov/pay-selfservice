@@ -14,7 +14,7 @@ describe('The token view', function () {
         tokens_create: true
       }
     }
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('h1').withText('API Keys')
     body.should.containSelector('#available-tokens').withText('There are no active API keys')
@@ -31,7 +31,7 @@ describe('The token view', function () {
       'tokens_singular': false
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('h1').withText('API Keys')
     body.should.containSelector('#revoked-tokens').withText('There are no revoked API keys')
@@ -53,7 +53,7 @@ describe('The token view', function () {
       ],
       'tokens_singular': true
     }
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('#available-tokens').withText('There is 1 active API key')
 
@@ -85,7 +85,7 @@ describe('The token view', function () {
       }
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('#available-tokens').withText('There is 1 active API key')
 
@@ -114,7 +114,7 @@ describe('The token view', function () {
         'last_used': '05 Sep 2016 - 14:35'}
       ]
     }
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('#revoked-tokens').withText('There is 1 revoked API key')
 
@@ -146,7 +146,7 @@ describe('The token view', function () {
         }
       ]
     }
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('#available-tokens').withText('There are 2 active API keys')
 
@@ -192,7 +192,7 @@ describe('The token view', function () {
         }
       ]
     }
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('#revoked-tokens').withText('There are 2 revoked API keys')
 
@@ -217,7 +217,7 @@ describe('The generate token view', function () {
   describe('After a GET request', function () {
     it('should render a form to request a new token via a post request', function () {
       let templateData = {}
-      let body = renderTemplate('token_generate', templateData)
+      let body = renderTemplate('api-keys/generate', templateData)
 
       body.should.containSelector('.page-title').withText('API keys')
 
@@ -249,7 +249,7 @@ describe('The generate token view', function () {
         'description': 'Test token'
       }
 
-      let body = renderTemplate('token_generate', templateData)
+      let body = renderTemplate('api-keys/generate', templateData)
       body.should.containSelector('.page-title').withText('API keys')
       body.should.containSelector('.heading-medium').withText('New key generated')
       body.should.containSelector('p').withText('Please copy this key now as it won’t be shown again')
@@ -261,7 +261,7 @@ describe('The generate token view', function () {
         'description': 'Test token'
       }
 
-      let body = renderTemplate('token_generate', templateData)
+      let body = renderTemplate('api-keys/generate', templateData)
       body.should.containTextarea('token')
         .withText('550e8400-e29b-41d4-a716-446655440000')
         .withLabel('Test token')
@@ -273,7 +273,7 @@ describe('The generate token view', function () {
         'description': 'Test token'
       }
 
-      let body = renderTemplate('token_generate', templateData)
+      let body = renderTemplate('api-keys/generate', templateData)
       body.should.containSelector('.button')
         .withAttribute('href', paths.apiKeys.index)
         .withText('Finish')

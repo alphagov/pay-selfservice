@@ -16,19 +16,19 @@
       There was a problem with the details you gave for:
     </h2>
     <ul class="error-summary-list">
-      {% if errors.merchant-name %}
+      {% if errors["merchant-name"] %}
       <li><a href="#merchant-name">Name</a></li>
       {% endif %}
-      {% if errors.address-line1 %}
+      {% if errors["address-line1"] %}
       <li><a href="#address-line1">Address</a></li>
       {% endif %}
-      {% if errors.address-city %}
+      {% if errors["address-city"] %}
       <li><a href="#address-city">City</a></li>
       {% endif %}
-      {% if errors.address-postcode %}
+      {% if errors["address-postcode"] %}
       <li><a href="#address-postcode">Postcode</a></li>
       {% endif %}
-      {% if errors.address-country %}
+      {% if errors["address-country"] %}
       <li><a href="#address-country">Country</a></li>
       {% endif %}
     </ul>
@@ -47,7 +47,7 @@
           Organisation or department that holds the bank account with payment service provider
         </span>
       </label>
-      {% if errors.merchant-name %}
+      {% if errors["merchant-name"] %}
         <span class="error-message">
           Please enter a valid name
         </span>
@@ -63,7 +63,7 @@
             <label class="form-label" for="address-line1">
               Building name/number and street
             </label>
-            {% if errors.address-line1 %}
+            {% if errors["address-line1"] %}
             <span class="error-message">
               Please enter a valid address
             </span>
@@ -75,7 +75,7 @@
           <label class="form-label" for="address-city">
             Town or city
           </label>
-          {% if errors.address-city %}
+          {% if errors["address-city"] %}
           <span class="error-message">
             Please enter a valid town or city
           </span>
@@ -86,7 +86,7 @@
           <label class="form-label" for="address-postcode">
             Postcode
           </label>
-          {% if errors.address-postcode %}
+          {% if errors["address-postcode"] %}
           <span class="error-message">
             Please enter a valid postcode
           </span>
@@ -97,7 +97,7 @@
           <label class="form-label" for="address-country">
               Country
           </label>
-          {% if errors.address-country %}
+          {% if errors["address-country"] %}
           <span class="error-message">
             Please enter a valid country
           </span>

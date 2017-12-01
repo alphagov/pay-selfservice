@@ -10,7 +10,7 @@ Payment types - GOV.UK Pay
 
 {% block mainContent %}
   {% if not permissions.payment_types_update %}
-    {% include "includes/settings_read_only.njk" %}
+    {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
   <h1 class="page-title">Payment types</h1>

@@ -24,7 +24,7 @@
   </div>
   <div id="team-members" class="flex-grid--column-half marked">
     <p>
-      {% if service.permissions.users_service_create %}
+      {% if permissions.users_service_create %}
       <a href="/service/{{ service.external_id }}" class="manage-team-members">Manage team members</a>
       {% else %}
       <a href="/service/{{ service.external_id }}" class="view-team-members">View team members</a>
