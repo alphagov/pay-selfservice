@@ -30,7 +30,7 @@ const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler
 // Global constants
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
-const nodeEnv = process.env.NODE_ENV
+const {NODE_ENV} = process.env
 const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.css')
 const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.js')
 
@@ -77,38 +77,28 @@ function initialiseProxy (app) {
 }
 
 function initialiseTemplateEngine (app) {
-  // Define app views
-  const appViews = [
-    path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
-    path.join(__dirname, '/app/views')
-  ]
-
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
-  const nunjucksConfiguration = {
+  const nunjucksEnvironment = nunjucks.configure([
+    path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
+    path.join(__dirname, '/app/views')
+  ], {
     express: app, // the express app that nunjucks should install to
     autoescape: true, // controls if output with dangerous characters are escaped automatically
     throwOnUndefined: false, // throw errors when outputting a null/undefined value
     trimBlocks: true, // automatically remove trailing newlines from a block/tag
     lstripBlocks: true, // automatically remove leading whitespace from a block/tag
-    watch: false, // reload templates when they are changed (server-side). To use watch, make sure optional dependency chokidar is installed
-    noCache: false // never use a cache and recompile templates each time (server-side)
-  }
-  if ((!nodeEnv) || (nodeEnv !== 'production')) {
-    nunjucksConfiguration.watch = true
-    nunjucksConfiguration.noCache = true
-  }
-
-  // Initialise nunjucks environment
-  const nunjucksEnvironment = nunjucks.configure(appViews, nunjucksConfiguration)
+    watch: NODE_ENV !== 'production', // reload templates when they are changed (server-side). To use watch, make sure optional dependency chokidar is installed
+    noCache: NODE_ENV !== 'production' // never use a cache and recompile templates each time (server-side)
+  })
 
   // Set view engine
   app.set('view engine', 'njk')
 
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
-  nunjucksEnvironment.addGlobal('css_path', nodeEnv === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
-  nunjucksEnvironment.addGlobal('js_path', nodeEnv === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
+  nunjucksEnvironment.addGlobal('css_path', NODE_ENV === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
+  nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 }
 
 function initialisePublic (app) {
