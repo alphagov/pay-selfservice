@@ -43,7 +43,6 @@
     "appmetrics-statsd": "1.0.1",
     "array.prototype.find": "2.0.x",
     "body-parser": "1.18.2",
-    "chalk": "1.1.x",
     "change-case": "3.0.1",
     "check-types": "^7.1.x",
     "client-sessions": "^0.8.0",
