@@ -122,7 +122,7 @@
     "proxyquire": "~1.8.0",
     "sass-lint": "^1.10.2",
     "should": "^11.2.1",
-    "sinon": "^2.3.5",
+    "sinon": "^4.1.2",
     "snyk": "^1.36.1",
     "standard": "^10.0.3",
     "superagent": "^3.5.2",
