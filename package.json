@@ -120,7 +120,7 @@
     "jsonwebtoken": "7.4.1",
     "mocha": "^4.0.1",
     "nock": "^9.0.13",
-    "node-sass": "4.5.x",
+    "node-sass": "^4.7.2",
     "pact": "1.0.0",
     "portfinder": "^1.0.13",
     "proxyquire": "~1.8.0",
