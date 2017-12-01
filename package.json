@@ -54,7 +54,6 @@
     "express": "4.15.x",
     "forever": "0.15.x",
     "hogan.js": "3.0.x",
-    "html5shiv": "3.7.x",
     "http-proxy": "1.16.x",
     "json2csv": "3.7.x",
     "lodash": "4.17.x",
@@ -74,17 +73,16 @@
     "rfc822-validate": "^1.0.0",
     "serve-favicon": "2.4.5",
     "staticify": "0.0.9",
-    "thirty-two": "^1.0.2",
     "throng": "4.0.x",
     "tunnel": "0.0.5",
     "uk-postcode": "0.1.x",
     "url-join": "^2.0.2",
-    "winston": "2.3.x",
-    "yargs": "8.0.x"
+    "winston": "2.3.x"
   },
   "devDependencies": {
     "@pact-foundation/pact-node": "4.6.0",
     "govuk-elements-sass": "3.1.0",
+    "html5shiv": "3.7.x",
     "govuk_frontend_toolkit": "6.0.4",
     "govuk_template_mustache": "0.22.2",
     "babel-polyfill": "^6.26.0",
