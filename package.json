@@ -55,7 +55,7 @@
     "forever": "0.15.x",
     "hogan.js": "3.0.x",
     "http-proxy": "1.16.x",
-    "json2csv": "3.7.x",
+    "json2csv": "3.11.x",
     "lodash": "4.17.x",
     "minimist": "1.2.x",
     "moment-timezone": "^0.5.14",
