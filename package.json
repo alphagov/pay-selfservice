@@ -51,7 +51,7 @@
     "correlation-id": "^2.0.0",
     "csrf": "3.0.x",
     "currency-formatter": "^1.2.1",
-    "express": "4.15.x",
+    "express": "4.16.x",
     "forever": "0.15.x",
     "hogan.js": "3.0.x",
     "http-proxy": "1.16.x",
