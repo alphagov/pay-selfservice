@@ -59,7 +59,7 @@
     "lodash": "4.17.x",
     "minimist": "1.2.x",
     "moment-timezone": "^0.5.14",
-    "morgan": "1.8.x",
+    "morgan": "1.9.x",
     "notp": "^2.0.3",
     "nunjucks": "^3.0.1",
     "nunjucksify": "^2.2.0",
