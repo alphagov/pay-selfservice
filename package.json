@@ -63,7 +63,7 @@
     "lodash": "4.17.x",
     "luhn": "2.1.x",
     "minimist": "1.2.x",
-    "moment": "2.18.1",
+    "moment": "2.19.3",
     "moment-timezone": "0.5.x",
     "morgan": "1.8.x",
     "notp": "^2.0.3",
