@@ -1,13 +1,12 @@
-let path = require('path')
-let TemplateEngine = require(path.join(__dirname, '/../../lib/template-engine.js'))
 let cheerio = require('cheerio')
 let chai = require('chai')
-let router = require('../../app/routes.js')
+const nunjucks = require('nunjucks')
+const views = ['./app/views', './govuk_modules/govuk_template/views/layouts']
+const environment = nunjucks.configure(views)
 
 function render (templateName, templateData) {
-  let templates = TemplateEngine._getTemplates([path.join(__dirname, '/../../app/views'), path.join(__dirname, '/../../govuk_modules/govuk_template/views/layouts')])
-  templateData.routes = router.paths
-  return templates[templateName].render(templateData, templates)
+  const pathToTemplate = templateName + '.njk'
+  return environment.render(pathToTemplate, templateData)
 }
 
 module.exports = {
