@@ -28,7 +28,7 @@ Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.
   <div>
   <h3 class="heading-small" id="total-results">
     {{total}} transactions
-    {{filtersDescription}}
+    {{ filtersDescription | safe }}
   </h3>
 
   {% include "transactions/display_size.njk" %}
