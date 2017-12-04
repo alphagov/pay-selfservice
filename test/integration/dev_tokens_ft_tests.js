@@ -261,11 +261,11 @@ describe('Dev Tokens Endpoints', function () {
 
       buildPutRequest()
         .expect(function (res) {
-          if (!res.body.csrfToken) throw new Error('no token')
-          delete res.body.csrfToken
+          if (!res.body.token.csrfToken) throw new Error('no token')
+          delete res.body.token.csrfToken
         })
         .expect(result => {
-          expect(result.body.description).to.equal('token description')
+          expect(result.body.token.description).to.equal('token description')
         })
         .end(done)
     })

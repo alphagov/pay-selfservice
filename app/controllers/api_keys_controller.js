@@ -7,8 +7,8 @@ var auth = require('../services/auth_service.js')
 const publicAuthClient = require('../services/clients/public_auth_client')
 
 // TODO remove these and make them proper i.e. show update destroy etc
-const API_KEYS_INDEX = 'api-keys/index'
-const API_KEY_GENERATE = 'api-keys/generate'
+const API_KEYS_INDEX = 'tokens'
+const API_KEY_GENERATE = 'token_generate'
 
 module.exports.index = function (req, res) {
   var accountId = auth.getCurrentGatewayAccountId(req)
@@ -110,12 +110,14 @@ module.exports.update = function (req, res) {
   })
     .then(publicAuthData => {
       response(req, res, 'includes/_token', {
-        'token_link': publicAuthData.token_link,
-        'created_by': publicAuthData.created_by,
-        'issued_date': publicAuthData.issued_date,
-        'last_used': publicAuthData.last_used,
-        'description': publicAuthData.description,
-        'csrfToken': csrf().create(req.session.csrfSecret)
+        token: {
+          'token_link': publicAuthData.token_link,
+          'created_by': publicAuthData.created_by,
+          'issued_date': publicAuthData.issued_date,
+          'last_used': publicAuthData.last_used,
+          'description': publicAuthData.description,
+          'csrfToken': csrf().create(req.session.csrfSecret)
+        }
       })
     })
     .catch((rejection) => {

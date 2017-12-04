@@ -34,14 +34,14 @@ module.exports = {
     forgottenPasswordReset: '/reset-password/:id'
   },
   apiKeys: {
-    index: '/api-keys',
-    revoked: '/api-keys/revoked',
+    index: '/tokens',
+    revoked: '/tokens/revoked',
     // we only show the token once, hence strange url
-    show: '/api-keys/generate',
-    create: '/api-keys/generate',
+    show: '/tokens/generate',
+    create: '/tokens/generate',
     // should these two not rely take an id in the url?
-    update: '/api-keys',
-    delete: '/api-keys'
+    update: '/tokens',
+    delete: '/tokens'
   },
   paymentTypes: {
     selectType: '/payment-types/select-type',

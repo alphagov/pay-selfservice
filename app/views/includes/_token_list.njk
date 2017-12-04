@@ -12,14 +12,14 @@
     </h2>
     {% if permissions.tokens_create %}
     {% if active %}
-        <a class="button generate-key" href="/api-keys/generate">Generate a new key</a>
+        <a class="button generate-key" href="/tokens/generate">Generate a new key</a>
     {% endif %}
     {% endif %}
 
     {% if tokens.length %}
     <div class="key-list">
         {% for token in tokens %}
-            {% include "api-keys/_api-key.njk" %}
+            {% include "./_token.njk" %}
         {% endfor %}
     </div>
     {% endif %}
