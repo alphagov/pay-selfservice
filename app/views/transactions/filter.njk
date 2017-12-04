@@ -24,7 +24,7 @@
           <select class="form-control large" id="card-brand" name="brand">
             <option value="">All brands</option>
             {% for cardBrand in cardBrands %}
-              <option value="{{cardBrand.key}}" {% if value.selected %} selected {% endif %}>{{cardBrand.value.text}}</option>
+              <option value="{{cardBrand.key}}" {% if cardBrand.value.selected %} selected {% endif %}>{{cardBrand.value.text}}</option>
             {% endfor %}
           </select>
         </div>
@@ -36,7 +36,7 @@
           <select class="form-control large" id="state" name="state">
             <option value="">Any</option>
             {% for eventState in eventStates %}
-            <option value="{{eventState.key}}" {% if value.selected %} selected {% endif %}>{{eventState.value.text}}</option>
+            <option value="{{eventState.key}}" {% if eventState.value.selected %} selected {% endif %}>{{eventState.value.text}}</option>
             {% endfor %}
           </select>
         </div>

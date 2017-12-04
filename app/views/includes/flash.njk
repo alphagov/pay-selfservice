@@ -1,16 +1,16 @@
 {% block flash %}
 <div class="grid-row">
-  {% if genericError %}
+  {% if flash.genericError %}
   <div class="column-two-thirds flash-container">
     <div class="notification generic-error">
-      {{genericError}}
+      {{flash.genericError}}
     </div>
   </div>
   {% endif %}
-  {% if generic %}
+  {% if flash.generic %}
   <div class="column-two-thirds flash-container">
     <div class="notification generic-flash">
-      {{generic}}
+      {{flash.generic}}
     </div>
   </div>
   {% endif %}

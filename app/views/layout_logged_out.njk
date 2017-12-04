@@ -21,9 +21,9 @@
   {% endblock %}
 
   {% block content %}
-    {% include "includes/flash.njk" %}
     <main id="content" role="main" class="{% block mainClasses %}{% endblock %}">
       <div class="main-content">
+        {% include "includes/flash.njk" %}
         <div class="grid-row">
           {% block mainContent %}{% endblock %}
         </div>

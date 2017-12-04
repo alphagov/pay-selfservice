@@ -12,7 +12,7 @@
     <div class="multi-select-dropdown-inner-container">
       {% for item in items %}
       <div class="multiple-choice">
-        <input class="multi-select-item" name="state" value="{{ item.value }}" id="{{ item.id }}" type="checkbox" {% if checked %}checked{% endif %}>
+        <input class="multi-select-item" name="state" value="{{ item.value }}" id="{{ item.id }}" type="checkbox" {% if item.checked %}checked{% endif %}>
         <label for="{{ item.id }}">{{ item.text }}</label>
       </div>
       {% endfor %}
