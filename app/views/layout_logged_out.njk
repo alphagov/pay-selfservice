@@ -1,20 +1,20 @@
 {% extends "../../govuk_modules/govuk_template/views/layouts/govuk_template.njk" %}
-
   {% block page_title %}GOV.UK Pay Self Service{% endblock %}
-
-  {% block homepage_url %}https://www.payments.service.gov.uk/{% endblock %}
-  {% block global_header_text %}GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>{% endblock %}
-
-  {% block propositionHeader %}
-    {% include "includes/propositional_navigation_logged_out.njk" %}
-  {% endblock %}
-  {% block headerClass %}with-proposition{% endblock %}
 
   {% block head %}
     {% include "includes/head.njk" %}
     {% block pageSpecificStyle %}
     {% endblock %}
   {% endblock %}
+
+  {% block proposition_header %}
+    {% include "includes/propositional_navigation_logged_out.njk" %}
+  {% endblock %}
+
+  {% block header_class %}with-proposition{% endblock %}
+
+  {% set homepage_url = '/' %}
+  {% set global_header_text = 'GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>' | safe %}
 
   {% block cookie_message %}
     {% include "includes/cookie-message.njk" %}
