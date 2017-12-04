@@ -1,0 +1,57 @@
+{% extends "../../layout.njk" %}
+
+{% block pageTitle %}
+Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <a href="/" class="link-back">Back to dashboard</a>
+  <h1 class="heading-large prototyping__heading">Test with your users</h1>
+  <p>Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.</p>
+  <a id="prototyping__links-button-create" class="button" href="{{createPage}}">Create prototype link</a>
+
+  <ul class="tabs prototyping__tabs">
+    {% if productsTab %}
+    <li><a href="{{indexPage}}">Mock card numbers</a></li>
+    <li class="current">Prototype links</li>
+    {% else %}
+    <li class="current">Mock card numbers</li>
+    <li><a href="{{linksPage}}">Prototype links</a></li>
+    {% endif %}
+  </ul>
+
+  <div class="tab-content current">
+    {% if not productsTab %}
+      <p>Use this card number to test a successful payment. Don’t use real card numbers.</p>
+      <div class="panel panel-border-wide">
+        <h2 class="heading-medium"><span class="mock-card-block">4000</span><span class="mock-card-block">0566</span><span class="mock-card-block">5566</span><span class="mock-card-block">5556</span></h2>
+      </div>
+      <p>
+      You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but it must be in the future.
+      </p>
+      <p>You can also use other card types and see errors. <a href="https://govukpay-docs.cloudapps.digital/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
+    {% endif %}
+    {% if productsTab %}
+      <h2 id="prototyping__links-header" class="heading-medium remove-top-margin">
+        {% if productsLength === 1 %}
+          There is 1 {{token_state}} prototype link
+        {% elif productsLength > 1 %}
+          There are {{productsLength}} prototype links
+        {% else %}
+          There are no prototype links
+        {% endif %}
+      </h2>
+      <div class="key-list prototyping__links-list">
+        {% for product in products %}
+        <div class="key-list-item prototyping__links-list-item">
+          <h3 class="heading-small"><a href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a></h3>
+          <p>Payment description: <strong class="prototyping__links-list-item-description">{{ product.name }}</strong> <br/>
+          Payment amount: <strong class="prototyping__links-list-item-amount">&pound;{{ product.priceInPounds }}</strong> <br/>
+          {% if product.returnUrl %}Success page: <strong class="prototyping__links-list-item-success-page">{{ product.returnUrl }}</strong></p>{% endif %}
+          <p><a class="prototyping__links-list-item-delete-link" href="links/disable/{{ product.externalId }}">Delete prototype link</a></p>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

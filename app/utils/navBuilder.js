@@ -6,7 +6,7 @@ const serviceNavigationItems = (originalUrl, permissions) => {
   var settingsPath
   // Settings doesn't exist as a page so need to link to the first available setting
   if (permissions.tokens_read) {
-    settingsPath = paths.devTokens.index
+    settingsPath = paths.apiKeys.index
   } else if (permissions.gateway_credentials_read) {
     settingsPath = paths.credentials.index
   } else if (permissions.merchant_details) {
@@ -43,7 +43,7 @@ const serviceNavigationItems = (originalUrl, permissions) => {
         paths.notificationCredentials,
         paths.merchantDetails,
         paths.toggle3ds,
-        paths.devTokens,
+        paths.apiKeys,
         paths.emailNotifications,
         paths.paymentTypes
       ]),
@@ -64,8 +64,8 @@ const adminNavigationItems = (originalUrl, permissions) => {
     {
       id: 'navigation-menu-api-keys',
       name: 'API keys',
-      url: paths.devTokens.index,
-      current: pathLookup(originalUrl, paths.devTokens.index),
+      url: paths.apiKeys.index,
+      current: pathLookup(originalUrl, paths.apiKeys.index),
       permissions: permissions.tokens_update || false
     },
     {

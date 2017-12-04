@@ -5,7 +5,9 @@ const lodash = require('lodash')
 
 // Local Dependencies
 const checks = require('./field-validation-checks')
-const validationErrorsTemplate = require('../views/includes/validation-errors.html')
+
+// Global constants
+const validationErrorsTemplate = require('../views/includes/validation-errors.njk')
 
 exports.enableFieldValidation = function () {
   const allForms = Array.prototype.slice.call(document.getElementsByTagName('form'))
@@ -95,7 +97,7 @@ function applyErrorMessaging (form, field, result) {
 function populateErrorSummary (form) {
   let erroringFields = Array.prototype.slice.call(form.querySelectorAll('.form-group.error label'))
   let configuration = {
-    field: erroringFields.map(field => {
+    fields: erroringFields.map(field => {
       let label = field.innerHTML.split('<')[0].trim()
       let id = field.getAttribute('for')
       return {label, id}
@@ -104,7 +106,7 @@ function populateErrorSummary (form) {
 
   form.parentNode.insertAdjacentHTML(
     'afterbegin',
-    validationErrorsTemplate.render(configuration)
+    validationErrorsTemplate(configuration)
   )
   window.scroll(0, 0)
 }

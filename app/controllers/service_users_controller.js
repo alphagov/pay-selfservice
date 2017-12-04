@@ -54,8 +54,8 @@ module.exports = {
       successResponse(req, res, 'services/team_members', {
         team_members: teamMembers,
         number_active_members: numberActiveMembers,
-        number_admin_members: numberOfAdminMembers,
         inviteTeamMemberLink: inviteTeamMemberLink,
+        number_admin_members: numberOfAdminMembers,
         'number_view-only_members': numberOfViewOnlyMembers,
         'number_view-and-refund_members': numberOfViewAndRefundMembers
       })

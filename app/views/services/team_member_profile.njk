@@ -1,0 +1,40 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+My profile - GOV.UK Pay
+{% endblock %}
+
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
+<h1 id="details-for" class="heading-large">
+    My profile
+</h1>
+
+<div class="grid-row">
+    <div class="column-two-thirds admin-list">
+        <table>
+            <caption class="visually-hidden">Details for {{username}}</caption>
+            <tbody>
+                <tr>
+                    <td>Name:</td>
+                    <td id="name">{{username}}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td id="email">{{email}}</td>
+                </tr>
+                <tr>
+                    <td>Mobile number:</td>
+                    <td id="telephone-number">{{telephone_number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="column-one-third">
+        <div class="related-information">
+            <p>To change your permission level on a service you need to contact an administrator for that service.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

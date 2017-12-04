@@ -1,0 +1,39 @@
+{% extends "../../layout.njk" %}
+
+{% block pageTitle %}
+Make a demo payment - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<a href="/" class="link-back">Back to dashboard</a>
+<h1 class="heading-large prototyping__heading">Make a demo payment</h1>
+<p>Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK Pay.</p>
+<table class="prototyping__settings-table">
+  <thead>
+  <tr>
+    <h2 class="heading-small">Payment description</h2>
+    <p class="prototyping__hint">Tell users what they are paying for</p>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td id="payment-description">{{paymentDescription}}</td>
+    <td class="prototyping__edit-cell"><a class="prototyping__edit-button" href="{{editDescription}}">Edit</a></td>
+  </tr>
+  </tbody>
+</table>
+<table class="prototyping__settings-table">
+  <thead>
+  <tr>
+    <h2 class="heading-small">Payment amount</h2>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td id="payment-amount">&pound;{{paymentAmount}}</td>
+    <td class="prototyping__edit-cell"><a class="prototyping__edit-button" href="{{editAmount}}">Edit</a></td>
+  </tr>
+  </tbody>
+</table>
+<a id="prototyping__continue" class="button" href="{{nextPage}}">Continue</a>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "./layout.njk" %}
+
+{% block pageTitle %}
+An error occurred - GOV.UK Pay
+{% endblock %}
+
+{% block pageSpecificJS %}
+  <script src="/public/js/components/link-follower.js"></script>
+{% endblock %}
+
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
+<div class="column-two-thirds">
+    <h1 class="heading-large" id="error-title">{{error.title}}</h1>
+
+    <p id="error-message">{{error.message}}</p>
+
+    {% if enable_link %}
+    <a class="lede" href="{{link.link}}" id="back-link">{{link.text}}</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,13 +1,19 @@
-let path = require('path')
-let TemplateEngine = require(path.join(__dirname, '/../../lib/template-engine.js'))
-let cheerio = require('cheerio')
-let chai = require('chai')
-let router = require('../../app/routes.js')
+const cheerio = require('cheerio')
+const chai = require('chai')
+const nunjucks = require('nunjucks')
+const router = require('../../app/routes.js')
+const environment = nunjucks.configure([
+  './app/views',
+  './govuk_modules/govuk_template/views/layouts'
+], {
+  trimBlocks: true, // automatically remove trailing newlines from a block/tag
+  lstripBlocks: true // automatically remove leading whitespace from a block/tag
+})
 
 function render (templateName, templateData) {
-  let templates = TemplateEngine._getTemplates([path.join(__dirname, '/../../app/views'), path.join(__dirname, '/../../govuk_modules/govuk_template/views/layouts')])
+  const pathToTemplate = templateName + '.njk'
   templateData.routes = router.paths
-  return templates[templateName].render(templateData, templates)
+  return environment.render(pathToTemplate, templateData)
 }
 
 module.exports = {

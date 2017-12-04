@@ -1,0 +1,34 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+My services - GOV.UK Pay
+{% endblock %}
+
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
+  {% if new_service_name %}
+  <div class=“flash-container”><p id="new-service-name" class="notification generic-flash">You have been added to {{new_service_name}}</p></div>
+  {% endif %}
+
+  <h1 class="heading-large">My services</h1>
+  <div class="grid-row grid-row-align-to-edges">
+      <div class="column-two-thirds">
+        {% if services_singular %}
+          <p class="lede service-count">You have {{services.length}} service</p>
+        {% else %}
+          <p class="lede service-count">You have {{services.length}} services</p>
+        {% endif %}
+      </div>
+      <div class="column-one-third">
+        <a href="{{routes.serviceSwitcher.create}}" class="create-service">
+            Add a new service
+        </a>
+      </div>
+  </div>
+  <div class="flex-grid">
+      {% for service in services %}
+        {% include "./_service_section.njk" %}
+      {% endfor %}
+  </div>
+{% endblock %}

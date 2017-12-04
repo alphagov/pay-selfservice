@@ -1,0 +1,29 @@
+{% extends "payment_types.njk" %}
+
+{% block page_title %}
+Manage payment types - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block page_content %}
+  {% if permissions.payment_types_update %}
+    <form id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      <div class="form-group">
+        <fieldset>
+          <legend>
+            <h1 class="heading-medium">What card types do you want to accept?</h1>
+          </legend>
+          <div class="multiple-choice">
+            <input id="payment-types-all-type" type="radio" name="payment-types-card-type" value="{{allCardOption.type}}" {{allCardOption.selected}}>
+            <label for="payment-types-all-type">Debit and credit cards</label>
+          </div>
+          <div class="multiple-choice">
+            <input id="payment-types-debit-type" type="radio" name="payment-types-card-type" value="{{debitCardOption.type}}" {{debitCardOption.selected}}>
+            <label for="payment-types-debit-type">Debit cards only</label>
+          </div>
+        </fieldset>
+      </div>
+      <input id="payment-types-continue-button" name="payment-types-continue-button" type="submit" class="button" value="Continue">
+  </form>
+  {% endif %}
+{% endblock %}

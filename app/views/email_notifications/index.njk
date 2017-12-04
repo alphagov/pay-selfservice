@@ -1,0 +1,49 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+  Email notifications - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  {% if not permissions.email_notification_toggle_update %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
+
+  <h1 class="page-title">
+    Email notifications
+  </h1>
+
+  {% if permissions.email_notification_template_read %}
+    {% if emailEnabled %}
+      <p>Payment confirmation emails are turned on for this account</p>
+
+      {% if permissions.email_notification_toggle_update %}
+      <a href="{{routes.emailNotifications.offConfirm}}" class="qa-off-confirm-link"> Turn off email notifications</a>
+      {% endif %}
+
+      <h2 class="heading-medium">Current email template</h2>
+
+      {% include "./email_body.njk" %}
+
+      <p class="small push-top">The optional custom paragraph should give users extra information related to your service.</p>
+
+      {% if permissions.email_notification_paragraph_update %}
+        {% if customEmailText %}
+          <a class="button qa-edit-link" href="/email-notifications/edit">Edit custom paragraph</a>
+        {% else %}
+          <a class="button qa-edit-link" href="/email-notifications/edit">Add a custom paragraph</a>
+        {% endif %}
+      {% endif %}
+    {% else %}
+      <h1 class="heading-medium">Email notifications are turned off</h1>
+
+      {% if permissions.email_notification_toggle_update %}
+        <p>Turn on payment confirmation emails so your users receive<br/>helpful information relating to their payments.</p>
+        <form method="post" action="{{routes.emailNotifications.on}}">
+            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+            <input name="email-on" type="submit" class="button push-top qa-on" value="Turn on email notifications">
+        </form>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "../../layout.njk" %}
+{% block pageTitle %}
+Mock card numbers for demo payment - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <a href="{{lastPage}}" class="link-back">Back to dashboard</a>
+  <h1 class="heading-large prototyping__heading">Mock card numbers</h1>
+  <p>Use this card number to test a successful payment. Don’t use real card numbers.</p>
+
+  <div class="panel panel-border-wide">
+    <h2 class="heading-medium"><span class="mock-card-block">4000</span><span class="mock-card-block">0566</span><span class="mock-card-block">5566</span><span class="mock-card-block">5556</span></h2>
+  </div>
+
+  <p>You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but it must be in the future.</p>
+  <p>You can also use other card types and see errors. <a href="https://govukpay-docs.cloudapps.digital/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
+  <form method="post" action="{{nextPage}}" >
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="prototyping__make-demo-payment" class="button" type="submit" value="Make a demo payment">
+  </form>
+{% endblock %}

@@ -1,0 +1,34 @@
+<div class="flex-grid--row service_list_item">
+  <div class="flex-grid--heading-group">
+    <h2 class="heading-medium service-name">
+      {{ service.name }}
+      {% if service.permissions.service_name_update %}
+      <a href="/service/{{ service.external_id }}/edit-name" class="edit-service-name">
+          Edit name
+      </a>
+      {% endif %}
+    </h2>
+  </div>
+  <div class="flex-grid--column-half marked">
+    <ul class="list">
+      {% for gateway_account in service.gateway_accounts %}
+      <li>
+        <form method="post" action="{{routes.serviceSwitcher.switch}}">
+          <input name="csrfToken" type="hidden" value="{{csrf}}" />
+          <input name="gatewayAccountId" type="hidden" value="{{ gateway_account.id }}"/>
+          <button class="service-switcher {{ gateway_account.type }} {{ gateway_account.payment_provider }}" type="submit" role="link">{{ gateway_account.type }} account {% if not gateway_account.isLive %}({{ gateway_account.payment_provider }}){% endif %}</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div id="team-members" class="flex-grid--column-half marked">
+    <p>
+      {% if service.permissions.users_service_create %}
+      <a href="/service/{{ service.external_id }}" class="manage-team-members">Manage team members</a>
+      {% else %}
+      <a href="/service/{{ service.external_id }}" class="view-team-members">View team members</a>
+      {% endif %}
+    </p>
+  </div>
+</div>

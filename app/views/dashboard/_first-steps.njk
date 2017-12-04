@@ -1,0 +1,47 @@
+<div class="flex-grid">
+  <div class="flex-grid--row">
+    {% if isSandbox %}
+    <article class="flex-grid--column-half first-steps__box border-bottom">
+      <a href="/make-a-demo-payment">
+        <h2 class="heading-small">Make a demo payment</h2>
+        <p>Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK&nbsp;Pay.</p>
+      </a>
+    </article>
+
+    <article class="flex-grid--column-half first-steps__box border-bottom">
+      <a href="/test-with-your-users">
+        <h2 class="heading-small">Test with your users</h2>
+        <p>Create a reusable link to integrate your service prototype with GOV.UK&nbsp;Pay and test with users.</p>
+      </a>
+    </article>
+    {% else %}
+    <article class="flex-grid--column-{% if isTestGateway %}third{% else %}half{% endif %} first-steps__box">
+      <a href="https://govukpay-docs.cloudapps.digital/#payment-flow-making-a-payment">
+        <h2 class="heading-small">See the payment flow</h2>
+        <p>Get an overview of payment pages in our documentation.</p>
+      </a>
+    </article>
+    {% endif %}
+
+    <article class="flex-grid--column-{% if isSandbox %}half{% else %}{% if isTestGateway %}third{% else %}half{% endif %}{% endif %} first-steps__box">
+      <a href="/my-services/">
+      {% if permissions.users_service_create %}
+        <h2 class="heading-small">Manage team members</h2>
+        <p>Administrators can manage team members in My&nbsp;services.</p>
+      {% else %}
+        <h2 class="heading-small">Manage your service</h2>
+        <p>Add a new service and view team members in My&nbsp;services.</p>
+      {% endif %}
+      </a>
+    </article>
+
+    {% if isTestGateway %}
+    <article class="flex-grid--column-{% if isSandbox %}half{% else %}third{% endif %} first-steps__box">
+      <a href="https://govukpay-docs.cloudapps.digital/#switching-to-live">
+        <h2 class="heading-small">Next steps to go live</h2>
+        <p>Read our documentation to see how your service can go live with GOV.UK&nbsp;Pay.</p>
+      </a>
+    </article>
+    {% endif %}
+  </div>
+</div>

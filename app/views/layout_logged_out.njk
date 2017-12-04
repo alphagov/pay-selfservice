@@ -1,0 +1,51 @@
+{% extends "../../govuk_modules/govuk_template/views/layouts/govuk_template.njk" %}
+  {% block page_title %}GOV.UK Pay Self Service{% endblock %}
+
+  {% block head %}
+    {% include "includes/head.njk" %}
+    {% block pageSpecificStyle %}
+    {% endblock %}
+  {% endblock %}
+
+  {% block proposition_header %}
+    {% include "includes/propositional_navigation_logged_out.njk" %}
+  {% endblock %}
+
+  {% block header_class %}with-proposition{% endblock %}
+
+  {% set homepage_url = '/' %}
+  {% set global_header_text = 'GOV.UK <span>Pay <strong class="phase-tag">Beta</strong></span>' | safe %}
+
+  {% block cookie_message %}
+    {% include "includes/cookie-message.njk" %}
+  {% endblock %}
+
+  {% block content %}
+    <main id="content" role="main" class="{% block mainClasses %}{% endblock %}">
+      <div class="main-content">
+        {% include "includes/flash.njk" %}
+        <div class="grid-row">
+          {% block mainContent %}{% endblock %}
+        </div>
+      </div>
+    </main>
+  {% endblock %}
+
+  {% block footer_top %}
+    {% include "includes/footer-categories.njk" %}
+  {% endblock %}
+
+  {% block footer_support_links %}
+  <nav class="footer-nav">
+    <ul>
+      <li>Built by the <a href="https://www.gov.uk/government/organisations/government-digital-service">Government Digital Service</a></li>
+      <li><a href="https://www.payments.service.gov.uk/cookies/">Cookies</a></li>
+    </ul>
+  </nav>
+  {% endblock %}
+
+  {% block body_end %}
+    {% include "includes/scripts.njk" %}
+    {% block pageSpecificJS %}
+    {% endblock %}
+  {% endblock %}

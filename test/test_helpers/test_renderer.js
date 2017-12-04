@@ -1,9 +1,15 @@
-var path = require('path')
-var TemplateEngine = require(path.join(__dirname, '/../../lib/template-engine.js'))
+const nunjucks = require('nunjucks')
+const environment = nunjucks.configure([
+  './app/views',
+  './govuk_modules/govuk_template/views/layouts'
+], {
+  trimBlocks: true, // automatically remove trailing newlines from a block/tag
+  lstripBlocks: true // automatically remove leading whitespace from a block/tag
+})
 
 function render (templateName, templateData) {
-  var templates = TemplateEngine._getTemplates([path.join(__dirname, '/../../app/views'), path.join(__dirname, '/../../govuk_modules/govuk_template/views/layouts')])
-  return templates[templateName].render(templateData, templates)
+  const pathToTemplate = templateName + '.njk'
+  return environment.render(pathToTemplate, templateData)
 }
 
 module.exports = {

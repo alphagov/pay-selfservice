@@ -1,0 +1,105 @@
+{% extends "../credentials.njk" %}
+
+{% block provider_content %}
+  <h4 class="heading-small" id="view-title">Your {{currentGatewayAccount.payment_provider}} Credentials</h4>
+
+  {% if permissions.gateway_credentials_read %}
+    {% if not editMode %}
+      <table id="credentials">
+        <tbody>
+          <tr>
+            <th id="merchant-id-key">Merchant ID</th>
+            <td id="merchant-id-value" class="font-small">{{currentGatewayAccount.credentials.merchant_id}}</td>
+          </tr>
+          <tr>
+            <th id="username-key">Username</th>
+            <td id="username-value" class="font-small">{{currentGatewayAccount.credentials.username}}</td>
+          </tr>
+          <tr>
+            <th id="password-key">Password</th>
+          <td id="password-value" class="font-small">{% if currentGatewayAccount.credentials.username %}****{% endif %}</td>
+          </tr>
+        </tbody>
+      </table>
+      <a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">
+          Edit credentials
+      </a>
+    {% endif %}
+  {% endif %}
+
+  {% if permissions.gateway_credentials_update %}
+    {% if editMode %}
+      <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
+          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+          <div class="form-group">
+              <label class="form-label" for="merchantId">Merchant ID</label>
+            <input class="form-control" id="merchantId" name="merchantId" type="text" value="{{currentGatewayAccount.credentials.  merchant_id}}">
+          </div>
+
+          <div class="form-group">
+              <label class="form-label" for="username">Username</label>
+              <input class="form-control" id="username" name="username" type="text" value="{{currentGatewayAccount.credentials.username}}">
+          </div>
+
+          <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <input class="form-control" id="password" name="password" type="password" value="">
+          </div>
+  
+          <input id="submitCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
+       </form>
+    {% endif %}
+  {% endif %}
+
+  <h4 class="heading-small pad-top" id="view-notification-title">Your {{currentGatewayAccount.payment_provider}} Notification Credentials</h4>
+  {% if permissions.gateway_credentials_read %}
+    {% if not editNotificationCredentialsMode %}
+      {% if not currentGatewayAccount.notificationCredentials.userName %}
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+                You must set SmartPay notification credentials
+            </h1>
+            <p>
+                You need to set these credentials here and in your Smartpay account. If
+                you do not set these credentials GOV.UK Pay will not be able to process your payments.
+                Read more <a href="https://www.barclaycard.co.uk/business/files/SmartPay_Notifications_Guide.pdf">here</a>.
+            </p>
+        </div>
+      {% endif %}
+      <table id="notification_credentials">
+        <tbody>
+        <tr>
+          <th id="notification-username-key">Username</th>
+          <td id="notification-username-value" class="font-small">{{currentGatewayAccount.notificationCredentials.userName}}</td>
+        </tr>
+        <tr>
+          <th id="notification-password-key">Password</th>
+          <td id="notification-password-value" class="font-small">{% if currentGatewayAccount.notificationCredentials.userName %}****{% endif %}</td>
+        </tbody>
+      </table>
+      <a id="edit-notification_credentials-link" class="button" href="{{routes.notificationCredentials.edit}}">
+          Edit notification credentials
+      </a>
+    {% endif %}
+  {% endif %}
+
+  {% if permissions.gateway_credentials_update %}
+    {% if editNotificationCredentialsMode %}
+      <form id="notification_credentials_form" method="post" action="{{routes.notificationCredentials.update}}">
+          <input id="notification-csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+          <div class="form-group">
+              <label class="form-label" for="notification-username">Username</label>
+            <input class="form-control" id="notification-username" name="username" type="text" value="{{currentGatewayAccount.notification_credentials.userName}}">
+          </div>
+
+          <div class="form-group">
+              <label class="form-label" for="notification-password">Password</label>
+              <input class="form-control" id="notification-password" name="password" type="password" value="">
+          </div>
+
+          <input id="submitNotificationCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
+
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

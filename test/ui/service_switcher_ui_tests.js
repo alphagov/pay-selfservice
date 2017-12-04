@@ -1,5 +1,7 @@
 'use strict'
 
+const _ = require('lodash')
+
 // Local Dependencies
 const {render} = require('../test_helpers/html_assertions.js')
 
@@ -35,7 +37,7 @@ const serviceTwo = {
 }
 
 describe('The account switcher link', () => {
-  it('should display My Services link', () => {
+  it('should display My services link', () => {
     body = render('layout', {})
 
     body.should.containSelector('#my-services').withExactText('My services')
@@ -47,7 +49,11 @@ describe('The account switcher link', () => {
         permissions: {
           users_service_create: true
         },
-        services: [serviceOne]
+        services: [_.extend(serviceOne, {
+          permissions: {
+            users_service_create: true
+          }
+        })]
       }
 
       body = render('services/index', templateData)
@@ -65,7 +71,14 @@ describe('The account switcher link', () => {
   describe('when a user has multiple services and only has view permissions', () => {
     before(() => {
       templateData = {
-        services: [serviceOne, serviceTwo]
+        services: [
+          _.extend(serviceOne, {
+            permissions: {
+              users_service_create: false
+            }
+          }),
+          serviceTwo
+        ]
       }
 
       body = render('services/index', templateData)

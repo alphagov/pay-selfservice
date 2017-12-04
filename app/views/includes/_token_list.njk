@@ -1,0 +1,26 @@
+<div class="tab-content current">
+    <h2 id="{{header}}" class="heading-medium remove-top-margin">
+        {% if tokens.length %}
+            {% if tokens_singular %}
+            There is 1 {{token_state}} API key
+            {% else %}
+            There are {{tokens.length}} {{token_state}} API keys
+            {% endif %}
+        {% else %}
+        There are no {{token_state}} API keys
+        {% endif %}
+    </h2>
+    {% if permissions.tokens_create %}
+    {% if active %}
+        <a class="button generate-key" href="/tokens/generate">Generate a new key</a>
+    {% endif %}
+    {% endif %}
+
+    {% if tokens.length %}
+    <div class="key-list">
+        {% for token in tokens %}
+            {% include "./_token.njk" %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>

@@ -9,13 +9,13 @@ var templateData = {
   isAcceptedTypeAll: true,
   isAcceptedTypeDebit: false,
   error: '',
-  brands: {
+  brands: [{
     'id': 'payment-types-visa-brand',
     'value': 'visa',
     'label': 'Visa',
     'available': true,
     'selected': true
-  },
+  }],
   permissions: {
     'payment_types_read': true,
     'payment_types_update': true
@@ -67,7 +67,7 @@ describe('The payment select brand view', function () {
 
   it('should grey out unavailable options', function () {
     var model = _.extend({}, templateData)
-    model['brands'] = _.extend({}, templateData['brands'], {
+    model['brands'][0] = _.extend({}, templateData['brands'][0], {
       'available': false,
       'unavailabilityReason': 'Not available'
     })
@@ -82,7 +82,7 @@ describe('The payment select brand view', function () {
 
   it('should not grey out available options', function () {
     var model = _.extend({}, templateData)
-    model['brands'] = _.extend({}, templateData['brands'], {
+    model['brands'][0] = _.extend({}, templateData['brands'][0], {
       'available': true
     })
 

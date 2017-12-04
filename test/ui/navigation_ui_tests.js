@@ -49,7 +49,7 @@ describe('navigation menu', function () {
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
   })
@@ -70,7 +70,7 @@ describe('navigation menu', function () {
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
@@ -91,7 +91,7 @@ describe('navigation menu', function () {
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Payment types')
   })
@@ -112,7 +112,7 @@ describe('navigation menu', function () {
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Merchant details')
   })
@@ -133,7 +133,7 @@ describe('navigation menu', function () {
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('3D Secure')
   })
@@ -154,7 +154,7 @@ describe('navigation menu', function () {
       adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
     }
 
-    let body = renderTemplate('token', templateData)
+    let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Email notifications')
   })

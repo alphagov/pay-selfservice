@@ -1,6 +1,6 @@
 root = true
 
-[*.{js,json,scss}]
+[*.{js,json,scss,njk}]
 charset = utf-8
 end_of_line = lf
 indent_style = space

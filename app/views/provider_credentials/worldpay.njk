@@ -1,0 +1,52 @@
+{% extends "../credentials.njk" %}
+
+{% block provider_content %}
+  <h4 class="heading-small" id="view-title">Your {{currentGatewayAccount.payment_provider}} Credentials</h4>
+
+  {% if permissions.gateway_credentials_read %}
+    {% if not editMode %}
+      <table id="credentials">
+        <tbody>
+          <tr>
+            <th id="merchant-id-key">Merchant ID</th>
+            <td id="merchant-id-value" class="font-small">{{currentGatewayAccount.credentials.merchant_id}}</td>
+          </tr>
+          <tr>
+            <th id="username-key">Username</th>
+            <td id="username-value" class="font-small">{{currentGatewayAccount.credentials.username}}</td>
+          </tr>
+          <tr>
+            <th id="password-key">Password</th>
+            <td id="password-value" class="font-small">{% if currentGatewayAccount.credentials.username %}****{% endif %}</td>
+          </tr>
+        </tbody>
+      </table>
+      <a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">Edit credentials</a>
+    {% endif %}
+  {% endif %}
+
+  {% if permissions.gateway_credentials_update %}
+    {% if editMode %}
+      <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
+          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+          <div class="form-group">
+              <label class="form-label" for="merchantId">Merchant ID</label>
+              <input class="form-control" id="merchantId" name="merchantId" type="text" value="{{currentGatewayAccount.credentials.merchant_id}}">
+          </div>
+
+          <div class="form-group">
+              <label class="form-label" for="username">Username</label>
+              <input class="form-control" id="username" name="username" type="text" value="{{currentGatewayAccount.credentials.username}}">
+          </div>
+
+          <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <input class="form-control" id="password" name="password" type="password" value="">
+          </div>
+
+          <input id="submitCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
+
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

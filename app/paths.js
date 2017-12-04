@@ -33,7 +33,7 @@ module.exports = {
     passwordRequested: '/reset-password-requested',
     forgottenPasswordReset: '/reset-password/:id'
   },
-  devTokens: {
+  apiKeys: {
     index: '/tokens',
     revoked: '/tokens/revoked',
     // we only show the token once, hence strange url

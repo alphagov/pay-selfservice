@@ -1,0 +1,13 @@
+{% extends "../layout_logged_out.njk" %}
+
+{% block page_title %}
+  Account confirmation - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div id="display-email-sent" class="column-two-thirds">
+    <h1 class="heading-large">Check your email</h1>
+    <p>An email has been sent to {{requesterEmail}}.</p>
+    <p>Click the link in the email to continue your registration.</p>
+</div>
+{% endblock %}

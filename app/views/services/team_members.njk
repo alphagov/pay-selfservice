@@ -1,0 +1,91 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Team members - GOV.UK Pay
+{% endblock %}
+
+{% block pageSpecificJS %}
+  <script src="/public/js/components/link-follower.js"></script>
+{% endblock %}
+
+{% block mainClasses %}full-width{% endblock %}
+
+{% block full_width_content %}
+  <a href="/my-services" class="link-back">My services</a>
+  <h1 class="heading-large">Team members</h1>
+  {% if permissions.users_service_create %}
+    <p class="admin-lede">Team member changes affect both live and test environments.</p>
+  {% else %}
+    <p class="admin-lede">Contact an administrator to invite team members and change permissions.</p>
+  {% endif %}
+  <div class="grid-row">
+    <div class="column-two-thirds admin-list-group">
+      <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
+      <div class="admin-list" id="team-members-admin-list">
+        <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{team_members["admin"].length}})</h3>
+        <ul>
+          {% for admin in team_members["admin"] %}
+            <li>
+              {% if permissions.users_service_read %}
+                <a href="{{ admin.link }}">
+              {% else %}
+                <span>
+              {% endif %}
+              {{ admin.username }} {% if admin.is_current %}(you){% endif %}
+              {% if permissions.users_service_read %}
+                </a>
+              {% else %}
+                </span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="admin-list" id="team-members-view-and-refund-list">
+        <h3 id="view-and-refund-role-header" class="admin-list-heading">View and refund ({{team_members["view-and-refund"].length}})</h3>
+        <ul>
+          {% for team_member in team_members["view-and-refund"] %}
+            <li>
+              {% if permissions.users_service_read %}
+                <a href="{{ team_member.link }}">
+              {% else %}
+                <span>
+              {% endif %}
+              {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+              {% if permissions.users_service_read %}
+                </a>
+              {% else %}
+                </span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="admin-list" id="team-members-view-only-list">
+        <h3 id="view-only-role-header" class="admin-list-heading">View only ({{team_members["view-only"].length}})</h3>
+        <ul>
+          {% for team_member in team_members["view-only"] %}
+            <li>
+              {% if permissions.users_service_read %}
+                <a href="{{ team_member.link }}">
+              {% else %}
+                <span>
+              {% endif %}
+              {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+              {% if permissions.users_service_read %}
+                </a>
+              {% else %}
+                </span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% if permissions.users_service_create %}
+      <a id="invite-team-member-link" class="button" href="{{inviteTeamMemberLink}}">
+          Invite a team member
+      </a>
+    {% endif %}
+  </div>
+{% endblock %}
