@@ -39,8 +39,8 @@
     "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
-    "appmetrics": "1.1.2",
-    "appmetrics-statsd": "1.0.1",
+    "appmetrics": "3.x",
+    "appmetrics-statsd": "2.0.x",
     "body-parser": "1.18.2",
     "change-case": "3.0.1",
     "check-types": "^7.1.x",
