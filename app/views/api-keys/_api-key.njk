@@ -1,6 +1,6 @@
 <div
   id="{{token.token_link}}"
-  class="key-list-item js-{% if not revoked %}active{% endif %}" data-csrf="{{ csrfToken }}">
+  class="key-list-item js-{% if not revoked %}active{% endif %}" data-csrf="{{ token.csrfToken }}">
   <h3 id="description-{{token.token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{token.description}}</h3>
   <div class="key-list-item-meta">
     <dl>
