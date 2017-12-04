@@ -11,6 +11,7 @@ RUN set -x \
                 bash="4.4.12-r2" \
            --repository http://dl-cdn.alpinelinux.org/alpine/edge/main
 
+
 RUN apk update &&\
     apk upgrade &&\
     apk add --update bash libc6-compat
