@@ -14,5 +14,5 @@ RUN apk add glibc-2.25-r0.apk
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 WORKDIR /app
-
+ENV LD_LIBRARY_PATH /app/node_modules/appmetrics
 CMD ./docker/build_and_test.sh
