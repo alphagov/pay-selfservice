@@ -1,0 +1,4 @@
+--reporter spec
+--require ./test/test_helpers/test-env.js
+--require ./test/test_helpers/supress-logs.js
+--exit
