@@ -40,7 +40,7 @@ module.exports = {
   submitRegistration: (req, res) => {
     const correlationId = req.correlationId
     const email = req.body['email']
-    const telephoneNumber = req.body['telephone-number']
+    const telephoneNumber = req.body['telephone-number'].replace(/\s/g, '')
     const password = req.body['password']
 
     const handleServerError = (err) => {
