@@ -52,11 +52,9 @@ describe('adminusers client - validate otp code for a service', function () {
             .withRequestBody(pactified)
             .withStatusCode(200)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -85,11 +83,9 @@ describe('adminusers client - validate otp code for a service', function () {
             .withStatusCode(400)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -118,11 +114,9 @@ describe('adminusers client - validate otp code for a service', function () {
             .withRequestBody(pactified)
             .withStatusCode(404)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -149,11 +143,9 @@ describe('adminusers client - validate otp code for a service', function () {
             .withRequestBody(pactified)
             .withStatusCode(410)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

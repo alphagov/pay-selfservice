@@ -21,8 +21,7 @@ module.exports = (req, res) => {
       params.products = products
       return response(req, res, 'dashboard/demo-service/index', params)
     })
-    .catch(error => {
-      console.error(error)
+    .catch(() => {
       errorView(req, res, 'Internal server error')
     })
 }

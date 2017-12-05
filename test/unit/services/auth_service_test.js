@@ -245,9 +245,7 @@ describe('auth service', function () {
           expect(req.session.version).to.equal(1)
           done()
         })
-        .catch((err) => {
-          console.log(err)
-        })
+        .catch(done)
     })
   })
 

@@ -57,11 +57,9 @@ describe('adminusers client - create a new service', function () {
             .withStatusCode(201)
             .withResponseBody(validCreateServiceResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -90,11 +88,9 @@ describe('adminusers client - create a new service', function () {
             .withStatusCode(201)
             .withResponseBody(validCreateServiceResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -123,11 +119,9 @@ describe('adminusers client - create a new service', function () {
             .withStatusCode(201)
             .withResponseBody(validCreateServiceResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -156,11 +150,9 @@ describe('adminusers client - create a new service', function () {
             .withStatusCode(400)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

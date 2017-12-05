@@ -61,11 +61,9 @@ describe('adminusers client - update service name', function () {
             .withStatusCode(200)
             .withResponseBody(validUpdateServiceNameResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -92,11 +90,9 @@ describe('adminusers client - update service name', function () {
             .withRequestBody(validUpdateServiceNameRequest.getPactified())
             .withStatusCode(404)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -122,11 +118,9 @@ describe('adminusers client - update service name', function () {
             .withRequestBody(invalidUpdateServiceNameRequest.getPactified())
             .withStatusCode(400)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
