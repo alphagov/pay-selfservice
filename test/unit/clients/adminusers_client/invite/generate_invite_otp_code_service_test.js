@@ -59,11 +59,9 @@ describe('adminusers client - generate otp code for service invite', function ()
             .withMethod('POST')
             .withStatusCode(200)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

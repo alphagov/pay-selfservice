@@ -57,11 +57,9 @@ describe('connector client - create gateway account', function () {
             .withRequestBody(pactified)
             .withStatusCode(201)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -97,11 +95,9 @@ describe('connector client - create gateway account', function () {
             .withStatusCode(400)
             .withResponseBody(errorResponse)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

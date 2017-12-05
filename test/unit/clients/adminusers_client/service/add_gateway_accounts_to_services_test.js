@@ -65,12 +65,9 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
               gateway_account_ids: request.getPlain().value
             })
             .build()
-        ).then(() => {
-          done()
-        }).catch(err => {
-          console.log(err)
-          done(err)
-        })
+        )
+          .then(() => done())
+          .catch(done)
       })
 
       it('should update service name', () => {
@@ -100,12 +97,9 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
               ]
             })
             .build()
-        ).then(() => {
-          done()
-        }).catch(err => {
-          console.log(err)
-          done(err)
-        })
+        )
+          .then(() => done())
+          .catch(done)
       })
 
       it('should reject with an error detailing the conflicting', () => {
@@ -141,12 +135,9 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
               ]
             })
             .build()
-        ).then(() => {
-          done()
-        }).catch(err => {
-          console.log(err)
-          done(err)
-        })
+        )
+          .then(() => done())
+          .catch(done)
       })
 
       it('should reject with an error detailing the conflicting', () => {
@@ -177,12 +168,9 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
             .withRequestBody(request.getPactified())
             .withStatusCode(404)
             .build()
-        ).then(() => {
-          done()
-        }).catch(err => {
-          console.log(err)
-          done(err)
-        })
+        )
+          .then(() => done())
+          .catch(done)
       })
 
       it('should reject with an error detailing the conflicting', () => {

@@ -53,11 +53,9 @@ describe('adminusers client - invite user', function () {
             .withStatusCode(201)
             .withResponseBody(inviteFixtures.validInviteResponse(validInvite.getPlain()).getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -86,11 +84,9 @@ describe('adminusers client - invite user', function () {
             .withRequestBody(pactified)
             .withStatusCode(404)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -121,11 +117,9 @@ describe('adminusers client - invite user', function () {
             .withStatusCode(400)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -158,11 +152,9 @@ describe('adminusers client - invite user', function () {
             .withStatusCode(409)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -195,11 +187,9 @@ describe('adminusers client - invite user', function () {
             .withStatusCode(403)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

@@ -51,15 +51,15 @@ describe('adminusers client - submit verification details', function () {
             .withRequestBody(pactified)
             .withStatusCode(201)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
+        adminUsersMock.finalize()
+          .then(() => done())
+          .catch(done)
       })
 
       it('should verify otp code successfully', function (done) {
@@ -84,15 +84,15 @@ describe('adminusers client - submit verification details', function () {
             .withStatusCode(400)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
+        adminUsersMock.finalize()
+          .then(() => done())
+          .catch(done)
       })
 
       it('should return 400 on missing fields', function (done) {
@@ -117,11 +117,9 @@ describe('adminusers client - submit verification details', function () {
             .withRequestBody(pactified)
             .withStatusCode(404)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -148,15 +146,15 @@ describe('adminusers client - submit verification details', function () {
             .withRequestBody(pactified)
             .withStatusCode(410)
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
+        adminUsersMock.finalize()
+          .then(() => done())
+          .catch(done)
       })
 
       it('return 410 if code locked', function (done) {

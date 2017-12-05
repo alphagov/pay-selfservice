@@ -68,11 +68,9 @@ describe('adminusers client - complete a user invite', function () {
             .withStatusCode(200)
             .withResponseBody(validInviteCompleteResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -100,7 +98,9 @@ describe('adminusers client - complete a user invite', function () {
             .withMethod('POST')
             .withStatusCode(404)
             .build()
-        ).then(() => done())
+        )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -125,7 +125,9 @@ describe('adminusers client - complete a user invite', function () {
             .withMethod('POST')
             .withStatusCode(410)
             .build()
-        ).then(() => done())
+        )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

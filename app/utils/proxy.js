@@ -13,19 +13,16 @@ var originalHttpsRequest = https.request
 // requests will pick them up do a bad job around certificate handling.
 function captureEnvironment () {
   if (process.env.HTTPS_PROXY) {
-    console.log('Tunnelling HTTPS -> ', process.env.HTTPS_PROXY)
     process.env.TUNNEL_HTTPS_PROXY = process.env.HTTPS_PROXY
     delete process.env.HTTPS_PROXY
   }
 
   if (process.env.HTTP_PROXY) {
-    console.log('Tunnelling HTTP -> ', process.env.HTTP_PROXY)
     process.env.TUNNEL_HTTP_PROXY = process.env.HTTP_PROXY
     delete process.env.HTTP_PROXY
   }
 
   if (process.env.NO_PROXY) {
-    console.log('No proxy zones: ', process.env.NO_PROXY)
     process.env.TUNNEL_NO_PROXY = process.env.NO_PROXY
     delete process.env.NO_PROXY
   }

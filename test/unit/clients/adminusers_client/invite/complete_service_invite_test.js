@@ -74,11 +74,9 @@ describe('adminusers client - complete an invite', function () {
             .withStatusCode(200)
             .withResponseBody(validInviteCompleteResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {

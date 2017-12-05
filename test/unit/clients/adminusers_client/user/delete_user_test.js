@@ -54,7 +54,7 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(204)
             .build())
           .then(() => done())
-          .catch(e => console.log(e))
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -83,7 +83,7 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(409)
             .build())
           .then(() => done())
-          .catch(e => console.log(e))
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -115,7 +115,7 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(404)
             .build())
           .then(() => done())
-          .catch(e => console.log(e))
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -150,7 +150,7 @@ describe('adminusers client - delete user', function () {
             .withStatusCode(403)
             .build())
           .then(() => done())
-          .catch(e => console.log(e))
+          .catch(done)
       })
 
       afterEach((done) => {

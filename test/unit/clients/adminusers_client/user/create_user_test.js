@@ -59,11 +59,9 @@ describe('adminusers client - create a new user', function () {
             .withStatusCode(201)
             .withResponseBody(validCreateUserResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
@@ -99,11 +97,9 @@ describe('adminusers client - create a new user', function () {
             .withStatusCode(400)
             .withResponseBody(errorResponse.getPactified())
             .build()
-        ).then(() => {
-          done()
-        }).catch(e =>
-          console.log(e)
         )
+          .then(() => done())
+          .catch(done)
       })
 
       afterEach((done) => {
