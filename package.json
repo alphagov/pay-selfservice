@@ -62,8 +62,7 @@
     "morgan": "1.9.x",
     "notp": "^2.0.3",
     "nunjucks": "^3.0.1",
-    "nunjucksify": "^2.2.0",
-    "passport": "0.3.x",
+    "passport": "0.4.x",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "q": "^1.5.0",
@@ -81,6 +80,7 @@
   },
   "devDependencies": {
     "@pact-foundation/pact-node": "4.6.0",
+    "nunjucksify": "^2.2.0",
     "babel-core": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
