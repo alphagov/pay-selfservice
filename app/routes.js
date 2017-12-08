@@ -30,7 +30,7 @@ const transactionsListCtrl = require('./controllers/transactions/transaction_lis
 const transactionDetailCtrl = require('./controllers/transactions/transaction_detail_controller')
 const transactionRefundCtrl = require('./controllers/transactions/transaction_refund_controller')
 const credentialsCtrl = require('./controllers/credentials_controller')
-const loginCtrl = require('./controllers/login_controller')
+const loginCtrl = require('./controllers/login')
 const healthcheckCtrl = require('./controllers/healthcheck_controller')
 const apiKeysCtrl = require('./controllers/api_keys_controller')
 const paymentTypesSelectType = require('./controllers/payment_types_select_type_controller')
@@ -95,15 +95,15 @@ module.exports.bind = function (app) {
   app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, loginCtrl.loggedIn)
 
   // LOGIN
-  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.logInGet)
-  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.logUserin, getAccount, loginCtrl.postLogin)
+  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.loginGet)
+  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, getAccount, loginCtrl.postLogin)
   app.get(user.loggedIn, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, loginCtrl.loggedIn)
   app.get(user.noAccess, loginCtrl.noAccess)
-  app.get(user.logOut, loginCtrl.logOut)
+  app.get(user.logOut, loginCtrl.logout)
   app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet)
   app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost)
-  app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.otpLogIn)
-  app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.logUserinOTP, loginCtrl.afterOTPLogin)
+  app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.otpLogin)
+  app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.loginUserOTP, loginCtrl.afterOTPLogin)
 
   // FORGOTTEN PASSWORD
   app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet)

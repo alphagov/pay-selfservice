@@ -10,7 +10,7 @@ const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
-const loginController = require('../controllers/login_controller')
+const loginController = require('../controllers/login')
 const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateServiceNamingInputs} = require('../utils/registration_validations')
 
 module.exports = {
