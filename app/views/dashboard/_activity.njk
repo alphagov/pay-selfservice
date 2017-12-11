@@ -1,54 +1,77 @@
 <div class="grid-row">
-  <form class="column-half">
+  <form class="column-half" action="/" method="get">
     <fieldset class="form-group">
-      <label for="range" class="visually-hidden">Select a date range</label>
-      <select name="range" class="form-control">
-        <option>Today</option>
-        <option>Yesterday</option>
-        <option>Last 7 days</option>
-        <option>Last 30 days</option>
+      <label for="activity-period" class="visually-hidden">Select a date range</label>
+      <select id="activity-period" name="period" class="form-control">
+        <option {% if period == 'today' %}selected{% endif %} value="today">Today</option>
+        <option {% if period == 'yesterday' %}selected{% endif %} value="yesterday">Yesterday</option>
+        <option {% if period == 'last-seven-days' %}selected{% endif %} value="last-seven-days">Previous 7 days</option>
+        <option {% if period == 'last-thirty-days' %}selected{% endif %} value="last-thirty-days">Previous 30 days</option>
       </select>
+      <noscript>
+        <button class="button nojs-update-button" type="submit">Update</button>
+      </noscript>
     </fieldset>
   </form>
 </div>
 
+{% set transactions_period_string %}
+fromDate={{ fromDateTime | datetime('date') | urlencode }}&fromTime={{ fromDateTime | datetime('time') | urlencode }}&toDate={{ toDateTime | datetime('date') | urlencode }}&toTime={{ toDateTime | datetime('time') | urlencode }}
+{% endset %}
+
 <div class="flex-grid">
   <div class="flex-grid--row">
+  {% if not activityError %}
     <article class="dashboard-total-group flex-grid--column-third">
       <header class="dashboard-total-group__heading">
         <h2 class="dashboard-total-group__title">Successful payments</h2>
       </header>
-      <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
-        <dt class="visually-hidden">Count</dt>
-        <dd class="dashboard-total-group__count">478</dd>
-        <dt class="visually-hidden">Amount</dt>
-        <dd class="dashboard-total-group__amount">&pound;45,000</dd>
-      </dl>
+      <a class="dashboard-total-group__link" href="/transactions?state=payment-success&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
+        <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
+          <dt class="visually-hidden">Count</dt>
+          <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
+          <dt class="visually-hidden">Amount</dt>
+          <dd class="dashboard-total-group__amount">{{ activity.successful_payments.total_in_pence | currency }}</dd>
+        </dl>
+      </a>
     </article>
     <article class="dashboard-total-group flex-grid--column-third">
       <header class="dashboard-total-group__heading">
         <h2 class="dashboard-total-group__title">Successful refunds</h2>
       </header>
-      <dl class="dashboard-total-group__values dashboard-total-group__values--red">
-        <dt class="visually-hidden">Count</dt>
-        <dd class="dashboard-total-group__count">36</dd>
-        <dt class="visually-hidden">Amount</dt>
-        <dd class="dashboard-total-group__amount">&pound;1,294</dd>
-      </dl>
+      <a class="dashboard-total-group__link" href="/transactions?state=refund&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
+        <dl class="dashboard-total-group__values dashboard-total-group__values--red">
+          <dt class="visually-hidden">Count</dt>
+          <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
+          <dt class="visually-hidden">Amount</dt>
+          <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | currency }}</dd>
+        </dl>
+      </a>
     </article>
     <article class="dashboard-total-group flex-grid--column-third">
       <header class="dashboard-total-group__heading">
         <h2 class="dashboard-total-group__title">Net income</h2>
       </header>
-      <dl class="dashboard-total-group__values">
-        <dt class="visually-hidden">Amount</dt>
-        <dd class="dashboard-total-group__amount">&pound;43,706</dd>
-      </dl>
+      <a class="dashboard-total-group__link" href="/transactions?{{ transactions_period_string }}" title="View today’s successful payment transactions">
+        <dl class="dashboard-total-group__values">
+          <dt class="visually-hidden">Amount</dt>
+          <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | currency }}</dd>
+        </dl>
+      </a>
       <details class="dashboard-total-explainer">
         <summary>How these numbers are calculated</summary>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et <a href="#">dolore magna aliqua</a>.</p>
+        <p>Current totals are calculated for the period from - {{ fromDateTime | datetime('full') }} to - {{ toDateTime | datetime('full') }}</p>
       </details>
     </article>
+    {% else %}
+    <article class="dashboard-total-group flex-grid--column-half">
+      <header class="dashboard-total-group__heading">
+        <h2 class="dashboard-total-group__title">Error fetching totals</h2>
+      </header>
+      <div class="dashboard-total-group__values dashboard-total-group__values--red">
+        <span>Transaction activity data cannot be retrieved at this time.</span>
+      </div>
+    </article>
+    {% endif %}
   </div>
 </div>

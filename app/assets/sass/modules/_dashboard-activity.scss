@@ -6,6 +6,26 @@
       @extend .heading-small;
     }
 
+    &__link {
+      text-decoration: none;
+
+      &:link, &:visited {
+        color: $black;
+      }
+
+      &:hover {
+        .dashboard-total-group__values {
+          background-color: $panel-colour;
+        }
+      }
+
+      &:focus {
+        .dashboard-total-group__values {
+          background-color: $yellow;
+        }
+      }
+    }
+
     &__values {
       display: flex;
       position: relative;
@@ -51,4 +71,8 @@
     margin-top: $gutter / 3;
     @include core-16;
   }
+}
+
+.nojs-update-button {
+  margin-left: $gutter / 2;
 }

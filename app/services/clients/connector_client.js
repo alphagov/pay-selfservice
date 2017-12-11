@@ -117,8 +117,8 @@ var _getToggle3dsUrlFor = function (accountID) {
 }
 
 /** @private */
-var _getTransactionSummaryUrlFor = function (accountID) {
-  return process.env.CONNECTOR_URL + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID)
+var _getTransactionSummaryUrlFor = function (accountID, period) {
+  return process.env.CONNECTOR_URL + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID) + '?' + period
 }
 
 function getQueryStringForParams (params) {
@@ -547,7 +547,12 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   getTransactionSummary: function (params, successCallback) {
-    var url = _getTransactionSummaryUrlFor(params.gatewayAccountId)
+    const queryStrings = {
+      from_date: params.fromDateTime,
+      to_date: params.toDateTime
+    }
+    const period = querystring.stringify(queryStrings)
+    var url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period)
     baseClient.get(url, params, this.responseHandler(successCallback))
 
     return this
