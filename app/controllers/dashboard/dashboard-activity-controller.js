@@ -55,7 +55,7 @@ module.exports = (req, res) => {
     logger.error(`[${correlationId}] Calling connector to get transactions summary failed -`, {
       service: 'connector',
       method: 'GET',
-      status: connectorResponse.statusCode
+      status: _.get(connectorResponse, 'statusCode')
     })
     response(req, res, 'dashboard/index', {
       name: req.user.username,

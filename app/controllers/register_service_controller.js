@@ -235,7 +235,7 @@ module.exports = {
       })
       .then((updatedService) => {
         _.unset(req, 'session.pageData.submitYourServiceName')
-        res.redirect(303, paths.user.loggedIn)
+        res.redirect(303, paths.dashboard.index)
       })
       .catch(err => {
         logger.debug(`[requestId=${correlationId}] invalid user input - service name`)

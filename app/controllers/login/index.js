@@ -1,6 +1,5 @@
 'use strict'
 
-exports.loggedIn = require('./logged-in-controller')
 exports.logout = require('./logout-controller')
 exports.noAccess = require('./no-access-controller')
 exports.loginGet = require('./login-get-controller')
