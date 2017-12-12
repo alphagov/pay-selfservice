@@ -19,59 +19,59 @@
 fromDate={{ fromDateTime | datetime('date') | urlencode }}&fromTime={{ fromDateTime | datetime('time') | urlencode }}&toDate={{ toDateTime | datetime('date') | urlencode }}&toTime={{ toDateTime | datetime('time') | urlencode }}
 {% endset %}
 
-<div class="flex-grid">
-  <div class="flex-grid--row">
-  {% if not activityError %}
-    <article class="dashboard-total-group flex-grid--column-third">
-      <header class="dashboard-total-group__heading">
-        <h2 class="dashboard-total-group__title">Successful payments</h2>
-      </header>
-      <a class="dashboard-total-group__link" href="/transactions?state=payment-success&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
-        <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
-          <dt class="visually-hidden">Count</dt>
-          <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
-          <dt class="visually-hidden">Amount</dt>
-          <dd class="dashboard-total-group__amount">{{ activity.successful_payments.total_in_pence | currency }}</dd>
-        </dl>
-      </a>
-    </article>
-    <article class="dashboard-total-group flex-grid--column-third">
-      <header class="dashboard-total-group__heading">
-        <h2 class="dashboard-total-group__title">Successful refunds</h2>
-      </header>
-      <a class="dashboard-total-group__link" href="/transactions?state=refund&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
-        <dl class="dashboard-total-group__values dashboard-total-group__values--red">
-          <dt class="visually-hidden">Count</dt>
-          <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
-          <dt class="visually-hidden">Amount</dt>
-          <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | currency }}</dd>
-        </dl>
-      </a>
-    </article>
-    <article class="dashboard-total-group flex-grid--column-third">
-      <header class="dashboard-total-group__heading">
-        <h2 class="dashboard-total-group__title">Net income</h2>
-      </header>
-      <a class="dashboard-total-group__link" href="/transactions?{{ transactions_period_string }}" title="View today’s successful payment transactions">
-        <dl class="dashboard-total-group__values">
-          <dt class="visually-hidden">Amount</dt>
-          <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | currency }}</dd>
-        </dl>
-      </a>
-      <details class="dashboard-total-explainer">
-        <summary>How these numbers are calculated</summary>
-        <p>Current totals are calculated for the period from - {{ fromDateTime | datetime('full') }} to - {{ toDateTime | datetime('full') }}</p>
-      </details>
-    </article>
-    {% else %}
-    <article class="dashboard-total-group flex-grid--column-half">
-      <header class="dashboard-total-group__heading">
-        <h2 class="dashboard-total-group__title">Error fetching totals</h2>
-      </header>
-      <div class="dashboard-total-group__values dashboard-total-group__values--red">
-        <span>Transaction activity data cannot be retrieved at this time.</span>
+<div class="grid-row">
+{% if not activityError %}
+  <article class="dashboard-total-group column-third column-half-mobile">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">Successful payments</h2>
+    </header>
+    <a class="dashboard-total-group__link" href="/transactions?state=payment-success&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
+      <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
+        <dt class="visually-hidden">Count</dt>
+        <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
+        <dt class="visually-hidden">Amount</dt>
+        <dd class="dashboard-total-group__amount">{{ activity.successful_payments.total_in_pence | currency }}</dd>
+      </dl>
+    </a>
+  </article>
+  <article class="dashboard-total-group column-third column-half-mobile">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">Successful refunds</h2>
+    </header>
+    <a class="dashboard-total-group__link" href="/transactions?state=refund&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
+      <dl class="dashboard-total-group__values dashboard-total-group__values--red">
+        <dt class="visually-hidden">Count</dt>
+        <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
+        <dt class="visually-hidden">Amount</dt>
+        <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | currency }}</dd>
+      </dl>
+    </a>
+  </article>
+  <article class="dashboard-total-group column-third">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">Net income</h2>
+    </header>
+    <a class="dashboard-total-group__link" href="/transactions?{{ transactions_period_string }}" title="View today’s successful payment transactions">
+      <dl class="dashboard-total-group__values">
+        <dt class="visually-hidden">Amount</dt>
+        <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | currency }}</dd>
+      </dl>
+    </a>
+    <details class="dashboard-total-explainer">
+      <summary>How these numbers are calculated</summary>
+      <div class="panel panel-border-narrow">
+        <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ fromDateTime | datetime('full') }} to {{ toDateTime | datetime('full') }}</p>
       </div>
-    </article>
-    {% endif %}
-  </div>
+    </details>
+  </article>
+{% else %}
+  <article class="dashboard-total-group column-half">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">Error fetching totals</h2>
+    </header>
+    <div class="dashboard-total-group__values dashboard-total-group__values--red">
+      <span>Transaction activity data cannot be retrieved at this time.</span>
+    </div>
+  </article>
+{% endif %}
 </div>
