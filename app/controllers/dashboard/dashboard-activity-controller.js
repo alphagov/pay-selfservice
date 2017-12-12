@@ -21,9 +21,9 @@ module.exports = (req, res) => {
 
   if (period === 'yesterday') {
     daysAgo = 1
-  } else if (period === 'last-seven-days') {
+  } else if (period === 'previous-seven-days') {
     daysAgo = 8 // 7+1 because we count starting from yesterday
-  } else if (period === 'last-thirty-days') {
+  } else if (period === 'previous-thirty-days') {
     daysAgo = 31 // 30+1 because we count starting from yesterday
   }
   const fromDateTime = moment().tz('Europe/London').startOf('day').subtract(daysAgo, 'days').format()
@@ -39,8 +39,7 @@ module.exports = (req, res) => {
     correlationId,
     fromDateTime,
     toDateTime
-  },
-  (connectorData, connectorResponse) => {
+  }, (connectorData, connectorResponse) => {
     const activityResults = connectorResponse.body
     response(req, res, 'dashboard/index', {
       name: req.user.username,
@@ -51,16 +50,20 @@ module.exports = (req, res) => {
       period
     })
   })
-  .on('connectorError', (err, connectorResponse) => {
+  .on('connectorError', (error, connectorResponse) => {
+    const status = _.get(connectorResponse, 'statusCode', 404)
     logger.error(`[${correlationId}] Calling connector to get transactions summary failed -`, {
       service: 'connector',
       method: 'GET',
-      status: _.get(connectorResponse, 'statusCode')
+      status,
+      error
     })
+    res.status(status)
     response(req, res, 'dashboard/index', {
       name: req.user.username,
       serviceId: req.service.externalId,
-      activityError: true
+      activityError: true,
+      period
     })
   })
 }

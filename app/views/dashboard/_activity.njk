@@ -5,8 +5,8 @@
       <select id="activity-period" name="period" class="form-control">
         <option {% if period == 'today' %}selected{% endif %} value="today">Today</option>
         <option {% if period == 'yesterday' %}selected{% endif %} value="yesterday">Yesterday</option>
-        <option {% if period == 'last-seven-days' %}selected{% endif %} value="last-seven-days">Previous 7 days</option>
-        <option {% if period == 'last-thirty-days' %}selected{% endif %} value="last-thirty-days">Previous 30 days</option>
+        <option {% if period == 'previous-seven-days' %}selected{% endif %} value="previous-seven-days">Previous 7 days</option>
+        <option {% if period == 'previous-thirty-days' %}selected{% endif %} value="previous-thirty-days">Previous 30 days</option>
       </select>
       <noscript>
         <button class="button nojs-update-button" type="submit">Update</button>
