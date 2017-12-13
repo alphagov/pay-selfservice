@@ -27,6 +27,8 @@
     }
 
     &__values {
+      @extend %contain-floats;
+
       display: flex;
       position: relative;
       padding: $gutter / 2;
@@ -38,7 +40,7 @@
       justify-content: space-between;
       align-items: baseline;
 
-      &::after {
+      &::before {
         content: "";
         position: absolute;
         top: -1px;
@@ -48,23 +50,25 @@
         background-color: $black;
       }
 
-      &--red::after {
+      &--red::before {
         background-color: $red;
       }
 
-      &--blue::after {
+      &--blue::before {
         background-color: $govuk-blue;
       }
     }
 
     &__count {
       @include core-24;
+      float: left;
     }
 
     &__amount {
       @include core-24;
       text-align: right;
       flex: 1;
+      float: right;
     }
   }
   &-explainer {
