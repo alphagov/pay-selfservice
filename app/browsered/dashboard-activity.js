@@ -1,6 +1,6 @@
 'use strict'
 
-exports.init = () => {
+module.exports.init = () => {
   const rangeSelector = document.getElementById('activity-period')
 
   if (rangeSelector) {

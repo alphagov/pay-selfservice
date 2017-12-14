@@ -1,2 +1,2 @@
-exports.currency = require('./currency')
-exports.datetime = require('./datetime')
+module.exports.currency = require('./currency')
+module.exports.datetime = require('./datetime')

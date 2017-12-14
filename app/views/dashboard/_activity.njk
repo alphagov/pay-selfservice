@@ -38,14 +38,18 @@ fromDate={{ fromDateTime | datetime('date') | urlencode }}&fromTime={{ fromDateT
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">Successful refunds</h2>
     </header>
+    {% if _features.REFUNDS_IN_TX_LIST %}
     <a class="dashboard-total-group__link" href="/transactions?state=refund&amp;{{ transactions_period_string }}" title="View today’s successful payment transactions">
+    {% endif %}
       <dl class="dashboard-total-group__values dashboard-total-group__values--red">
         <dt class="visually-hidden">Count</dt>
         <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
         <dt class="visually-hidden">Amount</dt>
         <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | currency }}</dd>
       </dl>
+    {% if _features.REFUNDS_IN_TX_LIST %}
     </a>
+    {% endif %}
   </article>
   <article class="dashboard-total-group column-third">
     <header class="dashboard-total-group__heading">
