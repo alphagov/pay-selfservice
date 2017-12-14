@@ -11,6 +11,7 @@ const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION
 const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient
 const auth = require('../../services/auth_service.js')
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
+const datetime = require('../../utils/nunjucks-filters/datetime')
 
 module.exports = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
@@ -32,6 +33,8 @@ module.exports = (req, res) => {
     toDateTime = moment().tz('Europe/London').startOf('day').format()
   }
 
+  const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
+
   logger.info(`[${correlationId}] successfully logged in`)
 
   connectorClient().getTransactionSummary({
@@ -47,7 +50,8 @@ module.exports = (req, res) => {
       activity: activityResults,
       fromDateTime,
       toDateTime,
-      period
+      period,
+      transactionsPeriodString
     })
   })
   .on('connectorError', (error, connectorResponse) => {
