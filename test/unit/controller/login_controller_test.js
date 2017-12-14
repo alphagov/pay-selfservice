@@ -7,7 +7,7 @@ const assert = require('assert')
 const sinon = require('sinon')
 
 // Custom dependencies
-const loginController = require('../../../app/controllers/login_controller.js')
+const loginController = require('../../../app/controllers/login')
 
 // Global setup
 let req, res, destroy, redirect
@@ -35,7 +35,7 @@ describe('Log out', function () {
   })
 
   it('should clear the session', function () {
-    loginController.logOut(req, res)
+    loginController.logout(req, res)
 
     assert(destroy.calledOnce)
     assert(redirect.calledWith('/login'))
@@ -44,7 +44,7 @@ describe('Log out', function () {
   it('should handle no session gracefully', function () {
     req = {}
 
-    loginController.logOut(req, res)
+    loginController.logout(req, res)
     assert(redirect.calledWith('/login'))
   })
 })

@@ -26,6 +26,7 @@ const proxy = require(path.join(__dirname, '/app/utils/proxy'))
 const auth = require(path.join(__dirname, '/app/services/auth_service'))
 const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
 const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler'))
+const nunjucksFilters = require('./app/utils/nunjucks-filters')
 
 // Global constants
 const port = (process.env.PORT || 3000)
@@ -104,6 +105,12 @@ function initialiseTemplateEngine (app) {
   // if it's not production we want to re-evaluate the assets on each file change
   nunjucksEnvironment.addGlobal('css_path', NODE_ENV === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
   nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
+
+  // Load custom Nunjucks filters
+  for (let name in nunjucksFilters) {
+    let filter = nunjucksFilters[name]
+    nunjucksEnvironment.addFilter(name, filter)
+  }
 }
 
 function initialisePublic (app) {

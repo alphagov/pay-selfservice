@@ -56,7 +56,7 @@ describe('create service - service naming', function () {
         csrfToken: csrf().create('123')
       })
       .expect(303)
-      .expect('Location', paths.user.loggedIn)
+      .expect('Location', paths.dashboard.index)
       .end(done)
   })
 

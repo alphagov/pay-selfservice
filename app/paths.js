@@ -27,11 +27,13 @@ module.exports = {
     otpSetup: '/otp-setup',
     logOut: '/logout',
     callback: '/callback',
-    loggedIn: '/',
     noAccess: '/noaccess',
     forgottenPassword: '/reset-password',
     passwordRequested: '/reset-password-requested',
     forgottenPasswordReset: '/reset-password/:id'
+  },
+  dashboard: {
+    index: '/'
   },
   apiKeys: {
     index: '/tokens',

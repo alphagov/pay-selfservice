@@ -10,7 +10,7 @@ const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
-const loginController = require('../controllers/login_controller')
+const loginController = require('../controllers/login')
 const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateServiceNamingInputs} = require('../utils/registration_validations')
 
 module.exports = {
@@ -235,7 +235,7 @@ module.exports = {
       })
       .then((updatedService) => {
         _.unset(req, 'session.pageData.submitYourServiceName')
-        res.redirect(303, paths.user.loggedIn)
+        res.redirect(303, paths.dashboard.index)
       })
       .catch(err => {
         logger.debug(`[requestId=${correlationId}] invalid user input - service name`)

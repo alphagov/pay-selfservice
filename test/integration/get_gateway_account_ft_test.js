@@ -45,6 +45,11 @@ describe('get account', function () {
       payment_provider: 'sandbox'
     })
 
+    connectorMock
+      .get(`/v1/api/accounts/1/transactions-summary`)
+      .query(() => true)
+      .reply(200, {})
+
     supertest(app)
       .get('/')
       .set('Accept', 'application/json')

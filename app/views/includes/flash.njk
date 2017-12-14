@@ -3,14 +3,14 @@
   {% if flash.genericError %}
   <div class="column-two-thirds flash-container">
     <div class="notification generic-error">
-      {{flash.genericError}}
+      {{ flash.genericError | safe }}
     </div>
   </div>
   {% endif %}
   {% if flash.generic %}
   <div class="column-two-thirds flash-container">
     <div class="notification generic-flash">
-      {{flash.generic}}
+      {{ flash.generic | safe }}
     </div>
   </div>
   {% endif %}

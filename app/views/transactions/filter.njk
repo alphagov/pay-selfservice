@@ -16,6 +16,20 @@
           </label>
           <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
         </div>
+      {% if _features.REFUNDS_IN_TX_LIST %}
+        <div class="column-quarter">
+          <label class="form-label" for="state">
+            <strong>State</strong>
+            <span class="form-hint">Select an option</span>
+          </label>
+          <select class="form-control large" id="state" name="state" data-enhance-multiple>
+            <option value="">Any</option>
+            {% for eventState in eventStates %}
+            <option value="{{eventState.key}}" {% if eventState.value.selected %} selected {% endif %}>{{eventState.value.text}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      {% endif %}
         <div class="column-quarter">
           <label class="form-label" for="card-brand">
             <strong>Card brand</strong>
@@ -28,6 +42,7 @@
             {% endfor %}
           </select>
         </div>
+      {% if not _features.REFUNDS_IN_TX_LIST %}
         <div class="column-quarter">
           <label class="form-label" for="state">
             <strong>State</strong>
@@ -40,6 +55,7 @@
             {% endfor %}
           </select>
         </div>
+      {% endif %}
 
       <fieldset class="column-half datetime-pair">
         <legend>
