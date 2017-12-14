@@ -2,10 +2,10 @@
   max-width: 1020px;
 }
 
-/* Allow the menu link to sit on the same line as the logo */
+// Allow the menu link to sit on the same line as the logo
 #global-header.with-proposition {
   .header-wrapper {
-    /* Allow the header contents to dictate their own padding-bottom when the proposition menu can be toggled */
+    // Allow the header contents to dictate their own padding-bottom when the proposition menu can be toggled
     padding-bottom: 0;
 
     @include media(desktop) {
@@ -154,24 +154,23 @@
   }
 
   .phase-tag {
-    /* Set text for lowercase (phase banner defaults to uppercase) */
-    text-transform: none;
-    letter-spacing: inherit;
-    float: right;
+    // Set text for lowercase (phase banner defaults to uppercase)
     margin-right: 0;
+    float: right;
+    color: $text-colour;
+    letter-spacing: inherit;
+    text-transform: none;
 
     &:first-letter {
       text-transform: capitalize;
     }
 
     .env-live & {
-      background: $govuk-blue;
-      color: $white;
+      background: $panel-colour;
     }
 
     .env-test & {
       background: $yellow;
-      color: $text-colour;
     }
   }
 }
