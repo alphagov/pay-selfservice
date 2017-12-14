@@ -21,7 +21,7 @@
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">Successful payments</h2>
     </header>
-    <a class="dashboard-total-group__link" href="/transactions?state=payment-success&{{ transactionsPeriodString }}" title="View today’s successful payment transactions">
+    <a class="dashboard-total-group__link" href="/transactions?state=payment-success&{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
       <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
         <dt class="visually-hidden">Count</dt>
         <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
@@ -35,7 +35,7 @@
       <h2 class="dashboard-total-group__title">Successful refunds</h2>
     </header>
     {% if _features.REFUNDS_IN_TX_LIST %}
-    <a class="dashboard-total-group__link" href="/transactions?state=refunded&{{ transactionsPeriodString }}" title="View today’s successful payment transactions">
+    <a class="dashboard-total-group__link" href="/transactions?state=refunded&{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
     {% endif %}
       <dl class="dashboard-total-group__values dashboard-total-group__values--red">
         <dt class="visually-hidden">Count</dt>
@@ -51,12 +51,10 @@
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">Net income</h2>
     </header>
-    <a class="dashboard-total-group__link" href="/transactions?{{ transactionsPeriodString }}" title="View today’s successful payment transactions">
       <dl class="dashboard-total-group__values">
         <dt class="visually-hidden">Amount</dt>
         <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | currency }}</dd>
       </dl>
-    </a>
     <details class="dashboard-total-explainer">
       <summary>How these numbers are calculated</summary>
       <div class="panel panel-border-narrow">
