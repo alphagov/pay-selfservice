@@ -1,0 +1,7 @@
+.target-to-show {
+  display: none;
+
+  &:target {
+    display: block;
+  }
+}

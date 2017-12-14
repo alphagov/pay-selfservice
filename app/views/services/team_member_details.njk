@@ -4,11 +4,6 @@
 Team members details — GOV.UK Pay
 {% endblock %}
 
-{% block pageSpecificJS %}
-  <script src="/public/js/components/confirm.js"></script>
-{% endblock %}
-
-
 {% block mainClasses %}full-width{% endblock %}
 
 {% block full_width_content %}
@@ -46,21 +41,21 @@ Team members details — GOV.UK Pay
   <div class="grid-row js-confirm">
       <div class="column-two-thirds">
           <p>
-              <a id="remove-team-member" class="red js-toggle-confirm-dialog" href="#">Remove user</a>
+              <a id="remove-team-member" href="#confirm-remove-user-dialog">Remove user</a>
           </p>
       </div>
   </div>
-  <div id="confirm-remove-user-dialog" class="grid-row js-confirm-dialog hidden">
+  <div id="confirm-remove-user-dialog" class="grid-row target-to-show">
       <div class="column-two-thirds">
-          <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-              <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+          <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
+              <h1 class="heading-medium error-summary-heading" id="error-summary">
                   Are you sure you want to remove {{username}}?
               </h1>
               <div class="button-group">
                   <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
                       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
                       <input id="remove-team-member-confirm" type="submit" value="Yes, remove" class="button delete"/>
-                      <a id="remove-team-member-cancel" href="#" class="js-confirm-close-dialog">Cancel</a>
+                      <a id="remove-team-member-cancel" href="#main">Cancel</a>
                   </form>
               </div>
           </div>
