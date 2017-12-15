@@ -35,7 +35,7 @@
       <h2 class="dashboard-total-group__title">Successful refunds</h2>
     </header>
     {% if _features.REFUNDS_IN_TX_LIST %}
-    <a class="dashboard-total-group__link" href="/transactions?state=refunded&{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
+    <a class="dashboard-total-group__link" href="/transactions?state=refund-success&{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
     {% endif %}
       <dl class="dashboard-total-group__values dashboard-total-group__values--red">
         <dt class="visually-hidden">Count</dt>
