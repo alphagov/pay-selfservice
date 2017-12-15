@@ -5,7 +5,7 @@ RUN set -x \
                 musl="1.1.18-r2" \
                 musl-dev="1.1.18-r2" \
                 libc6-compat="1.1.18-r2" \
-                openssl="1.0.2m-r0" \
+                openssl="1.0.2n-r0" \
                 c-ares="1.13.0-r0" \
                 busybox="1.27.2-r7" \
                 bash="4.4.12-r5" \
