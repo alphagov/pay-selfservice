@@ -1,5 +1,8 @@
 FROM node:6.12.2-alpine
 
+# This section is to fix some security vulnerabilities present in our baselayer.
+# Here, we update the vulnerable packages pulling them from the Alpine edge branch.
+# This is just a short-term patch.
 RUN set -x \
         && apk add --no-cache \
                 musl="1.1.18-r2" \
