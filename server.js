@@ -22,7 +22,6 @@ const router = require(path.join(__dirname, '/app/routes'))
 const cookieUtil = require(path.join(__dirname, '/app/utils/cookie'))
 const noCache = require(path.join(__dirname, '/app/utils/no_cache'))
 const customCertificate = require(path.join(__dirname, '/app/utils/custom_certificate'))
-const proxy = require(path.join(__dirname, '/app/utils/proxy'))
 const auth = require(path.join(__dirname, '/app/services/auth_service'))
 const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
 const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler'))
@@ -75,11 +74,6 @@ function initialiseGlobalMiddleware (app) {
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
-}
-
-function initialiseProxy (app) {
-  app.enable('trust proxy')
-  proxy.use()
 }
 
 function initialiseTemplateEngine (app) {
@@ -160,8 +154,6 @@ function initialise () {
   app.disable('x-powered-by')
   app.use(flash())
   initialiseTLS(app)
-  initialiseProxy(app)
-
   initialiseCookies(app)
   initialiseAuth(app)
   initialiseGlobalMiddleware(app)
