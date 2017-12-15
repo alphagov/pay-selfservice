@@ -37,6 +37,7 @@ const VALID_CREATE_TOKEN_RESPONSE = {token: randomUuid()}
 const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   name: PAYMENT_DESCRIPTION,
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
+  serviceName: VALID_USER.serviceRoles[0].service.name,
   price: PAYMENT_AMOUNT * 100,
   gatewayAccountId: GATEWAY_ACCOUNT_ID
 }).getPlain()
