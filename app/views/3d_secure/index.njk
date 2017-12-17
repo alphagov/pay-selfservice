@@ -7,7 +7,7 @@
 {% block mainContent %}
 
   {% if not permissions.toggle_3ds_update %}
-    {% extends "../includes/settings-read-only.njk" %}
+    {% include "../includes/settings-read-only.njk" %}
   {% endif %}
 
   {% if supports3ds %}

@@ -12,8 +12,9 @@ var sinon = require('sinon')
 
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-var loginController = require(path.join(__dirname, '/../../app/controllers/login_controller.js'))
+var loginController = require(path.join(__dirname, '/../../app/controllers/login'))
 var mockRes = require('../fixtures/response')
+const {CONNECTOR_URL} = process.env
 
 var chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -24,8 +25,8 @@ var ACCOUNT_ID = 182364
 const USER_RESOURCE = '/v1/api/users'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 
-var user = mockSession.getUser({gateway_account_id: ACCOUNT_ID})
-
+var user = mockSession.getUser()
+user.serviceRoles[0].service.gatewayAccountIds = [ACCOUNT_ID]
 function testController (controller, req, res) {
   _.assign(req, {
     headers: {'x-request-id': 'some-unique-id'},
@@ -37,11 +38,17 @@ function testController (controller, req, res) {
 describe('The logged in endpoint', function () {
   it('should render ok when logged in', function (done) {
     var app = mockSession.getAppWithLoggedInUser(getApp(), user)
+
+    nock(CONNECTOR_URL)
+      .get(`/v1/api/accounts/${ACCOUNT_ID}/transactions-summary`)
+      .query(() => true)
+      .reply(200, {})
+
     request(app)
       .get('/')
       .expect(200)
       .expect(function (res) {
-        assert(res.text.indexOf('Welcome') !== -1)
+        assert(res.text.indexOf('Dashboard') !== -1)
       })
       .end(done)
   })
@@ -201,11 +208,11 @@ describe('login get endpoint', function () {
     var req = { 'body': { 'username': '', 'password': '' } }
     var res = mockRes.getStubbedRes()
 
-    testController(loginController.logUserin, req, res)
+    testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_all')
 
     res.locals = { 'flash': {} }
-    testController(loginController.logInGet, req, res)
+    testController(loginController.loginGet, req, res)
     expect(res.locals.flash === {username: 'You must enter a username', password: 'You must enter a password'})
     done()
   })
@@ -214,11 +221,11 @@ describe('login get endpoint', function () {
     var req = { 'body': { 'username': '', 'password': '123' } }
     var res = mockRes.getStubbedRes()
 
-    testController(loginController.logUserin, req, res)
+    testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_username')
 
     res.locals = { 'flash': {} }
-    testController(loginController.logInGet, req, res)
+    testController(loginController.loginGet, req, res)
     expect(res.locals.flash === {username: 'You must enter a username'})
     done()
   })
@@ -229,7 +236,7 @@ describe('login post endpoint', function () {
     var req = { 'body': { 'username': '', 'password': '' } }
     var res = mockRes.getStubbedRes()
 
-    testController(loginController.logUserin, req, res)
+    testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_all')
     done()
   })
@@ -238,7 +245,7 @@ describe('login post endpoint', function () {
     var req = { 'body': { 'username': '', 'password': '123' } }
     var res = mockRes.getStubbedRes()
 
-    testController(loginController.logUserin, req, res)
+    testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_username')
     done()
   })
@@ -308,6 +315,11 @@ describe('direct login after user registration', function () {
 
     connectorMock.get(`${CONNECTOR_ACCOUNT_PATH}/${gatewayAccountId}`)
       .reply(200, { foo: 'bar', gateway_account_id: gatewayAccountId })
+
+    connectorMock
+      .get(`/v1/api/accounts/${gatewayAccountId}/transactions-summary`)
+      .query(() => true)
+      .reply(200, {})
 
     let destroyStub = sinon.stub()
     let gatewayAccountData = {

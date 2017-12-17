@@ -5,7 +5,7 @@
     {% endif %}
     {% if currentGatewayAccount %}
     <p>
-      <strong class="phase-tag">{{currentGatewayAccount.full_type}}</strong>
+      <strong class="phase-tag">{{currentGatewayAccount.full_type}} {% if currentGatewayAccount.full_type == 'live' %}account{% endif %}</strong>
     </p>
     {% endif %}
   </div>

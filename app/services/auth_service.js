@@ -85,7 +85,7 @@ function enforceUserAuthenticated (req, res, next) {
 
 function redirectLoggedInUser (req, res, next) {
   if (hasValidSession(req)) {
-    return res.redirect(paths.user.loggedIn)
+    return res.redirect(paths.dashboard.index)
   }
   next()
 }

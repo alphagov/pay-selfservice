@@ -27,6 +27,7 @@ var ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' 
 var ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 var EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 var TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
+var TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
 
 /**
  * @private
@@ -113,6 +114,11 @@ var _getNotificationEmailUrlFor = function (accountID) {
 /** @private */
 var _getToggle3dsUrlFor = function (accountID) {
   return process.env.CONNECTOR_URL + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
+}
+
+/** @private */
+var _getTransactionSummaryUrlFor = function (accountID, period) {
+  return process.env.CONNECTOR_URL + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID) + '?' + period
 }
 
 function getQueryStringForParams (params) {
@@ -532,6 +538,23 @@ ConnectorClient.prototype = {
   update3dsEnabled: function (params, successCallback) {
     var url = _getToggle3dsUrlFor(params.gatewayAccountId)
     baseClient.patch(url, params, this.responseHandler(successCallback))
+    return this
+  },
+
+  /**
+   *
+   * @param {Object} params
+   * @param {Function} successCallback
+   */
+  getTransactionSummary: function (params, successCallback) {
+    const queryStrings = {
+      from_date: params.fromDateTime,
+      to_date: params.toDateTime
+    }
+    const period = querystring.stringify(queryStrings)
+    var url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period)
+    baseClient.get(url, params, this.responseHandler(successCallback))
+
     return this
   }
 }

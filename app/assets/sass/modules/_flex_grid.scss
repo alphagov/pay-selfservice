@@ -14,8 +14,11 @@
 
   &--heading-group {
     margin: 0 $gutter-half;
-    border-top: solid 1px $grey-2;
     flex: 2 100%;
+
+    &.marked {
+      border-top: solid 1px $grey-2;
+    }
 
     h2 {
       margin-top: 1.25em;
