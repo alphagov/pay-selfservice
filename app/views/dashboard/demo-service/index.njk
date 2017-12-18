@@ -46,7 +46,7 @@ Test with your users - {{currentServiceName}} {{currentGatewayAccount.full_type}
         <div class="key-list-item prototyping__links-list-item">
           <h3 class="heading-small"><a href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a></h3>
           <p>Payment description: <strong class="prototyping__links-list-item-description">{{ product.name }}</strong> <br/>
-          Payment amount: <strong class="prototyping__links-list-item-amount">&pound;{{ product.priceInPounds }}</strong> <br/>
+          Payment amount: <strong class="prototyping__links-list-item-amount">{{ product.price | currency }}</strong> <br/>
           {% if product.returnUrl %}Success page: <strong class="prototyping__links-list-item-success-page">{{ product.returnUrl }}</strong></p>{% endif %}
           <p><a class="prototyping__links-list-item-delete-link" href="links/disable/{{ product.externalId }}">Delete prototype link</a></p>
         </div>
