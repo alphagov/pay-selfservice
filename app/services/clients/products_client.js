@@ -37,6 +37,7 @@ module.exports = {
  * @param {string} options.payApiToken - The API token to use to access GOV.UK Pay in order to initiate payments for the product
  * @param {string} options.name - The name of the product
  * @param {number} options.price - The price of product in pence
+ * @param {string} options.serviceName - The name of the service with which the product is associated
  * @param {string=} options.description - The description of the product
  * @param {string=} options.returnUrl - Where to redirect to upon completion of a charge for this product
  * @returns {Promise<Product>}
@@ -53,6 +54,7 @@ function createProduct (options) {
       name: options.name,
       price: options.price,
       description: options.description,
+      service_name: options.serviceName,
       return_url: options.returnUrl
     },
     description: 'create a product for a service',

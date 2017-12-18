@@ -69,6 +69,7 @@ describe('products client - create a new product', () => {
           payApiToken: requestPlain.pay_api_token,
           name: requestPlain.name,
           price: requestPlain.price,
+          serviceName: requestPlain.service_name,
           description: requestPlain.description,
           returnUrl: requestPlain.return_url
         }))
@@ -120,6 +121,7 @@ describe('products client - create a new product', () => {
           payApiToken: requestPlain.pay_api_token,
           name: requestPlain.name,
           price: requestPlain.price,
+          serviceName: requestPlain.service_name,
           description: requestPlain.description,
           returnUrl: requestPlain.return_url
         }), done)
@@ -158,6 +160,7 @@ describe('products client - create a new product', () => {
           name: requestPlain.name,
           price: requestPlain.price,
           description: requestPlain.description,
+          serviceName: requestPlain.service_name,
           returnUrl: requestPlain.return_url
         }), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))

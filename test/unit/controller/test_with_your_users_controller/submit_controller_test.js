@@ -37,6 +37,7 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   payApiToken: API_TOKEN,
   price: parseInt(VALID_PAYLOAD['payment-amount']) * 100,
   returnUrl: VALID_PAYLOAD['confirmation-page'],
+  serviceName: VALID_USER.serviceRoles[0].service.name,
   gatewayAccountId: GATEWAY_ACCOUNT_ID
 }).getPlain()
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()

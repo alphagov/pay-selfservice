@@ -19,6 +19,7 @@ module.exports = {
       gateway_account_id: opts.gatewayAccountId || randomGatewayAccountId(),
       pay_api_token: opts.payApiToken || 'pay-api-token',
       name: opts.name || 'A Product Name',
+      service_name: opts.serviceName || 'Example Service',
       price: opts.price || randomPrice()
     }
     if (opts.description) data.description = opts.description
@@ -68,6 +69,7 @@ module.exports = {
       external_id: opts.external_id || randomExternalId(),
       gateway_account_id: opts.gateway_account_id || randomGatewayAccountId(),
       name: opts.name || 'A Product Name',
+      service_name: opts.serviceName || 'Example Service',
       price: opts.price || randomPrice(),
       _links: opts.links
     }

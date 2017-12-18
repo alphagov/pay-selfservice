@@ -16,7 +16,6 @@ module.exports = (req, res) => {
   if (!paymentAmount || !paymentDescription) {
     return res.redirect(paths.prototyping.demoPayment.index)
   }
-
   publicAuthClient.createTokenForAccount({
     accountId: gatewayAccountId,
     correlationId: req.correlationId,
@@ -30,6 +29,7 @@ module.exports = (req, res) => {
       payApiToken: publicAuthData.token,
       gatewayAccountId,
       name: paymentDescription,
+      serviceName: req.service.name,
       price: Math.trunc(paymentAmount * 100)
     }))
     .then(product => {
