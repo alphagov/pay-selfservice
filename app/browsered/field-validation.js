@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM Dependencies
-const lodash = require('lodash')
+const every = require('lodash/every')
 
 // Local Dependencies
 const checks = require('./field-validation-checks')
@@ -27,7 +27,7 @@ function initValidation (e) {
   let validatedFields = findFields(form)
   .map(field => validateField(form, field))
 
-  if (lodash.every(validatedFields)) {
+  if (every(validatedFields)) {
     form.submit()
   } else {
     populateErrorSummary(form)

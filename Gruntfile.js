@@ -27,6 +27,18 @@ module.exports = function (grunt) {
       }
     },
 
+    cssmin: {
+      target: {
+        files: [{
+          expand: true,
+          cwd: 'public/stylesheets',
+          src: ['*.css', '!*.min.css'],
+          dest: 'public/stylesheets',
+          ext: '.min.css'
+        }]
+      }
+    },
+
     // Copies templates and assets from external modules and dirs
     copy: {
       govuk: {
@@ -139,6 +151,14 @@ module.exports = function (grunt) {
       }
     },
 
+    uglify: {
+      my_target: {
+        files: {
+          'public/js/application.min.js': ['public/js/application.js']
+        }
+      }
+    },
+
     // nodemon watches for changes and restarts app
     nodemon: {
       dev: {
@@ -165,6 +185,8 @@ module.exports = function (grunt) {
     'grunt-contrib-copy',
     'grunt-contrib-watch',
     'grunt-contrib-clean',
+    'grunt-contrib-uglify',
+    'grunt-contrib-cssmin',
     'grunt-sass',
     'grunt-nodemon',
     'grunt-browserify',
@@ -179,7 +201,9 @@ module.exports = function (grunt) {
     'copy',
     'replace',
     'browserify',
-    'sass'
+    'uglify',
+    'sass',
+    'cssmin'
   ])
 
   const defaultTasks = ['generate-assets', 'concurrent:target']
