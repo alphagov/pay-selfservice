@@ -71,7 +71,8 @@ describe('products client - create a new product', () => {
           price: requestPlain.price,
           serviceName: requestPlain.service_name,
           description: requestPlain.description,
-          returnUrl: requestPlain.return_url
+          returnUrl: requestPlain.return_url,
+          type: 'DEMO'
         }))
         .then(res => {
           result = res
@@ -92,6 +93,7 @@ describe('products client - create a new product', () => {
       expect(result.description).to.equal(plainRequest.description)
       expect(result.price).to.equal(plainRequest.price)
       expect(result.returnUrl).to.equal('https://example.gov.uk/paid-for-somet')
+      expect(result.type).to.equal('DEMO')
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')
@@ -123,7 +125,8 @@ describe('products client - create a new product', () => {
           price: requestPlain.price,
           serviceName: requestPlain.service_name,
           description: requestPlain.description,
-          returnUrl: requestPlain.return_url
+          returnUrl: requestPlain.return_url,
+          type: requestPlain.type
         }), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
@@ -161,7 +164,8 @@ describe('products client - create a new product', () => {
           price: requestPlain.price,
           description: requestPlain.description,
           serviceName: requestPlain.service_name,
-          returnUrl: requestPlain.return_url
+          returnUrl: requestPlain.return_url,
+          type: requestPlain.type
         }), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {

@@ -55,7 +55,8 @@ describe('products client - find a product by it\'s external id', function () {
         price: 1000,
         name: 'A Product Name',
         description: 'About this product',
-        return_url: 'https://example.gov.uk'
+        return_url: 'https://example.gov.uk',
+        type: 'DEMO'
       })
       productsMock.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}`)
@@ -84,6 +85,7 @@ describe('products client - find a product by it\'s external id', function () {
       expect(result.description).to.exist.and.equal(plainResponse.description)
       expect(result.price).to.exist.and.equal(plainResponse.price)
       expect(result.returnUrl).to.exist.and.equal(plainResponse.return_url)
+      expect(result.type).to.equal('DEMO')
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')

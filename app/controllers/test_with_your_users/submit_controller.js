@@ -7,6 +7,7 @@ const lodash = require('lodash')
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
+const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const authService = require('../../services/auth_service.js')
 const {isCurrency, isHttps, isBelowMaxAmount} = require('../../browsered/field-validation-checks')
@@ -58,7 +59,8 @@ module.exports = (req, res) => {
       name: req.body['payment-description'],
       returnUrl: req.body['confirmation-page'],
       serviceName: req.service.name,
-      price: Math.trunc(paymentAmount * 100)
+      price: Math.trunc(paymentAmount * 100),
+      type: productTypes.PROTOTYPE
     }))
     .then(product => {
       params.prototypeLink = lodash.get(product, 'links.pay.href')
