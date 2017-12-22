@@ -3,14 +3,20 @@
 
 // govuk_frontend_toolkit dependencies
 // https://github.com/alphagov/govuk_frontend_toolkit#usage
-@import "_shims";
-@import "_css3";
-@import "_conditionals";
-@import "_colours";
-@import "_measurements";
-@import "_typography";
-@import "_grid_layout";
-@import "design-patterns/_buttons";
+@import "~govuk-toolkit/_shims";
+@import "~govuk-toolkit/_css3";
+@import "~govuk-toolkit/_conditionals";
+@import "~govuk-toolkit/_colours";
+@import "~govuk-toolkit/_measurements";
+@import "~govuk-toolkit/_typography";
+@import "~govuk-toolkit/_grid_layout";
+@import "~govuk-toolkit/design-patterns/_buttons";
+@import "~govuk-toolkit/_font_stack";                             // Font family variables
+@import "~govuk-toolkit/_conditionals";                           // Media query mixin
+@import "~govuk-toolkit/_device-pixels";                          // Retina image mixin
+@import "~govuk-toolkit/design-patterns/alpha-beta";
+@import "~govuk-toolkit/design-patterns/buttons";
+@import "~govuk-toolkit/design-patterns/breadcrumbs";
 
 // Override New Transport font-stack from front-end toolkit
 $grey-8: #fff;
@@ -19,7 +25,7 @@ $grey-8: #fff;
   @content;
 }
 
-@import "govuk-elements";
+@import "~govuk-elements";
 
 // Application mixins and helpers
 @import "helpers/_margins";

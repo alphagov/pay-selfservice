@@ -24,6 +24,7 @@
     ]
   },
   "scripts": {
+    "webpack": "webpack",
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
     "start": "node_modules/forever/bin/forever --minUptime 1000 --spinSleepTime 500 start.js",
@@ -88,10 +89,13 @@
     "chai-string": "^1.4.0",
     "cheerio": "^1.0.0-rc.1",
     "chokidar-cli": "latest",
+    "css-loader": "^0.28.7",
+    "cssnano": "^3.10.0",
     "envfile": "^2.1.1",
     "errorhandler": "^1.5.0",
     "eslint": "^3.0.0",
     "express-writer": "0.0.4",
+    "extract-text-webpack-plugin": "^3.0.2",
     "fresh-require": "^1.0.3",
     "govuk-elements-sass": "3.1.2",
     "govuk_frontend_toolkit": "7.2.0",
@@ -117,14 +121,21 @@
     "nyc": "^11.3.0",
     "pact": "1.0.0",
     "portfinder": "^1.0.13",
+    "postcss-cssnext": "^3.0.2",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^2.0.9",
+    "postcss-scss": "^1.0.2",
     "proxyquire": "~1.8.0",
     "sass-lint": "^1.10.2",
+    "sass-loader": "^6.0.6",
     "sinon": "^4.1.2",
     "snyk": "^1.36.1",
     "standard": "^10.0.3",
+    "style-loader": "^0.19.1",
     "superagent": "^3.5.2",
     "supertest": "^3.0.0",
-    "supertest-session": "^3.0.0"
+    "supertest-session": "^3.0.0",
+    "webpack": "^3.10.0"
   },
   "snyk": true
 }
