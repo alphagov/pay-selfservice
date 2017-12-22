@@ -117,6 +117,7 @@
     "mocha": "^4.0.1",
     "nock": "^9.0.13",
     "node-sass": "^4.7.2",
+    "nunjucks-loader": "^2.4.8",
     "nunjucksify": "^2.2.0",
     "nyc": "^11.3.0",
     "pact": "1.0.0",
