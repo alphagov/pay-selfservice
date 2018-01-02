@@ -10,6 +10,7 @@ const lodash = require('lodash')
  * @property {string} name
  * @property {number} price
  * @property {string} description
+ * @property {string} type - The type of the product
  * @property {string} returnUrl
  * @property {string} govukStatus - the current status of the gov.uk pay charge
  * @property {string} serviceName - the name of the service with which the product is associated
@@ -36,6 +37,7 @@ class Product {
    * @param {string} opts._links[].method - the http method of the link
    * @param {string} opts._links[].rel - the name of the link
    * @param {string=} opts.description - The name of the product
+   * @param {string=} opts.type - The type of the product
    * @param {string=} opts.return_url - return url of where to redirect for any charge of this product
    **/
   constructor (opts) {
@@ -46,6 +48,7 @@ class Product {
     this.govukStatus = opts.govuk_status
     this.serviceName = opts.service_name
     this.description = opts.description
+    this.type = opts.type
     this.returnUrl = opts.return_url
     opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, {method: link.method, href: link.href}))
   }

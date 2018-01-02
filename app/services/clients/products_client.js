@@ -39,6 +39,7 @@ module.exports = {
  * @param {number} options.price - The price of product in pence
  * @param {string} options.serviceName - The name of the service with which the product is associated
  * @param {string=} options.description - The description of the product
+ * @param {string=} options.type - The type of the product
  * @param {string=} options.returnUrl - Where to redirect to upon completion of a charge for this product
  * @returns {Promise<Product>}
  */
@@ -55,6 +56,7 @@ function createProduct (options) {
       price: options.price,
       description: options.description,
       service_name: options.serviceName,
+      type: options.type,
       return_url: options.returnUrl
     },
     description: 'create a product for a service',

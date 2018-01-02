@@ -6,6 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
+const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
 
@@ -30,7 +31,8 @@ module.exports = (req, res) => {
       gatewayAccountId,
       name: paymentDescription,
       serviceName: req.service.name,
-      price: Math.trunc(paymentAmount * 100)
+      price: Math.trunc(paymentAmount * 100),
+      type: productTypes.DEMO
     }))
     .then(product => {
       lodash.unset(req, 'session.pageData.makeADemoPayment')

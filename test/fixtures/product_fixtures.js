@@ -20,7 +20,8 @@ module.exports = {
       pay_api_token: opts.payApiToken || 'pay-api-token',
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
-      price: opts.price || randomPrice()
+      price: opts.price || randomPrice(),
+      type: opts.type || 'DEMO'
     }
     if (opts.description) data.description = opts.description
     if (opts.returnUrl) data.return_url = opts.returnUrl
@@ -71,6 +72,7 @@ module.exports = {
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
       price: opts.price || randomPrice(),
+      type: opts.type || 'DEMO',
       _links: opts.links
     }
     if (opts.description) data.description = opts.description

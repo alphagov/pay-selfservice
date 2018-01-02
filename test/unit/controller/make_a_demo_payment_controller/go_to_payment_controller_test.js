@@ -39,7 +39,8 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
   serviceName: VALID_USER.serviceRoles[0].service.name,
   price: PAYMENT_AMOUNT * 100,
-  gatewayAccountId: GATEWAY_ACCOUNT_ID
+  gatewayAccountId: GATEWAY_ACCOUNT_ID,
+  type: 'DEMO'
 }).getPlain()
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
