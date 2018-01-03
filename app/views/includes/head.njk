@@ -1,4 +1,6 @@
-<link href="{{ css_path }}" media="screen" rel="stylesheet" type="text/css" />
+{% if css_path %}
+  <link href="{{ css_path }}" media="screen" rel="stylesheet" type="text/css" />
+{% endif %}
 
 {% if analyticsTrackingId %}
 <!-- Google Analytics -->

@@ -1,4 +1,8 @@
 'use strict'
+
+// Include Sass root file so that Webpack makes it
+require('./assets/sass/application.scss')
+
 // NPM dependencies
 require('babel-polyfill')
 const $ = require('jquery')
@@ -12,3 +16,7 @@ window.$ = window.jQuery = $
 multiSelects.enableMultiSelects()
 fieldValidation.enableFieldValidation()
 dashboardActivity.init()
+
+if (process.env.NODE_ENV !== 'production') {
+  module.hot.accept()
+}

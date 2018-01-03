@@ -7,6 +7,10 @@ require(path.join(__dirname, '/app/utils/metrics')).metrics()
 // NPM dependencies
 const express = require('express')
 const nunjucks = require('nunjucks')
+const webpack = require('webpack')
+const webpackDevMiddleware = require('webpack-dev-middleware')
+const webpackHotMiddleware = require('webpack-hot-middleware')
+const webpackConfig = require('./webpack.config.js')
 const httpsAgent = require('https').globalAgent
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
@@ -31,8 +35,10 @@ const nunjucksFilters = require('./app/utils/nunjucks-filters')
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
 const {NODE_ENV} = process.env
-const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.min.css')
-const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
+const webpackEnv = {development: NODE_ENV !== 'production'}
+const compiler = webpack(webpackConfig(webpackEnv))
+let CSS_PATH = NODE_ENV === 'production' ? '/stylesheets/application.css' : ''
+let JAVASCRIPT_PATH = '/browser.bundle.js'
 
 function warnIfAnalyticsNotSet () {
   if (typeof process.env.ANALYTICS_TRACKING_ID === 'undefined') {
@@ -52,7 +58,6 @@ function initialiseGlobalMiddleware (app) {
       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'))
   }
   app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')))
-  app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
     res.locals.asset_path = '/public/'
@@ -80,7 +85,7 @@ function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
-    path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
+    path.join(__dirname, '/node_modules/govuk_template_jinja/views/layouts'),
     path.join(__dirname, '/app/views')
   ], {
     express: app, // the express app that nunjucks should install to
@@ -95,10 +100,16 @@ function initialiseTemplateEngine (app) {
   // Set view engine
   app.set('view engine', 'njk')
 
+  if (NODE_ENV === 'production') {
+    app.use(staticify.middleware)
+    CSS_PATH = staticify.getVersionedPath('/stylesheets/application.css')
+    JAVASCRIPT_PATH = staticify.getVersionedPath('/browser.bundle.js')
+  }
+
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
-  nunjucksEnvironment.addGlobal('css_path', NODE_ENV === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
-  nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
+  nunjucksEnvironment.addGlobal('css_path', CSS_PATH)
+  nunjucksEnvironment.addGlobal('js_path', JAVASCRIPT_PATH)
 
   // Load custom Nunjucks filters
   for (let name in nunjucksFilters) {
@@ -108,9 +119,8 @@ function initialiseTemplateEngine (app) {
 }
 
 function initialisePublic (app) {
+  app.use('/', express.static(path.join(__dirname, '/public')))
   app.use('/public', express.static(path.join(__dirname, '/public')))
-  app.use('/public', express.static(path.join(__dirname, '/govuk_modules/govuk_frontend_toolkit')))
-  app.use('/public', express.static(path.join(__dirname, '/govuk_modules/govuk_template/assets')))
 }
 
 function initialiseRoutes (app) {
@@ -164,6 +174,12 @@ function initialise () {
 
   warnIfAnalyticsNotSet()
 
+  if (NODE_ENV !== 'production') {
+    app.use(webpackDevMiddleware(compiler, {
+      publicPath: '/public/'
+    }))
+    app.use(webpackHotMiddleware(compiler))
+  }
   return app
 }
 
@@ -181,6 +197,5 @@ if (argv.i) {
 
 module.exports = {
   start: start,
-  getApp: initialise,
-  staticify: staticify
+  getApp: initialise
 }
