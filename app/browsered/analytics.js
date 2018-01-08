@@ -9,7 +9,7 @@
 module.exports.init = () => {
   const elementsToTrack = Array.prototype.slice.call(document.querySelectorAll('[data-click-events]'))
 
-  if (elementsToTrack) {
+  if (elementsToTrack && typeof ga === 'function') {
     setupTracking(elementsToTrack)
   }
 }

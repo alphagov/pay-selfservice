@@ -33,9 +33,10 @@ const unconfiguredApp = express()
 const {NODE_ENV} = process.env
 const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.min.css')
 const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
+const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
 
 function warnIfAnalyticsNotSet () {
-  if (typeof process.env.ANALYTICS_TRACKING_ID === 'undefined') {
+  if (ANALYTICS_TRACKING_ID === '') {
     logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
   }
 }
@@ -57,11 +58,7 @@ function initialiseGlobalMiddleware (app) {
   app.use(function (req, res, next) {
     res.locals.asset_path = '/public/'
     res.locals.routes = router.paths
-    if (typeof process.env.ANALYTICS_TRACKING_ID === 'undefined') {
-      res.locals.analyticsTrackingId = '' // to not break the app
-    } else {
-      res.locals.analyticsTrackingId = process.env.ANALYTICS_TRACKING_ID
-    }
+    res.locals.analyticsTrackingId = ANALYTICS_TRACKING_ID
     noCache(res)
     next()
   })
