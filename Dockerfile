@@ -5,9 +5,9 @@ FROM node:6.12.2-alpine
 # This is just a short-term patch.
 RUN set -x \
         && apk add --no-cache \
-                musl="1.1.18-r3" \
-                musl-dev="1.1.18-r3" \
-                libc6-compat="1.1.18-r3" \
+                musl="1.1.18-r5" \
+                musl-dev="1.1.18-r5" \
+                libc6-compat="1.1.18-r5" \
                 openssl="1.0.2n-r0" \
                 c-ares="1.13.0-r0" \
                 busybox="1.27.2-r7" \

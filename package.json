@@ -74,7 +74,7 @@
     "throng": "4.0.x",
     "tunnel": "0.0.5",
     "uk-postcode": "0.1.x",
-    "url-join": "^2.0.2",
+    "url-join": "2.0.2",
     "winston": "2.4.x"
   },
   "devDependencies": {
