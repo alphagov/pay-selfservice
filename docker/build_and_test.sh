@@ -6,3 +6,5 @@ npm run compile &&\
 npm run lint &&\
 npm test -- --forbid-only --forbid-pending &&\
 rm -rf node_modules
+apk del glibc-2.26-r0 bash
+rm /glibc-2.26-r0.apk
