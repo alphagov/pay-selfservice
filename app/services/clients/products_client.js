@@ -20,7 +20,7 @@ module.exports = {
   product: {
     create: createProduct,
     disable: disableProduct,
-    updateProductServiceName,
+    updateServiceNameOfProductsByGatewayAccountId: updateServiceNameOfProductsByGatewayAccountId,
     getByProductExternalId: getProductByExternalId,
     getByGatewayAccountId: getProductsByGatewayAccountId
   },
@@ -97,23 +97,23 @@ function getProductsByGatewayAccountId (gatewayAccountId) {
 }
 
 /**
- * @param {String} productExternalId: the external id of the product you wish to retrieve
+ * @param {String} gatewayAccountId: the id of the gateway account whose service name you wish to update
  * @returns {Promise<Product>}
  */
-function updateProductServiceName (productExternalId, serviceName) {
+function updateServiceNameOfProductsByGatewayAccountId (gatewayAccountId, serviceName) {
   return baseClient.patch({
     headers,
     baseUrl,
-    url: `/products/${productExternalId}`,
+    url: `/gateway-account/${gatewayAccountId}`,
     json: true,
     body: {
-      op: 'update',
+      op: 'replace',
       path: 'service_name',
       value: serviceName
     },
     description: `update a product's service name`,
     service: SERVICE_NAME
-  }).then(product => new Product(product))
+  })
 }
 
 /**

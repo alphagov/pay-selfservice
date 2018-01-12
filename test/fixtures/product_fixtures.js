@@ -14,9 +14,9 @@ module.exports = {
     pactProducts.pactify(opts)
   },
 
-  validUpdateProductServiceNameRequest: (serviceName) => {
+  validUpdateServiceNameOfProductsByGatewayAccountIdRequest: (serviceName) => {
     const data = {
-      op: 'update',
+      op: 'replace',
       path: 'service_name',
       value: serviceName || 'New Service Name'
     }
@@ -28,9 +28,9 @@ module.exports = {
     }
   },
 
-  invalidUpdateProductServiceNameRequest: () => {
+  invalidUpdateServiceNameOfProductsByGatewayAccountIdRequest: () => {
     const data = {
-      op: 'update',
+      op: 'replace',
       path: 'service_name'
     }
     return {

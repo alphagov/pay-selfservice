@@ -7,11 +7,11 @@ const proxyquire = require('proxyquire')
 
 // Custom dependencies
 const pactProxy = require('../../../../test_helpers/pact_proxy')
-const {invalidUpdateProductServiceNameRequest, validUpdateProductServiceNameRequest, validCreateProductResponse} = require('../../../../fixtures/product_fixtures')
+const {invalidUpdateServiceNameOfProductsByGatewayAccountIdRequest, validUpdateServiceNameOfProductsByGatewayAccountIdRequest} = require('../../../../fixtures/product_fixtures')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
 // Constants
-const PRODUCT_RESOURCE = '/v1/api/products'
+const GATEWAY_ACCOUNT_RESOURCE = '/v1/api/gateway-account'
 const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
 let productsMock
@@ -24,7 +24,7 @@ function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsAp
   })
 }
 
-describe('products client - disable a product', () => {
+describe('products client - update product service name by gateway account id', () => {
   /**
    * Start the server and set up Pact
    */
@@ -46,21 +46,20 @@ describe('products client - disable a product', () => {
   })
 
   describe('when a product is successfully disabled', () => {
-    let result, productExternalId, newServiceName
+    let result, gatewayAccountId, newServiceName
     before(done => {
       const productsClient = getProductsClient()
-      productExternalId = 'a_valid_external_id'
+      gatewayAccountId = '541'
       newServiceName = 'Buy a Fish'
       productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}`)
+        new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
           .withUponReceiving('a valid update product service_name request')
-          .withRequestBody(validUpdateProductServiceNameRequest(newServiceName).getPactified())
+          .withRequestBody(validUpdateServiceNameOfProductsByGatewayAccountIdRequest(newServiceName).getPactified())
           .withMethod('PATCH')
           .withStatusCode(200)
-          .withResponseBody(validCreateProductResponse({serviceName: newServiceName}).getPactified())
           .build()
       )
-        .then(() => productsClient.product.updateProductServiceName(productExternalId, newServiceName))
+        .then(() => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, newServiceName))
         .then(res => {
           result = res
           done()
@@ -72,26 +71,26 @@ describe('products client - disable a product', () => {
       productsMock.finalize().then(() => done())
     })
 
-    it(`should update the product's associated serviceName`, () => {
-      expect(result.serviceName).to.equal(newServiceName)
+    it(`should update the service name of any products associated with the service name`, () => {
+      expect(result).to.equal(undefined)
     })
   })
 
   describe('when the request has invalid authorization credentials', () => {
-    let result, productExternalId, newServiceName
+    let result, gatewayAccountId, newServiceName
     before(done => {
       const productsClient = getProductsClient(`http://localhost:${mockPort}`, 'invalid-api-key')
-      productExternalId = 'a_valid_external_id'
+      gatewayAccountId = '541'
       newServiceName = 'Buy a Fish'
       productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}`)
+        new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
           .withUponReceiving('a valid update product service_name request with invalid PRODUCTS_API_TOKEN')
-          .withRequestBody(validUpdateProductServiceNameRequest(newServiceName).getPactified())
+          .withRequestBody(validUpdateServiceNameOfProductsByGatewayAccountIdRequest(newServiceName).getPactified())
           .withMethod('PATCH')
           .withStatusCode(401)
           .build()
       )
-        .then(() => productsClient.product.updateProductServiceName(productExternalId, newServiceName))
+        .then(() => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, newServiceName))
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
           result = err
@@ -109,18 +108,17 @@ describe('products client - disable a product', () => {
   })
 
   describe('update service name - bad request', () => {
-    let result, productExternalId
+    let result, gatewayAccountId
     before(done => {
       const productsClient = getProductsClient()
-      productExternalId = 'a_valid_external_id'
-      const request = invalidUpdateProductServiceNameRequest()
-      productsMock.addInteraction(new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}`)
+      gatewayAccountId = '541'
+      productsMock.addInteraction(new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
         .withUponReceiving('a invalid update product service_name request')
-        .withRequestBody(request.getPactified())
+        .withRequestBody(invalidUpdateServiceNameOfProductsByGatewayAccountIdRequest().getPactified())
         .withMethod('PATCH')
         .withStatusCode(400)
         .build())
-        .then(() => productsClient.product.updateProductServiceName(productExternalId))
+        .then(() => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId))
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
           result = err
