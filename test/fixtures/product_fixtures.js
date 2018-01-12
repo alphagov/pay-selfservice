@@ -14,6 +14,33 @@ module.exports = {
     pactProducts.pactify(opts)
   },
 
+  validUpdateProductServiceNameRequest: (serviceName) => {
+    const data = {
+      op: 'update',
+      path: 'service_name',
+      value: serviceName || 'New Service Name'
+    }
+    return {
+      getPactified: () => {
+        return pactProducts.pactify(data)
+      },
+      getPlain: () => data
+    }
+  },
+
+  invalidUpdateProductServiceNameRequest: () => {
+    const data = {
+      op: 'update',
+      path: 'service_name'
+    }
+    return {
+      getPactified: () => {
+        return pactProducts.pactify(data)
+      },
+      getPlain: () => data
+    }
+  },
+
   validCreateProductRequest: (opts = {}) => {
     const data = {
       gateway_account_id: opts.gatewayAccountId || randomGatewayAccountId(),
@@ -41,6 +68,7 @@ module.exports = {
       product_external_id: opts.product_external_id || randomExternalId(),
       next_url: opts.next_url || `http://service.url/next`,
       status: opts.status || 'CREATED',
+      govuk_status: opts.govuk_status || 'success',
       _links: opts.links
     }
     if (!data._links) {
@@ -50,7 +78,7 @@ module.exports = {
         method: 'GET'
       }, {
         href: `http://frontend.url/charges/${(data.external_id)}`,
-        rel: 'pay',
+        rel: 'next',
         method: 'POST'
       }]
     }
@@ -68,11 +96,11 @@ module.exports = {
   validCreateProductResponse: (opts = {}) => {
     const data = {
       external_id: opts.external_id || randomExternalId(),
+      type: opts.type || 'DEMO',
       gateway_account_id: opts.gateway_account_id || randomGatewayAccountId(),
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
       price: opts.price || randomPrice(),
-      type: opts.type || 'DEMO',
       _links: opts.links
     }
     if (opts.description) data.description = opts.description

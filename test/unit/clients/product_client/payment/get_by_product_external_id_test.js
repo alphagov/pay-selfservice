@@ -45,6 +45,7 @@ describe('products client - find a payment by it\'s associated product external 
     mockServer.delete()
       .then(() => pactProxy.removeAll())
       .then(() => done())
+      .catch(done)
   })
 
   describe('when a product is successfully found', () => {
@@ -71,9 +72,7 @@ describe('products client - find a payment by it\'s associated product external 
         .catch(e => done(e))
     })
 
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    after(() => productsMock.finalize())
 
     it('should return a list of payments', () => {
       expect(result.length).to.equal(3)
@@ -89,9 +88,9 @@ describe('products client - find a payment by it\'s associated product external 
         expect(payment.links).to.have.property('self')
         expect(payment.links.self).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'self').method)
         expect(payment.links.self).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'self').href)
-        expect(payment.links).to.have.property('pay')
-        expect(payment.links.pay).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'pay').method)
-        expect(payment.links.pay).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'pay').href)
+        expect(payment.links).to.have.property('next')
+        expect(payment.links.next).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'next').method)
+        expect(payment.links.next).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'next').href)
       })
     })
   })
@@ -115,9 +114,7 @@ describe('products client - find a payment by it\'s associated product external 
         })
     })
 
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    after(() => productsMock.finalize())
 
     it('should reject with error: 401 unauthorised', () => {
       expect(result.errorCode).to.equal(401)
@@ -143,9 +140,7 @@ describe('products client - find a payment by it\'s associated product external 
         })
     })
 
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    after(() => productsMock.finalize())
 
     it('should reject with error: 404 not found', () => {
       expect(result.errorCode).to.equal(404)

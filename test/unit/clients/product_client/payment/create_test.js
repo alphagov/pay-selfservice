@@ -44,6 +44,7 @@ describe('products client - creating a new payment', () => {
     mockServer.delete()
       .then(() => pactProxy.removeAll())
       .then(() => done())
+      .catch(done)
   })
 
   describe('when a charge is successfully created', () => {
@@ -67,9 +68,7 @@ describe('products client - creating a new payment', () => {
         .catch(e => done(e))
     })
 
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    after(() => productsMock.finalize())
 
     it('should create a new product', () => {
       const plainResponse = response.getPlain()
@@ -82,9 +81,9 @@ describe('products client - creating a new payment', () => {
       expect(result.links).to.have.property('self')
       expect(result.links.self).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'self').method)
       expect(result.links.self).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'self').href)
-      expect(result.links).to.have.property('pay')
-      expect(result.links.pay).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'pay').method)
-      expect(result.links.pay).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'pay').href)
+      expect(result.links).to.have.property('next')
+      expect(result.links.next).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'next').method)
+      expect(result.links.next).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'next').href)
     })
   })
 
@@ -107,9 +106,7 @@ describe('products client - creating a new payment', () => {
         })
     })
 
-    afterEach((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    after(() => productsMock.finalize())
 
     it('should reject with error unauthorised', () => {
       expect(result.errorCode).to.equal(401)
@@ -135,9 +132,7 @@ describe('products client - creating a new payment', () => {
         })
     })
 
-    afterEach(done => {
-      productsMock.finalize().then(() => done())
-    })
+    after(() => productsMock.finalize())
 
     it('should reject with error: bad request', () => {
       expect(result.errorCode).to.equal(400)
