@@ -4,10 +4,11 @@ const q = require('q')
 const lodash = require('lodash')
 const getAdminUsersClient = require('./clients/adminusers_client')
 const {ConnectorClient} = require('../services/clients/connector_client')
+const productsClient = require('../services/clients/products_client')
 const GatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
 
-const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
+const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 // Exports
 module.exports = {
   getGatewayAccounts,
@@ -24,7 +25,7 @@ module.exports = {
  */
 function getGatewayAccounts (gatewayAccountIds, correlationId) {
   return q.allSettled(gatewayAccountIds
-    .map(gatewayAccountId => connectorClient().getAccount({
+    .map(gatewayAccountId => connectorClient.getAccount({
       gatewayAccountId: gatewayAccountId,
       correlationId: correlationId
     })))
@@ -51,14 +52,14 @@ function updateServiceName (serviceExternalId, serviceName, correlationId) {
     .then(result => {
       const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
       // Update gateway account service names
-      if (gatewayAccountIds.length > 0) {
-        return q.all([].concat(gatewayAccountIds).map(gatewayAccountId => {
-          connectorClient().patchServiceName(gatewayAccountId, serviceName, correlationId)
-        })).then(() => {
-          q.resolve(new Service(result))
-        })
-      } else {
+      if (gatewayAccountIds.length <= 0) {
         return q.resolve(new Service(result))
+      } else {
+        return q.all([
+          ...gatewayAccountIds.map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
+          ...gatewayAccountIds.map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
+        ])
+          .then(() => q.resolve(new Service(result)))
       }
     })
 }
@@ -90,7 +91,7 @@ function updateMerchantDetails (serviceExternalId, merchantDetails, correlationI
 function createService (serviceName, correlationId) {
   if (!serviceName) serviceName = 'System Generated'
 
-  return connectorClient().createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
+  return connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
     .then(gatewayAccount =>
       getAdminUsersClient({correlationId}).createService(serviceName, [gatewayAccount.gateway_account_id])
     )
