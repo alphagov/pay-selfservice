@@ -20,6 +20,7 @@ module.exports = {
   product: {
     create: createProduct,
     disable: disableProduct,
+    updateServiceNameOfProductsByGatewayAccountId: updateServiceNameOfProductsByGatewayAccountId,
     getByProductExternalId: getProductByExternalId,
     getByGatewayAccountId: getProductsByGatewayAccountId
   },
@@ -44,7 +45,7 @@ module.exports = {
  * @returns {Promise<Product>}
  */
 function createProduct (options) {
-  const opts = {
+  return baseClient.post({
     headers,
     baseUrl,
     url: `/products`,
@@ -61,19 +62,18 @@ function createProduct (options) {
     },
     description: 'create a product for a service',
     service: SERVICE_NAME
-  }
-  return baseClient.post(opts).then(product => new Product(product))
+  }).then(product => new Product(product))
 }
 
 /**
- * @param {String} externalProductId: the external id of the product you wish to retrieve
+ * @param {String} productExternalId: the external id of the product you wish to retrieve
  * @returns {Promise<Product>}
  */
-function getProductByExternalId (externalProductId) {
+function getProductByExternalId (productExternalId) {
   return baseClient.get({
     headers,
     baseUrl,
-    url: `/products/${externalProductId}`,
+    url: `/products/${productExternalId}`,
     description: `find a product by it's external id`,
     service: SERVICE_NAME
   }).then(product => new Product(product))
@@ -97,8 +97,28 @@ function getProductsByGatewayAccountId (gatewayAccountId) {
 }
 
 /**
+ * @param {String} gatewayAccountId: the id of the gateway account whose service name you wish to update
+ * @returns {Promise<Product>}
+ */
+function updateServiceNameOfProductsByGatewayAccountId (gatewayAccountId, serviceName) {
+  return baseClient.patch({
+    headers,
+    baseUrl,
+    url: `/gateway-account/${gatewayAccountId}`,
+    json: true,
+    body: {
+      op: 'replace',
+      path: 'service_name',
+      value: serviceName
+    },
+    description: `update a product's service name`,
+    service: SERVICE_NAME
+  })
+}
+
+/**
  * @param {String} productExternalId: the external id of the product you wish to disable
- * @returns {undefined}
+ * @returns Promise<undefined>
  */
 function disableProduct (productExternalId) {
   return baseClient.patch({
