@@ -5,7 +5,7 @@ const $ = require('jquery')
 const multiSelects = require('./browsered/multi-select')
 const fieldValidation = require('./browsered/field-validation')
 const dashboardActivity = require('./browsered/dashboard-activity')
-const analytics = require('./browsered/analytics')
+const analytics = require('gaap-analytics')
 
 // This adds jquery globally for non-browserified contexts
 window.$ = window.jQuery = $
@@ -14,4 +14,4 @@ multiSelects.enableMultiSelects()
 fieldValidation.enableFieldValidation()
 dashboardActivity.init()
 dashboardActivity.init()
-analytics.init()
+analytics.eventTracking.init()
