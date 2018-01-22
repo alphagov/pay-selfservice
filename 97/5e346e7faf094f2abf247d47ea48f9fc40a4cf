@@ -5,3 +5,5 @@ release.alpha_release-396.date=2018-01-19:20:09:31
 staging-2.tag=FAILED-396
 
 staging-2.FAILED-396.date=
+
+staging-2.FAILED-396.status=failed
