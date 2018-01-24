@@ -32,7 +32,7 @@ Transaction details {{reference}} - {{currentServiceName}} {{currentGatewayAccou
       {% if refundable %}
         {% if permissions.refunds_create %}
         <div class="refund__toggle-container {% if not flash.genericError %}active{% endif %}">
-          <button class="button refund__toggle delete">Refund Payment</button>
+          <a href="#refundForm" class="button refund__toggle delete">Refund Payment</a>
           <p>You can also give partial&nbsp;refunds</p>
         </div>
         {% include "./_refund.njk" %}
