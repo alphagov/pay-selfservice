@@ -29,16 +29,25 @@
   }
 
   &__amount {
-    display: none;
     margin-left: $gutter / 2;
-
-    &.active {
-      display: block;
-    }
   }
 
   &__submit-button {
     margin: 0 $gutter / 2 $gutter / 2 0;
+  }
+}
+
+// Target to show/hide without JS
+#refundForm:target {
+  display: block;
+}
+
+// Only hide partial amount if JS is enabled
+.js-enabled .refund__amount {
+  display: none;
+
+  &.active {
+    display: block;
   }
 }
 

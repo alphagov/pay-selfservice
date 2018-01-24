@@ -45,7 +45,7 @@ describe('products client - update product service name by gateway account id', 
       .then(() => done())
   })
 
-  describe('when a product is successfully disabled', () => {
+  describe('when the request is successful', () => {
     let result, gatewayAccountId, newServiceName
     before(done => {
       const productsClient = getProductsClient()
@@ -107,7 +107,7 @@ describe('products client - update product service name by gateway account id', 
     })
   })
 
-  describe('update service name - bad request', () => {
+  describe('when the request is malformed', () => {
     let result, gatewayAccountId
     before(done => {
       const productsClient = getProductsClient()
