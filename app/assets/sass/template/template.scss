@@ -10,7 +10,7 @@
   // width: 100%;
   max-width: 960px;
   margin: $gutter auto 0;
-  padding: 0 $gutter / 2;
+  padding: 0 $gutter / 2 $gutter;
 
   @include media(tablet) {
     margin: $gutter $gutter 0;
