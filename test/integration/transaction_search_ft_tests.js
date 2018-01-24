@@ -46,7 +46,10 @@ function connectorMockResponds (data, searchParameters) {
     page: searchParameters.page ? searchParameters.page : '1',
     display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
   }
-  if (searchParameters.state) toStringify.payment_states = [searchParameters.state]
+  if (searchParameters.state) {
+    toStringify.payment_states = [searchParameters.state]
+    toStringify.state = ''
+  }
   var queryString = querystring.stringify(toStringify)
 
   return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + '?' + queryString)
