@@ -132,23 +132,8 @@ function getQueryStringForParams (params) {
     page: params.page || 1,
     display_size: params.pageSize || 100
   }
-
-  if (params.payment_states && params.payment_states instanceof Array) {
-    queryStrings.payment_states = params.payment_states.join(',')
-  } else if (params.payment_states) {
-    queryStrings.payment_states = params.payment_states
-  }
-
-  if (params.refund_states && params.refund_states instanceof Array) {
-    queryStrings.refund_states = params.refund_states.join(',')
-  } else if (params.refund_states) {
-    queryStrings.refund_states = params.refund_states
-  }
-
-  if ((queryStrings.payment_states || queryStrings.refund_states) && queryStrings.state) {
-    queryStrings.state = undefined
-  }
-
+  if (params.payment_states) queryStrings.payment_states = params.payment_states.join(',')
+  if (params.refund_states) queryStrings.refund_states = params.refund_states.join(',')
   return querystring.stringify(queryStrings)
 }
 
