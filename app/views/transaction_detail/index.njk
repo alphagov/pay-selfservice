@@ -11,12 +11,12 @@ Transaction details {{reference}} - {{currentServiceName}} {{currentGatewayAccou
 {% block full_width_content %}
   <div class="grid-row">
     <div class="column-full">
-      <a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="arrowed"> &#9664; Transactions list</a>
+      <a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="link-back">Transactions list</a>
     </div>
   </div>
   <div class="grid-row">
     <div class="column-two-thirds">
-      <h1 class="page-title heading-large">Transaction detail</h1>
+      <h1 class="heading-large">Transaction detail</h1>
       {% include "./_details.njk" %}
 
       <h2 class="heading-medium">Payment method</h2>
