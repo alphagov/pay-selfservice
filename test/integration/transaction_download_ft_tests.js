@@ -21,13 +21,8 @@ var connectorMock = nock(process.env.CONNECTOR_URL)
 function connectorMockResponds (code, data, searchParameters) {
   var queryStr = '?'
   queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-    '&email=' + (searchParameters.email ? searchParameters.email : '')
-
-  if (searchParameters.payment_states || searchParameters.refund_states) {
-    delete searchParameters.state
-  }
-
-  queryStr += '&state=' + (searchParameters.state ? searchParameters.state : '') +
+    '&email=' + (searchParameters.email ? searchParameters.email : '') +
+    '&state=' + (searchParameters.state ? searchParameters.state : '') +
     '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
     '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
     '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +

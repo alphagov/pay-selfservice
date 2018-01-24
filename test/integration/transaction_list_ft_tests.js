@@ -139,7 +139,7 @@ describe('The /transactions endpoint', function () {
       .end(done)
   })
 
-  it('should return a list of transactions for the gateway account when a state is selected', function (done) {
+  it('should return a list of transactions for the gateway account', function (done) {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
@@ -178,7 +178,7 @@ describe('The /transactions endpoint', function () {
       ]
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started'})
+    connectorMockResponds(200, connectorData, {state: 'started'})
     request(app)
       .get(paths.transactions.index + '?state=started')
       .set('Accept', 'application/json')
@@ -529,8 +529,6 @@ function connectorMockResponds (code, data, searchParameters) {
     display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
   }
 
-
-
   if (!searchParameters.payment_states && !searchParameters.refund_states && searchParameters.state) {
     toStringify.payment_states = [searchParameters.state]
   }
@@ -540,11 +538,6 @@ function connectorMockResponds (code, data, searchParameters) {
   if (searchParameters.payment_states) {
     toStringify.payment_states = searchParameters.payment_states
   }
-
-  if (searchParameters.payment_states || searchParameters.refund_states) {
-    toStringify.state = ''
-  }
-
 
   var queryString = querystring.stringify(toStringify)
 

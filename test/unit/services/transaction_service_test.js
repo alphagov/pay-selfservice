@@ -54,42 +54,17 @@ describe('transaction service', () => {
 
   describe('searchAll', () => {
     describe('when connector returns correctly', () => {
-
-
-      it('should return into the correct promise when it uses the legacy \'state\' method of querying states', () => {
-        nock(process.env.CONNECTOR_URL)
-          .get('/v1/api/accounts/123/charges?reference=&email=&state=success&card_brand=&from_date=&to_date=&page=1&display_size=100')
-          .reply(200, {})
-        return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, state:'success'}, 'some-unique-id'))
-          .to.eventually.be.fulfilled
-      })
-
-      it('should return into the correct promise when it uses the new  \'refund_states\' method of querying refund states and mulitple have been selected', () => {
-        nock(process.env.CONNECTOR_URL)
-          .get('/v1/api/accounts/123/charges?reference=&email=&state=&card_brand=&from_date=&to_date=&page=1&display_size=100&refund_states=refund_success%2Crefund_error')
-          .reply(200, {})
-        return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, refund_states: ['refund_success','refund_error']}, 'some-unique-id'))
-          .to.eventually.be.fulfilled
-      })
-
-      it('should return into the correct promise when it uses the new  \'refund_states\' method of querying refund states and only one has been selected', () => {
-        nock(process.env.CONNECTOR_URL)
-          .get('/v1/api/accounts/123/charges?reference=&email=&state=&card_brand=&from_date=&to_date=&page=1&display_size=100&refund_states=refund_success')
-          .reply(200, {})
-        return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, refund_states: 'refund_success'}, 'some-unique-id'))
-          .to.eventually.be.fulfilled
-      })
-
-      it('should return into the correct promise', () => {
+      before(() => {
         nock(process.env.CONNECTOR_URL)
           .get('/v1/api/accounts/123/charges?reference=&email=&state=&card_brand=&from_date=&to_date=&page=1&display_size=100')
           .reply(200, {})
+      })
+
+      it('should return into the correct promise', () => {
         return expect(transactionService.searchAll(123, {pageSize: 100, page: 1}, 'some-unique-id'))
           .to.eventually.be.fulfilled
       })
     })
-
-
 
     describe('when connector is unavailable', () => {
       it('should return client unavailable', () => {
