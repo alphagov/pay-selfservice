@@ -11,6 +11,7 @@ var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var assert = require('chai').assert
 var expect = require('chai').expect
+var getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 
 var gatewayAccountId = 651342
 var app
@@ -19,28 +20,7 @@ var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
 var connectorMock = nock(process.env.CONNECTOR_URL)
 
 function connectorMockResponds (code, data, searchParameters) {
-  var queryStr = '?'
-  queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-    '&email=' + (searchParameters.email ? searchParameters.email : '')
-
-  if (searchParameters.payment_states || searchParameters.refund_states) {
-    delete searchParameters.state
-  }
-
-  queryStr += '&state=' + (searchParameters.state ? searchParameters.state : '') +
-    '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
-    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-    '&page=' + (searchParameters.page ? searchParameters.page : '1') +
-    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
-
-  if (searchParameters.payment_states) {
-    queryStr += '&payment_states=' + searchParameters.payment_states
-  }
-
-  if (searchParameters.refund_states) {
-    queryStr += '&refund_states=' + searchParameters.refund_states
-  }
+  var queryStr = '?' + getQueryStringForParams(searchParameters)
 
   return connectorMock.get(CHARGES_API_PATH + queryStr)
     .reply(code, data)

@@ -8,6 +8,7 @@ var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var assert = require('assert')
 var querystring = require('querystring')
+const getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 var app
 
 var gatewayAccountId = 452345
@@ -26,25 +27,19 @@ var ALL_CARD_TYPES = {
 }
 
 function connectorMockResponds (data, searchParameters) {
-  var queryStr = '?'
-  queryStr += 'reference=' + (searchParameters.reference ? searchParameters.reference : '') +
-    '&email=' + (searchParameters.email ? searchParameters.email : '') +
-    '&state=' + (searchParameters.state ? searchParameters.state : '') +
-    '&card_brand=' + (searchParameters.brand ? searchParameters.brand : '') +
-    '&from_date=' + (searchParameters.fromDate ? searchParameters.fromDate : '') +
-    '&to_date=' + (searchParameters.toDate ? searchParameters.toDate : '') +
-    '&page=' + (searchParameters.page ? searchParameters.page : '1') +
-    '&display_size=' + (searchParameters.pageSize ? searchParameters.pageSize : '100')
+  var queryStr = '?' + getQueryStringForParams(searchParameters)
 
-  return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + encodeURI(queryStr))
+  return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + queryStr)
     .reply(200, data)
 }
 
 function searchTransactions (data) {
   var query = querystring.stringify(data)
 
-  return request(app).get(paths.transactions.index + '?' + query)
-    .set('Accept', 'application/json').send()
+  return request(app)
+    .get(paths.transactions.index + '?' + query)
+    .set('Accept', 'application/json')
+    .send()
 }
 
 describe('Pagination', function () {
