@@ -17,10 +17,8 @@
   .filter-submit {
     float: right;
     display: block;
-    width: auto;
     margin-top: 65px;
     padding-right: 20px;
-    width:200px;
     @include respond-to-max(860px) {
       margin-top: 0;
       margin-right: 15px;
@@ -28,7 +26,8 @@
     }
     @include respond-to-max(640px) {
       width: 100%;
-      margin: 15px 15px 15px;
+      margin: 15px 0;
+      padding: 0 15px;
     }
   }
 
@@ -37,7 +36,8 @@
     padding-bottom:1px;
     float: left;
     margin-right: 0;
-    width: auto;
+    margin-bottom: 15px;
+    width: 100%;
     @include respond-to-max(860px) {
       float: right;
     }

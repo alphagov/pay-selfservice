@@ -18,11 +18,15 @@
   display: inline-block;
   margin-bottom: -1px;
   margin-left: 10px;
-  padding: 10px 30px;
+  padding: 10px;
   color: $link-colour;
   background: none;
   font-weight: bold;
   cursor: pointer;
+
+  @include media(tablet) {
+    padding: 10px 30px;
+  }
 }
 
 .tabs .current {
