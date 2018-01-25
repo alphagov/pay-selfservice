@@ -6,10 +6,10 @@ var logger = require('winston')
 var querystring = require('querystring')
 const q = require('q')
 
-var dates = require('../../utils/dates.js')
 const baseClient = require('./old_base_client')
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
+const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 
 const SERVICE_NAME = 'connector'
 var ACCOUNTS_API_PATH = '/v1/api/accounts'
@@ -119,22 +119,6 @@ var _getToggle3dsUrlFor = function (accountID) {
 /** @private */
 var _getTransactionSummaryUrlFor = function (accountID, period) {
   return process.env.CONNECTOR_URL + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID) + '?' + period
-}
-
-function getQueryStringForParams (params) {
-  const queryStrings = {
-    reference: params.reference,
-    email: params.email,
-    state: params.state,
-    card_brand: params.brand,
-    from_date: dates.fromDateToApiFormat(params.fromDate, params.fromTime),
-    to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
-    page: params.page || 1,
-    display_size: params.pageSize || 100
-  }
-  if (params.payment_states) queryStrings.payment_states = params.payment_states.join(',')
-  if (params.refund_states) queryStrings.refund_states = params.refund_states.join(',')
-  return querystring.stringify(queryStrings)
 }
 
 function searchUrl (baseUrl, params) {

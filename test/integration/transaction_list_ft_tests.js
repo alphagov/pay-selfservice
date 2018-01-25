@@ -9,7 +9,7 @@ const nock = require('nock')
 const getApp = require('../../server.js').getApp
 const paths = require('../../app/paths.js')
 const session = require('../test_helpers/mock_session.js')
-const querystring = require('querystring')
+const getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 
 const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
 const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
@@ -139,7 +139,7 @@ describe('The /transactions endpoint', function () {
       .end(done)
   })
 
-  it('should return a list of transactions for the gateway account', function (done) {
+  it('should return a list of transactions for the gateway account when a state is selected', function (done) {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
@@ -178,7 +178,7 @@ describe('The /transactions endpoint', function () {
       ]
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started'})
+    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started'})
     request(app)
       .get(paths.transactions.index + '?state=started')
       .set('Accept', 'application/json')
@@ -456,7 +456,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started'})
+    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started', refundReportingEnabled: true})
 
     request(app)
       .get(paths.transactions.index + '?state=payment-started')
@@ -490,7 +490,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', refund_states: 'started'})
+    connectorMockResponds(200, connectorData, {state: 'started', refund_states: 'started', refundReportingEnabled: true})
 
     request(app)
       .get(paths.transactions.index + '?state=refund-started')
@@ -518,28 +518,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
 })
 
 function connectorMockResponds (code, data, searchParameters) {
-  var toStringify = {
-    reference: searchParameters.reference ? searchParameters.reference : '',
-    email: searchParameters.email ? searchParameters.email : '',
-    state: searchParameters.state ? searchParameters.state : '',
-    card_brand: searchParameters.brand ? searchParameters.brand : '',
-    from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
-    to_date: searchParameters.toDate ? searchParameters.toDate : '',
-    page: searchParameters.page ? searchParameters.page : '1',
-    display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
-  }
-
-  if (!searchParameters.payment_states && !searchParameters.refund_states && searchParameters.state) {
-    toStringify.payment_states = [searchParameters.state]
-  }
-  if (searchParameters.refund_states) {
-    toStringify.refund_states = searchParameters.refund_states
-  }
-  if (searchParameters.payment_states) {
-    toStringify.payment_states = searchParameters.payment_states
-  }
-
-  var queryString = querystring.stringify(toStringify)
+  var queryString = getQueryStringForParams(searchParameters)
 
   return connectorMock.get(CONNECTOR_CHARGES_API_PATH + '?' + queryString)
     .reply(code, data)

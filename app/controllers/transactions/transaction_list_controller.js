@@ -25,7 +25,7 @@ module.exports = (req, res) => {
 
   req.session.filters = url.parse(req.url).query
   if (!filters.valid) return error('Invalid search')
-
+  filters.result.refundReportingEnabled = req.user.hasFeature(REFUNDS_IN_TRANSACTION_LIST_FEATURE_HEADER)
   transactionService
     .search(accountId, filters.result, correlationId)
     .then(transactions => {

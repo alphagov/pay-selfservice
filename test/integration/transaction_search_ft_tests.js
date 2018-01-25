@@ -12,6 +12,7 @@ var dates = require('../../app/utils/dates.js')
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var querystring = require('querystring')
+var getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 var _ = require('lodash')
 chai.use(chaiAsPromised)
 chai.should()
@@ -36,20 +37,9 @@ var ALL_CARD_TYPES = {
 }
 
 function connectorMockResponds (data, searchParameters) {
-  var toStringify = {
-    reference: searchParameters.reference ? searchParameters.reference : '',
-    email: searchParameters.email ? searchParameters.email : '',
-    state: searchParameters.state ? searchParameters.state : '',
-    card_brand: searchParameters.brand ? searchParameters.brand : '',
-    from_date: searchParameters.fromDate ? searchParameters.fromDate : '',
-    to_date: searchParameters.toDate ? searchParameters.toDate : '',
-    page: searchParameters.page ? searchParameters.page : '1',
-    display_size: searchParameters.pageSize ? searchParameters.pageSize : '100'
-  }
-  if (searchParameters.state) toStringify.payment_states = [searchParameters.state]
-  var queryString = querystring.stringify(toStringify)
+  var queryString = '?' + getQueryStringForParams(searchParameters)
 
-  return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + '?' + queryString)
+  return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + queryString)
     .reply(200, data)
 }
 
@@ -461,8 +451,8 @@ describe('The search transactions endpoint', function () {
     }
 
     var queryStringParams = _.extend({}, data, {
-      'fromDate': '2016-01-21T13:04:45.000Z',
-      'toDate': '2016-01-22T14:12:19.000Z'
+      'from_date': '2016-01-21T13:04:45.000Z',
+      'to_date': '2016-01-22T14:12:19.000Z'
     })
 
     connectorMockResponds(connectorData, queryStringParams)
