@@ -4,8 +4,6 @@ const querystring = require('querystring')
 const dates = require('./dates.js')
 
 function getQueryStringForParams (params = {}) {
-
-
   const queryStrings = {
     reference: params.reference,
     email: params.email,
@@ -17,7 +15,7 @@ function getQueryStringForParams (params = {}) {
   }
 
   if (params.refundReportingEnabled) {
-    if (params.payment_states){
+    if (params.payment_states) {
       queryStrings.payment_states = params.payment_states instanceof Array ? params.payment_states.join(',') : params.payment_states
     }
     if (params.refund_states) {
@@ -25,11 +23,10 @@ function getQueryStringForParams (params = {}) {
     }
     queryStrings.state = ''
   } else {
-    queryStrings.state  = params.state
+    queryStrings.state = params.state
   }
 
   return querystring.stringify(queryStrings)
 }
-
 
 module.exports = getQueryStringForParams

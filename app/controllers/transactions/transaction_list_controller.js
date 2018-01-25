@@ -18,7 +18,6 @@ const client = new ConnectorClient(process.env.CONNECTOR_URL)
 const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
 const REFUNDS_IN_TRANSACTION_LIST_FEATURE_HEADER = 'REFUNDS_IN_TX_LIST'
 
-
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const filters = getFilters(req)
