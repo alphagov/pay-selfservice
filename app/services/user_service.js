@@ -98,12 +98,12 @@ module.exports = {
   },
 
   /**
-   * @param serviceId
+   * @param externalServiceId
    * @param correlationId
    * @returns {Promise}
    */
-  getServiceUsers: function (serviceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(serviceId)
+  getServiceUsers: function (externalServiceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(externalServiceId)
   },
 
   /**
@@ -163,12 +163,13 @@ module.exports = {
 
   /**
    *
-   * @param serviceId
-   * @param removerId
-   * @param userId
+   * @param externalServiceId
+   * @param removerExternalId
+   * @param userExternalId
+   * @param correlationId
    */
-  delete: function (serviceId, removerId, userId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).deleteUser(serviceId, removerId, userId)
+  delete: function (externalServiceId, removerExternalId, userExternalId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).deleteUser(externalServiceId, removerExternalId, userExternalId)
   },
 
   /**
