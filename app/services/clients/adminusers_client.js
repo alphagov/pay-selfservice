@@ -770,12 +770,12 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-  const deleteUser = (serviceExternalId, removerId, userId) => {
+  const deleteUser = (serviceExternalId, removerExternalId, userExternalId) => {
     const params = {
       correlationId: correlationId,
       headers: {}
     }
-    const url = `${serviceResource}/${serviceExternalId}/users/${userId}`
+    const url = `${serviceResource}/${serviceExternalId}/users/${userExternalId}`
     const defer = q.defer()
     const startTime = new Date()
     const context = {
@@ -785,14 +785,14 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId,
       method: 'DELETE',
       description: 'delete a user from a service',
-      userDelete: userId,
-      userRemover: removerId,
+      userDelete: userExternalId,
+      userRemover: removerExternalId,
       service: SERVICE_NAME
     }
     const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
     requestLogger.logRequestStart(context)
 
-    params.headers[HEADER_USER_CONTEXT] = removerId
+    params.headers[HEADER_USER_CONTEXT] = removerExternalId
     baseClient.delete(url, params, callbackToPromiseConverter)
       .on('error', callbackToPromiseConverter)
 

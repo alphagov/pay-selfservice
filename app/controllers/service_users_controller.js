@@ -113,12 +113,12 @@ module.exports = {
    * @param res
    */
   delete: (req, res) => {
-    const userToRemoveId = req.params.externalUserId
+    const userToRemoveExternalId = req.params.externalUserId
     const externalServiceId = req.params.externalServiceId
-    const removerId = req.user.externalId
+    const removerExternalId = req.user.externalId
     const correlationId = req.correlationId
 
-    if (userToRemoveId === removerId) {
+    if (userToRemoveExternalId === removerExternalId) {
       errorResponse(req, res, 'Not allowed to delete a user itself')
       return
     }
@@ -143,8 +143,8 @@ module.exports = {
       successResponse(req, res, 'error_logged_in', messageUserHasBeenDeleted)
     }
 
-    return userService.findByExternalId(userToRemoveId, correlationId)
-      .then(user => userService.delete(externalServiceId, removerId, userToRemoveId, correlationId).then(() => user.username))
+    return userService.findByExternalId(userToRemoveExternalId, correlationId)
+      .then(user => userService.delete(externalServiceId, removerExternalId, userToRemoveExternalId, correlationId).then(() => user.username))
       .then((username) => onSuccess(username))
       .catch(onError)
   },
