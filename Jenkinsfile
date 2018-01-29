@@ -55,7 +55,8 @@ pipeline {
         branch 'master'
       }
       steps {
-        deploy("selfservice", "test", null, true, true)
+        deploy("selfservice", "test", null, false, false)
+        deployEcs("selfservice", "test", null, true, true)
       }
     }
   }
