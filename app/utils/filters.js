@@ -28,7 +28,12 @@ function describeFilters (filters) {
     description += ` with <strong>${selectedStates.join('</strong>, <strong>').replace(/,([^,]*)$/, ' or$1')}</strong> states`
   }
 
-  if (filters.brand) description += ` with <strong>'${filters.brand}'</strong> card brand`
+  const brandStates = Array.isArray(filters.brand) ? filters.brand.map(brand => brand.replace('-', ' ')) : []
+  if (brandStates.length === 0 && filters.brand) {
+    description += ` with <strong class="capitalize">‘${filters.brand.replace('-', ' ')}’</strong> card brand`
+  } else if (brandStates.length > 1) {
+    description += ` with <strong class="capitalize">‘${brandStates.join('</strong>, <strong class="capitalize">').replace(/,([^,]*)$/, ' or$1')}’</strong> card brands`
+  }
 
   return description
 }
