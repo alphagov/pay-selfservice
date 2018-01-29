@@ -22,10 +22,14 @@ module.exports = {
     }
 
     agent.options.ca = agent.options.ca || []
-    fs.readdirSync(certsPath).forEach(
-      (certPath) => agent.options.ca.push(
-        fs.readFileSync(path.join(certsPath, certPath))
-      )
-    )
+    // Read everything from the certificates directories
+    // Get everything that isn't a directory (e.g. files, symlinks)
+    // Read it (assume it is a certificate)
+    // Add it to the agentOptions list of CAs
+    fs.readdirSync(certsPath)
+      .map(certPath => path.join(certsPath, certPath))
+      .filter(fullCertPath => !fs.lstatSync(fullCertPath).isDirectory())
+      .map(fullCertPath => fs.readFileSync(fullCertPath))
+      .forEach(ca => agent.options.ca.push(ca))
   }
 }
