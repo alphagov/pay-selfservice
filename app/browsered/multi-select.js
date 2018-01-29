@@ -30,6 +30,7 @@ function progressivelyEnhanceSelects () {
     select = $(select)
     const configuration = {
       id: select.id || randomElementId(),
+      name: select[0].name,
       items: [...select.find('option')].map(option => {
         option = $(option)
         const text = option.text()

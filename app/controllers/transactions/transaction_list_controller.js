@@ -2,6 +2,7 @@
 
 // Core Dependencies
 const url = require('url')
+const _ = require('lodash')
 
 // Local Dependencies
 const auth = require('../../services/auth_service.js')
@@ -43,6 +44,11 @@ module.exports = (req, res) => {
             .filter(state => state.value.selected)
             .map(state => state.value.text)
             .join(', ')
+          if (_.has(filters.result, 'brand')) {
+            model.cardBrands.forEach(brand => {
+              brand.value.selected = filters.result.brand.includes(brand.key)
+            })
+          }
           response(req, res, 'transactions/index', model)
         })
         .on('connectorError', () => error('Unable to retrieve card types.'))
