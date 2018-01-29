@@ -18,8 +18,7 @@ let productsMock, result, productExternalId
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
-      PRODUCTS_URL: baseUrl,
-      PRODUCTS_API_TOKEN: productsApiKey
+      PRODUCTS_URL: baseUrl
     }
   })
 }
@@ -70,34 +69,6 @@ describe('products client - disable a product', () => {
 
     it('should disable the product', () => {
       expect(result).to.equal(undefined)
-    })
-  })
-
-  describe('when the request has invalid authorization credentials', () => {
-    before(done => {
-      const productsClient = getProductsClient(`http://localhost:${mockPort}`, 'invalid-api-key')
-      productExternalId = 'a_valid_external_id'
-      productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/disable`)
-          .withUponReceiving('a valid disable product request with invalid PRODUCTS_API_TOKEN')
-          .withMethod('PATCH')
-          .withStatusCode(401)
-          .build()
-      )
-        .then(() => productsClient.product.disable(productExternalId), done)
-        .then(() => done(new Error('Promise unexpectedly resolved')))
-        .catch((err) => {
-          result = err
-          done()
-        })
-    })
-
-    afterEach(done => {
-      productsMock.finalize().then(() => done())
-    })
-
-    it('should error unauthorised', () => {
-      expect(result.errorCode).to.equal(401)
     })
   })
 

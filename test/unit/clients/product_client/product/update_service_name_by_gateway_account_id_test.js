@@ -18,8 +18,7 @@ let productsMock
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
-      PRODUCTS_URL: baseUrl,
-      PRODUCTS_API_TOKEN: productsApiKey
+      PRODUCTS_URL: baseUrl
     }
   })
 }
@@ -73,37 +72,6 @@ describe('products client - update product service name by gateway account id', 
 
     it(`should update the service name of any products associated with the service name`, () => {
       expect(result).to.equal(undefined)
-    })
-  })
-
-  describe('when the request has invalid authorization credentials', () => {
-    let result, gatewayAccountId, newServiceName
-    before(done => {
-      const productsClient = getProductsClient(`http://localhost:${mockPort}`, 'invalid-api-key')
-      gatewayAccountId = '541'
-      newServiceName = 'Buy a Fish'
-      productsMock.addInteraction(
-        new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
-          .withUponReceiving('a valid update product service_name request with invalid PRODUCTS_API_TOKEN')
-          .withRequestBody(validUpdateServiceNameOfProductsByGatewayAccountIdRequest(newServiceName).getPactified())
-          .withMethod('PATCH')
-          .withStatusCode(401)
-          .build()
-      )
-        .then(() => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, newServiceName))
-        .then(() => done(new Error('Promise unexpectedly resolved')))
-        .catch((err) => {
-          result = err
-          done()
-        })
-    })
-
-    afterEach(done => {
-      productsMock.finalize().then(() => done())
-    })
-
-    it('should error unauthorised', () => {
-      expect(result.errorCode).to.equal(401)
     })
   })
 

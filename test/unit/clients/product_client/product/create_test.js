@@ -19,8 +19,7 @@ let productsMock, request, response, result
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
-      PRODUCTS_URL: baseUrl,
-      PRODUCTS_API_TOKEN: productsApiKey
+      PRODUCTS_URL: baseUrl
     }
   })
 }
@@ -66,7 +65,6 @@ describe('products client - create a new product', () => {
       )
         .then(() => productsClient.product.create({
           gatewayAccountId: requestPlain.gateway_account_id,
-          payApiToken: requestPlain.pay_api_token,
           name: requestPlain.name,
           price: requestPlain.price,
           serviceName: requestPlain.service_name,
@@ -105,49 +103,10 @@ describe('products client - create a new product', () => {
     })
   })
 
-  describe('when the request has invalid authorization credentials', () => {
-    before(done => {
-      const productsClient = getProductsClient(`http://localhost:${mockPort}`, 'invalid-api-key')
-      request = productFixtures.validCreateProductRequest()
-      const requestPlain = request.getPlain()
-      productsMock.addInteraction(
-        new PactInteractionBuilder(PRODUCT_RESOURCE)
-          .withUponReceiving('a valid create product request with invalid PRODUCTS_API_TOKEN')
-          .withMethod('POST')
-          .withRequestBody(request.getPactified())
-          .withStatusCode(401)
-          .build()
-      )
-        .then(() => productsClient.product.create({
-          gatewayAccountId: requestPlain.gateway_account_id,
-          payApiToken: requestPlain.pay_api_token,
-          name: requestPlain.name,
-          price: requestPlain.price,
-          serviceName: requestPlain.service_name,
-          description: requestPlain.description,
-          returnUrl: requestPlain.return_url,
-          type: requestPlain.type
-        }), done)
-        .then(() => done(new Error('Promise unexpectedly resolved')))
-        .catch((err) => {
-          result = err
-          done()
-        })
-    })
-
-    afterEach(done => {
-      productsMock.finalize().then(() => done())
-    })
-
-    it('should error unauthorised', () => {
-      expect(result.errorCode).to.equal(401)
-    })
-  })
-
   describe('create a product - bad request', () => {
     before(done => {
       const productsClient = getProductsClient()
-      request = productFixtures.validCreateProductRequest({pay_api_token: ''})
+      request = productFixtures.validCreateProductRequest()
       const requestPlain = request.getPlain()
       productsMock.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
@@ -159,7 +118,6 @@ describe('products client - create a new product', () => {
       )
         .then(() => productsClient.product.create({
           gatewayAccountId: requestPlain.gateway_account_id,
-          payApiToken: requestPlain.pay_api_token,
           name: requestPlain.name,
           price: requestPlain.price,
           description: requestPlain.description,

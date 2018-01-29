@@ -19,8 +19,7 @@ let productsMock, response, result, gatewayAccountId
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
-      PRODUCTS_URL: baseUrl,
-      PRODUCTS_API_TOKEN: productsApiKey
+      PRODUCTS_URL: baseUrl
     }
   })
 }
@@ -91,34 +90,6 @@ describe('products client - find products associated with a particular gateway a
         expect(product.links.pay).to.have.property('method').to.equal(plainResponse[index]._links.find(link => link.rel === 'pay').method)
         expect(product.links.pay).to.have.property('href').to.equal(plainResponse[index]._links.find(link => link.rel === 'pay').href)
       })
-    })
-  })
-
-  describe('when the request has invalid authorization credentials', () => {
-    beforeEach(done => {
-      const productsClient = getProductsClient(`http://localhost:${mockPort}`, 'invalid-api-key')
-      gatewayAccountId = 76543
-      const interaction = new PactInteractionBuilder(PRODUCT_RESOURCE)
-        .withQuery('gatewayAccountId', String(gatewayAccountId))
-        .withUponReceiving('a valid get product by gateway account id request with invalid PRODUCTS_API_TOKEN ')
-        .withMethod('GET')
-        .withStatusCode(401)
-        .build()
-      productsMock.addInteraction(interaction)
-        .then(() => productsClient.product.getByGatewayAccountId(gatewayAccountId), done)
-        .then(() => done(new Error('Promise unexpectedly resolved')))
-        .catch((err) => {
-          result = err
-          done()
-        })
-    })
-
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
-
-    it('should reject with error: 401 unauthorised', () => {
-      expect(result.errorCode).to.equal(401)
     })
   })
 
