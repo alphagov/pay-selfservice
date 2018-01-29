@@ -19,8 +19,7 @@ let productsMock, response, result, paymentExternalId
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
-      PRODUCTS_URL: baseUrl,
-      PRODUCTS_API_TOKEN: productsApiKey
+      PRODUCTS_URL: baseUrl
     }
   })
 }
@@ -83,32 +82,6 @@ describe('products client - find a payment by it\'s own external id', function (
       expect(result.links).to.have.property('next')
       expect(result.links.next).to.have.property('method').to.equal(plainResponse._links.find(link => link.rel === 'next').method)
       expect(result.links.next).to.have.property('href').to.equal(plainResponse._links.find(link => link.rel === 'next').href)
-    })
-  })
-
-  describe('when the request has invalid authorization credentials', () => {
-    beforeEach(done => {
-      const productsClient = getProductsClient(`http://localhost:${mockPort}`, 'invalid-api-key')
-      paymentExternalId = 'existing-id'
-      productsMock.addInteraction(
-        new PactInteractionBuilder(`${PAYMENT_RESOURCE}/${paymentExternalId}`)
-          .withUponReceiving('a valid find payment request with invalid PRODUCTS_API_TOKEN')
-          .withMethod('GET')
-          .withStatusCode(401)
-          .build()
-      )
-        .then(() => productsClient.payment.getByPaymentExternalId(paymentExternalId), done)
-        .then(() => done(new Error('Promise unexpectedly resolved')))
-        .catch((err) => {
-          result = err
-          done()
-        })
-    })
-
-    after(() => productsMock.finalize())
-
-    it('should reject with error: 401 unauthorised', () => {
-      expect(result.errorCode).to.equal(401)
     })
   })
 
