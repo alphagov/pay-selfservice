@@ -48,6 +48,7 @@ function createProduct (options) {
     json: true,
     body: {
       gateway_account_id: options.gatewayAccountId,
+      pay_api_token: options.payApiToken,
       name: options.name,
       price: options.price,
       description: options.description,
