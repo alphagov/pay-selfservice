@@ -39,6 +39,7 @@ pipeline {
       }
       steps {
         runEndToEnd("selfservice")
+        runParameterisedEndToEnd("selfservice", null, "end2end-tagged", false, false, "uk.gov.pay.endtoend.categories.End2EndProducts")
       }
     }
     stage('Docker Tag') {
