@@ -1,10 +1,12 @@
-var response = require('../utils/response.js').response
-var Email = require('../models/email.js')
-var router = require('../routes.js')
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const response = require('../utils/response.js').response
+const Email = require('../models/email.js')
+const router = require('../routes.js')
+const _ = require('lodash')
+const logger = require('winston')
+const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
 
-var showEmail = function (req, res, resource, locals) {
-  var template = 'email_notifications/' + resource
+const showEmail = function (req, res, resource, locals) {
+  const template = 'email_notifications/' + resource
   response(req, res, template, locals)
 }
 
@@ -34,11 +36,10 @@ module.exports.offConfirm = (req, res) => {
   showEmail(req, res, 'off_confirm', {})
 }
 
-var toggleEmail = function (req, res, enabled) {
-  var indexPath = router.paths.emailNotifications.index
-  var accountID = req.account.gateway_account_id
-
-  var emailModel = Email(req.headers[CORRELATION_HEADER])
+const toggleEmail = function (req, res, enabled) {
+  const indexPath = router.paths.emailNotifications.index
+  const accountID = req.account.gateway_account_id
+  const emailModel = Email(req.headers[CORRELATION_HEADER])
   emailModel.setEnabled(accountID, enabled)
   .then(() => {
     res.redirect(303, indexPath)
@@ -54,13 +55,14 @@ module.exports.on = (req, res) => {
 }
 
 module.exports.update = (req, res) => {
-  var indexPath = router.paths.emailNotifications.index
-  var newEmailText = req.body['custom-email-text']
-  var accountID = req.account.gateway_account_id
-
-  var emailModel = Email(req.headers[CORRELATION_HEADER])
+  const indexPath = router.paths.emailNotifications.index
+  const newEmailText = req.body['custom-email-text']
+  const accountID = req.account.gateway_account_id
+  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
+  const emailModel = Email(correlationId)
   emailModel.update(accountID, newEmailText)
-  .then((customEmailText) => {
+  .then(() => {
+    logger.info(`[${correlationId}] - Updated email notifications custom paragraph. user=${req.session.passport.user}, gateway_account=${accountID}`)
     res.redirect(303, indexPath)
   })
 }
