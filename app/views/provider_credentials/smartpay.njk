@@ -45,7 +45,7 @@
               <label class="form-label" for="password">Password</label>
               <input class="form-control" id="password" name="password" type="password" value="">
           </div>
-  
+
           <input id="submitCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
        </form>
     {% endif %}
@@ -85,16 +85,16 @@
 
   {% if permissions.gateway_credentials_update %}
     {% if editNotificationCredentialsMode %}
-      <form id="notification_credentials_form" method="post" action="{{routes.notificationCredentials.update}}">
+      <form id="notification_credentials_form" method="post" action="{{routes.notificationCredentials.update}}" data-validate>
           <input id="notification-csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
           <div class="form-group">
               <label class="form-label" for="notification-username">Username</label>
-            <input class="form-control" id="notification-username" name="username" type="text" value="{{currentGatewayAccount.notification_credentials.userName}}">
+            <input class="form-control" id="notification-username" name="username" type="text" value="{{lastNotificationsData.username or currentGatewayAccount.notificationCredentials.userName}}" data-validate="required">
           </div>
 
           <div class="form-group">
               <label class="form-label" for="notification-password">Password</label>
-              <input class="form-control" id="notification-password" name="password" type="password" value="">
+              <input class="form-control" id="notification-password" name="password" type="password" value="{{ lastNotificationsData.password }}" data-validate="required passwordLessThanTenChars">
           </div>
 
           <input id="submitNotificationCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">

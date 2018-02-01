@@ -7,7 +7,7 @@ var nock = require('nock')
 var csrf = require('csrf')
 var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var app
-var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+var mockSession = require('../test_helpers/mock_session.js')
 var {expect} = require('chai')
 var ACCOUNT_ID = 182364
 var CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
@@ -51,10 +51,10 @@ describe('Credentials endpoints', () => {
 
     beforeEach(function (done) {
       let permissions = 'gateway-credentials:read'
-      var user = session.getUser({
+      var user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
-      app = session.getAppWithLoggedInUser(getApp(), user)
+      app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
       userCreator.mockUserResponse(user.toJson(), done)
     })
@@ -146,10 +146,10 @@ describe('Credentials endpoints', () => {
 
     beforeEach(function (done) {
       let permissions = 'gateway-credentials:update'
-      var user = session.getUser({
+      var user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
-      app = session.getAppWithLoggedInUser(getApp(), user)
+      app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
       userCreator.mockUserResponse(user.toJson(), done)
     })
@@ -257,10 +257,10 @@ describe('Credentials endpoints', () => {
 
     beforeEach(function (done) {
       let permissions = 'gateway-credentials:update'
-      var user = session.getUser({
+      var user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
-      app = session.getAppWithLoggedInUser(getApp(), user)
+      app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
       userCreator.mockUserResponse(user.toJson(), done)
     })
@@ -368,10 +368,10 @@ describe('Credentials endpoints', () => {
 
     beforeEach(function (done) {
       let permissions = 'gateway-credentials:read'
-      var user = session.getUser({
+      var user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
-      app = session.getAppWithLoggedInUser(getApp(), user)
+      app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
       userCreator.mockUserResponse(user.toJson(), done)
     })
@@ -405,10 +405,10 @@ describe('Credentials endpoints', () => {
 
     beforeEach(function (done) {
       let permissions = 'gateway-credentials:update'
-      var user = session.getUser({
+      var user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
-      app = session.getAppWithLoggedInUser(getApp(), user)
+      app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
       userCreator.mockUserResponse(user.toJson(), done)
     })
@@ -519,6 +519,7 @@ describe('Credentials endpoints', () => {
   })
 
   describe('The provider update notification credentials endpoint', function () {
+    let session
     afterEach(function () {
       nock.cleanAll()
       app = null
@@ -526,10 +527,11 @@ describe('Credentials endpoints', () => {
 
     beforeEach(function (done) {
       let permissions = 'gateway-credentials:update'
-      var user = session.getUser({
+      var user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
-      app = session.getAppWithLoggedInUser(getApp(), user)
+      session = mockSession.getMockSession(user)
+      app = mockSession.createAppWithSession(getApp(), session)
 
       userCreator.mockUserResponse(user.toJson(), done)
     })
@@ -548,6 +550,50 @@ describe('Credentials endpoints', () => {
         .expect(303, {})
         .expect('Location', expectedLocation)
         .end(done)
+    })
+
+    it('should should flash a relevant error if no password is sent', function (done) {
+
+      var sendData = {'password': 'a-notification-password'}
+      var path = paths.notificationCredentials.update
+      buildFormPostRequest(path, sendData, true, app)
+        .end((err, res) => {
+          if(err) done(err)
+          expect(res.statusCode).to.equal(302)
+          expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
+          expect(session.flash.genericError).to.have.property('length').to.equal(1)
+          expect(session.flash.genericError[0]).to.equal('<h2>Please enter a valid username</h2>')
+          done()
+        })
+    })
+    it('should should flash a relevant error if no password is sent', function (done) {
+
+      var sendData = {'username': 'a-notification-username'}
+      var path = paths.notificationCredentials.update
+      buildFormPostRequest(path, sendData, true, app)
+        .end((err, res) => {
+          if(err) done(err)
+          expect(res.statusCode).to.equal(302)
+          expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
+          expect(session.flash.genericError).to.have.property('length').to.equal(1)
+          expect(session.flash.genericError[0]).to.equal('<h2>Please enter a valid password</h2>')
+          done()
+        })
+    })
+
+    it('should should flash a relevant error if too short a password is sent', function (done) {
+
+      var sendData = {'username': 'a-notification-username', 'password': '123456789'}
+      var path = paths.notificationCredentials.update
+      buildFormPostRequest(path, sendData, true, app)
+        .end((err, res) => {
+          if(err) done(err)
+          expect(res.statusCode).to.equal(302)
+          expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
+          expect(session.flash.genericError).to.have.property('length').to.equal(1)
+          expect(session.flash.genericError[0]).to.equal('<h2>Please enter a valid password</h2> Choose a Password of 10 characters or longer')
+          done()
+        })
     })
   })
 })

@@ -13,7 +13,8 @@ const validationErrors = {
   phoneNumber: 'Must be a 11 digit phone number',
   validEmail: 'Please use a valid email address',
   isHttps: 'URL must begin with https://',
-  isBelowMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`
+  isBelowMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
+  isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`
 }
 
 exports.isEmpty = function (value) {
@@ -63,3 +64,5 @@ exports.isBelowMaxAmount = value => {
   }
   return false
 }
+
+exports.isPasswordLessThanTenChars = value => !value || value.length < 10 ? validationErrors.isPasswordLessThanTenChars : false

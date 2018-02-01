@@ -3,15 +3,17 @@ const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
 var logger = require('winston')
 var _ = require('lodash')
-
+const paths = require('../paths')
 var response = require('../utils/response.js').response
 var errorView = require('../utils/response.js').renderErrorView
 var ConnectorClient = require('../services/clients/connector_client').ConnectorClient
 var auth = require('../services/auth_service.js')
 var router = require('../routes.js')
+const {CONNECTOR_URL} = process.env
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const {isEmpty, isPasswordLessThanTenChars} = require('../browsered/field-validation-checks')
 
-var connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
+var connectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
@@ -29,7 +31,11 @@ function showSuccessView (viewMode, req, res) {
       responsePayload.editMode = false
       responsePayload.editNotificationCredentialsMode = false
   }
-
+  const invalidCreds = _.get(req,'session.pageData.editNotificationCredentials')
+  if (invalidCreds) {
+    responsePayload.lastNotificationsData = invalidCreds
+    delete req.session.pageData.editNotificationCredentials
+  }
   response(req, res, 'provider_credentials/' + req.account.payment_provider, responsePayload)
 }
 
@@ -81,12 +87,21 @@ module.exports = {
   },
 
   updateNotificationCredentials: function (req, res) {
-    var accountId = auth.getCurrentGatewayAccountId((req))
-    var connectorUrl = process.env.CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
+    const accountId = auth.getCurrentGatewayAccountId((req))
+    const connectorUrl = CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
+    const {username, password} = _.get(req, 'body')
 
-    var requestPayLoad = {
-      username: req.body.username,
-      password: req.body.password
+    if(!username) {
+      req.flash('genericError', `<h2>Please enter a valid username</h2>`)
+    } else if (!password) {
+      req.flash('genericError', `<h2>Please enter a valid password</h2>`)
+    } else if (isPasswordLessThanTenChars(password)) {
+      req.flash('genericError', `<h2>Please enter a valid password</h2> ${isPasswordLessThanTenChars(password)}`)
+    }
+
+    if (_.get(req, 'session.flash.genericError.length')) {
+      _.set(req,'session.pageData.editNotificationCredentials', {username,password})
+      return res.redirect(paths.notificationCredentials.edit)
     }
 
     logger.info('Calling connector to update provider notification credentials -', {
@@ -100,7 +115,7 @@ module.exports = {
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
     connectorClient().postAccountNotificationCredentials({
-      payload: requestPayLoad,
+      payload: {username, password},
       correlationId: correlationId,
       gatewayAccountId: accountId
     }, function (connectorData, connectorResponse) {
@@ -137,7 +152,7 @@ module.exports = {
       url: '/frontend/accounts/{id}/credentials'
     })
     var accountId = auth.getCurrentGatewayAccountId(req)
-    var connectorUrl = process.env.CONNECTOR_URL + '/v1/frontend/accounts/{accountId}/credentials'
+    var connectorUrl = CONNECTOR_URL + '/v1/frontend/accounts/{accountId}/credentials'
 
     logger.info('Calling connector to update provider credentials -', {
       service: 'connector',
