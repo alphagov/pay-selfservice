@@ -71,6 +71,9 @@ function validateField (form, field) {
       case 'belowMaxAmount' :
         result = checks.isBelowMaxAmount(field.value)
         break
+      case 'passwordLessThanTenChars' :
+        result = checks.isPasswordLessThanTenChars(field.value)
+        break
       default :
         result = checks.isEmpty(field.value)
         break
@@ -89,7 +92,7 @@ function applyErrorMessaging (form, field, result) {
   let formGroup = field.closest('.form-group')
   if (!formGroup.classList.contains('error')) {
     formGroup.classList.add('error')
-    document.querySelector('label[for="' + field.name + '"]').insertAdjacentHTML('beforeend',
+    document.querySelector('label[for="' + field.id + '"]').insertAdjacentHTML('beforeend',
       '<span class="error-message">' + result + '</span>')
   }
 }

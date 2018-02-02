@@ -30,13 +30,13 @@
     {% endif %}
 
     <main id="content" role="main" class="{% block mainClasses %}{% endblock %}">
-      {% include "includes/flash.njk" %}
       {% block full_width_content %}{% endblock %}
       <div class="grid-row">
         {% if showSettingsNav %}
           {% include "includes/side_navigation.njk" %}
         {% endif %}
         <div class="column-two-thirds">
+            {% include "includes/flash.njk" %}
             {% block mainContent %}{% endblock %}
         </div>
       </div>
