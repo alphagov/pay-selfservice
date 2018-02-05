@@ -17,6 +17,7 @@ const PAYMENT_1 = {
   description: 'product-description-1',
   name: 'payment-name-1',
   price: '150',
+  type: 'PROTOTYPE',
   return_url: 'http://return.url',
   _links: [{
     rel: 'pay',
@@ -31,6 +32,22 @@ const PAYMENT_2 = {
   description: 'product-description-2',
   name: 'payment-name-2',
   price: '150',
+  type: 'PROTOTYPE',
+  return_url: 'http://return.url',
+  _links: [{
+    rel: 'pay',
+    href: 'http://pay.url',
+    method: 'GET'
+  }]
+}
+
+const PAYMENT_3 = {
+  external_id: 'product-external-id-3',
+  gateway_account_id: 'product-gateway-account-id-3',
+  description: 'product-description-3',
+  name: 'payment-name-3',
+  price: '150',
+  type: 'LIVE',
   return_url: 'http://return.url',
   _links: [{
     rel: 'pay',
@@ -138,7 +155,8 @@ describe('Show the prototype links', () => {
             href: 'http://pay.url',
             method: 'GET'
           }
-        }
+        },
+        type: 'PROTOTYPE'
       }])
     })
   })
@@ -190,7 +208,8 @@ describe('Show the prototype links', () => {
             href: 'http://pay.url',
             method: 'GET'
           }
-        }
+        },
+        type: 'PROTOTYPE'
       }, {
         description: 'product-description-2',
         externalId: 'product-external-id-2',
@@ -203,7 +222,47 @@ describe('Show the prototype links', () => {
             href: 'http://pay.url',
             method: 'GET'
           }
-        }
+        },
+        type: 'PROTOTYPE'
+      }])
+    })
+  })
+
+  describe('when one prototype link and one live link exists', () => {
+    let response
+    before(function (done) {
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
+      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_3])
+
+      supertest(app)
+        .get(paths.prototyping.demoService.links)
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          response = res
+          done(err)
+        })
+    })
+
+    it('should display only prototype links', () => {
+      expect(response.body).to.have.property('productsLength', 1)
+      expect(response.body).to.have.property('productsSingular', true)
+      expect(response.body).to.have.deep.property('products', [{
+        description: 'product-description-1',
+        externalId: 'product-external-id-1',
+        gatewayAccountId: 'product-gateway-account-id-1',
+        name: 'payment-name-1',
+        price: '150',
+        returnUrl: 'http://return.url',
+        links: {
+          pay: {
+            href: 'http://pay.url',
+            method: 'GET'
+          }
+        },
+        type: 'PROTOTYPE'
       }])
     })
   })
