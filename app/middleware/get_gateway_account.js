@@ -16,7 +16,7 @@ module.exports = function (req, res, next) {
       })
       next()
     })
-    .catch(() => {
+    .catch((err) => {
       next()
     })
 }

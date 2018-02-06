@@ -11,6 +11,7 @@ const httpsAgent = require('https').globalAgent
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const clientSession = require('client-sessions')
 const logger = require('winston')
 const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
@@ -19,13 +20,13 @@ const staticify = require('staticify')(path.join(__dirname, 'public'))
 
 // Custom dependencies
 const router = require(path.join(__dirname, '/app/routes'))
-const cookieUtil = require(path.join(__dirname, '/app/utils/cookie'))
 const noCache = require(path.join(__dirname, '/app/utils/no_cache'))
 const customCertificate = require(path.join(__dirname, '/app/utils/custom_certificate'))
 const auth = require(path.join(__dirname, '/app/services/auth_service'))
 const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
 const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler'))
 const nunjucksFilters = require('./app/utils/nunjucks-filters')
+const cookieConfig = require('./config/cookie')
 
 // Global constants
 const port = (process.env.PORT || 3000)
@@ -127,9 +128,9 @@ function initialiseAuth (app) {
 }
 
 function initialiseCookies (app) {
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()))
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.gatewayAccountCookie()))
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()))
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], clientSession(cookieConfig.session)))
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], clientSession(cookieConfig.gatewayAccount)))
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], clientSession(cookieConfig.registration)))
 }
 
 function initialiseErrorHandling (app) {
