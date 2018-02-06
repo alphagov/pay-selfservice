@@ -65,6 +65,7 @@ describe('products client - create a new product', () => {
       )
         .then(() => productsClient.product.create({
           gatewayAccountId: requestPlain.gateway_account_id,
+          payApiToken: requestPlain.pay_api_token,
           name: requestPlain.name,
           price: requestPlain.price,
           serviceName: requestPlain.service_name,
@@ -106,7 +107,7 @@ describe('products client - create a new product', () => {
   describe('create a product - bad request', () => {
     before(done => {
       const productsClient = getProductsClient()
-      request = productFixtures.validCreateProductRequest()
+      request = productFixtures.validCreateProductRequest({pay_api_token: ''})
       const requestPlain = request.getPlain()
       productsMock.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
@@ -118,6 +119,7 @@ describe('products client - create a new product', () => {
       )
         .then(() => productsClient.product.create({
           gatewayAccountId: requestPlain.gateway_account_id,
+          payApiToken: requestPlain.pay_api_token,
           name: requestPlain.name,
           price: requestPlain.price,
           description: requestPlain.description,

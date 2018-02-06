@@ -11,7 +11,7 @@ var auth = require('../services/auth_service.js')
 var router = require('../routes.js')
 const {CONNECTOR_URL} = process.env
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
-const {isEmpty, isPasswordLessThanTenChars} = require('../browsered/field-validation-checks')
+const {isPasswordLessThanTenChars} = require('../browsered/field-validation-checks')
 
 var connectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
@@ -31,7 +31,7 @@ function showSuccessView (viewMode, req, res) {
       responsePayload.editMode = false
       responsePayload.editNotificationCredentialsMode = false
   }
-  const invalidCreds = _.get(req,'session.pageData.editNotificationCredentials')
+  const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
   if (invalidCreds) {
     responsePayload.lastNotificationsData = invalidCreds
     delete req.session.pageData.editNotificationCredentials
@@ -91,7 +91,7 @@ module.exports = {
     const connectorUrl = CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
     const {username, password} = _.get(req, 'body')
 
-    if(!username) {
+    if (!username) {
       req.flash('genericError', `<h2>Please enter a valid username</h2>`)
     } else if (!password) {
       req.flash('genericError', `<h2>Please enter a valid password</h2>`)
@@ -100,7 +100,7 @@ module.exports = {
     }
 
     if (_.get(req, 'session.flash.genericError.length')) {
-      _.set(req,'session.pageData.editNotificationCredentials', {username,password})
+      _.set(req, 'session.pageData.editNotificationCredentials', {username, password})
       return res.redirect(paths.notificationCredentials.edit)
     }
 
