@@ -10,7 +10,7 @@ const {expect} = require('chai')
 
 const {PRODUCTS_URL, CONNECTOR_URL} = process.env
 
-const GATEWAY_ACCOUNT_ID = 182364
+const GATEWAY_ACCOUNT_ID = '182364'
 const PAYMENT_1 = {
   external_id: 'product-external-id-1',
   gateway_account_id: 'product-gateway-account-id-1',

@@ -301,7 +301,7 @@ describe('auth service', function () {
       }
       const test = auth.getCurrentGatewayAccountId(req)
 
-      expect(test).to.equal(1)
+      expect(test).to.equal('1')
       expect(req.gateway_account.currentGatewayAccountId).to.equal('1')
 
       done()

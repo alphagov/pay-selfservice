@@ -10,7 +10,7 @@ var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var expect = require('chai').expect
 var {TYPES} = require(path.join(__dirname, '/../../app/controllers/payment_types_controller.js'))
 
-var ACCOUNT_ID = 182364
+var ACCOUNT_ID = '182364'
 var app
 var requestId = 'unique-request-id'
 var aCorrelationHeader = {

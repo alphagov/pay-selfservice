@@ -15,7 +15,7 @@ const {randomUuid} = require('../../../../app/utils/random')
 const {validCreateProductRequest, validCreateProductResponse} = require('../../../fixtures/product_fixtures')
 
 const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
-const GATEWAY_ACCOUNT_ID = 929
+const GATEWAY_ACCOUNT_ID = '929'
 const PAYMENT_DESCRIPTION = 'Pay your window tax'
 const PAYMENT_AMOUNT = '20.00'
 const VALID_PAYLOAD = {

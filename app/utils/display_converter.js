@@ -99,7 +99,6 @@ const getAccount = account => {
       ? [account.payment_provider, account.type].join(' ')
       : account.type
   }
-
   return account
 }
 

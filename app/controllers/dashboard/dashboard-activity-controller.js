@@ -9,6 +9,7 @@ const moment = require('moment-timezone')
 const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient
+const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client.js')
 const auth = require('../../services/auth_service.js')
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const datetime = require('../../utils/nunjucks-filters/datetime')
@@ -16,6 +17,7 @@ const datetime = require('../../utils/nunjucks-filters/datetime')
 module.exports = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
+
   let toDateTime = moment().tz('Europe/London').format() // Today is the default
   let daysAgo = 0
   let period = _.get(req, 'query.period', 'today')
@@ -37,6 +39,15 @@ module.exports = (req, res) => {
 
   logger.info(`[${correlationId}] successfully logged in`)
 
+  if (gatewayAccountId.startsWith(directDebitConnectorClient.DIRECT_DEBIT_TOKEN_PREFIX)) {
+    // todo implement transaction list for direct debit
+    return response(req, res, 'dashboard/index', {
+      name: req.user.username,
+      serviceId: req.service.externalId,
+      activityError: true,
+      period
+    })
+  }
   connectorClient().getTransactionSummary({
     gatewayAccountId,
     correlationId,

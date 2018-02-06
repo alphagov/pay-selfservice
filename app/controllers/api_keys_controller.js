@@ -3,16 +3,14 @@ var csrf = require('csrf')
 var response = require('../utils/response.js').response
 var errorView = require('../utils/response.js').renderErrorView
 var auth = require('../services/auth_service.js')
-
 const publicAuthClient = require('../services/clients/public_auth_client')
-
+const {DIRECT_DEBIT_TOKEN_PREFIX} = require('../services/clients/direct_debit_connector_client.js')
 // TODO remove these and make them proper i.e. show update destroy etc
 const API_KEYS_INDEX = 'tokens'
 const API_KEY_GENERATE = 'token_generate'
 
 module.exports.index = function (req, res) {
-  var accountId = auth.getCurrentGatewayAccountId(req)
-
+  const accountId = auth.getCurrentGatewayAccountId(req)
   publicAuthClient.getActiveTokensForAccount({
     correlationId: req.correlationId,
     accountId: accountId
@@ -41,7 +39,7 @@ module.exports.index = function (req, res) {
 }
 
 module.exports.revoked = function (req, res) {
-  var accountId = auth.getCurrentGatewayAccountId(req)
+  const accountId = auth.getCurrentGatewayAccountId(req)
   publicAuthClient.getRevokedTokensForAccount({
     correlationId: req.correlationId,
     accountId: accountId
@@ -73,19 +71,20 @@ module.exports.show = function (req, res) {
 }
 
 module.exports.create = function (req, res) {
-  let accountId = auth.getCurrentGatewayAccountId(req)
+  // current account id is either external (DIRECT_DEBIT) or internal (CARD) for now
+  const currentAccountId = auth.getCurrentGatewayAccountId(req)
+  let tokenType = currentAccountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX) ? 'DIRECT_DEBIT' : 'CARD'
   let correlationId = req.correlationId
   let description = req.body.description
-
   let payload = {
-    'account_id': accountId,
+    'account_id': currentAccountId,
     'description': description,
-    'created_by': req.user.email
+    'created_by': req.user.email,
+    'token_type': tokenType
   }
-
   publicAuthClient.createTokenForAccount({
     payload: payload,
-    accountId: accountId,
+    accountId: currentAccountId,
     correlationId: correlationId
   })
     .then(publicAuthData => response(req, res, API_KEY_GENERATE, {
@@ -130,9 +129,8 @@ module.exports.update = function (req, res) {
 }
 
 module.exports.destroy = function (req, res) {
-  var accountId = auth.getCurrentGatewayAccountId(req)
-
-  var payload = {
+  const accountId = auth.getCurrentGatewayAccountId(req)
+  const payload = {
     token_link: req.query.token_link
   }
 

@@ -9,7 +9,7 @@ var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var app
 var mockSession = require('../test_helpers/mock_session.js')
 var {expect} = require('chai')
-var ACCOUNT_ID = 182364
+var ACCOUNT_ID = '182364'
 var CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
 var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + '/credentials'
 var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/notification-credentials'

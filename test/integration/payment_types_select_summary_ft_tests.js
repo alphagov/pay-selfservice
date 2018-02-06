@@ -12,7 +12,7 @@ var {expect} = require('chai')
 var NOT_AVAILABLE_BECAUSE_OF_TYPE_REQUIREMENT = 'Not available'
 var NOT_AVAILABLE_BECAUSE_OF_3DS_REQUIREMENT = 'You must <a href=\'/3ds\'>enable 3D Secure</a> to accept Maestro'
 
-var ACCOUNT_ID = 182364
+var ACCOUNT_ID = '182364'
 var app
 var requestId = 'unique-request-id'
 var aCorrelationHeader = {
