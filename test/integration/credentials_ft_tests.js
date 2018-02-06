@@ -553,12 +553,11 @@ describe('Credentials endpoints', () => {
     })
 
     it('should should flash a relevant error if no password is sent', function (done) {
-
       var sendData = {'password': 'a-notification-password'}
       var path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
-          if(err) done(err)
+          if (err) done(err)
           expect(res.statusCode).to.equal(302)
           expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
           expect(session.flash.genericError).to.have.property('length').to.equal(1)
@@ -567,12 +566,11 @@ describe('Credentials endpoints', () => {
         })
     })
     it('should should flash a relevant error if no password is sent', function (done) {
-
       var sendData = {'username': 'a-notification-username'}
       var path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
-          if(err) done(err)
+          if (err) done(err)
           expect(res.statusCode).to.equal(302)
           expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
           expect(session.flash.genericError).to.have.property('length').to.equal(1)
@@ -582,12 +580,11 @@ describe('Credentials endpoints', () => {
     })
 
     it('should should flash a relevant error if too short a password is sent', function (done) {
-
       var sendData = {'username': 'a-notification-username', 'password': '123456789'}
       var path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
-          if(err) done(err)
+          if (err) done(err)
           expect(res.statusCode).to.equal(302)
           expect(res.headers.location).to.equal(paths.notificationCredentials.edit)
           expect(session.flash.genericError).to.have.property('length').to.equal(1)
