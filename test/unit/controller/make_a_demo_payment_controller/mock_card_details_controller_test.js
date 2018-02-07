@@ -12,7 +12,7 @@ const {getApp} = require('../../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
 const {CONNECTOR_URL} = process.env
-const GATEWAY_ACCOUNT_ID = 929
+const GATEWAY_ACCOUNT_ID = '929'
 
 describe('make a demo payment - mock card details controller', () => {
   describe('when both paymentDescription and paymentAmount exist in the session', () => {

@@ -15,7 +15,7 @@ const {randomUuid} = require('../../../../app/utils/random')
 const {validCreateProductRequest, validCreateProductResponse} = require('../../../fixtures/product_fixtures')
 
 const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
-const GATEWAY_ACCOUNT_ID = 929
+const GATEWAY_ACCOUNT_ID = '929'
 const API_TOKEN = randomUuid()
 const VALID_USER = getUser({gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{name: 'transactions:read'}]})
 const VALID_PAYLOAD = {

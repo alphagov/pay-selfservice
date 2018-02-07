@@ -9,10 +9,10 @@ var paths = require(path.join(__dirname, '/../../app/paths.js'))
 var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var {expect} = require('chai')
 
-var gatewayAccountId = 98344
+var gatewayAccountId = '98344'
 var TOKEN = '00112233'
 var PUBLIC_AUTH_PATH = '/v1/frontend/auth'
-var CONNECTOR_PATH = '/v1/frontend/accounts/{accountId}'
+var CONNECTOR_PATH = '/v1/api/accounts/{accountId}'
 
 var app
 
@@ -22,6 +22,7 @@ var aCorrelationHeader = {
 }
 
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
+var directDebitConnectorMock = nock(process.env.DIRECT_DEBIT_CONNECTOR_URL, aCorrelationHeader)
 var publicauthMock = nock(process.env.PUBLIC_AUTH_BASE, aCorrelationHeader)
 
 function buildGetRequest (path) {
@@ -395,9 +396,10 @@ describe('Dev Tokens Endpoints', function () {
       publicauthMock.post(PUBLIC_AUTH_PATH, {
         'account_id': gatewayAccountId,
         'description': 'description',
-        'created_by': user.email
+        'created_by': user.email,
+        'token_type': 'CARD'
       }).reply(200, {'token': TOKEN})
-
+      connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
       buildFormPostRequest(paths.apiKeys.create, {'description': 'description'}, true)
         .expect(200)
         .expect(response => {
@@ -422,7 +424,8 @@ describe('Dev Tokens Endpoints', function () {
 
       publicauthMock.post(PUBLIC_AUTH_PATH, {
         'account_id': gatewayAccountId,
-        'description': 'description'
+        'description': 'description',
+        'token_type': 'CARD'
       }).reply(200, {
         'token': TOKEN,
         navigation: true
@@ -435,29 +438,81 @@ describe('Dev Tokens Endpoints', function () {
         .end(done)
     })
 
-    it('should return the account_id', function (done) {
-      connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
-
-      buildGetRequest(paths.apiKeys.show)
-        .expect(200)
-        .expect(response => {
-          expect(response.body.account_id).to.be.deep.equal(gatewayAccountId)
-        })
-        .end(done)
-    })
-
     it('should fail if the csrf does not exist for the post', function (done) {
       connectorMock.get(CONNECTOR_PATH.replace('{accountId}', gatewayAccountId)).reply(200)
 
       publicauthMock.post(PUBLIC_AUTH_PATH, {
         'account_id': gatewayAccountId,
-        'description': 'description'
+        'description': 'description',
+        'token_type': 'CARD'
       }).reply(200, {
         'token': TOKEN,
         navigation: true
       })
 
       buildFormPostRequest(paths.apiKeys.create, {}, true)
+        .expect(500, {
+          'message': 'There is a problem with the payments platform'
+        })
+        .end(done)
+    })
+  })
+  describe('The /tokens/generate endpoint (create tokens and show generated token)', function () {
+    var user
+    let ddExternalId = 'DIRECT_DEBIT:asdjkjkasd'
+    afterEach(function () {
+      nock.cleanAll()
+      app = null
+    })
+
+    beforeEach(function (done) {
+      let permissions = 'tokens:create'
+      user = session.getUser({
+        gateway_account_ids: [ddExternalId], permissions: [{name: permissions}]
+      })
+      app = session.getAppWithLoggedInUser(getApp(), user)
+
+      userCreator.mockUserResponse(user.toJson(), done)
+    })
+
+    it('should create a direct debit token successfully', function (done) {
+      publicauthMock.post(PUBLIC_AUTH_PATH, {
+        'account_id': ddExternalId,
+        'description': 'description',
+        'created_by': user.email,
+        'token_type': 'DIRECT_DEBIT'
+      }).reply(200, {'token': TOKEN})
+      directDebitConnectorMock.get(CONNECTOR_PATH.replace('{accountId}', ddExternalId)).reply(200)
+      buildFormPostRequest(paths.apiKeys.create, {'description': 'description'}, true)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.token).to.equal(TOKEN)
+        })
+        .end(done)
+    })
+
+    it('should return the external account_id', function (done) {
+      directDebitConnectorMock.get(CONNECTOR_PATH.replace('{accountId}', ddExternalId)).reply(200)
+      buildGetRequest(paths.apiKeys.show)
+        .expect(200)
+        .expect(response => {
+          expect(response.body.account_id).to.be.deep.equal(ddExternalId)
+        })
+        .end(done)
+    })
+    it('should fail if the direct debit account does not exist for a POST', function (done) {
+      directDebitConnectorMock.get(CONNECTOR_PATH.replace('{accountId}', ddExternalId)).reply(400)
+
+      publicauthMock.post(PUBLIC_AUTH_PATH, {
+        'account_id': ddExternalId,
+        'description': 'description',
+        'token_type': 'DIRECT_DEBIT'
+      }).reply(200, {
+        'token': TOKEN,
+        navigation: true
+      })
+
+      buildFormPostRequest(paths.apiKeys.create, {})
         .expect(500, {
           'message': 'There is a problem with the payments platform'
         })

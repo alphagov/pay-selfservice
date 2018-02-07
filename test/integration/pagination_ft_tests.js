@@ -11,7 +11,7 @@ var querystring = require('querystring')
 const getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 var app
 
-var gatewayAccountId = 452345
+var gatewayAccountId = '452345'
 
 var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'

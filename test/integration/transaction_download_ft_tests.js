@@ -13,7 +13,7 @@ var assert = require('chai').assert
 var expect = require('chai').expect
 var getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 
-var gatewayAccountId = 651342
+var gatewayAccountId = '651342'
 var app
 
 var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'

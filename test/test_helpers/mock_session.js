@@ -20,6 +20,7 @@ const createAppWithSession = function (app, sessionData, gatewayAccountData, reg
     req.gateway_account = gatewayAccountData || {
       currentGatewayAccountId: _.get(sessionData, 'passport.user.serviceRoles[0].service.gatewayAccountIds[0]')
     }
+    req.account = gatewayAccountData
     req.register_invite = registerInviteData || {}
     next()
   })

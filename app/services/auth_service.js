@@ -149,7 +149,7 @@ function getCurrentGatewayAccountId (req) {
   }
   // save currentGatewayAccountId and return it
   req.gateway_account.currentGatewayAccountId = currentGatewayAccountId
-  return parseInt(req.gateway_account.currentGatewayAccountId)
+  return req.gateway_account.currentGatewayAccountId
 }
 
 function hasValidSession (req) {

@@ -8,7 +8,7 @@ var session = require('../test_helpers/mock_session.js')
 var userCreator = require('../test_helpers/user_creator.js')
 var expect = chai.expect
 
-var ACCOUNT_ID = 15486734
+var ACCOUNT_ID = '15486734'
 var USER_EXTERNAL_ID = 'efc2e588d92e42969d1fc32f61f5653b'
 var app
 var connectorMock = nock(process.env.CONNECTOR_URL)

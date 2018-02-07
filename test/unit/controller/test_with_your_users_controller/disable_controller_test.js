@@ -11,7 +11,7 @@ const {getMockSession, createAppWithSession, getUser} = require('../../../test_h
 const paths = require('../../../../app/paths')
 const {randomUuid} = require('../../../../app/utils/random')
 
-const GATEWAY_ACCOUNT_ID = 929
+const GATEWAY_ACCOUNT_ID = '929'
 const {PRODUCTS_URL, CONNECTOR_URL} = process.env
 
 describe('test with your users - disable controller', () => {

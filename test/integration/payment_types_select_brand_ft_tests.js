@@ -14,7 +14,7 @@ var aCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
 }
 var {TYPES} = require(path.join(__dirname, '/../../app/controllers/payment_types_controller.js'))
-var ACCOUNT_ID = 182364
+var ACCOUNT_ID = '182364'
 var app
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 var CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID

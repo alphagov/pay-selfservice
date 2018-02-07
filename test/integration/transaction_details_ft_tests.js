@@ -8,7 +8,7 @@ var getApp = require('../../server.js').getApp
 var paths = require('../../app/paths.js')
 var session = require('../test_helpers/mock_session.js')
 var {expect} = require('chai')
-var gatewayAccountId = 15486734
+var gatewayAccountId = '15486734'
 
 var app
 

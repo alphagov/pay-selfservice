@@ -17,7 +17,7 @@ var _ = require('lodash')
 chai.use(chaiAsPromised)
 chai.should()
 
-var gatewayAccountId = 452345
+var gatewayAccountId = '452345'
 
 var app
 
@@ -120,7 +120,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
@@ -138,7 +138,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing2',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
@@ -192,7 +192,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
@@ -244,7 +244,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
@@ -298,7 +298,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
@@ -351,7 +351,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
@@ -404,7 +404,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
@@ -471,7 +471,7 @@ describe('The search transactions endpoint', function () {
           },
           'card_brand': 'Visa',
           'state_friendly': 'Testing',
-          'gateway_account_id': 452345,
+          'gateway_account_id': '452345',
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})

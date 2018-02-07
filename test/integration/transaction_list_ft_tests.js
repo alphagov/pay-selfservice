@@ -13,7 +13,7 @@ const getQueryStringForParams = require('../../app/utils/get_query_string_for_pa
 
 const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
 const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
-const gatewayAccountId = 651342
+const gatewayAccountId = '651342'
 const {expect} = chai
 const searchParameters = {}
 const CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'

@@ -21,7 +21,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 var adminusersMock = nock(process.env.ADMINUSERS_URL)
-var ACCOUNT_ID = 182364
+var ACCOUNT_ID = '182364'
 const USER_RESOURCE = '/v1/api/users'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 

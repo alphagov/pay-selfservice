@@ -6,7 +6,7 @@ const pactProducts = pactBase()
 
 // Create random values if none provided
 const randomExternalId = () => Math.random().toString(36).substring(7)
-const randomGatewayAccountId = () => Math.round(Math.random() * 1000) + 1
+const randomGatewayAccountId = () => Math.random().toString(36).substring(7)
 const randomPrice = () => Math.round(Math.random() * 10000) + 1
 
 module.exports = {
@@ -103,6 +103,7 @@ module.exports = {
       price: opts.price || randomPrice(),
       _links: opts.links
     }
+
     if (opts.description) data.description = opts.description
     if (opts.return_url) data.return_url = opts.return_url
     if (!data._links) {

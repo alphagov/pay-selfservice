@@ -9,7 +9,7 @@ var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 var csrf = require('csrf')
 var {expect} = require('chai')
 
-var ACCOUNT_ID = 182364
+var ACCOUNT_ID = '182364'
 
 var app
 
