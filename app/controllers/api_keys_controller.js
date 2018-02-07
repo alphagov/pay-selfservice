@@ -45,7 +45,7 @@ module.exports.revoked = function (req, res) {
     accountId: accountId
   })
       .then(publicAuthData => {
-        var revokedTokens = publicAuthData.tokens || []
+        const revokedTokens = publicAuthData.tokens || []
         revokedTokens.forEach(function (token) {
           token.csrfToken = csrf().create(req.session.csrfSecret)
         })
@@ -73,10 +73,10 @@ module.exports.show = function (req, res) {
 module.exports.create = function (req, res) {
   // current account id is either external (DIRECT_DEBIT) or internal (CARD) for now
   const currentAccountId = auth.getCurrentGatewayAccountId(req)
-  let tokenType = currentAccountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX) ? 'DIRECT_DEBIT' : 'CARD'
-  let correlationId = req.correlationId
-  let description = req.body.description
-  let payload = {
+  const tokenType = currentAccountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX) ? 'DIRECT_DEBIT' : 'CARD'
+  const correlationId = req.correlationId
+  const description = req.body.description
+  const payload = {
     'account_id': currentAccountId,
     'description': description,
     'created_by': req.user.email,

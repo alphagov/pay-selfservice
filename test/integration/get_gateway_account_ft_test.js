@@ -66,7 +66,7 @@ describe('get account', function () {
       .end(done)
   })
 
-  it('s.onlyhould get a direct debit account', function (done) {
+  it('should get a direct debit account', function (done) {
     const user = session.getUser({
       service_roles: [
         {
