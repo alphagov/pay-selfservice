@@ -100,7 +100,9 @@ describe('get account', function () {
         expect(data.body.currentGatewayAccount).to.deep.equal({
           type: 'test',
           payment_provider: 'sandbox',
-          full_type: 'sandbox test'
+          full_type: 'sandbox test',
+          paymentProvider: 'sandbox',
+          paymentMethod: 'direct debit'
         })
       })
       .end(done)

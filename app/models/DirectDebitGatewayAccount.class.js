@@ -24,16 +24,17 @@ class DirectDebitGatewayAccount {
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
     this.serviceName = gatewayAccountData.service_name
-    this.type = gatewayAccountData.type
+    this.paymentProvider = gatewayAccountData.payment_provider.toLowerCase()
+    this.type = gatewayAccountData.type.toLowerCase()
     this.description = gatewayAccountData.description
     this.analyticsId = gatewayAccountData.analytics_id
     this.externalId = gatewayAccountData.gateway_account_external_id
+    this.paymentMethod = 'direct debit'
 
     // compatibility with other parts of selfservice - recording as tech debt in jira
     this.payment_provider = gatewayAccountData.payment_provider
     this.service_name = gatewayAccountData.service_name
   }
-
   /**
    * @method toJson
    * @returns {Object} A minimal representation of the gateway account
@@ -44,7 +45,8 @@ class DirectDebitGatewayAccount {
       external_id: this.externalId,
       payment_provider: this.paymentProvider,
       service_name: this.serviceName,
-      type: this.type
+      type: this.type,
+      payment_method: this.paymentMethod
     }
   }
 }

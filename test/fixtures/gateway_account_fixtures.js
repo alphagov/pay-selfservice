@@ -32,10 +32,11 @@ module.exports = {
     }
   },
   validDirectDebitGatewayAccountResponse: (opts = {}) => {
-    let data = {
+    const data = {
       gateway_account_id: opts.gateway_account_id || random.randomInt(),
       gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + random.randomUuid(),
       service_name: opts.service_name || random.randomUuid(),
+      payment_provider: opts.service_name || 'sandbox',
       type: opts.type || 'test',
       analytics_id: opts.analytics_id || random.randomUuid()
     }
