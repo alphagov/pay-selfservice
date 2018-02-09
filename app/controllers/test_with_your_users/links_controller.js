@@ -16,9 +16,10 @@ module.exports = (req, res) => {
 
   productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))
     .then(products => {
-      params.productsLength = products.length
-      params.productsSingular = products.length < 2
-      params.products = products
+      const prototypeProducts = products.filter(product => product.type === 'PROTOTYPE')
+      params.productsLength = prototypeProducts.length
+      params.productsSingular = prototypeProducts.length < 2
+      params.products = prototypeProducts
       return response(req, res, 'dashboard/demo-service/index', params)
     })
     .catch(() => {
