@@ -34,7 +34,8 @@ var setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvider)
     return Promise.resolve(new DirectDebitGatewayAccount({
       gateway_account_id: '3',
       gateway_account_external_id: params.gatewayAccountId,
-      payment_provider: paymentProvider
+      payment_provider: paymentProvider,
+      type: 'test'
     }))
   })
   const directDebitConnectorMock = {

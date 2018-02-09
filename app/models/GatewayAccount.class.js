@@ -36,8 +36,10 @@ class GatewayAccount {
    * @returns {Object} A minimal representation of the gateway account
    */
   toMinimalJson () {
+    // until we have external ids for card accounts, the external id is the internal one
     return {
       id: this.id,
+      external_id: this.id,
       payment_provider: this.paymentProvider,
       service_name: this.name,
       type: this.type

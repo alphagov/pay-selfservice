@@ -5,7 +5,9 @@ const sinon = require('sinon')
 const nock = require('nock')
 const _ = require('lodash')
 const connectorMock = nock(process.env.CONNECTOR_URL)
+const directDebitConnectorMock = nock(process.env.DIRECT_DEBIT_CONNECTOR_URL)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
+const DIRECT_DEBIT_ACCOUNTS_PATH = '/v1/api/accounts'
 const serviceSwitchController = require('../../../app/controllers/my_services_controller')
 const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
@@ -29,6 +31,7 @@ describe('service switch controller: list of accounts', function () {
     const service1gatewayAccountIds = ['2', '5']
     const service2gatewayAccountIds = ['3', '6', '7']
     const service3gatewayAccountIds = ['4', '9']
+    const directDebitGatewayAccountIds = ['DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34']
     const gatewayAccountIds = _.concat(service1gatewayAccountIds, service2gatewayAccountIds, service3gatewayAccountIds)
 
     gatewayAccountIds.forEach(gid => {
@@ -39,7 +42,14 @@ describe('service switch controller: list of accounts', function () {
           type: _.sample(['test', 'live'])
         }).getPlain())
     })
-
+    directDebitGatewayAccountIds.forEach(gid => {
+      directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `/${gid}`)
+        .reply(200, gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
+          gateway_account_id: gid,
+          service_name: `account ${gid}`,
+          type: _.sample(['test', 'live'])
+        }).getPlain())
+    })
     const req = {
       correlationId: 'correlationId',
       user: userFixtures.validUserResponse({
@@ -77,6 +87,17 @@ describe('service switch controller: list of accounts', function () {
               name: 'admin',
               permissions: [{name: 'blah-blah:blah'}]
             }
+          },
+          {
+            service: {
+              name: 'Direct debit service',
+              external_id: 'service-external-id-4',
+              gateway_account_ids: directDebitGatewayAccountIds
+            },
+            role: {
+              name: 'admin',
+              permissions: [{name: 'blah-blah:blah'}]
+            }
           }]
       }).getAsObject(),
       session: {}
@@ -97,11 +118,12 @@ describe('service switch controller: list of accounts', function () {
       expect(path).to.equal('services/index')
       expect(renderData.navigation).to.equal(false)
 
-      expect(renderData.services.map(service => service.name)).to.have.lengthOf(3).and.to.include('My Service 1', 'My Service 2', '')
+      expect(renderData.services.map(service => service.name)).to.have.lengthOf(4).and.to.include('My Service 1', 'My Service 2', '', 'Direct debit service')
 
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
       expect(gatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
+      expect(gatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('account DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'account DIRECT_DEBIT:ksdfhjhfd;sfksd34')
     }).should.notify(done)
   })
 

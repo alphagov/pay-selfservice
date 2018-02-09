@@ -4,9 +4,12 @@ const q = require('q')
 const lodash = require('lodash')
 const getAdminUsersClient = require('./clients/adminusers_client')
 const {ConnectorClient} = require('../services/clients/connector_client')
+const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client')
+const {DIRECT_DEBIT_TOKEN_PREFIX} = directDebitConnectorClient
 const productsClient = require('../services/clients/products_client')
-const GatewayAccount = require('../models/GatewayAccount.class')
+const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
+const winston = require('winston')
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 // Exports
@@ -21,19 +24,34 @@ module.exports = {
  * @method getServicesForUser
  * @param {string[]} gatewayAccountIds - The ids of interested gateway accounts.
  *
- * @returns {GatewayAccount[]} collection of gateway accounts which belong to this service
+ * @returns {Promise<GatewayAccount[]>} promise of collection of gateway accounts which belong to this service
  */
 function getGatewayAccounts (gatewayAccountIds, correlationId) {
-  return q.allSettled(gatewayAccountIds
+  const accounts = lodash.partition(gatewayAccountIds, id => id.startsWith(DIRECT_DEBIT_TOKEN_PREFIX))
+  const fetchCardGatewayAccounts = Promise.all(accounts[1]
     .map(gatewayAccountId => connectorClient.getAccount({
       gatewayAccountId: gatewayAccountId,
       correlationId: correlationId
-    })))
-    .then(gatewayAccountPromises => gatewayAccountPromises
-      .filter(promise => promise.state === 'fulfilled')
-      .map(promise => promise.value))
-    .then(gatewayAccountsData => gatewayAccountsData
-      .map(accountData => new GatewayAccount(accountData).toMinimalJson()))
+    }).then(ga => new CardGatewayAccount(ga).toMinimalJson())
+      .catch((err) => {
+        winston.error('Failed to retrieve card gateway account with id', gatewayAccountId)
+        return new Error(err)
+      })))
+  const fetchDirectDebitGatewayAccounts = Promise.all(accounts[0]
+    .map(gatewayAccountId => directDebitConnectorClient.gatewayAccount.get({
+      gatewayAccountId: gatewayAccountId,
+      correlationId: correlationId
+    }).then(ga => ga.toMinimalJson())
+      .catch((err) => {
+        winston.error('Failed to retrieve dd gateway account with id', gatewayAccountId)
+        return new Error(err)
+      })))
+
+  return Promise.all([fetchCardGatewayAccounts, fetchDirectDebitGatewayAccounts]
+    .map(promise => promise))
+    .then(results => results
+        .reduce((a, b) => a.concat(b))
+        .filter(p => !(p instanceof Error)))
 }
 
 /**
