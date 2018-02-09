@@ -43,7 +43,7 @@ class DirectDebitGatewayAccount {
       id: this.id,
       external_id: this.externalId,
       payment_provider: this.paymentProvider,
-      service_name: this.name,
+      service_name: this.serviceName,
       type: this.type
     }
   }

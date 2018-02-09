@@ -31,7 +31,24 @@ module.exports = {
       }
     }
   },
+  validDirectDebitGatewayAccountResponse: (opts = {}) => {
+    let data = {
+      gateway_account_id: opts.gateway_account_id || random.randomInt(),
+      gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + random.randomUuid(),
+      service_name: opts.service_name || random.randomUuid(),
+      type: opts.type || 'test',
+      analytics_id: opts.analytics_id || random.randomUuid()
+    }
 
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
+  },
   validCreateGatewayAccountRequest: (opts = {}) => {
     const data = {
       payment_provider: opts.payment_provider || 'sandbox',
