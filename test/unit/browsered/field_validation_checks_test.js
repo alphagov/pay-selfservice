@@ -8,8 +8,8 @@ const {isBelowMaxAmount, isPasswordLessThanTenChars} = require('../../../app/bro
 
 describe('field validation checks', () => {
   describe('isBelowMaxAmount', () => {
-    it('should return an error string if it is passed an currency string exceeding £10 million', () => {
-      expect(isBelowMaxAmount('10000000.01')).to.equal(`Choose an amount under £10,000,000`)
+    it('should return an error string if it is passed an currency string exceeding £100 thousands', () => {
+      expect(isBelowMaxAmount('10000000.01')).to.equal(`Choose an amount under £100,000`)
     })
 
     it('should not return false if it is not passed an currency string', () => {
