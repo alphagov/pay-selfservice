@@ -5,7 +5,7 @@ const emailValidator = require('../utils/email_tools.js')
 
 // Constants
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
-const MAX_AMOUNT = 10000000
+const MAX_AMOUNT = 100000
 
 const validationErrors = {
   required: 'This is field cannot be blank',
