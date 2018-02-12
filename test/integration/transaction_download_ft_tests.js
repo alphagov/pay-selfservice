@@ -16,7 +16,7 @@ var getQueryStringForParams = require('../../app/utils/get_query_string_for_para
 var gatewayAccountId = '651342'
 var app
 
-var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/transactions'
 var connectorMock = nock(process.env.CONNECTOR_URL)
 
 function connectorMockResponds (code, data, searchParameters) {

@@ -21,7 +21,7 @@ var gatewayAccountId = '452345'
 
 var app
 
-var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/transactions'
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 
 var connectorMock = nock(process.env.CONNECTOR_URL)
@@ -36,9 +36,18 @@ var ALL_CARD_TYPES = {
     {'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT'}]
 }
 
-function connectorMockResponds (data, searchParameters) {
-  var queryString = '?' + getQueryStringForParams(searchParameters)
+function filterStates (filters) {
+  if (filters.state) {
+    const states = typeof filters.state === 'string' ? [filters.state] : filters.state
+    filters.payment_states = states.filter(state => !state.includes('refund-')).map(state => state.replace('payment-', ''))
+    filters.refund_states = states.filter(state => state.includes('refund-')).map(state => state.replace('refund-', ''))
+    filters.state = [...filters.payment_states, ...filters.refund_states][0]
+  }
+  return filters
+}
 
+function connectorMockResponds (data, searchParameters) {
+  var queryString = '?' + getQueryStringForParams(filterStates(searchParameters)).replace(/\&$/, '') // eslint-disable-line
   return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + queryString)
     .reply(200, data)
 }
@@ -436,13 +445,27 @@ describe('The search transactions endpoint', function () {
           'card_brand': 'Visa',
           'updated': '2016-01-11 01:01:01',
           'created_date': '2016-01-11 01:01:01'
+        },
+        {
+          'charge_id': '200',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': 1000,
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'refunded',
+            'finished': true
+          },
+          'card_brand': 'Visa',
+          'updated': '2016-01-11 01:01:01',
+          'created_date': '2016-01-11 01:01:01'
         }
       ]
     }
 
     var data = {
       'reference': 'ref1',
-      'state': 'TEST_STATUS',
+      'state': ['TEST_STATUS', 'refund-test_status'],
       'brand': 'visa',
       'fromDate': '21/01/2016',
       'fromTime': '13:04:45',
@@ -475,6 +498,23 @@ describe('The search transactions endpoint', function () {
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
           'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+        },
+        {
+          'charge_id': '200',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': '£10.00',
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'refunded',
+            'finished': true
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Refunded',
+          'gateway_account_id': '452345',
+          'updated': '11 Jan 2016 — 01:01:01',
+          'created': '11 Jan 2016 — 01:01:01',
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 200})
         }
       ]
     }

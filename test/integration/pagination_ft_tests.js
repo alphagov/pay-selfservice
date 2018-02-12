@@ -13,7 +13,7 @@ var app
 
 var gatewayAccountId = '452345'
 
-var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/transactions'
 var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 
 var connectorMock = nock(process.env.CONNECTOR_URL)

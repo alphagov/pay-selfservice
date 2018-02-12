@@ -16,7 +16,7 @@ const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
 const gatewayAccountId = '651342'
 const {expect} = chai
 const searchParameters = {}
-const CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+const CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/transactions'
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 const ALL_CARD_TYPES = {
   'card_types': [
