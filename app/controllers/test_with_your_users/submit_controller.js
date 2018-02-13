@@ -10,7 +10,7 @@ const productsClient = require('../../services/clients/products_client.js')
 const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const authService = require('../../services/auth_service.js')
-const {isCurrency, isHttps, isBelowMaxAmount} = require('../../browsered/field-validation-checks')
+const {isCurrency, isHttps, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
 
 const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{2}))?$/
 
@@ -29,8 +29,8 @@ module.exports = (req, res) => {
     req.flash('genericError', `<h2>Enter a description</h2> Tell users what they are paying for`)
   } else if (!paymentAmount || isCurrency(paymentAmount)) {
     req.flash('genericError', `<h2>Use valid characters only</h2> ${isCurrency(paymentAmount)}`)
-  } else if (isBelowMaxAmount(paymentAmount)) {
-    req.flash('genericError', `<h2>Enter a valid amount</h2> ${isBelowMaxAmount(paymentAmount)}`)
+  } else if (isAboveMaxAmount(paymentAmount)) {
+    req.flash('genericError', `<h2>Enter a valid amount</h2> ${isAboveMaxAmount(paymentAmount)}`)
   } else if (!confirmationPage || isHttps(confirmationPage)) {
     req.flash('genericError', `<h2>Enter a valid secure URL</h2>${isHttps(confirmationPage)}`)
   }

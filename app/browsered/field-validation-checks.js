@@ -13,7 +13,7 @@ const validationErrors = {
   phoneNumber: 'Must be a 11 digit phone number',
   validEmail: 'Please use a valid email address',
   isHttps: 'URL must begin with https://',
-  isBelowMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
+  isAboveMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`
 }
 
@@ -58,9 +58,9 @@ exports.isHttps = function (value) {
   }
 }
 
-exports.isBelowMaxAmount = value => {
-  if (!exports.isCurrency(value) && parseFloat(value) >= MAX_AMOUNT) {
-    return validationErrors.isBelowMaxAmount
+exports.isAboveMaxAmount = value => {
+  if (!exports.isCurrency(value) && parseFloat(value) > MAX_AMOUNT) {
+    return validationErrors.isAboveMaxAmount
   }
   return false
 }
