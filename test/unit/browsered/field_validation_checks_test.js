@@ -4,16 +4,16 @@
 const {expect} = require('chai')
 
 // Local dependencies
-const {isBelowMaxAmount, isPasswordLessThanTenChars} = require('../../../app/browsered/field-validation-checks')
+const {isAboveMaxAmount, isPasswordLessThanTenChars} = require('../../../app/browsered/field-validation-checks')
 
 describe('field validation checks', () => {
-  describe('isBelowMaxAmount', () => {
-    it('should return an error string if it is passed an currency string exceeding £100 thousands', () => {
-      expect(isBelowMaxAmount('10000000.01')).to.equal(`Choose an amount under £100,000`)
+  describe('isAboveMaxAmount', () => {
+    it('should return an error string if it is passed an currency string exceeding £100 thousand', () => {
+      expect(isAboveMaxAmount('10000000.01')).to.equal(`Choose an amount under £100,000`)
     })
 
     it('should not return false if it is not passed an currency string', () => {
-      expect(isBelowMaxAmount('10,000,000 pounds sterling')).to.equal(false)
+      expect(isAboveMaxAmount('100,000 pounds sterling')).to.equal(false)
     })
   })
   describe('isPasswordLessThanTenChars', () => {
