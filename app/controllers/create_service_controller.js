@@ -8,7 +8,7 @@ const responses = require('../utils/response')
 const paths = require('../paths')
 const serviceService = require('../services/service_service')
 const userService = require('../services/user_service')
-const ServiceNameField = require('../models/form-fields/ServiceNameField.class')
+const {validateServiceName} = require('../utils/service_name_validation')
 
 exports.get = (req, res) => {
   let pageData = lodash.get(req, 'session.pageData.createServiceName')
@@ -28,10 +28,16 @@ exports.get = (req, res) => {
 
 exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
-  const serviceName = new ServiceNameField(lodash.get(req, 'body.service-name'))
-
-  if (serviceName.validate()) {
-    return serviceService.createService(serviceName.value, correlationId)
+  const serviceName = lodash.get(req, 'body.service-name')
+  const validationErrors = validateServiceName(serviceName)
+  if (validationErrors) {
+    lodash.set(req, 'session.pageData.createServiceName', {
+      errors: validationErrors,
+      current_name: serviceName
+    })
+    res.redirect(paths.serviceSwitcher.create)
+  } else {
+    return serviceService.createService(serviceName, correlationId)
       .then((service) => userService.assignServiceRole(req.user.externalId, service.external_id, 'admin', correlationId))
       .then(() => {
         res.redirect(paths.serviceSwitcher.index)
@@ -39,13 +45,5 @@ exports.post = (req, res) => {
       .catch(err => {
         responses.renderErrorView(req, res, err)
       })
-  } else {
-    lodash.set(req, 'session.pageData.createServiceName', {
-      errors: {
-        service_name: serviceName.errors
-      },
-      current_name: serviceName.value
-    })
-    res.redirect(paths.serviceSwitcher.create)
   }
 }

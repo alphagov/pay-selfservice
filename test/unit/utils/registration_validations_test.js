@@ -243,7 +243,7 @@ describe('registration_validation module', function () {
       const invalidServiceName = undefined
 
       validation.validateServiceNamingInputs(invalidServiceName).should.be.rejected.then(response => {
-        expect(response).to.equal('Invalid service name')
+        expect(response).to.equal('This field cannot be blank')
       }).should.notify(done)
     })
 
@@ -251,7 +251,7 @@ describe('registration_validation module', function () {
       const invalidServiceName = ' '
 
       validation.validateServiceNamingInputs(invalidServiceName).should.be.rejected.then(response => {
-        expect(response).to.equal('Invalid service name')
+        expect(response).to.equal('This field cannot be blank')
       }).should.notify(done)
     })
 
@@ -259,7 +259,7 @@ describe('registration_validation module', function () {
       const invalidServiceName = 'Wb7a9RbjhI0tDEkmZuuUuiblHhiNwiRyLwXPcQcbhSguFKjDOkh'
 
       validation.validateServiceNamingInputs(invalidServiceName).should.be.rejected.then(response => {
-        expect(response).to.equal('Your service name is too long')
+        expect(response).to.equal('The text is too long')
       }).should.notify(done)
     })
   })

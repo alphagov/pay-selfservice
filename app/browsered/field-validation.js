@@ -74,6 +74,9 @@ function validateField (form, field) {
       case 'passwordLessThanTenChars' :
         result = checks.isPasswordLessThanTenChars(field.value)
         break
+      case 'isFieldGreaterThanMaxLengthChars' :
+        result = checks.isFieldGreaterThanMaxLengthChars(field.value, field.getAttribute('data-validate-max-length'))
+        break
       default :
         result = checks.isEmpty(field.value)
         break

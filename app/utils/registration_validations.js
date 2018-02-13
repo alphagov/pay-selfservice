@@ -7,11 +7,11 @@ const commonPassword = require('common-password')
 
 // Local dependencies
 const emailValidator = require('../utils/email_tools.js')
+const {validateServiceName} = require('../utils/service_name_validation')
 
 // Constants
 const MIN_PHONE_NUMBER_LENGTH = 11
 const MIN_PASSWORD_LENGTH = 10
-const MAX_SERVICE_NAME_LENGTH = 50
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
 
 // Global functions
@@ -116,15 +116,9 @@ module.exports = {
 
   validateServiceNamingInputs: (serviceName) => {
     const defer = q.defer()
-
-    if (!hasValue(serviceName)) {
-      defer.reject('Invalid service name')
-    } else if (_.trim(serviceName).length > MAX_SERVICE_NAME_LENGTH) {
-      defer.reject('Your service name is too long')
-    } else {
-      defer.resolve()
-    }
-
+    const error = validateServiceName(_.trim(serviceName))
+    if (error) defer.reject(error.service_name)
+    else defer.resolve()
     return defer.promise
   }
 }

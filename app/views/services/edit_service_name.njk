@@ -26,14 +26,14 @@ GOV.UK Pay - My services
       <p>
           Changing your service name affects both live and test environments, including user-facing payment pages and emails.
       </p>
-      <form id="edit-service-name-form" method="post" action="{{submit_link}}">
+      <form id="edit-service-name-form" method="post" action="{{submit_link}}" data-validate="true">
         <div class="form-group {% if errors.service_name %}error{% endif %}">
           <label class="form-label" for="service-name">Service name</label>
           {% if errors.service_name %}
-            <span class="error-message">Please enter a valid service name</span>
+            <span class="error-message">{{errors.service_name}}</span>
           {% endif %}
           <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-          <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{current_name}}">
+          <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{current_name}}" data-validate="required isFieldGreaterThanMaxLengthChars" data-validate-max-length="50">
         </div>
         <div class="form-group call-to-action-group">
           <input class="button" type="submit" value="Save">

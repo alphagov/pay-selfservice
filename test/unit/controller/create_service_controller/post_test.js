@@ -132,11 +132,7 @@ describe('Controller: createService, Method: post', () => {
 
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.createServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
-      expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({
-        service_name: {
-          'required-field-left-blank': true
-        }
-      })
+      expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({service_name: 'This field cannot be blank'})
     })
   })
 })
