@@ -3,6 +3,8 @@
 // NPM dependencies
 const lodash = require('lodash')
 
+const logger = require('winston')
+
 // Local dependencies
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
@@ -38,7 +40,8 @@ module.exports = (req, res) => {
       lodash.unset(req, 'session.pageData.makeADemoPayment')
       res.redirect(product.links.pay.href)
     })
-    .catch(() => {
+    .catch((err) => {
+      logger.error(`[requestId=${req.correlationId}] Making a demo payment failed - ${err.message}`)
       req.flash('genericError', `<h2>There were errors</h2> Error while creating demo payment`)
       return res.redirect(paths.prototyping.demoPayment.index)
     })
