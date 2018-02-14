@@ -254,5 +254,13 @@ describe('registration_validation module', function () {
         expect(response).to.equal('Invalid service name')
       }).should.notify(done)
     })
+
+    it('should error if service name length is longer than 50 characters', function (done) {
+      const invalidServiceName = 'Wb7a9RbjhI0tDEkmZuuUuiblHhiNwiRyLwXPcQcbhSguFKjDOkh'
+
+      validation.validateServiceNamingInputs(invalidServiceName).should.be.rejected.then(response => {
+        expect(response).to.equal('Your service name is too long')
+      }).should.notify(done)
+    })
   })
 })
