@@ -1,5 +1,7 @@
 'use strict'
 
+const logger = require('winston')
+
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
@@ -22,7 +24,8 @@ module.exports = (req, res) => {
       params.products = prototypeProducts
       return response(req, res, 'dashboard/demo-service/index', params)
     })
-    .catch(() => {
+    .catch((err) => {
+      logger.error(`[requestId=${req.correlationId}] Get PROTOTYPE product by gateway account id failed - ${err.message}`)
       errorView(req, res, 'Internal server error')
     })
 }
