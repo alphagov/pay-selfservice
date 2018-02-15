@@ -4,7 +4,7 @@
 const {expect} = require('chai')
 
 // Local dependencies
-const {isAboveMaxAmount, isPasswordLessThanTenChars} = require('../../../app/browsered/field-validation-checks')
+const {isAboveMaxAmount, isPasswordLessThanTenChars, isFieldGreaterThanMaxLengthChars} = require('../../../app/browsered/field-validation-checks')
 
 describe('field validation checks', () => {
   describe('isAboveMaxAmount', () => {
@@ -22,6 +22,17 @@ describe('field validation checks', () => {
     })
     it('should return false if it is passed a string of 10 chars', () => {
       expect(isPasswordLessThanTenChars('0123456789')).to.equal(false)
+    })
+  })
+  describe('isFieldGreaterThanMaxLengthChars', () => {
+    it('should return an error if value passed is greater than max length', () => {
+      expect(isFieldGreaterThanMaxLengthChars('123456', 5)).to.equal(`The text is too long`)
+    })
+    it('should return false if value passed is less/equal than max length', () => {
+      expect(isFieldGreaterThanMaxLengthChars('12345', 5)).to.equal(false)
+    })
+    it('should return false, ignoring the validation if max length is not numeric', () => {
+      expect(isFieldGreaterThanMaxLengthChars('123456ABC', 'que')).to.equal(false)
     })
   })
 })

@@ -1,5 +1,8 @@
 'use strict'
 
+// npm dependencies
+const isNumber = require('lodash/isNumber')
+
 // local dependencies
 const emailValidator = require('../utils/email_tools.js')
 
@@ -8,13 +11,14 @@ const NUMBERS_ONLY = new RegExp('^[0-9]+$')
 const MAX_AMOUNT = 100000
 
 const validationErrors = {
-  required: 'This is field cannot be blank',
+  required: 'This field cannot be blank',
   currency: 'Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”',
   phoneNumber: 'Must be a 11 digit phone number',
   validEmail: 'Please use a valid email address',
   isHttps: 'URL must begin with https://',
   isAboveMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
-  isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`
+  isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`,
+  isGreaterThanMaxLengthChars: `The text is too long`
 }
 
 exports.isEmpty = function (value) {
@@ -64,5 +68,7 @@ exports.isAboveMaxAmount = value => {
   }
   return false
 }
+
+exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => { return isNumber(maxLength) && value.length > maxLength ? validationErrors.isGreaterThanMaxLengthChars : false }
 
 exports.isPasswordLessThanTenChars = value => !value || value.length < 10 ? validationErrors.isPasswordLessThanTenChars : false
