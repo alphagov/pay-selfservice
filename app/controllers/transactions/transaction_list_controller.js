@@ -17,7 +17,6 @@ const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
-const REFUNDS_IN_TRANSACTION_LIST_FEATURE_HEADER = 'REFUNDS_IN_TX_LIST'
 
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
@@ -34,7 +33,7 @@ module.exports = (req, res) => {
           const model = buildPaymentList(transactions, allCards, accountId, filters.result)
           model.search_path = router.paths.transactions.index
           model.filtersDescription = describeFilters(filters.result)
-          model.eventStates = req.user.hasFeature(REFUNDS_IN_TRANSACTION_LIST_FEATURE_HEADER) ? states.states() : states.payment_states()
+          model.eventStates = states.states()
           model.eventStates.forEach(state => {
             const relevantFilter = (state.type === 'payment' ? filters.result.payment_states : filters.result.refund_states) || []
             state.value.selected = relevantFilter.includes(state.name)

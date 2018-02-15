@@ -10,14 +10,12 @@ const auth = require('../../services/auth_service.js')
 const date = require('../../utils/dates.js')
 const {renderErrorView} = require('../../utils/response.js')
 const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
-const REFUNDS_IN_TRANSACTION_LIST_FEATURE_HEADER = 'REFUNDS_IN_TX_LIST'
 
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const filters = req.query
   const name = `GOVUK Pay ${date.dateToDefaultFormat(new Date())}.csv`
   const correlationId = req.headers[CORRELATION_HEADER]
-  filters.refundReportingEnabled = req.user.hasFeature(REFUNDS_IN_TRANSACTION_LIST_FEATURE_HEADER)
   transactionService.searchAll(accountId, filters, correlationId)
     .then(json => jsonToCsv(json.results))
     .then(csv => {

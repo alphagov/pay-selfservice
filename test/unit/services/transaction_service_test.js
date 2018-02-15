@@ -67,17 +67,17 @@ describe('transaction service', () => {
 
       it('should return into the correct promise when it uses the new  \'refund_states\' method of querying refund states and multiple have been selected', () => {
         nock(process.env.CONNECTOR_URL)
-          .get(`${TRANSACTION_SEARCH_PATH}?${getQueryStringForParams({pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error'], refundReportingEnabled: true})}`)
+          .get(`${TRANSACTION_SEARCH_PATH}?${getQueryStringForParams({pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error']})}`)
           .reply(200, {})
-        return expect(transactionService.searchAll(TEST_ACCOUNT_ID, {pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error'], refundReportingEnabled: true}, 'some-unique-id'))
+        return expect(transactionService.searchAll(TEST_ACCOUNT_ID, {pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error']}, 'some-unique-id'))
           .to.eventually.be.fulfilled
       })
 
       it('should return into the correct promise when it uses the new  \'refund_states\' method of querying refund states and only one has been selected', () => {
         nock(process.env.CONNECTOR_URL)
-          .get(`${TRANSACTION_SEARCH_PATH}?${getQueryStringForParams({pageSize: 100, page: 1, refund_states: 'refund_success', refundReportingEnabled: true})}`)
+          .get(`${TRANSACTION_SEARCH_PATH}?${getQueryStringForParams({pageSize: 100, page: 1, refund_states: 'refund_success'})}`)
           .reply(200, {})
-        return expect(transactionService.searchAll(TEST_ACCOUNT_ID, {pageSize: 100, page: 1, refund_states: 'refund_success', refundReportingEnabled: true}, 'some-unique-id'))
+        return expect(transactionService.searchAll(TEST_ACCOUNT_ID, {pageSize: 100, page: 1, refund_states: 'refund_success'}, 'some-unique-id'))
           .to.eventually.be.fulfilled
       })
 

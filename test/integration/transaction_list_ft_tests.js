@@ -318,33 +318,6 @@ describe('The /transactions endpoint', function () {
       .end(done)
   })
 
-  it('should only allow filtering by charge states', function (done) {
-    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES)
-
-    var connectorData = {
-      'results': []
-    }
-
-    connectorMockResponds(200, connectorData, searchParameters)
-
-    getTransactionList()
-      .expect(200)
-      .expect(function (res) {
-        expect(res.body.eventStates).property('length').to.equal(7)
-        expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
-          'Created',
-          'Started',
-          'Submitted',
-          'Success',
-          'Error',
-          'Failed',
-          'Cancelled'
-        ])
-      })
-      .end(done)
-  })
-
   //
   // PP-1158 Fix 3 selfservice problematic tests in transaction_list_ft_tests
   //
@@ -456,7 +429,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started', refundReportingEnabled: true})
+    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started'})
 
     request(app)
       .get(paths.transactions.index + '?state=payment-started')
@@ -490,7 +463,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', refund_states: 'started', refundReportingEnabled: true})
+    connectorMockResponds(200, connectorData, {state: 'started', refund_states: 'started'})
 
     request(app)
       .get(paths.transactions.index + '?state=refund-started')
