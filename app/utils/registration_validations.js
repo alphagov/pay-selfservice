@@ -116,7 +116,7 @@ module.exports = {
 
   validateServiceNamingInputs: (serviceName) => {
     const defer = q.defer()
-    const error = validateServiceName(_.trim(serviceName))
+    const error = validateServiceName(serviceName)
     if (error) defer.reject(error.service_name)
     else defer.resolve()
     return defer.promise
