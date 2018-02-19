@@ -18,7 +18,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
     <h1 class="page-title">Review your payment link details</h1>
 
     <dl class="govuk-check-your-answers cya-questions-short">
-      <div>
+      <div class="review-title">
         <dt class="cya-question">
           Title
         </dt>
@@ -31,7 +31,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           </a>
         </dd>
       </div>
-      <div>
+      <div class="review-details">
         <dt class="cya-question">
           More details
         </dt>
@@ -48,7 +48,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           </a>
         </dd>
       </div>
-      <div>
+      <div class="review-amount">
         <dt class="cya-question">
           Payment amount
         </dt>
@@ -67,7 +67,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       </div>
     </dl>
 
-    <p><a href="{{ returnToStart }}">Cancel</a></p>
+    <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
   </section>
 </div>
 {% endblock %}
