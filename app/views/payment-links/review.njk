@@ -23,7 +23,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           Title
         </dt>
         <dd class="cya-answer">
-          Pay for a offline service
+          {{ paymentLinkTitle }}
         </dd>
         <dd class="cya-change">
           <a href="{{ change }}">
@@ -36,8 +36,11 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           More details
         </dt>
         <dd class="cya-answer">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua.
+          {% if paymentLinkDescription %}
+            {{ paymentLinkDescription }}
+          {% else %}
+            <span class="grey">No details set</span>
+          {% endif %}
         </dd>
         <dd class="cya-change">
           <a href="{{ change }}">
@@ -50,13 +53,17 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           Payment amount
         </dt>
         <dd class="cya-answer">
-          £10.00
+          {% if paymentLinkAmount %}
+            £{{ paymentLinkAmount }}
+          {% else %}
+            <span class="grey">Amount to be set by user</span>
+          {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ change }}">
+<!--           <a href="{{ change }}">
             Change <span class="visuallyhidden">payment amount</span>
           </a>
-        </dd>
+ -->        </dd>
       </div>
     </dl>
 

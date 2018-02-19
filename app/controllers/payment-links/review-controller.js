@@ -1,13 +1,20 @@
 'use strict'
 
+// NPM dependencies
+const lodash = require('lodash')
+
 // Local dependencies
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 
-const PAGE_PARAMS = {
-  nextPage: undefined,
-  change: paths.paymentLinks.createInformation,
-  returnToStart: paths.paymentLinks.index
-}
+module.exports = (req, res) => {
+  const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
-module.exports = (req, res) => response(req, res, 'payment-links/review', PAGE_PARAMS)
+  return response(req, res, 'payment-links/review', {
+    paymentLinkTitle: pageData.paymentLinkTitle,
+    paymentLinkDescription: pageData.paymentLinkDescription,
+    nextPage: undefined,
+    change: paths.paymentLinks.createInformation,
+    returnToStart: paths.paymentLinks.index
+  })
+}
