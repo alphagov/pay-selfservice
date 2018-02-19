@@ -125,5 +125,12 @@ module.exports = {
       goToPaymentScreens: '/make-a-demo-payment/go-to-payment'
     }
   },
+  paymentLinks: {
+    index: '/create-payment-link',
+    createType: '/create-payment-link/type',
+    createInformation: '/create-payment-link/information',
+    createAmount: '/create-payment-link/amount',
+    createReview: '/create-payment-link/review'
+  },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
 }

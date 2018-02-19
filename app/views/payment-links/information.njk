@@ -1,0 +1,52 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block full_width_content %}
+<div class="grid-row">
+  <aside class="column-one-third">
+    <nav role="navigation" class="navigation settings-navigation">
+      <ul class="list">
+        <li class="active"><a href="#">Create payment link</a></li>
+        <li><a href="#">Manage payment&nbsp;links</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <section class="column-two-thirds">
+    <h1 class="page-title">Set payment link information</h1>
+
+    <form action="{{ nextPage }}" class="form" method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <div class="form-group">
+        <label class="form-label-bold" for="link-title">
+          Title
+          <span class="form-hint">
+            Briefly describe what the user is paying for.
+            For example, “Pay for a parking permit”.
+            This will also be your link URL.
+          </span>
+        </label>
+        <input class="form-control form-control-full" id="link-title" name="link-title" type="text" data-validate>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label-bold" for="link-description">
+          Details
+          <span class="form-hint">
+          Explain to the user what the payment link is for (optional).
+          </span>
+        </label>
+
+        <textarea class="form-control form-control-full" name="link-description" id="link-description" rows="5"></textarea>
+      </div>
+
+      <div class="form-group">
+        <button class="button" type="submit">Continue</button>
+      </div>
+      <p><a href="{{ returnToStart }}">Cancel</a></p>
+    </form>
+  </section>
+</div>
+{% endblock %}

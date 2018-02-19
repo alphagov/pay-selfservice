@@ -1,0 +1,66 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block full_width_content %}
+<div class="grid-row">
+  <aside class="column-one-third">
+    <nav role="navigation" class="navigation settings-navigation">
+      <ul class="list">
+        <li class="active"><a href="#">Create payment link</a></li>
+        <li><a href="#">Manage payment&nbsp;links</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <section class="column-two-thirds">
+    <h1 class="page-title">Review your payment link details</h1>
+
+    <dl class="govuk-check-your-answers cya-questions-short">
+      <div>
+        <dt class="cya-question">
+          Title
+        </dt>
+        <dd class="cya-answer">
+          Pay for a offline service
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ change }}">
+            Change <span class="visuallyhidden">Title</span>
+          </a>
+        </dd>
+      </div>
+      <div>
+        <dt class="cya-question">
+          More details
+        </dt>
+        <dd class="cya-answer">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua.
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ change }}">
+            Change <span class="visuallyhidden">More details</span>
+          </a>
+        </dd>
+      </div>
+      <div>
+        <dt class="cya-question">
+          Payment amount
+        </dt>
+        <dd class="cya-answer">
+          £10.00
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ change }}">
+            Change <span class="visuallyhidden">payment amount</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+
+    <p><a href="{{ returnToStart }}">Cancel</a></p>
+  </section>
+</div>
+{% endblock %}
