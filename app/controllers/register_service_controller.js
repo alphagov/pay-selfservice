@@ -11,7 +11,8 @@ const errorResponse = response.renderErrorView
 const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login')
-const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber, validateServiceNamingInputs} = require('../utils/registration_validations')
+const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber} = require('../utils/registration_validations')
+const {validateServiceName} = require('../utils/service_name_validation')
 
 module.exports = {
 
@@ -224,23 +225,24 @@ module.exports = {
   submitYourServiceName: (req, res) => {
     const correlationId = req.correlationId
     const serviceName = req.body['service-name']
+    const validationErrors = validateServiceName(serviceName)
 
-    _.set(req, 'session.pageData.submitYourServiceName', {
-      serviceName
-    })
-
-    return validateServiceNamingInputs(serviceName)
-      .then(() => {
-        return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, correlationId)
+    if (validationErrors) {
+      _.set(req, 'session.pageData.submitYourServiceName', {
+        errors: validationErrors,
+        current_name: serviceName
       })
-      .then((updatedService) => {
-        _.unset(req, 'session.pageData.submitYourServiceName')
-        res.redirect(303, paths.dashboard.index)
-      })
-      .catch(err => {
-        logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
-        req.flash('genericError', err)
-        res.redirect(303, paths.selfCreateService.serviceNaming)
-      })
+      res.redirect(303, paths.selfCreateService.serviceNaming)
+    } else {
+      return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, correlationId)
+        .then(() => {
+          _.unset(req, 'session.pageData.submitYourServiceName')
+          res.redirect(303, paths.dashboard.index)
+        })
+        .catch(err => {
+          logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
+          response.renderErrorView(req, res, err)
+        })
+    }
   }
 }
