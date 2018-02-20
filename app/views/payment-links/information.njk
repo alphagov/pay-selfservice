@@ -28,7 +28,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             This will also be your link URL.
           </span>
         </label>
-        <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}">
+        <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}" {% if change !== 'payment-link-description' %}autofocus{% endif %}>
       </div>
 
       <div class="form-group">
@@ -39,7 +39,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           </span>
         </label>
 
-        <textarea class="form-control form-control-full" name="payment-link-description" id="payment-link-description" rows="5">{{ paymentLinkDescription }}</textarea>
+        <textarea class="form-control form-control-full" name="payment-link-description" id="payment-link-description" rows="5" {% if change === 'payment-link-description' %}autofocus{% endif %}>{{ paymentLinkDescription }}</textarea>
       </div>
 
       <div class="form-group">

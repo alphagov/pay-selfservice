@@ -4,6 +4,8 @@
 Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block mainClasses %}fullwidth{% endblock %}
+
 {% block full_width_content %}
 <div class="grid-row">
   <aside class="column-one-third">
@@ -15,6 +17,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
     </nav>
   </aside>
   <section class="column-two-thirds">
+    {% include "includes/flash.njk" %}
     <h1 class="page-title">Review your payment link details</h1>
 
     <dl class="govuk-check-your-answers cya-questions-short">
@@ -26,7 +29,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           {{ paymentLinkTitle }}
         </dd>
         <dd class="cya-change">
-          <a href="{{ change }}">
+          <a href="{{ change }}?field=payment-link-title">
             Change <span class="visuallyhidden">Title</span>
           </a>
         </dd>
@@ -43,7 +46,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ change }}">
+          <a href="{{ change }}?field=payment-link-description">
             Change <span class="visuallyhidden">More details</span>
           </a>
         </dd>
@@ -56,7 +59,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           {% if paymentLinkAmount %}
             £{{ paymentLinkAmount }}
           {% else %}
-            <span class="grey">Amount to be set by user</span>
+            <span class="grey">Amount will be set by user</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
