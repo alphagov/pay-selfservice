@@ -27,16 +27,19 @@ Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.
 
   <div>
   <h3 class="heading-small" id="total-results">
-    {{total}} transactions
+    {{totalFormatted}} transactions
     {{ filtersDescription | safe }}
   </h3>
 
   {% include "transactions/display_size.njk" %}
 
-
-  {% if hasResults %}
-    {% if permissions.transactions_download_read %}
-    <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
+  {% if permissions.transactions_download_read %}
+    {% if (hasResults) %}
+      {% if showCsvDownload %}
+        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
+      {% else %}
+        <p class="push-bottom-sml">You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search</p>
+      {% endif %}
     {% endif %}
   {% endif %}
   </div>
