@@ -50,6 +50,14 @@ describe('Create payment link review controller', () => {
       expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.index)
     })
 
+    it(`should include link to change title`, () => {
+      expect($('.review-title .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.createInformation}?field=payment-link-title`)
+    })
+
+    it(`should include link to change description`, () => {
+      expect($('.review-details .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.createInformation}?field=payment-link-description`)
+    })
+
     it(`should display the Title in the definition list`, () =>
       expect($(`.review-title .cya-answer`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkTitle)
     )

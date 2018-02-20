@@ -59,7 +59,7 @@ describe('Create payment link information controller', () => {
     )
   })
 
-  describe('if returning here for to change fields', () => {
+  describe('if returning here to change fields', () => {
     let $, session
     before(done => {
       const user = getUser({
