@@ -1,4 +1,3 @@
-
 .notification {
   @include core-19;
   margin-bottom: $gutter;
@@ -26,4 +25,8 @@
 
 .error-summary ul {
   list-style: none;
+}
+
+.full-width .main-content {
+  display: none;
 }

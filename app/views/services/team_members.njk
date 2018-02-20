@@ -9,8 +9,12 @@ Team members - GOV.UK Pay
 {% endblock %}
 
 {% block mainClasses %}full-width{% endblock %}
-
 {% block full_width_content %}
+  <div class="grid-row">
+    <div class="column-two-thirds admin-list-group">
+      {% include "includes/flash.njk" %}
+    </div>
+  </div>
   <a href="/my-services" class="link-back">My services</a>
   <h1 class="heading-large">Team members</h1>
   {% if permissions.users_service_create %}
