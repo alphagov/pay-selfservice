@@ -4,6 +4,8 @@
 Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block mainClasses %}fullwidth{% endblock %}
+
 {% block full_width_content %}
 <div class="grid-row">
   <aside class="column-one-third">
@@ -15,11 +17,12 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
     </nav>
   </aside>
   <section class="column-two-thirds">
+    {% include "includes/flash.njk" %}
     <h1 class="page-title">Set payment link information</h1>
 
     <form action="{{ nextPage }}" class="form" method="post" data-validate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-      <div class="form-group">
+      <div class="form-group{% if flash.genericError %} error{% endif %}">
         <label class="form-label-bold" for="payment-link-title">
           Title
           <span class="form-hint">
@@ -27,6 +30,11 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             For example, “Pay for a parking permit”.
             This will also be your link URL.
           </span>
+          {% if flash.genericError %}
+          <span class="error-message">
+            This field cannot be blank
+          </span>
+          {% endif %}
         </label>
         <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}" {% if change !== 'payment-link-description' %}autofocus{% endif %}>
       </div>

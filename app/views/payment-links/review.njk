@@ -25,7 +25,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         <dt class="cya-question">
           Title
         </dt>
-        <dd class="cya-answer">
+        <dd class="cya-answer" id="create-payment-link-title">
           {{ paymentLinkTitle }}
         </dd>
         <dd class="cya-change">
@@ -38,7 +38,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         <dt class="cya-question">
           More details
         </dt>
-        <dd class="cya-answer">
+        <dd class="cya-answer" id="create-payment-link-description">
           {% if paymentLinkDescription %}
             {{ paymentLinkDescription }}
           {% else %}
@@ -55,7 +55,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         <dt class="cya-question">
           Payment amount
         </dt>
-        <dd class="cya-answer">
+        <dd class="cya-answer" id="create-payment-link-amount">
           {% if paymentLinkAmount %}
             £{{ paymentLinkAmount }}
           {% else %}
