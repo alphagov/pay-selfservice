@@ -9,6 +9,10 @@
     margin: 0 0 em(20, 24);
     @include core-24;
     font-weight: bold;
+
+    &:only-child {
+      margin-bottom: 0;
+    }
   }
 
   p:only-child {
