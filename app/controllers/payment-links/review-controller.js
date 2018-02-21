@@ -15,6 +15,7 @@ module.exports = (req, res) => {
     paymentLinkDescription: pageData.paymentLinkDescription,
     nextPage: undefined,
     change: paths.paymentLinks.createInformation,
-    returnToStart: paths.paymentLinks.index
+    returnToStart: paths.paymentLinks.index,
+    manage: paths.paymentLinks.manage
   })
 }

@@ -240,4 +240,5 @@ module.exports.bind = function (app) {
   app.get(paymentLinks.createInformation, permission('transactions:read'), getAccount, paymentLinksCtrl.information)
   app.post(paymentLinks.createReview, permission('transactions:read'), getAccount, paymentLinksCtrl.submitInformation)
   app.get(paymentLinks.createReview, permission('transactions:read'), getAccount, paymentLinksCtrl.review)
+  app.get(paymentLinks.manage, permission('transactions:read'), getAccount, paymentLinksCtrl.manage)
 }

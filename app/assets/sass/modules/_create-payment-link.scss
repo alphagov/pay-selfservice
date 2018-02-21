@@ -1,3 +1,41 @@
 .fullwidth .main-content {
   display: none;
 }
+
+.payment-links-list {
+
+  &--item {
+    position: relative;
+    padding: $gutter / 2 0;
+    border-top: 1px solid $border-colour;
+
+    &:last-of-type {
+      border-bottom: 1px solid $border-colour;
+    }
+  }
+
+  &--actions {
+    @include core-16;
+
+    margin-top: $gutter / 2;
+
+    a {
+      padding: 5px 15px 5px 0;
+    }
+  }
+
+  &--status {
+    @include core-16
+
+    position: absolute;
+    top: $gutter / 2;
+    right: 0;
+    padding: 5px 10px;
+    background-color: $panel-colour;
+    font-weight: bold;
+
+    &__draft {
+      background-color: $focus-colour;
+    }
+  }
+}

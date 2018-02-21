@@ -1,0 +1,48 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainClasses %}fullwidth{% endblock %}
+
+{% block full_width_content %}
+<div class="grid-row">
+  <aside class="column-one-third">
+    <nav role="navigation" class="navigation settings-navigation">
+      <ul class="list">
+        <li><a href="{{ returnToStart }}">Create payment link</a></li>
+        <li class="active"><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <section class="column-two-thirds">
+    {% include "includes/flash.njk" %}
+    <h1 class="page-title">Manage payment links</h1>
+
+    <ul class="payment-links-list">
+      <li class="payment-links-list--item">
+        <a class="payment-links-list--link" href="#">https://payment.service.gov.uk/pay/service-name</a>
+        <div class="payment-links-list--actions">
+          <a href="#">Delete</a>
+          <a href="#">Edit</a>
+        </div>
+        <aside class="payment-links-list--status payment-links-list--status__live">
+          Live
+        </aside>
+      </li>
+      <li class="payment-links-list--item">
+        <a class="payment-links-list--link" href="#">https://payment.service.gov.uk/pay/service-name</a>
+        <div class="payment-links-list--actions">
+          <a href="#">Delete</a>
+          <a href="#">Edit</a>
+        </div>
+        <aside class="payment-links-list--status payment-links-list--status__draft">
+          Draft
+        </aside>
+      </li>
+    </ul>
+
+  </section>
+</div>
+{% endblock %}
