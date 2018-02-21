@@ -8,58 +8,46 @@ Team members details — GOV.UK Pay
 
 {% block full_width_content %}
   <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
-  <h1 id="details-for" class="heading-large">
-      <span class="heading-secondary">Team members</span>
-      Details for {{username}}
-  </h1>
-
   <div class="grid-row">
-      <div class="column-two-thirds admin-list">
-          <table>
-              <caption class="visually-hidden">Details for {{username}}</caption>
-              <tbody>
-              <tr>
-                  <td>Name:</td>
-                  <td id="name">{{username}}</td>
-                  <td></td>
-              </tr>
-              <tr>
-                  <td>Email:</td>
-                  <td id="email">{{email}}</td>
-                  <td></td>
-              </tr>
-              <tr>
-                  <td>Permission level:</td>
-                  <td id="role">{{role}}</td>
-                  <td id="edit-permissions-link"><a href="{{editPermissionsLink}}">Edit permissions</a></td>
-              </tr>
-              </tbody>
-          </table>
-      </div>
-  </div>
-  {% if permissions.users_service_delete %}
-  <div class="grid-row js-confirm">
-      <div class="column-two-thirds">
+    <div class="column-two-thirds admin-list">
+      <h1 id="details-for" class="page-title gutter-top">
+          <span class="heading-secondary">Team members</span>
+          Details for {{username}}
+      </h1>
+      <table>
+          <caption class="visually-hidden">Member details</caption>
+          <tbody>
+          <tr>
+              <th>Email:</th>
+              <td colspan="2" id="email">{{email}}</td>
+          </tr>
+          <tr>
+              <th>Permission level:</th>
+              <td id="role">{{role}}</td>
+              <td id="edit-permissions-link"><a href="{{editPermissionsLink}}">Edit permissions</a></td>
+          </tr>
+          </tbody>
+      </table>
+      {% if permissions.users_service_delete %}
+      <div class="js-confirm">
           <p>
               <a id="remove-team-member" href="#confirm-remove-user-dialog">Remove user</a>
           </p>
       </div>
-  </div>
-  <div id="confirm-remove-user-dialog" class="grid-row target-to-show">
-      <div class="column-two-thirds">
-          <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
-              <h1 class="heading-medium error-summary-heading" id="error-summary">
-                  Are you sure you want to remove {{username}}?
-              </h1>
-              <div class="button-group">
-                  <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
-                      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-                      <input id="remove-team-member-confirm" type="submit" value="Yes, remove" class="button delete"/>
-                      <a id="remove-team-member-cancel" href="#main">Cancel</a>
-                  </form>
-              </div>
-          </div>
+      <div id="confirm-remove-user-dialog" class="target-to-show">
+        <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
+            <h1 class="heading-medium error-summary-heading" id="error-summary">
+                Are you sure you want to remove {{username}}?
+            </h1>
+            <div class="button-group">
+                <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
+                    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                    <input id="remove-team-member-confirm" type="submit" value="Yes, remove" class="button delete"/>
+                    <a id="remove-team-member-cancel" href="#main">Cancel</a>
+                </form>
+            </div>
+        </div>
       </div>
-  </div>
-  {% endif %}
+      {% endif %}
+    </div>
 {% endblock %}

@@ -9,6 +9,10 @@
   margin-top: 0;
 }
 
+.gutter-top {
+  margin-top: $gutter;
+}
+
 .heading-group {
   // Allow other tags to sit alongside the heading
   h1,
