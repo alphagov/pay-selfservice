@@ -31,7 +31,7 @@ describe('Create payment link review controller', () => {
         paymentLinkDescription: 'Hello world'
       })
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.createReview)
+        .get(paths.paymentLinks.review)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)
@@ -47,15 +47,15 @@ describe('Create payment link review controller', () => {
     })
 
     it(`should include a cancel link linking to the Create payment link index`, () => {
-      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.index)
+      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.start)
     })
 
     it(`should include link to change title`, () => {
-      expect($('.review-title .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.createInformation}?field=payment-link-title`)
+      expect($('.review-title .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-title`)
     })
 
     it(`should include link to change description`, () => {
-      expect($('.review-details .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.createInformation}?field=payment-link-description`)
+      expect($('.review-details .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-description`)
     })
 
     it(`should display the Title in the definition list`, () =>

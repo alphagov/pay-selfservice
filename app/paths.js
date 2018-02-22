@@ -126,11 +126,9 @@ module.exports = {
     }
   },
   paymentLinks: {
-    index: '/create-payment-link',
-    createType: '/create-payment-link/type',
-    createInformation: '/create-payment-link/information',
-    createAmount: '/create-payment-link/amount',
-    createReview: '/create-payment-link/review',
+    start: '/create-payment-link',
+    information: '/create-payment-link/information',
+    review: '/create-payment-link/review',
     manage: '/create-payment-link/manage'
   },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))

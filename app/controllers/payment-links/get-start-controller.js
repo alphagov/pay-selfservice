@@ -8,8 +8,8 @@ const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 
 const PAGE_PARAMS = {
-  nextPage: paths.paymentLinks.createInformation,
-  returnToStart: paths.paymentLinks.index,
+  nextPage: paths.paymentLinks.information,
+  returnToStart: paths.paymentLinks.start,
   manage: paths.paymentLinks.manage
 }
 

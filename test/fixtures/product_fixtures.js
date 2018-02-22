@@ -47,11 +47,11 @@ module.exports = {
       pay_api_token: opts.payApiToken || 'pay-api-token',
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
-      price: opts.price || randomPrice(),
       type: opts.type || 'DEMO'
     }
     if (opts.description) data.description = opts.description
     if (opts.returnUrl) data.return_url = opts.returnUrl
+    if (opts.price) data.price = opts.price
     return {
       getPactified: () => {
         return pactProducts.pactify(data)

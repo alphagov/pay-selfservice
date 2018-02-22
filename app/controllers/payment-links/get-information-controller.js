@@ -17,8 +17,8 @@ module.exports = (req, res) => {
     change,
     paymentLinkTitle,
     paymentLinkDescription,
-    nextPage: paths.paymentLinks.createReview,
-    returnToStart: paths.paymentLinks.index,
+    nextPage: paths.paymentLinks.information,
+    returnToStart: paths.paymentLinks.start,
     manage: paths.paymentLinks.manage
   })
 }

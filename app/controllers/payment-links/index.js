@@ -1,7 +1,8 @@
 'use strict'
 
-exports.index = require('./index-controller')
-exports.information = require('./information-controller')
-exports.submitInformation = require('./information-submit-controller')
-exports.review = require('./review-controller')
-exports.manage = require('./get.manage-controller')
+exports.getStart = require('./get-start-controller')
+exports.getInformation = require('./get-information-controller')
+exports.postInformation = require('./post-information-controller')
+exports.getReview = require('./get-review-controller')
+exports.postReview = require('./post-review-controller')
+exports.getManage = require('./get-manage-controller')

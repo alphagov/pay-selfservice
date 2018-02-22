@@ -13,9 +13,9 @@ module.exports = (req, res) => {
   return response(req, res, 'payment-links/review', {
     paymentLinkTitle: pageData.paymentLinkTitle,
     paymentLinkDescription: pageData.paymentLinkDescription,
-    nextPage: undefined,
-    change: paths.paymentLinks.createInformation,
-    returnToStart: paths.paymentLinks.index,
+    nextPage: paths.paymentLinks.review,
+    change: paths.paymentLinks.information,
+    returnToStart: paths.paymentLinks.start,
     manage: paths.paymentLinks.manage
   })
 }
