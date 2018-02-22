@@ -12,6 +12,10 @@
     &:last-of-type {
       border-bottom: 1px solid $border-colour;
     }
+
+    &__title {
+      margin-top: 0;
+    }
   }
 
   &--actions {
@@ -28,11 +32,16 @@
     @include core-16
 
     position: absolute;
-    top: $gutter / 2;
     right: 0;
+    bottom: $gutter / 2;
     padding: 5px 10px;
     background-color: $panel-colour;
     font-weight: bold;
+
+    @include media(desktop) {
+      top: $gutter / 2;
+      bottom: inherit;
+    }
 
     &__draft {
       background-color: $focus-colour;
