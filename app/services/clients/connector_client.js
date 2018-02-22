@@ -172,6 +172,7 @@ ConnectorClient.prototype = {
   getAllTransactions (params, successCallback) {
     var results = []
     var connectorClient = this
+    params.pageSize = params.pageSize || 500
     var recursiveRetrieve = function (recursiveParams) {
       connectorClient.searchTransactions(recursiveParams, function (data) {
         var next = _.get(data, '_links.next_page')

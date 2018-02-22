@@ -20,6 +20,7 @@ var CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
 var connectorMock = nock(process.env.CONNECTOR_URL)
 
 function connectorMockResponds (code, data, searchParameters) {
+  searchParameters.pageSize = searchParameters.pageSize || 500
   var queryStr = '?' + getQueryStringForParams(searchParameters)
 
   return connectorMock.get(CHARGES_API_PATH + queryStr)
