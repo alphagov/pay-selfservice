@@ -19,32 +19,33 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
   <section class="column-two-thirds">
     {% include "includes/flash.njk" %}
     <h1 class="page-title">Manage payment links</h1>
-
+    <p>
+      {% if productsLength === 1 %}
+        There is 1 payment link
+      {% elif productsLength > 1 %}
+        There are {{productsLength}} payment links
+      {% else %}
+        There are no payment links, you can <a href="{{ returnToStart }}">create one now</a>.
+      {% endif %}
+    </p>
+    {% if products.length %}
     <ul class="payment-links-list">
+      {% for product in products %}
       <li class="payment-links-list--item">
-        <h2 class="heading-small payment-links-list--item__title">Pay for an offline service</h2>
-        <a class="payment-links-list--link" href="#">https://payment.service.gov.uk/pay/service-name</a>
-        <div class="payment-links-list--actions">
-          <a href="#">Delete</a>
-          <a href="#">Edit</a>
+        <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
+        <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
+<!--
+         <div class="payment-links-list--actions">
+          <a href="delete/{{ product.externalId }}">Delete</a>
         </div>
+ -->
         <aside class="payment-links-list--status payment-links-list--status__live">
           Live
         </aside>
       </li>
-      <li class="payment-links-list--item">
-        <h2 class="heading-small payment-links-list--item__title">Pay for a recycling collection</h2>
-        <a class="payment-links-list--link" href="#">https://payment.service.gov.uk/pay/service-name</a>
-        <div class="payment-links-list--actions">
-          <a href="#">Delete</a>
-          <a href="#">Edit</a>
-        </div>
-        <aside class="payment-links-list--status payment-links-list--status__draft">
-          Draft
-        </aside>
-      </li>
+      {% endfor %}
     </ul>
-
+    {% endif %}
   </section>
 </div>
 {% endblock %}

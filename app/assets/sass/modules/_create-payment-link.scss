@@ -6,7 +6,7 @@
 
   &--item {
     position: relative;
-    padding: $gutter / 2 0;
+    padding: $gutter * (2 / 3) $gutter * 3 $gutter * (2 / 3) 0;
     border-top: 1px solid $border-colour;
 
     &:last-of-type {
@@ -15,6 +15,10 @@
 
     &__title {
       margin-top: 0;
+    }
+
+    &__link {
+      word-break: break-all;
     }
   }
 
@@ -39,7 +43,7 @@
     font-weight: bold;
 
     @include media(desktop) {
-      top: $gutter / 2;
+      top: $gutter * (2 / 3);
       bottom: inherit;
     }
 
