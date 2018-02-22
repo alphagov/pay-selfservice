@@ -53,13 +53,12 @@ const createServiceCtrl = require('./controllers/create_service_controller')
 const inviteValidationCtrl = require('./controllers/invite_validation_controller')
 const testWithYourUsers = require('./controllers/test_with_your_users')
 const makeADemoPayment = require('./controllers/make_a_demo_payment')
-const paymentLinksCtrl = require('./controllers/payment-links')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks} = paths
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -143,8 +142,7 @@ module.exports.bind = function (app) {
     ...lodash.values(t3ds),
     ...lodash.values(merchantDetails),
     ...lodash.values(prototyping.demoPayment),
-    ...lodash.values(prototyping.demoService),
-    ...lodash.values(paymentLinks)
+    ...lodash.values(prototyping.demoService)
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
@@ -234,10 +232,4 @@ module.exports.bind = function (app) {
   app.get(prototyping.demoPayment.editAmount, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
   app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.mockCardDetails)
   app.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.goToPayment)
-
-  // Create payment link
-  app.get(paymentLinks.index, permission('transactions:read'), getAccount, paymentLinksCtrl.index)
-  app.get(paymentLinks.createInformation, permission('transactions:read'), getAccount, paymentLinksCtrl.information)
-  app.post(paymentLinks.createReview, permission('transactions:read'), getAccount, paymentLinksCtrl.submitInformation)
-  app.get(paymentLinks.createReview, permission('transactions:read'), getAccount, paymentLinksCtrl.review)
 }

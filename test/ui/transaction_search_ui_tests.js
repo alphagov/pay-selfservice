@@ -70,9 +70,7 @@ describe('The transaction list view', function () {
         'transactions_email_read': true,
         'transactions_card_type_read': true,
         'transactions_download_read': true
-      },
-      showCsvDownload: true,
-      totalFormatted: 2
+      }
     }
 
     var body = renderTemplate('transactions/index', templateData)
