@@ -1,5 +1,14 @@
 FROM govukpay/nodejs:6.12.2
 
+# ---------------------------------------------------------------
+# -- FOLLOWING SECTION ONLY REQUIRED FOR HEAPDUMP (NPM MODULE) --
+# ---------------------------------------------------------------
+RUN apk update &&\
+    apk upgrade &&\
+    apk add --update g++ python make
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install --production
 
