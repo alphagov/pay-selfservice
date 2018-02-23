@@ -45,7 +45,7 @@ function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
   return nock(PRODUCTS_URL).get('/v1/api/products?gatewayAccountId=' + gatewayAccountId)
 }
 
-describe.only('Manage payment links', () => {
+describe('Manage payment links', () => {
   let app
   before(function () {
     const user = mockSession.getUser({

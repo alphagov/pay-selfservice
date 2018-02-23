@@ -112,7 +112,7 @@ describe('Create payment link review controller', () => {
           expect(result.statusCode).to.equal(302)
         })
 
-        it('should redirect back to the index page', () => {
+        it('should redirect back to the review page', () => {
           expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.review)
         })
 
@@ -163,7 +163,7 @@ describe('Create payment link review controller', () => {
       })
     })
   })
-  describe.only(`when paymentDescription in missing from the session`, () => {
+  describe(`when paymentDescription in missing from the session`, () => {
     describe(`when the API token is successfully created`, () => {
       describe(`and the product is successfully created`, () => {
         let result, session, app
