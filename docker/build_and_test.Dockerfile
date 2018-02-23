@@ -12,6 +12,7 @@ RUN apk del libc6-compat && apk add glibc-2.26-r0.apk
 
 # add package.json before source for node_module cache layer
 ADD package.json /tmp/package.json
+ADD npm-shrinkwrap.json /tmp/npm-shrinkwrap.json
 RUN cd /tmp && npm install
 WORKDIR /app
 ENV LD_LIBRARY_PATH /app/node_modules/appmetrics
