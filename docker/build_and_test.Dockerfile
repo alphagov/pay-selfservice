@@ -2,7 +2,7 @@ FROM govukpay/nodejs:6.12.2
 
 RUN apk update &&\
     apk upgrade &&\
-    apk add --update bash ruby
+    apk add --update bash ruby g++ python make
 
 ADD docker/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 

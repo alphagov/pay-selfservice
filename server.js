@@ -2,7 +2,8 @@
 const path = require('path')
 
 // Please leave here even though it looks unused - this enables Node.js metrics to be pushed to Hosted Graphite
-require(path.join(__dirname, '/app/utils/metrics')).metrics()
+require('./app/utils/metrics').metrics()
+require('heapdump')
 
 // NPM dependencies
 const express = require('express')
