@@ -76,10 +76,12 @@ function initialiseGlobalMiddleware (app) {
 function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
-  const nunjucksEnvironment = nunjucks.configure([
+
+  const views = [
     path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
     path.join(__dirname, '/app/views')
-  ], {
+  ]
+  const nunjucksEnvironment = nunjucks.configure(views, {
     express: app, // the express app that nunjucks should install to
     autoescape: true, // controls if output with dangerous characters are escaped automatically
     throwOnUndefined: false, // throw errors when outputting a null/undefined value
@@ -91,6 +93,7 @@ function initialiseTemplateEngine (app) {
 
   // Set view engine
   app.set('view engine', 'njk')
+  app.set('views', views)
 
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
