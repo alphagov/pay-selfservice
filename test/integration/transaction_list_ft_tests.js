@@ -16,7 +16,7 @@ const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
 const gatewayAccountId = '651342'
 const {expect} = chai
 const searchParameters = {}
-const CONNECTOR_CHARGES_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
+const CONNECTOR_CHARGES_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 const ALL_CARD_TYPES = {
   'card_types': [
@@ -43,7 +43,7 @@ describe('The /transactions endpoint', function () {
 
   beforeEach(function (done) {
     let permissions = 'transactions:read'
-    var user = session.getUser({
+    let user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
@@ -55,7 +55,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': [
         {
           'charge_id': '100',
@@ -93,7 +93,7 @@ describe('The /transactions endpoint', function () {
 
     connectorMockResponds(200, connectorData, searchParameters)
 
-    var expectedData = {
+    let expectedData = {
       'results': [
         {
           'charge_id': '100',
@@ -146,7 +146,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': [
         {
           'charge_id': '100',
@@ -184,7 +184,7 @@ describe('The /transactions endpoint', function () {
 
     connectorMockResponds(200, connectorData, searchParameters)
 
-    var expectedData = {
+    let expectedData = {
       'results': [
         {
           'charge_id': '100',
@@ -238,7 +238,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': [
         {
           'charge_id': '100',
@@ -280,7 +280,7 @@ describe('The /transactions endpoint', function () {
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&payment_states=started')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=started')
       })
       .end(done)
   })
@@ -375,7 +375,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': []
     }
     connectorMockResponds(200, connectorData, searchParameters)
@@ -389,7 +389,7 @@ describe('The /transactions endpoint', function () {
   })
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {
-    var errorMessage = 'Unable to retrieve list of transactions.'
+    let errorMessage = 'Unable to retrieve list of transactions.'
     connectorMockResponds(400, {'message': errorMessage}, searchParameters)
 
     getTransactionList()
@@ -410,33 +410,6 @@ describe('The /transactions endpoint', function () {
 
     getTransactionList()
       .expect(500, {'message': 'Unable to retrieve list of transactions.'})
-      .end(done)
-  })
-
-  it('should only allow filtering by charge states', function (done) {
-    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
-      .reply(200, ALL_CARD_TYPES)
-
-    var connectorData = {
-      'results': []
-    }
-
-    connectorMockResponds(200, connectorData, searchParameters)
-
-    getTransactionList()
-      .expect(200)
-      .expect(function (res) {
-        expect(res.body.eventStates).property('length').to.equal(7)
-        expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
-          'Created',
-          'Started',
-          'Submitted',
-          'Success',
-          'Error',
-          'Failed',
-          'Cancelled'
-        ])
-      })
       .end(done)
   })
 
@@ -496,7 +469,7 @@ describe('The /transactions endpoint', function () {
   // });
 })
 
-describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' is enabled)', () => {
+describe('The /transactions endpoint is enabled)', () => {
   afterEach(function () {
     nock.cleanAll()
     app = null
@@ -504,10 +477,9 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
 
   beforeEach(function (done) {
     let permissions = 'transactions:read'
-    var user = session.getUser({
+    let user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     })
-    user.features = ['REFUNDS_IN_TX_LIST']
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     userCreator.mockUserResponse(user.toJson(), done)
@@ -517,7 +489,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': []
     }
 
@@ -547,11 +519,11 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started', refundReportingEnabled: true})
+    connectorMockResponds(200, connectorData, {payment_states: 'started'})
 
     request(app)
       .get(paths.transactions.index + '?state=payment-started')
@@ -572,7 +544,7 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
           'Refund error',
           'Refund success'
         ])
-        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&payment_states=started')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=started')
       })
       .end(done)
   })
@@ -581,11 +553,11 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    var connectorData = {
+    let connectorData = {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {state: 'started', refund_states: 'started', refundReportingEnabled: true})
+    connectorMockResponds(200, connectorData, {refund_states: 'started'})
 
     request(app)
       .get(paths.transactions.index + '?state=refund-started')
@@ -606,14 +578,14 @@ describe('The /transactions endpoint (when feature flag: \'REFUNDS_IN_TX_LIST\' 
           'Refund error',
           'Refund success'
         ])
-        res.body.downloadTransactionLink.should.eql('/transactions/download?state=started&refund_states=started')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?refund_states=started')
       })
       .end(done)
   })
 })
 
 function connectorMockResponds (code, data, searchParameters) {
-  var queryString = getQueryStringForParams(searchParameters)
+  let queryString = getQueryStringForParams(searchParameters)
 
   return connectorMock.get(CONNECTOR_CHARGES_API_PATH + '?' + queryString)
     .reply(code, data)
