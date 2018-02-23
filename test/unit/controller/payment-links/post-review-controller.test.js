@@ -45,8 +45,8 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
 
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
-describe('make a demo payment - go to payment controller', () => {
-  describe(`when both paymentDescription and paymentAmount exist in the session`, () => {
+describe('Create payment link review controller', () => {
+  describe(`when both paymentDescription and paymentLinkTitle exist in the session`, () => {
     describe(`when the API token is successfully created`, () => {
       describe(`and the product is successfully created`, () => {
         let result, session, app
@@ -160,6 +160,44 @@ describe('make a demo payment - go to payment controller', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
         expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating payment link')
+      })
+    })
+  })
+  describe.only(`when paymentDescription in missing from the session`, () => {
+    describe(`when the API token is successfully created`, () => {
+      describe(`and the product is successfully created`, () => {
+        let result, session, app
+        before('Arrange', () => {
+          nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
+          nock(PRODUCTS_URL).post('/v1/api/products', lodash.omit(VALID_CREATE_PRODUCT_REQUEST, 'description')).reply(201, VALID_CREATE_PRODUCT_RESPONSE)
+          nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+          session = getMockSession(VALID_USER)
+          lodash.set(session, 'pageData.createPaymentLink.paymentLinkTitle', PAYMENT_TITLE)
+          app = createAppWithSession(getApp(), session)
+        })
+        before('Act', done => {
+          supertest(app)
+            .post(paths.paymentLinks.review)
+            .send(VALID_PAYLOAD)
+            .end((err, res) => {
+              result = res
+              done(err)
+            })
+        })
+        after(() => {
+          nock.cleanAll()
+        })
+
+        it('should redirect with status code 302', () => {
+          expect(result.statusCode).to.equal(302)
+        })
+
+        it('should redirect to the manage page with a success message', () => {
+          expect(session.flash).to.have.property('generic')
+          expect(session.flash.generic.length).to.equal(1)
+          expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2> Give this link to your users to collect payments for your service.')
+          expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
+        })
       })
     })
   })
