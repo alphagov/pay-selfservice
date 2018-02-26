@@ -86,7 +86,9 @@ function validateField (form, field) {
     }
   })
 
-  return !field.closest('.form-group').classList.contains('error')
+  if (!result) {
+    return true
+  }
 }
 
 function applyErrorMessaging (form, field, result) {
