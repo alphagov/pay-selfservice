@@ -16,6 +16,8 @@ const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
 let productsMock, request, response, result
 
+const randomPrice = () => Math.round(Math.random() * 10000) + 1
+
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
@@ -50,7 +52,8 @@ describe('products client - create a new product', () => {
       const productsClient = getProductsClient()
       request = productFixtures.validCreateProductRequest({
         description: 'a test product',
-        returnUrl: 'https://example.gov.uk/paid-for-somet'
+        returnUrl: 'https://example.gov.uk/paid-for-somet',
+        price: randomPrice()
       })
       const requestPlain = request.getPlain()
       response = productFixtures.validCreateProductResponse(requestPlain)

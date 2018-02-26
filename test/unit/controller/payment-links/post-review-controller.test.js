@@ -207,7 +207,7 @@ describe('Create payment link review controller', () => {
     before('Arrange', () => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       const session = getMockSession(VALID_USER)
-        lodash.set(session, 'pageData.createPaymentLink.paymentLinkDescription', PAYMENT_DESCRIPTION)
+      lodash.set(session, 'pageData.createPaymentLink.paymentLinkDescription', PAYMENT_DESCRIPTION)
       app = createAppWithSession(getApp(), session)
     })
     before('Act', done => {

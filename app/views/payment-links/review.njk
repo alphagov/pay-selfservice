@@ -64,16 +64,18 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             {% endif %}
           </dd>
           <dd class="cya-change">
-  <!--           <a href="{{ change }}">
+<!--      
+            <a href="{{ change }}">
               Change <span class="visuallyhidden">payment amount</span>
             </a>
-  -->        </dd>
+-->        
+          </dd>
         </div>
       </dl>
       <div class="form-group">
-        <button class="button" type="submit">Publish</button>
+        <button id="create-payment-link-publish" class="button" type="submit">Publish</button>
       </div>
-      <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+      <p><a id="create-payment-link-cancel" class="cancel" href="{{ returnToStart }}">Cancel</a></p>
     </form>
   </section>
 </div>

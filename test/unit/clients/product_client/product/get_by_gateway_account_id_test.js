@@ -16,6 +16,8 @@ const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
 let productsMock, response, result, gatewayAccountId
 
+const randomPrice = () => Math.round(Math.random() * 10000) + 1
+
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
@@ -50,9 +52,9 @@ describe('products client - find products associated with a particular gateway a
       const productsClient = getProductsClient()
       gatewayAccountId = 123456
       response = [
-        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId}),
-        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId}),
-        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId})
+        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()}),
+        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()}),
+        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()})
       ]
       const interaction = new PactInteractionBuilder(PRODUCT_RESOURCE)
         .withQuery('gatewayAccountId', String(gatewayAccountId))

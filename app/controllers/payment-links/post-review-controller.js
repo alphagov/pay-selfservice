@@ -12,13 +12,13 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
 
-function buildProductPayload(payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, serviceName) {
+function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, serviceName) {
   const productPayload = {
     payApiToken,
-      gatewayAccountId,
-      name: paymentLinkTitle,
-      serviceName,
-      type: productTypes.ADHOC
+    gatewayAccountId,
+    name: paymentLinkTitle,
+    serviceName,
+    type: productTypes.ADHOC
   }
 
   if (paymentLinkDescription) {

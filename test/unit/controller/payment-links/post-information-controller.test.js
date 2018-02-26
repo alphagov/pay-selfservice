@@ -24,7 +24,7 @@ const VALID_USER = getUser({
   permissions: [{name: 'transactions:read'}]
 })
 
-describe.only('Create payment link information controller', () => {
+describe('Create payment link information controller', () => {
   describe(`when both paymentLinkTitle and paymentLinkDescription are submitted`, () => {
     let result, session, app
     before('Arrange', () => {
@@ -54,7 +54,6 @@ describe.only('Create payment link information controller', () => {
     it('should redirect to the review page', () => {
       expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.review)
     })
-    
   })
   describe(`when no paymentLinkDescription is submitted`, () => {
     let result, session, app

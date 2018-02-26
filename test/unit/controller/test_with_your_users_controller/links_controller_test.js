@@ -104,7 +104,6 @@ describe('Show the prototype links', () => {
 
     it('should not display any link', () => {
       expect(response.body).to.have.property('productsLength', 0)
-      expect(response.body).to.have.property('productsSingular', true)
     })
   })
 
@@ -142,7 +141,6 @@ describe('Show the prototype links', () => {
 
     it('should display all the links', () => {
       expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.property('productsSingular', true)
       expect(response.body).to.have.deep.property('products', [{
         description: 'product-description-1',
         externalId: 'product-external-id-1',
@@ -195,7 +193,6 @@ describe('Show the prototype links', () => {
 
     it('should display all the links', () => {
       expect(response.body).to.have.property('productsLength', 2)
-      expect(response.body).to.have.property('productsSingular', false)
       expect(response.body).to.have.deep.property('products', [{
         description: 'product-description-1',
         externalId: 'product-external-id-1',
@@ -248,7 +245,6 @@ describe('Show the prototype links', () => {
 
     it('should display only prototype links', () => {
       expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.property('productsSingular', true)
       expect(response.body).to.have.deep.property('products', [{
         description: 'product-description-1',
         externalId: 'product-external-id-1',

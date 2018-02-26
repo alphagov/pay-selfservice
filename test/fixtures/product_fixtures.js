@@ -7,7 +7,6 @@ const pactProducts = pactBase()
 // Create random values if none provided
 const randomExternalId = () => Math.random().toString(36).substring(7)
 const randomGatewayAccountId = () => Math.random().toString(36).substring(7)
-const randomPrice = () => Math.round(Math.random() * 10000) + 1
 
 module.exports = {
   pactifyRandomData: (opts = {}) => {
@@ -100,12 +99,12 @@ module.exports = {
       gateway_account_id: opts.gateway_account_id || randomGatewayAccountId(),
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
-      price: opts.price || randomPrice(),
       _links: opts.links
     }
 
     if (opts.description) data.description = opts.description
     if (opts.return_url) data.return_url = opts.return_url
+    if (opts.price) data.price = opts.price
     if (!data._links) {
       data._links = [{
         href: `http://products.url/v1/api/products/${data.external_id}`,
