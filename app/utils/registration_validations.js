@@ -7,6 +7,7 @@ const commonPassword = require('common-password')
 
 // Local dependencies
 const emailValidator = require('../utils/email_tools.js')
+const {validateServiceName} = require('../utils/service_name_validation')
 
 // Constants
 const MIN_PHONE_NUMBER_LENGTH = 11
@@ -110,6 +111,14 @@ module.exports = {
       defer.resolve()
     }
 
+    return defer.promise
+  },
+
+  validateServiceNamingInputs: (serviceName) => {
+    const defer = q.defer()
+    const error = validateServiceName(serviceName)
+    if (error) defer.reject(error.service_name)
+    else defer.resolve()
     return defer.promise
   }
 }
