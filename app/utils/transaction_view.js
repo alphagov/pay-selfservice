@@ -14,6 +14,7 @@ const TransactionEvent = require('../models/TransactionEvent.class')
 
 const DATA_UNAVAILABLE = 'Data unavailable'
 const PAGINATION_SPREAD = 2
+const CSV_MAX_LIMIT = process.env.CSV_MAX_LIMIT || 10000
 
 module.exports = {
   /** prepares the transaction list view */
@@ -21,8 +22,10 @@ module.exports = {
     connectorData.filters = filters
     connectorData.hasFilters = Object.keys(filters).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
-
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
+    connectorData.showCsvDownload = connectorData.total <= CSV_MAX_LIMIT
+    connectorData.totalFormatted = connectorData.total.toLocaleString()
+    connectorData.csvMaxLimitFormatted = parseInt(CSV_MAX_LIMIT).toLocaleString()
     connectorData.paginationLinks = getPaginationLinks(connectorData)
     connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData)
 

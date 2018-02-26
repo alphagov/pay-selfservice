@@ -151,12 +151,12 @@ function initialise () {
   app.disable('x-powered-by')
   app.use(flash())
   initialiseTLS(app)
-  initialisePublic(app)
   initialiseCookies(app)
   initialiseAuth(app)
   initialiseGlobalMiddleware(app)
   initialiseTemplateEngine(app)
   initialiseRoutes(app)
+  initialisePublic(app)
   initialiseErrorHandling(app)
 
   warnIfAnalyticsNotSet()

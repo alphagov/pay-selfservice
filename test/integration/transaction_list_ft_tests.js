@@ -87,7 +87,8 @@ describe('The /transactions endpoint', function () {
           'created_date': CONNECTOR_DATE
 
         }
-      ]
+      ],
+      total: 2
     }
 
     connectorMockResponds(200, connectorData, searchParameters)
@@ -135,6 +136,100 @@ describe('The /transactions endpoint', function () {
       .expect(200)
       .expect(function (res) {
         res.body.results.should.eql(expectedData.results)
+        res.body.csvMaxLimitFormatted.should.eql('10,000')
+        res.body.showCsvDownload.should.eql(true)
+      })
+      .end(done)
+  })
+
+  it('should return a list of transactions for the gateway account', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    var connectorData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': 5000,
+          'reference': 'ref1',
+          'email': 'alice.222@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
+
+        },
+        {
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': 2000,
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing2',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
+
+        }
+      ],
+      total: 10001
+    }
+
+    connectorMockResponds(200, connectorData, searchParameters)
+
+    var expectedData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': '£50.00',
+          'reference': 'ref1',
+          'email': 'alice.222@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Testing',
+          'gateway_account_id': gatewayAccountId,
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+        },
+        {
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': '£20.00',
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing2',
+            'finished': false
+          },
+          'card_brand': 'Visa',
+          'state_friendly': 'Testing2',
+          'gateway_account_id': gatewayAccountId,
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+        }
+      ]
+    }
+
+    getTransactionList()
+      .expect(200)
+      .expect(function (res) {
+        res.body.results.should.eql(expectedData.results)
+        res.body.csvMaxLimitFormatted.should.eql('10,000')
+        res.body.totalFormatted.should.eql('10,001')
+        res.body.showCsvDownload.should.eql(false)
       })
       .end(done)
   })
