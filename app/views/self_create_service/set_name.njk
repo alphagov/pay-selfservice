@@ -6,17 +6,30 @@
 
 {% block mainContent %}
 <div id="display-name-your-service" class="column-two-thirds">
-  <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+  {% if errors %}
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+      <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+        There was a problem with the details you gave for:
+      </h2>
+      <ul class="error-summary-list">
+        {% if errors.service_name %}
+          <li><a href="#service-name">Service name</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endif %}
+  <form action="{{routes.selfCreateService.serviceNaming}}" method="post" id="name-your-service-form" data-validate="true">
     <h1 class="form-title heading-large">What service will you be taking payments for?</h1>
-    <div class="form-group">
-      <label class="form-label" for="service-name">
-        Service name
+    <div class="form-group {% if errors.service_name %}error{% endif %}">
+      <label class="form-label" for="service-name">Service name</label>
         <span class="form-hint">
           You can change this later
         </span>
-      </label>
-      <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{serviceName}}">
+      {% if errors.service_name %}
+        <span class="error-message">{{errors.service_name}}</span>
+      {% endif %}
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{serviceName}}" data-validate="required isFieldGreaterThanMaxLengthChars" data-validate-max-length="50">
     </div>
     <div class="form-group">
       <input class="button" type="submit" value="Add service">

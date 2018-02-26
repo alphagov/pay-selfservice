@@ -1,7 +1,7 @@
 'use strict'
 
 // npm dependencies
-const isNumber = require('lodash/isNumber')
+const parseInt = require('lodash/parseInt')
 
 // local dependencies
 const emailValidator = require('../utils/email_tools.js')
@@ -69,6 +69,9 @@ exports.isAboveMaxAmount = value => {
   return false
 }
 
-exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => { return isNumber(maxLength) && value.length > maxLength ? validationErrors.isGreaterThanMaxLengthChars : false }
+exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => {
+  let parsedMaxLength = parseInt(maxLength)
+  return parsedMaxLength && value.length > parsedMaxLength ? validationErrors.isGreaterThanMaxLengthChars : false
+}
 
 exports.isPasswordLessThanTenChars = value => !value || value.length < 10 ? validationErrors.isPasswordLessThanTenChars : false
