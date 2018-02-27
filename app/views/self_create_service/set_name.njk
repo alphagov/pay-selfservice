@@ -6,7 +6,7 @@
 
 {% block mainContent %}
 <div id="display-name-your-service" class="column-two-thirds">
-  <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form">
+  <form action="{{routes.selfCreateService.serviceNaming}}" method="post" class="form submit-two-fa" id="name-your-service-form" data-virtual-pageview="/service/registration-complete" data-parameters="dimension1:service-name">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <h1 class="form-title heading-large">What service will you be taking payments for?</h1>
     <div class="form-group">
