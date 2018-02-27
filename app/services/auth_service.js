@@ -124,6 +124,7 @@ function setSessionVersion (req) {
 
 function redirectToLogin (req, res) {
   req.session.last_url = req.originalUrl
+  logger.info(`[${req.correlationId}] Redirecting attempt to access ${req.originalUrl} to ${paths.user.logIn}`)
   res.redirect(paths.user.logIn)
 }
 
@@ -153,13 +154,8 @@ function getCurrentGatewayAccountId (req) {
 }
 
 function hasValidSession (req) {
-  let isValid = sessionValidator.validate(req.user, req.session)
-  let correlationId = req.headers[CORRELATION_HEADER] || ''
-  let userSessionVersion = lodash.get(req, 'user.sessionVersion', 0)
-  let sessionVersion = lodash.get(req, 'session.version', 0)
-  if (!isValid) {
-    logger.info(`[${correlationId}] Invalid session version for user. User session_version: ${userSessionVersion}, session version ${sessionVersion}`)
-  }
+  const isValid = sessionValidator.validate(req.user, req.session)
+  if (!isValid) logger.info(`[${req.correlationId}] Invalid session version for user. User session_version: ${lodash.get(req, 'user.sessionVersion', 0)}, session version ${lodash.get(req, 'session.version')}`)
   return isValid
 }
 
@@ -171,16 +167,16 @@ function initialise (app) {
   passport.use('localDirect', new CustomStrategy(localDirectStrategy))
 
   passport.serializeUser(serializeUser)
-
   passport.deserializeUser(deserializeUser)
 }
 
 function deserializeUser (req, externalId, done) {
   return userService.findByExternalId(externalId, req.headers[CORRELATION_HEADER] || '')
-    .then((user) => {
-      done(null, user)
+    .then((user) => done(null, user))
+    .catch(err => {
+      logger.info(`[${req.correlationId}]: Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
+      done(err)
     })
-    .catch(err => done(err, null))
 }
 
 function serializeUser (user, done) {
