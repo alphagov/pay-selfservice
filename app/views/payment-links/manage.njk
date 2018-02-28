@@ -34,11 +34,9 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       <li class="payment-links-list--item">
         <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
         <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
-<!--
          <div class="payment-links-list--actions">
-          <a href="delete/{{ product.externalId }}">Delete</a>
+          <a href="manage/delete/{{ product.externalId }}">Delete</a>
         </div>
- -->
         <aside class="payment-links-list--status payment-links-list--status__live">
           Live
         </aside>
