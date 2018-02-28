@@ -13,5 +13,5 @@ window.$ = window.jQuery = $
 multiSelects.enableMultiSelects()
 fieldValidation.enableFieldValidation()
 dashboardActivity.init()
-dashboardActivity.init()
 analytics.eventTracking.init()
+analytics.virtualPageview.init()
