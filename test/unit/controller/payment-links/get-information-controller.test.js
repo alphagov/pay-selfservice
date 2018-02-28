@@ -27,7 +27,7 @@ describe('Create payment link information controller', () => {
       })
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.createInformation)
+        .get(paths.paymentLinks.information)
         .end((err, res) => {
           result = res
           $ = cheerio.load(res.text)
@@ -43,11 +43,11 @@ describe('Create payment link information controller', () => {
     })
 
     it(`should include a cancel link linking to the Create payment link index`, () => {
-      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.index)
+      expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.start)
     })
 
     it(`should have the review page as the form action`, () => {
-      expect($('form').attr('action')).to.equal(paths.paymentLinks.createReview)
+      expect($('form').attr('action')).to.equal(paths.paymentLinks.information)
     })
 
     it(`should have blank value in the Title input`, () =>
@@ -75,7 +75,7 @@ describe('Create payment link information controller', () => {
         paymentLinkDescription: 'Hello world'
       })
       supertest(createAppWithSession(getApp(), session))
-        .get(paths.paymentLinks.createInformation)
+        .get(paths.paymentLinks.information)
         .end((err, res) => {
           $ = cheerio.load(res.text)
           done(err)

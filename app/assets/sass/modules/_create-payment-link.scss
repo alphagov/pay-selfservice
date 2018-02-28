@@ -1,3 +1,54 @@
 .fullwidth .main-content {
   display: none;
 }
+
+.payment-links-list {
+
+  &--item {
+    position: relative;
+    padding: $gutter * (2 / 3) $gutter * 3 $gutter * (2 / 3) 0;
+    border-top: 1px solid $border-colour;
+
+    &:last-of-type {
+      border-bottom: 1px solid $border-colour;
+    }
+
+    &__title {
+      margin-top: 0;
+    }
+
+    &__link {
+      word-break: break-all;
+    }
+  }
+
+  &--actions {
+    @include core-16;
+
+    margin-top: $gutter / 2;
+
+    a {
+      padding: 5px 15px 5px 0;
+    }
+  }
+
+  &--status {
+    @include core-16
+
+    position: absolute;
+    right: 0;
+    bottom: $gutter / 2;
+    padding: 5px 10px;
+    background-color: $panel-colour;
+    font-weight: bold;
+
+    @include media(desktop) {
+      top: $gutter * (2 / 3);
+      bottom: inherit;
+    }
+
+    &__draft {
+      background-color: $focus-colour;
+    }
+  }
+}

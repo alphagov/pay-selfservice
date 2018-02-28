@@ -16,12 +16,12 @@ module.exports = (req, res) => {
 
   if (paymentLinkTitle === '') {
     req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-link-title">Title</a></li></ul>`)
-    return res.redirect(paths.paymentLinks.createInformation)
+    return res.redirect(paths.paymentLinks.information)
   }
 
   if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
     req.flash('generic', `<h2>The details have been updated</h2>`)
   }
 
-  return res.redirect(paths.paymentLinks.createReview)
+  return res.redirect(paths.paymentLinks.review)
 }

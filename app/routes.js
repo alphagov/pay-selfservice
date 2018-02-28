@@ -236,8 +236,10 @@ module.exports.bind = function (app) {
   app.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.goToPayment)
 
   // Create payment link
-  app.get(paymentLinks.index, permission('transactions:read'), getAccount, paymentLinksCtrl.index)
-  app.get(paymentLinks.createInformation, permission('transactions:read'), getAccount, paymentLinksCtrl.information)
-  app.post(paymentLinks.createReview, permission('transactions:read'), getAccount, paymentLinksCtrl.submitInformation)
-  app.get(paymentLinks.createReview, permission('transactions:read'), getAccount, paymentLinksCtrl.review)
+  app.get(paymentLinks.start, permission('transactions:read'), getAccount, paymentLinksCtrl.getStart)
+  app.get(paymentLinks.information, permission('transactions:read'), getAccount, paymentLinksCtrl.getInformation)
+  app.post(paymentLinks.information, permission('transactions:read'), getAccount, paymentLinksCtrl.postInformation)
+  app.get(paymentLinks.review, permission('transactions:read'), getAccount, paymentLinksCtrl.getReview)
+  app.post(paymentLinks.review, permission('transactions:read'), getAccount, paymentLinksCtrl.postReview)
+  app.get(paymentLinks.manage, permission('transactions:read'), getAccount, paymentLinksCtrl.getManage)
 }

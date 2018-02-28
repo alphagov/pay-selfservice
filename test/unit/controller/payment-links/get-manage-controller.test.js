@@ -17,7 +17,7 @@ const PAYMENT_1 = {
   description: 'product-description-1',
   name: 'payment-name-1',
   price: '150',
-  type: 'PROTOTYPE',
+  type: 'ADHOC',
   return_url: 'http://return.url',
   _links: [{
     rel: 'pay',
@@ -32,22 +32,7 @@ const PAYMENT_2 = {
   description: 'product-description-2',
   name: 'payment-name-2',
   price: '150',
-  type: 'PROTOTYPE',
-  return_url: 'http://return.url',
-  _links: [{
-    rel: 'pay',
-    href: 'http://pay.url',
-    method: 'GET'
-  }]
-}
-
-const PAYMENT_3 = {
-  external_id: 'product-external-id-3',
-  gateway_account_id: 'product-gateway-account-id-3',
-  description: 'product-description-3',
-  name: 'payment-name-3',
-  price: '150',
-  type: 'LIVE',
+  type: 'ADHOC',
   return_url: 'http://return.url',
   _links: [{
     rel: 'pay',
@@ -60,7 +45,7 @@ function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
   return nock(PRODUCTS_URL).get('/v1/api/products?gatewayAccountId=' + gatewayAccountId)
 }
 
-describe('Show the prototype links', () => {
+describe('Manage payment links', () => {
   let app
   before(function () {
     const user = mockSession.getUser({
@@ -80,7 +65,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(paths.paymentLinks.manage)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -92,14 +77,9 @@ describe('Show the prototype links', () => {
       nock.cleanAll()
     })
 
-    it('should toggle the product tab', () => {
-      expect(response.body).to.have.property('productsTab', true)
-    })
-
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).to.have.property('returnToStart', paths.paymentLinks.start)
+      expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
     })
 
     it('should not display any link', () => {
@@ -117,7 +97,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(paths.paymentLinks.manage)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -129,14 +109,9 @@ describe('Show the prototype links', () => {
       nock.cleanAll()
     })
 
-    it('should toggle the product tab', () => {
-      expect(response.body).to.have.property('productsTab', true)
-    })
-
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).to.have.property('returnToStart', paths.paymentLinks.start)
+      expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
     })
 
     it('should display all the links', () => {
@@ -154,12 +129,12 @@ describe('Show the prototype links', () => {
             method: 'GET'
           }
         },
-        type: 'PROTOTYPE'
+        type: 'ADHOC'
       }])
     })
   })
 
-  describe('when more than one link exist', () => {
+  describe('when more than one link exists', () => {
     let response
     before(function (done) {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
@@ -169,7 +144,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_2])
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(paths.paymentLinks.manage)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res
@@ -181,14 +156,9 @@ describe('Show the prototype links', () => {
       nock.cleanAll()
     })
 
-    it('should toggle the product tab', () => {
-      expect(response.body).to.have.property('productsTab', true)
-    })
-
     it('should display the correct page links', () => {
-      expect(response.body).to.have.property('createPage', paths.prototyping.demoService.create)
-      expect(response.body).to.have.property('indexPage', paths.prototyping.demoService.index)
-      expect(response.body).to.have.property('linksPage', paths.prototyping.demoService.links)
+      expect(response.body).to.have.property('returnToStart', paths.paymentLinks.start)
+      expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
     })
 
     it('should display all the links', () => {
@@ -206,7 +176,7 @@ describe('Show the prototype links', () => {
             method: 'GET'
           }
         },
-        type: 'PROTOTYPE'
+        type: 'ADHOC'
       }, {
         description: 'product-description-2',
         externalId: 'product-external-id-2',
@@ -220,45 +190,7 @@ describe('Show the prototype links', () => {
             method: 'GET'
           }
         },
-        type: 'PROTOTYPE'
-      }])
-    })
-  })
-
-  describe('when one prototype link and one live link exists', () => {
-    let response
-    before(function (done) {
-      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-        .reply(200, {
-          payment_provider: 'sandbox'
-        })
-      mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).reply(200, [PAYMENT_1, PAYMENT_3])
-
-      supertest(app)
-        .get(paths.prototyping.demoService.links)
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
-    })
-
-    it('should display only prototype links', () => {
-      expect(response.body).to.have.property('productsLength', 1)
-      expect(response.body).to.have.deep.property('products', [{
-        description: 'product-description-1',
-        externalId: 'product-external-id-1',
-        gatewayAccountId: 'product-gateway-account-id-1',
-        name: 'payment-name-1',
-        price: '150',
-        returnUrl: 'http://return.url',
-        links: {
-          pay: {
-            href: 'http://pay.url',
-            method: 'GET'
-          }
-        },
-        type: 'PROTOTYPE'
+        type: 'ADHOC'
       }])
     })
   })
@@ -273,7 +205,7 @@ describe('Show the prototype links', () => {
       mockGetProductsByGatewayAccountEndpoint(GATEWAY_ACCOUNT_ID).replyWithError('an error')
 
       supertest(app)
-        .get(paths.prototyping.demoService.links)
+        .get(paths.paymentLinks.manage)
         .set('Accept', 'application/json')
         .end((err, res) => {
           response = res

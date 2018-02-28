@@ -8,7 +8,9 @@ const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 
 const PAGE_PARAMS = {
-  nextPage: paths.paymentLinks.createInformation
+  nextPage: paths.paymentLinks.information,
+  returnToStart: paths.paymentLinks.start,
+  manage: paths.paymentLinks.manage
 }
 
 module.exports = (req, res) => {

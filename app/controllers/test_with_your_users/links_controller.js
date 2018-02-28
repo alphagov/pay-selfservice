@@ -20,7 +20,6 @@ module.exports = (req, res) => {
     .then(products => {
       const prototypeProducts = products.filter(product => product.type === 'PROTOTYPE')
       params.productsLength = prototypeProducts.length
-      params.productsSingular = prototypeProducts.length < 2
       params.products = prototypeProducts
       return response(req, res, 'dashboard/demo-service/index', params)
     })
