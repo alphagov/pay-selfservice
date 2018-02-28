@@ -29,7 +29,7 @@ function progressivelyEnhanceSelects () {
   [...$(ENHANCEMENT_SELECTOR)].forEach(select => {
     select = $(select)
     const configuration = {
-      id: select.id || randomElementId(),
+      id: select[0].id || randomElementId(),
       name: select[0].name,
       items: [...select.find('option')].map(option => {
         option = $(option)
