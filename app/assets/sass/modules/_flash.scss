@@ -23,8 +23,14 @@
   border-color: $red;
 }
 
-.error-summary ul {
-  list-style: none;
+.flash-container {
+  .error-summary {
+    margin-top: 0;
+
+    ul {
+      list-style: none;
+    }
+  }
 }
 
 .full-width .main-content {

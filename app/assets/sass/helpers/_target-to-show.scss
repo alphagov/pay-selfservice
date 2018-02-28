@@ -1,7 +1,14 @@
 .target-to-show {
   display: none;
+  position: relative;
 
   &:target {
     display: block;
+  }
+
+  &--cancel {
+    position: absolute;
+    right: $gutter / 2;
+    bottom: $gutter / 2;
   }
 }
