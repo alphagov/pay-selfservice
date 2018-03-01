@@ -12,11 +12,20 @@
     @include bold-16;
   }
 
+  table {
+    margin-bottom: $gutter;
+  }
+
   /* List styles */
   ul,
   table td {
     @include core-16;
     border-bottom: 1px solid $grey-2;
+  }
+
+  th {
+    @include core-16;
+    font-weight: bold;
   }
 
   /* Row styles */
@@ -29,7 +38,7 @@
   .admin-list-heading,
   a,
   span {
-    padding: 0.75em 1.25em 0.5625em 0;
+    padding: 0.75em 0 0.5625em 0;
   }
 
   /* Styles specific to certain tags */
@@ -62,4 +71,8 @@
       }
     }
   }
+}
+
+#edit-permissions-link {
+  text-align: right;
 }
