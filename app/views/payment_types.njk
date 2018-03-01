@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block page_title %}
-Payment types - GOV.UK Pay
+Card Types - GOV.UK Pay
 {% endblock %}
 
 {% block pageSpecificJS %}
@@ -18,10 +18,10 @@ Payment types - GOV.UK Pay
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <h1 class="page-title">Payment types</h1>
+  <h1 class="page-title">Card Types</h1>
 
   {% if permissions.payment_types_update %}
-  <h2 class="heading-medium remove-top-margin">Manage accepted payment types</h2>
+  <h2 class="heading-medium remove-top-margin">Manage accepted cards</h2>
   {% endif %}
 
   <div id="payment-types">

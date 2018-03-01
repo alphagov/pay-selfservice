@@ -46,9 +46,9 @@ module.exports = {
     delete: '/tokens'
   },
   paymentTypes: {
-    selectType: '/payment-types/select-type',
-    selectBrand: '/payment-types/select-brand',
-    summary: '/payment-types/summary'
+    selectType: '/card-types/manage-type',
+    selectBrand: '/card-types/manage-brand',
+    summary: '/card-types/summary'
   },
   emailNotifications: {
     index: '/email-notifications',

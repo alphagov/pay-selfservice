@@ -75,7 +75,7 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
 
-  it('should render Payment types navigation link when user have payment types read permission', function () {
+  it('should render Card Types navigation link when user have card Types read permission', function () {
     let testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
@@ -93,7 +93,7 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('tokens', templateData)
 
-    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Payment types')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Card Types')
   })
 
   it('should render Merchant details navigation link when user have merchant details read permission', function () {

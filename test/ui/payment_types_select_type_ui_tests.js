@@ -22,7 +22,7 @@ describe('The payment select type view', function () {
 
     var body = renderTemplate('payment_types_select_type', templateData)
 
-    body.should.containSelector('h1.page-title').withExactText('Payment types')
+    body.should.containSelector('h1.page-title').withExactText('Card Types')
 
     body.should.containSelector('input#payment-types-all-type')
       .withAttribute('name', 'payment-types-card-type')

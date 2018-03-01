@@ -352,7 +352,7 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Retrieves the accepted payment types for the given account
+   * Retrieves the accepted card Types for the given account
    * @param params
    *          An object with the following elements;
    *            gatewayAccountId (required)
@@ -372,7 +372,7 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Updates the accepted payment types for to the given gateway account
+   * Updates the accepted card Types for to the given gateway account
    * @param params
    *          An object with the following elements;
    *            gatewayAccountId (required)
