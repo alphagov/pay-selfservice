@@ -33,7 +33,7 @@ module.exports = (req, res) => {
           const model = buildPaymentList(transactions, allCards, accountId, filters.result)
           model.search_path = router.paths.transactions.index
           model.filtersDescription = describeFilters(filters.result)
-          model.eventStates = states.states()
+          model.eventStates = states.old_states()
           model.eventStates.forEach(state => {
             const relevantFilter = (state.type === 'payment' ? filters.result.payment_states : filters.result.refund_states) || []
             state.value.selected = relevantFilter.includes(state.name)
