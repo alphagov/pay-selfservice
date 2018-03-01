@@ -20,35 +20,35 @@
     &__link {
       word-break: break-all;
     }
-  }
 
-  &--actions {
-    @include core-16;
+    &__actions {
+      @include core-16;
 
-    margin-top: $gutter / 2;
+      margin-top: $gutter / 2;
 
-    a {
-      padding: 5px 15px 5px 0;
-    }
-  }
-
-  &--status {
-    @include core-16
-
-    position: absolute;
-    right: 0;
-    bottom: $gutter / 2;
-    padding: 5px 10px;
-    background-color: $panel-colour;
-    font-weight: bold;
-
-    @include media(desktop) {
-      top: $gutter * (2 / 3);
-      bottom: inherit;
+      &--toggle {
+        padding: 5px 15px 5px 0;
+      }
     }
 
-    &__draft {
-      background-color: $focus-colour;
+    &__status {
+      @include core-16
+
+      position: absolute;
+      right: 0;
+      bottom: $gutter / 2;
+      padding: 5px 10px;
+      background-color: $panel-colour;
+      font-weight: bold;
+
+      @include media(desktop) {
+        top: $gutter * (2 / 3);
+        bottom: inherit;
+      }
+
+      &--draft {
+        background-color: $focus-colour;
+      }
     }
   }
 }

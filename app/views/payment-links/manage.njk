@@ -34,12 +34,21 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       <li class="payment-links-list--item">
         <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
         <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
-<!--
-         <div class="payment-links-list--actions">
-          <a href="delete/{{ product.externalId }}">Delete</a>
+         <div class="payment-links-list--item__actions">
+          <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete</a>
+          <div class="target-to-show" id="delete-{{ product.externalId }}">
+            <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
+                <h1 class="heading-medium error-summary-heading" id="error-summary">
+                    Are you sure you want to delete this link?
+                </h1>
+                <div class="button-group">
+                  <a class="button delete payment-links-list--item__actions--delete" href="manage/delete/{{ product.externalId }}">Yes, delete this link</a>
+                </div>
+                <a class="target-to-show--cancel" href="#main">Cancel</a>
+              </div>
+          </div>
         </div>
- -->
-        <aside class="payment-links-list--status payment-links-list--status__live">
+        <aside class="payment-links-list--item__status payment-links-list--item__status--live">
           Live
         </aside>
       </li>
