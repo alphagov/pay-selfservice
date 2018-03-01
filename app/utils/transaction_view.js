@@ -18,9 +18,9 @@ const CSV_MAX_LIMIT = process.env.CSV_MAX_LIMIT || 10000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountId, filters) {
-    connectorData.filters = filters
-    connectorData.hasFilters = Object.keys(filters).length !== 0
+  buildPaymentList: function (connectorData, allCards, gatewayAccountId, filtersResult) {
+    connectorData.filters = filtersResult
+    connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
     connectorData.total = connectorData.total || (connectorData.results && connectorData.results.length)
     connectorData.showCsvDownload = connectorData.total <= CSV_MAX_LIMIT
@@ -36,14 +36,18 @@ module.exports = {
       .map((card) => {
         let value = {}
         value.text = card.label
-        if (card.brand === filters.brand) {
+        if (card.brand === filtersResult.brand) {
           value.selected = true
         }
         return {'key': card.brand, 'value': value}
       })
 
     connectorData.results.forEach(element => {
-      element.state_friendly = states.old_getDisplayName(element.transaction_type, element.state.status)
+      if (filtersResult.newChargeStatusEnabled) {
+        element.state_friendly = states.getDisplayNameForConnectorState(element.state.status, element.transaction_type)
+      } else {
+        element.state_friendly = states.old_getDisplayName(element.transaction_type, element.state.status)
+      }
       element.amount = asGBP(element.amount)
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
       element.updated = dates.utcToDisplay(element.updated)
@@ -61,21 +65,21 @@ module.exports = {
     // TODO normalise fromDate and ToDate so you can just pass them through no problem
     connectorData.downloadTransactionLink = router.generateRoute(
       router.paths.transactions.download, {
-        reference: filters.reference,
-        email: filters.email,
-        payment_states: filters.payment_states,
-        refund_states: filters.refund_states,
-        brand: filters.brand,
-        fromDate: filters.fromDate,
-        toDate: filters.toDate,
-        fromTime: filters.fromTime,
-        toTime: filters.toTime
+        reference: filtersResult.reference,
+        email: filtersResult.email,
+        payment_states: filtersResult.payment_states,
+        refund_states: filtersResult.refund_states,
+        brand: filtersResult.brand,
+        fromDate: filtersResult.fromDate,
+        toDate: filtersResult.toDate,
+        fromTime: filtersResult.fromTime,
+        toTime: filtersResult.toTime
       })
 
     return connectorData
   },
 
-  buildPaymentView: function (chargeData, eventsData, users = []) {
+  buildPaymentView: function (chargeData, eventsData, users = [], newChargeStatusEnabled = false) {
     chargeData.state_friendly = changeCase.upperCaseFirst(chargeData.state.status.toLowerCase())
 
     chargeData.amount = asGBP(chargeData.amount)
@@ -102,7 +106,7 @@ module.exports = {
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
-    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
+    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData, newChargeStatusEnabled)).reverse()
     chargeData.events.forEach(event => {
       if (event.submitted_by && event.state_friendly === 'Refund submitted') {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')

@@ -64,9 +64,9 @@ exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => 
 //       Simplify this when removing the feature flag for displaying the new payment states (PP-3377)
 function toSelectorObject (displayName = '') {
   return {
-    type: displayName,
+    type: displayName, //to remove
     name: displayName,
-    key: `${displayName}`,
+    key: `${displayName}`, //to remove
     value: {
       text: displayName
     }

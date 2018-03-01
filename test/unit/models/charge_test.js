@@ -111,7 +111,7 @@ describe('charge model', function () {
         return chargeModel.findWithEvents(1, 2).then(function (data) {
           expect(buildPaymentView.called).to.equal(true)
           expect(buildPaymentView.args.length).to.equal(1)
-          expect(buildPaymentView.args[0].length).to.equal(3)
+          expect(buildPaymentView.args[0]).to.have.lengthOf.above(3)
           expect(buildPaymentView.args[0][0]).to.deep.equal({foo: 'bar'})
           expect(buildPaymentView.args[0][1]).to.deep.equal({events: [{submitted_by: user.external_id}]})
           expect(buildPaymentView.args[0][2]).to.deep.equal([new User(user)])
