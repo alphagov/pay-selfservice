@@ -30,7 +30,7 @@ describe('The card Types summary view', function () {
 
     body.should.containSelector('a#payment-types-manage-button')
       .withAttribute('class', 'button')
-      .withAttribute('href', '/payment-types/select-type')
+      .withAttribute('href', '/card-types/manage-type')
       .withText('Manage')
   })
 

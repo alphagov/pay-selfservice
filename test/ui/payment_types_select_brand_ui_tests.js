@@ -30,7 +30,7 @@ describe('The payment select brand view', function () {
 
     body.should.containSelector('form#payment-types-card-brand-selection-form')
       .withAttribute('method', 'post')
-      .withAttribute('action', '/payment-types/select-brand')
+      .withAttribute('action', '/card-types/manage-brand')
 
     body.should.containSelector('input#accepted-card-type')
       .withAttribute('name', 'acceptedType')
@@ -38,7 +38,7 @@ describe('The payment select brand view', function () {
       .withAttribute('value', 'ALL')
 
     body.should.containSelector('a#payment-types-cancel-link')
-      .withAttribute('href', '/payment-types/summary')
+      .withAttribute('href', '/card-types/summary')
   })
 
   it('should display a message stating debit and credit cards have been chosen', function () {
