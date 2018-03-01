@@ -11,6 +11,11 @@ Invite a new team member - GOV.UK Pay
 {% block mainClasses %}full-width{% endblock %}
 
 {% block full_width_content %}
+  <div class="grid-row">
+    <div class="column-two-thirds admin-list-group">
+      {% include "includes/flash.njk" %}
+    </div>
+  </div>
   <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
   <div>
     <h1 class="heading-large underline">
