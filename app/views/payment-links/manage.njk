@@ -19,7 +19,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
   <section class="column-two-thirds">
     {% include "includes/flash.njk" %}
     <h1 class="page-title">Manage payment links</h1>
-    <p>
+    <p class="payment-links-list--header">
       {% if productsLength === 1 %}
         There is 1 payment link
       {% elif productsLength > 1 %}
