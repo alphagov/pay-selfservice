@@ -3,12 +3,12 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-var path = require('path')
+const path = require('path')
 chai.use(chaiAsPromised)
 chai.should()
 
 require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
-var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
 
 describe('The transaction list view', function () {
   it('should render all transactions', function () {
@@ -19,9 +19,9 @@ describe('The transaction list view', function () {
           'email': 'example1@mail.fake',
           'amount': '50.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Declined',
           'state': {
-            'status': 'testing',
+            'status': 'failed',
             'finished': false
           },
           'card_details': {
@@ -44,10 +44,10 @@ describe('The transaction list view', function () {
           'email': 'example2@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'In progress',
           'state': {
-            'status': 'testing2',
-            'finished': true
+            'status': 'created',
+            'finished': false
           },
           'card_details': {
             'billing_address': {
@@ -69,9 +69,9 @@ describe('The transaction list view', function () {
           'email': 'example3@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Refund success',
           'state': {
-            'status': 'testing2',
+            'status': 'success',
             'finished': true
           },
           'card_details': {
@@ -126,9 +126,9 @@ describe('The transaction list view', function () {
           'email': 'example1@mail.fake',
           'amount': '50.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Declined',
           'state': {
-            'status': 'testing',
+            'status': 'failed',
             'finished': false
           },
           'card_details': {
@@ -151,10 +151,10 @@ describe('The transaction list view', function () {
           'email': 'example2@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'In progress',
           'state': {
-            'status': 'testing2',
-            'finished': true
+            'status': 'created',
+            'finished': false
           },
           'card_details': {
             'billing_address': {
@@ -176,9 +176,9 @@ describe('The transaction list view', function () {
           'email': 'example3@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Refund success',
           'state': {
-            'status': 'testing2',
+            'status': 'success',
             'finished': true
           },
           'card_details': {
@@ -233,10 +233,10 @@ describe('The transaction list view', function () {
           'email': 'example1@mail.fake',
           'amount': '50.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'state': {
-            'status': 'testing',
-            'finished': false
+            'status': 'success',
+            'finished': true
           },
           'card_details': {
             'billing_address': {
@@ -258,9 +258,9 @@ describe('The transaction list view', function () {
           'email': 'example2@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Refund error',
           'state': {
-            'status': 'testing2',
+            'status': 'error',
             'finished': true
           },
           'card_details': {
@@ -299,10 +299,10 @@ describe('The transaction list view', function () {
           'email': 'example1@mail.fake',
           'amount': '50.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Timed out',
           'state': {
-            'status': 'testing',
-            'finished': false
+            'status': 'failed',
+            'finished': true
           },
           'card_details': {
             'billing_address': {
@@ -324,9 +324,9 @@ describe('The transaction list view', function () {
           'email': 'example2@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Success',
           'state': {
-            'status': 'testing2',
+            'status': 'success',
             'finished': true
           },
           'card_details': {
@@ -365,10 +365,10 @@ describe('The transaction list view', function () {
           'email': 'example1@mail.fake',
           'amount': '50.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'state': {
-            'status': 'testing',
-            'finished': false
+            'status': 'success',
+            'finished': true
           },
           'card_details': {
             'billing_address': {
@@ -390,9 +390,9 @@ describe('The transaction list view', function () {
           'email': 'example2@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Success',
           'state': {
-            'status': 'testing2',
+            'status': 'success',
             'finished': true
           },
           'card_details': {

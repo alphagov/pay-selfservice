@@ -44,7 +44,7 @@ module.exports = {
 
     connectorData.results.forEach(element => {
       if (filtersResult.newChargeStatusEnabled) {
-        element.state_friendly = states.getDisplayNameForConnectorState(element.state.status, element.transaction_type)
+        element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
       } else {
         element.state_friendly = states.old_getDisplayName(element.transaction_type, element.state.status)
       }

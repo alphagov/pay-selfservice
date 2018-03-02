@@ -40,9 +40,7 @@ describe('The transaction view scenarios', function () {
   beforeEach(function (done) {
     let permissions = 'transactions-details:read'
     let user = session.getUser({
-      gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}],
-      features: 'NEW_CHARGE_STATUS_ENABLED'
+      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -56,7 +54,7 @@ describe('The transaction view scenarios', function () {
         'charge_id': chargeId,
         'events': [
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'state': {
               'status': 'created',
               'finished': false
@@ -65,7 +63,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'state': {
               'status': 'started',
               'finished': false
@@ -74,7 +72,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:23:12'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'state': {
               'status': 'success',
               'finished': true
@@ -83,7 +81,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 12:05:43'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'state': {
               'status': 'cancelled',
               'finished': true,
@@ -94,7 +92,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 12:05:43'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'state': {
               'status': 'failed',
               'finished': true,
@@ -199,9 +197,9 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the user',
               'code': 'P0030'
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': '20000',
-            'state_friendly': 'Cancelled',
+            'state_friendly': 'User failed to complete payment',
             'updated': '2015-12-24 12:05:43',
             'amount_friendly': '£200.00',
             'updated_friendly': '24 Dec 2015 — 12:05:43'
@@ -213,9 +211,9 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the service',
               'code': 'P0040'
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': '20000',
-            'state_friendly': 'Cancelled',
+            'state_friendly': 'Service cancelled payment',
             'amount_friendly': '£200.00',
             'updated': '2015-12-24 12:05:43',
             'updated_friendly': '24 Dec 2015 — 12:05:43'
@@ -225,9 +223,9 @@ describe('The transaction view scenarios', function () {
               'status': 'success',
               'finished': true
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': '20000',
-            'state_friendly': 'Success',
+            'state_friendly': 'Payment successful',
             'amount_friendly': '£200.00',
             'updated': '2015-12-24 12:05:43',
             'updated_friendly': '24 Dec 2015 — 12:05:43'
@@ -237,9 +235,9 @@ describe('The transaction view scenarios', function () {
               'status': 'started',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': '20000',
-            'state_friendly': 'In progress',
+            'state_friendly': 'User entering card details',
             'amount_friendly': '£200.00',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
@@ -249,9 +247,9 @@ describe('The transaction view scenarios', function () {
               'status': 'created',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': '20000',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Service created payment',
             'amount_friendly': '£200.00',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
@@ -279,7 +277,7 @@ describe('The transaction view scenarios', function () {
         'charge_id': chargeId,
         'events': [
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'state': {
               'status': 'created',
@@ -288,7 +286,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'state': {
               'status': 'started',
@@ -365,26 +363,26 @@ describe('The transaction view scenarios', function () {
         'gateway_transaction_id': 'dsfh-34578fb-4und-8dhry',
         'events': [
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
             'state': {
               'status': 'started',
               'finished': false
             },
-            'state_friendly': 'In progress',
+            'state_friendly': 'User entering card details',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
             'state': {
               'status': 'created',
               'finished': false
             },
-            'state_friendly': 'In progress',
+            'state_friendly': 'Service created payment',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
@@ -411,7 +409,7 @@ describe('The transaction view scenarios', function () {
         'charge_id': chargeId,
         'events': [
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'state': {
               'status': 'created',
@@ -420,7 +418,7 @@ describe('The transaction view scenarios', function () {
             'updated': '2015-12-24 13:21:05'
           },
           {
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'state': {
               'status': 'started',
@@ -509,10 +507,10 @@ describe('The transaction view scenarios', function () {
               'status': 'started',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'User entering card details',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
           },
@@ -521,10 +519,10 @@ describe('The transaction view scenarios', function () {
               'status': 'created',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Service created payment',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
@@ -555,7 +553,7 @@ describe('The transaction view scenarios', function () {
               'status': 'created',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'updated': '2015-12-24 13:21:05'
           },
@@ -564,7 +562,7 @@ describe('The transaction view scenarios', function () {
               'status': 'started',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'updated': '2015-12-24 13:23:12'
           },
@@ -573,7 +571,7 @@ describe('The transaction view scenarios', function () {
               'status': 'success',
               'finished': true
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'updated': '2015-12-24 12:05:43'
           },
@@ -584,7 +582,7 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the service',
               'code': 'P0040'
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'updated': '2015-12-24 12:05:43'
           },
@@ -595,7 +593,7 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the user',
               'code': 'P0030'
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'updated': '2015-12-24 12:05:43'
           }
@@ -694,10 +692,10 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the user',
               'code': 'P0030'
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'Cancelled',
+            'state_friendly': 'User failed to complete payment',
             'updated': '2015-12-24 12:05:43',
             'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
@@ -708,10 +706,10 @@ describe('The transaction view scenarios', function () {
               'message': 'Payment was cancelled by the service',
               'code': 'P0040'
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'Cancelled',
+            'state_friendly': 'Service cancelled payment',
             'updated': '2015-12-24 12:05:43',
             'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
@@ -720,10 +718,10 @@ describe('The transaction view scenarios', function () {
               'status': 'success',
               'finished': true
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'Success',
+            'state_friendly': 'Payment successful',
             'updated': '2015-12-24 12:05:43',
             'updated_friendly': '24 Dec 2015 — 12:05:43'
           },
@@ -732,10 +730,10 @@ describe('The transaction view scenarios', function () {
               'status': 'started',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'User entering card details',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
           },
@@ -744,10 +742,10 @@ describe('The transaction view scenarios', function () {
               'status': 'created',
               'finished': false
             },
-            'type': 'payment',
+            'type': 'PAYMENT',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Service created payment',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }

@@ -52,7 +52,7 @@ module.exports = (req, res) => {
             model.filtersDescription = describeFilters(filters.result)
             model.eventStates = states.allDisplayStateSelectorObjects()
             model.eventStates.forEach(state => {
-              state.value.selected = filters.selectedStates.includes(state.name)
+              state.value.selected = filters.selectedStates && filters.selectedStates.includes(state.name)
             })
           }
 
