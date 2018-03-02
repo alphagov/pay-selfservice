@@ -79,7 +79,7 @@ describe('Create payment link review controller', () => {
         it('should redirect to the manage page with a success message', () => {
           expect(session.flash).to.have.property('generic')
           expect(session.flash.generic.length).to.equal(1)
-          expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2> Give this link to your users to collect payments for your service.')
+          expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>')
           expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
         })
       })
@@ -119,7 +119,7 @@ describe('Create payment link review controller', () => {
         it('should add a relevant error message to the session \'flash\'', () => {
           expect(session.flash).to.have.property('genericError')
           expect(session.flash.genericError.length).to.equal(1)
-          expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating payment link')
+          expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2><p>Error while creating payment link</p>')
         })
       })
     })
@@ -159,7 +159,7 @@ describe('Create payment link review controller', () => {
       it('should add a relevant error message to the session \'flash\'', () => {
         expect(session.flash).to.have.property('genericError')
         expect(session.flash.genericError.length).to.equal(1)
-        expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2> Error while creating payment link')
+        expect(session.flash.genericError[0]).to.equal('<h2>There were errors</h2><p>Error while creating payment link</p>')
       })
     })
   })
@@ -195,7 +195,7 @@ describe('Create payment link review controller', () => {
         it('should redirect to the manage page with a success message', () => {
           expect(session.flash).to.have.property('generic')
           expect(session.flash.generic.length).to.equal(1)
-          expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2> Give this link to your users to collect payments for your service.')
+          expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>')
           expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.manage)
         })
       })
