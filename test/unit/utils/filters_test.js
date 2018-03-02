@@ -60,21 +60,20 @@ describe('filters', () => {
         const testFilter = {
           fromDate: 'from-date',
           toDate: 'to-date',
-          payment_states: ['created', 'started', 'failed'],
-          refund_states: ['success', 'submitted']
+          selectedStates: ['In progress', 'Refund success', 'Refund submitted'],
         }
         const result = filters.describeFilters(testFilter)
-        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>In progress</strong>, <strong>In progress</strong>, <strong>Failed</strong>, <strong>Refund success</strong> or <strong>Refund submitted</strong> states')
+        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>In progress</strong>, <strong>Refund success</strong> or <strong>Refund submitted</strong> states')
       })
 
       it('should describe correctly when one state selected', function () {
         const testFilter = {
           fromDate: 'from-date',
           toDate: 'to-date',
-          payment_states: ['failed']
+          selectedStates: ['Cancelled']
         }
         const result = filters.describeFilters(testFilter)
-        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>Failed</strong> state')
+        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>Cancelled</strong> state')
       })
 
       it('should describe correctly when no state selected', function () {

@@ -57,7 +57,8 @@ exports.allDisplayStates = () => [... uniqueDisplayStates(PAYMENT_STATE_DESCRIPT
 exports.displayStatesToConnectorStates = (displayStatesArray) => toConnectorStates(displayStatesArray)
 exports.allDisplayStateSelectorObjects = () => exports.allDisplayStates().map(state => toSelectorObject(state))
 exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => {
-  return displayNameForConnectorState(connectorState, type)
+  const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase();
+  return displayNameForConnectorState(connectorState, sanitisedType)
 }
 
 // TODO: leaving this toSelector Object structure for backward compatibility.

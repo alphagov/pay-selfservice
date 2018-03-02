@@ -66,6 +66,10 @@ describe('states', function () {
       expect(states.getDisplayNameForConnectorState({status: 'failed', code: 'P0010', message: 'Bar'})).to.equal('Declined')
       expect(states.getDisplayNameForConnectorState({status: 'cancelled', code: 'P0040', message: 'Baz'})).to.equal('Cancelled')
       expect(states.getDisplayNameForConnectorState({status: 'cancelled', code: 'P0050', message: 'Kaz'})).to.equal('Error')
+
+      expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'charge')).to.equal('In progress')
+      expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'PAYMENT')).to.equal('In progress')
+      expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'refund')).to.equal('Refund submitted')
     })
   })
 

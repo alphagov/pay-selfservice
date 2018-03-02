@@ -17,6 +17,7 @@ function validateFilters (filters) {
 
 function getFilters (req) {
   let filters = qs.parse(req.query)
+  filters.selectedStates = []
   if (filters.state) {
     filters.selectedStates = typeof filters.state === 'string' ? [filters.state] : filters.state
     const result = states.displayStatesToConnectorStates(filters.selectedStates)
@@ -35,10 +36,8 @@ function describeFilters (filters) {
   if (filters.fromDate) description += ` from <strong>${filters.fromDate}</strong>`
   if (filters.toDate) description += ` to <strong>${filters.toDate}</strong>`
 
-  const paymentStates = filters.payment_states ? filters.payment_states.map(state => states.getDisplayNameForConnectorState(state, 'payment')) : []
-  const refundStates = filters.refund_states ? filters.refund_states.map(state => states.getDisplayNameForConnectorState(state, 'refund')) : []
-  const selectedStates = [...paymentStates, ...refundStates].map(state => `${state}`)
-  if (filters.state && selectedStates.length === 0) {
+  const selectedStates = filters.selectedStates || []
+  if (filters.state && filters.selectedStates.length === 0) {
     description += ` with <strong>${filters.state}</strong> state`
   } else if (selectedStates.length === 1) {
     description += ` with <strong>${selectedStates[0]}</strong> state`
