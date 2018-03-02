@@ -91,13 +91,14 @@ function displayNameForConnectorState (connectorState, type) {
 }
 
 function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
+  let stateToConvert = connectorState.status || connectorState
   if (type === 'payment') {
-    const found = Object.keys(PAYMENT_STATE_DESCRIPTIONS).find(connectorPaymentState => connectorPaymentState === connectorState.status.toLowerCase())
+    const found = Object.keys(PAYMENT_STATE_DESCRIPTIONS).find(connectorPaymentState => connectorPaymentState === stateToConvert.toLowerCase())
     if (found) {
       return lodash.get(PAYMENT_STATE_DESCRIPTIONS, `${found}.displayName`, '')
     }
   } else {
-    const found = Object.keys(REFUND_STATE_DESCRIPTIONS).find(refundPaymentState => refundPaymentState === connectorState.status.toLowerCase())
+    const found = Object.keys(REFUND_STATE_DESCRIPTIONS).find(refundPaymentState => refundPaymentState === stateToConvert.toLowerCase())
     if (found) {
       return lodash.get(REFUND_STATE_DESCRIPTIONS, `${found}.displayName`, '')
     }

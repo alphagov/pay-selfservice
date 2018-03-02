@@ -4,7 +4,7 @@ const {expect} = require('chai')
 const filters = require('../../../app/utils/filters')
 
 describe('filters', () => {
-  describe('state filter', () => {
+  describe('old state filter', () => {
     it('should be unchanged if there is a single state does not contain \'-\' but should add it to the \'payment_states\' array for backward compatibility', () => {
       const {result} = filters.old_getFilters({query: {state: 'started'}})
       expect(result).to.have.property('payment_states').to.deep.equal(['started'])
@@ -19,6 +19,73 @@ describe('filters', () => {
       const {result} = filters.old_getFilters({query: {state: ['payment-started', 'payment-success', 'refund-created', 'complete']}})
       expect(result).to.have.property('payment_states').to.deep.equal(['started', 'success', 'complete'])
       expect(result).to.have.property('refund_states').to.deep.equal(['created'])
+    })
+  })
+
+  describe('state filter', () => {
+    describe('getFilter', () => {
+      it('should transform In progress display states to connector states correctly', function () {
+        const {result} = filters.getFilters({query: {state: 'In progress'}})
+        expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted'])
+        expect(result).to.not.have.property('refund_states')
+      })
+
+      it('should transform some payment display states to connector states correctly', function () {
+        const {result} = filters.getFilters({query: {state: ['In progress', 'Timed out', 'Cancelled']}})
+        expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'failed', 'cancelled'])
+        expect(result).to.not.have.property('refund_states')
+      })
+
+      it('should transform all payment display states to connector states correctly', function () {
+        const {result} = filters.getFilters({query: {state: ['In progress', 'Success', 'Error', 'Cancelled', 'Timed out', 'Declined']}})
+        expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'success', 'error', 'failed', 'cancelled'])
+        expect(result).to.not.have.property('refund_states')
+      })
+
+      it('should transform all refund display states to connector states correctly', function () {
+        const {result} = filters.getFilters({query: {state: ['Refund success', 'Refund error', 'Refund submitted']}})
+        expect(result).to.have.property('refund_states').to.deep.equal(['success', 'error', 'submitted'])
+        expect(result).to.not.have.property('payment_states')
+      })
+
+      it('should transform both payment and refund display states to connector states correctly', function () {
+        const {result} = filters.getFilters({query: {state: ['In progress', 'Success', 'Error', 'Cancelled', 'Timed out', 'Declined', 'Refund success', 'Refund error', 'Refund submitted']}})
+        expect(result).to.have.property('refund_states').to.deep.equal(['success', 'error', 'submitted'])
+        expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'success', 'error', 'failed', 'cancelled'])
+      })
+    })
+
+    describe('describeFilter', () => {
+      it('should describe correctly when multiple states selected', function () {
+        const testFilter = {
+          fromDate: 'from-date',
+          toDate: 'to-date',
+          payment_states: ['created', 'started', 'failed'],
+          refund_states: ['success', 'submitted']
+        }
+        const result = filters.describeFilters(testFilter)
+        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>In progress</strong>, <strong>In progress</strong>, <strong>Failed</strong>, <strong>Refund success</strong> or <strong>Refund submitted</strong> states')
+      })
+
+      it('should describe correctly when one state selected', function () {
+        const testFilter = {
+          fromDate: 'from-date',
+          toDate: 'to-date',
+          payment_states: ['failed']
+        }
+        const result = filters.describeFilters(testFilter)
+        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>Failed</strong> state')
+      })
+
+      it('should describe correctly when no state selected', function () {
+        const testFilter = {
+          fromDate: 'from-date',
+          toDate: 'to-date',
+          state: ''
+        }
+        const result = filters.describeFilters(testFilter)
+        expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong>')
+      })
     })
   })
 })
