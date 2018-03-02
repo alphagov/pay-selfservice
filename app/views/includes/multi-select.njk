@@ -6,13 +6,13 @@
   </button>
   <div role="group" aria-labelledby="option-select-title-{{name}}"
      class="multi-select-dropdown"
-     id="list_of_sectors"
+     id="list-of-sectors-{{ name }}"
      style="visibility:hidden;">
     <div class="multi-select-dropdown-inner-container">
       {% for item in items %}
       <div class="multiple-choice">
         <input class="multi-select-item" name="{{name}}" value="{{ item.value }}" id="{{ item.id }}" type="checkbox" {% if item.checked %}checked{% endif %}>
-        <label for="{{ item.id }}">{{ item.text }}</label>
+        <label for="{{ item.id }}" class="multi-select-label-{{ name }}">{{ item.text }}</label>
       </div>
       {% endfor %}
     </div>
