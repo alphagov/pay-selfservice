@@ -18,6 +18,7 @@ var CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
 var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 var CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
 var CARD_TYPES_API_PATH = '/v1/api/card-types'
+const TRANSACTIONS_API_PATH = ACCOUNT_API_PATH + '/transactions'
 
 var ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 var ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
@@ -122,7 +123,7 @@ var _getTransactionSummaryUrlFor = function (accountID, period) {
 }
 
 function searchUrl (baseUrl, params) {
-  return baseUrl + CHARGES_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
+  return baseUrl + TRANSACTIONS_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
 }
 
 /**

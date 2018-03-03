@@ -47,7 +47,6 @@ function getFilters (req) {
     filters.refund_states = states.filter(state => state.includes('refund-')).map(state => state.replace('refund-', ''))
     filters.state = [...filters.payment_states, ...filters.refund_states][0]
   }
-
   filters = _.omitBy(filters, _.isEmpty)
   return {
     valid: validateFilters(filters),
