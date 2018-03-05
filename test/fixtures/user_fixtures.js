@@ -155,7 +155,8 @@ module.exports = {
       otp_key: opts.otp_key || randomOtpKey(),
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
-      session_version: opts.session_version || 0
+      session_version: opts.session_version || 0,
+      features: opts.features || ''
     }
 
     return {

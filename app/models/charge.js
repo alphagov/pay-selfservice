@@ -11,7 +11,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
 
-  function findWithEvents (accountId, chargeId) {
+  function findWithEvents (accountId, chargeId, newChargeStatusEnabled = false) {
     var defer = q.defer()
     var params = {
       gatewayAccountId: accountId,
@@ -25,11 +25,11 @@ module.exports = function (correlationId) {
           .map(event => event.submitted_by)
         userIds = lodash.uniq(userIds)
         if (userIds.length <= 0) {
-          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData))
+          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, [], newChargeStatusEnabled))
         } else {
           userService.findMultipleByExternalIds(userIds, correlationId)
             .then(users => {
-              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
+              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users, newChargeStatusEnabled))
             })
             .catch(err => findWithEventsError(err, undefined, defer))
         }

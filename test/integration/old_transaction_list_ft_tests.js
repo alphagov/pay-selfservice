@@ -15,7 +15,7 @@ const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
 const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
 const gatewayAccountId = '651342'
 const {expect} = chai
-const connectorSearchParameters = {}
+const searchParameters = {}
 const CONNECTOR_CHARGES_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 const ALL_CARD_TYPES = {
@@ -44,9 +44,7 @@ describe('The /transactions endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'transactions:read'
     let user = session.getUser({
-      gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}],
-      features: 'NEW_CHARGE_STATUS_ENABLED'
+      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -65,9 +63,8 @@ describe('The /transactions endpoint', function () {
           'amount': 5000,
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'created',
+            'status': 'testing',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -81,10 +78,9 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'success',
-            'finished': true
+            'status': 'testing2',
+            'finished': false
           },
           'card_brand': 'Visa',
           'updated': CONNECTOR_DATE,
@@ -95,7 +91,7 @@ describe('The /transactions endpoint', function () {
       total: 2
     }
 
-    connectorMockResponds(200, connectorData, connectorSearchParameters)
+    connectorMockResponds(200, connectorData, searchParameters)
 
     let expectedData = {
       'results': [
@@ -105,13 +101,12 @@ describe('The /transactions endpoint', function () {
           'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'created',
+            'status': 'testing',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'In progress',
+          'state_friendly': 'Testing',
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -123,13 +118,12 @@ describe('The /transactions endpoint', function () {
           'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'success',
-            'finished': true
+            'status': 'testing2',
+            'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Success',
+          'state_friendly': 'Testing2',
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -148,51 +142,47 @@ describe('The /transactions endpoint', function () {
       .end(done)
   })
 
-  it('should return a list of transactions for the gateway account with no csv download link', function (done) {
+  it('should return a list of transactions for the gateway account', function (done) {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
     let connectorData = {
-      results: [
+      'results': [
         {
-          charge_id: '100',
-          gateway_transaction_id: 'tnx-id-1',
-          amount: 5000,
-          reference: 'ref1',
-          email: 'alice.222@mail.fake',
-          transaction_type: 'payment',
-          state: {
-            status: 'failed',
-            finished: true,
-            code: 'P0030',
-            message: 'Payment was cancelled by the service'
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': 5000,
+          'reference': 'ref1',
+          'email': 'alice.222@mail.fake',
+          'state': {
+            'status': 'testing',
+            'finished': false
           },
-          card_brand: 'Visa',
-          updated: CONNECTOR_DATE,
-          created_date: CONNECTOR_DATE
+          'card_brand': 'Visa',
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
 
         },
         {
-          charge_id: '101',
-          gateway_transaction_id: 'tnx-id-2',
-          amount: 2000,
-          reference: 'ref2',
-          email: 'alice.111@mail.fake',
-          transaction_type: 'refund',
-          state: {
-            status: 'success',
-            finished: true
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': 2000,
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'testing2',
+            'finished': false
           },
-          card_brand: 'Visa',
-          updated: CONNECTOR_DATE,
-          created_date: CONNECTOR_DATE
+          'card_brand': 'Visa',
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
 
         }
       ],
       total: 10001
     }
 
-    connectorMockResponds(200, connectorData, connectorSearchParameters)
+    connectorMockResponds(200, connectorData, searchParameters)
 
     let expectedData = {
       'results': [
@@ -202,15 +192,12 @@ describe('The /transactions endpoint', function () {
           'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'failed',
-            'finished': true,
-            'code': 'P0030',
-            'message': 'Payment was cancelled by the service'
+            'status': 'testing',
+            'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Cancelled',
+          'state_friendly': 'Testing',
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -219,16 +206,15 @@ describe('The /transactions endpoint', function () {
         {
           'charge_id': '101',
           'gateway_transaction_id': 'tnx-id-2',
-          'amount': '–£20.00',
+          'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'refund',
           'state': {
-            'status': 'success',
-            'finished': true
+            'status': 'testing2',
+            'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Refund success',
+          'state_friendly': 'Testing2',
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -248,7 +234,7 @@ describe('The /transactions endpoint', function () {
       .end(done)
   })
 
-  it('should return a list of transactions for the gateway account when some display states is selected', function (done) {
+  it('should return a list of transactions for the gateway account when a state is selected', function (done) {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
@@ -260,9 +246,8 @@ describe('The /transactions endpoint', function () {
           'amount': 5000,
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'created',
+            'status': 'testing',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -276,72 +261,26 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'submitted',
+            'status': 'testing2',
             'finished': false
           },
           'card_brand': 'Visa',
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE
-        },
-        {
-          'charge_id': '102',
-          'gateway_transaction_id': 'tnx-id-3',
-          'amount': 4500,
-          'reference': 'ref2',
-          'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
-          'state': {
-            'status': 'failed',
-            'finished': false,
-            'code': 'P0020',
-            'message': 'some error'
-          },
-          'card_brand': 'Visa',
-          'updated': CONNECTOR_DATE,
-          'created_date': CONNECTOR_DATE
-        },
-        {
-          'charge_id': '103',
-          'gateway_transaction_id': 'tnx-id-2',
-          'amount': 5000,
-          'reference': 'ref2',
-          'email': 'alice.111@mail.fake',
-          transaction_type: 'refund',
-          'state': {
-            'status': 'submitted',
-            'finished': true
-          },
-          'card_brand': 'Visa',
-          'updated': CONNECTOR_DATE,
-          'created_date': CONNECTOR_DATE
+
         }
       ]
     }
 
-    connectorMockResponds(200, connectorData, {
-      payment_states: 'created,started,submitted,failed',
-      refund_states: 'submitted'
-    })
+    connectorMockResponds(200, connectorData, {state: 'started', payment_states: 'started'})
     request(app)
-      .get(paths.transactions.index)
-      .query({state: ['In progress', 'Timed out', 'Refund submitted']})
+      .get(paths.transactions.index + '?state=started')
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        expect(res.body.results.length).to.equal(4)
-        expect(res.body.results.map(row => row.charge_id)).to.deep.equal(['100', '101', '102', '103'])
-        expect(res.body.results.map(row => row.state_friendly)).to.deep.equal(['In progress', 'In progress', 'Timed out', 'Refund submitted'])
-        expect(res.body.eventStates.length).to.equal(9)
-        const selectedStates = res.body.eventStates.filter(state => state.value.selected === true)
-        expect(selectedStates.length).to.equal(3)
-        selectedStates.forEach(state => {
-          expect(['In progress', 'Timed out', 'Refund submitted']).to.include(state.value.text)
-        })
-
-        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=failed&refund_states=submitted')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=started')
       })
       .end(done)
   })
@@ -357,9 +296,8 @@ describe('The /transactions endpoint', function () {
           'gateway_transaction_id': 'tnx-id-1',
           'amount': 5000,
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'created',
+            'status': 'testing',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -373,9 +311,8 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'success',
+            'status': 'testing2',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -385,7 +322,7 @@ describe('The /transactions endpoint', function () {
       ]
     }
 
-    connectorMockResponds(200, connectorData, connectorSearchParameters)
+    connectorMockResponds(200, connectorData, searchParameters)
 
     var expectedData = {
       'results': [
@@ -394,13 +331,12 @@ describe('The /transactions endpoint', function () {
           'gateway_transaction_id': 'tnx-id-1',
           'amount': '£50.00',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'created',
+            'status': 'testing',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'In progress',
+          'state_friendly': 'Testing',
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -413,13 +349,12 @@ describe('The /transactions endpoint', function () {
           'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
           'state': {
-            'status': 'success',
+            'status': 'testing2',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Success',
+          'state_friendly': 'Testing2',
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -443,7 +378,7 @@ describe('The /transactions endpoint', function () {
     let connectorData = {
       'results': []
     }
-    connectorMockResponds(200, connectorData, connectorSearchParameters)
+    connectorMockResponds(200, connectorData, searchParameters)
 
     getTransactionList()
       .expect(200)
@@ -455,7 +390,7 @@ describe('The /transactions endpoint', function () {
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {
     let errorMessage = 'Unable to retrieve list of transactions.'
-    connectorMockResponds(400, {'message': errorMessage}, connectorSearchParameters)
+    connectorMockResponds(400, {'message': errorMessage}, searchParameters)
 
     getTransactionList()
       .expect(500, {'message': errorMessage})
@@ -463,7 +398,7 @@ describe('The /transactions endpoint', function () {
   })
 
   it('should show a generic error message on a connector service error while retrieving the list of transactions', function (done) {
-    connectorMockResponds(500, {'message': 'some error from connector'}, connectorSearchParameters)
+    connectorMockResponds(500, {'message': 'some error from connector'}, searchParameters)
 
     getTransactionList()
       .expect(500, {'message': 'Unable to retrieve list of transactions.'})
@@ -477,9 +412,64 @@ describe('The /transactions endpoint', function () {
       .expect(500, {'message': 'Unable to retrieve list of transactions.'})
       .end(done)
   })
+
+  //
+  // PP-1158 Fix 3 selfservice problematic tests in transaction_list_ft_tests
+  //
+  // These 3 tests have been commented out deliberately in selfservice due to a
+  // very obscure condition causing an Uncaught Error: Can't set headers
+  // after they are sent.
+  //
+  // This matter has already been investigate by a few team members but
+  // with no real solution so far!
+  //
+  // The problem seems to be around promises being resolved aggressively in
+  // tests resulting in the response being rendered more than once.
+  //
+
+  // it('should show error message on a bad request while retrieving the list of card brands', function (done) {
+  //  var connectorData = {
+  //    'results': []
+  //  };
+  //  connectorMockResponds(200, connectorData, searchParameters);
+  //
+  //  var errorMessage = 'Unable to retrieve list of card brands.';
+  //  connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+  //    .reply(400, {'message': errorMessage});
+  //
+  //  getTransactionList()
+  //    .expect(500, {'message': errorMessage})
+  //    .end(done);
+  // });
+
+  // it('should show a generic error message on a connector service error while retrieving the list of card brands', function (done) {
+  //  var connectorData = {
+  //    'results': []
+  //  };
+  //  connectorMockResponds(200, connectorData, searchParameters);
+  //
+  //  connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+  //    .reply(500, {'message': 'some error from connector'});
+  //
+  //  getTransactionList()
+  //    .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+  //    .end(done);
+  // });
+
+  // it('should show internal error message if any error happens while retrieving the list of card brands', function (done) {
+  //
+  //  var connectorData = {
+  //    'results': []
+  //  };
+  //  connectorMockResponds(200, connectorData, searchParameters);
+  //
+  //  getTransactionList()
+  //    .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+  //    .end(done);
+  // });
 })
 
-describe('The /transactions endpoint filtering by states)', () => {
+describe('The /transactions endpoint is enabled)', () => {
   afterEach(function () {
     nock.cleanAll()
     app = null
@@ -488,16 +478,14 @@ describe('The /transactions endpoint filtering by states)', () => {
   beforeEach(function (done) {
     let permissions = 'transactions:read'
     let user = session.getUser({
-      gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}],
-      features: 'NEW_CHARGE_STATUS_ENABLED'
+      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     userCreator.mockUserResponse(user.toJson(), done)
   })
 
-  it('should show all options in state filter', function (done) {
+  it('should allow filtering by charge and refund states', function (done) {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
@@ -505,18 +493,19 @@ describe('The /transactions endpoint filtering by states)', () => {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, connectorSearchParameters)
+    connectorMockResponds(200, connectorData, searchParameters)
 
     getTransactionList()
       .expect(200)
       .expect(function (res) {
-        expect(res.body.eventStates).property('length').to.equal(9)
+        expect(res.body.eventStates).property('length').to.equal(10)
         expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
-          'In progress',
+          'Created',
+          'Started',
+          'Submitted',
           'Success',
           'Error',
-          'Declined',
-          'Timed out',
+          'Failed',
           'Cancelled',
           'Refund submitted',
           'Refund error',
@@ -534,28 +523,28 @@ describe('The /transactions endpoint filtering by states)', () => {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {payment_states: 'created,started,submitted'})
+    connectorMockResponds(200, connectorData, {payment_states: 'started'})
 
     request(app)
-      .get(paths.transactions.index)
-      .query({state: 'In progress'})
+      .get(paths.transactions.index + '?state=payment-started')
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        expect(res.body.eventStates).property('length').to.equal(9)
+        expect(res.body.eventStates).property('length').to.equal(10)
         expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
-          'In progress',
+          'Created',
+          'Started',
+          'Submitted',
           'Success',
           'Error',
-          'Declined',
-          'Timed out',
+          'Failed',
           'Cancelled',
           'Refund submitted',
           'Refund error',
           'Refund success'
         ])
-        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=started')
       })
       .end(done)
   })
@@ -568,28 +557,28 @@ describe('The /transactions endpoint filtering by states)', () => {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {refund_states: 'submitted'})
+    connectorMockResponds(200, connectorData, {refund_states: 'started'})
 
     request(app)
-      .get(paths.transactions.index)
-      .query({state: 'Refund submitted'})
+      .get(paths.transactions.index + '?state=refund-started')
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
       .expect(function (res) {
-        expect(res.body.eventStates).property('length').to.equal(9)
+        expect(res.body.eventStates).property('length').to.equal(10)
         expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
-          'In progress',
+          'Created',
+          'Started',
+          'Submitted',
           'Success',
           'Error',
-          'Declined',
-          'Timed out',
+          'Failed',
           'Cancelled',
           'Refund submitted',
           'Refund error',
           'Refund success'
         ])
-        res.body.downloadTransactionLink.should.eql('/transactions/download?refund_states=submitted')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?refund_states=started')
       })
       .end(done)
   })

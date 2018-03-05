@@ -8,16 +8,16 @@ describe('The transaction list view', function () {
   it('should render all transactions', function () {
     var templateData = {
       'total': 2,
-      'filtersDescription': '  from 2015-01-11 01:01:01   to 2015-01-11 01:01:01   with \'Testing2\' state   with \'Visa\' card brand',
+      'filtersDescription': '  from 2015-01-11 01:01:01   to 2015-01-11 01:01:01   with <strong>\'Refund success\'</strong>, <strong>\'Success\'</strong> states   with \'Visa\' card brand',
       'results': [
         {
           'charge_id': '100',
           'email': 'example1@mail.fake',
           'amount': '50.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Refund success',
           'state': {
-            'status': 'testing2',
+            'status': 'success',
             'finished': true
           },
           'card_details': {
@@ -40,10 +40,10 @@ describe('The transaction list view', function () {
           'email': 'example2@mail.fake',
           'amount': '20.00',
           'reference': 'ref1',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Success',
           'state': {
-            'status': 'testing2',
-            'finished': false
+            'status': 'success',
+            'finished': true
           },
           'card_details': {
             'billing_address': {
@@ -84,7 +84,8 @@ describe('The transaction list view', function () {
     expect(totalResultsText).to.contain('2 transactions')
     expect(totalResultsText).to.contain('from 2015-01-11 01:01:01')
     expect(totalResultsText).to.contain('to 2015-01-11 01:01:01')
-    expect(totalResultsText).to.contain('with \'Testing2\' state')
+    expect(totalResultsText).to.contain('with \'Refund success\'')
+    expect(totalResultsText).to.contain('\'Success\' states')
     expect(totalResultsText).to.contain('with \'Visa\' card brand')
     expect($('input#reference').attr('value')).to.equal('ref1')
     expect($('input#fromDate').attr('value')).to.equal('2015-01-11 01:01:01')

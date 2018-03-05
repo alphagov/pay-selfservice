@@ -2,7 +2,7 @@
   {
     "amount": 12345,
     "state": {
-      "status": "succeeded",
+      "status": "success",
       "finished": false
     },
     "card_brand": "Visa",
@@ -29,6 +29,7 @@
       "cardholder_name": "TEST01",
       "expiry_date": "12\/19",
       "last_digits_card_number": "4242"
-    }
+    },
+    "transaction_type": "charge"
   }
 ]

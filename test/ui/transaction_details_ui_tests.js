@@ -23,8 +23,9 @@ describe('The transaction details view', function () {
       'refunded': false,
       'charge_id': '1',
       'description': 'First ever',
+      'state_friendly': 'Declined',
       'state': {
-        'status': 'success',
+        'status': 'Failed',
         'finished': true
       },
       'card_details': {
@@ -33,21 +34,27 @@ describe('The transaction details view', function () {
         'expiry_date': 'Data unavailable',
         'last_digits_card_number': '****'
       },
-      'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
         {
           'chargeId': 1,
-          'state:': {'status': 'started', 'finished': false},
-          'state_friendly': 'User started payment of AMOUNT',
+          state: {
+            status: 'error', finished: true, message: 'Payment provider returned an error', code: 'P0050'
+          },
+          'state_friendly': '',
           'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
         },
         {
           'chargeId': 1,
-          'state:': {'status': 'created', 'finished': false},
-          'state_friendly': 'Service created payment',
+          state: {
+            status: 'failed',
+            finished: false,
+            message: 'Payment was cancelled by the user',
+            code: 'P0030'
+          },
+          'state_friendly': '',
           'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'
@@ -81,10 +88,10 @@ describe('The transaction details view', function () {
     //
     templateData.events.forEach((transactionData, ix) => {
       body.should.containSelector('table.transaction-events')
-          .havingRowAt(ix + 1)
-          .withTableDataAt(1, templateData.events[ix].state_friendly)
-          .withTableDataAt(2, templateData.events[ix].amount_friendly)
-          .withTableDataAt(3, templateData.events[ix].updated_friendly)
+        .havingRowAt(ix + 1)
+        .withTableDataAt(1, `${templateData.events[ix].state.code} - ${templateData.events[ix].state.message}`)
+        .withTableDataAt(2, templateData.events[ix].amount_friendly)
+        .withTableDataAt(3, templateData.events[ix].updated_friendly)
     })
   })
 
@@ -184,10 +191,10 @@ describe('The transaction details view', function () {
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
-          .havingRowAt(ix + 1)
-          .withTableDataAt(1, templateData.events[ix].state_friendly)
-          .withTableDataAt(2, templateData.events[ix].amount_friendly)
-          .withTableDataAt(3, templateData.events[ix].updated_friendly)
+        .havingRowAt(ix + 1)
+        .withTableDataAt(1, templateData.events[ix].state_friendly)
+        .withTableDataAt(2, templateData.events[ix].amount_friendly)
+        .withTableDataAt(3, templateData.events[ix].updated_friendly)
     })
   })
 

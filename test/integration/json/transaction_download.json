@@ -1,9 +1,10 @@
 [
   {
     "amount": 12345,
+    "transaction_type": "charge",
     "state": {
-      "status": "succeeded",
-      "finished": false
+      "status": "success",
+      "finished": true
     },
     "card_brand": "Visa",
     "description": "desc-red",
@@ -33,8 +34,9 @@
   },
   {
     "amount": 999,
+    "transaction_type": "charge",
     "state": {
-      "status": "canceled",
+      "status": "cancelled",
       "finished": true,
       "code": "P01234",
       "message": "Something happened"

@@ -13,7 +13,7 @@ describe('session', function () {
       toTime: '14:12:18'
     }
 
-    var filter = filters.getFilters({ query: query })
+    var filter = filters.old_getFilters({ query: query })
     expect(filter.valid).to.equal(true)
     expect(filter.result).to.not.equal(query)
     expect(filter.result).to.deep.equal({
@@ -39,7 +39,7 @@ describe('session', function () {
       page: '1'
     }
 
-    var filter = filters.getFilters({ query: query })
+    var filter = filters.old_getFilters({ query: query })
     delete query.state
     expect(filter.valid).to.equal(true)
     expect(filter.result).to.deep.equal(query)
@@ -50,7 +50,7 @@ describe('session', function () {
       pageSize: '1000'
     }
 
-    var filter = filters.getFilters({ query: query })
+    var filter = filters.old_getFilters({ query: query })
     expect(filter.valid).to.equal(false)
   })
 
@@ -61,7 +61,7 @@ describe('session', function () {
 
     }
 
-    var filter = filters.getFilters({ query: query })
+    var filter = filters.old_getFilters({ query: query })
     expect(filter.valid).to.equal(false)
   })
 
@@ -71,7 +71,7 @@ describe('session', function () {
       pageSize: '5000'
 
     }
-    var filter = filters.getFilters({ query: query })
+    var filter = filters.old_getFilters({ query: query })
     expect(filter.valid).to.equal(false)
   })
 
@@ -81,7 +81,7 @@ describe('session', function () {
       pageSize: '5'
 
     }
-    var filter = filters.getFilters({ query: query })
+    var filter = filters.old_getFilters({ query: query })
     expect(filter.valid).to.equal(false)
   })
 })

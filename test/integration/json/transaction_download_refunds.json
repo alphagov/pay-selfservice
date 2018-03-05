@@ -2,7 +2,7 @@
   {
     "amount": 12345,
     "state": {
-      "status": "succeeded",
+      "status": "success",
       "finished": false
     },
     "card_brand": "Visa",

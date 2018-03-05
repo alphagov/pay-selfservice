@@ -83,6 +83,7 @@
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
     "chai": "^4.0.2",
+    "chai-arrays": "^2.0.0",
     "chai-as-promised": "^7.0.0",
     "chai-string": "^1.4.0",
     "cheerio": "^1.0.0-rc.1",
