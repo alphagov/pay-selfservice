@@ -46,7 +46,7 @@ describe('Create payment link information controller', () => {
       expect($('.cancel').attr('href')).to.equal(paths.paymentLinks.start)
     })
 
-    it(`should have the review page as the form action`, () => {
+    it(`should have itself as the form action`, () => {
       expect($('form').attr('action')).to.equal(paths.paymentLinks.information)
     })
 
