@@ -335,6 +335,13 @@ describe('The /transactions endpoint', function () {
         expect(res.body.results.length).to.equal(4)
         expect(res.body.results.map(row => row.charge_id)).to.deep.equal(['100', '101', '102', '103'])
         expect(res.body.results.map(row => row.state_friendly)).to.deep.equal(['In progress', 'In progress', 'Timed out', 'Refund submitted'])
+        expect(res.body.eventStates.length).to.equal(9)
+        const selectedStates = res.body.eventStates.filter(state => state.value.selected === true)
+        expect(selectedStates.length).to.equal(3)
+        selectedStates.forEach(state => {
+          expect(['In progress', 'Timed out', 'Refund submitted']).to.include(state.value.text)
+        })
+
         res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=failed&refund_states=submitted')
       })
       .end(done)
