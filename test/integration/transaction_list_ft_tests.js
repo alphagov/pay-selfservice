@@ -1,7 +1,6 @@
 'use strict'
 
 const chai = require('chai')
-const lodash = require('lodash')
 const chaiAsPromised = require('chai-as-promised')
 require('../test_helpers/serialize_mock.js')
 const userCreator = require('../test_helpers/user_creator.js')

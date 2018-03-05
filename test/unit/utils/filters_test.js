@@ -60,7 +60,7 @@ describe('filters', () => {
         const testFilter = {
           fromDate: 'from-date',
           toDate: 'to-date',
-          selectedStates: ['In progress', 'Refund success', 'Refund submitted'],
+          selectedStates: ['In progress', 'Refund success', 'Refund submitted']
         }
         const result = filters.describeFilters(testFilter)
         expect(result.trim()).to.equal('from <strong>from-date</strong> to <strong>to-date</strong> with <strong>In progress</strong>, <strong>Refund success</strong> or <strong>Refund submitted</strong> states')

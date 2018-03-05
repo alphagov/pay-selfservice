@@ -55,7 +55,7 @@ function describeFilters (filters) {
   return description
 }
 
-function old_describeFilters (filters) {
+function old_describeFilters (filters) { // eslint-disable-line
   let description = ``
   if (filters.fromDate) description += ` from <strong>${filters.fromDate}</strong>`
   if (filters.toDate) description += ` to <strong>${filters.toDate}</strong>`
@@ -81,7 +81,7 @@ function old_describeFilters (filters) {
   return description
 }
 
-function old_getFilters (req) {
+function old_getFilters (req) { // eslint-disable-line
   let filters = qs.parse(req.query)
 
   if (filters.state) {
@@ -97,8 +97,8 @@ function old_getFilters (req) {
 }
 
 module.exports = {
-  old_getFilters: old_getFilters,
-  old_describeFilters: old_describeFilters,
+  old_getFilters: old_getFilters, // eslint-disable-line
+  old_describeFilters: old_describeFilters, // eslint-disable-line
   getFilters: getFilters,
   describeFilters: describeFilters
 }

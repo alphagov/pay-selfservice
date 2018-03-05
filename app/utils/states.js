@@ -53,11 +53,11 @@ const ERROR_CODE_TO_DISPLAY_STATE = {
   'P0050': 'Error'
 }
 
-exports.allDisplayStates = () => [... uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ... uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
+exports.allDisplayStates = () => [...uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ...uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
 exports.displayStatesToConnectorStates = (displayStatesArray) => toConnectorStates(displayStatesArray)
 exports.allDisplayStateSelectorObjects = () => exports.allDisplayStates().map(state => toSelectorObject(state))
 exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => {
-  const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase();
+  const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase()
   return displayNameForConnectorState(connectorState, sanitisedType)
 }
 
@@ -65,9 +65,9 @@ exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => 
 //       Simplify this when removing the feature flag for displaying the new payment states (PP-3377)
 function toSelectorObject (displayName = '') {
   return {
-    type: displayName, //to remove
+    type: displayName, // to remove
     name: displayName,
-    key: `${displayName}`, //to remove
+    key: `${displayName}`, // to remove
     value: {
       text: displayName
     }
@@ -110,7 +110,7 @@ function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
 function toConnectorStates (displayStates) {
   const result = {
     payment_states: [],
-    refund_states: [],
+    refund_states: []
   }
   displayStates.forEach(displayState => {
     Object.keys(PAYMENT_STATE_DESCRIPTIONS).forEach(connectorPaymentState => {
@@ -155,19 +155,19 @@ const OLD_REFUND_STATE_DESCRIPTIONS = {
   'success': 'Refund successful'
 }
 
-exports.old_payment_states = () => Object.keys(OLD_PAYMENT_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('PAYMENT', key))
-exports.old_refund_states = () => Object.keys(OLD_REFUND_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('REFUND', key))
-exports.old_states = () => [...exports.old_payment_states(), ...exports.old_refund_states()]
-exports.old_getDisplayName = (type = 'payment', name = '') => {
-  const origin = exports.old_states().find(event => event.name === name.toLowerCase() && event.type === type.toLowerCase())
+exports.old_payment_states = () => Object.keys(OLD_PAYMENT_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('PAYMENT', key)) // eslint-disable-line
+exports.old_refund_states = () => Object.keys(OLD_REFUND_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('REFUND', key)) // eslint-disable-line
+exports.old_states = () => [...exports.old_payment_states(), ...exports.old_refund_states()] // eslint-disable-line
+exports.old_getDisplayName = (type = 'payment', name = '') => {  // eslint-disable-line
+  const origin = exports.old_states().find(event => event.name === name.toLowerCase() && event.type === type.toLowerCase()) // eslint-disable-line
   return lodash.get(origin, `value.text`, changeCase.upperCaseFirst(name.toLowerCase()))
 }
-exports.old_getDescription = (type = '', name = '') => {
+exports.old_getDescription = (type = '', name = '') => {  // eslint-disable-line
   const origin = type.toLowerCase() === 'refund' ? OLD_REFUND_STATE_DESCRIPTIONS : OLD_PAYMENT_STATE_DESCRIPTIONS
   return origin[name.toLowerCase()]
 }
 
-function old_toSelectorObject (type = '', name = '') {
+function old_toSelectorObject (type = '', name = '') {  // eslint-disable-line
   return {
     type: type.toLowerCase(),
     name: name.toLowerCase(),
