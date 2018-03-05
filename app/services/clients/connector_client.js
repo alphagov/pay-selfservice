@@ -1,9 +1,9 @@
 'use strict'
-var _ = require('lodash')
-var util = require('util')
-var EventEmitter = require('events').EventEmitter
-var logger = require('winston')
-var querystring = require('querystring')
+const _ = require('lodash')
+const util = require('util')
+const EventEmitter = require('events').EventEmitter
+const logger = require('winston')
+const querystring = require('querystring')
 const q = require('q')
 
 const baseClient = require('./old_base_client')
@@ -12,22 +12,23 @@ const createCallbackToPromiseConverter = require('../../utils/response_converter
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 
 const SERVICE_NAME = 'connector'
-var ACCOUNTS_API_PATH = '/v1/api/accounts'
-var ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
-var CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
-var CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
-var CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
-var CARD_TYPES_API_PATH = '/v1/api/card-types'
+const ACCOUNTS_API_PATH = '/v1/api/accounts'
+const ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
+const CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
+const V2_CHARGES_API_PATH = '/v2/api/accounts/{accountId}/charges'
+const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
+const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
+const CARD_TYPES_API_PATH = '/v1/api/card-types'
 
-var ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
-var ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
-var SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename'
-var ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
-var ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
-var ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
-var EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
-var TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
-var TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
+const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
+const ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
+const SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename'
+const ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
+const ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
+const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
+const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
+const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
+const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
 
 /**
  * @private
@@ -122,7 +123,7 @@ var _getTransactionSummaryUrlFor = function (accountID, period) {
 }
 
 function searchUrl (baseUrl, params) {
-  return baseUrl + CHARGES_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
+  return baseUrl + V2_CHARGES_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
 }
 
 /**
@@ -172,6 +173,7 @@ ConnectorClient.prototype = {
   getAllTransactions (params, successCallback) {
     var results = []
     var connectorClient = this
+    params.pageSize = params.pageSize || 500
     var recursiveRetrieve = function (recursiveParams) {
       connectorClient.searchTransactions(recursiveParams, function (data) {
         var next = _.get(data, '_links.next_page')
@@ -200,7 +202,7 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   getCharge: function (params, successCallback) {
-    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
+    let url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
     logger.debug('Calling connector to get charge -', {
       service: 'connector',
       method: 'GET',
@@ -222,7 +224,7 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   getChargeEvents: function (params, successCallback) {
-    var url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + '/events'
+    let url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + '/events'
     logger.debug('Calling connector to get events -', {
       service: 'connector',
       method: 'GET',
@@ -242,7 +244,7 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: function (params) {
-    var url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
     let defer = q.defer()
     let startTime = new Date()
     let context = {
@@ -318,7 +320,7 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   patchAccountCredentials: function (params, successCallback) {
-    var url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
     logger.debug('Calling connector to get account -', {
       service: 'connector',
@@ -337,7 +339,7 @@ ConnectorClient.prototype = {
    * @returns {ConnectorClient}
    */
   postAccountNotificationCredentials: function (params, successCallback) {
-    var url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
     logger.debug('Calling connector to get account -', {
       service: 'connector',
@@ -359,7 +361,7 @@ ConnectorClient.prototype = {
    *          Callback function upon retrieving accepted cards successfully
    */
   getAcceptedCardsForAccount: function (params, successCallback) {
-    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
     logger.debug('Calling connector to get accepted card types for account -', {
       service: 'connector',
       method: 'GET',
@@ -380,7 +382,7 @@ ConnectorClient.prototype = {
    *          Callback function upon saving accepted cards successfully
    */
   postAcceptedCardsForAccount: function (params, successCallback) {
-    var url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
     logger.debug('Calling connector to post accepted card types for account -', {
       service: 'connector',
       method: 'POST',
@@ -404,7 +406,7 @@ ConnectorClient.prototype = {
       successCallback = params
     }
 
-    var url = _cardTypesUrlFor(this.connectorUrl)
+    let url = _cardTypesUrlFor(this.connectorUrl)
     logger.debug('Calling connector to get all card types -', {
       service: 'connector',
       method: 'GET',
@@ -464,7 +466,7 @@ ConnectorClient.prototype = {
    *          Callback function for successful refunds
    */
   postChargeRefund: function (params, successCallback) {
-    var url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
+    let url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
     logger.debug('Calling connector to post a refund for payment -', {
       service: 'connector',
       method: 'POST',
@@ -483,7 +485,7 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   getNotificationEmail: function (params, successCallback) {
-    var url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+    let url = _getNotificationEmailUrlFor(params.gatewayAccountId)
     baseClient.get(url, params, this.responseHandler(successCallback))
 
     return this
@@ -495,7 +497,7 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   updateNotificationEmail: function (params, successCallback) {
-    var url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+    let url = _getNotificationEmailUrlFor(params.gatewayAccountId)
     baseClient.post(url, params, this.responseHandler(successCallback))
 
     return this
@@ -507,7 +509,7 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   updateNotificationEmailEnabled: function (params, successCallback) {
-    var url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+    let url = _getNotificationEmailUrlFor(params.gatewayAccountId)
     baseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
@@ -519,7 +521,7 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   update3dsEnabled: function (params, successCallback) {
-    var url = _getToggle3dsUrlFor(params.gatewayAccountId)
+    let url = _getToggle3dsUrlFor(params.gatewayAccountId)
     baseClient.patch(url, params, this.responseHandler(successCallback))
     return this
   },
@@ -535,7 +537,7 @@ ConnectorClient.prototype = {
       to_date: params.toDateTime
     }
     const period = querystring.stringify(queryStrings)
-    var url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period)
+    let url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period)
     baseClient.get(url, params, this.responseHandler(successCallback))
 
     return this

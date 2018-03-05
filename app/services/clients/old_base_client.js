@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 const https = require('https')
 const httpAgent = require('http').globalAgent

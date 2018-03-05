@@ -1,24 +1,26 @@
-var path = require('path')
+'use strict'
+
+const path = require('path')
 require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
-var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
-var request = require('supertest')
-var nock = require('nock')
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
-var session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-var assert = require('assert')
-var querystring = require('querystring')
+const userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
+const request = require('supertest')
+const nock = require('nock')
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+const assert = require('assert')
+const querystring = require('querystring')
 const getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
-var app
+let app
 
-var gatewayAccountId = '452345'
+const gatewayAccountId = '452345'
 
-var CONNECTOR_CHARGES_SEARCH_API_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges'
-var CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
+const CONNECTOR_CHARGES_SEARCH_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
+const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 
-var connectorMock = nock(process.env.CONNECTOR_URL)
+const connectorMock = nock(process.env.CONNECTOR_URL)
 
-var ALL_CARD_TYPES = {
+const ALL_CARD_TYPES = {
   'card_types': [
     {'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT'},
     {'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT'},
@@ -27,14 +29,14 @@ var ALL_CARD_TYPES = {
 }
 
 function connectorMockResponds (data, searchParameters) {
-  var queryStr = '?' + getQueryStringForParams(searchParameters)
+  let queryStr = '?' + getQueryStringForParams(searchParameters)
 
   return connectorMock.get(CONNECTOR_CHARGES_SEARCH_API_PATH + queryStr)
     .reply(200, data)
 }
 
 function searchTransactions (data) {
-  var query = querystring.stringify(data)
+  let query = querystring.stringify(data)
 
   return request(app)
     .get(paths.transactions.index + '?' + query)
@@ -63,8 +65,8 @@ describe('Pagination', function () {
 
   describe('Pagination', function () {
     it('should generate correct pagination data when no page number passed', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 5}
+      let connectorData = {}
+      let data = {'display_size': 5}
       connectorData.total = 30
       connectorData.results = []
       connectorData._links = {self: {'href': '/v1/api/accounts/111/charges?&page=&display_size=5&state='}}
@@ -86,8 +88,8 @@ describe('Pagination', function () {
     })
 
     it('should generate correct pagination data when page number passed', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 5}
+      let connectorData = {}
+      let data = {'display_size': 5}
       connectorData.total = 30
       connectorData.results = []
       connectorData.page = 3
@@ -113,8 +115,8 @@ describe('Pagination', function () {
     })
 
     it('should generate correct pagination data with different display size', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 5}
+      let connectorData = {}
+      let data = {'display_size': 5}
       connectorData.total = 30
       connectorData.results = []
       connectorData.page = 3
@@ -140,8 +142,8 @@ describe('Pagination', function () {
     })
 
     it('should default to page 1 and display_size 100', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 5}
+      let connectorData = {}
+      let data = {'display_size': 5}
       connectorData.total = 600
       connectorData.results = []
       connectorData._links = {self: {'href': '/v1/api/accounts/111/charges?&page=&display_size=&state='}}
@@ -163,8 +165,8 @@ describe('Pagination', function () {
     })
 
     it('should return correct display size options when total over 500', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 100}
+      let connectorData = {}
+      let data = {'display_size': 100}
       connectorData.total = 600
       connectorData.results = []
       connectorData._links = {self: {'href': '/v1/api/accounts/111/charges?&page=1&display_size=100&state='}}
@@ -183,8 +185,8 @@ describe('Pagination', function () {
     })
 
     it('should return correct display size options when total between 100 and 500', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 100}
+      let connectorData = {}
+      let data = {'display_size': 100}
       connectorData.total = 400
       connectorData.results = []
       connectorData.page = 1
@@ -204,8 +206,8 @@ describe('Pagination', function () {
     })
 
     it('should return correct display size options when total under 100', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 100}
+      let connectorData = {}
+      let data = {'display_size': 100}
       connectorData.total = 50
       connectorData.results = []
       connectorData._links = {self: {'href': '/v1/api/accounts/111/charges?&page=1&display_size=100&state='}}
@@ -221,8 +223,8 @@ describe('Pagination', function () {
     })
 
     it('should return correct display size options when total under 100', function (done) {
-      var connectorData = {}
-      var data = {'display_size': 500}
+      let connectorData = {}
+      let data = {'display_size': 500}
       connectorData.total = 150
       connectorData.results = []
       connectorData._links = {self: {'href': '/v1/api/accounts/111/charges?&page=1&display_size=500&state='}}
@@ -238,21 +240,21 @@ describe('Pagination', function () {
     })
 
     it('should return return error if page out of bounds', function (done) {
-      var data = {'page': -1}
+      let data = {'page': -1}
 
       searchTransactions(data)
         .expect(500, {'message': 'Invalid search'}).end(done)
     })
 
     it('should return return error if pageSize out of bounds 1', function (done) {
-      var data = {'pageSize': 600}
+      let data = {'pageSize': 600}
 
       searchTransactions(data)
         .expect(500, {'message': 'Invalid search'}).end(done)
     })
 
     it('should return return error if pageSize out of bounds 2', function (done) {
-      var data = {'pageSize': 0}
+      let data = {'pageSize': 0}
 
       searchTransactions(data)
         .expect(500, {'message': 'Invalid search'}).end(done)

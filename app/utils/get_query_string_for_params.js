@@ -14,16 +14,11 @@ function getQueryStringForParams (params = {}) {
     display_size: params.pageSize || 100
   }
 
-  if (params.refundReportingEnabled) {
-    if (params.payment_states) {
-      queryStrings.payment_states = params.payment_states instanceof Array ? params.payment_states.join(',') : params.payment_states
-    }
-    if (params.refund_states) {
-      queryStrings.refund_states = params.refund_states instanceof Array ? params.refund_states.join(',') : params.refund_states
-    }
-    queryStrings.state = ''
-  } else {
-    queryStrings.state = params.state
+  if (params.payment_states) {
+    queryStrings.payment_states = params.payment_states instanceof Array ? params.payment_states.join(',') : params.payment_states
+  }
+  if (params.refund_states) {
+    queryStrings.refund_states = params.refund_states instanceof Array ? params.refund_states.join(',') : params.refund_states
   }
 
   return querystring.stringify(queryStrings)

@@ -7,7 +7,9 @@ const chaiAsPromised = require('chai-as-promised')
 
 // Local Dependencies
 const transactionService = require('../../../app/services/transaction_service')
-var getQueryStringForParams = require('../../../app/utils/get_query_string_for_params')
+const getQueryStringForParams = require('../../../app/utils/get_query_string_for_params')
+
+const V2_CHARGES_API_PATH = '/v2/api/accounts/123/charges?'
 
 const {expect} = chai
 chai.use(chaiAsPromised)
@@ -21,7 +23,7 @@ describe('transaction service', () => {
         nock.cleanAll()
 
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams()}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams()}`)
           .reply(200, {})
       })
 
@@ -42,7 +44,7 @@ describe('transaction service', () => {
     describe('when connector returns incorrect response code while retrieving the list of transactions', () => {
       before(() => {
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams()}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams()}`)
           .reply(404, '')
       })
 
@@ -57,7 +59,7 @@ describe('transaction service', () => {
     describe('when connector returns correctly', () => {
       it('should return into the correct promise when it uses the legacy \'state\' method of querying states', () => {
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams({pageSize: 100, page: 1, state: 'success'})}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams({pageSize: 100, page: 1, state: 'success'})}`)
           .reply(200, {})
         return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, state: 'success'}, 'some-unique-id'))
           .to.eventually.be.fulfilled
@@ -65,7 +67,7 @@ describe('transaction service', () => {
 
       it('should return into the correct promise when it uses the new  \'refund_states\' method of querying refund states and multiple have been selected', () => {
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams({pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error'], refundReportingEnabled: true})}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams({pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error'], refundReportingEnabled: true})}`)
           .reply(200, {})
         return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, refund_states: ['refund_success', 'refund_error'], refundReportingEnabled: true}, 'some-unique-id'))
           .to.eventually.be.fulfilled
@@ -73,7 +75,7 @@ describe('transaction service', () => {
 
       it('should return into the correct promise when it uses the new  \'refund_states\' method of querying refund states and only one has been selected', () => {
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams({pageSize: 100, page: 1, refund_states: 'refund_success', refundReportingEnabled: true})}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams({pageSize: 100, page: 1, refund_states: 'refund_success', refundReportingEnabled: true})}`)
           .reply(200, {})
         return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, refund_states: 'refund_success', refundReportingEnabled: true}, 'some-unique-id'))
           .to.eventually.be.fulfilled
@@ -81,7 +83,7 @@ describe('transaction service', () => {
 
       it('should return into the correct promise', () => {
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams()}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams()}`)
           .reply(200, {})
         return expect(transactionService.searchAll(123, {pageSize: 100, page: 1}, 'some-unique-id'))
           .to.eventually.be.fulfilled
@@ -99,7 +101,7 @@ describe('transaction service', () => {
     describe('when connector returns incorrect response code', () => {
       before(() => {
         nock(process.env.CONNECTOR_URL)
-          .get(`/v1/api/accounts/123/charges?${getQueryStringForParams()}`)
+          .get(`${V2_CHARGES_API_PATH + getQueryStringForParams()}`)
           .reply(404, '')
       })
 

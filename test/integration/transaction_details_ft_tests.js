@@ -1,19 +1,20 @@
+'use strict'
 
-var request = require('supertest')
-var nock = require('nock')
+const request = require('supertest')
+const nock = require('nock')
 
 require('../test_helpers/serialize_mock.js')
-var userCreator = require('../test_helpers/user_creator.js')
-var getApp = require('../../server.js').getApp
-var paths = require('../../app/paths.js')
-var session = require('../test_helpers/mock_session.js')
-var {expect} = require('chai')
-var gatewayAccountId = '15486734'
+const userCreator = require('../test_helpers/user_creator.js')
+const getApp = require('../../server.js').getApp
+const paths = require('../../app/paths.js')
+const session = require('../test_helpers/mock_session.js')
+const {expect} = require('chai')
+const gatewayAccountId = '15486734'
 
-var app
+let app
 
-var CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}'
-var connectorMock = nock(process.env.CONNECTOR_URL)
+const CONNECTOR_CHARGE_PATH = '/v1/api/accounts/' + gatewayAccountId + '/charges/{chargeId}'
+const connectorMock = nock(process.env.CONNECTOR_URL)
 
 function connectorMockResponds (path, data) {
   return connectorMock.get(path)
@@ -38,7 +39,7 @@ describe('The transaction view scenarios', function () {
 
   beforeEach(function (done) {
     let permissions = 'transactions-details:read'
-    var user = session.getUser({
+    let user = session.getUser({
       gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
@@ -48,8 +49,8 @@ describe('The transaction view scenarios', function () {
 
   describe('The transaction history endpoint', function () {
     it('should return a list of transaction history for a given charge id', function (done) {
-      var chargeId = 452345
-      var mockEventsResponse = {
+      let chargeId = 452345
+      let mockEventsResponse = {
         'charge_id': chargeId,
         'events': [
           {
@@ -104,7 +105,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var mockChargeResponse = {
+      let mockChargeResponse = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -150,7 +151,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = {
+      let expectedEventsView = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -271,8 +272,8 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should show a transaction when no card details are present', function (done) {
-      var chargeId = 452345
-      var mockEventsResponse = {
+      let chargeId = 452345
+      let mockEventsResponse = {
         'charge_id': chargeId,
         'events': [
           {
@@ -296,7 +297,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var mockChargeResponse = {
+      let mockChargeResponse = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -329,7 +330,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = {
+      let expectedEventsView = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -403,8 +404,8 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should show a transaction when legacy cards details are present', function (done) {
-      var chargeId = 452345
-      var mockEventsResponse = {
+      let chargeId = 452345
+      let mockEventsResponse = {
         'charge_id': chargeId,
         'events': [
           {
@@ -428,7 +429,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var mockChargeResponse = {
+      let mockChargeResponse = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -468,7 +469,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = {
+      let expectedEventsView = {
         'charge_id': chargeId,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -543,8 +544,8 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should return a list of transaction history for a given charge id and show refunded', function (done) {
-      var chargeWithRefund = 12345
-      var mockEventsResponse = {
+      let chargeWithRefund = 12345
+      let mockEventsResponse = {
         'charge_id': chargeWithRefund,
         'events': [
           {
@@ -599,7 +600,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var mockChargeResponse = {
+      let mockChargeResponse = {
         'charge_id': chargeWithRefund,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -645,7 +646,7 @@ describe('The transaction view scenarios', function () {
         ]
       }
 
-      var expectedEventsView = {
+      let expectedEventsView = {
         'charge_id': chargeWithRefund,
         'description': 'Breathing licence',
         'reference': 'Ref-1234',
@@ -754,7 +755,7 @@ describe('The transaction view scenarios', function () {
         }
       }
 
-      var events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events'
+      let events = '/v1/api/accounts/' + gatewayAccountId + '/charges/' + chargeWithRefund + '/events'
       connectorMockResponds(connectorChargePathFor(chargeWithRefund), mockChargeResponse)
       connectorMockResponds(events, mockEventsResponse)
 
@@ -767,8 +768,8 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should return charge not found if a non existing charge id requested', function (done) {
-      var nonExistentChargeId = 888
-      var connectorError = {'message': 'Charge not found'}
+      let nonExistentChargeId = 888
+      let connectorError = {'message': 'Charge not found'}
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
         .reply(404, connectorError)
 
@@ -778,8 +779,8 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should return a generic if connector responds with an error', function (done) {
-      var nonExistentChargeId = 888
-      var connectorError = {'message': 'Internal server error'}
+      let nonExistentChargeId = 888
+      let connectorError = {'message': 'Internal server error'}
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
         .reply(500, connectorError)
 
@@ -789,7 +790,7 @@ describe('The transaction view scenarios', function () {
     })
 
     it('should return a generic if unable to communicate with connector', function (done) {
-      var chargeId = 452345
+      let chargeId = 452345
       whenGetTransactionHistory(chargeId, app)
         .expect(500, {'message': 'Error processing transaction view'})
         .end(done)
