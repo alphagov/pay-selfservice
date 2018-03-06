@@ -57,15 +57,15 @@
   &__inner {
     position: relative;
 
+    .form-control {
+      padding: 6px 0 3px 25px;
+    }
+
     &__unit {
       position: absolute;
       bottom: $gutter / 6;
       left: $gutter / 3;
       font-weight: bold;
     }
-  }
-
-  .form-control {
-    padding: 6px 0 3px 25px;
   }
 }

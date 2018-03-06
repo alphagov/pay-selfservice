@@ -22,6 +22,9 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
 
     <form action="{{ nextPage }}" class="form" method="post" data-validate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      {% if change.length %}
+        <input name="change" type="hidden" value="true"/>
+      {% endif %}
       <div class="form-group{% if flash.genericError %} error{% endif %}">
         <label class="form-label-bold" for="payment-link-title">
           Title

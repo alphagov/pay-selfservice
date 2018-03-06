@@ -51,8 +51,8 @@ describe('Create payment link information controller', () => {
       expect(result.statusCode).to.equal(302)
     })
 
-    it('should redirect to the review page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.review)
+    it('should redirect to the amount page', () => {
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
     })
   })
   describe(`when no paymentLinkDescription is submitted`, () => {
@@ -85,8 +85,8 @@ describe('Create payment link information controller', () => {
       expect(result.statusCode).to.equal(302)
     })
 
-    it('should redirect to the review page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.review)
+    it('should redirect to the amount page', () => {
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
     })
   })
   describe(`when no paymentLinkTitle is submitted`, () => {

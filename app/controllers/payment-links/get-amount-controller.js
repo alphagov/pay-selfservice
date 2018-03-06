@@ -9,15 +9,13 @@ const paths = require('../../paths')
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
+  const paymentLinkAmount = req.body['payment-amount'] || pageData.paymentLinkAmount || ''
+  const paymentAmountType = req.body['amount-type-group'] || pageData.paymentAmountType || ''
 
-  return response(req, res, 'payment-links/review', {
-    pageData,
-    paymentLinkTitle: pageData.paymentLinkTitle,
-    paymentLinkDescription: pageData.paymentLinkDescription,
-    paymentLinkAmount: pageData.paymentLinkAmount,
-    nextPage: paths.paymentLinks.review,
-    changeInformation: paths.paymentLinks.information,
-    changeAmount: paths.paymentLinks.amount,
+  return response(req, res, 'payment-links/amount', {
+    paymentLinkAmount,
+    paymentAmountType,
+    nextPage: paths.paymentLinks.amount,
     returnToStart: paths.paymentLinks.start,
     manage: paths.paymentLinks.manage
   })

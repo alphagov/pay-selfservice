@@ -128,6 +128,7 @@ module.exports = {
   paymentLinks: {
     start: '/create-payment-link',
     information: '/create-payment-link/information',
+    amount: '/create-payment-link/amount',
     review: '/create-payment-link/review',
     manage: '/create-payment-link/manage',
     disable: '/create-payment-link/manage/delete/:productExternalId'

@@ -30,7 +30,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             {{ paymentLinkTitle }}
           </dd>
           <dd class="cya-change">
-            <a href="{{ change }}?field=payment-link-title">
+            <a href="{{ changeInformation }}?field=payment-link-title">
               Change <span class="visuallyhidden">Title</span>
             </a>
           </dd>
@@ -47,7 +47,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             {% endif %}
           </dd>
           <dd class="cya-change">
-            <a href="{{ change }}?field=payment-link-description">
+            <a href="{{ changeInformation }}?field=payment-link-description">
               Change <span class="visuallyhidden">More details</span>
             </a>
           </dd>
@@ -64,11 +64,9 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             {% endif %}
           </dd>
           <dd class="cya-change">
-<!--      
-            <a href="{{ change }}">
+            <a href="{{ changeAmount }}">
               Change <span class="visuallyhidden">payment amount</span>
             </a>
--->        
           </dd>
         </div>
       </dl>
