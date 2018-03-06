@@ -38,6 +38,7 @@ module.exports = (req, res) => {
   }
 
   updatedPageData.paymentLinkAmount = formattedPaymentLinkAmount
+  updatedPageData.paymentAmountType = paymentAmountType
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 
   if (pageData.paymentLinkAmount && pageData.paymentLinkAmount !== formattedPaymentLinkAmount) {

@@ -74,6 +74,7 @@ describe('Create payment link amount controller', () => {
         lodash.set(session, 'pageData.createPaymentLink', {
           paymentLinkTitle: 'Pay for an offline service',
           paymentLinkDescription: 'Hello world',
+          paymentAmountType: 'fixed',
           paymentLinkAmount: '5.00'
         })
         supertest(createAppWithSession(getApp(), session))
@@ -88,7 +89,7 @@ describe('Create payment link amount controller', () => {
       })
 
       it(`should set the fixed amount radio to checked`, () =>
-        expect($(`#amount-type-fixed`).val()).to.equal('fixed')
+        expect($(`#amount-type-fixed:checked`).length).to.equal(1)
       )
 
       it(`should set the value of the amount input to pre-existing data present in the session`, () =>
@@ -110,6 +111,7 @@ describe('Create payment link amount controller', () => {
         lodash.set(session, 'pageData.createPaymentLink', {
           paymentLinkTitle: 'Pay for an offline service',
           paymentLinkDescription: 'Hello world',
+          paymentAmountType: 'variable',
           paymentLinkAmount: ''
         })
         supertest(createAppWithSession(getApp(), session))
@@ -124,7 +126,7 @@ describe('Create payment link amount controller', () => {
       })
 
       it(`should set the variable amount radio to checked`, () =>
-        expect($(`#amount-type-variable`).val()).to.equal('variable')
+        expect($(`#amount-type-variable:checked`).length).to.equal(1)
       )
 
       it(`should set the value of the amount input to pre-existing data present in the session`, () =>

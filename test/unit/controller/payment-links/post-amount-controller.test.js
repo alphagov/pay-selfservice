@@ -44,6 +44,11 @@ describe('Create payment link amount post controller', () => {
       expect(sessionPageData).to.have.property('paymentLinkAmount').to.equal(VALID_PAYLOAD['payment-amount'])
     })
 
+    it('should have paymentAmountType stored in the session', () => {
+      const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
+      expect(sessionPageData).to.have.property('paymentAmountType').to.equal(VALID_PAYLOAD['amount-type-group'])
+    })
+
     it('should redirect with status code 302', () => {
       expect(result.statusCode).to.equal(302)
     })
@@ -79,6 +84,11 @@ describe('Create payment link amount post controller', () => {
       expect(sessionPageData).to.have.property('paymentLinkAmount').to.equal('')
     })
 
+    it('should have paymentAmountType stored in the session', () => {
+      const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
+      expect(sessionPageData).to.have.property('paymentAmountType').to.equal(VALID_PAYLOAD['amount-type-group'])
+    })
+
     it('should redirect with status code 302', () => {
       expect(result.statusCode).to.equal(302)
     })
@@ -88,7 +98,7 @@ describe('Create payment link amount post controller', () => {
     })
   })
 
-  describe(`when a payment amount is submitted but variable is still selected`, () => {
+  describe(`when a payment amount is submitted but variable is selected`, () => {
     let result, session, app
     const VALID_PAYLOAD = {
       'csrfToken': csrf().create('123'),
@@ -112,6 +122,11 @@ describe('Create payment link amount post controller', () => {
     it('should have no paymentLinkAmount stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
       expect(sessionPageData).to.have.property('paymentLinkAmount').to.equal('')
+    })
+
+    it('should have paymentAmountType stored in the session', () => {
+      const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
+      expect(sessionPageData).to.have.property('paymentAmountType').to.equal(VALID_PAYLOAD['amount-type-group'])
     })
 
     it('should redirect with status code 302', () => {
