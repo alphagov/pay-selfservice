@@ -11,7 +11,7 @@
 // </div>
 
 module.exports.init = () => {
-  const toggles = document.querySelectorAll('.target-to-show--toggle')
+  const toggles = Array.prototype.slice.call(document.querySelectorAll('.target-to-show--toggle'))
 
   if (toggles) {
     toggles.forEach(toggle => {
