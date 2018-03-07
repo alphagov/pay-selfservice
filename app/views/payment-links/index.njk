@@ -9,18 +9,45 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
   <aside class="column-one-third">
     <nav role="navigation" class="navigation settings-navigation">
       <ul class="list">
-         <li class="active"><a href="{{ returnToStart }}">Create payment link</a></li>
+         <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
         <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
       </ul>
     </nav>
   </aside>
   <section class="column-two-thirds">
-    <h1 class="page-title">Create payment link</h1>
-    <p>A payment link lets you take payments online even if your service is offline. When users visit this link, they’ll be able to make an online payment to your service. You’ll be able to preview the link before you publish it.</p>
+    <h1 class="page-title">Create a payment link</h1>
+    <p>You can create a payment link so that users can make online payments to your service. Even if you don’t have a digital service, GOV.UK Pay can still take payments for you.</p>
+    <p>It's quick and easy to create a payment link and you don’t need any technical knowledge.</p>
+    <p>The same payment link can be used by all users of your service.</p>
+    <a id="create-payment-link" class="button" href="{{nextPage}}">Create a payment link</a>
+    <details role="group" class="create-payment-link-details">
+      <summary role="button" aria-controls="details-content" aria-expanded="false"><span class="summary">See an example</span></summary>
 
-    <p>Learn more about <a href="#">setting up payment links</a>.</p>
-
-    <a id="create-payment-link" class="button" href="{{nextPage}}">Create payment link</a>
+      <div class="panel panel-border-narrow" id="details-content" aria-hidden="true">
+        <ol class="list list-number">
+          <li>
+            <h4 class="heading-small">A user copies the payment link and enters it in a web browser.</h4>
+            <p>The url will be created from your service name. For example https://payment.service.gov.uk/pay/fishing-permit</p>
+          </li>
+          <li>
+            <h4 class="heading-small">They arrive at the start page, which tells them what they’re paying for. You choose the wording that goes here.</h4>
+            <img class="example-image" src="/public/images/adhoc-1-start.png" alt="">
+          </li>
+          <li>
+            <h4 class="heading-small">They enter the amount they need to pay, or proceed with a set amount you’ve chosen.</h4>
+            <img class="example-image" src="/public/images/adhoc-2-amount.png" alt="">
+          </li>
+          <li>
+            <h4 class="heading-small">They enter their payment information and make the payment.</h4>
+            <img class="example-image" src="/public/images/adhoc-3-card.png" alt="">
+          </li>
+          <li>
+            <h4 class="heading-small">They receive a confirmation of successful payment. This is also emailed to them with a payment reference number.</h4>
+            <img class="example-image" src="/public/images/adhoc-4-confirm.png" alt="">
+          </li>
+        </ol>
+      </div>
+    </details>
   </section>
 </div>
 {% endblock %}
