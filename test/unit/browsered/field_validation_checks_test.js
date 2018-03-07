@@ -25,10 +25,16 @@ describe('field validation checks', () => {
     })
   })
   describe('isFieldGreaterThanMaxLengthChars', () => {
-    it('should return an error if value passed is greater than max length', () => {
+    it('should return an error if value passed is greater than max length as string', () => {
+      expect(isFieldGreaterThanMaxLengthChars('123456', '5')).to.equal(`The text is too long`)
+    })
+    it('should return false if value passed is less/equal than max length as string', () => {
+      expect(isFieldGreaterThanMaxLengthChars('12345', '5')).to.equal(false)
+    })
+    it('should return an error if value passed is greater than max length as number', () => {
       expect(isFieldGreaterThanMaxLengthChars('123456', 5)).to.equal(`The text is too long`)
     })
-    it('should return false if value passed is less/equal than max length', () => {
+    it('should return false if value passed is less/equal than max length as number', () => {
       expect(isFieldGreaterThanMaxLengthChars('12345', 5)).to.equal(false)
     })
     it('should return false, ignoring the validation if max length is not numeric', () => {
