@@ -18,6 +18,7 @@ const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const PAYMENT_TITLE = 'Payment title'
 const PAYMENT_DESCRIPTION = 'Payment description'
+const PAYMENT_LINK_AMOUNT = 500
 const VALID_PAYLOAD = {
   'csrfToken': csrf().create('123')
 }
@@ -28,7 +29,7 @@ const VALID_USER = getUser({
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
   created_by: VALID_USER.email,
-  description: 'Token for Adhoc Payment'
+  description: `Token for “${PAYMENT_TITLE}” payment link`
 }
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
   payment_provider: 'sandbox'
@@ -40,13 +41,14 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
   serviceName: VALID_USER.serviceRoles[0].service.name,
+  price: PAYMENT_LINK_AMOUNT + '00',
   type: 'ADHOC'
 }).getPlain()
 
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
 describe('Create payment link review controller', () => {
-  describe(`when both paymentDescription and paymentLinkTitle exist in the session`, () => {
+  describe(`when paymentDescription, paymentLinkTitle and paymentLinkAmount exist in the session`, () => {
     describe(`when the API token is successfully created`, () => {
       describe(`and the product is successfully created`, () => {
         let result, session, app
@@ -57,6 +59,7 @@ describe('Create payment link review controller', () => {
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.createPaymentLink.paymentLinkTitle', PAYMENT_TITLE)
           lodash.set(session, 'pageData.createPaymentLink.paymentLinkDescription', PAYMENT_DESCRIPTION)
+          lodash.set(session, 'pageData.createPaymentLink.paymentLinkAmount', PAYMENT_LINK_AMOUNT)
           app = createAppWithSession(getApp(), session)
         })
         before('Act', done => {
@@ -93,6 +96,7 @@ describe('Create payment link review controller', () => {
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.createPaymentLink.paymentLinkTitle', PAYMENT_TITLE)
           lodash.set(session, 'pageData.createPaymentLink.paymentLinkDescription', PAYMENT_DESCRIPTION)
+          lodash.set(session, 'pageData.createPaymentLink.paymentLinkAmount', PAYMENT_LINK_AMOUNT)
           app = createAppWithSession(getApp(), session)
         })
         before('Act', done => {
@@ -173,6 +177,7 @@ describe('Create payment link review controller', () => {
           nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
           session = getMockSession(VALID_USER)
           lodash.set(session, 'pageData.createPaymentLink.paymentLinkTitle', PAYMENT_TITLE)
+          lodash.set(session, 'pageData.createPaymentLink.paymentLinkAmount', PAYMENT_LINK_AMOUNT)
           app = createAppWithSession(getApp(), session)
         })
         before('Act', done => {

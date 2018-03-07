@@ -12,7 +12,7 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
 
-function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, serviceName) {
+function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceName) {
   const productPayload = {
     payApiToken,
     gatewayAccountId,
@@ -24,12 +24,16 @@ function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, p
   if (paymentLinkDescription) {
     productPayload.description = paymentLinkDescription
   }
+
+  if (paymentLinkAmount) {
+    productPayload.price = paymentLinkAmount + '00'
+  }
   return productPayload
 }
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const {paymentLinkTitle, paymentLinkDescription} = lodash.get(req, 'session.pageData.createPaymentLink', {})
+  const {paymentLinkTitle, paymentLinkDescription, paymentLinkAmount} = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
     return res.redirect(paths.paymentLinks.start)
@@ -40,7 +44,7 @@ module.exports = (req, res) => {
     payload: {
       account_id: gatewayAccountId,
       created_by: req.user.email,
-      description: `Token for Adhoc Payment`
+      description: `Token for “${paymentLinkTitle}” payment link`
     }
   })
     .then(publicAuthData => productsClient.product.create(
@@ -49,6 +53,7 @@ module.exports = (req, res) => {
         gatewayAccountId,
         paymentLinkTitle,
         paymentLinkDescription,
+        paymentLinkAmount,
         req.service.name
       )
     ))
