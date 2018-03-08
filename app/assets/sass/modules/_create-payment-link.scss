@@ -52,3 +52,21 @@
     }
   }
 }
+
+.create-payment-link {
+  &-details {
+    margin-top: $gutter;
+
+    p {
+      margin-bottom: $gutter / 2!important;
+    }
+  }
+
+  &-link-replay {
+    margin-top: $gutter / 2;
+  }
+
+  &-screenshot {
+    max-width: 100%;
+  }
+}

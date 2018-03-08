@@ -9,7 +9,6 @@ select.form-control {
 
 textarea {
   width: 100%;
-  max-width: 600px;
   min-height: 100px;
   resize: none;
 }
@@ -28,6 +27,10 @@ textarea {
       border: 4px solid $error-colour;
     }
   }
+}
+
+.form-hint {
+  margin-bottom: $gutter / 6;
 }
 
 // One day `.currency-input` will be part of elements or patterns and tools -  https://github.com/alphagov/temporary-event-notice-prototype/blob/master/app/assets/sass/patterns/currency-input.scss

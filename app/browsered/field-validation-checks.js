@@ -30,7 +30,7 @@ exports.isEmpty = function (value) {
 }
 
 exports.isCurrency = function (value) {
-  if (!/^([0-9]+)(?:\.([0-9]{2}))?$/.test(value)) {
+  if (!/^([0-9]+)(?:\.([0-9]{1,2}))?$/.test(value)) {
     return validationErrors.currency
   } else {
     return false

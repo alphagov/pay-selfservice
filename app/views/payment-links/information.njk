@@ -11,7 +11,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
   <aside class="column-one-third">
     <nav role="navigation" class="navigation settings-navigation">
       <ul class="list">
-        <li class="active"><a href="{{ returnToStart }}">Create payment link</a></li>
+        <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
         <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
       </ul>
     </nav>
@@ -31,7 +31,6 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           <span class="form-hint">
             Briefly describe what the user is paying for.
             For example, “Pay for a parking permit”.
-            This will also be your link URL.
           </span>
           {% if flash.genericError %}
           <span class="error-message">
@@ -40,13 +39,20 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           {% endif %}
         </label>
         <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}" {% if change !== 'payment-link-description' %}autofocus{% endif %}>
+        <div class="panel panel-border-wide create-payment-link-link-replay">
+          <h3 class="heading-small">
+            The website address for this payment link will look like:
+          </h3>
+          <p class="grey">
+            You haven’t entered a title yet.
+          </p>
+        </div>
       </div>
-
       <div class="form-group">
         <label class="form-label-bold" for="payment-link-description">
-          Details
+          Details (optional)
           <span class="form-hint">
-          Explain to the user what the payment link is for (optional).
+            Give your users more information. For example, you could tell them how long it takes for their application to be processed.
           </span>
         </label>
 
@@ -58,6 +64,10 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       </div>
       <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
     </form>
+    <div>
+      <h3 class="heading-small">Example of what the user will see</h3>
+      <img class="create-payment-link-screenshot" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOcO3tuPQAGCAJWo1/M5QAAAABJRU5ErkJggg==" width="600" height="300" alt="Placeholder">
+    </div>
   </section>
 </div>
 {% endblock %}

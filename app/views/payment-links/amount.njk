@@ -11,7 +11,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
   <aside class="column-one-third">
     <nav role="navigation" class="navigation settings-navigation">
       <ul class="list">
-        <li class="active"><a href="{{ returnToStart }}">Create payment link</a></li>
+        <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
         <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
       </ul>
     </nav>
@@ -32,7 +32,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             <input id="amount-type-fixed" type="radio" name="amount-type-group" value="fixed" {% if paymentAmountType == 'fixed' %}checked{% endif %}>
             <label for="amount-type-fixed">Yes</label>
           </div>
-          <div class="panel panel-border-wide {% if paymentAmountType == 'fixed' %}{% else %}js-hidden{% endif %}" id="fixed-amount">
+          <div class="panel panel-border-wide {% if paymentAmountType == 'fixed' %}{% elif flash.genericError %}{% else %}js-hidden{% endif %}" id="fixed-amount">
             <label class="form-label" for="contact-email">
               Enter the amount
               <span class="visually-hidden">in £</span>

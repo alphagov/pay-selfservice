@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 
-const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{2}))?$/
+const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
@@ -31,6 +31,8 @@ module.exports = (req, res) => {
 
   if (formattedPaymentLinkAmount && !currencyMatch[2]) {
     formattedPaymentLinkAmount = paymentLinkAmount + '.00'
+  } else if (formattedPaymentLinkAmount && currencyMatch[2].length === 1) {
+    formattedPaymentLinkAmount = paymentLinkAmount + '0'
   }
 
   if (paymentAmountType === 'variable') {
