@@ -12,7 +12,7 @@ const DEFAULTS = {
   paymentDescription: 'An example payment description',
   paymentAmount: '20.00'
 }
-const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{2}))?$/
+const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.makeADemoPayment', {})
@@ -33,6 +33,8 @@ module.exports = (req, res) => {
   const currencyMatch = AMOUNT_FORMAT.exec(paymentAmount)
   if (!currencyMatch[2]) {
     paymentAmount = paymentAmount + '.00'
+  } else if (currencyMatch[2].length === 1) {
+    paymentAmount = paymentAmount + '0'
   }
 
   lodash.set(req, 'session.pageData.makeADemoPayment', {paymentDescription, paymentAmount})

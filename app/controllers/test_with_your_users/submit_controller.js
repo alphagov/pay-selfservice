@@ -13,7 +13,7 @@ const publicAuthClient = require('../../services/clients/public_auth_client')
 const authService = require('../../services/auth_service.js')
 const {isCurrency, isHttps, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
 
-const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{2}))?$/
+const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
 
 module.exports = (req, res) => {
   const params = {
@@ -44,6 +44,8 @@ module.exports = (req, res) => {
   const currencyMatch = AMOUNT_FORMAT.exec(paymentAmount)
   if (!currencyMatch[2]) {
     paymentAmount = paymentAmount + '.00'
+  } else if (currencyMatch[2].length === 1) {
+    paymentAmount = paymentAmount + '0'
   }
 
   publicAuthClient.createTokenForAccount({

@@ -32,7 +32,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             <input id="amount-type-fixed" type="radio" name="amount-type-group" value="fixed" {% if paymentAmountType == 'fixed' %}checked{% endif %}>
             <label for="amount-type-fixed">Yes</label>
           </div>
-          <div class="panel panel-border-wide {% if paymentAmountType == 'fixed' %}{% else %}js-hidden{% endif %}" id="fixed-amount">
+          <div class="panel panel-border-wide {% if paymentAmountType == 'fixed' %}{% elif flash.genericError %}{% else %}js-hidden{% endif %}" id="fixed-amount">
             <label class="form-label" for="contact-email">
               Enter the amount
               <span class="visually-hidden">in £</span>
