@@ -355,7 +355,7 @@ describe('The transaction view scenarios', function () {
           'expiry_date': 'Data unavailable',
           'last_digits_card_number': '****'
         },
-        'state_friendly': 'Started',
+        'state_friendly': 'In progress',
         'refund_summary': {
           'status': 'available',
           'amount_available': 5000,
@@ -495,7 +495,7 @@ describe('The transaction view scenarios', function () {
           'expiry_date': 'Data unavailable',
           'last_digits_card_number': '****'
         },
-        'state_friendly': 'Started',
+        'state_friendly': 'In progress',
         'refund_summary': {
           'status': 'available',
           'amount_available': 5000,
