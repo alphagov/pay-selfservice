@@ -5,8 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
-
-const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
+const currencyFormatter = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
@@ -20,19 +19,12 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.amount)
   }
 
-  let formattedPaymentLinkAmount = paymentLinkAmount.replace(/[^0-9.-]+/g, '')
-  const currencyMatch = AMOUNT_FORMAT.exec(formattedPaymentLinkAmount)
+  let formattedPaymentLinkAmount = currencyFormatter(paymentLinkAmount)
 
-  if (paymentLinkAmount !== '' && currencyMatch === null) {
+  if (paymentLinkAmount !== '' && formattedPaymentLinkAmount === null) {
     req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)
     req.flash('errorType', `paymentAmountFormat`)
     return res.redirect(paths.paymentLinks.amount)
-  }
-
-  if (formattedPaymentLinkAmount && !currencyMatch[2]) {
-    formattedPaymentLinkAmount = paymentLinkAmount + '.00'
-  } else if (formattedPaymentLinkAmount && currencyMatch[2].length === 1) {
-    formattedPaymentLinkAmount = paymentLinkAmount + '0'
   }
 
   if (paymentAmountType === 'variable') {

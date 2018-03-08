@@ -7,12 +7,12 @@ const lodash = require('lodash')
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 const {isCurrency, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
+const currencyFormatter = require('../../utils/currency_formatter')
 
 const DEFAULTS = {
   paymentDescription: 'An example payment description',
   paymentAmount: '20.00'
 }
-const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.makeADemoPayment', {})
@@ -29,13 +29,7 @@ module.exports = (req, res) => {
     return res.redirect(paths.prototyping.demoPayment.editAmount)
   }
 
-  paymentAmount = paymentAmount.replace(/[^0-9.-]+/g, '')
-  const currencyMatch = AMOUNT_FORMAT.exec(paymentAmount)
-  if (!currencyMatch[2]) {
-    paymentAmount = paymentAmount + '.00'
-  } else if (currencyMatch[2].length === 1) {
-    paymentAmount = paymentAmount + '0'
-  }
+  paymentAmount = currencyFormatter(paymentAmount)
 
   lodash.set(req, 'session.pageData.makeADemoPayment', {paymentDescription, paymentAmount})
 

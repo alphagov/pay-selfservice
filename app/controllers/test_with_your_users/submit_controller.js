@@ -12,8 +12,7 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const authService = require('../../services/auth_service.js')
 const {isCurrency, isHttps, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
-
-const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
+const currencyFormatter = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
   const params = {
@@ -23,7 +22,7 @@ module.exports = (req, res) => {
   const gatewayAccountId = authService.getCurrentGatewayAccountId(req)
   const confirmationPage = req.body['confirmation-page']
   const paymentDescription = req.body['payment-description']
-  let paymentAmount = req.body['payment-amount']
+  const paymentAmount = currencyFormatter(req.body['payment-amount'])
   lodash.set(req, 'session.pageData.createPrototypeLink', {paymentAmount, paymentDescription, confirmationPage})
 
   if (!paymentDescription) {
@@ -38,14 +37,6 @@ module.exports = (req, res) => {
 
   if (lodash.get(req, 'session.flash.genericError.length')) {
     return res.redirect(paths.prototyping.demoService.create)
-  }
-
-  paymentAmount = paymentAmount.replace(/[^0-9.-]+/g, '')
-  const currencyMatch = AMOUNT_FORMAT.exec(paymentAmount)
-  if (!currencyMatch[2]) {
-    paymentAmount = paymentAmount + '.00'
-  } else if (currencyMatch[2].length === 1) {
-    paymentAmount = paymentAmount + '0'
   }
 
   publicAuthClient.createTokenForAccount({
