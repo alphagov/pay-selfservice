@@ -26,7 +26,7 @@ function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, p
   }
 
   if (paymentLinkAmount) {
-    productPayload.price = paymentLinkAmount + '00'
+    productPayload.price = paymentLinkAmount * 100
   }
   return productPayload
 }
