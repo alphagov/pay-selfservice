@@ -80,7 +80,11 @@ module.exports = {
   },
 
   buildPaymentView: function (chargeData, eventsData, users = [], newChargeStatusEnabled = false) {
-    chargeData.state_friendly = changeCase.upperCaseFirst(chargeData.state.status.toLowerCase())
+    if (newChargeStatusEnabled) {
+      chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
+    } else {
+      chargeData.state_friendly = states.old_getDisplayName(chargeData.transaction_type, chargeData.state.status)
+    }
 
     chargeData.amount = asGBP(chargeData.amount)
 
