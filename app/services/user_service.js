@@ -153,12 +153,12 @@ module.exports = {
   /**
    * @param invitee
    * @param senderId
-   * @param serviceId
+   * @param externalServiceId
    * @param roleName
    * @param correlationId
    */
-  inviteUser: function (invitee, senderId, serviceId, roleName, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, serviceId, roleName)
+  inviteUser: function (invitee, senderId, externalServiceId, roleName, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, externalServiceId, roleName)
   },
 
   /**
@@ -170,19 +170,6 @@ module.exports = {
    */
   delete: function (externalServiceId, removerExternalId, userExternalId, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).deleteUser(externalServiceId, removerExternalId, userExternalId)
-  },
-
-  /**
-   * Submit create user
-   *
-   * @param email
-   * @param gatewayAccountIds
-   * @param serviceIds
-   * @param role
-   * @param phoneNumber
-   * @param correlationId
-   */
-  createUser: function (email, gatewayAccountIds, serviceIds, role, phoneNumber, correlationId) {
-    return getAdminUsersClient({correlationId}).createUser(email, gatewayAccountIds, serviceIds, role, phoneNumber)
   }
+
 }
