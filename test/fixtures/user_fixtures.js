@@ -273,31 +273,6 @@ module.exports = {
     }
   },
 
-  validCreateUserRequest: () => {
-    let newUsername = randomUsername()
-    let role = {name: 'admin'}
-    let defaultServiceId = randomServiceId()
-
-    let data = {
-      username: newUsername,
-      email: `${newUsername}@example.com`,
-      gateway_account_ids: [randomAccountId()],
-      service_ids: [defaultServiceId],
-      telephone_number: randomTelephoneNumber(),
-      role_name: role.name
-    }
-
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(data)
-      },
-
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-
   validAuthenticateRequest: (options) => {
     let request = {
       username: options.username || 'username',
