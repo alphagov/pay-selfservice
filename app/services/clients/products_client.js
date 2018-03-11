@@ -65,10 +65,10 @@ function createProduct (options) {
  * @param {String} productExternalId: the external id of the product you wish to retrieve
  * @returns {Promise<Product>}
  */
-function getProductByExternalId (productExternalId) {
+function getProductByExternalId (gatewayAccountId, productExternalId) {
   return baseClient.get({
     baseUrl,
-    url: `/products/${productExternalId}`,
+    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
     description: `find a product by it's external id`,
     service: SERVICE_NAME
   }).then(product => new Product(product))
@@ -81,10 +81,7 @@ function getProductByExternalId (productExternalId) {
 function getProductsByGatewayAccountId (gatewayAccountId) {
   return baseClient.get({
     baseUrl,
-    url: '/products',
-    qs: {
-      gatewayAccountId
-    },
+    url: `/gateway-account/${gatewayAccountId}/products`,
     description: 'find a list products associated with a gateway account',
     service: SERVICE_NAME
   }).then(products => products.map(product => new Product(product)))
@@ -113,10 +110,10 @@ function updateServiceNameOfProductsByGatewayAccountId (gatewayAccountId, servic
  * @param {String} productExternalId: the external id of the product you wish to disable
  * @returns Promise<undefined>
  */
-function disableProduct (productExternalId) {
+function disableProduct (gatewayAccountId, productExternalId) {
   return baseClient.patch({
     baseUrl,
-    url: `/products/${productExternalId}/disable`,
+    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`,
     description: `disable a product`,
     service: SERVICE_NAME
   })

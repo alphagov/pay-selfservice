@@ -10,10 +10,10 @@ const pactProxy = require('../../../../test_helpers/pact_proxy')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
 // Constants
-const PRODUCT_RESOURCE = '/v1/api/products'
+const API_RESOURCE = '/v1/api'
 const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
-let productsMock, result, productExternalId
+let productsMock, result, productExternalId, gatewayAccountId
 
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
@@ -47,15 +47,16 @@ describe('products client - disable a product', () => {
   describe('when a product is successfully disabled', () => {
     before(done => {
       const productsClient = getProductsClient()
+      gatewayAccountId = '999'
       productExternalId = 'a_valid_external_id'
       productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/disable`)
+        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`)
           .withUponReceiving('a valid disable product request')
           .withMethod('PATCH')
           .withStatusCode(204)
           .build()
       )
-        .then(() => productsClient.product.disable(productExternalId))
+        .then(() => productsClient.product.disable(gatewayAccountId, productExternalId))
         .then(res => {
           result = res
           done()
@@ -77,13 +78,13 @@ describe('products client - disable a product', () => {
       const productsClient = getProductsClient()
       productExternalId = 'a_non_existant_external_id'
       productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/disable`)
+        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`)
           .withUponReceiving('an invalid create product request')
           .withMethod('PATCH')
           .withStatusCode(400)
           .build()
       )
-        .then(() => productsClient.product.disable(productExternalId), done)
+        .then(() => productsClient.product.disable(gatewayAccountId, productExternalId), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
           result = err

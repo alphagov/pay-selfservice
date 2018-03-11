@@ -26,7 +26,7 @@ describe('Manage payment links - disable controller', () => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
       })
-      nock(PRODUCTS_URL).patch(`/v1/api/products/${productExternalId}/disable`).reply(200)
+      nock(PRODUCTS_URL).patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}/disable`).reply(200)
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
         .get(paths.paymentLinks.disable.replace(':productExternalId', productExternalId))
@@ -65,7 +65,7 @@ describe('Manage payment links - disable controller', () => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
       })
-      nock(PRODUCTS_URL).patch(`/v1/api/products/${productExternalId}/disable`)
+      nock(PRODUCTS_URL).patch(`/v1/api/gateway-account/${GATEWAY_ACCOUNT_ID}/products/${productExternalId}/disable`)
         .replyWithError('Ruhroh! Something terrible has happened Shaggy!')
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
