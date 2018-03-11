@@ -3,6 +3,9 @@
 // NPM Dependencies
 const every = require('lodash/every')
 
+// Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
+require('./polyfills')
+
 // Local Dependencies
 const checks = require('./field-validation-checks')
 
@@ -25,7 +28,7 @@ function initValidation (e) {
   clearPreviousErrors()
 
   let validatedFields = findFields(form)
-  .map(field => validateField(form, field))
+    .map(field => validateField(form, field))
 
   if (every(validatedFields)) {
     form.submit()
