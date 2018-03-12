@@ -4,7 +4,7 @@ pipeline {
   agent any
 
   parameters {
-    booleanParam(defaultValue: false, description: '', name: 'runEndToEndOnPR')
+    booleanParam(defaultValue: true, description: '', name: 'runEndToEndOnPR')
   }
 
   options {
