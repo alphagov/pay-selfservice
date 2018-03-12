@@ -24,9 +24,14 @@ pipeline {
     stage('Docker Build') {
       steps {
         script {
-          buildApp{
+          buildAppWithMetrics {
             app = "selfservice"
           }
+        }
+      }
+      post {
+        failure {
+          postMetric("selfservice.docker-build.failure", 1, "new")
         }
       }
     }
@@ -45,9 +50,14 @@ pipeline {
     stage('Docker Tag') {
       steps {
         script {
-          dockerTag {
+          dockerTagWithMetrics {
             app = "selfservice"
           }
+        }
+      }
+      post {
+        failure {
+          postMetric("selfservice.docker-tag.failure", 1, "new")
         }
       }
     }
@@ -59,6 +69,14 @@ pipeline {
         deploy("selfservice", "test", null, false, false)
         deployEcs("selfservice", "test", null, true, true)
       }
+    }
+  }
+  post {
+    failure {
+      postMetric("selfservice.failure", 1, "new")
+    }
+    success {
+      postSuccessfulMetrics("selfservice")
     }
   }
 }
