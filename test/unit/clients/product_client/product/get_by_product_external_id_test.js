@@ -11,10 +11,10 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 const productFixtures = require('../../../../fixtures/product_fixtures')
 
 // Constants
-const PRODUCT_RESOURCE = '/v1/api/products'
+const API_RESOURCE = '/v1/api'
 const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
-let productsMock, response, result, productExternalId
+let productsMock, response, result, productExternalId, gatewayAccountId
 
 function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
@@ -48,6 +48,7 @@ describe('products client - find a product by it\'s external id', function () {
   describe('when a product is successfully found', () => {
     before(done => {
       const productsClient = getProductsClient()
+      gatewayAccountId = 999
       productExternalId = 'existing-id'
       response = productFixtures.validCreateProductResponse({
         external_id: productExternalId,
@@ -58,14 +59,14 @@ describe('products client - find a product by it\'s external id', function () {
         type: 'DEMO'
       })
       productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}`)
+        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
           .withUponReceiving('a valid get product request')
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(response.getPactified())
           .build()
       )
-        .then(() => productsClient.product.getByProductExternalId(productExternalId))
+        .then(() => productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId))
         .then(res => {
           result = res
           done()
@@ -99,15 +100,16 @@ describe('products client - find a product by it\'s external id', function () {
   describe('when a product is not found', () => {
     before(done => {
       const productsClient = getProductsClient()
+      gatewayAccountId = 999
       productExternalId = 'non-existing-id'
       productsMock.addInteraction(
-        new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}`)
+        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
           .withUponReceiving('a valid find product request with non existing id')
           .withMethod('GET')
           .withStatusCode(404)
           .build()
       )
-        .then(() => productsClient.product.getByProductExternalId(productExternalId), done)
+        .then(() => productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
           result = err

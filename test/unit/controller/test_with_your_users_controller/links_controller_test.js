@@ -57,7 +57,7 @@ const PAYMENT_3 = {
 }
 
 function mockGetProductsByGatewayAccountEndpoint (gatewayAccountId) {
-  return nock(PRODUCTS_URL).get('/v1/api/products?gatewayAccountId=' + gatewayAccountId)
+  return nock(PRODUCTS_URL).get(`/v1/api/gateway-account/${gatewayAccountId}/products`)
 }
 
 describe('Show the prototype links', () => {

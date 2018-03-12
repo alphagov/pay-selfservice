@@ -11,7 +11,7 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 const productFixtures = require('../../../../fixtures/product_fixtures')
 
 // Constants
-const PRODUCT_RESOURCE = '/v1/api/products'
+const API_RESOURCE = '/v1/api'
 const mockPort = Math.floor(Math.random() * 65535)
 const mockServer = pactProxy.create('localhost', mockPort)
 let productsMock, response, result, gatewayAccountId
@@ -56,8 +56,7 @@ describe('products client - find products associated with a particular gateway a
         productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()}),
         productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()})
       ]
-      const interaction = new PactInteractionBuilder(PRODUCT_RESOURCE)
-        .withQuery('gatewayAccountId', String(gatewayAccountId))
+      const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id request')
         .withMethod('GET')
         .withStatusCode(200)
@@ -99,8 +98,7 @@ describe('products client - find products associated with a particular gateway a
     before(done => {
       const productsClient = getProductsClient()
       gatewayAccountId = 98765
-      const interaction = new PactInteractionBuilder(PRODUCT_RESOURCE)
-        .withQuery('gatewayAccountId', String(gatewayAccountId))
+      const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id where the gateway account has no products')
         .withMethod('GET')
         .withStatusCode(404)
