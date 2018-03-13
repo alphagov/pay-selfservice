@@ -19,7 +19,8 @@ Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.
 <script src="/public/js/components/datetime-picker.js"></script>
 {% endblock %}
 
-{% block full_width_content %}
+{% block mainContent %}
+<div class="column-full">
   <h1 class="heading-large page-title">Transactions</h1>
 
   {% include "transactions/filter.njk" %}
@@ -49,4 +50,5 @@ Transactions - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.
   {% include "transactions/list.njk" %}
 
   {% include "transactions/paginator.njk" %}
+</div>
 {% endblock %}

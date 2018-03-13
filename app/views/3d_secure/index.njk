@@ -4,8 +4,12 @@
   3D Secure - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block mainContent %}
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
 
+{% block mainContent %}
+<div class="column-two-thirds">
   {% if not permissions.toggle_3ds_update %}
     {% include "../includes/settings-read-only.njk" %}
   {% endif %}
@@ -94,5 +98,5 @@
     <h1 class="page-title">3D Secure</h1>
     <p id="threeds-not-supported">3D Secure is not currently supported for this payment service provider (PSP).</p>
   {% endif %}
-
+</div>
 {% endblock %}

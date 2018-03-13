@@ -4,7 +4,12 @@
   Merchant details - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
 {% block mainContent %}
+<div class="column-two-thirds">
   {% if success %}
   <div class="notification">
       Merchant details updated
@@ -120,4 +125,5 @@
         <input id="save-merchant-details" class="button" type="submit" value="Save">
     </div>
   </form>
+</div>
 {% endblock %}

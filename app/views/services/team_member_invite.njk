@@ -8,21 +8,15 @@ Invite a new team member - GOV.UK Pay
   <script src="/public/js/components/link-follower.js"></script>
 {% endblock %}
 
-{% block mainClasses %}full-width{% endblock %}
-
-{% block full_width_content %}
-  <div class="grid-row">
-    <div class="column-two-thirds admin-list-group">
-      {% include "includes/flash.njk" %}
+{% block mainContent %}
+  <div class="column-two-thirds">
+    <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
+    <div>
+      <h1 class="heading-large underline">
+        <span class="heading-secondary">Team members</span>
+        Invite a team member</h1>
     </div>
   </div>
-  <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
-  <div>
-    <h1 class="heading-large underline">
-      <span class="heading-secondary">Team members</span>
-      Invite a team member</h1>
-  </div>
-
   <div class="column-full remove-left-margin">
     <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}">
       <div class="form-group">

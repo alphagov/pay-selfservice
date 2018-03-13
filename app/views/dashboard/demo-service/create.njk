@@ -5,6 +5,7 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
 {% endblock %}
 
 {% block mainContent %}
+<div class="column-two-thirds">
   <a href="{{linksPage}}" class="link-back">Back to prototype links</a>
   <h1 class="heading-large prototyping__heading">Create a prototype link</h1>
   <form method="post" action="{{confirmPage}}" data-validate>
@@ -35,4 +36,5 @@ Create a prototype link - {{currentServiceName}} {{currentGatewayAccount.full_ty
     </div>
     <input id="prototyping__links-button-create-prototype-link" class="button" type="submit" value="Create prototype link">
   </form>
+</div>
 {% endblock %}

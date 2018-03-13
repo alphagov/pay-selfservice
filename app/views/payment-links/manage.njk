@@ -4,57 +4,55 @@
 Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block mainClasses %}fullwidth{% endblock %}
-
-{% block full_width_content %}
-<div class="grid-row">
-  <aside class="column-one-third">
-    <nav role="navigation" class="navigation settings-navigation">
-      <ul class="list">
-        <li><a href="{{ returnToStart }}">Create a payment link</a></li>
-        <li class="active"><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
-      </ul>
-    </nav>
-  </aside>
-  <section class="column-two-thirds">
-    {% include "includes/flash.njk" %}
-    <h1 class="page-title">Manage payment links</h1>
-    <p class="payment-links-list--header">
-      {% if productsLength === 1 %}
-        There is 1 payment link
-      {% elif productsLength > 1 %}
-        There are {{productsLength}} payment links
-      {% else %}
-        There are no payment links, you can <a href="{{ returnToStart }}">create one now</a>.
-      {% endif %}
-    </p>
-    {% if products.length %}
-    <ul class="payment-links-list">
-      {% for product in products %}
-      <li class="payment-links-list--item">
-        <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
-        <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
-         <div class="payment-links-list--item__actions">
-          <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete</a>
-          <div class="target-to-show" id="delete-{{ product.externalId }}">
-            <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
-                <h1 class="heading-medium error-summary-heading" id="error-summary">
-                    Are you sure you want to delete this link?
-                </h1>
-                <div class="button-group">
-                  <a class="button delete payment-links-list--item__actions--delete" href="manage/delete/{{ product.externalId }}">Yes, delete this link</a>
-                </div>
-                <a class="target-to-show--cancel" href="#main">Cancel</a>
-              </div>
-          </div>
-        </div>
-        <aside class="payment-links-list--item__status payment-links-list--item__status--live">
-          Live
-        </aside>
-      </li>
-      {% endfor %}
+{% block side_navigation %}
+<aside class="column-one-third pad-bottom">
+  <nav role="navigation" class="navigation settings-navigation">
+    <ul class="list">
+      <li><a href="{{ returnToStart }}">Create a payment link</a></li>
+      <li class="active"><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
     </ul>
+  </nav>
+</aside>
+{% endblock %}
+
+{% block mainContent %}
+<section class="column-two-thirds">
+  <h1 class="page-title">Manage payment links</h1>
+  <p class="payment-links-list--header">
+    {% if productsLength === 1 %}
+      There is 1 payment link
+    {% elif productsLength > 1 %}
+      There are {{productsLength}} payment links
+    {% else %}
+      There are no payment links, you can <a href="{{ returnToStart }}">create one now</a>.
     {% endif %}
-  </section>
-</div>
+  </p>
+  {% if products.length %}
+  <ul class="payment-links-list">
+    {% for product in products %}
+    <li class="payment-links-list--item">
+      <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
+      <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
+       <div class="payment-links-list--item__actions">
+        <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete</a>
+        <div class="target-to-show" id="delete-{{ product.externalId }}">
+          <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
+              <h1 class="heading-medium error-summary-heading" id="error-summary">
+                  Are you sure you want to delete this link?
+              </h1>
+              <div class="button-group">
+                <a class="button delete payment-links-list--item__actions--delete" href="manage/delete/{{ product.externalId }}">Yes, delete this link</a>
+              </div>
+              <a class="target-to-show--cancel" href="#main">Cancel</a>
+            </div>
+        </div>
+      </div>
+      <aside class="payment-links-list--item__status payment-links-list--item__status--live">
+        Live
+      </aside>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
 {% endblock %}

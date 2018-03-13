@@ -4,70 +4,68 @@
 Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block mainClasses %}fullwidth{% endblock %}
+{% block side_navigation %}
+<aside class="column-one-third pad-bottom">
+  <nav role="navigation" class="navigation settings-navigation">
+    <ul class="list">
+       <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
+      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+    </ul>
+  </nav>
+</aside>
+{% endblock %}
 
-{% block full_width_content %}
-<div class="grid-row">
-  <aside class="column-one-third">
-    <nav role="navigation" class="navigation settings-navigation">
-      <ul class="list">
-        <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
-        <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
-      </ul>
-    </nav>
-  </aside>
-  <section class="column-two-thirds">
-    {% include "includes/flash.njk" %}
-    <h1 class="page-title">Set payment link information</h1>
+{% block mainContent %}
+<section class="column-two-thirds">
+  <h1 class="page-title">Set payment link information</h1>
 
-    <form action="{{ nextPage }}" class="form" method="post" data-validate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-      {% if change.length %}
-        <input name="change" type="hidden" value="true"/>
-      {% endif %}
-      <div class="form-group{% if flash.genericError %} error{% endif %}">
-        <label class="form-label-bold" for="payment-link-title">
-          Title
-          <span class="form-hint">
-            Briefly describe what the user is paying for.
-            For example, “Pay for a parking permit”.
-          </span>
-          {% if flash.genericError %}
-          <span class="error-message">
-            This field cannot be blank
-          </span>
-          {% endif %}
-        </label>
-        <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}" {% if change !== 'payment-link-description' %}autofocus{% endif %}>
-        <div class="panel panel-border-wide create-payment-link-link-replay">
-          <h3 class="heading-small">
-            The website address for this payment link will look like:
-          </h3>
-          <p class="grey">
-            You haven’t entered a title yet.
-          </p>
-        </div>
+  <form action="{{ nextPage }}" class="form" method="post" data-validate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {% if change.length %}
+      <input name="change" type="hidden" value="true"/>
+    {% endif %}
+    <div class="form-group{% if flash.genericError %} error{% endif %}">
+      <label class="form-label-bold" for="payment-link-title">
+        Title
+        <span class="form-hint">
+          Briefly describe what the user is paying for.
+          For example, “Pay for a parking permit”.
+        </span>
+        {% if flash.genericError %}
+        <span class="error-message">
+          This field cannot be blank
+        </span>
+        {% endif %}
+      </label>
+      <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}" {% if change !== 'payment-link-description' %}autofocus{% endif %}>
+      <div class="panel panel-border-wide create-payment-link-link-replay">
+        <h3 class="heading-small">
+          The website address for this payment link will look like:
+        </h3>
+        <p class="grey">
+          You haven’t entered a title yet.
+        </p>
       </div>
-      <div class="form-group">
-        <label class="form-label-bold" for="payment-link-description">
-          Details (optional)
-          <span class="form-hint">
-            Give your users more information. For example, you could tell them how long it takes for their application to be processed.
-          </span>
-        </label>
-
-        <textarea class="form-control form-control-full" name="payment-link-description" id="payment-link-description" rows="5" {% if change === 'payment-link-description' %}autofocus{% endif %}>{{ paymentLinkDescription }}</textarea>
-      </div>
-
-      <div class="form-group">
-        <button class="button" type="submit">Continue</button>
-      </div>
-      <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
-    </form>
-    <div>
-      <h3 class="heading-small">Example of what the user will see</h3>
-      <img class="create-payment-link-screenshot" src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
     </div>
-  </section>
-</div>
+    <div class="form-group">
+      <label class="form-label-bold" for="payment-link-description">
+        Details (optional)
+        <span class="form-hint">
+          Give your users more information. For example, you could tell them how long it takes for their application to be processed.
+        </span>
+      </label>
+
+      <textarea class="form-control form-control-full" name="payment-link-description" id="payment-link-description" rows="5" {% if change === 'payment-link-description' %}autofocus{% endif %}>{{ paymentLinkDescription }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <button class="button" type="submit">Continue</button>
+    </div>
+    <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+  </form>
+  <div>
+    <h3 class="heading-small">Example of what the user will see</h3>
+    <img class="create-payment-link-screenshot" src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
+  </div>
+</section>
 {% endblock %}
