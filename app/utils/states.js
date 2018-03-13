@@ -45,18 +45,12 @@ const REFUND_STATE_DESCRIPTIONS = {
   }
 }
 
-const ERROR_CODE_TO_DISPLAY_STATE = {
-  'P0010': 'Declined',
-  'P0020': 'Timed out',
-  'P0030': 'Cancelled'
-}
-
 exports.allDisplayStates = () => [...uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ...uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
 exports.displayStatesToConnectorStates = (displayStatesArray) => toConnectorStates(displayStatesArray)
 exports.allDisplayStateSelectorObjects = () => exports.allDisplayStates().map(state => toSelectorObject(state))
 exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => {
   const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase()
-  return displayNameForConnectorState(connectorState, sanitisedType)
+  return getDisplayNameFromConnectorState(connectorState, sanitisedType)
 }
 
 // TODO: leaving this toSelector Object structure for backward compatibility.
@@ -74,19 +68,9 @@ function toSelectorObject (displayName = '') {
 
 function uniqueDisplayStates (stateDescriptions) {
   const result = lodash.flattenDeep(Object.keys(stateDescriptions).map(key => {
-    if (stateDescriptions[key].errorCodes) {
-      return stateDescriptions[key].errorCodes.map(errorCode => ERROR_CODE_TO_DISPLAY_STATE[errorCode])
-    }
     return stateDescriptions[key].displayName
   }))
   return lodash.uniq(result)
-}
-
-function displayNameForConnectorState (connectorState, type) {
-  if (connectorState.status === 'failed') {
-    return ERROR_CODE_TO_DISPLAY_STATE[connectorState.code]
-  }
-  return getDisplayNameFromConnectorState(connectorState, type)
 }
 
 function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
@@ -112,15 +96,8 @@ function toConnectorStates (displayStates) {
   }
   displayStates.forEach(displayState => {
     Object.keys(PAYMENT_STATE_DESCRIPTIONS).forEach(connectorPaymentState => {
-      if (PAYMENT_STATE_DESCRIPTIONS[connectorPaymentState].errorCodes) {
-        const found = PAYMENT_STATE_DESCRIPTIONS[connectorPaymentState].errorCodes.find(errorCode => ERROR_CODE_TO_DISPLAY_STATE[errorCode] === displayState)
-        if (found) {
-          result.payment_states.push(connectorPaymentState)
-        }
-      } else {
-        if (PAYMENT_STATE_DESCRIPTIONS[connectorPaymentState].displayName === displayState) {
-          result.payment_states.push(connectorPaymentState)
-        }
+      if (PAYMENT_STATE_DESCRIPTIONS[connectorPaymentState].displayName === displayState) {
+        result.payment_states.push(connectorPaymentState)
       }
     })
 

@@ -162,7 +162,7 @@ describe('The /transactions endpoint', function () {
           email: 'alice.222@mail.fake',
           transaction_type: 'payment',
           state: {
-            status: 'failed',
+            status: 'cancelled',
             finished: true,
             code: 'P0030',
             message: 'Payment was cancelled by the service'
@@ -204,7 +204,7 @@ describe('The /transactions endpoint', function () {
           'email': 'alice.222@mail.fake',
           transaction_type: 'payment',
           'state': {
-            'status': 'failed',
+            'status': 'cancelled',
             'finished': true,
             'code': 'P0030',
             'message': 'Payment was cancelled by the service'
@@ -293,7 +293,7 @@ describe('The /transactions endpoint', function () {
           'email': 'alice.111@mail.fake',
           transaction_type: 'payment',
           'state': {
-            'status': 'failed',
+            'status': 'timedout',
             'finished': false,
             'code': 'P0020',
             'message': 'some error'
