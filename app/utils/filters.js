@@ -64,11 +64,11 @@ function old_describeFilters (filters) { // eslint-disable-line
   const refundStates = filters.refund_states ? filters.refund_states.map(state => `Refund ${state}`) : []
   const selectedStates = [...paymentStates, ...refundStates].map(state => `${state}`)
   if (filters.state && selectedStates.length === 0) {
-    description += ` with <strong>${filters.state}</strong> state`
+    description += ` with a payment status of <strong>${filters.state}</strong>`
   } else if (selectedStates.length === 1) {
-    description += ` with <strong>${selectedStates[0]}</strong> state`
+    description += ` with a payment status of <strong>${selectedStates[0]}</strong>`
   } else if (selectedStates.length > 1) {
-    description += ` with <strong>${selectedStates.join('</strong>, <strong>').replace(/,([^,]*)$/, ' or$1')}</strong> states`
+    description += ` with a payment status of <strong>${selectedStates.join('</strong>, <strong>').replace(/,([^,]*)$/, ' or$1')}</strong>`
   }
 
   const brandStates = Array.isArray(filters.brand) ? filters.brand.map(brand => brand.replace('-', ' ')) : []
