@@ -22,7 +22,7 @@ var templateData = {
   }
 }
 
-describe('The payment types summary view', function () {
+describe('The card Types summary view', function () {
   it('should display the manage button', function () {
     var model = _.extend({}, templateData)
 
@@ -30,7 +30,7 @@ describe('The payment types summary view', function () {
 
     body.should.containSelector('a#payment-types-manage-button')
       .withAttribute('class', 'button')
-      .withAttribute('href', '/payment-types/select-type')
+      .withAttribute('href', '/card-types/manage-type')
       .withText('Manage')
   })
 

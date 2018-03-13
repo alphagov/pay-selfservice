@@ -65,7 +65,7 @@ function mockConnectorAcceptedCardTypesEndpoint (acceptedCardTypes) {
     .reply(200, acceptedCardTypes)
 }
 
-describe('The payment types endpoint,', function () {
+describe('The card Types endpoint,', function () {
   describe('render summary view,', function () {
     afterEach(function () {
       nock.cleanAll()

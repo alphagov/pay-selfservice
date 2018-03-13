@@ -41,7 +41,7 @@ function buildFormPostRequest (path, sendData, sendCSRF, baseApp) {
     .send(sendData)
 }
 
-describe('The payment types endpoint,', function () {
+describe('The card Types endpoint,', function () {
   describe('render select type view,', function () {
     afterEach(function () {
       nock.cleanAll()

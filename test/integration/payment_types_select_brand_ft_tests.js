@@ -79,7 +79,7 @@ function buildFormPostRequest (path, sendData, sendCSRF, app) {
     .send(sendData)
 }
 
-describe('The payment types endpoint,', function () {
+describe('The card Types endpoint,', function () {
   describe('render select brand view,', function () {
     afterEach(function () {
       nock.cleanAll()
