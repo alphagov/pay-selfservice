@@ -16,17 +16,17 @@ const PAYMENT_STATE_DESCRIPTIONS = {
   'success': {
     displayName: 'Success'
   },
-  'error': {
-    displayName: 'Error',
-    errorCodes: ['P0050']
+  'declined': {
+    displayName: 'Declined'
   },
-  'failed': {
-    displayName: 'Failed',
-    errorCodes: ['P0010', 'P0020', 'P0030']
+  'timedout': {
+    displayName: 'Timed out'
   },
   'cancelled': {
-    displayName: 'Cancelled',
-    errorCodes: ['P0040']
+    displayName: 'Cancelled'
+  },
+  'error': {
+    displayName: 'Error'
   }
 }
 
@@ -48,9 +48,7 @@ const REFUND_STATE_DESCRIPTIONS = {
 const ERROR_CODE_TO_DISPLAY_STATE = {
   'P0010': 'Declined',
   'P0020': 'Timed out',
-  'P0030': 'Cancelled',
-  'P0040': 'Cancelled',
-  'P0050': 'Error'
+  'P0030': 'Cancelled'
 }
 
 exports.allDisplayStates = () => [...uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ...uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
@@ -85,7 +83,7 @@ function uniqueDisplayStates (stateDescriptions) {
 }
 
 function displayNameForConnectorState (connectorState, type) {
-  if (connectorState.code && ERROR_CODE_TO_DISPLAY_STATE[connectorState.code]) {
+  if (connectorState.status === 'failed') {
     return ERROR_CODE_TO_DISPLAY_STATE[connectorState.code]
   }
   return getDisplayNameFromConnectorState(connectorState, type)
