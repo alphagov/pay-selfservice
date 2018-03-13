@@ -4,6 +4,7 @@ const connectorClient = new Connector(process.env.CONNECTOR_URL)
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client.js')
 const _ = require('lodash')
 const winston = require('winston')
+const EPDQ_3DS_ENABLED = process.env.EPDQ_3DS_ENABLED
 
 module.exports = function (req, res, next) {
   const accountId = auth.getCurrentGatewayAccountId(req)
@@ -24,8 +25,9 @@ module.exports = function (req, res, next) {
   }
   return connectorClient.getAccount(params)
     .then(data => {
+      const SUPPORTS_3DS = (EPDQ_3DS_ENABLED === 'true') ? ['worldpay', 'epdq'] : ['worldpay']
       req.account = _.extend({}, data, {
-        supports3ds: _.get(data, 'payment_provider') === 'worldpay'
+        supports3ds: SUPPORTS_3DS.includes(_.get(data, 'payment_provider'))
       })
       next()
     })

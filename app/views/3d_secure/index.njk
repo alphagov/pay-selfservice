@@ -34,19 +34,24 @@
       {% endif %}
 
       {% if permissions.toggle_3ds_update %}
-      <div class="panel panel-border-wide">
-          <h2 class="heading-small">Activating 3D Secure</h2>
-          <p>Check with your Worldpay account manager that your merchant code has been configured to support 3D Secure. Read more about this in our <a href="https://docs.payments.service.gov.uk/#worldpay-setup-for-3d-secure">technical documentation</a>.</p>
-      </div>
-
-      <p>Once that’s done, you can turn on 3D Secure for all payments to your service.</p>
-
-      <form class="permission-main" method="post" action="{{routes.toggle3ds.onConfirm}}">
-          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-          <div class="form-group">
-              <input id="threeds-on-button" class="button" type="submit" value="Turn on 3D Secure">
+        {% if showHelper3ds %}
+          <div class="panel panel-border-wide">
+            <h2 class="heading-small">Activating 3D Secure</h2>
+            <p>Check with your Worldpay account manager that your merchant code has been configured to support 3D
+              Secure. Read more about this in our <a
+                href="https://govukpay-docs.cloudapps.digital/#worldpay-setup-for-3d-secure">technical documentation</a>.
+            </p>
           </div>
-      </form>
+        {% endif %}
+
+        <p>Once that’s done, you can turn on 3D Secure for all payments to your service.</p>
+
+        <form class="permission-main" method="post" action="{{ routes.toggle3ds.onConfirm }}">
+          <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+          <div class="form-group">
+            <input id="threeds-on-button" class="button" type="submit" value="Turn on 3D Secure">
+          </div>
+        </form>
       {% endif %}
     {% endif %}
 
@@ -56,7 +61,7 @@
 
         <div class="panel panel-border-wide">
             <h2 class="heading-small">Having problems with 3D Secure?</h2>
-            <p>If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Worldpay account manager that your merchant code has been configured to support 3D Secure.</p>
+            <p>If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Payment Gateway account manager that your merchant code has been configured to support 3D Secure.</p>
         </div>
       {% endif %}
 

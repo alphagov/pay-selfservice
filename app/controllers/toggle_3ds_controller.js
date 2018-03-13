@@ -1,12 +1,14 @@
-var response = require('../utils/response.js').response
-var auth = require('../services/auth_service.js')
-var router = require('../routes.js')
-var renderErrorView = require('../utils/response.js').renderErrorView
-var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
-var _ = require('lodash')
+'use strict'
 
-var renderConnectorError = function (request, response, errorMessage) {
+const response = require('../utils/response.js').response
+const auth = require('../services/auth_service.js')
+const router = require('../routes.js')
+const renderErrorView = require('../utils/response.js').renderErrorView
+const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
+const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const _ = require('lodash')
+
+const renderConnectorError = function (request, response, errorMessage) {
   return function (connectorError) {
     if (connectorError) {
       renderErrorView(request, response, 'Internal server error')
@@ -18,12 +20,13 @@ var renderConnectorError = function (request, response, errorMessage) {
 }
 
 module.exports.index = function (req, res) {
-  var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
-    var model = {
+  const onSuccessGetAccountAcceptedCards = function (acceptedCards) {
+    let model = {
       supports3ds: req.account.supports3ds,
       requires3ds: req.account.requires3ds,
       hasAnyCardTypeRequiring3dsSelected: _.some(acceptedCards['card_types'], {'requires3ds': true}),
-      justToggled: typeof req.query.toggled !== 'undefined'
+      justToggled: typeof req.query.toggled !== 'undefined',
+      showHelper3ds: req.payment_provider === 'worldpay'
     }
 
     show(req, res, 'index', model)
@@ -33,10 +36,10 @@ module.exports.index = function (req, res) {
     return renderErrorView(req, res, 'Unable to retrieve the 3D Secure setting.')
   }
 
-  var accountId = auth.getCurrentGatewayAccountId(req)
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+  const accountId = auth.getCurrentGatewayAccountId(req)
+  const correlationId = req.headers[CORRELATION_HEADER] || ''
 
-  var params = {
+  const params = {
     gatewayAccountId: accountId,
     correlationId: correlationId
   }
@@ -58,26 +61,26 @@ module.exports.off = function (req, res) {
   toggle(req, res, false)
 }
 
-var connectorClient = function () {
+const connectorClient = function () {
   return new ConnectorClient(process.env.CONNECTOR_URL)
 }
 
-var show = function (req, res, resource, data) {
-  var template = '3d_secure/' + resource
+const show = function (req, res, resource, data) {
+  let template = '3d_secure/' + resource
   response(req, res, template, data)
 }
 
-var toggle = function (req, res, trueOrFalse) {
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+const toggle = function (req, res, trueOrFalse) {
+  let correlationId = req.headers[CORRELATION_HEADER] || ''
 
-  var init = function () {
-    var accountId = auth.getCurrentGatewayAccountId(req)
+  const init = function () {
+    let accountId = auth.getCurrentGatewayAccountId(req)
 
-    var payload = {
+    let payload = {
       toggle_3ds: trueOrFalse
     }
 
-    var params = {
+    let params = {
       gatewayAccountId: accountId,
       payload: payload,
       correlationId: correlationId
@@ -88,11 +91,11 @@ var toggle = function (req, res, trueOrFalse) {
       .on('connectorError', onError)
   }
 
-  var onSuccess = function () {
+  const onSuccess = function () {
     res.redirect(303, router.paths.toggle3ds.index + '?toggled')
   }
 
-  var onError = function () {
+  const onError = function () {
     renderErrorView(req, res, 'Unable to toggle 3D Secure.')
   }
 
