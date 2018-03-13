@@ -4,6 +4,7 @@ Mock card numbers for demo payment - {{currentServiceName}} {{currentGatewayAcco
 {% endblock %}
 
 {% block mainContent %}
+<div class="column-two-thirds">
   <a href="{{lastPage}}" class="link-back">Back to dashboard</a>
   <h1 class="heading-large prototyping__heading">Mock card numbers</h1>
   <p>Use this card number to test a successful payment. Don’t use real card numbers.</p>
@@ -18,4 +19,5 @@ Mock card numbers for demo payment - {{currentServiceName}} {{currentGatewayAcco
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input id="prototyping__make-demo-payment" class="button" type="submit" value="Make a demo payment">
   </form>
+</div>
 {% endblock %}

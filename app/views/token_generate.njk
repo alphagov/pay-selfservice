@@ -7,7 +7,12 @@ Generate API key - {{currentServiceName}} {{currentGatewayAccount.full_type}} - 
 <script src="/public/js/devtokens.js"></script>
 {% endblock %}
 
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
 {% block mainContent %}
+<div class="column-two-thirds">
   <h1 class="page-title">API keys</h1>
 
   {% if not token %}
@@ -42,4 +47,5 @@ Generate API key - {{currentServiceName}} {{currentGatewayAccount.full_type}} - 
       Finish
     </a>
   {% endif %}
+</div>
 {% endblock %}

@@ -14,7 +14,7 @@
     }
   }
 
-  p:only-child {
+  p:last-of-type {
     margin-bottom: 0;
   }
 }
@@ -31,8 +31,4 @@
       list-style: none;
     }
   }
-}
-
-.full-width .main-content {
-  display: none;
 }

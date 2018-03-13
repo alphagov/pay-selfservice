@@ -4,7 +4,12 @@
   Email notifications - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
 {% block mainContent %}
+<div class="column-two-thirds">
   {% if not permissions.email_notification_toggle_update %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
@@ -46,4 +51,5 @@
       {% endif %}
     {% endif %}
   {% endif %}
+</div>
 {% endblock %}

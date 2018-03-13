@@ -4,6 +4,7 @@ Edit payment description for demo payment - {{currentServiceName}} {{currentGate
 {% endblock %}
 
 {% block mainContent %}
+<div class="column-two-thirds">
   <a href="{{nextPage}}" class="link-back">Back to make a demo payment</a>
   <h1 class="heading-large prototyping__heading">Edit payment description</h1>
   <form method="post" action="{{nextPage}}" data-validate="true">
@@ -17,4 +18,5 @@ Edit payment description for demo payment - {{currentServiceName}} {{currentGate
     </div>
     <input class="button" type="submit" value="Save changes">
   </form>
+</div>
 {% endblock %}

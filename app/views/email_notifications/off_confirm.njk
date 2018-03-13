@@ -4,7 +4,12 @@
 Turn off email notifications - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
 {% block mainContent %}
+<div class="column-two-thirds">
   <h1 class="heading-medium">
     Are you sure you want to turn off email notifications?
   </h1>
@@ -22,4 +27,5 @@ Turn off email notifications - {{currentServiceName}} {{currentGatewayAccount.fu
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       <input name="email-off" type="submit" class="button push-top qa-off" value="Turn off email notifications">
   </form>
+</div>
 {% endblock %}

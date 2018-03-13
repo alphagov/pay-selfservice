@@ -4,6 +4,10 @@
 Confirm 3D Secure - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
 {% block mainContent %}
   <h1 class="page-title">3D Secure</h1>
 

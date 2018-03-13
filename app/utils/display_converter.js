@@ -2,27 +2,6 @@ let _ = require('lodash')
 const getHeldPermissions = require('./get_held_permissions')
 const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
 
-const showSettingsNavTemplates = [
-  'tokens',
-  'tokens/generate',
-  'credentials',
-  'provider_credentials/epdq',
-  'provider_credentials/sandbox',
-  'provider_credentials/smartpay',
-  'provider_credentials/worldpay',
-  'service_name',
-  'merchant_details/edit_merchant_details',
-  'payment_types_summary',
-  'payment_types_select_type',
-  'payment_types_select_brand',
-  '3d_secure/index',
-  '3d_secure/on_confirm',
-  'email_notifications/index',
-  'email_notifications/off_confirm',
-  'email_notifications/edit',
-  'email_notifications/confirm'
-]
-
 const hideServiceHeaderTemplates = [
   'services/index',
   'services/edit_service_name',
@@ -68,10 +47,6 @@ const getPermissions = (user, service) => {
   }
 }
 
-const showSettingsNav = template => {
-  return showSettingsNavTemplates.indexOf(template) !== -1
-}
-
 const hideServiceHeader = template => {
   return hideServiceHeaderTemplates.indexOf(template) !== -1
 }
@@ -109,7 +84,6 @@ module.exports = function (req, data, template) {
   let originalUrl = req.originalUrl
   let permissions = getPermissions(user, req.service)
   convertedData.permissions = permissions
-  convertedData.showSettingsNav = showSettingsNav(template)
   convertedData.hideServiceHeader = hideServiceHeader(template)
   convertedData.hideServiceNav = hideServiceNav(template)
   addGatewayAccountProviderDisplayNames(convertedData)

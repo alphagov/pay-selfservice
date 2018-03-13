@@ -8,8 +8,12 @@ API Keys - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK P
 <script src="/public/js/devtokens.js"></script>
 {% endblock %}
 
-{% block mainContent %}
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
 
+{% block mainContent %}
+<div class="column-two-thirds">
   <h1 class="page-title">API Keys</h1>
   <ul class="tabs">
     {% if active %}
@@ -22,5 +26,5 @@ API Keys - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK P
   </ul>
 
   {% include "./includes/_token_list.njk" %}
-
+</div>
 {% endblock %}
