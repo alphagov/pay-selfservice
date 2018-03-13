@@ -59,7 +59,7 @@ const paymentLinksCtrl = require('./controllers/payment-links')
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks} = paths
+  notificationCredentials: nc, paymentTypes: pt, OLDpaymentTypes: OLDpt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -183,6 +183,12 @@ module.exports.bind = function (app) {
   app.get(pt.selectBrand, permission('payment-types:read'), getAccount, paymentTypesSelectBrand.showBrands)
   app.post(pt.selectBrand, permission('payment-types:update'), getAccount, paymentTypesSelectBrand.updateBrands)
   app.get(pt.summary, permission('payment-types:read'), getAccount, paymentTypesSummary.showSummary)
+
+  app.get(OLDpt.selectType, permission('payment-types:read'), getAccount, paymentTypesSelectType.selectType)
+  app.post(OLDpt.selectType, permission('payment-types:update'), getAccount, paymentTypesSelectType.updateType)
+  app.get(OLDpt.selectBrand, permission('payment-types:read'), getAccount, paymentTypesSelectBrand.showBrands)
+  app.post(OLDpt.selectBrand, permission('payment-types:update'), getAccount, paymentTypesSelectBrand.updateBrands)
+  app.get(OLDpt.summary, permission('payment-types:read'), getAccount, paymentTypesSummary.showSummary)
 
   // EMAIL
   app.get(en.index, permission('email-notification-template:read'), getAccount, getEmailNotification, emailNotifications.index)
