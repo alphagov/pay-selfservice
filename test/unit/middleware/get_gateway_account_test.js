@@ -1,7 +1,6 @@
 'use strict'
-// Core Dependencies
+
 const path = require('path')
-// NPM Dependencies
 const proxyquire = require('proxyquire')
 const lodash = require('lodash')
 const sinon = require('sinon')
@@ -15,7 +14,7 @@ const connectorMock = {
     this.getAccount = connectorGetAccountMock
   }
 }
-var setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvider) {
+const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvider) {
   const authServiceMock = {getCurrentGatewayAccountId: () => currentGatewayAccountID}
   req = {
     correlationId: 'sdfghjk'
@@ -71,22 +70,22 @@ describe('middleware: getGatewayAccount', () => {
       done()
     })
   })
-  it('should extend the account data with supports3ds set to true if the account type is epdq', done => {
-    if (process.env.EPDQ_3DS_ENABLED === 'true') {
-      lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
-      const getGatewayAccount = setupGetGatewayAccount('1', 'epdq')
-      getGatewayAccount(req, res, next).then(() => {
-        expect(req.account).to.deep.equal({id: '1', payment_provider: 'epdq', supports3ds: true})
-        done()
-      })
-    } else {
-      lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
-      const getGatewayAccount = setupGetGatewayAccount('1', 'epdq')
-      getGatewayAccount(req, res, next).then(() => {
-        expect(req.account).to.deep.equal({id: '1', payment_provider: 'epdq', supports3ds: false})
-        done()
-      })
-    }
+  it('should extend the account data with supports3ds set to false if the account type is epdq and feature flag default disabled', done => {
+    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+    const getGatewayAccount = setupGetGatewayAccount('1', 'epdq')
+    getGatewayAccount(req, res, next).then(() => {
+      expect(req.account).to.deep.equal({id: '1', payment_provider: 'epdq', supports3ds: false})
+      done()
+    })
+  })
+  it('should extend the account data with supports3ds set to true if the account type is epdq and feature flag enabled', done => {
+    process.env.EPDQ_3DS_ENABLED = 'true'
+    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+    const getGatewayAccount = setupGetGatewayAccount('1', 'epdq')
+    getGatewayAccount(req, res, next).then(() => {
+      expect(req.account).to.deep.equal({id: '1', payment_provider: 'epdq', supports3ds: true})
+      done()
+    })
   })
   it('should extend the account data with supports3ds set to false if the account type is not worldpay or epdq', done => {
     lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
