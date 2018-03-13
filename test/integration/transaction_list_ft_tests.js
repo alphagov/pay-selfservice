@@ -162,7 +162,7 @@ describe('The /transactions endpoint', function () {
           email: 'alice.222@mail.fake',
           transaction_type: 'payment',
           state: {
-            status: 'failed',
+            status: 'cancelled',
             finished: true,
             code: 'P0030',
             message: 'Payment was cancelled by the service'
@@ -204,7 +204,7 @@ describe('The /transactions endpoint', function () {
           'email': 'alice.222@mail.fake',
           transaction_type: 'payment',
           'state': {
-            'status': 'failed',
+            'status': 'cancelled',
             'finished': true,
             'code': 'P0030',
             'message': 'Payment was cancelled by the service'
@@ -293,7 +293,7 @@ describe('The /transactions endpoint', function () {
           'email': 'alice.111@mail.fake',
           transaction_type: 'payment',
           'state': {
-            'status': 'failed',
+            'status': 'timedout',
             'finished': false,
             'code': 'P0020',
             'message': 'some error'
@@ -321,7 +321,7 @@ describe('The /transactions endpoint', function () {
     }
 
     connectorMockResponds(200, connectorData, {
-      payment_states: 'created,started,submitted,failed',
+      payment_states: 'created,started,submitted,timedout',
       refund_states: 'submitted'
     })
     request(app)
@@ -341,7 +341,7 @@ describe('The /transactions endpoint', function () {
           expect(['In progress', 'Timed out', 'Refund submitted']).to.include(state.value.text)
         })
 
-        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=failed&refund_states=submitted')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=timedout&refund_states=submitted')
       })
       .end(done)
   })
@@ -514,10 +514,10 @@ describe('The /transactions endpoint filtering by states)', () => {
         expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
           'In progress',
           'Success',
-          'Error',
           'Declined',
           'Timed out',
           'Cancelled',
+          'Error',
           'Refund submitted',
           'Refund error',
           'Refund success'
@@ -547,10 +547,10 @@ describe('The /transactions endpoint filtering by states)', () => {
         expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
           'In progress',
           'Success',
-          'Error',
           'Declined',
           'Timed out',
           'Cancelled',
+          'Error',
           'Refund submitted',
           'Refund error',
           'Refund success'
@@ -581,10 +581,10 @@ describe('The /transactions endpoint filtering by states)', () => {
         expect(res.body.eventStates.map(state => state.value.text)).to.deep.equal([
           'In progress',
           'Success',
-          'Error',
           'Declined',
           'Timed out',
           'Cancelled',
+          'Error',
           'Refund submitted',
           'Refund error',
           'Refund success'

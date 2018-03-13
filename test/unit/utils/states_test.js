@@ -25,8 +25,8 @@ describe('states', function () {
 
     it('should get connector states from Cancelled display state', function () {
       const connectorStatesResult = states.displayStatesToConnectorStates(['Cancelled'])
-      expect(connectorStatesResult.payment_states.length).to.be.equal(2)
-      expect(connectorStatesResult.payment_states).to.be.containingAllOf(['failed', 'cancelled'])
+      expect(connectorStatesResult.payment_states.length).to.be.equal(1)
+      expect(connectorStatesResult.payment_states).to.be.containingAllOf(['cancelled'])
       expect(connectorStatesResult.refund_states.length).to.be.equal(0)
     })
 
@@ -39,8 +39,8 @@ describe('states', function () {
 
     it('should get connector states from all possible display states', function () {
       const connectorStatesResult = states.displayStatesToConnectorStates(['In progress', 'Success', 'Error', 'Declined', 'Timed out', 'Cancelled', 'Refund success', 'Refund error', 'Refund submitted'])
-      expect(connectorStatesResult.payment_states.length).to.be.equal(7)
-      expect(connectorStatesResult.payment_states).to.be.containingAllOf(['created', 'started', 'submitted', 'success', 'error', 'failed', 'cancelled'])
+      expect(connectorStatesResult.payment_states.length).to.be.equal(8)
+      expect(connectorStatesResult.payment_states).to.be.containingAllOf(['created', 'started', 'submitted', 'success', 'error', 'declined', 'timedout', 'cancelled'])
       expect(connectorStatesResult.refund_states.length).to.be.equal(3)
       expect(connectorStatesResult.refund_states).to.be.containingAllOf(['submitted', 'error', 'success'])
     })
@@ -58,31 +58,15 @@ describe('states', function () {
       expect(states.getDisplayNameForConnectorState({status: 'submitted'})).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({status: 'created'})).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({status: 'success'})).to.equal('Success')
+      expect(states.getDisplayNameForConnectorState({status: 'declined'})).to.equal('Declined')
+      expect(states.getDisplayNameForConnectorState({status: 'cancelled'})).to.equal('Cancelled')
+      expect(states.getDisplayNameForConnectorState({status: 'timedout'})).to.equal('Timed out')
+      expect(states.getDisplayNameForConnectorState({status: 'error'})).to.equal('Error')
+      expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'charge')).to.equal('In progress')
+
       expect(states.getDisplayNameForConnectorState({status: 'success'}, 'refund')).to.equal('Refund success')
       expect(states.getDisplayNameForConnectorState({status: 'error'}, 'refund')).to.equal('Refund error')
 
-      expect(states.getDisplayNameForConnectorState({
-        status: 'failed',
-        code: 'P0030',
-        message: 'Foo'
-      })).to.equal('Cancelled')
-      expect(states.getDisplayNameForConnectorState({
-        status: 'failed',
-        code: 'P0010',
-        message: 'Bar'
-      })).to.equal('Declined')
-      expect(states.getDisplayNameForConnectorState({
-        status: 'cancelled',
-        code: 'P0040',
-        message: 'Baz'
-      })).to.equal('Cancelled')
-      expect(states.getDisplayNameForConnectorState({
-        status: 'cancelled',
-        code: 'P0050',
-        message: 'Kaz'
-      })).to.equal('Error')
-
-      expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'charge')).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'PAYMENT')).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'refund')).to.equal('Refund submitted')
     })
