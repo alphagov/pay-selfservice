@@ -106,13 +106,16 @@ describe('states', function () {
     })
 
     it('should get correct display name for a given connector state', function () {
-      expect(states.old_getDisplayName('payment', 'success')).to.equal('Success')
-      expect(states.old_getDisplayName('payment', 'failed')).to.equal('Failed')
-      expect(states.old_getDisplayName('payment', 'error')).to.equal('Error')
-      expect(states.old_getDisplayName('payment', 'cancelled')).to.equal('Cancelled')
-      expect(states.old_getDisplayName('refund', 'success')).to.equal('Refund success')
-      expect(states.old_getDisplayName('refund', 'submitted')).to.equal('Refund submitted')
-      expect(states.old_getDisplayName('refund', 'error')).to.equal('Refund error')
+      expect(states.old_getDisplayName('payment', {status: 'success'})).to.equal('Success')
+      expect(states.old_getDisplayName('payment', {status: 'failed', code: ''})).to.equal('Failed')
+      expect(states.old_getDisplayName('payment', {status: 'timedout', code: 'P0020'})).to.equal('Failed')
+      expect(states.old_getDisplayName('payment', {status: 'declined', code: 'P0010'})).to.equal('Failed')
+      expect(states.old_getDisplayName('payment', {status: 'error', code: 'P0050'})).to.equal('Error')
+      expect(states.old_getDisplayName('payment', {status: 'cancelled', code: 'P0030'})).to.equal('Failed')
+      expect(states.old_getDisplayName('payment', {status: 'cancelled', code: 'P0040'})).to.equal('Cancelled')
+      expect(states.old_getDisplayName('refund', {status: 'success'})).to.equal('Refund success')
+      expect(states.old_getDisplayName('refund', {status: 'submitted'})).to.equal('Refund submitted')
+      expect(states.old_getDisplayName('refund', {status: 'error', code: 'P0050'})).to.equal('Refund error')
     })
 
     it('should get correct description for a given connector state', function () {

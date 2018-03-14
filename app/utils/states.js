@@ -156,7 +156,13 @@ const OLD_REFUND_STATE_DESCRIPTIONS = {
 exports.old_payment_states = () => Object.keys(OLD_PAYMENT_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('PAYMENT', key)) // eslint-disable-line
 exports.old_refund_states = () => Object.keys(OLD_REFUND_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('REFUND', key)) // eslint-disable-line
 exports.old_states = () => [...exports.old_payment_states(), ...exports.old_refund_states()] // eslint-disable-line
-exports.old_getDisplayName = (type = 'payment', name = '') => {  // eslint-disable-line
+exports.old_getDisplayName = (type = 'payment', state = {}) => {  // eslint-disable-line
+  let name = state.status || ''
+  if (name.toLowerCase() === 'timedout' || name.toLowerCase() === 'declined') {
+    name = 'failed'
+  } else if (name.toLowerCase() === 'cancelled' && state.code === 'P0030') {
+    name = 'failed'
+  }
   const origin = exports.old_states().find(event => event.name === name.toLowerCase() && event.type === type.toLowerCase()) // eslint-disable-line
   return lodash.get(origin, `value.text`, changeCase.upperCaseFirst(name.toLowerCase()))
 }
