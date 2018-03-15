@@ -31,7 +31,7 @@ pipeline {
       }
       post {
         failure {
-          postMetric("selfservice.docker-build.failure", 1, "new")
+          postMetric("selfservice.docker-build.failure", 1)
         }
       }
     }
@@ -57,7 +57,7 @@ pipeline {
       }
       post {
         failure {
-          postMetric("selfservice.docker-tag.failure", 1, "new")
+          postMetric("selfservice.docker-tag.failure", 1)
         }
       }
     }
@@ -66,17 +66,16 @@ pipeline {
         branch 'master'
       }
       steps {
-        deploy("selfservice", "test", null, false, false)
         deployEcs("selfservice", "test", null, true, true)
       }
     }
   }
   post {
     failure {
-      postMetric("selfservice.failure", 1, "new")
+      postMetric(appendBranchSuffix("selfservice") + ".failure", 1)
     }
     success {
-      postSuccessfulMetrics("selfservice")
+      postSuccessfulMetrics(appendBranchSuffix("selfservice"))
     }
   }
 }
