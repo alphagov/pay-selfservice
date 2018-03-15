@@ -4,7 +4,9 @@ pipeline {
   agent any
 
   parameters {
-    booleanParam(defaultValue: true, description: '', name: 'runEndToEndOnPR')
+    booleanParam(defaultValue: true, description: '', name: 'runEndToEndTestsOnPR')
+    booleanParam(defaultValue: true, description: '', name: 'runAcceptTestsOnPR')
+    booleanParam(defaultValue: false, description: '', name: 'runZapTestsOnPR')
   }
 
   options {
@@ -17,7 +19,9 @@ pipeline {
   }
 
   environment {
-    RUN_END_TO_END_ON_PR = "${params.runEndToEndOnPR}"
+    RUN_END_TO_END_ON_PR = "${params.runEndToEndTestsOnPR}"
+    RUN_ACCEPT_ON_PR = "${params.runAcceptTestsOnPR}"
+    RUN_ZAP_ON_PR = "${params.runZapTestsOnPR}"
   }
 
   stages {
@@ -35,16 +39,53 @@ pipeline {
         }
       }
     }
-    stage('Test') {
-      when {
-        anyOf {
-          branch 'master'
-          environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+    stage('Tests') {
+      failFast true
+      parallel {
+        stage('End to End Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runE2E("selfservice")
+            }
         }
-      }
-      steps {
-        runEndToEnd("selfservice")
-        runParameterisedEndToEnd("selfservice", null, "end2end-tagged", false, false, "uk.gov.pay.endtoend.categories.End2EndProducts")
+        stage('Products End to End Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runE2E("selfservice", null, "end2end-tagged", "uk.gov.pay.endtoend.categories.End2EndProducts")
+            }
+        }
+        stage('Accept Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_ACCEPT_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runAccept("selfservice")
+            }
+        }
+         stage('ZAP Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_ZAP_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runZap("selfservice")
+            }
+         }
       }
     }
     stage('Docker Tag') {
