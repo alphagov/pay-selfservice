@@ -26,7 +26,7 @@ module.exports.index = function (req, res) {
       requires3ds: req.account.requires3ds,
       hasAnyCardTypeRequiring3dsSelected: _.some(acceptedCards['card_types'], {'requires3ds': true}),
       justToggled: typeof req.query.toggled !== 'undefined',
-      showHelper3ds: req.payment_provider === 'worldpay'
+      showHelper3ds: req.account.payment_provider === 'worldpay'
     }
 
     show(req, res, 'index', model)
