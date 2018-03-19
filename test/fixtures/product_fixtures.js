@@ -51,6 +51,8 @@ module.exports = {
     if (opts.description) data.description = opts.description
     if (opts.returnUrl) data.return_url = opts.returnUrl
     if (opts.price) data.price = opts.price
+    if (opts.service_name_path) data.service_name_path = opts.service_name_path
+    if (opts.product_name_path) data.product_name_path = opts.product_name_path
     return {
       getPactified: () => {
         return pactProducts.pactify(data)
@@ -105,6 +107,8 @@ module.exports = {
     if (opts.description) data.description = opts.description
     if (opts.return_url) data.return_url = opts.return_url
     if (opts.price) data.price = opts.price
+    if (opts.service_name_path) data.service_name_path = opts.service_name_path
+    if (opts.product_name_path) data.product_name_path = opts.product_name_path
     if (!data._links) {
       data._links = [{
         href: `http://products.url/v1/api/products/${data.external_id}`,
@@ -115,6 +119,13 @@ module.exports = {
         rel: 'pay',
         method: 'GET'
       }]
+      if (opts.service_name_path && opts.product_name_path) {
+        data._links.push({
+          href: `http://products-ui.url/redirect/${opts.service_name_path}/${opts.product_name_path}`,
+          rel: 'friendly',
+          method: 'GET'
+        })
+      }
     }
 
     return {
