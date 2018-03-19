@@ -21,6 +21,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
 
   <form action="{{ nextPage }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input type="hidden" name="service-name-path" value="{{currentServiceName | slugify }}">
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
     {% endif %}
@@ -45,7 +46,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         data-validate value="{{ paymentLinkTitle }}"
         {% if change !== 'payment-link-description' %}autofocus{% endif %} data-confirmation
         data-confirmation-title="The website address for this payment link will look like:"
-        data-confirmation-label="http://www.gov.uk/payments/{{currentServiceName | slugify }}/"
+        data-confirmation-label="{{friendlyURL}}/{{currentServiceName | slugify }}/"
         data-confirmation-filter="slugify"
       />
     </div>

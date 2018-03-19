@@ -39,6 +39,8 @@ module.exports = {
  * @param {string=} options.description - The description of the product
  * @param {string=} options.type - The type of the product
  * @param {string=} options.returnUrl - Where to redirect to upon completion of a charge for this product
+ * @param {string=} options.serviceNamePath - first part of friendly url derived from the service name
+ * @param {string=} options.productNamePath - second part of friendly url derived from the payment link title
  * @returns {Promise<Product>}
  */
 function createProduct (options) {
@@ -54,7 +56,9 @@ function createProduct (options) {
       description: options.description,
       service_name: options.serviceName,
       type: options.type,
-      return_url: options.returnUrl
+      return_url: options.returnUrl,
+      service_name_path: options.serviceNamePath,
+      product_name_path: options.productNamePath
     },
     description: 'create a product for a service',
     service: SERVICE_NAME
