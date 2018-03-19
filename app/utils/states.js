@@ -5,13 +5,16 @@ const changeCase = require('change-case')
 
 const PAYMENT_STATE_DESCRIPTIONS = {
   'created': {
-    displayName: 'In progress'
+    displayName: 'In progress',
+    eventDisplayName: 'Created'
   },
   'started': {
-    displayName: 'In progress'
+    displayName: 'In progress',
+    eventDisplayName: 'Started'
   },
   'submitted': {
-    displayName: 'In progress'
+    displayName: 'In progress',
+    eventDisplayName: 'Submitted'
   },
   'success': {
     displayName: 'Success'
@@ -56,7 +59,7 @@ exports.displayStatesToConnectorStates = (displayStatesArray) => toConnectorStat
 exports.allDisplayStateSelectorObjects = () => exports.allDisplayStates().map(state => toSelectorObject(state))
 exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => {
   const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase()
-  return displayNameForConnectorState(connectorState, sanitisedType)
+  return displayNameForConnectorState(connectorState, sanitisedType).displayName
 }
 
 // TODO: leaving this toSelector Object structure for backward compatibility.
@@ -84,7 +87,7 @@ function uniqueDisplayStates (stateDescriptions) {
 
 function displayNameForConnectorState (connectorState, type) {
   if (connectorState.status === 'failed') {
-    return ERROR_CODE_TO_DISPLAY_STATE[connectorState.code]
+    return {displayName: ERROR_CODE_TO_DISPLAY_STATE[connectorState.code]}
   }
   return getDisplayNameFromConnectorState(connectorState, type)
 }
@@ -92,17 +95,15 @@ function displayNameForConnectorState (connectorState, type) {
 function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
   let stateToConvert = connectorState.status || connectorState
   if (type === 'payment') {
-    const found = Object.keys(PAYMENT_STATE_DESCRIPTIONS).find(connectorPaymentState => connectorPaymentState === stateToConvert.toLowerCase())
-    if (found) {
-      return lodash.get(PAYMENT_STATE_DESCRIPTIONS, `${found}.displayName`, '')
+    if (PAYMENT_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]) {
+      return PAYMENT_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]
     }
   } else {
-    const found = Object.keys(REFUND_STATE_DESCRIPTIONS).find(refundPaymentState => refundPaymentState === stateToConvert.toLowerCase())
-    if (found) {
-      return lodash.get(REFUND_STATE_DESCRIPTIONS, `${found}.displayName`, '')
+    if (REFUND_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]) {
+      return REFUND_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]
     }
   }
-  return ''
+  return {displayName: '', eventDisplayName: ''}
 }
 
 function toConnectorStates (displayStates) {
@@ -133,6 +134,15 @@ function toConnectorStates (displayStates) {
   result.payment_states = lodash.uniq(result.payment_states)
   result.refund_states = lodash.uniq(result.refund_states)
   return result
+}
+
+exports.getEventDisplayNameForConnectorState = (state, type) => {  // eslint-disable-line
+  const displayName = displayNameForConnectorState(state, type.toLowerCase())
+  if (displayName.eventDisplayName) {
+    return displayName.eventDisplayName
+  } else {
+    return displayName.displayName
+  }
 }
 
 // OLD Status code logic from here onwards -- TO REMOVE once the feature flag is taken off (PP-3377)

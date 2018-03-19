@@ -239,7 +239,7 @@ describe('The transaction view scenarios', function () {
             },
             'type': 'payment',
             'amount': '20000',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Started',
             'amount_friendly': '£200.00',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
@@ -251,7 +251,7 @@ describe('The transaction view scenarios', function () {
             },
             'type': 'payment',
             'amount': '20000',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Created',
             'amount_friendly': '£200.00',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
@@ -372,7 +372,7 @@ describe('The transaction view scenarios', function () {
               'status': 'started',
               'finished': false
             },
-            'state_friendly': 'In progress',
+            'state_friendly': 'Started',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
           },
@@ -384,7 +384,7 @@ describe('The transaction view scenarios', function () {
               'status': 'created',
               'finished': false
             },
-            'state_friendly': 'In progress',
+            'state_friendly': 'Created',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
@@ -512,7 +512,7 @@ describe('The transaction view scenarios', function () {
             'type': 'payment',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Started',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
           },
@@ -524,7 +524,7 @@ describe('The transaction view scenarios', function () {
             'type': 'payment',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Created',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }
@@ -735,7 +735,7 @@ describe('The transaction view scenarios', function () {
             'type': 'payment',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Started',
             'updated': '2015-12-24 13:23:12',
             'updated_friendly': '24 Dec 2015 — 13:23:12'
           },
@@ -747,7 +747,7 @@ describe('The transaction view scenarios', function () {
             'type': 'payment',
             'amount': 5000,
             'amount_friendly': '£50.00',
-            'state_friendly': 'In progress',
+            'state_friendly': 'Created',
             'updated': '2015-12-24 13:21:05',
             'updated_friendly': '24 Dec 2015 — 13:21:05'
           }

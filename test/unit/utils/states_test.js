@@ -93,6 +93,46 @@ describe('states', function () {
       expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'PAYMENT')).to.equal('In progress')
       expect(states.getDisplayNameForConnectorState({status: 'submitted'}, 'refund')).to.equal('Refund submitted')
     })
+
+    it('should get event display name for connector state', function () {
+      expect(states.getEventDisplayNameForConnectorState({status: 'submitted'}, 'payment')).to.equal('Submitted')
+      expect(states.getEventDisplayNameForConnectorState({status: 'submitted'}, 'PAYMENT')).to.equal('Submitted')
+      expect(states.getEventDisplayNameForConnectorState({status: 'submitted'}, 'refund')).to.equal('Refund submitted')
+
+      expect(states.getEventDisplayNameForConnectorState({status: 'started'}, 'payment')).to.equal('Started')
+      expect(states.getEventDisplayNameForConnectorState({status: 'created'}, 'payment')).to.equal('Created')
+      expect(states.getEventDisplayNameForConnectorState({status: 'success'}, 'payment')).to.equal('Success')
+      expect(states.getEventDisplayNameForConnectorState({status: 'success'}, 'refund')).to.equal('Refund success')
+      expect(states.getEventDisplayNameForConnectorState({status: 'error'}, 'refund')).to.equal('Refund error')
+      expect(states.getEventDisplayNameForConnectorState({status: 'timedout'}, 'payment')).to.equal('Timed out')
+      expect(states.getEventDisplayNameForConnectorState({status: 'declined'}, 'payment')).to.equal('Declined')
+
+      expect(states.getEventDisplayNameForConnectorState({
+        status: 'failed',
+        code: 'P0030',
+        message: 'Foo'
+      }, 'payment')).to.equal('Cancelled')
+      expect(states.getEventDisplayNameForConnectorState({
+        status: 'failed',
+        code: 'P0010',
+        message: 'Bar'
+      }, 'payment')).to.equal('Declined')
+      expect(states.getEventDisplayNameForConnectorState({
+        status: 'cancelled',
+        code: 'P0030',
+        message: 'Baz'
+      }, 'payment')).to.equal('Cancelled')
+      expect(states.getEventDisplayNameForConnectorState({
+        status: 'cancelled',
+        code: 'P0040',
+        message: 'Baz'
+      }, 'payment')).to.equal('Cancelled')
+      expect(states.getEventDisplayNameForConnectorState({
+        status: 'error',
+        code: 'P0050',
+        message: 'Kaz'
+      }, 'payment')).to.equal('Error')
+    })
   })
 
   describe('old states', function () {
