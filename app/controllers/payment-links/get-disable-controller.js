@@ -12,7 +12,7 @@ module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
   productsClient.product.disable(gatewayAccountId, req.params.productExternalId)
     .then(() => {
-      req.flash('generic', '<h2>The payment link was successfully deleted</h2><p>It will no longer be accessible</p>')
+      req.flash('generic', '<h2>The payment link was successfully deleted</h2>')
       res.redirect(paths.paymentLinks.manage)
     })
     .catch((err) => {
