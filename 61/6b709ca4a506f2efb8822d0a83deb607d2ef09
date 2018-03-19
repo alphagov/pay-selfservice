@@ -11,3 +11,5 @@ staging-2.alpha_staging-2-457.status=success
 staging-2.tag=FAILED-457
 
 staging-2.FAILED-457.date=
+
+staging-2.FAILED-457.status=failed
