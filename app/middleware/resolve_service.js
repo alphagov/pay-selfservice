@@ -17,5 +17,8 @@ module.exports = function (req, res, next) {
     return renderErrorView(req, res, 'You do not have the rights to access this service.')
   }
 
+  req.service.hasDirectDebitGatewayAccount =
+    (req.service.gatewayAccountIds || []).some((gatewayAccountId) => gatewayAccountId.startsWith('DIRECT_DEBIT:'))
+
   next()
 }

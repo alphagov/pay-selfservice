@@ -50,6 +50,8 @@ function randomMerchantDetails () {
 
 module.exports = {
 
+  randomAccountId,
+
   validMinimalUser: () => {
     let newExternalId = random.randomUuid()
     let newUsername = randomUsername()
