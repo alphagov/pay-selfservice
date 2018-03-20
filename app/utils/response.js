@@ -14,6 +14,9 @@ function response (req, res, template, data) {
 function errorResponse (req, res, msg, status) {
   if (!msg) msg = ERROR_MESSAGE
   let correlationId = req.correlationId
+  if (typeof msg !== 'string') {
+    msg = 'Please try again or contact support team.'
+  }
   let data = { 'message': msg }
   logger.error(`[${correlationId}] ${status} An error has occurred. Rendering error view -`, {errorMessage: msg})
   res.setHeader('Content-Type', 'text/html')
