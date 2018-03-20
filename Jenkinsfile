@@ -100,12 +100,38 @@ pipeline {
         }
       }
     }
-    stage('Deploy') {
-      when {
-        branch 'master'
+    stage('Smoke Tests') {
+      failFast true
+      parallel {
+        stage('Product Smoke Test') {
+          when { branch 'master' }
+          steps { runProductsSmokeTest() }
+        }
+        stage('Direct Debit Smoke Test') {
+          when { branch 'master' }
+          steps { runDirectDebitSmokeTest() }
+        }
       }
-      steps {
-        deployEcs("selfservice", "test", null, true, true)
+    }
+    stage('Complete') {
+      failFast true
+      parallel {
+        stage('Tag Build') {
+          when {
+            branch 'master'
+          }
+          steps {
+            tagDeployment("selfservice")
+          }
+        }
+        stage('Trigger Deploy Notification') {
+          when {
+            branch 'master'
+          }
+          steps {
+            triggerGraphiteDeployEvent("selfservice")
+          }
+        }
       }
     }
   }
