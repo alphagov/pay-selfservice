@@ -6,7 +6,6 @@ pipeline {
   parameters {
     booleanParam(defaultValue: true, description: '', name: 'runEndToEndTestsOnPR')
     booleanParam(defaultValue: true, description: '', name: 'runAcceptTestsOnPR')
-    booleanParam(defaultValue: false, description: '', name: 'runZapTestsOnPR')
   }
 
   options {
@@ -21,7 +20,6 @@ pipeline {
   environment {
     RUN_END_TO_END_ON_PR = "${params.runEndToEndTestsOnPR}"
     RUN_ACCEPT_ON_PR = "${params.runAcceptTestsOnPR}"
-    RUN_ZAP_ON_PR = "${params.runZapTestsOnPR}"
   }
 
   stages {
@@ -42,7 +40,7 @@ pipeline {
     stage('Tests') {
       failFast true
       parallel {
-        stage('End to End Tests') {
+        stage('Card Payment End-to-End Tests') {
             when {
                 anyOf {
                   branch 'master'
@@ -50,10 +48,10 @@ pipeline {
                 }
             }
             steps {
-                runE2E("selfservice")
+                runCardPaymentsE2E("selfservice")
             }
         }
-        stage('Products End to End Tests') {
+        stage('Products End-to-End Tests') {
             when {
                 anyOf {
                   branch 'master'
@@ -61,7 +59,18 @@ pipeline {
                 }
             }
             steps {
-                runE2E("selfservice", null, "end2end-tagged", "uk.gov.pay.endtoend.categories.End2EndProducts")
+                runProductsE2E("selfservice")
+            }
+        }
+        stage('Direct-Debit End-to-End Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runDirectDebitE2E("selfservice")
             }
         }
         stage('Accept Tests') {
@@ -75,17 +84,6 @@ pipeline {
                 runAccept("selfservice")
             }
         }
-         stage('ZAP Tests') {
-            when {
-                anyOf {
-                  branch 'master'
-                  environment name: 'RUN_ZAP_ON_PR', value: 'true'
-                }
-            }
-            steps {
-                runZap("selfservice")
-            }
-         }
       }
     }
     stage('Docker Tag') {
