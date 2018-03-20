@@ -7,9 +7,10 @@ const removeDefinateArticles = require('../../utils/nunjucks-filters/remove-defi
 
 // Local dependencies
 const paths = require('../../paths')
+const productsClient = require('../../services/clients/products_client.js')
 
 const makeNiceURL = string => {
-  slugify(removeDefinateArticles(string))
+  return slugify(removeDefinateArticles(string))
 }
 
 module.exports = (req, res) => {
@@ -27,6 +28,16 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.information)
   }
 
+  productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
+  .then(product => {
+    // if product exists we need to alert the user they must use a different URL
+    return res.redirect(paths.paymentLinks.webAddress)
+  })
+  .catch((err) => { // eslint-disable-line handle-callback-err
+    // if it errors then it means no product was found and that’s good
+    return res.redirect(paths.paymentLinks.amount)
+  })
+
   if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
     req.flash('generic', `<h2>The details have been updated</h2>`)
   }
@@ -34,6 +45,4 @@ module.exports = (req, res) => {
   if (req.body['change'] === 'true') {
     return res.redirect(paths.paymentLinks.review)
   }
-
-  return res.redirect(paths.paymentLinks.amount)
 }

@@ -3,6 +3,8 @@
 exports.getStart = require('./get-start-controller')
 exports.getInformation = require('./get-information-controller')
 exports.postInformation = require('./post-information-controller')
+exports.getWebAddress = require('./get-web-address-controller')
+exports.postWebAddress = require('./post-web-address-controller')
 exports.getAmount = require('./get-amount-controller')
 exports.postAmount = require('./post-amount-controller')
 exports.getReview = require('./get-review-controller')

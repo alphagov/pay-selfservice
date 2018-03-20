@@ -33,8 +33,9 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
     <li class="payment-links-list--item">
       <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
       {% if product.links.friendly %}
-        <a class="payment-links-list--item__link" href="{{ product.links.friendly.href }}">{{ product.links.friendly.href }}</a>
-    {% else %}
+      {# Looks friendly but href is not friendly until we have it all set up with GOV.UK #}
+        <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.friendly.href }}</a>
+      {% else %}
         <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
       {% endif %}
        <div class="payment-links-list--item__actions">
@@ -51,10 +52,12 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
             </div>
         </div>
       </div>
+      {# There’s no point in showing this until we have drafts
       <aside class="payment-links-list--item__status payment-links-list--item__status--live">
         Live
       </aside>
     </li>
+    #}
     {% endfor %}
   </ul>
   {% endif %}
