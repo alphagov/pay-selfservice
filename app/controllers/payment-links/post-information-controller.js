@@ -28,6 +28,14 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.information)
   }
 
+  if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
+    req.flash('generic', `<h2>The details have been updated</h2>`)
+  }
+
+  if (req.body['change'] === 'true') {
+    return res.redirect(paths.paymentLinks.review)
+  }
+
   productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
   .then(product => {
     // if product exists we need to alert the user they must use a different URL
@@ -37,12 +45,4 @@ module.exports = (req, res) => {
     // if it errors then it means no product was found and that’s good
     return res.redirect(paths.paymentLinks.amount)
   })
-
-  if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
-    req.flash('generic', `<h2>The details have been updated</h2>`)
-  }
-
-  if (req.body['change'] === 'true') {
-    return res.redirect(paths.paymentLinks.review)
-  }
 }

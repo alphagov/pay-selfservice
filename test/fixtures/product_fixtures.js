@@ -136,5 +136,20 @@ module.exports = {
         return data
       }
     }
+  },
+
+  validGetProductByPath: (opts = {}) => {
+    const data = {
+      serviceNamePath: opts.serviceNamePath || 'service-name',
+      productNamePath: opts.productNamePath || 'product-name'
+    }
+    return {
+      getPactified: () => {
+        return pactProducts.pactify(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
   }
 }
