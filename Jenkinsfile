@@ -100,6 +100,14 @@ pipeline {
         }
       }
     }
+    stage('Deploy') {
+      when {
+        branch 'master'
+      }
+      steps {
+        deployEcs("selfservice", "test", null, false, false)
+      }
+    }
     stage('Smoke Tests') {
       failFast true
       parallel {
