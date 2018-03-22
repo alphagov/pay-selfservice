@@ -22,7 +22,7 @@ module.exports = (req, res) => {
     .then(json => jsonToCsv(json.results, newChargeStatusEnabled))
     .then(csv => {
       logger.debug('Sending csv attachment download -', {'filename': name})
-      res.setHeader('Content-disposition', 'attachment; filename=' + name)
+      res.setHeader('Content-disposition', 'attachment; filename="' + name + '"')
       res.setHeader('Content-Type', 'text/csv')
       res.send(csv)
     })
