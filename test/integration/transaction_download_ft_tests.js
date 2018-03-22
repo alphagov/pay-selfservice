@@ -79,7 +79,7 @@ describe('Transaction download endpoints', function () {
       downloadTransactionList()
         .expect(200)
         .expect('Content-Type', 'text/csv; charset=utf-8')
-        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
         .expect(function (res) {
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
@@ -124,7 +124,7 @@ describe('Transaction download endpoints', function () {
       downloadTransactionList()
         .expect(200)
         .expect('Content-Type', 'text/csv; charset=utf-8')
-        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
         .end(function (err, res) {
           if (err) return done(err)
           let csvContent = res.text
@@ -159,7 +159,7 @@ describe('Transaction download endpoints', function () {
         .set('Accept', 'application/json')
         .expect(200)
         .expect('Content-Type', 'text/csv; charset=utf-8')
-        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
         .end(function (err, res) {
           if (err) return done(err)
           let csvContent = res.text
@@ -194,7 +194,7 @@ describe('Transaction download endpoints', function () {
         .set('Accept', 'application/json')
         .expect(200)
         .expect('Content-Type', 'text/csv; charset=utf-8')
-        .expect('Content-disposition', /attachment; filename=GOVUK Pay \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.csv/)
+        .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
         .end(function (err, res) {
           if (err) return done(err)
           let csvContent = res.text
