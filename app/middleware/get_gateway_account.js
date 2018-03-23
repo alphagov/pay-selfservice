@@ -5,6 +5,7 @@ const directDebitConnectorClient = require('../services/clients/direct_debit_con
 const _ = require('lodash')
 const winston = require('winston')
 const EPDQ_3DS_ENABLED = process.env.EPDQ_3DS_ENABLED
+const SMARTPAY_3DS_ENABLED = process.env.SMARTPAY_3DS_ENABLED || 'false'
 
 module.exports = function (req, res, next) {
   const accountId = auth.getCurrentGatewayAccountId(req)
@@ -25,7 +26,14 @@ module.exports = function (req, res, next) {
   }
   return connectorClient.getAccount(params)
     .then(data => {
-      const SUPPORTS_3DS = (EPDQ_3DS_ENABLED === 'true') ? ['worldpay', 'epdq'] : ['worldpay']
+      let SUPPORTS_3DS = ['worldpay']
+      // env var values are treated as text so the comparisaon is done for text
+      if (EPDQ_3DS_ENABLED === 'true') {
+        SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['epdq'])
+      }
+      if (SMARTPAY_3DS_ENABLED === 'true') {
+        SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['smartpay'])
+      }
       req.account = _.extend({}, data, {
         supports3ds: SUPPORTS_3DS.includes(_.get(data, 'payment_provider'))
       })

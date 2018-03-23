@@ -87,11 +87,20 @@ describe('middleware: getGatewayAccount', () => {
       done()
     })
   })
-  it('should extend the account data with supports3ds set to false if the account type is not worldpay or epdq', done => {
+  it('should not extend the account data with supports3ds set to false if the account type is smartpay and feature flag disabled', done => {
     lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
     const getGatewayAccount = setupGetGatewayAccount('1', 'smartpay')
     getGatewayAccount(req, res, next).then(() => {
       expect(req.account).to.deep.equal({id: '1', payment_provider: 'smartpay', supports3ds: false})
+      done()
+    })
+  })
+  it('should extend the account data with supports3ds set to true if the account type is smartpay and feature flag enabled', done => {
+    process.env.SMARTPAY_3DS_ENABLED = 'true'
+    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+    const getGatewayAccount = setupGetGatewayAccount('1', 'smartpay')
+    getGatewayAccount(req, res, next).then(() => {
+      expect(req.account).to.deep.equal({id: '1', payment_provider: 'smartpay', supports3ds: true})
       done()
     })
   })
