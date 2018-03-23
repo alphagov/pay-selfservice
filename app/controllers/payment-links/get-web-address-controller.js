@@ -10,7 +10,7 @@ const paths = require('../../paths')
 module.exports = (req, res) => {
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
-  const productNamePath = req.body['payment-amount'] || pageData.productNamePath || ''
+  const productNamePath = pageData.productNamePath || ''
 
   return response(req, res, 'payment-links/web-address', {
     friendlyURL,
