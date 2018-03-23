@@ -18,9 +18,9 @@ API Keys - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK P
   <ul class="tabs">
     {% if active %}
     <li class="current">Active keys</li>
-    <li><a href="{{ routes.apiKeys.revoked }}">Revoked keys</a></li>
+    <li><a id="revoked-keys-tab" href="{{ routes.apiKeys.revoked }}">Revoked keys</a></li>
     {% else %}
-    <li><a href="{{ routes.apiKeys.index }}">Active keys</a></li>
+    <li><a id="active-keys-tab" href="{{ routes.apiKeys.index }}">Active keys</a></li>
     <li class="current">Revoked keys</li>
     {% endif %}
   </ul>
