@@ -105,7 +105,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        deployEcs("selfservice", "test", null, false, false)
+        deployEcs("selfservice")
       }
     }
     stage('Smoke Tests') {
