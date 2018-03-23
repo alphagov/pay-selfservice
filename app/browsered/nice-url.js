@@ -3,7 +3,7 @@
 const removeDefinateArticles = require('../utils/nunjucks-filters/remove-definate-articles')
 
 module.exports = () => {
-  const inputs = document.querySelectorAll('[data-slugify]')
+  const inputs = Array.prototype.slice.call(document.querySelectorAll('[data-slugify]'))
 
   inputs.forEach(input => {
     input.addEventListener('input', niceURL, false)
