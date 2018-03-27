@@ -2,9 +2,16 @@
 
 // NPM dependencies
 const lodash = require('lodash')
+const slugify = require('../../utils/nunjucks-filters/slugify')
+const removeDefinateArticles = require('../../utils/nunjucks-filters/remove-definate-articles')
 
 // Local dependencies
 const paths = require('../../paths')
+const productsClient = require('../../services/clients/products_client.js')
+
+const makeNiceURL = string => {
+  return slugify(removeDefinateArticles(string))
+}
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
@@ -12,6 +19,8 @@ module.exports = (req, res) => {
 
   updatedPageData.paymentLinkTitle = req.body['payment-link-title']
   updatedPageData.paymentLinkDescription = req.body['payment-link-description']
+  updatedPageData.serviceNamePath = makeNiceURL(req.body['service-name-path'])
+  updatedPageData.productNamePath = makeNiceURL(req.body['payment-link-title'])
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 
   if (updatedPageData.paymentLinkTitle === '') {
@@ -27,5 +36,13 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.review)
   }
 
-  return res.redirect(paths.paymentLinks.amount)
+  productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
+  .then(product => {
+    // if product exists we need to alert the user they must use a different URL
+    return res.redirect(paths.paymentLinks.webAddress)
+  })
+  .catch((err) => { // eslint-disable-line handle-callback-err
+    // if it errors then it means no product was found and that’s good
+    return res.redirect(paths.paymentLinks.amount)
+  })
 }

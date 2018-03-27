@@ -69,4 +69,14 @@
   &-list {
     padding-bottom: $gutter / 2;
   }
+
+  &-read-more {
+    @include core-16;
+
+    margin-top: $gutter / 2;
+  }
+
+  &-url {
+    font-weight: normal;
+  }
 }

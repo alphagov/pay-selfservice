@@ -19,7 +19,8 @@ module.exports = {
     disable: disableProduct,
     updateServiceNameOfProductsByGatewayAccountId: updateServiceNameOfProductsByGatewayAccountId,
     getByProductExternalId: getProductByExternalId,
-    getByGatewayAccountId: getProductsByGatewayAccountId
+    getByGatewayAccountId: getProductsByGatewayAccountId,
+    getByProductPath: getProductByPath
   },
   payment: {
     create: createPayment,
@@ -39,6 +40,8 @@ module.exports = {
  * @param {string=} options.description - The description of the product
  * @param {string=} options.type - The type of the product
  * @param {string=} options.returnUrl - Where to redirect to upon completion of a charge for this product
+ * @param {string=} options.serviceNamePath - first part of friendly url derived from the service name
+ * @param {string=} options.productNamePath - second part of friendly url derived from the payment link title
  * @returns {Promise<Product>}
  */
 function createProduct (options) {
@@ -54,7 +57,9 @@ function createProduct (options) {
       description: options.description,
       service_name: options.serviceName,
       type: options.type,
-      return_url: options.returnUrl
+      return_url: options.returnUrl,
+      service_name_path: options.serviceNamePath,
+      product_name_path: options.productNamePath
     },
     description: 'create a product for a service',
     service: SERVICE_NAME
@@ -157,4 +162,18 @@ function getPaymentsByProductExternalId (productExternalId) {
     description: `find a payments associated with a particular product`,
     service: SERVICE_NAME
   }).then(payments => payments.map(payment => new Payment(payment)))
+}
+
+/**
+ * @param {String} serviceNamePath: the service name path of the product you wish to retrieve
+ * @param {String} productNamePath: the product name path of the product you wish to retrieve
+ * @returns {Promise<Product>}
+ */
+function getProductByPath (serviceNamePath, productNamePath) {
+  return baseClient.get({
+    baseUrl,
+    url: `/products?serviceNamePath=${serviceNamePath}&productNamePath=${productNamePath}`,
+    description: `find a product by it's product path`,
+    service: SERVICE_NAME
+  }).then(product => new Product(product))
 }

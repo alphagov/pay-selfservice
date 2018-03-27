@@ -12,13 +12,15 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
 
-function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceName) {
+function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceName, serviceNamePath, productNamePath) {
   const productPayload = {
     payApiToken,
     gatewayAccountId,
     name: paymentLinkTitle,
     serviceName,
-    type: productTypes.ADHOC
+    type: productTypes.ADHOC,
+    serviceNamePath,
+    productNamePath
   }
 
   if (paymentLinkDescription) {
@@ -33,7 +35,7 @@ function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, p
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const {paymentLinkTitle, paymentLinkDescription, paymentLinkAmount} = lodash.get(req, 'session.pageData.createPaymentLink', {})
+  const {paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceNamePath, productNamePath} = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
     return res.redirect(paths.paymentLinks.start)
@@ -54,7 +56,9 @@ module.exports = (req, res) => {
         paymentLinkTitle,
         paymentLinkDescription,
         paymentLinkAmount,
-        req.service.name
+        req.service.name,
+        serviceNamePath,
+        productNamePath
       )
     ))
     .then(product => {

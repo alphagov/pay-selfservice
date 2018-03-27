@@ -21,6 +21,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
 
   <form action="{{ nextPage }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input type="hidden" name="service-name-path" value="{{currentServiceName}}">
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
     {% endif %}
@@ -37,15 +38,17 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         </span>
         {% endif %}
       </label>
-      <input class="form-control form-control-full" id="payment-link-title" name="payment-link-title" type="text" data-validate value="{{ paymentLinkTitle }}" {% if change !== 'payment-link-description' %}autofocus{% endif %}>
-<!--       <div class="panel panel-border-wide create-payment-link-link-replay">
-        <h3 class="heading-small">
-          The website address for this payment link will look like:
-        </h3>
-        <p class="grey">
-          You haven’t entered a title yet.
-        </p>
-      </div> -->
+      <input
+        class="form-control form-control-full"
+        id="payment-link-title"
+        name="payment-link-title"
+        type="text"
+        data-validate value="{{ paymentLinkTitle }}"
+        {% if change !== 'payment-link-description' %}autofocus{% endif %} data-confirmation
+        data-confirmation-title="The website address for this payment link will look like:"
+        data-confirmation-label="{{friendlyURL}}/{{currentServiceName | removeDefinateArticles | slugify}}/"
+        data-confirmation-filter="slugify"
+      />
     </div>
     <div class="form-group">
       <label class="form-label-bold" for="payment-link-description">

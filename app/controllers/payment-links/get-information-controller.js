@@ -12,9 +12,11 @@ module.exports = (req, res) => {
   const paymentLinkTitle = req.body['payment-description'] || pageData.paymentLinkTitle || ''
   const paymentLinkDescription = req.body['payment-amount'] || pageData.paymentLinkDescription || ''
   const change = lodash.get(req, 'query.field', {})
+  const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
 
   return response(req, res, 'payment-links/information', {
     change,
+    friendlyURL,
     paymentLinkTitle,
     paymentLinkDescription,
     nextPage: paths.paymentLinks.information,

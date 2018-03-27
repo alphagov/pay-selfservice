@@ -29,6 +29,16 @@ textarea {
   }
 }
 
+.error-summary .error-summary-list {
+  li {
+    margin-bottom: 0;
+
+    &+ li {
+      margin-top: $gutter / 6;
+    }
+  }
+}
+
 .form-hint {
   margin-bottom: $gutter / 6;
 }

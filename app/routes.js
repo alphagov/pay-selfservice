@@ -245,6 +245,8 @@ module.exports.bind = function (app) {
   app.get(paymentLinks.start, permission('transactions:read'), getAccount, paymentLinksCtrl.getStart)
   app.get(paymentLinks.information, permission('transactions:read'), getAccount, paymentLinksCtrl.getInformation)
   app.post(paymentLinks.information, permission('transactions:read'), getAccount, paymentLinksCtrl.postInformation)
+  app.get(paymentLinks.webAddress, permission('transactions:read'), getAccount, paymentLinksCtrl.getWebAddress)
+  app.post(paymentLinks.webAddress, permission('transactions:read'), getAccount, paymentLinksCtrl.postWebAddress)
   app.get(paymentLinks.amount, permission('transactions:read'), getAccount, paymentLinksCtrl.getAmount)
   app.post(paymentLinks.amount, permission('transactions:read'), getAccount, paymentLinksCtrl.postAmount)
   app.get(paymentLinks.review, permission('transactions:read'), getAccount, paymentLinksCtrl.getReview)

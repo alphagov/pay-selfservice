@@ -40,7 +40,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         </dt>
         <dd class="cya-answer" id="create-payment-link-description">
           {% if paymentLinkDescription %}
-            {{ paymentLinkDescription }}
+            {{ paymentLinkDescription | striptags(true) | escape | nl2br }}
           {% else %}
             <span class="grey">None given</span>
           {% endif %}
