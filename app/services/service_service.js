@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const getAdminUsersClient = require('./clients/adminusers_client')
 const {ConnectorClient} = require('../services/clients/connector_client')
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client')
-const {DIRECT_DEBIT_TOKEN_PREFIX} = directDebitConnectorClient
+const {isADirectDebitAccount} = directDebitConnectorClient
 const productsClient = require('../services/clients/products_client')
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
@@ -27,7 +27,7 @@ module.exports = {
  * @returns {Promise<GatewayAccount[]>} promise of collection of gateway accounts which belong to this service
  */
 function getGatewayAccounts (gatewayAccountIds, correlationId) {
-  const accounts = lodash.partition(gatewayAccountIds, id => id.startsWith(DIRECT_DEBIT_TOKEN_PREFIX))
+  const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
   const fetchCardGatewayAccounts = Promise.all(accounts[1]
     .map(gatewayAccountId => connectorClient.getAccount({
       gatewayAccountId: gatewayAccountId,
@@ -73,9 +73,10 @@ function updateServiceName (serviceExternalId, serviceName, correlationId) {
       if (gatewayAccountIds.length <= 0) {
         return q.resolve(new Service(result))
       } else {
+        const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
         return q.all([
-          ...gatewayAccountIds.map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
-          ...gatewayAccountIds.map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
+          ...accounts[1].map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
+          ...accounts[1].map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
         ])
           .then(() => q.resolve(new Service(result)))
       }

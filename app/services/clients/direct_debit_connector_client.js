@@ -13,11 +13,15 @@ const SERVICE_NAME = 'directdebit-connector'
 
 // Exports
 module.exports = {
-  DIRECT_DEBIT_TOKEN_PREFIX,
+  isADirectDebitAccount,
   gatewayAccount: {
     create: createGatewayAccount,
     get: getGatewayAccountByExternalId
   }
+}
+
+function isADirectDebitAccount (accountId) {
+  return accountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX)
 }
 
 function createGatewayAccount (options) {

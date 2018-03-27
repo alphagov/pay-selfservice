@@ -4,7 +4,7 @@ var response = require('../utils/response.js').response
 var errorView = require('../utils/response.js').renderErrorView
 var auth = require('../services/auth_service.js')
 const publicAuthClient = require('../services/clients/public_auth_client')
-const {DIRECT_DEBIT_TOKEN_PREFIX} = require('../services/clients/direct_debit_connector_client.js')
+const {isADirectDebitAccount} = require('../services/clients/direct_debit_connector_client.js')
 // TODO remove these and make them proper i.e. show update destroy etc
 const API_KEYS_INDEX = 'tokens'
 const API_KEY_GENERATE = 'token_generate'
@@ -73,7 +73,7 @@ module.exports.show = function (req, res) {
 module.exports.create = function (req, res) {
   // current account id is either external (DIRECT_DEBIT) or internal (CARD) for now
   const currentAccountId = auth.getCurrentGatewayAccountId(req)
-  const tokenType = currentAccountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX) ? 'DIRECT_DEBIT' : 'CARD'
+  const tokenType = isADirectDebitAccount(currentAccountId) ? 'DIRECT_DEBIT' : 'CARD'
   const correlationId = req.correlationId
   const description = req.body.description
   const payload = {

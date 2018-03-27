@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
     gatewayAccountId: accountId,
     correlationId: req.correlationId
   }
-  if (accountId.startsWith(directDebitConnectorClient.DIRECT_DEBIT_TOKEN_PREFIX)) {
+  if (directDebitConnectorClient.isADirectDebitAccount(accountId)) {
     return directDebitConnectorClient.gatewayAccount.get(params)
       .then(gatewayAccount => {
         req.account = gatewayAccount
