@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const {renderErrorView} = require('../utils/response.js')
+const {isADirectDebitAccount} = require('../services/clients/direct_debit_connector_client')
 /**
  * This middleware resolves the current service in context
  *
@@ -18,7 +19,7 @@ module.exports = function (req, res, next) {
   }
 
   req.service.hasDirectDebitGatewayAccount =
-    (req.service.gatewayAccountIds || []).some((gatewayAccountId) => gatewayAccountId.startsWith('DIRECT_DEBIT:'))
+    (req.service.gatewayAccountIds || []).some((gatewayAccountId) => isADirectDebitAccount(gatewayAccountId))
 
   next()
 }
