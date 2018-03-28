@@ -15,6 +15,9 @@
 // Override New Transport font-stack from front-end toolkit
 $grey-8: #fff;
 
+// Set path for frontend toolkit because this isn’t rails
+$path: '/public/images/icons/';
+
 @mixin media-down($mobile) {
   @content;
 }
