@@ -80,6 +80,9 @@ function validateField (form, field) {
       case 'isFieldGreaterThanMaxLengthChars' :
         result = checks.isFieldGreaterThanMaxLengthChars(field.value, field.getAttribute('data-validate-max-length'))
         break
+      case 'isNaxsiSafe' :
+        result = checks.isNaxiSafe(field.value)
+        break
       default :
         result = checks.isEmpty(field.value)
         break

@@ -18,7 +18,8 @@ const validationErrors = {
   isHttps: 'URL must begin with https://',
   isAboveMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`,
-  isGreaterThanMaxLengthChars: `The text is too long`
+  isGreaterThanMaxLengthChars: `The text is too long`,
+  invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`
 }
 
 exports.isEmpty = function (value) {
@@ -75,3 +76,11 @@ exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => {
 }
 
 exports.isPasswordLessThanTenChars = value => !value || value.length < 10 ? validationErrors.isPasswordLessThanTenChars : false
+
+exports.isNaxsiSafe = function (value) {
+  if (/[<>;:`()"'=|,~[\]]+/g.test(value)) {
+    return validationErrors.invalidCharacters
+  } else {
+    return false
+  }
+}

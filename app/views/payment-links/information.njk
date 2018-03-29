@@ -43,7 +43,9 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         id="payment-link-title"
         name="payment-link-title"
         type="text"
-        data-validate value="{{ paymentLinkTitle }}"
+        data-validate="isFieldGreaterThanMaxLengthChars isNaxsiSafe"
+        data-validate-max-length="254"
+        value="{{ paymentLinkTitle }}"
         {% if change !== 'payment-link-description' %}autofocus{% endif %} data-confirmation
         data-confirmation-title="The website address for this payment link will look like:"
         data-confirmation-label="{{friendlyURL}}/{{currentServiceName | removeDefinateArticles | slugify}}/"
