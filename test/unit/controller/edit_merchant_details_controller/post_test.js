@@ -24,9 +24,10 @@ describe('edit merchant details controller - post', () => {
     service: {
       name: 'System Generated',
       external_id: EXTERNAL_SERVICE_ID,
-      gateway_account_ids: ['20'],
+      gateway_account_ids: ['20', 'DIRECT_DEBIT:somerandomidhere'],
       merchant_details: {
         name: 'name',
+        telephone_number: '03069990000',
         address_line1: 'line1',
         address_line2: 'line2',
         address_city: 'City',
@@ -65,6 +66,7 @@ describe('edit merchant details controller - post', () => {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
+          'telephone-number': '03069990001',
           'address-line1': 'new-line1',
           'address-city': 'new-city',
           'address-postcode': 'new-postcode',
@@ -131,6 +133,7 @@ describe('edit merchant details controller - post', () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
       expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
         'merchant-name': true,
+        'telephone-number': true,
         'address-line1': true
       })
     })
@@ -160,6 +163,7 @@ describe('edit merchant details controller - post', () => {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
+          'telephone-number': '03069990001',
           'address-line1': 'new-line1',
           'address-city': 'new-city',
           'address-postcode': 'wrong',
@@ -197,6 +201,7 @@ describe('edit merchant details controller - post', () => {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
+          'telephone-number': '03069990001',
           'address-line1': 'new-line1',
           'address-city': 'new-city',
           'address-postcode': 'new-postcode',

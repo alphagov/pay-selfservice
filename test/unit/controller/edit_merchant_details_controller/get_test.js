@@ -34,7 +34,7 @@ describe('edit merchant details controller - get', () => {
     external_id: EXTERNAL_ID_IN_SESSION,
     service_roles: serviceRoles
   })
-  describe('when the merchant already has details', () => {
+  describe('when the merchant already has details (CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
       let serviceRoles = [{
         service: {
@@ -43,6 +43,7 @@ describe('edit merchant details controller - get', () => {
           gateway_account_ids: ['20'],
           merchant_details: {
             name: 'name',
+            telephone_number: '',
             address_line1: 'line1',
             address_line2: 'line2',
             address_city: 'City',
@@ -63,7 +64,7 @@ describe('edit merchant details controller - get', () => {
       user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      let app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
         .get(paths.merchantDetails.index)
         .end((err, res) => {
@@ -84,12 +85,89 @@ describe('edit merchant details controller - get', () => {
       expect($('#address-country').val()).to.equal('AR')
     })
   })
-  describe('when the merchant has empty details', () => {
+  describe('when the merchant already has details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
     before(done => {
+      let serviceRoles = [{
+        service: {
+          name: 'System Generated',
+          external_id: EXTERNAL_SERVICE_ID,
+          gateway_account_ids: ['DIRECT_DEBIT:somerandomidhere'],
+          merchant_details: {
+            name: 'name',
+            telephone_number: '03069990000',
+            address_line1: 'line1',
+            address_line2: 'line2',
+            address_city: 'City',
+            address_postcode: 'POSTCODE',
+            address_country: 'AR'
+          }
+        },
+        role: {
+          name: 'admin',
+          description: 'Administrator',
+          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
+        }
+      }]
+      let userInSession = mockSession.getUser({
+        external_id: EXTERNAL_ID_IN_SESSION,
+        service_roles: serviceRoles
+      })
       user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      let app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      supertest(app)
+        .get(paths.merchantDetails.index)
+        .end((err, res) => {
+          response = res
+          $ = cheerio.load(res.text || '')
+          done(err)
+        })
+    })
+    it(`should get a nice 200 status code`, () => {
+      expect(response.statusCode).to.equal(200)
+    })
+    it(`should pre-fill form values with the merchant details`, () => {
+      expect($('#merchant-name').val()).to.equal('name')
+      expect($('#telephone-number').val()).to.equal('03069990000')
+      expect($('#address-line1').val()).to.equal('line1')
+      expect($('#address-line2').val()).to.equal('line2')
+      expect($('#address-city').val()).to.equal('City')
+      expect($('#address-postcode').val()).to.equal('POSTCODE')
+      expect($('#address-country').val()).to.equal('AR')
+    })
+  })
+  describe('when the merchant has empty details (CREDIT CARD GATEWAY ACCOUNT)', () => {
+    before(done => {
+      let serviceRoles = [{
+        service: {
+          name: 'System Generated',
+          external_id: EXTERNAL_SERVICE_ID,
+          gateway_account_ids: ['20'],
+          merchant_details: {
+            name: '',
+            telephone_number: '',
+            address_line1: '',
+            address_line2: '',
+            address_city: '',
+            address_postcode: '',
+            address_country: ''
+          }
+        },
+        role: {
+          name: 'admin',
+          description: 'Administrator',
+          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
+        }
+      }]
+      let userInSession = mockSession.getUser({
+        external_id: EXTERNAL_ID_IN_SESSION,
+        service_roles: serviceRoles
+      })
+      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
+        .reply(200, user.getPlain())
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
         .get(paths.merchantDetails.index)
         .end((err, res) => {
@@ -103,6 +181,58 @@ describe('edit merchant details controller - get', () => {
     })
     it(`should show empty inputs and GB selected as country`, () => {
       expect($('#merchant-name').val()).to.equal('')
+      expect($('#address-line1').val()).to.equal('')
+      expect($('#address-line2').val()).to.equal('')
+      expect($('#address-city').val()).to.equal('')
+      expect($('#address-postcode').val()).to.equal('')
+      expect($('#address-country').val()).to.equal('GB')
+    })
+  })
+  describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
+    before(done => {
+      let serviceRoles = [{
+        service: {
+          name: 'System Generated',
+          external_id: EXTERNAL_SERVICE_ID,
+          gateway_account_ids: ['DIRECT_DEBIT:somerandomidhere'],
+          merchant_details: {
+            name: '',
+            telephone_number: '',
+            address_line1: '',
+            address_line2: '',
+            address_city: '',
+            address_postcode: '',
+            address_country: ''
+          }
+        },
+        role: {
+          name: 'admin',
+          description: 'Administrator',
+          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
+        }
+      }]
+      let userInSession = mockSession.getUser({
+        external_id: EXTERNAL_ID_IN_SESSION,
+        service_roles: serviceRoles
+      })
+      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
+        .reply(200, user.getPlain())
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      supertest(app)
+        .get(paths.merchantDetails.index)
+        .end((err, res) => {
+          response = res
+          $ = cheerio.load(res.text || '')
+          done(err)
+        })
+    })
+    it(`should get a nice 200 status code`, () => {
+      expect(response.statusCode).to.equal(200)
+    })
+    it(`should show empty inputs and GB selected as country`, () => {
+      expect($('#merchant-name').val()).to.equal('')
+      expect($('#telephone-number').val()).to.equal('')
       expect($('#address-line1').val()).to.equal('')
       expect($('#address-line2').val()).to.equal('')
       expect($('#address-city').val()).to.equal('')
@@ -130,7 +260,7 @@ describe('edit merchant details controller - get', () => {
           }
         }
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
+      const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
       .get(paths.merchantDetails.index)
       .end((err, res) => {
@@ -149,7 +279,7 @@ describe('edit merchant details controller - get', () => {
       expect($('.error-summary').length).to.equal(0)
     })
   })
-  describe('when errors and merchant details are set in the session', () => {
+  describe('when errors and merchant details are set in the session (CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
       user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
@@ -181,7 +311,7 @@ describe('edit merchant details controller - get', () => {
           }
         }
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
+      const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
       .get(paths.merchantDetails.index)
       .end((err, res) => {
@@ -208,6 +338,78 @@ describe('edit merchant details controller - get', () => {
     })
     it(`should show prefilled inputs`, () => {
       expect($('#merchant-name').val()).to.equal('name')
+      expect($('#address-line1').val()).to.equal('line1')
+      expect($('#address-line2').val()).to.equal('line2')
+      expect($('#address-city').val()).to.equal('City')
+      expect($('#address-postcode').val()).to.equal('POSTCODE')
+      expect($('#address-country').val()).to.equal('GB')
+    })
+  })
+  describe('when errors and merchant details are set in the session (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
+    before(done => {
+      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
+        .reply(200, user.getPlain())
+      session = {
+        csrfSecret: '123',
+        12345: {refunded_amount: 5},
+        passport: {
+          user: userInSession
+        },
+        secondFactor: 'totp',
+        last_url: 'last_url',
+        version: 0,
+        pageData: {
+          editMerchantDetails: {
+            success: false,
+            merchant_details: {
+              name: 'name',
+              telephone_number: 'invalid-phone',
+              address_line1: 'line1',
+              address_line2: 'line2',
+              address_city: 'City',
+              address_postcode: 'POSTCODE',
+              address_country: 'GB'
+            },
+            has_direct_debit_gateway_account: true,
+            errors: {
+              'merchant-name': true,
+              'telephone-number': true,
+              'address-country': true
+            }
+          }
+        }
+      }
+      const app = mockSession.createAppWithSession(getApp(), session)
+      supertest(app)
+        .get(paths.merchantDetails.index)
+        .end((err, res) => {
+          response = res
+          $ = cheerio.load(res.text || '')
+          done(err)
+        })
+    })
+    it(`should get a nice 200 status code`, () => {
+      expect(response.statusCode).to.be.equal(200)
+    })
+    it(`should show a list of errors`, () => {
+      expect($('.error-summary-list li').length).to.equal(3)
+      expect($('.error-summary-list li a[href$="#merchant-name"]').text()).to.equal('Name')
+      expect($('.error-summary-list li a[href$="#telephone-number"]').text()).to.equal('Phone number')
+      expect($('.error-summary-list li a[href$="#address-country"]').text()).to.equal('Country')
+    })
+    it(`should show inline error messages`, () => {
+      expect($('.error-message').length).to.equal(3)
+      expect($('.error-message').eq(0).text()).to.contain('Please enter a valid name')
+      expect($('.error-message').eq(1).text()).to.contain('Please enter a valid phone number')
+      expect($('.error-message').eq(2).text()).to.contain('Please enter a valid country')
+    })
+    it(`should not show an updated successful banner`, () => {
+      expect($('.notification').length).to.equal(0)
+    })
+    it(`should show prefilled inputs`, () => {
+      expect($('#merchant-name').val()).to.equal('name')
+      expect($('#telephone-number').val()).to.equal('invalid-phone')
       expect($('#address-line1').val()).to.equal('line1')
       expect($('#address-line2').val()).to.equal('line2')
       expect($('#address-city').val()).to.equal('City')

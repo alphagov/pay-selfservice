@@ -24,6 +24,9 @@
       {% if errors["merchant-name"] %}
       <li><a href="#merchant-name">Name</a></li>
       {% endif %}
+      {% if errors["telephone-number"] %}
+        <li><a href="#telephone-number">Phone number</a></li>
+      {% endif %}
       {% if errors["address-line1"] %}
       <li><a href="#address-line1">Address</a></li>
       {% endif %}
@@ -59,6 +62,22 @@
       {% endif %}
       <input class="form-control form-control-2-3" id="merchant-name" name="merchant-name" type="text" value="{{merchant_details.name}}">
     </div>
+    {% if has_direct_debit_gateway_account %}
+      <div class="form-group">
+        <label class="form-label" for="telephone-number">
+          <span class="heading-small">Phone number</span>
+          <span class="form-hint form-control-2-3">
+            Required for Direct Debit
+          </span>
+        </label>
+        {% if errors["telephone-number"] %}
+          <span class="error-message">
+            Please enter a valid phone number
+          </span>
+        {% endif %}
+        <input class="form-control form-control-2-3" id="telephone-number" name="telephone-number" type="text" value="{{merchant_details.telephone_number}}">
+      </div>
+    {% endif %}
     <div class="form-group">
       <h2 class="heading-small billing-address-label">Merchant address</h2>
       <div class="payment-type-intro">
