@@ -30,7 +30,7 @@ Team members - GOV.UK Pay
         {% for admin in team_members["admin"] %}
           <li>
             {% if permissions.users_service_read %}
-              <a href="{{ admin.link }}">
+              <a id="admin-{{ loop.index }}-link" href="{{ admin.link }}">
             {% else %}
               <span>
             {% endif %}
@@ -50,7 +50,7 @@ Team members - GOV.UK Pay
         {% for team_member in team_members["view-and-refund"] %}
           <li>
             {% if permissions.users_service_read %}
-              <a href="{{ team_member.link }}">
+              <a id="view-refund-member-{{ loop.index }}-link" href="{{ team_member.link }}">
             {% else %}
               <span>
             {% endif %}
@@ -70,7 +70,7 @@ Team members - GOV.UK Pay
         {% for team_member in team_members["view-only"] %}
           <li>
             {% if permissions.users_service_read %}
-              <a href="{{ team_member.link }}">
+              <a id="view-only-member-{{ loop.index }}-link" href="{{ team_member.link }}">
             {% else %}
               <span>
             {% endif %}
