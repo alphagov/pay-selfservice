@@ -46,10 +46,16 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         data-validate="isFieldGreaterThanMaxLengthChars isNaxsiSafe"
         data-validate-max-length="254"
         value="{{ paymentLinkTitle }}"
-        {% if change !== 'payment-link-description' %}autofocus{% endif %} data-confirmation
+        {% if change !== 'payment-link-description' %}
+          autofocus
+        {% endif %}
+        data-confirmation
         data-confirmation-title="The website address for this payment link will look like:"
         data-confirmation-label="{{friendlyURL}}/{{currentServiceName | removeDefinateArticles | slugify}}/"
         data-confirmation-filter="slugify"
+        {% if change.length %}
+          data-confirmation-display="onload"
+        {% endif %}
       />
     </div>
     <div class="form-group">
