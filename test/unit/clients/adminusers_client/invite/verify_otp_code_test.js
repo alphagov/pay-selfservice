@@ -24,7 +24,7 @@ describe('adminusers client - submit verification details', function () {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-verify-security-code', provider: 'adminusers', port: mockPort})
+      adminUsersMock = Pact({consumer: 'selfservice', provider: 'adminusers', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

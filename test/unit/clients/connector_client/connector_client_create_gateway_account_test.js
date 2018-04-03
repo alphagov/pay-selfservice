@@ -30,7 +30,7 @@ describe('connector client - create gateway account', function () {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      connectorMock = Pact({consumer: 'Connector-create-gateway-account', provider: 'Connector', port: mockPort})
+      connectorMock = Pact({consumer: 'selfservice', provider: 'connector', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

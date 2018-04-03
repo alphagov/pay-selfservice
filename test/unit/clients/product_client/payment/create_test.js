@@ -31,7 +31,7 @@ describe('products client - creating a new payment', () => {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(() => {
-      productsMock = Pact({consumer: 'Selfservice-create-new-charge', provider: 'products', port: mockPort})
+      productsMock = Pact({consumer: 'selfservice', provider: 'products', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

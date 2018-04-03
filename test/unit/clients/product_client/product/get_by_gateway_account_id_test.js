@@ -33,7 +33,7 @@ describe('products client - find products associated with a particular gateway a
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(() => {
-      productsMock = Pact({consumer: 'Selfservice-find-product', provider: 'products', port: mockPort})
+      productsMock = Pact({consumer: 'selfservice', provider: 'products', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

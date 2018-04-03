@@ -32,7 +32,7 @@ describe('products client - find a payment by it\'s associated product external 
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      productsMock = Pact({consumer: 'Selfservice-find-product', provider: 'products', port: mockPort})
+      productsMock = Pact({consumer: 'selfservice', provider: 'products', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })
