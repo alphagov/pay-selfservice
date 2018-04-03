@@ -30,7 +30,7 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
    */
   before(done => {
     mockServer.start().then(() => {
-      adminUsersMock = Pact({consumer: 'Selfservice-add-gateway-account-to-service', provider: 'adminusers', port: mockPort})
+      adminUsersMock = Pact({consumer: 'selfservice', provider: 'adminusers', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

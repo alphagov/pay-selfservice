@@ -30,9 +30,10 @@ describe('adminusers client - generate otp code for service invite', function ()
     this.timeout(5000)
     mockServer.start().then(function () {
       adminUsersMock = Pact({
-        consumer: 'Selfservice-generate-service-invite-otp-code',
+        consumer: 'selfservice',
         provider: 'adminusers',
-        port: mockPort
+        port: mockPort,
+        pactfileWriteMode: 'merge'
       })
       done()
     })

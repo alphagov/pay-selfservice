@@ -30,7 +30,7 @@ describe('adminusers client - complete a user invite', function () {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-complete-user-invite', provider: 'adminusers', port: mockPort})
+      adminUsersMock = Pact({consumer: 'selfservice', provider: 'adminusers', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

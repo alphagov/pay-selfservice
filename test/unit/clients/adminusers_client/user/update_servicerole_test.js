@@ -24,7 +24,7 @@ describe('adminusers client - update user service role', function () {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-update-service-role', provider: 'adminusers', port: mockPort})
+      adminUsersMock = Pact({consumer: 'selfservice', provider: 'adminusers', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })

@@ -30,7 +30,7 @@ describe('products client - disable a product', () => {
   before(function (done) {
     this.timeout(5000)
     mockServer.start().then(function () {
-      productsMock = Pact({consumer: 'Selfservice-create-new-product', provider: 'products', port: mockPort})
+      productsMock = Pact({consumer: 'selfservice', provider: 'products', port: mockPort, pactfileWriteMode: 'merge'})
       done()
     })
   })
