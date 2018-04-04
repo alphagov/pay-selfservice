@@ -6,17 +6,16 @@ const {expect} = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
-const pactProxy = require('../../../../test_helpers/pact_proxy')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const productFixtures = require('../../../../fixtures/product_fixtures')
+let path = require('path')
 
 // Constants
 const PRODUCT_RESOURCE = '/v1/api/products'
-const mockPort = Math.floor(Math.random() * 65535)
-const mockServer = pactProxy.create('localhost', mockPort)
-let productsMock, response, result, productExternalId, serviceNamePath, productNamePath
+let port = Math.floor(Math.random() * 48127) + 1024
+let response, result, productExternalId, serviceNamePath, productNamePath
 
-function getProductsClient (baseUrl = `http://localhost:${mockPort}`) {
+function getProductsClient (baseUrl = `http://localhost:${port}`) {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -25,25 +24,18 @@ function getProductsClient (baseUrl = `http://localhost:${mockPort}`) {
 }
 
 describe('products client - find a product by it\'s product path', function () {
-  /**
-   * Start the server and set up Pact
-   */
-  before(function (done) {
-    this.timeout(5000)
-    mockServer.start().then(function () {
-      productsMock = Pact({consumer: 'selfservice', provider: 'products', port: mockPort, pactfileWriteMode: 'merge'})
-      done()
-    })
+  let provider = Pact({
+    consumer: 'selfservice',
+    provider: 'products',
+    port: port,
+    log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    dir: path.resolve(process.cwd(), 'pacts'),
+    spec: 2,
+    pactfileWriteMode: 'merge'
   })
 
-  /**
-   * Remove the server and publish pacts to broker
-   */
-  after(done => {
-    mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
-  })
+  before(() => provider.setup())
+  after((done) => provider.finalize().then(done()))
 
   describe('when a product is successfully found', () => {
     before(done => {
@@ -60,7 +52,7 @@ describe('products client - find a product by it\'s product path', function () {
         service_name_path: serviceNamePath,
         product_name_path: productNamePath
       })
-      productsMock.addInteraction(
+      provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}`)
           .withQuery('serviceNamePath', serviceNamePath)
           .withQuery('productNamePath', productNamePath)
@@ -78,9 +70,7 @@ describe('products client - find a product by it\'s product path', function () {
         .catch(e => done(e))
     })
 
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    afterEach(() => provider.verify())
 
     it('should find an existing product', () => {
       const plainResponse = response.getPlain()
@@ -108,7 +98,7 @@ describe('products client - find a product by it\'s product path', function () {
       const productsClient = getProductsClient()
       serviceNamePath = 'non-existing-service-name-path'
       productNamePath = 'non-existing-product-name-path'
-      productsMock.addInteraction(
+      provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}`)
           .withQuery('serviceNamePath', serviceNamePath)
           .withQuery('productNamePath', productNamePath)
@@ -125,9 +115,7 @@ describe('products client - find a product by it\'s product path', function () {
         })
     })
 
-    after((done) => {
-      productsMock.finalize().then(() => done())
-    })
+    afterEach(() => provider.verify())
 
     it('should reject with error: 404 not found', () => {
       expect(result.errorCode).to.equal(404)
