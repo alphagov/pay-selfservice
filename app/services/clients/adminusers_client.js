@@ -921,6 +921,80 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
+
+  /**
+   *
+   * @param externalId
+   * @param code
+   * @returns {Promise}
+   */
+  const provisionNewOtpKey = (externalId) => {
+    const params = {
+      correlationId: correlationId
+    }
+
+    const url = `${userResource}/${externalId}/second-factor/provision`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'create a new 2FA provisional OTP key',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
+   *
+   * @param externalId
+   * @param code
+   * @param secondFactor {String} 'SMS' or 'APP'
+   * @returns {Promise}
+   */
+  const configureNewOtpKey = (externalId, code, secondFactor) => {
+    const params = {
+      correlationId: correlationId,
+      payload: {
+        code: code,
+        second_factor: secondFactor
+      }
+    }
+
+    const url = `${userResource}/${externalId}/second-factor/configure`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'POST',
+      description: 'configure a new OTP key and method',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context, responseBodyToUserTransformer)
+
+    requestLogger.logRequestStart(context)
+
+    baseClient.post(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -935,6 +1009,8 @@ module.exports = function (clientOptions = {}) {
     verifyOtpAndCreateUser,
     resendOtpCode,
     deleteUser,
+    provisionNewOtpKey,
+    configureNewOtpKey,
 
     // UserServiceRole-related Methods
     updateServiceRole,

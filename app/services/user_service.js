@@ -170,6 +170,38 @@ module.exports = {
    */
   delete: function (externalServiceId, removerExternalId, userExternalId, correlationId) {
     return getAdminUsersClient({correlationId: correlationId}).deleteUser(externalServiceId, removerExternalId, userExternalId)
+  },
+
+  /**
+   * @param externalId
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  provisionNewOtpKey: function (externalId, correlationId) {
+    if (!externalId) {
+      const defer = q.defer()
+      defer.reject()
+      return defer.promise
+    }
+
+    return getAdminUsersClient({correlationId: correlationId}).provisionNewOtpKey(externalId)
+  },
+
+  /**
+   * @param externalId
+   * @param code
+   * @param secondFactor
+   * @param correlationId
+   * @returns {Promise<User>}
+   */
+  configureNewOtpKey: function (externalId, code, secondFactor, correlationId) {
+    if (!externalId) {
+      const defer = q.defer()
+      defer.reject()
+      return defer.promise
+    }
+
+    return getAdminUsersClient({correlationId: correlationId}).configureNewOtpKey(externalId, code, secondFactor)
   }
 
 }

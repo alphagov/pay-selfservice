@@ -1,0 +1,53 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Set up an authenticator app - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-full">
+  <h1 id="details-for" class="heading-large page-title">
+      Set up an authenticator app
+  </h1>
+</div>
+<div class="column-two-thirds">
+  <p>Scan the barcode with your authenticator app or enter the secret manually.</p>
+  <table>
+    <tbody>
+      <tr>
+        <td>Barcode:</td>
+        <td><img src="{{qrCodeDataUrl}}" alt=""></td>
+      </tr>
+      <tr>
+        <td>Secret:</td>
+        <td>{{prettyPrintedSecret}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Now enter the security code shown in your app to complete the set-up.</p>
+  <div class="notice">
+    <i class="icon icon-important">
+      <span class="visually-hidden">Warning</span>
+    </i>
+    <strong class="bold-small">
+        Once set-up is complete, you will only be able to use this authenticator app to sign in.
+    </strong>
+  </div>
+  <p>
+  <form method="post" action="{{confirmApp}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+      <label class="form-label" for="code">
+          Security code
+      </label>
+      <input type="text" class="form-control" id="code" name="code">
+    </div>
+    <div class="form-group call-to-action-group">
+      <input type="submit" class="button" value="Complete">
+      <a id="service-name-cancel-link" href="{{configure2faStartLink}}">
+          Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

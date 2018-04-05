@@ -1,0 +1,33 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Sign-in method - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-full">
+  <h1 id="details-for" class="heading-large page-title">
+      Sign-in method
+  </h1>
+</div>
+<div class="column-two-thirds">
+  {% if usesSmsToSignIn  %}
+  <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
+  <form class="permission-main" method="post" action="{{setUpApp}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+        <button class="button" type="submit">Use an authenticator app instead</button>
+    </div>
+  </form>
+  {% endif %}
+  {% if usesAppToSignIn  %}
+    <p>You currently use an authenticator app to sign in to GOV.UK Pay.</p>
+    <form method="post" action="{{setUpApp}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <div class="form-group">
+          <button class="button" type="submit">Set up a different authenticator app</button>
+      </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
