@@ -34,7 +34,8 @@
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "npm run snyk-protect",
+    "publish": "./test/publish-pacts.js"
   },
   "dependencies": {
     "appmetrics": "3.x",
