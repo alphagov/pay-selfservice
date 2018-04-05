@@ -14,7 +14,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@PP-3614-Add-pact-parameters-for-publishing")
   }
 
   environment {
