@@ -18,6 +18,7 @@ pipeline {
   }
 
   environment {
+    DOCKER_HOST = "unix:///var/run/docker.sock"
     RUN_END_TO_END_ON_PR = "${params.runEndToEndTestsOnPR}"
     RUN_ACCEPT_ON_PR = "${params.runAcceptTestsOnPR}"
   }
