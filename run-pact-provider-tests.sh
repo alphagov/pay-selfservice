@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -d "pay-adminusers" ]; then
+  rm -rf pay-adminusers
+fi
+
 git clone git@github.com:alphagov/pay-adminusers.git
 cd pay-adminusers
 git checkout PP-Test-Pact-Versioning
