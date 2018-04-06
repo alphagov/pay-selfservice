@@ -21,7 +21,7 @@ module.exports = {
 }
 
 function isADirectDebitAccount (accountId) {
-  return accountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX)
+  return accountId && (typeof accountId === 'string') && accountId.startsWith(DIRECT_DEBIT_TOKEN_PREFIX)
 }
 
 function createGatewayAccount (options) {
