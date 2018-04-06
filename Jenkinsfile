@@ -14,7 +14,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@PP-3596_temporarily_disabling_products_smoke_tests")
   }
 
   environment {
@@ -34,55 +34,6 @@ pipeline {
       post {
         failure {
           postMetric("selfservice.docker-build.failure", 1)
-        }
-      }
-    }
-    stage('Tests') {
-      failFast true
-      parallel {
-        stage('Card Payment End-to-End Tests') {
-            when {
-                anyOf {
-                  branch 'master'
-                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
-                }
-            }
-            steps {
-                runCardPaymentsE2E("selfservice")
-            }
-        }
-        stage('Products End-to-End Tests') {
-            when {
-                anyOf {
-                  branch 'master'
-                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
-                }
-            }
-            steps {
-                runProductsE2E("selfservice")
-            }
-        }
-        stage('Direct-Debit End-to-End Tests') {
-            when {
-                anyOf {
-                  branch 'master'
-                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
-                }
-            }
-            steps {
-                runDirectDebitE2E("selfservice")
-            }
-        }
-        stage('Accept Tests') {
-            when {
-                anyOf {
-                  branch 'master'
-                  environment name: 'RUN_ACCEPT_ON_PR', value: 'true'
-                }
-            }
-            steps {
-                runAccept("selfservice")
-            }
         }
       }
     }
@@ -112,7 +63,6 @@ pipeline {
       failFast true
       parallel {
         stage('Product Smoke Test') {
-          when { branch 'master' }
           steps { runProductsSmokeTest() }
         }
         stage('Direct Debit Smoke Test') {
