@@ -17,6 +17,6 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Configuring new OTP key failed - ${err.message}`)
-      errorView(req, res, 'Internal server error')
+      errorView(req, res, 'Security code incorrect')
     })
 }
