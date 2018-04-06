@@ -9,4 +9,7 @@ cd pay-adminusers
 git checkout PP-Test-Pact-Versioning
 branch=$(git rev-parse --abbrev-ref HEAD)
 
+echo "Bash arguments:"
+echo $@
+
 mvn test -Dtest=uk.gov.pay.adminusers.pact.UsersApiTest -DargLine="-Dpact.provider.version=test-tag" -DpactTags=$3 -DpactBrokerUsername=$1 -DpactBrokerPassword=$2 -DpactBrokerHost=governmentdigitalservice.pact.dius.com.au -DpactBrokerPort=443
