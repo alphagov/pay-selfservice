@@ -12,4 +12,4 @@ branch=$(git rev-parse --abbrev-ref HEAD)
 echo "Bash arguments:"
 echo $@
 
-mvn test -Dtest=uk.gov.pay.adminusers.pact.UsersApiTest -DargLine="-Dpact.provider.version=test-tag" -DpactTags=$3 -DpactBrokerUsername=$1 -DpactBrokerPassword=$2 -DpactBrokerHost=governmentdigitalservice.pact.dius.com.au -DpactBrokerPort=443
+mvn test -Dtest=uk.gov.pay.adminusers.pact.UsersApiTest -DargLine="-Dpact.provider.version=1" -DpactTags=$3 -DpactBrokerUsername=$1 -DpactBrokerPassword=$2 -DpactBrokerHost=governmentdigitalservice.pact.dius.com.au -DpactBrokerPort=443
