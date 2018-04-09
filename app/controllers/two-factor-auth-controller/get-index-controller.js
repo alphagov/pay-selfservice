@@ -10,6 +10,8 @@ const userService = require('../../services/user_service.js')
 const errorView = require('../../utils/response.js').renderErrorView
 
 const PAGE_PARAMS = {
+  profile: paths.user.profile,
+  index: paths.user.twoFactorAuth.index,
   configure: paths.user.twoFactorAuth.configure
 }
 

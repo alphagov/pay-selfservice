@@ -6,48 +6,54 @@ Set up an authenticator app - GOV.UK Pay
 
 {% block mainContent %}
 <div class="column-full">
+  <a href="{{profile}}" class="link-back">My profile</a>
+</div>
+<div class="column-full">
   <h1 class="heading-large page-title">
     Set up an authenticator app
   </h1>
 </div>
 <div class="column-two-thirds">
   <p>Scan the barcode with your authenticator app or enter the secret manually.</p>
-  <table>
-    <tbody>
-      <tr>
-        <td>Barcode:</td>
-        <td><img src="{{qrCodeDataUrl}}" alt=""></td>
-      </tr>
-      <tr>
-        <td>Secret:</td>
-        <td>{{prettyPrintedSecret}}</td>
-      </tr>
-    </tbody>
-  </table>
-  <p>Now enter the security code shown in your app to complete the set-up.</p>
   <div class="notice">
     <i class="icon icon-important">
       <span class="visually-hidden">Warning</span>
     </i>
     <strong class="bold-small">
-        Once set-up is complete, you will only be able to use this authenticator app to sign in.
+      Once set-up is complete, you will only be able to use this authenticator app to sign in.
     </strong>
   </div>
-  <p>
-  <form method="post" action="{{complete}}">
+  <figure class="qr-code">
+    <img src="{{qrCodeDataUrl}}" alt="QR code, please scan with your authenticator app.">
+    <figcaption>
+      <h4>Secret</h4>
+      <p class="small">
+        <span class="code">{{prettyPrintedSecret}}</span>
+      </p>
+    </figcaption>
+  </figure>
+  <form method="post" action="{{configure}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group">
+    <div class="form-group {% if flash.genericError %}error{% endif %}">
       <label class="form-label" for="code">
-          Security code
+        Security code
+        <span class="form-hint">
+          Enter the code shown in your app to complete the set-up
+        </span>
+        {% if flash.genericError %}
+          <span class="error-message">Please enter a valid security code</span>
+        {% endif %}
       </label>
-      <input type="text" class="form-control" id="code" name="code">
+      <input autofocus type="text" class="form-control" id="code" name="code" data-validate="required">
     </div>
-    <div class="form-group call-to-action-group">
-      <input type="submit" class="button" value="Complete">
-      <a id="service-name-cancel-link" href="{{index}}">
-          Cancel
-      </a>
+    <div class="form-group">
+      <button class="button" type="submit">
+        Complete
+      </button>
     </div>
+    <a id="service-name-cancel-link" href="{{index}}">
+      Cancel
+    </a>
   </form>
 </div>
 {% endblock %}

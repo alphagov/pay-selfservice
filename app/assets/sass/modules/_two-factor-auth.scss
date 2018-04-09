@@ -1,0 +1,8 @@
+.qr-code {
+  margin: $gutter 0;
+
+  img {
+    margin-left: -1 * ($gutter / 2);
+  }
+
+}
