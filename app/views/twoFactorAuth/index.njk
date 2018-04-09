@@ -14,18 +14,18 @@ Sign-in method - GOV.UK Pay
   </h1>
 </div>
 <div class="column-two-thirds">
-  {% if usesSmsToSignIn %}
-  <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
-  <form method="post" action="{{index}}">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group">
-      <button class="button" type="submit">
-        Use an authenticator app instead
-      </button>
-    </div>
-  </form>
+  {% if authenticatorMethod == 'SMS' %}
+    <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
+    <form method="post" action="{{index}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <div class="form-group">
+        <button class="button" type="submit">
+          Use an authenticator app instead
+        </button>
+      </div>
+    </form>
   {% endif %}
-  {% if usesAppToSignIn %}
+  {% if authenticatorMethod == 'APP' %}
     <p>You currently use an authenticator app to sign in to GOV.UK Pay.</p>
     <form method="post" action="{{index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
