@@ -1,8 +1,7 @@
+{% if currentServiceName %}
 <div class="phase-banner">
   <div class="service-info">
-    {% if currentServiceName %}
     <h4 class="service-info--name heading-small">{{currentServiceName}}</h4>
-    {% endif %}
     {% if currentGatewayAccount %}
     <p>
       <strong class="phase-tag">{{currentGatewayAccount.full_type}} {% if currentGatewayAccount.full_type == 'live' %}account{% endif %}</strong>
@@ -25,3 +24,4 @@
   </nav>
   {% endif %}
 </div>
+{% endif %}
