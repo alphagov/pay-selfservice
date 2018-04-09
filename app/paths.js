@@ -22,10 +22,10 @@ module.exports = {
   user: {
     logIn: '/login',
     profile: '/my-profile',
-    configure2fa: {
-      start: '/my-profile/2fa',
-      setUpApp: '/my-profile/2fa/set-up-app',
-      confirmApp: '/my-profile/2fa/confirm-app'
+    twoFactorAuth: {
+      index: '/my-profile/two-factor-auth',
+      configure: '/my-profile/two-factor-auth/configure',
+      complete: '/my-profile/two-factor-auth/complete'
     },
     otpLogIn: '/otp-login',
     otpSendAgain: '/otp-send-again',

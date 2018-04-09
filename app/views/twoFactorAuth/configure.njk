@@ -6,8 +6,8 @@ Set up an authenticator app - GOV.UK Pay
 
 {% block mainContent %}
 <div class="column-full">
-  <h1 id="details-for" class="heading-large page-title">
-      Set up an authenticator app
+  <h1 class="heading-large page-title">
+    Set up an authenticator app
   </h1>
 </div>
 <div class="column-two-thirds">
@@ -34,7 +34,7 @@ Set up an authenticator app - GOV.UK Pay
     </strong>
   </div>
   <p>
-  <form method="post" action="{{confirmApp}}">
+  <form method="post" action="{{complete}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
       <label class="form-label" for="code">
@@ -44,7 +44,7 @@ Set up an authenticator app - GOV.UK Pay
     </div>
     <div class="form-group call-to-action-group">
       <input type="submit" class="button" value="Complete">
-      <a id="service-name-cancel-link" href="{{configure2faStartLink}}">
+      <a id="service-name-cancel-link" href="{{index}}">
           Cancel
       </a>
     </div>

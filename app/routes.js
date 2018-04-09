@@ -54,7 +54,7 @@ const inviteValidationCtrl = require('./controllers/invite_validation_controller
 const testWithYourUsers = require('./controllers/test_with_your_users')
 const makeADemoPayment = require('./controllers/make_a_demo_payment')
 const paymentLinksCtrl = require('./controllers/payment-links')
-const configure2faCtrl = require('./controllers/configure-2fa-controller')
+const twoFactorAuthCtrl = require('./controllers/two-factor-auth-controller')
 
 // Assignments
 const {
@@ -146,7 +146,7 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
-    ...lodash.values(user.configure2fa)
+    ...lodash.values(user.twoFactorAuth)
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
@@ -258,7 +258,7 @@ module.exports.bind = function (app) {
   app.get(paymentLinks.delete, permission('transactions:read'), getAccount, paymentLinksCtrl.getDelete)
 
   // Configure 2FA
-  app.get(user.configure2fa.start, enforceUserAuthenticated, configure2faCtrl.getStart)
-  app.post(user.configure2fa.setUpApp, enforceUserAuthenticated, configure2faCtrl.postSetUpApp)
-  app.post(user.configure2fa.confirmApp, enforceUserAuthenticated, configure2faCtrl.postConfirmApp)
+  app.get(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.getIndex)
+  app.post(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.postIndex)
+  app.post(user.twoFactorAuth.complete, enforceUserAuthenticated, twoFactorAuthCtrl.postConfigure)
 }

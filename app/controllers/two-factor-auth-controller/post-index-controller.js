@@ -11,14 +11,12 @@ const userService = require('../../services/user_service.js')
 const errorView = require('../../utils/response.js').renderErrorView
 
 const makeOtpUrl = (username, secret) => {
-  return "otpauth://totp/GOV.UK%20Pay:" + encodeURIComponent(username)
-    + "?secret=" + encodeURIComponent(secret)
-    + "&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30";
+  return `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(username)}?secret=${encodeURIComponent(secret)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
 }
 
 const PAGE_PARAMS = {
-  confirmApp: paths.user.configure2fa.confirmApp,
-  configure2faStartLink: paths.user.configure2fa.start
+  complete: paths.user.twoFactorAuth.complete,
+  index: paths.user.twoFactorAuth.index
 }
 
 module.exports = (req, res) => {
@@ -31,7 +29,7 @@ module.exports = (req, res) => {
     })
     .then(qrCodeDataUrl => {
       PAGE_PARAMS.qrCodeDataUrl = qrCodeDataUrl
-      return response(req, res, 'configure_2fa/set-up-app', PAGE_PARAMS)
+      return response(req, res, 'twoFactorAuth/configure', PAGE_PARAMS)
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Provisioning new OTP key failed - ${err.message}`)
