@@ -8,7 +8,8 @@ exports.get = (req, res) => {
     delete req.session.pageData.editMerchantDetails
   } else {
     pageData = {
-      merchant_details: lodash.get(req, 'service.merchantDetails')
+      merchant_details: lodash.get(req, 'service.merchantDetails'),
+      has_direct_debit_gateway_account: lodash.get(req, 'service.hasDirectDebitGatewayAccount')
     }
   }
   pageData.countries = countries.retrieveCountries(lodash.get(pageData.merchant_details, 'address_country'))

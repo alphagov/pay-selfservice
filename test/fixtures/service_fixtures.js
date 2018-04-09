@@ -168,6 +168,7 @@ module.exports = {
     const serviceName = opts.name || 'updated-service-name'
     const merchantDetails = opts.merchant_details || {}
     const merchantName = merchantDetails.name || 'updated-merchant-details-name'
+    const merchantTelephoneNumber = merchantDetails.telephone_number || '03069990000'
     const merchantAddressLine1 = merchantDetails.address_line1 || 'updated-merchant-details-addressline1'
     const merchantAddressLine2 = merchantDetails.address_line2 || 'updated-merchant-details-addressline2'
     const merchantAddressCity = merchantDetails.address_city || 'updated-merchant-details-city'
@@ -179,6 +180,7 @@ module.exports = {
       name: serviceName,
       merchant_details: {
         name: merchantName,
+        telephone_number: merchantTelephoneNumber,
         address_line1: merchantAddressLine1,
         address_line2: merchantAddressLine2,
         address_city: merchantAddressCity,
