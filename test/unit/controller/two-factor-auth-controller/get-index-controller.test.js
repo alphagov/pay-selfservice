@@ -13,7 +13,7 @@ const paths = require('../../../../app/paths')
 const {CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
-describe('Two factor authenticator configure index', () => {
+describe('Two factor authenticator configure index GET', () => {
   describe('when user currently has SMS configured', () => {
     let result, $, session
     before(done => {
