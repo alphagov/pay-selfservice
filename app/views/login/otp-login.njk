@@ -15,18 +15,18 @@ Enter security code - GOV.UK Pay
 </div>
 {% endif %}
 <div class="column-two-thirds" id="display-otp-login">
-  {% if usesSmsToSignIn %}
-  <h1 class="form-title heading-large">Check your phone</h1>
+  {% if authenticatorMethod == 'SMS' %}
+  <h1 class="form-title heading-large page-title">Check your phone</h1>
   {% endif %}
-  {% if usesAppToSignIn %}
-  <h1 class="form-title heading-large">Use your authenticator app</h1>
+  {% if authenticatorMethod == 'APP' %}
+  <h1 class="form-title heading-large page-title">Use your authenticator app</h1>
   {% endif %}
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    {% if usesSmsToSignIn %}
+    {% if authenticatorMethod == 'SMS' %}
     <p>We’ve sent you a text message with a security code</p>
     {% endif %}
-    {% if usesAppToSignIn %}
+    {% if authenticatorMethod == 'APP' %}
     <p>Enter the security code shown in your authenticator app</p>
     {% endif %}
     <div class="form-group{% if flash.error %} error{% endif %}">
@@ -42,7 +42,7 @@ Enter security code - GOV.UK Pay
       <input class="button" type="submit" value="Continue">
     </div>
   </form>
-  {% if usesSmsToSignIn %}
+  {% if authenticatorMethod == 'SMS' %}
   <p><a href="{{routes.user.otpSendAgain}}">Not received a text message?</a></p>
   {% endif %}
   <p><a href="{{routes.user.logOut}}">Cancel</a></p>

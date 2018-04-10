@@ -11,24 +11,17 @@ const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION
 
 module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  userService.findByExternalId(req.user.externalId, correlationId)
-    .then(user => {
-      if (user.secondFactor === 'SMS') {
-        userService.sendOTP(req.user, correlationId).then(
-          () => {
-            res.redirect(paths.user.otpLogIn)
-          },
-          (err) => {
-            errorView(req, res)
-            logger.error(err)
-          }
-        )
-      } else {
-        errorView(req, res, 'You do not use text messages to sign in')
+  if (req.user.secondFactor === 'SMS') {
+    userService.sendOTP(req.user, correlationId).then(
+      () => {
+        res.redirect(paths.user.otpLogIn)
+      },
+      (err) => {
+        errorView(req, res)
+        logger.error(err)
       }
-    })
-    .catch((err) => {
-      logger.error(`[requestId=${correlationId}] Unable to retrieve user - ${err.message}`)
-      errorView(req, res, 'Unable to retrieve user')
-    })
+    )
+  } else {
+    errorView(req, res, 'You do not use text messages to sign in')
+  }
 }
