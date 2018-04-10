@@ -107,7 +107,24 @@ describe('The toggle 3D Secure page when 3D Secure is off', function () {
 
     let body = renderTemplate('3d_secure/index', templateData)
 
-    body.should.containSelector('#threeds-helper-text')
+    body.should.containSelector('#3ds-helper-text-worldpay')
+  })
+
+  it('should not display helper test if not worldpay', function () {
+    let templateData = {
+      'supports3ds': true,
+      'requires3ds': false,
+      'justToggled': false,
+      'showHelper3ds': false,
+      permissions: {
+        toggle_3ds_read: true,
+        toggle_3ds_update: true
+      }
+    }
+
+    let body = renderTemplate('3d_secure/index', templateData)
+
+    body.should.containNoSelector('#3ds-helper-text-worldpay')
   })
 })
 
@@ -296,9 +313,38 @@ describe('The turn 3D Secure on confirmation page', function () {
         toggle_3ds_update: false
       }
     }
-
     let body = renderTemplate('3d_secure/on_confirm', templateData)
 
     body.should.containNoSelector('#3ds-confirm-on-button')
+  })
+
+  it('should not display helper test if not worldpay', function () {
+    let templateData = {
+      'supports3ds': true,
+      'showHelper3ds': false,
+      permissions: {
+        toggle_3ds_read: true,
+        toggle_3ds_update: true
+      }
+    }
+
+    let body = renderTemplate('3d_secure/on_confirm', templateData)
+
+    body.should.containNoSelector('#3ds-helper-text-worldpay')
+  })
+
+  it('should display helper test if worldpay', function () {
+    let templateData = {
+      'supports3ds': true,
+      'showHelper3ds': true,
+      permissions: {
+        toggle_3ds_read: true,
+        toggle_3ds_update: true
+      }
+    }
+
+    let body = renderTemplate('3d_secure/on_confirm', templateData)
+
+    body.should.containSelector('#3ds-helper-text-worldpay')
   })
 })

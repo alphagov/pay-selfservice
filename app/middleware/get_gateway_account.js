@@ -27,7 +27,7 @@ module.exports = function (req, res, next) {
   return connectorClient.getAccount(params)
     .then(data => {
       let SUPPORTS_3DS = ['worldpay']
-      // env var values are treated as text so the comparisaon is done for text
+      // env var values are treated as text so the comparison is done for text
       if (EPDQ_3DS_ENABLED === 'true') {
         SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['epdq'])
       }

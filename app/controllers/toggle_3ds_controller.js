@@ -50,7 +50,8 @@ module.exports.index = function (req, res) {
 }
 
 module.exports.onConfirm = (req, res) => {
-  show(req, res, 'on_confirm', {})
+  const model = {showHelper3ds: req.account.payment_provider === 'worldpay'}
+  show(req, res, 'on_confirm', model)
 }
 
 module.exports.on = function (req, res) {
