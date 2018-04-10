@@ -48,7 +48,7 @@ describe('The team member details view', function () {
       username: 'John Smith',
       email: 'john.smith@example.com',
       telephone_number: '+447769897329',
-      two_factor_auth: 'SMS',
+      two_factor_auth: 'SMS'
     }
 
     let body = renderTemplate('services/team_member_profile', templateData)

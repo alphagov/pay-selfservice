@@ -921,7 +921,6 @@ module.exports = function (clientOptions = {}) {
     return defer.promise
   }
 
-
   /**
    *
    * @param externalId
