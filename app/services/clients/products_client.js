@@ -17,6 +17,7 @@ module.exports = {
   product: {
     create: createProduct,
     disable: disableProduct,
+    delete: deleteProduct,
     updateServiceNameOfProductsByGatewayAccountId: updateServiceNameOfProductsByGatewayAccountId,
     getByProductExternalId: getProductByExternalId,
     getByGatewayAccountId: getProductsByGatewayAccountId,
@@ -119,6 +120,20 @@ function disableProduct (gatewayAccountId, productExternalId) {
   return baseClient.patch({
     baseUrl,
     url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`,
+    description: `disable a product`,
+    service: SERVICE_NAME
+  })
+}
+
+/**
+ * @param {String} gatewayAccountId: the id of the gateway account whose service the product belongs to
+ * @param {String} productExternalId: the external id of the product you wish to delete
+ * @returns Promise<undefined>
+ */
+function deleteProduct (gatewayAccountId, productExternalId) {
+  return baseClient.delete({
+    baseUrl,
+    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
     description: `disable a product`,
     service: SERVICE_NAME
   })
