@@ -972,7 +972,7 @@ module.exports = function (clientOptions = {}) {
       }
     }
 
-    const url = `${userResource}/${externalId}/second-factor/configure`
+    const url = `${userResource}/${externalId}/second-factor/activate`
     const defer = q.defer()
     const startTime = new Date()
     const context = {
