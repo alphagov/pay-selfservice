@@ -92,23 +92,6 @@ describe('The toggle 3D Secure page when 3D Secure is off', function () {
 
     body.should.containNoSelector('#3ds-toggled')
   })
-
-  it('should display helper test for worldpay', function () {
-    let templateData = {
-      'supports3ds': true,
-      'requires3ds': false,
-      'justToggled': false,
-      'showHelper3ds': true,
-      permissions: {
-        toggle_3ds_read: true,
-        toggle_3ds_update: true
-      }
-    }
-
-    let body = renderTemplate('3d_secure/index', templateData)
-
-    body.should.containSelector('#threeds-helper-text')
-  })
 })
 
 describe('The toggle 3D Secure page when 3D Secure is on', function () {
@@ -296,7 +279,6 @@ describe('The turn 3D Secure on confirmation page', function () {
         toggle_3ds_update: false
       }
     }
-
     let body = renderTemplate('3d_secure/on_confirm', templateData)
 
     body.should.containNoSelector('#3ds-confirm-on-button')
