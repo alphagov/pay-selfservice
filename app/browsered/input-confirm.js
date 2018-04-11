@@ -8,6 +8,10 @@ module.exports = () => {
 
   inputs.forEach(input => {
     input.addEventListener('input', confirmInput, false)
+
+    if (input.dataset.confirmationDisplay === 'onload') {
+      confirmInput({target: input})
+    }
   })
 
   function confirmInput (e) {

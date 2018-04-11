@@ -17,6 +17,11 @@ module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
   let updatedPageData = lodash.cloneDeep(pageData)
 
+  if (updatedPageData.productNamePath === '') {
+    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-name-path">Please change the website address</a></li></ul>`)
+    return res.redirect(paths.paymentLinks.webAddress)
+  }
+
   updatedPageData.productNamePath = makeNiceURL(req.body['payment-name-path'])
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 

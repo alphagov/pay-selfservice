@@ -22,7 +22,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
   <form action="{{ nextPage }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group{% if flash.genericError %} error{% endif %}">
-      <label class="form-label-bold" for="payment-link-title">
+      <label class="form-label-bold" for="payment-name-path">
         Please change the website address
         <span class="form-hint">
           This will not change the title
@@ -43,6 +43,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         type="text"
         value="{{ productNamePath }}"
         autofocus
+        data-validate
         data-slugify
       />
       <p class="create-payment-link-read-more"><a href="https://www.gov.uk/guidance/content-design/url-standards-for-gov-uk">Get guidance on writing a web address (URL)</a></p>
