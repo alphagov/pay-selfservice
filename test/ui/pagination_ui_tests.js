@@ -31,7 +31,7 @@ describe('The pagination links', function () {
           'created': '2016-01-11 01:01:01'
         }
       ],
-      'filters': {'reference': 'ref1', 'state': 'Testing2', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01', 'pageSize': '100'},
+      'filters': {'reference': 'ref1', 'state': ['Testing2'], 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01', 'pageSize': '100'},
       'paginationLinks': [
         {pageNumber: 1, pageName: 1},
         {pageNumber: 2, pageName: 2},

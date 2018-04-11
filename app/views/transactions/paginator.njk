@@ -2,8 +2,14 @@
 <div class="pagination">
 	{% for paginationLink in paginationLinks %}
     <form class="paginationForm {{paginationLink.pageName}}" method="get" action="{{paginationLink.search_path}}">
-        <input class="state" name="state" type="hidden" value="{{filters.state}}"/>
+        {% for state in filters.state %}
+          <input class="state" name="state" type="hidden" value="{{state}}"/>
+        {% endfor %}
+        {% for brand in filters.brand %}
+          <input class="brand" name="brand" type="hidden" value="{{brand}}"/>
+        {% endfor %}
         <input class="reference" name="reference" type="hidden" value="{{filters.reference}}" />
+        <input class="email" name="email" type="hidden" value="{{filters.email}}" />
         <input class="fromDate" name="fromDate" type="hidden" value="{{filters.fromDate}}" />
         <input class="toDate" name="toDate" type="hidden" value="{{filters.toDate}}"/>
         <input class="page" name="page" type="hidden" value="{{paginationLink.pageNumber}}"/>
