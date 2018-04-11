@@ -21,7 +21,7 @@
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">Successful payments</h2>
     </header>
-    <a class="dashboard-total-group__link" href="/transactions?state=payment-success&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
+    <a class="dashboard-total-group__link" href="/transactions?state={{successfulTransactionsState}}&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
       <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
         <dt class="visually-hidden">Count</dt>
         <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
