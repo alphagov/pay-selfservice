@@ -1,3 +1,5 @@
+'use strict'
+
 const q = require('q')
 const dates = require('../utils/dates.js')
 const logger = require('winston')
@@ -5,7 +7,7 @@ const json2csv = require('json2csv')
 const lodash = require('lodash')
 const states = require('../utils/states')
 
-module.exports = function (data, newChargeStatusEnabled = false) {
+module.exports = function (data) {
   logger.debug('Converting transactions list from json to csv')
   const defer = q.defer()
 
@@ -21,7 +23,9 @@ module.exports = function (data, newChargeStatusEnabled = false) {
         ]),
         {
           label: 'Amount',
-          value: row => { return (row.transaction_type === 'refund') ? (parseInt(row.amount) * -1 / 100).toFixed(2) : (parseInt(row.amount) / 100).toFixed(2) }
+          value: row => {
+            return (row.transaction_type === 'refund') ? (parseInt(row.amount) * -1 / 100).toFixed(2) : (parseInt(row.amount) / 100).toFixed(2)
+          }
         },
         ...getSanitisableFields([
           {label: 'Card Brand', value: 'card_details.card_brand'},
@@ -33,11 +37,7 @@ module.exports = function (data, newChargeStatusEnabled = false) {
         {
           label: 'State',
           value: row => {
-            if (newChargeStatusEnabled) {
-              return states.getDisplayNameForConnectorState(row.state, row.transaction_type)
-            } else {
-              return (row.transaction_type === 'refund') ? 'Refund ' + row.state.status : row.state.status
-            }
+            return states.getDisplayNameForConnectorState(row.state, row.transaction_type)
           }
         },
         ...getSanitisableFields([
@@ -49,7 +49,9 @@ module.exports = function (data, newChargeStatusEnabled = false) {
         ]),
         {
           label: 'Date Created',
-          value: row => { return dates.utcToDisplay(row.created_date) }
+          value: row => {
+            return dates.utcToDisplay(row.created_date)
+          }
         }
       ]
     },
@@ -61,7 +63,9 @@ module.exports = function (data, newChargeStatusEnabled = false) {
 }
 
 const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
-  if (typeof (fieldValue) !== 'string') { return fieldValue }
+  if (typeof (fieldValue) !== 'string') {
+    return fieldValue
+  }
   const injectionTriggerRegexp = /(^[=@+-])/g
   return fieldValue.replace(injectionTriggerRegexp, '\'$1')
 }

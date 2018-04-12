@@ -13,12 +13,10 @@ const { isADirectDebitAccount } = require('../../services/clients/direct_debit_c
 const auth = require('../../services/auth_service.js')
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const datetime = require('../../utils/nunjucks-filters/datetime')
-const NEW_CHARGE_STATUS_FEATURE_HEADER = 'NEW_CHARGE_STATUS_ENABLED'
 
 module.exports = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
-  const newChargeStatusEnabled = req.user.hasFeature(NEW_CHARGE_STATUS_FEATURE_HEADER)
   let toDateTime = moment().tz('Europe/London').format() // Today is the default
   let daysAgo = 0
   let period = _.get(req, 'query.period', 'today')
@@ -60,7 +58,7 @@ module.exports = (req, res) => {
       name: req.user.username,
       serviceId: req.service.externalId,
       activity: activityResults,
-      successfulTransactionsState: newChargeStatusEnabled ? 'payment-success' : 'success',
+      successfulTransactionsState: 'payment-success',
       fromDateTime,
       toDateTime,
       period,

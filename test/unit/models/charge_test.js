@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 require(path.join(__dirname, '/../../test_helpers/html_assertions.js'))
 const assert = require('assert')
@@ -30,7 +32,7 @@ describe('charge model', function () {
       })
 
       it('should return client unavailable', function () {
-        var chargeModel = Charge('correlation-id')
+        const chargeModel = Charge('correlation-id')
         return chargeModel.findWithEvents(1, 1).then(wrongPromise,
             function rejected (error) {
               assert.equal(error, 'CLIENT_UNAVAILABLE')
@@ -41,7 +43,7 @@ describe('charge model', function () {
     })
 
     describe('when connector returns incorrect response code', function () {
-      var defaultCorrelationHeader = {
+      const defaultCorrelationHeader = {
         reqheaders: {'x-request-id': 'some-unique-id'}
       }
 
@@ -54,7 +56,7 @@ describe('charge model', function () {
       })
 
       it('should return get_failed', function () {
-        var chargeModel = Charge('some-unique-id')
+        const chargeModel = Charge('some-unique-id')
         return chargeModel.findWithEvents(1, 2).then(wrongPromise,
           function rejected (error) {
             assert.equal(error, 'GET_FAILED')
@@ -80,7 +82,7 @@ describe('charge model', function () {
       })
 
       it('should return get_failed', function () {
-        var chargeModel = Charge('some-unique-id')
+        const chargeModel = Charge('some-unique-id')
         return chargeModel.findWithEvents(1, 2).then(wrongPromise,
           function rejected (error) {
             assert.equal(error, 'GET_FAILED')
@@ -107,11 +109,11 @@ describe('charge model', function () {
       })
 
       it('should return the correct promise', function () {
-        var chargeModel = Charge('correlation-id')
-        return chargeModel.findWithEvents(1, 2).then(function (data) {
+        const chargeModel = Charge('correlation-id')
+        return chargeModel.findWithEvents(1, 2).then(function () {
           expect(buildPaymentView.called).to.equal(true)
           expect(buildPaymentView.args.length).to.equal(1)
-          expect(buildPaymentView.args[0]).to.have.lengthOf.above(3)
+          expect(buildPaymentView.args[0].length).to.equal(3)
           expect(buildPaymentView.args[0][0]).to.deep.equal({foo: 'bar'})
           expect(buildPaymentView.args[0][1]).to.deep.equal({events: [{submitted_by: user.external_id}]})
           expect(buildPaymentView.args[0][2]).to.deep.equal([new User(user)])

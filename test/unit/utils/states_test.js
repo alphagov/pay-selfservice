@@ -134,38 +134,4 @@ describe('states', function () {
       }, 'payment')).to.equal('Error')
     })
   })
-
-  describe('old states', function () {
-    it('should get all state selector objects', function () {
-      const oldStates = states.old_states()
-      expect(oldStates.length).to.equal(10)
-      const expectedOldStates = ['Created', 'Started', 'Submitted', 'Success', 'Error', 'Failed', 'Cancelled', 'Refund submitted', 'Refund success', 'Refund error']
-      oldStates.forEach(state => {
-        expect(expectedOldStates).to.include(state.value.text)
-      })
-    })
-
-    it('should get correct display name for a given connector state', function () {
-      expect(states.old_getDisplayName('payment', {status: 'success'})).to.equal('Success')
-      expect(states.old_getDisplayName('payment', {status: 'failed', code: ''})).to.equal('Failed')
-      expect(states.old_getDisplayName('payment', {status: 'timedout', code: 'P0020'})).to.equal('Failed')
-      expect(states.old_getDisplayName('payment', {status: 'declined', code: 'P0010'})).to.equal('Failed')
-      expect(states.old_getDisplayName('payment', {status: 'error', code: 'P0050'})).to.equal('Error')
-      expect(states.old_getDisplayName('payment', {status: 'cancelled', code: 'P0030'})).to.equal('Failed')
-      expect(states.old_getDisplayName('payment', {status: 'cancelled', code: 'P0040'})).to.equal('Cancelled')
-      expect(states.old_getDisplayName('refund', {status: 'success'})).to.equal('Refund success')
-      expect(states.old_getDisplayName('refund', {status: 'submitted'})).to.equal('Refund submitted')
-      expect(states.old_getDisplayName('refund', {status: 'error', code: 'P0050'})).to.equal('Refund error')
-    })
-
-    it('should get correct description for a given connector state', function () {
-      expect(states.old_getDescription('payment', 'success')).to.equal('Payment successful')
-      expect(states.old_getDescription('payment', 'failed')).to.equal('User failed to complete payment')
-      expect(states.old_getDescription('payment', 'error')).to.equal('Error processing payment')
-      expect(states.old_getDescription('payment', 'cancelled')).to.equal('Service cancelled payment')
-      expect(states.old_getDescription('refund', 'success')).to.equal('Refund successful')
-      expect(states.old_getDescription('refund', 'submitted')).to.equal('Refund submitted')
-      expect(states.old_getDescription('refund', 'error')).to.equal('Error processing refund')
-    })
-  })
 })
