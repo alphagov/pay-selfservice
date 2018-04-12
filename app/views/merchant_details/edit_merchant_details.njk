@@ -4,11 +4,10 @@
   Merchant details - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block side_navigation %}
-  {% include "includes/side_navigation.njk" %}
-{% endblock %}
-
 {% block mainContent %}
+<div class="column-full">
+  <a href="/my-services" class="link-back">My services</a>
+</div>
 <div class="column-two-thirds">
   {% if success %}
   <div class="notification">
@@ -46,7 +45,7 @@
 
   <p>Payment card schemes require the details of the merchant taking payment to be shown on payment pages. This information is displayed in the footer.</p>
 
-  <form id="merchant-details-form" method="post" action="{{routes.merchantDetails.update}}">
+  <form id="merchant-details-form" method="post" action="/merchant-details/{{externalServiceId}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <div class="form-group">
       <label class="form-label" for="merchant-name">

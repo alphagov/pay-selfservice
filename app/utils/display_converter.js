@@ -9,6 +9,7 @@ const hideServiceHeaderTemplates = [
 ]
 
 const hideServiceNavTemplates = [
+  'merchant_details/edit_merchant_details',
   'services/team_members',
   'services/team_member_invite',
   'services/team_member_details',
