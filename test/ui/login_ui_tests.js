@@ -1,11 +1,11 @@
-let path = require('path')
-let renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
-let paths = require('../../app/paths.js')
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const paths = require('../../app/paths.js')
 
 describe('Login view', function () {
   describe('if using SMS', () => {
     it('should render the right messaging when there are errors with user information', function () {
-      let templateDate = {
+      const templateDate = {
         flash: {
           error: {
             messages: {
@@ -16,18 +16,18 @@ describe('Login view', function () {
         }
       }
 
-      let body = renderTemplate('login/login', templateDate)
+      const body = renderTemplate('login/login', templateDate)
       body.should.containSelector('.error-summary-heading')
       body.should.containSelector('label[for="username"] .error-message').withText(templateDate.flash.error.messages.username)
       body.should.containSelector('label[for="password"] .error-message').withText(templateDate.flash.error.messages.password)
     })
 
     it('should render send otp code form', function (done) {
-      let templateData = {
+      const templateData = {
         authenticatorMethod: 'SMS'
       }
 
-      let body = renderTemplate('login/otp-login', templateData)
+      const body = renderTemplate('login/otp-login', templateData)
 
       body.should.containSelector('h1').withExactText('Check your phone')
 
@@ -44,14 +44,14 @@ describe('Login view', function () {
     })
 
     it('should render send otp code form with error message', function (done) {
-      let templateData = {
+      const templateData = {
         authenticatorMethod: 'SMS',
         flash: {
           error: 'Invalid security code'
         }
       }
 
-      let body = renderTemplate('login/otp-login', templateData)
+      const body = renderTemplate('login/otp-login', templateData)
 
       body.should.containSelector('h1').withExactText('Check your phone')
 
@@ -71,7 +71,7 @@ describe('Login view', function () {
   })
   describe('if using an authenticatior APP', () => {
     it('should render the right messaging when there are errors with user information', function () {
-      let templateDate = {
+      const templateDate = {
         flash: {
           error: {
             messages: {
@@ -82,18 +82,18 @@ describe('Login view', function () {
         }
       }
 
-      let body = renderTemplate('login/login', templateDate)
+      const body = renderTemplate('login/login', templateDate)
       body.should.containSelector('.error-summary-heading')
       body.should.containSelector('label[for="username"] .error-message').withText(templateDate.flash.error.messages.username)
       body.should.containSelector('label[for="password"] .error-message').withText(templateDate.flash.error.messages.password)
     })
 
     it('should render send otp code form', function (done) {
-      let templateData = {
+      const templateData = {
         authenticatorMethod: 'APP'
       }
 
-      let body = renderTemplate('login/otp-login', templateData)
+      const body = renderTemplate('login/otp-login', templateData)
 
       body.should.containSelector('h1').withExactText('Use your authenticator app')
 
@@ -107,14 +107,14 @@ describe('Login view', function () {
     })
 
     it('should render send otp code form with error message', function (done) {
-      let templateData = {
+      const templateData = {
         authenticatorMethod: 'APP',
         flash: {
           error: 'Invalid security code'
         }
       }
 
-      let body = renderTemplate('login/otp-login', templateData)
+      const body = renderTemplate('login/otp-login', templateData)
 
       body.should.containSelector('h1').withExactText('Use your authenticator app')
 

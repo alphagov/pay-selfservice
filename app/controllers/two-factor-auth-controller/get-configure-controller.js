@@ -8,19 +8,14 @@ const qrcode = require('qrcode')
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 
-const PAGE_PARAMS = {
-  profile: paths.user.profile,
-  index: paths.user.twoFactorAuth.index,
-  configure: paths.user.twoFactorAuth.configure
-}
-
-const makeOtpUrl = (username, secret) => {
-  return `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(username)}?secret=${encodeURIComponent(secret)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
-}
-
 module.exports = (req, res) => {
-  const otpUrl = makeOtpUrl(req.user.username, req.user.provisionalOtpKey)
+  const PAGE_PARAMS = {
+    profile: paths.user.profile,
+    index: paths.user.twoFactorAuth.index,
+    configure: paths.user.twoFactorAuth.configure
+  }
   PAGE_PARAMS.prettyPrintedSecret = req.user.provisionalOtpKey.match(/.{4}/g).join(' ')
+  const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(req.user.username)}?secret=${encodeURIComponent(req.user.provisionalOtpKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
 
   qrcode.toDataURL(otpUrl)
     .then(url => {

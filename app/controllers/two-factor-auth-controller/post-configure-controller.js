@@ -11,7 +11,7 @@ module.exports = (req, res) => {
   const code = req.body['code'] || ''
   userService.configureNewOtpKey(req.user.externalId, code, 'APP', req.correlationId)
     .then(user => {
-      req.flash('generic', `<h2>Your two factor authentication method has been&nbsp;updated</h2><p>Next time you sign in please use your configured authenticator app</p>`)
+      req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>Next time you sign in please use your configured authenticator app</p>`)
       return res.redirect(paths.user.profile)
     })
     .catch((err) => {
