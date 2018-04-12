@@ -1,4 +1,4 @@
-let _ = require('lodash')
+const _ = require('lodash')
 
 const roles = {
   'admin': {extId: 200, name: 'admin', description: 'Administrator'},

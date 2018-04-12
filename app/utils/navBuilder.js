@@ -1,4 +1,4 @@
-let _ = require('lodash')
+const _ = require('lodash')
 const paths = require('./../paths')
 const pathLookup = require('./pathLookup')
 

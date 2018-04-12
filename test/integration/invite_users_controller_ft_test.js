@@ -1,19 +1,19 @@
-let path = require('path')
-let nock = require('nock')
-let getApp = require(path.join(__dirname, '/../../server.js')).getApp
-let supertest = require('supertest')
-let session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-let csrf = require('csrf')
-let chai = require('chai')
-let roles = require('../../app/utils/roles').roles
-let paths = require(path.join(__dirname, '/../../app/paths.js'))
-let inviteFixtures = require(path.join(__dirname, '/../fixtures/invite_fixtures'))
-let sinon = require('sinon')
-let _ = require('lodash')
-let inviteUserController = require('../../app/controllers/invite_user_controller')
+const path = require('path')
+const nock = require('nock')
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const supertest = require('supertest')
+const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+const csrf = require('csrf')
+const chai = require('chai')
+const roles = require('../../app/utils/roles').roles
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite_fixtures'))
+const sinon = require('sinon')
+const _ = require('lodash')
+const inviteUserController = require('../../app/controllers/invite_user_controller')
 
-let expect = chai.expect
-let adminusersMock = nock(process.env.ADMINUSERS_URL)
+const expect = chai.expect
+const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const formattedPathFor = require('../../app/utils/replace_params_in_path')
 

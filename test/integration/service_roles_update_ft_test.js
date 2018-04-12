@@ -1,15 +1,15 @@
-let path = require('path')
-let nock = require('nock')
-let session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-let getApp = require(path.join(__dirname, '/../../server.js')).getApp
-let supertest = require('supertest')
-let csrf = require('csrf')
-let userFixtures = require(path.join(__dirname, '/../fixtures/user_fixtures'))
-let paths = require(path.join(__dirname, '/../../app/paths.js'))
-let roles = require('../../app/utils/roles').roles
-let chai = require('chai')
-let _ = require('lodash')
-let chaiAsPromised = require('chai-as-promised')
+const path = require('path')
+const nock = require('nock')
+const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const supertest = require('supertest')
+const csrf = require('csrf')
+const userFixtures = require(path.join(__dirname, '/../fixtures/user_fixtures'))
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const roles = require('../../app/utils/roles').roles
+const chai = require('chai')
+const _ = require('lodash')
+const chaiAsPromised = require('chai-as-promised')
 let app
 
 chai.use(chaiAsPromised)
