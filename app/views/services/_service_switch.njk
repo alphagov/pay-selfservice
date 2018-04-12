@@ -1,0 +1,26 @@
+<li class="service--{{ account.type }}">
+  <form method="post" action="{{routes.serviceSwitcher.switch}}">
+    <input name="csrfToken" type="hidden" value="{{csrf}}" />
+    <input name="gatewayAccountId" type="hidden" value="{{ account.external_id }}"/>
+    <button
+      class="service-switcher {{ account.type }} {{ account.payment_provider }}"
+      type="submit"
+      role="link">
+      {{ account.type | title }}
+      {% if account.isLive %}
+        {% if account.payment_method == 'direct debit' %}
+          direct debit transactions
+        {% else %}
+          card transactions
+        {% endif %}
+        {% else %}
+        ({{ account.payment_provider }})
+      {% endif %}
+    </button>
+    {% if account.type != 'live' %}
+      {% if not loop.last %}
+        <span class="switch-divider">|</span>
+      {% endif %}
+    {% endif %}
+  </form>
+</li>

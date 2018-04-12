@@ -1,7 +1,20 @@
+.service {
+  form {
+    display: inline-block;
+  }
+
+  &--test {
+    display: inline-block;
+  }
+}
+
 .service-switcher {
   // Remove all decorations to look like normal text link
+  @include core-16;
+
   display: inline-block;
-  margin: 0 0 5px;
+  width: auto;
+  margin: 0;
   padding: 0;
   border: 0;
   outline: none;
@@ -9,6 +22,7 @@
   color: $link-colour;
   background: none;
   font: inherit;
+  text-align: left;
   text-decoration: underline;
   cursor: pointer;
 
@@ -17,18 +31,35 @@
   }
 
   &.live {
-   @include core-24;
-   font-weight: bold;
-   margin-bottom: $gutter / 2;
+    @include core-19;
+    position: relative;
+    margin-bottom: $gutter / 2;
+    padding-left: 2rem;
+    font-weight: bold;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      @include translate(0, -60%);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 100%;
+      background-color: $green;
+    }
   }
+}
+
+.switch-divider {
+  @include core-16;
+  margin: 0 $gutter / 6;
 }
 
 .service-name a {
   @include core-14;
-  text-decoration: none;
   padding-left: 10px;
-
-
+  text-decoration: none;
 }
 
 .service-switcher.active {

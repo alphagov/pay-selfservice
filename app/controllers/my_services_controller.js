@@ -30,7 +30,8 @@ module.exports = {
       const data = {
         navigation: false,
         services: servicesData,
-        services_singular: servicesData.length === 1
+        services_singular: servicesData.length === 1,
+        editMerchantDetails: paths.merchantDetails.index
       }
 
       if (newServiceId) {
@@ -53,10 +54,15 @@ module.exports = {
           .forEach(function (account) {
             account.isLive = account.type === 'live'
           })
+          const cardAccounts = accounts.filter(account => account.payment_method === undefined)
+          const directdebitAccounts = accounts.filter(account => account.payment_method === 'direct debit')
           defer.resolve({
             name: displayNameOf(serviceRole.service),
             external_id: serviceRole.service.externalId,
-            gateway_accounts: accounts,
+            gateway_accounts: {
+              cardAccounts,
+              directdebitAccounts
+            },
             permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
           })
         })
