@@ -40,7 +40,7 @@
       </li>
       <li>
       {% if service.permissions.merchant_details_read %}
-        <a href="{{editMerchantDetails}}" class="manage-team-members">Edit merchant details</a>
+        <a href="{{routes.merchantDetails.index}}" class="manage-team-members">Edit merchant details</a>
         <p class="font-xsmall">Payment schemes require the details of the merchant taking payment to be shown to paying users.</p>
       {% endif %}
       </li>

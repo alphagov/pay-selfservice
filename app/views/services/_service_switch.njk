@@ -7,7 +7,7 @@
       type="submit"
       role="link">
       {{ account.type | title }}
-      {% if account.isLive %}
+      {% if account.type == 'live' %}
         {% if account.payment_method == 'direct debit' %}
           direct debit transactions
         {% else %}
