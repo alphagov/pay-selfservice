@@ -8,7 +8,7 @@ const connectorMock = nock(process.env.CONNECTOR_URL)
 const directDebitConnectorMock = nock(process.env.DIRECT_DEBIT_CONNECTOR_URL)
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const DIRECT_DEBIT_ACCOUNTS_PATH = '/v1/api/accounts'
-const serviceSwitchController = require('../../../app/controllers/my_services_controller')
+const serviceSwitchController = require('../../../app/controllers/my-services')
 const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const chaiAsPromised = require('chai-as-promised')
@@ -107,23 +107,23 @@ describe('service switch controller: list of accounts', function () {
       render: renderSpy
     }
 
-    const gatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.map(g => g.service_name)
+    const cardGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.cardAccounts.map(g => g.service_name)
+    const directDebitGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.directdebitAccounts.map(g => g.service_name)
 
-    serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
+    serviceSwitchController.getIndex(req, res).should.be.fulfilled.then(() => {
       expect(renderSpy.calledOnce).to.be.equal(true)
 
       const path = renderSpy.getCall(0).args[0]
       const renderData = renderSpy.getCall(0).args[1]
 
       expect(path).to.equal('services/index')
-      expect(renderData.navigation).to.equal(false)
 
       expect(renderData.services.map(service => service.name)).to.have.lengthOf(4).and.to.include('My Service 1', 'My Service 2', '', 'Direct debit service')
 
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
-      expect(gatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('account DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'account DIRECT_DEBIT:ksdfhjhfd;sfksd34')
+      expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
+      expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
+      expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
+      expect(directDebitGatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('account DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'account DIRECT_DEBIT:ksdfhjhfd;sfksd34')
     }).should.notify(done)
   })
 
@@ -145,14 +145,13 @@ describe('service switch controller: list of accounts', function () {
       status: statusSpy
     }
 
-    serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
+    serviceSwitchController.getIndex(req, res).should.be.fulfilled.then(() => {
       expect(renderSpy.calledOnce).to.be.equal(true)
 
       const path = renderSpy.getCall(0).args[0]
       const renderData = renderSpy.getCall(0).args[1]
       expect(path).to.equal('services/index')
 
-      expect(renderData.navigation).to.equal(false)
       expect(renderData.services).to.have.lengthOf(0)
     }).should.notify(done)
   })
@@ -184,7 +183,7 @@ describe('service switch controller: switching', function () {
       redirect: redirectSpy
     }
 
-    serviceSwitchController.switch(req, res)
+    serviceSwitchController.postIndex(req, res)
 
     expect(gatewayAccount.currentGatewayAccountId).to.be.equal('6')
     expect(redirectSpy.calledWith(302, '/')).to.be.equal(true)
@@ -206,7 +205,7 @@ describe('service switch controller: switching', function () {
       redirect: redirectSpy
     }
 
-    serviceSwitchController.switch(req, res)
+    serviceSwitchController.postIndex(req, res)
 
     expect(session).to.deep.equal({})
     expect(redirectSpy.calledWith(302, '/my-services')).to.be.equal(true)
@@ -277,14 +276,13 @@ describe('service switch controller: display added to the new service msg', func
       render: renderSpy
     }
 
-    serviceSwitchController.index(req, res).should.be.fulfilled.then(() => {
+    serviceSwitchController.getIndex(req, res).should.be.fulfilled.then(() => {
       expect(renderSpy.calledOnce).to.be.equal(true)
 
       const path = renderSpy.getCall(0).args[0]
       const renderData = renderSpy.getCall(0).args[1]
 
       expect(path).to.equal('services/index')
-      expect(renderData.navigation).to.equal(false)
 
       expect(renderData.new_service_name).to.be.equal(newServiceName)
     }).should.notify(done)

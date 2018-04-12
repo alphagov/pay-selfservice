@@ -47,7 +47,6 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
       permissions: _.some([
         permissions.tokens_read,
         permissions.gateway_credentials_read,
-        permissions.merchant_details_read,
         permissions.payment_types_read,
         permissions.toggle_3ds_read,
         permissions.email_notification_template_read
