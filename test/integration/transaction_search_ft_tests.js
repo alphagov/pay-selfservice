@@ -79,7 +79,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -93,7 +93,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing2',
+            'status': 'cancelled',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -115,11 +115,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -133,11 +133,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing2',
+            'status': 'cancelled',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing2',
+          'state_friendly': 'Cancelled',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -165,7 +165,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -187,11 +187,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -218,7 +218,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -239,11 +239,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -271,7 +271,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -293,11 +293,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -324,7 +324,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -346,11 +346,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -377,18 +377,18 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE
         }
       ]
     }
-    let data = { 'reference': 'ref1', 'payment_states': 'TEST_STATUS', 'brand': 'visa' }
-    connectorMockResponds(connectorData, data)
+    let formData = { 'reference': 'ref1', 'payment_states': 'success', 'brand': 'visa' }
+    connectorMockResponds(connectorData, formData)
 
     let expectedData = {
       'results': [
@@ -399,11 +399,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
@@ -412,7 +412,6 @@ describe('The search transactions endpoint', function () {
       ]
     }
 
-    let formData = _.omit(_.merge({'state': data.payment_states}, data), 'payment_states')
     searchTransactions(formData)
       .expect(200)
       .expect(function (res) {
@@ -431,7 +430,7 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
@@ -441,7 +440,7 @@ describe('The search transactions endpoint', function () {
       ]
     }
 
-    let data = {
+    let formData = {
       'reference': 'ref1',
       'payment_states': 'TEST_STATUS',
       'brand': 'visa',
@@ -451,7 +450,7 @@ describe('The search transactions endpoint', function () {
       'toTime': '14:12:18'
     }
 
-    let queryStringParams = _.extend({}, data, {
+    let queryStringParams = _.extend({}, formData, {
       'from_date': '2016-01-21T13:04:45.000Z',
       'to_date': '2016-01-22T14:12:19.000Z'
     })
@@ -467,11 +466,11 @@ describe('The search transactions endpoint', function () {
           'reference': 'ref1',
           'email': 'alice.111@mail.fake',
           'state': {
-            'status': 'testing',
+            'status': 'success',
             'finished': false
           },
           'card_brand': 'Visa',
-          'state_friendly': 'Testing',
+          'state_friendly': 'Success',
           'gateway_account_id': '452345',
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
@@ -480,7 +479,6 @@ describe('The search transactions endpoint', function () {
       ]
     }
 
-    let formData = _.omit(_.merge({'state': data.payment_states}, data), 'payment_states')
     searchTransactions(formData)
       .expect(200)
       .expect(function (res) {

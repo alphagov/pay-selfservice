@@ -11,9 +11,9 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
 
-  function findWithEvents (accountId, chargeId, newChargeStatusEnabled = false) {
-    var defer = q.defer()
-    var params = {
+  function findWithEvents (accountId, chargeId) {
+    const defer = q.defer()
+    const params = {
       gatewayAccountId: accountId,
       chargeId: chargeId,
       correlationId: correlationId
@@ -25,11 +25,11 @@ module.exports = function (correlationId) {
           .map(event => event.submitted_by)
         userIds = lodash.uniq(userIds)
         if (userIds.length <= 0) {
-          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, [], newChargeStatusEnabled))
+          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, []))
         } else {
           userService.findMultipleByExternalIds(userIds, correlationId)
             .then(users => {
-              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users, newChargeStatusEnabled))
+              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
             })
             .catch(err => findWithEventsError(err, undefined, defer))
         }
@@ -43,9 +43,9 @@ module.exports = function (correlationId) {
   }
 
   function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
-    var defer = q.defer()
+    const defer = q.defer()
 
-    var payload = {
+    const payload = {
       amount: amount,
       refund_amount_available: refundAmountAvailable,
       user_external_id: userExternalId
@@ -58,7 +58,7 @@ module.exports = function (correlationId) {
       'userExternalId': userExternalId
     })
 
-    var params = {
+    const params = {
       gatewayAccountId: accountId,
       chargeId: chargeId,
       payload: payload,

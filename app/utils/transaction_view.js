@@ -43,11 +43,7 @@ module.exports = {
       })
 
     connectorData.results.forEach(element => {
-      if (filtersResult.newChargeStatusEnabled) {
-        element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
-      } else {
-        element.state_friendly = states.old_getDisplayName(element.transaction_type, element.state)
-      }
+      element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
       element.amount = asGBP(element.amount)
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
       element.updated = dates.utcToDisplay(element.updated)
@@ -79,12 +75,8 @@ module.exports = {
     return connectorData
   },
 
-  buildPaymentView: function (chargeData, eventsData, users = [], newChargeStatusEnabled = false) {
-    if (newChargeStatusEnabled) {
-      chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
-    } else {
-      chargeData.state_friendly = states.old_getDisplayName(chargeData.transaction_type, chargeData.state)
-    }
+  buildPaymentView: function (chargeData, eventsData, users = []) {
+    chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
 
     chargeData.amount = asGBP(chargeData.amount)
 
@@ -110,7 +102,7 @@ module.exports = {
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
-    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData, newChargeStatusEnabled)).reverse()
+    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
     chargeData.events.forEach(event => {
       if (event.submitted_by && event.state_friendly === 'Refund submitted') {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')

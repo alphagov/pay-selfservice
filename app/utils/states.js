@@ -1,7 +1,6 @@
 'use strict'
 
 const lodash = require('lodash')
-const changeCase = require('change-case')
 
 const PAYMENT_STATE_DESCRIPTIONS = {
   'created': {
@@ -142,52 +141,5 @@ exports.getEventDisplayNameForConnectorState = (state, type) => {  // eslint-dis
     return displayName.eventDisplayName
   } else {
     return displayName.displayName
-  }
-}
-
-// OLD Status code logic from here onwards -- TO REMOVE once the feature flag is taken off (PP-3377)
-// ------------------------------------------------------------------------------------------
-
-const OLD_PAYMENT_STATE_DESCRIPTIONS = {
-  'created': 'Service created payment',
-  'started': 'User entering card details',
-  'submitted': 'User submitted card details',
-  'success': 'Payment successful',
-  'error': 'Error processing payment',
-  'failed': 'User failed to complete payment',
-  'cancelled': 'Service cancelled payment'
-}
-const OLD_REFUND_STATE_DESCRIPTIONS = {
-  'submitted': 'Refund submitted',
-  'error': 'Error processing refund',
-  'success': 'Refund successful'
-}
-
-exports.old_payment_states = () => Object.keys(OLD_PAYMENT_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('PAYMENT', key)) // eslint-disable-line
-exports.old_refund_states = () => Object.keys(OLD_REFUND_STATE_DESCRIPTIONS).map(key => old_toSelectorObject('REFUND', key)) // eslint-disable-line
-exports.old_states = () => [...exports.old_payment_states(), ...exports.old_refund_states()] // eslint-disable-line
-exports.old_getDisplayName = (type = 'payment', state = {}) => {  // eslint-disable-line
-  let name = state.status || ''
-  if (name.toLowerCase() === 'timedout' || name.toLowerCase() === 'declined') {
-    name = 'failed'
-  } else if (name.toLowerCase() === 'cancelled' && state.code === 'P0030') {
-    name = 'failed'
-  }
-  const origin = exports.old_states().find(event => event.name === name.toLowerCase() && event.type === type.toLowerCase()) // eslint-disable-line
-  return lodash.get(origin, `value.text`, changeCase.upperCaseFirst(name.toLowerCase()))
-}
-exports.old_getDescription = (type = '', name = '') => {  // eslint-disable-line
-  const origin = type.toLowerCase() === 'refund' ? OLD_REFUND_STATE_DESCRIPTIONS : OLD_PAYMENT_STATE_DESCRIPTIONS
-  return origin[name.toLowerCase()]
-}
-
-function old_toSelectorObject (type = '', name = '') {  // eslint-disable-line
-  return {
-    type: type.toLowerCase(),
-    name: name.toLowerCase(),
-    key: `${type.toLowerCase()}-${name.toLowerCase()}`,
-    value: {
-      text: changeCase.upperCaseFirst((type.toLowerCase() === 'refund' ? 'refund ' : '') + name.toLowerCase())
-    }
   }
 }
