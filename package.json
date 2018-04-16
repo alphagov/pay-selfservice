@@ -16,7 +16,8 @@
       "after",
       "afterEach",
       "it",
-      "expect"
+      "expect",
+      "cy"
     ],
     "ignore": [
       "app/assets/**/*.js",
@@ -27,12 +28,18 @@
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
     "start": "node_modules/forever/bin/forever --minUptime 1000 --spinSleepTime 500 start.js",
+
     "stop": "node_modules/forever/bin/forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
     "lint": "./node_modules/.bin/standard",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "rm -rf ./pacts && ./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
+    "cypress-start-server": "node -r dotenv/config start.js dotenv_config_path=cypress/test.env",
+    "cypress-run": "cypress run",
+    "cypress-open": "cypress open",
+    "cypress-local": "start-server-and-test cypress-start-server http://localhost:3000/healthcheck cypress-open",
+    "cypress-ci": "start-server-and-test cypress-start-server http://localhost:3000/healthcheck cypress-run",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
     "publish-pacts": "./bin/publish-pacts.js"
@@ -91,6 +98,8 @@
     "chai-string": "^1.4.0",
     "cheerio": "^1.0.0-rc.1",
     "chokidar-cli": "latest",
+    "cypress": "^2.1.0",
+    "dotenv": "^5.0.1",
     "envfile": "^2.1.1",
     "errorhandler": "^1.5.0",
     "eslint": "^3.0.0",
@@ -126,6 +135,7 @@
     "sinon": "^4.1.2",
     "snyk": "^1.36.1",
     "standard": "^10.0.3",
+    "start-server-and-test": "^1.4.1",
     "superagent": "^3.5.2",
     "supertest": "^3.0.0",
     "supertest-session": "^3.0.0"
