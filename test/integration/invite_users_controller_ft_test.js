@@ -67,7 +67,7 @@ describe('invite user controller', function () {
     it('should error if the user is already invited/exists', function (done) {
       let existingUser = 'existing-user@example.com'
       adminusersMock.post(INVITE_RESOURCE)
-        .reply(409, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser).getPlain())
+        .reply(412, inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(existingUser).getPlain())
       const app = session.getAppWithLoggedInUser(getApp(), userInSession)
 
       supertest(app)

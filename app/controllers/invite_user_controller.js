@@ -60,48 +60,40 @@ module.exports = {
    * @param res
    */
   invite: (req, res) => {
-    let correlationId = req.correlationId
-    let senderId = req.user.externalId
-    let externalServiceId = req.params.externalServiceId
-    let invitee = req.body['invitee-email'].trim()
-    let roleId = parseInt(req.body['role-input'])
+    const correlationId = req.correlationId
+    const senderId = req.user.externalId
+    const externalServiceId = req.params.externalServiceId
+    const invitee = req.body['invitee-email'].trim()
+    const roleId = parseInt(req.body['role-input'])
 
-    let role = rolesModule.getRoleByExtId(roleId)
-
-    let onSuccess = () => {
-      delete req.session.pageData.invitee
-      req.flash('generic', `Invite sent to ${invitee}`)
-      res.redirect(303, formattedPathFor(paths.teamMembers.index, externalServiceId))
-    }
-
-    let onError = (err) => {
-      logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err.message))
-
-      switch (err.errorCode) {
-        case 409:
-          successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
-          break
-        default:
-          errorResponse(req, res, messages.inviteError, 200)
-      }
-    }
+    const role = rolesModule.getRoleByExtId(roleId)
 
     if (!emailValidator(invitee)) {
       req.flash('genericError', `Invalid email address`)
       lodash.set(req, 'session.pageData', {invitee})
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
-      return
-    }
-
-    if (!role) {
+    } else if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)
       errorResponse(req, res, messages.inviteError, 200)
-      return
-    }
+    } else {
+      userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
+        .then(() => {
+          if (lodash.has(req, 'session.pageData.invitee')) delete req.session.pageData.invitee
+          req.flash('generic', `Invite sent to ${invitee}`)
+          res.redirect(303, formattedPathFor(paths.teamMembers.index, externalServiceId))
+        })
+        .catch(err => {
+          logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))
 
-    return userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
-      .then(onSuccess)
-      .catch(onError)
+          switch (err.errorCode) {
+            case 412:
+              successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
+              break
+            default:
+              errorResponse(req, res, messages.inviteError, 200)
+          }
+        })
+    }
   }
 
 }
