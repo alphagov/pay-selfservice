@@ -1,10 +1,11 @@
+const lodash = require('lodash')
 const logger = require('winston')
-let response = require('../utils/response.js')
-let userService = require('../services/user_service.js')
-let paths = require('../paths.js')
-let successResponse = response.response
-let errorResponse = response.renderErrorView
-let rolesModule = require('../utils/roles')
+const response = require('../utils/response.js')
+const userService = require('../services/user_service.js')
+const paths = require('../paths.js')
+const successResponse = response.response
+const errorResponse = response.renderErrorView
+const rolesModule = require('../utils/roles')
 const emailValidator = require('../utils/email_tools.js')
 
 const formattedPathFor = require('../../app/utils/replace_params_in_path')
@@ -40,12 +41,14 @@ module.exports = {
     const externalServiceId = req.params.externalServiceId
     const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
     const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
+    const invitee = lodash.get(req, 'session.pageData.invitee', '')
     let data = {
       teamMemberIndexLink: teamMemberIndexLink,
       teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
       admin: {id: roles['admin'].extId},
       viewAndRefund: {id: roles['view-and-refund'].extId},
-      view: {id: roles['view-only'].extId}
+      view: {id: roles['view-only'].extId},
+      invitee
     }
 
     return successResponse(req, res, 'services/team_member_invite', data)
@@ -57,46 +60,40 @@ module.exports = {
    * @param res
    */
   invite: (req, res) => {
-    let correlationId = req.correlationId
-    let senderId = req.user.externalId
-    let externalServiceId = req.params.externalServiceId
-    let invitee = req.body['invitee-email']
-    let roleId = parseInt(req.body['role-input'])
+    const correlationId = req.correlationId
+    const senderId = req.user.externalId
+    const externalServiceId = req.params.externalServiceId
+    const invitee = req.body['invitee-email'].trim()
+    const roleId = parseInt(req.body['role-input'])
 
-    let role = rolesModule.getRoleByExtId(roleId)
-
-    let onSuccess = () => {
-      req.flash('generic', `Invite sent to ${invitee}`)
-      res.redirect(303, formattedPathFor(paths.teamMembers.index, externalServiceId))
-    }
-
-    let onError = (err) => {
-      logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err.message))
-
-      switch (err.errorCode) {
-        case 409:
-          successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
-          break
-        default:
-          errorResponse(req, res, messages.inviteError, 200)
-      }
-    }
+    const role = rolesModule.getRoleByExtId(roleId)
 
     if (!emailValidator(invitee)) {
       req.flash('genericError', `Invalid email address`)
+      lodash.set(req, 'session.pageData', {invitee})
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
-      return
-    }
-
-    if (!role) {
+    } else if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)
       errorResponse(req, res, messages.inviteError, 200)
-      return
-    }
+    } else {
+      userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
+        .then(() => {
+          if (lodash.has(req, 'session.pageData.invitee')) delete req.session.pageData.invitee
+          req.flash('generic', `Invite sent to ${invitee}`)
+          res.redirect(303, formattedPathFor(paths.teamMembers.index, externalServiceId))
+        })
+        .catch(err => {
+          logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))
 
-    return userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
-      .then(onSuccess)
-      .catch(onError)
+          switch (err.errorCode) {
+            case 412:
+              successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
+              break
+            default:
+              errorResponse(req, res, messages.inviteError, 200)
+          }
+        })
+    }
   }
 
 }

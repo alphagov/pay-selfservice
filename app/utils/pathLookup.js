@@ -1,6 +1,6 @@
 // function to see if current url matches another URL,
 // useful for navigation.
-let _ = require('lodash')
+const _ = require('lodash')
 
 module.exports = function (currentURL, url) {
   if (_.isArray(url)) {

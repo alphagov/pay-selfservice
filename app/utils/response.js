@@ -1,5 +1,5 @@
 let logger = require('winston')
-let _ = require('lodash')
+const _ = require('lodash')
 
 let displayConverter = require('./display_converter')
 

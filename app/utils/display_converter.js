@@ -1,4 +1,4 @@
-let _ = require('lodash')
+const _ = require('lodash')
 const getHeldPermissions = require('./get_held_permissions')
 const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
 
