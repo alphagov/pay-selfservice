@@ -34,7 +34,7 @@ Sign in to GOV.UK Pay
 
   <p>If you do not have an account, you can <a href="{{ routes.selfCreateService.register }}" class="register-link">create one now</a>.</p>
 
-  <form action="/login" method="post" name="userLoginForm" class="push-bottom">
+  <form data-validate action="/login" method="post" name="userLoginForm" class="push-bottom">
   <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group{% if flash.error.messages.username %} error{% endif %}">
       <label for="username" class="form-label">
@@ -45,7 +45,7 @@ Sign in to GOV.UK Pay
         </span>
         {% endif %}
       </label>
-      <input class="form-control form-control-2-3" data-module="" id="username" name="username" rows="8" type="email" value="">
+      <input class="form-control form-control-2-3" data-validate="required" data-module="" id="username" name="username" rows="8" type="email" value="">
     </div>
     <div class="form-group{% if flash.error.messages.password %} error{% endif %}">
       <label for="password" class="form-label">
@@ -56,7 +56,7 @@ Sign in to GOV.UK Pay
         </span>
         {% endif %}
       </label>
-      <input class="form-control form-control-2-3" data-module="" id="password" name="password" rows="8" type="password" value="">
+      <input data-validate="required" class="form-control form-control-2-3" data-module="" id="password" name="password" rows="8" type="password" value="">
     </div>
     <div>
     <input type="submit" class="button" value="Continue">
