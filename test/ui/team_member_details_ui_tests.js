@@ -47,12 +47,14 @@ describe('The team member details view', function () {
     let templateData = {
       username: 'John Smith',
       email: 'john.smith@example.com',
-      telephone_number: '+447769897329'
+      telephone_number: '+447769897329',
+      two_factor_auth: 'SMS'
     }
 
     let body = renderTemplate('services/team_member_profile', templateData)
 
     body.should.containSelector('td#email').withExactText('john.smith@example.com')
     body.should.containSelector('td#telephone-number').withExactText('+447769897329')
+    body.should.containSelector('td#two-factor-auth').withText('Text message')
   })
 })

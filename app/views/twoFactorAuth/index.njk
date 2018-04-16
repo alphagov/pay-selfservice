@@ -1,0 +1,55 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Sign-in method - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-full">
+  <a href="{{profile}}" class="link-back">My profile</a>
+</div>
+<div class="column-full">
+  <h1 class="heading-large page-title">
+    Sign-in method
+  </h1>
+</div>
+<div class="column-two-thirds">
+  {% if authenticatorMethod == 'SMS' %}
+    <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
+    <form method="post" action="{{index}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <div class="form-group">
+        <button class="button" type="submit">
+          Use an authenticator app instead
+        </button>
+      </div>
+    </form>
+  {% endif %}
+  {% if authenticatorMethod == 'APP' %}
+    <p>You currently use an authenticator app to sign in to GOV.UK Pay.</p>
+    <form method="post" action="{{index}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <div class="form-group">
+        <button class="button" type="submit">
+          Set up a different authenticator app
+        </button>
+      </div>
+    </form>
+  {% endif %}
+  <div>
+    <details>
+      <summary>What is an authenticator app?</summary>
+      <h2 class="heading-small">Authenticator apps</h2>
+      <p>Instead of text message codes, you can use an authenticator app to sign in to GOV.UK Pay. This is an app (usually installed on your phone) that generates a security code whenever you need to sign in. If you choose to use an authenticator app, you will only be able to sign in to GOV.UK Pay using that app and you will no longer receive text message codes.</p>
+      <p>GOV.UK Pay works with most authenticator apps. If you do not have one installed already, there are several available. These include:</p>
+      <ul class="list list-bullet">
+        <li><a href="https://authy.com/">Authy</a></li>
+        <li><a href="https://duo.com/">Duo</a></li>
+        <li><a href="https://support.google.com/accounts/answer/1066447">Google Authenticator</a></li>
+        <li><a href="https://lastpass.com/auth/">LastPass Authenticator</a></li>
+        <li><a href="https://docs.microsoft.com/en-us/azure/multi-factor-authentication/end-user/microsoft-authenticator-app-how-to">Microsoft Authenticator</a></li>
+      </ul>
+    </details>
+  </div>
+</div>
+{% endblock %}

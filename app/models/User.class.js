@@ -45,6 +45,8 @@ class User {
     this.disabled = userData.disabled ? userData.disabled : false
     this.sessionVersion = userData.session_version || 0
     this.features = (userData.features || '').split(',').map(feature => feature.trim())
+    this.secondFactor = userData.second_factor
+    this.provisionalOtpKey = userData.provisional_otp_key || ''
   }
 
   /**

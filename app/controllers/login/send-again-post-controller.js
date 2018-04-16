@@ -11,13 +11,15 @@ const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION
 
 module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  userService.sendOTP(req.user, correlationId).then(
-    () => {
+  if (req.user.secondFactor === 'SMS') {
+    userService.sendOTP(req.user, correlationId).then(() => {
       res.redirect(paths.user.otpLogIn)
-    },
-    (err) => {
+    })
+    .catch(err => {
       errorView(req, res)
       logger.error(err)
-    }
-  )
+    })
+  } else {
+    errorView(req, res, 'You do not use text messages to sign in')
+  }
 }

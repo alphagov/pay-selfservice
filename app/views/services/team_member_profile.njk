@@ -16,15 +16,29 @@ My profile - GOV.UK Pay
     <tbody>
       <tr>
         <td>Name:</td>
-        <td id="name">{{username}}</td>
+        <td colspan="2" id="name">{{username}}</td>
       </tr>
       <tr>
         <td>Email:</td>
-        <td id="email">{{email}}</td>
+        <td colspan="2" id="email">{{email}}</td>
       </tr>
       <tr>
         <td>Mobile number:</td>
-        <td id="telephone-number">{{telephone_number}}</td>
+        <td colspan="2" id="telephone-number">{{telephone_number}}</td>
+      </tr>
+      <tr>
+        <td>Sign-in method:</td>
+        <td id="two-factor-auth">
+          {% if two_factor_auth == 'APP' %}
+            Authenticator app
+          {% endif %}
+          {% if two_factor_auth == 'SMS' %}
+            Text message
+          {% endif %}
+        </td>
+        <td>
+          <a href="{{two_factor_auth_link}}">Change</a>
+        </td>
       </tr>
     </tbody>
   </table>

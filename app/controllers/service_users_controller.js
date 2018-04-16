@@ -159,7 +159,9 @@ module.exports = {
       successResponse(req, res, 'services/team_member_profile', {
         username: user.username,
         email: user.email,
-        telephone_number: user.telephoneNumber
+        telephone_number: user.telephoneNumber,
+        two_factor_auth: user.secondFactor,
+        two_factor_auth_link: paths.user.twoFactorAuth.index
       })
     }
 

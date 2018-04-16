@@ -74,7 +74,8 @@ module.exports = {
           permissions: ['perm-1']
         }
       }],
-      telephone_number: randomTelephoneNumber()
+      telephone_number: randomTelephoneNumber(),
+      secondFactor: 'SMS'
     }
 
     return {
@@ -158,7 +159,9 @@ module.exports = {
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
-      features: opts.features || ''
+      features: opts.features || '',
+      second_factor: opts.second_factor || 'SMS',
+      provisional_otp_key: opts.provisional_otp_key || randomOtpKey()
     }
 
     return {
@@ -207,7 +210,9 @@ module.exports = {
         'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
         'rel': 'self',
         'method': 'GET'
-      }]
+      }],
+      secondFactor: request.secondFactor || 'SMS',
+      provisionalOtpKey: request.provisionalOtp_key || randomOtpKey()
     }
 
     return {

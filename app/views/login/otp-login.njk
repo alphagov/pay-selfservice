@@ -15,10 +15,20 @@ Enter security code - GOV.UK Pay
 </div>
 {% endif %}
 <div class="column-two-thirds" id="display-otp-login">
-  <h1 class="form-title heading-large">Check your phone</h1>
+  {% if authenticatorMethod == 'SMS' %}
+  <h1 class="form-title heading-large page-title">Check your phone</h1>
+  {% endif %}
+  {% if authenticatorMethod == 'APP' %}
+  <h1 class="form-title heading-large page-title">Use your authenticator app</h1>
+  {% endif %}
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+    {% if authenticatorMethod == 'SMS' %}
     <p>We’ve sent you a text message with a security code</p>
+    {% endif %}
+    {% if authenticatorMethod == 'APP' %}
+    <p>Enter the security code shown in your authenticator app</p>
+    {% endif %}
     <div class="form-group{% if flash.error %} error{% endif %}">
       <label class="form-label" for="sms_code">
         Security code
@@ -26,13 +36,15 @@ Enter security code - GOV.UK Pay
         <span class="error-message">{{flash.error}}</span>
         {% endif %}
       </label>
-      <input class="form-control form-control-1-4" data-module="" id="sms_code" name="code" rows="6" type="text" value="" autofocus>
+      <input class="form-control form-control-1-4" data-module="" id="sms_code" name="code" rows="6" type="text" value="" autofocus autocomplete="off">
     </div>
     <div class="form-group">
       <input class="button" type="submit" value="Continue">
     </div>
   </form>
+  {% if authenticatorMethod == 'SMS' %}
   <p><a href="{{routes.user.otpSendAgain}}">Not received a text message?</a></p>
+  {% endif %}
   <p><a href="{{routes.user.logOut}}">Cancel</a></p>
 </div>
 
