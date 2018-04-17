@@ -14,7 +14,7 @@ describe('navigation menu', function () {
       currentServiceName: 'Service Name',
       permissions: testPermissions,
       hideServiceNav: false,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions)
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
     }
 
     let body = renderTemplate('dashboard/index', templateData)
@@ -33,7 +33,7 @@ describe('navigation menu', function () {
       currentServiceName: 'Service Name',
       permissions: testPermissions,
       hideServiceNav: false,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions)
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
     }
 
     let body = renderTemplate('dashboard/index', templateData)
@@ -48,7 +48,7 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
     }
 
     let body = renderTemplate('tokens', templateData)
@@ -69,7 +69,7 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
     }
 
     let body = renderTemplate('tokens', templateData)
@@ -90,7 +90,7 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
     }
 
     let body = renderTemplate('tokens', templateData)
@@ -111,7 +111,7 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
     }
 
     let body = renderTemplate('tokens', templateData)
@@ -132,7 +132,7 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
     }
 
     let body = renderTemplate('tokens', templateData)
@@ -153,11 +153,93 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions)
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
     }
 
     let body = renderTemplate('tokens', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Email notifications')
+  })
+  it('should not render Accounts credentials navigation link when user is using direct debit gateway account', function () {
+    let testPermissions = {
+      tokens_update: true,
+      gateway_credentials_update: true,
+      service_name_read: false,
+      merchant_details_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: false
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+    }
+
+    let body = renderTemplate('tokens', templateData)
+
+    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+  })
+
+  it('should not render Card Types navigation link when user is using direct debit gateway account', function () {
+    let testPermissions = {
+      tokens_update: true,
+      gateway_credentials_update: false,
+      service_name_read: false,
+      merchant_details_read: false,
+      payment_types_read: true,
+      toggle_3ds_read: false,
+      email_notification_template_read: false
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+    }
+
+    let body = renderTemplate('tokens', templateData)
+
+    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+  })
+  it('should not render 3D Secure navigation link when user is using direct debit gateway account', function () {
+    let testPermissions = {
+      tokens_update: true,
+      gateway_credentials_update: false,
+      service_name_read: false,
+      merchant_details_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: true,
+      email_notification_template_read: false
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+    }
+
+    let body = renderTemplate('tokens', templateData)
+
+    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+  })
+
+  it('should not render Email notifications navigation link when user is using direct debit gateway account', function () {
+    let testPermissions = {
+      tokens_update: true,
+      gateway_credentials_update: false,
+      service_name_read: false,
+      merchant_details_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: true
+    }
+    let templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+    }
+
+    let body = renderTemplate('tokens', templateData)
+
+    body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
 })

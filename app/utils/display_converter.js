@@ -92,8 +92,8 @@ module.exports = function (req, data, template) {
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.currentServiceName = _.get(req, 'service.name')
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions)
-    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions)
+    convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions, _.get(account, 'paymentMethod', 'card'))
+    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, _.get(account, 'paymentMethod', 'card'))
   }
   convertedData._features = {}
   if (req.user && req.user.features) {
