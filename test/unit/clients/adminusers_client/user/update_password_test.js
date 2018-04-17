@@ -1,5 +1,5 @@
 var Pact = require('pact')
-var pactProxy = require('../../../../test_helpers/pact_proxy')
+var path = require('path')
 var chai = require('chai')
 var chaiAsPromised = require('chai-as-promised')
 var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
@@ -10,85 +10,69 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const RESET_PASSWORD_PATH = '/v1/api/reset-password'
-var mockPort = Math.floor(Math.random() * 65535)
-var mockServer = pactProxy.create('localhost', mockPort)
-
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
+var port = Math.floor(Math.random() * 48127) + 1024
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
 describe('adminusers client - update password', function () {
-  var adminUsersMock
-  /**
-   * Start the server and set up Pact
-   */
-  before(function (done) {
-    this.timeout(5000)
-    mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-update-password', provider: 'adminusers', port: mockPort})
-      done()
+  let provider = Pact({
+    consumer: 'selfservice',
+    provider: 'adminusers',
+    port: port,
+    log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    dir: path.resolve(process.cwd(), 'pacts'),
+    spec: 2,
+    pactfileWriteMode: 'merge'
+  })
+
+  before(() => provider.setup())
+  after((done) => provider.finalize().then(done()))
+
+  describe('update password for user API - success', () => {
+    let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
+
+    before((done) => {
+      provider.addInteraction(
+        new PactInteractionBuilder(RESET_PASSWORD_PATH)
+          .withState('a valid forgotten password entry and a related user exists')
+          .withUponReceiving('a valid update password request')
+          .withMethod('POST')
+          .withRequestBody(request.getPactified())
+          .withStatusCode(204)
+          .withResponseHeaders({})
+          .build()
+      ).then(() => done())
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update password successfully', function (done) {
+      let requestData = request.getPlain()
+      adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done)
     })
   })
 
-  /**
-   * Remove the server and publish pacts to broker
-   */
-  after(function (done) {
-    mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
-  })
+  describe('update password for user API - not found', () => {
+    let request = userFixtures.validUpdatePasswordRequest()
 
-  describe('update password API', function () {
-    context('update password for user API - success', () => {
-      let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
-
-      beforeEach((done) => {
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(RESET_PASSWORD_PATH)
-            .withState('a valid forgotten password entry and a related user exists')
-            .withUponReceiving('a valid update password request')
-            .withMethod('POST')
-            .withRequestBody(request.getPactified())
-            .withStatusCode(204)
-            .withResponseHeaders({})
-            .build()
-        ).then(() => done())
-      })
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
-
-      it('should update password successfully', function (done) {
-        let requestData = request.getPlain()
-        adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.fulfilled.notify(done)
-      })
+    before((done) => {
+      provider.addInteraction(
+        new PactInteractionBuilder(RESET_PASSWORD_PATH)
+          .withState('a forgotten password does not exists')
+          .withUponReceiving('a valid update password request')
+          .withMethod('POST')
+          .withRequestBody(request.getPactified())
+          .withStatusCode(404)
+          .build()
+      ).then(() => done())
     })
 
-    context('update password for user API - not found', () => {
-      let request = userFixtures.validUpdatePasswordRequest()
+    afterEach(() => provider.verify())
 
-      beforeEach((done) => {
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(RESET_PASSWORD_PATH)
-            .withState('a forgotten password does not exists')
-            .withUponReceiving('a valid update password request')
-            .withMethod('POST')
-            .withRequestBody(request.getPactified())
-            .withStatusCode(404)
-            .build()
-        ).then(() => done())
-      })
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
-
-      it('should error if forgotten password code is not found/expired', function (done) {
-        let requestData = request.getPlain()
-        adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(404)
-        }).should.notify(done)
-      })
+    it('should error if forgotten password code is not found/expired', function (done) {
+      let requestData = request.getPlain()
+      adminusersClient.updatePasswordForUser(requestData.forgotten_password_code, requestData.new_password).should.be.rejected.then(function (response) {
+        expect(response.errorCode).to.equal(404)
+      }).should.notify(done)
     })
   })
 })

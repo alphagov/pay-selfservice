@@ -130,7 +130,7 @@ describe('The otplogin endpoint', function () {
       }
     }
 
-    adminusersMock.post(`${USER_RESOURCE}/${user.externalId}/second-factor/`)
+    adminusersMock.post(`${USER_RESOURCE}/${user.externalId}/second-factor`)
       .reply(200)
 
     var app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
