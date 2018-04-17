@@ -34,7 +34,8 @@
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "npm run snyk-protect",
+    "publish": "./test/publish-pacts.js"
   },
   "dependencies": {
     "appmetrics": "3.x",
@@ -79,7 +80,7 @@
     "winston": "2.4.x"
   },
   "devDependencies": {
-    "@pact-foundation/pact-node": "4.6.0",
+    "@pact-foundation/pact-node": "6.14.2",
     "babel-core": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
@@ -118,7 +119,7 @@
     "node-sass": "^4.7.2",
     "nunjucksify": "^2.2.0",
     "nyc": "^11.3.0",
-    "pact": "1.0.0",
+    "pact": "4.3.2",
     "portfinder": "^1.0.13",
     "proxyquire": "~1.8.0",
     "sass-lint": "^1.10.2",
