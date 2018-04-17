@@ -14,7 +14,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@PP-Test-Pact-Versioning")
+    lib("pay-jenkins-library@master")
   }
 
   environment {
