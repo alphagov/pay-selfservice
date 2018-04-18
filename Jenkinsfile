@@ -14,7 +14,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@PP-3636_run_cypress_integration_test")
+    lib("pay-jenkins-library@master")
   }
 
   environment {
