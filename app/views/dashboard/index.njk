@@ -8,7 +8,9 @@ Dashboard - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK 
 <div class="column-full">
   <h1 class="page-title first-steps__title">Dashboard</h1>
 
-  {% include "./_activity.njk" %}
+  {% if paymentMethod == 'card' %}
+    {% include "./_activity.njk" %}
+  {% endif %}
   {% include "./_first-steps.njk" %}
 </div>
 {% endblock %}
