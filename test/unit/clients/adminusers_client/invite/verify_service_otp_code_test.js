@@ -1,5 +1,5 @@
 const Pact = require('pact')
-const pactProxy = require('../../../../test_helpers/pact_proxy')
+const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
@@ -10,154 +10,129 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const OTP_VALIDATE_RESOURCE = '/v1/api/invites/otp/validate/service'
-const mockPort = Math.floor(Math.random() * 65535)
-const mockServer = pactProxy.create('localhost', mockPort)
-
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${mockPort}`})
+const port = Math.floor(Math.random() * 48127) + 1024
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
 describe('adminusers client - validate otp code for a service', function () {
-  let adminUsersMock
+  let provider = Pact({
+    consumer: 'selfservice',
+    provider: 'adminusers',
+    port: port,
+    log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    dir: path.resolve(process.cwd(), 'pacts'),
+    spec: 2,
+    pactfileWriteMode: 'merge'
+  })
 
-  /**
-   * Start the server and set up Pact
-   */
-  before(function (done) {
-    this.timeout(5000)
-    mockServer.start().then(function () {
-      adminUsersMock = Pact({consumer: 'Selfservice-verify-service-otp-code', provider: 'adminusers', port: mockPort})
-      done()
+  before(() => provider.setup())
+  after((done) => provider.finalize().then(done()))
+
+  describe('success', () => {
+    let validRequest = registrationFixtures.validVerifyOtpCodeRequest({code: 'aValidCode'})
+
+    before((done) => {
+      let pactified = validRequest.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
+          .withState('a service invite exists with the given code')
+          .withUponReceiving('a valid service otp code submission')
+          .withMethod('POST')
+          .withRequestBody(pactified)
+          .withStatusCode(200)
+          .build()
+      ).then(() => done())
+      .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should verify service otp code successfully', function (done) {
+      let securityCode = validRequest.getPlain()
+      adminusersClient.verifyOtpForServiceInvite(securityCode.code, securityCode.otp).should.be.fulfilled
+        .should.notify(done)
     })
   })
 
-  /**
-   * Remove the server and publish pacts to broker
-   */
-  after(function (done) {
-    mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
+  describe('bad request', () => {
+    let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest()
+    verifyCodeRequest.code = ''
+    let errorResponse = registrationFixtures.badRequestResponseWhenFieldsMissing(['code'])
+
+    before((done) => {
+      let pactified = verifyCodeRequest.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
+          .withUponReceiving('a verify otp code request with missing code')
+          .withMethod('POST')
+          .withRequestBody(pactified)
+          .withStatusCode(400)
+          .withResponseBody(errorResponse.getPactified())
+          .build()
+      ).then(() => done())
+      .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should return 400 on missing fields', function (done) {
+      let verifyCodeData = verifyCodeRequest.getPlain()
+      adminusersClient.verifyOtpForServiceInvite(verifyCodeData.code, verifyCodeData.otp).should.be.rejected.then(function (response) {
+        expect(response.errorCode).to.equal(400)
+        expect(response.message.errors.length).to.equal(1)
+        expect(response.message.errors[0]).to.equal('Field [code] is required')
+      }).should.notify(done)
+    })
   })
 
-  describe('verify service otp code API', function () {
-    context('verify service otp code - success', () => {
-      let validRequest = registrationFixtures.validVerifyOtpCodeRequest({code: 'aValidCode'})
+  describe('not found', () => {
+    let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest()
 
-      beforeEach((done) => {
-        let pactified = validRequest.getPactified()
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-            .withState('a service invite exists with the given code')
-            .withUponReceiving('a valid service otp code submission')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(200)
-            .build()
-        )
-          .then(() => done())
-          .catch(done)
-      })
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
-
-      it('should verify service otp code successfully', function (done) {
-        let securityCode = validRequest.getPlain()
-        adminusersClient.verifyOtpForServiceInvite(securityCode.code, securityCode.otp).should.be.fulfilled
-          .should.notify(done)
-      })
+    before((done) => {
+      let pactified = verifyCodeRequest.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
+          .withUponReceiving('a verify otp code request with non existent code')
+          .withMethod('POST')
+          .withRequestBody(pactified)
+          .withStatusCode(404)
+          .build()
+      ).then(() => done())
+      .catch(done)
     })
 
-    context('verify otp code API - bad request', () => {
-      let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest()
-      verifyCodeRequest.code = ''
-      let errorResponse = registrationFixtures.badRequestResponseWhenFieldsMissing(['code'])
+    afterEach(() => provider.verify())
 
-      beforeEach((done) => {
-        let pactified = verifyCodeRequest.getPactified()
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-            .withUponReceiving('a verify otp code request with missing code')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(400)
-            .withResponseBody(errorResponse.getPactified())
-            .build()
-        )
-          .then(() => done())
-          .catch(done)
-      })
+    it('should return 404 if code cannot be found', function (done) {
+      let request = verifyCodeRequest.getPlain()
+      adminusersClient.verifyOtpForServiceInvite(request.code, request.otp).should.be.rejected.then(function (response) {
+        expect(response.errorCode).to.equal(404)
+      }).should.notify(done)
+    })
+  })
 
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
+  describe('invitation locked', () => {
+    let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest()
 
-      it('should return 400 on missing fields', function (done) {
-        let verifyCodeData = verifyCodeRequest.getPlain()
-        adminusersClient.verifyOtpForServiceInvite(verifyCodeData.code, verifyCodeData.otp).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(400)
-          expect(response.message.errors.length).to.equal(1)
-          expect(response.message.errors[0]).to.equal('Field [code] is required')
-        }).should.notify(done)
-      })
+    before((done) => {
+      let pactified = verifyCodeRequest.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
+          .withUponReceiving('a registration details submission for locked code')
+          .withMethod('POST')
+          .withRequestBody(pactified)
+          .withStatusCode(410)
+          .build()
+      ).then(() => done())
+      .catch(done)
     })
 
-    context('verify otp code API - invitation not found', () => {
-      let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest()
+    afterEach(() => provider.verify())
 
-      beforeEach((done) => {
-        let pactified = verifyCodeRequest.getPactified()
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-            .withUponReceiving('a verify otp code request with non existent code')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(404)
-            .build()
-        )
-          .then(() => done())
-          .catch(done)
-      })
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
-
-      it('should return 404 if code cannot be found', function (done) {
-        let request = verifyCodeRequest.getPlain()
-        adminusersClient.verifyOtpForServiceInvite(request.code, request.otp).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(404)
-        }).should.notify(done)
-      })
-    })
-
-    context('submit registration details API - invitation locked', () => {
-      let verifyCodeRequest = registrationFixtures.validVerifyOtpCodeRequest()
-
-      beforeEach((done) => {
-        let pactified = verifyCodeRequest.getPactified()
-        adminUsersMock.addInteraction(
-          new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-            .withUponReceiving('a registration details submission for locked code')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(410)
-            .build()
-        )
-          .then(() => done())
-          .catch(done)
-      })
-
-      afterEach((done) => {
-        adminUsersMock.finalize().then(() => done())
-      })
-
-      it('return 410 if code locked', function (done) {
-        let request = verifyCodeRequest.getPlain()
-        adminusersClient.verifyOtpForServiceInvite(request.code, request.otp).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(410)
-        }).should.notify(done)
-      })
+    it('return 410 if code locked', function (done) {
+      let request = verifyCodeRequest.getPlain()
+      adminusersClient.verifyOtpForServiceInvite(request.code, request.otp).should.be.rejected.then(function (response) {
+        expect(response.errorCode).to.equal(410)
+      }).should.notify(done)
     })
   })
 })

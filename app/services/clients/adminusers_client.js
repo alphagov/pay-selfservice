@@ -286,7 +286,7 @@ module.exports = function (clientOptions = {}) {
       correlationId: correlationId
     }
 
-    const url = `${userResource}/${externalId}/second-factor/`
+    const url = `${userResource}/${externalId}/second-factor`
     const defer = q.defer()
     const startTime = new Date()
     const context = {

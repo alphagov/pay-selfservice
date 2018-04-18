@@ -6,116 +6,100 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies
-const pactProxy = require('../../../test_helpers/pact_proxy')
+const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector_client').ConnectorClient
 const gatewayAccountFixtures = require('../../../fixtures/gateway_account_fixtures')
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
-const mockPort = Math.floor(Math.random() * 65535)
-const mockServer = pactProxy.create('localhost', mockPort)
-const connectorClient = new Connector(`http://localhost:${mockPort}`)
+const port = Math.floor(Math.random() * 48127) + 1024
+const connectorClient = new Connector(`http://localhost:${port}`)
 const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
-  let connectorMock
+  let provider = Pact({
+    consumer: 'selfservice',
+    provider: 'connector',
+    port: port,
+    log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    dir: path.resolve(process.cwd(), 'pacts'),
+    spec: 2,
+    pactfileWriteMode: 'merge'
+  })
 
-  /**
-   * Start the server and set up Pact
-   */
-  before(function (done) {
-    this.timeout(5000)
-    mockServer.start().then(function () {
-      connectorMock = Pact({consumer: 'Connector-create-gateway-account', provider: 'Connector', port: mockPort})
-      done()
+  before(() => provider.setup())
+  after((done) => provider.finalize().then(done()))
+
+  describe('create gateway account - success', () => {
+    const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
+
+    before((done) => {
+      let pactified = validCreateGatewayAccountRequest.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(ACCOUNTS_RESOURCE)
+          .withUponReceiving('a valid create gateway account request')
+          .withMethod('POST')
+          .withRequestBody(pactified)
+          .withStatusCode(201)
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should submit create gateway account successfully', function (done) {
+      const createGatewayAccount = validCreateGatewayAccountRequest.getPlain()
+      connectorClient.createGatewayAccount(
+        createGatewayAccount.payment_provider,
+        createGatewayAccount.type,
+        createGatewayAccount.service_name,
+        createGatewayAccount.analytics_id
+      ).should.be.fulfilled.should.notify(done)
     })
   })
 
-  /**
-   * Remove the server and publish pacts to broker
-   */
-  after(function (done) {
-    mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
-  })
+  describe('create gateway account - bad request', () => {
+    const invalidCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
+    const nonExistentPaymentProvider = 'non-existent-payment-provider'
+    invalidCreateGatewayAccountRequest.payment_provider = nonExistentPaymentProvider
+    const errorResponse = {
+      message: `Unsupported payment provider ${nonExistentPaymentProvider}.`
+    }
 
-  describe('create gateway account', function () {
-    context('create gateway account - success', () => {
-      const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
-
-      beforeEach((done) => {
-        let pactified = validCreateGatewayAccountRequest.getPactified()
-        connectorMock.addInteraction(
-          new PactInteractionBuilder(ACCOUNTS_RESOURCE)
-            .withUponReceiving('a valid create gateway account request')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(201)
-            .build()
-        )
-          .then(() => done())
-          .catch(done)
-      })
-
-      afterEach((done) => {
-        connectorMock.finalize().then(() => done())
-      })
-
-      it('should submit create gateway account successfully', function (done) {
-        const createGatewayAccount = validCreateGatewayAccountRequest.getPlain()
-        connectorClient.createGatewayAccount(
-          createGatewayAccount.payment_provider,
-          createGatewayAccount.type,
-          createGatewayAccount.service_name,
-          createGatewayAccount.analytics_id
-        ).should.be.fulfilled.should.notify(done)
-      })
+    before((done) => {
+      let pactified = invalidCreateGatewayAccountRequest.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(ACCOUNTS_RESOURCE)
+          .withUponReceiving('an invalid create gateway account request')
+          .withMethod('POST')
+          .withRequestBody(pactified)
+          .withStatusCode(400)
+          .withResponseBody(errorResponse)
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
     })
 
-    context('create gateway account - bad request', () => {
-      const invalidCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
-      const nonExistentPaymentProvider = 'non-existent-payment-provider'
-      invalidCreateGatewayAccountRequest.payment_provider = nonExistentPaymentProvider
-      const errorResponse = {
-        message: `Unsupported payment provider ${nonExistentPaymentProvider}.`
-      }
+    afterEach(() => provider.verify())
 
-      beforeEach((done) => {
-        let pactified = invalidCreateGatewayAccountRequest.getPactified()
-        connectorMock.addInteraction(
-          new PactInteractionBuilder(ACCOUNTS_RESOURCE)
-            .withUponReceiving('an invalid create gateway account request')
-            .withMethod('POST')
-            .withRequestBody(pactified)
-            .withStatusCode(400)
-            .withResponseBody(errorResponse)
-            .build()
-        )
-          .then(() => done())
-          .catch(done)
-      })
-
-      afterEach((done) => {
-        connectorMock.finalize().then(() => done())
-      })
-
-      it('should return 400 on missing fields', function (done) {
-        const createGatewayAccount = invalidCreateGatewayAccountRequest.getPlain()
-        connectorClient.createGatewayAccount(
-          createGatewayAccount.payment_provider,
-          createGatewayAccount.type,
-          createGatewayAccount.service_name,
-          createGatewayAccount.analytics_id
-        ).should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(400)
-          expect(response.message).to.deep.equal(errorResponse)
-        }).should.notify(done)
-      })
+    it('should return 400 on missing fields', function (done) {
+      const createGatewayAccount = invalidCreateGatewayAccountRequest.getPlain()
+      connectorClient.createGatewayAccount(
+        createGatewayAccount.payment_provider,
+        createGatewayAccount.type,
+        createGatewayAccount.service_name,
+        createGatewayAccount.analytics_id
+      ).should.be.rejected.then(function (response) {
+        expect(response.errorCode).to.equal(400)
+        expect(response.message).to.deep.equal(errorResponse)
+      }).should.notify(done)
     })
   })
 })
