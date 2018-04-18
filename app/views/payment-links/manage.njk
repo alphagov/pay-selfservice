@@ -8,7 +8,9 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
 <aside class="column-one-third pad-bottom">
   <nav role="navigation" class="navigation settings-navigation">
     <ul class="list">
+      {% if permissions.tokens_create %}
       <li><a href="{{ returnToStart }}">Create a payment link</a></li>
+      {% endif %}
       <li class="active"><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
     </ul>
   </nav>
@@ -37,6 +39,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       {% else %}
         <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
       {% endif %}
+      {% if permissions.tokens_create %}
        <div class="payment-links-list--item__actions">
         <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete</a>
         <div class="target-to-show" id="delete-{{ product.externalId }}">
@@ -50,6 +53,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
               <a class="target-to-show--cancel" href="#main">Cancel</a>
             </div>
         </div>
+      {% endif %}
       </div>
       {# There’s no point in showing this until we have drafts
       <aside class="payment-links-list--item__status payment-links-list--item__status--live">
