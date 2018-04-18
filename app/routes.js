@@ -39,7 +39,7 @@ const paymentTypesSelectBrand = require('./controllers/payment_types_select_bran
 const paymentTypesSummary = require('./controllers/payment_types_summary_controller')
 const emailNotifications = require('./controllers/email_notifications_controller')
 const forgotPassword = require('./controllers/forgotten_password_controller')
-const myServicesCtrl = require('./controllers/my_services_controller')
+const myServicesCtrl = require('./controllers/my-services')
 const editServiceNameCtrl = require('./controllers/edit_service_name_controller')
 const serviceUsersController = require('./controllers/service_users_controller')
 const editMerchantDetailsCtrlGet = require('./controllers/edit_merchant_details/get')
@@ -202,8 +202,8 @@ module.exports.bind = function (app) {
   app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.on)
 
   // MY SERVICES
-  app.get(serviceSwitcher.index, myServicesCtrl.index)
-  app.post(serviceSwitcher.switch, myServicesCtrl.switch)
+  app.get(serviceSwitcher.index, myServicesCtrl.getIndex)
+  app.post(serviceSwitcher.switch, myServicesCtrl.postIndex)
   app.get(serviceSwitcher.create, createServiceCtrl.get)
   app.post(serviceSwitcher.create, createServiceCtrl.post)
 

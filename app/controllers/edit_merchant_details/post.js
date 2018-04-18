@@ -5,6 +5,7 @@ const responses = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service_service')
 const {isPhoneNumber} = require('../../browsered/field-validation-checks')
+const formattedPathFor = require('../../utils/replace_params_in_path')
 
 const MERCHANT_NAME = 'merchant-name'
 const TELEPHONE_NUMBER = 'telephone-number'
@@ -16,7 +17,7 @@ const ADDRESS_COUNTRY = 'address-country'
 
 exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
-  const serviceExternalId = lodash.get(req, 'service.externalId')
+  const externalServiceId = req.params.externalServiceId
   const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount')
   const reqMerchantDetails = {
     name: req.body[MERCHANT_NAME],
@@ -29,14 +30,15 @@ exports.post = (req, res) => {
   }
   const errors = isValidForm(req, hasDirectDebitGatewayAccount)
   if (lodash.isEmpty(errors)) {
-    return serviceService.updateMerchantDetails(serviceExternalId, reqMerchantDetails, correlationId)
+    return serviceService.updateMerchantDetails(externalServiceId, reqMerchantDetails, correlationId)
       .then(() => {
         lodash.set(req, 'session.pageData.editMerchantDetails', {
           success: true,
           merchant_details: reqMerchantDetails,
-          has_direct_debit_gateway_account: hasDirectDebitGatewayAccount
+          has_direct_debit_gateway_account: hasDirectDebitGatewayAccount,
+          externalServiceId
         })
-        res.redirect(paths.merchantDetails.index)
+        res.redirect(formattedPathFor(paths.merchantDetails.index, externalServiceId))
       })
       .catch(err => {
         responses.renderErrorView(req, res, err.message)
@@ -46,9 +48,10 @@ exports.post = (req, res) => {
       success: false,
       errors: errors,
       merchant_details: reqMerchantDetails,
-      has_direct_debit_gateway_account: hasDirectDebitGatewayAccount
+      has_direct_debit_gateway_account: hasDirectDebitGatewayAccount,
+      externalServiceId
     })
-    res.redirect(paths.merchantDetails.index)
+    res.redirect(formattedPathFor(paths.merchantDetails.index, externalServiceId))
   }
 }
 

@@ -1,12 +1,12 @@
 const chai = require('chai')
 const cheerio = require('cheerio')
-const path = require('path')
 const nock = require('nock')
-const mockSession = require(path.join(__dirname, '/../../../test_helpers/mock_session.js'))
-const getApp = require(path.join(__dirname, '/../../../../server.js')).getApp
+const mockSession = require('../../../test_helpers/mock_session.js')
+const getApp = require('../../../../server.js').getApp
 const supertest = require('supertest')
-const serviceFixtures = require(path.join(__dirname, '/../../../fixtures/service_fixtures'))
-const paths = require(path.join(__dirname, '/../../../../app/paths.js'))
+const serviceFixtures = require('../../../fixtures/service_fixtures')
+const paths = require('../../../../app/paths.js')
+const formattedPathFor = require('../../../../app/utils/replace_params_in_path')
 const csrf = require('csrf')
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -62,7 +62,7 @@ describe('edit merchant details controller - post', () => {
       }
       let app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(paths.merchantDetails.update)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -80,7 +80,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(paths.merchantDetails.index)
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
     })
     it(`should set the success notification in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.true // eslint-disable-line
@@ -112,7 +112,7 @@ describe('edit merchant details controller - post', () => {
       }
       let app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(paths.merchantDetails.update)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'address-city': 'new-city',
@@ -127,7 +127,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(paths.merchantDetails.index)
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
     })
     it(`should the errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -159,7 +159,7 @@ describe('edit merchant details controller - post', () => {
       }
       let app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(paths.merchantDetails.update)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -177,7 +177,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(paths.merchantDetails.index)
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
     })
     it(`should set errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -197,7 +197,7 @@ describe('edit merchant details controller - post', () => {
       })
       let app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .post(paths.merchantDetails.update)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',

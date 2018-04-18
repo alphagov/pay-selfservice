@@ -3,13 +3,15 @@ const responses = require('../../utils/response')
 const countries = require('../../services/countries.js')
 
 exports.get = (req, res) => {
+  const externalServiceId = req.params.externalServiceId
   let pageData = lodash.get(req, 'session.pageData.editMerchantDetails')
   if (pageData) {
     delete req.session.pageData.editMerchantDetails
   } else {
     pageData = {
       merchant_details: lodash.get(req, 'service.merchantDetails'),
-      has_direct_debit_gateway_account: lodash.get(req, 'service.hasDirectDebitGatewayAccount')
+      has_direct_debit_gateway_account: lodash.get(req, 'service.hasDirectDebitGatewayAccount'),
+      externalServiceId
     }
   }
   pageData.countries = countries.retrieveCountries(lodash.get(pageData.merchant_details, 'address_country'))

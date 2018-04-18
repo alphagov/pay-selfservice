@@ -4,31 +4,46 @@
       {{ service.name }}
       {% if service.permissions.service_name_update %}
       <a href="/service/{{ service.external_id }}/edit-name" class="edit-service-name">
-          Edit name
+        Edit name
       </a>
       {% endif %}
     </h2>
   </div>
   <div class="flex-grid--column-half marked">
+    {% if service.gateway_accounts.cardAccounts.length %}
+    <h3 class="heading-small page-title">Card payments</h3>
     <ul class="list">
-      {% for gateway_account in service.gateway_accounts %}
-      <li>
-        <form method="post" action="{{routes.serviceSwitcher.switch}}">
-          <input name="csrfToken" type="hidden" value="{{csrf}}" />
-          <input name="gatewayAccountId" type="hidden" value="{{ gateway_account.external_id }}"/>
-          <button class="service-switcher {{ gateway_account.type }} {{ gateway_account.payment_provider }}" type="submit" role="link">{{ gateway_account.type }} account {% if not gateway_account.isLive %}({{ gateway_account.payment_provider }}){% endif %}{% if gateway_account.payment_method %} ({{ gateway_account.payment_method }}){% endif %}</button>
-        </form>
-      </li>
-      {% endfor %}
+    {% for account in service.gateway_accounts.cardAccounts %}
+      {% include "./_service_switch.njk" %}
+    {% endfor %}
     </ul>
+    {% endif %}
+
+    {% if service.gateway_accounts.directdebitAccounts.length %}
+    <h3 class="heading-small">Direct debit payments</h3>
+    <ul class="list">
+    {% for account in service.gateway_accounts.directdebitAccounts %}
+      {% include "./_service_switch.njk" %}
+    {% endfor %}
+    </ul>
+    {% endif %}
   </div>
   <div id="team-members" class="flex-grid--column-half marked">
-    <p>
+    <ul>
+      <li>
       {% if service.permissions.users_service_create %}
-      <a href="/service/{{ service.external_id }}" class="manage-team-members">Manage team members</a>
+        <a href="/service/{{ service.external_id }}" class="manage-team-members">Manage team members</a>
+        <p class="font-xsmall">Team member changes affect both live and test environments.</p>
       {% else %}
-      <a href="/service/{{ service.external_id }}" class="view-team-members">View team members</a>
+        <a href="/service/{{ service.external_id }}" class="view-team-members">View team members</a>
       {% endif %}
-    </p>
+      </li>
+      <li>
+      {% if service.permissions.merchant_details_read %}
+        <a href="/merchant-details/{{ service.external_id }}" class="edit-merchant-details">Edit merchant details</a>
+        <p class="font-xsmall">Payment schemes require the details of the merchant taking payment to be shown to paying users.</p>
+      {% endif %}
+      </li>
+    </ul>
   </div>
 </div>

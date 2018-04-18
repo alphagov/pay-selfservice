@@ -1,12 +1,12 @@
 const chai = require('chai')
 const cheerio = require('cheerio')
-const path = require('path')
 const nock = require('nock')
-const mockSession = require(path.join(__dirname, '/../../../test_helpers/mock_session.js'))
-const getApp = require(path.join(__dirname, '/../../../../server.js')).getApp
+const mockSession = require('../../../test_helpers/mock_session.js')
+const getApp = require('../../../../server.js').getApp
 const supertest = require('supertest')
-const userFixtures = require(path.join(__dirname, '/../../../fixtures/user_fixtures'))
-const paths = require(path.join(__dirname, '/../../../../app/paths.js'))
+const userFixtures = require('../../../fixtures/user_fixtures')
+const paths = require('../../../../app/paths.js')
+const formattedPathFor = require('../../../../app/utils/replace_params_in_path')
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
@@ -66,7 +66,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(paths.merchantDetails.index)
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -117,7 +117,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(paths.merchantDetails.index)
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -169,7 +169,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(paths.merchantDetails.index)
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -220,7 +220,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(paths.merchantDetails.index)
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -262,7 +262,7 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-      .get(paths.merchantDetails.index)
+      .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
       .end((err, res) => {
         response = res
         $ = cheerio.load(res.text || '')
@@ -313,7 +313,7 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-      .get(paths.merchantDetails.index)
+      .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
       .end((err, res) => {
         response = res
         $ = cheerio.load(res.text || '')
@@ -382,7 +382,7 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .get(paths.merchantDetails.index)
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
