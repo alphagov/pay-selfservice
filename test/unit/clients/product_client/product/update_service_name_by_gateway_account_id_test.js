@@ -6,16 +6,15 @@ const {expect} = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
-const pactProxy = require('../../../../test_helpers/pact_proxy')
+const path = require('path')
 const {invalidUpdateServiceNameOfProductsByGatewayAccountIdRequest, validUpdateServiceNameOfProductsByGatewayAccountIdRequest} = require('../../../../fixtures/product_fixtures')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
 // Constants
 const GATEWAY_ACCOUNT_RESOURCE = '/v1/api/gateway-account'
-const mockPort = Math.floor(Math.random() * 65535)
-const mockServer = pactProxy.create('localhost', mockPort)
-let productsMock
-function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsApiKey = 'ABC1234567890DEF') {
+const port = Math.floor(Math.random() * 48127) + 1024
+
+function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
       PRODUCTS_URL: baseUrl
@@ -24,25 +23,18 @@ function getProductsClient (baseUrl = `http://localhost:${mockPort}`, productsAp
 }
 
 describe('products client - update product service name by gateway account id', () => {
-  /**
-   * Start the server and set up Pact
-   */
-  before(function (done) {
-    this.timeout(5000)
-    mockServer.start().then(function () {
-      productsMock = Pact({consumer: 'Selfservice-create-new-product', provider: 'products', port: mockPort})
-      done()
-    })
+  let provider = Pact({
+    consumer: 'selfservice',
+    provider: 'products',
+    port: port,
+    log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    dir: path.resolve(process.cwd(), 'pacts'),
+    spec: 2,
+    pactfileWriteMode: 'merge'
   })
 
-  /**
-   * Remove the server and publish pacts to broker
-   */
-  after(done => {
-    mockServer.delete()
-      .then(() => pactProxy.removeAll())
-      .then(() => done())
-  })
+  before(() => provider.setup())
+  after((done) => provider.finalize().then(done()))
 
   describe('when the request is successful', () => {
     let result, gatewayAccountId, newServiceName
@@ -50,7 +42,7 @@ describe('products client - update product service name by gateway account id', 
       const productsClient = getProductsClient()
       gatewayAccountId = '541'
       newServiceName = 'Buy a Fish'
-      productsMock.addInteraction(
+      provider.addInteraction(
         new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
           .withUponReceiving('a valid update product service_name request')
           .withRequestBody(validUpdateServiceNameOfProductsByGatewayAccountIdRequest(newServiceName).getPactified())
@@ -66,9 +58,7 @@ describe('products client - update product service name by gateway account id', 
         .catch(e => done(e))
     })
 
-    afterEach(done => {
-      productsMock.finalize().then(() => done())
-    })
+    afterEach(() => provider.verify())
 
     it(`should update the service name of any products associated with the service name`, () => {
       expect(result).to.equal(undefined)
@@ -80,7 +70,7 @@ describe('products client - update product service name by gateway account id', 
     before(done => {
       const productsClient = getProductsClient()
       gatewayAccountId = '541'
-      productsMock.addInteraction(new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
+      provider.addInteraction(new PactInteractionBuilder(`${GATEWAY_ACCOUNT_RESOURCE}/${gatewayAccountId}`)
         .withUponReceiving('a invalid update product service_name request')
         .withRequestBody(invalidUpdateServiceNameOfProductsByGatewayAccountIdRequest().getPactified())
         .withMethod('PATCH')
@@ -94,9 +84,7 @@ describe('products client - update product service name by gateway account id', 
         })
     })
 
-    afterEach(done => {
-      productsMock.finalize().then(() => done())
-    })
+    afterEach(() => provider.verify())
 
     it('should reject with error: bad request', () => {
       expect(result.errorCode).to.equal(400)
