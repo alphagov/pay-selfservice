@@ -53,7 +53,6 @@ pipeline {
         }
       }
     }
-    stage('E2E Tests') {
     stage('Integration Test') {
       steps {
         script {
