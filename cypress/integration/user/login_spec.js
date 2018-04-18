@@ -18,16 +18,17 @@ describe('Login Page', () => {
   })
 
   describe('Form validation', () => {
-    // describe('Valid submissions', () => {
-    //   it('should show inline errors if no password is supplied', () => {
-    //     // cy.server('http://localhost:8002')
-    //     cy.getCookie('session')
-    //     cy.get('#username').type('fake@example.com')
-    //     cy.get('#password').type('sup3r-s3cur3-pa$$w0rd')
-    //     cy.contains('Continue').click()
-    //
-    //   })
-    // })
+    describe('Valid submissions', () => {
+      it('should progress to 2FA page if provided valid username and password', () => {
+        cy.getCookie('session')
+        cy.get('#username').type('existing-user')
+        cy.get('#password').type('password')
+        cy.contains('Continue').click()
+        cy.title().should('eq', 'Enter security code - GOV.UK Pay')
+        cy.url().should('include', '/otp-login')
+        // TODO: This will currently fail pending the addition of a connector/get-gateway-account pact for use in the stubs
+      })
+    })
     describe('Invalid submissions', () => {
       it('should show inline errors if no password is supplied', () => {
         cy.get('#username').type('fake@example.com')

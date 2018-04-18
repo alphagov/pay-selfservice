@@ -157,14 +157,20 @@ module.exports = {
   validUserResponse: (request = {}) => {
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     let reqExternalId = request.external_id || existingExternalId
+<<<<<<< HEAD
     let reqUsername = request.username || 'existing-user'
     let defaultServiceId = 'cp5wa'
     const gatewayAccountIds = request.gateway_account_ids || ['758', '772']
+=======
+    let reqEmail = request.email || `${request.username || 'existing-user'}@example.com`
+    let defaultServiceId = randomString()
+    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId(), randomAccountId()]
+>>>>>>> PP-3636 Add test that hits pact stub
 
     let data = {
       external_id: reqExternalId,
-      username: reqUsername,
-      email: request.email || `${reqUsername}@example.com`,
+      username: reqEmail,
+      email: reqEmail,
       service_roles: request.service_roles || [{
         service: {
           name: 'System Generated',
