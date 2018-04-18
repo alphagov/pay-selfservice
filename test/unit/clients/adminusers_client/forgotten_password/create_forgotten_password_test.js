@@ -101,4 +101,4 @@ describe('adminusers client - create forgotten password', function () {
       }).should.notify(done)
     })
   })
- })
+})

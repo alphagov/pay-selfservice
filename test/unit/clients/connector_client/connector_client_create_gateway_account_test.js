@@ -21,7 +21,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
-
   let provider = Pact({
     consumer: 'selfservice',
     provider: 'connector',
