@@ -14,7 +14,7 @@ const paths = require('../../../../app/paths')
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'transactions:read'}]
+  permissions: [{name: 'tokens:create'}]
 })
 
 describe('Create payment link amount post controller', () => {

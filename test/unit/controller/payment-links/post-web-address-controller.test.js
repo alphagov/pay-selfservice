@@ -18,7 +18,7 @@ let product
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'transactions:read'}]
+  permissions: [{name: 'tokens:create'}]
 })
 const SERVICE_NAME_SLUGIFIED = 'pay-for-offline-service'
 const PAYMENT_TITLE_SLUGIFIED = 'payment-title'
