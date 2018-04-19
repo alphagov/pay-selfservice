@@ -21,7 +21,7 @@ describe('Manage payment links - disable controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'transactions:read'}]
+        permissions: [{name: 'tokens:create'}]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -60,7 +60,7 @@ describe('Manage payment links - disable controller', () => {
       const productExternalId = randomUuid()
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'transactions:read'}]
+        permissions: [{name: 'tokens:create'}]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
