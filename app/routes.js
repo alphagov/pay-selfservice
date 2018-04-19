@@ -251,6 +251,12 @@ module.exports.bind = function (app) {
   app.get(paymentLinks.manage, permission('transactions:read'), getAccount, paymentLinksCtrl.getManage)
   app.get(paymentLinks.disable, permission('tokens:create'), getAccount, paymentLinksCtrl.getDisable)
   app.get(paymentLinks.delete, permission('tokens:create'), getAccount, paymentLinksCtrl.getDelete)
+  app.get(paymentLinks.edit, permission('tokens:create'), getAccount, paymentLinksCtrl.getEdit)
+  app.post(paymentLinks.edit, permission('tokens:create'), getAccount, paymentLinksCtrl.postEdit)
+  app.get(paymentLinks.editInformation, permission('tokens:create'), getAccount, paymentLinksCtrl.getEditInformation)
+  app.post(paymentLinks.editInformation, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditInformation)
+  app.get(paymentLinks.editAmount, permission('tokens:create'), getAccount, paymentLinksCtrl.getEditAmount)
+  app.post(paymentLinks.editAmount, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditAmount)
 
   // Configure 2FA
   app.get(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.getIndex)

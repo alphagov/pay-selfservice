@@ -1,0 +1,81 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Edit your payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+<aside class="column-one-third pad-bottom">
+  <nav role="navigation" class="navigation settings-navigation">
+    <ul class="list">
+      <li><a href="{{ create }}">Create a payment link</a></li>
+      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+    </ul>
+  </nav>
+</aside>
+{% endblock %}
+
+{% block mainContent %}
+<section class="column-two-thirds">
+  <form action="{{ self }}" class="form" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input name="service-name" type="hidden" value="{{currentServiceName}}"/>
+    <h1 class="page-title">Edit your payment link</h1>
+    <dl class="govuk-check-your-answers cya-questions-short">
+      <div class="review-title">
+        <dt class="cya-question">
+          Title
+        </dt>
+        <dd class="cya-answer" id="edit-payment-link-title">
+          {{ product.name }}
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ editInformation }}?field=payment-link-title">
+            Change <span class="visuallyhidden">Title</span>
+          </a>
+        </dd>
+      </div>
+      <div class="review-details">
+        <dt class="cya-question">
+          More details
+        </dt>
+        <dd class="cya-answer" id="edit-payment-link-description">
+          {% if product.description %}
+            {{ product.description | striptags(true) | escape | nl2br }}
+          {% else %}
+            <span class="grey">None given</span>
+          {% endif %}
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ editInformation }}?field=payment-link-description">
+            Change <span class="visuallyhidden">More details</span>
+          </a>
+        </dd>
+      </div>
+      <div class="review-amount">
+        <dt class="cya-question">
+          Payment amount
+        </dt>
+        <dd class="cya-answer" id="edit-payment-link-amount">
+          {% if product.price %}
+            {{ product.price | currency }}
+          {% else %}
+            <span class="grey">User can choose</span>
+          {% endif %}
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ editAmount }}">
+            Change <span class="visuallyhidden">payment amount</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    <div class="form-group">
+      {% if changed %}
+      <button id="update-payment-link-publish" class="button" type="submit">Save changes</button>
+      {% endif %}
+    </div>
+    <p><a id="update-payment-link-cancel" class="cancel" href="{{ manage }}">Cancel</a></p>
+  </form>
+</section>
+{% endblock %}

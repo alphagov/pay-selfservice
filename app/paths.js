@@ -136,7 +136,10 @@ module.exports = {
     review: '/create-payment-link/review',
     manage: '/create-payment-link/manage',
     disable: '/create-payment-link/manage/disable/:productExternalId',
-    delete: '/create-payment-link/manage/delete/:productExternalId'
+    delete: '/create-payment-link/manage/delete/:productExternalId',
+    edit: '/create-payment-link/manage/edit/:productExternalId',
+    editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
+    editAmount: '/create-payment-link/manage/edit/amount/:productExternalId'
   },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
 }

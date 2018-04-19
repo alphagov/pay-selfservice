@@ -41,6 +41,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       {% endif %}
       {% if permissions.tokens_create %}
        <div class="payment-links-list--item__actions">
+        <a class="payment-links-list--item__actions--link payment-links-list--item__actions" href="manage/edit/{{ product.externalId }}">Edit</a>
         <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete</a>
         <div class="target-to-show" id="delete-{{ product.externalId }}">
           <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
