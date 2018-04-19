@@ -108,18 +108,9 @@ pipeline {
         deployEcs("selfservice")
       }
     }
-    stage('Smoke Tests') {
-      failFast true
-      parallel {
-        stage('Product Smoke Test') {
-          when { branch 'master' }
-          steps { runProductsSmokeTest() }
-        }
-        stage('Direct Debit Smoke Test') {
-          when { branch 'master' }
-          steps { runDirectDebitSmokeTest() }
-        }
-      }
+    stage('Direct Debit Smoke Test') {
+      when { branch 'master' }
+      steps { runDirectDebitSmokeTest() }
     }
     stage('Complete') {
       failFast true
