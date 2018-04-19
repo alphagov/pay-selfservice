@@ -4,10 +4,6 @@ const pactBase = require('./pact_base')
 // Global setup
 const pactProducts = pactBase()
 
-// Create random values if none provided
-const randomExternalId = () => Math.random().toString(36).substring(7)
-const randomGatewayAccountId = () => Math.random().toString(36).substring(7)
-
 module.exports = {
   pactifyRandomData: (opts = {}) => {
     pactProducts.pactify(opts)
@@ -42,7 +38,7 @@ module.exports = {
 
   validCreateProductRequest: (opts = {}) => {
     const data = {
-      gateway_account_id: opts.gatewayAccountId || randomGatewayAccountId(),
+      gateway_account_id: opts.gatewayAccountId || 'd5gzn',
       pay_api_token: opts.payApiToken || 'pay-api-token',
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
@@ -65,8 +61,8 @@ module.exports = {
 
   validCreatePaymentResponse: (opts = {}) => {
     const data = {
-      external_id: opts.external_id || randomExternalId(),
-      product_external_id: opts.product_external_id || randomExternalId(),
+      external_id: opts.external_id || 'b9tijg',
+      product_external_id: opts.product_external_id || 'mekna7',
       next_url: opts.next_url || `http://service.url/next`,
       status: opts.status || 'CREATED',
       govuk_status: opts.govuk_status || 'success',
@@ -96,9 +92,9 @@ module.exports = {
 
   validCreateProductResponse: (opts = {}) => {
     const data = {
-      external_id: opts.external_id || randomExternalId(),
+      external_id: opts.external_id || 'cf3hp2',
       type: opts.type || 'DEMO',
-      gateway_account_id: opts.gateway_account_id || randomGatewayAccountId(),
+      gateway_account_id: opts.gateway_account_id || 'xr9nkd',
       name: opts.name || 'A Product Name',
       service_name: opts.serviceName || 'Example Service',
       _links: opts.links

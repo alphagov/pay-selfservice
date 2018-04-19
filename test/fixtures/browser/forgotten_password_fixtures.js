@@ -1,20 +1,6 @@
 var _ = require('lodash')
 var sinon = require('sinon')
 
-function randomString () {
-  return Math.random().toString(36).substring(7)
-}
-
-function validPassword () {
-  return 'G0VUkPay2017Rocks'
-}
-
-function randomUsername () {
-  var name = randomString()
-  var domain = 'example.gov.uk'
-  return name + '@' + domain
-}
-
 var baseReq = {
   flash: sinon.stub(),
   session: {
@@ -26,7 +12,7 @@ module.exports = {
   validForgottenPasswordPost: (username) => {
     let req = {
       body: {
-        username: username || randomUsername()
+        username: username || 'validForgottenPasswordPost@example.gov.uk'
       }
     }
 
@@ -36,7 +22,7 @@ module.exports = {
   validForgottenPasswordGet: (token) => {
     let req = {
       params: {
-        id: token || randomString()
+        id: token || '3lodzl'
       }
     }
 
@@ -46,11 +32,11 @@ module.exports = {
   validUpdatePasswordPost: (username, token, password) => {
     let req = {
       params: {
-        id: token || randomString()
+        id: token || 'dxad2j'
       },
       body: {
-        password: password || validPassword(),
-        username: username || randomUsername()
+        password: password || 'G0VUkPay2017Rocks',
+        username: username || 'validUpdatePasswordPost@example.gov.uk'
       }
     }
 

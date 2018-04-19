@@ -7,37 +7,12 @@ const _ = require('lodash')
 let User = require('../../app/models/User.class')
 let pactBase = require('./pact_base')
 let pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids']})
-let random = require('../../app/utils/random')
-
-function randomString () {
-  return Math.random().toString(36).substring(7)
-}
 
 function validPassword () {
   return 'G0VUkPay2017Rocks'
 }
 
-function randomUsername () {
-  return randomString()
-}
-
-function randomOtpKey () {
-  return String(Math.floor(Math.random() * 100000) + 1)
-}
-
-function randomAccountId () {
-  return String(Math.floor(Math.random() * 1000) + 1)
-}
-
-function randomServiceId () {
-  return String(Math.floor(Math.random() * 1000) + 1)
-}
-
-function randomTelephoneNumber () {
-  return `07700 9${String(Math.floor(Math.random() * 10000) + 1)}`
-}
-
-function randomMerchantDetails () {
+function merchantDetailsFixture () {
   return {
     name: 'name',
     address_line1: 'line1',
@@ -50,13 +25,11 @@ function randomMerchantDetails () {
 
 module.exports = {
 
-  randomAccountId,
-
   validMinimalUser: () => {
-    let newExternalId = random.randomUuid()
-    let newUsername = randomUsername()
-    let defaultServiceId = randomServiceId()
-    let accountIds = [randomAccountId()]
+    let newExternalId = '8e1a29e4f66e409693d6e530bff7a642'
+    let newUsername = '5nxja'
+    let defaultServiceId = '535'
+    let accountIds = ['507']
 
     let data = {
       external_id: newExternalId,
@@ -74,7 +47,7 @@ module.exports = {
           permissions: ['perm-1']
         }
       }],
-      telephone_number: randomTelephoneNumber(),
+      telephone_number: '07700 95665',
       secondFactor: 'SMS'
     }
 
@@ -91,11 +64,11 @@ module.exports = {
     }
   },
   validUserWithMerchantDetails: (opts = {}) => {
-    let newExternalId = random.randomUuid()
-    let newUsername = randomUsername()
-    let defaultServiceId = opts.default_service_id || randomServiceId()
-    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()]
-    let merchantDetails = opts.merchant_details || randomMerchantDetails()
+    let newExternalId = '79d686ec43bc4768b2600d2e1e41e54e'
+    let newUsername = '6fu6kr'
+    let defaultServiceId = opts.default_service_id || '946'
+    let gatewayAccountIds = opts.gateway_account_ids || ['218']
+    let merchantDetails = opts.merchant_details || merchantDetailsFixture()
 
     let data = {
       external_id: opts.external_id || newExternalId,
@@ -114,8 +87,8 @@ module.exports = {
           permissions: opts.permissions || [{name: 'perm-1'}]
         }
       }],
-      telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
-      otp_key: opts.otp_key || randomOtpKey(),
+      telephone_number: opts.telephone_number || '922037',
+      otp_key: opts.otp_key || '56609',
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0
@@ -133,10 +106,10 @@ module.exports = {
     }
   },
   validUser: (opts = {}) => {
-    let newExternalId = random.randomUuid()
-    let newUsername = randomUsername()
-    let defaultServiceId = opts.default_service_id || randomServiceId()
-    let gatewayAccountIds = opts.gateway_account_ids || [randomAccountId()]
+    let newExternalId = '121391373c1844dd99cb3416b70785c8'
+    let newUsername = 'm87bmh'
+    let defaultServiceId = opts.default_service_id || '193'
+    let gatewayAccountIds = opts.gateway_account_ids || ['540']
 
     let data = {
       external_id: opts.external_id || newExternalId,
@@ -154,14 +127,14 @@ module.exports = {
           permissions: opts.permissions || [{name: 'perm-1'}]
         }
       }],
-      telephone_number: opts.telephone_number || String(Math.floor(Math.random() * 1000000)),
-      otp_key: opts.otp_key || randomOtpKey(),
+      telephone_number: opts.telephone_number || '940583',
+      otp_key: opts.otp_key || '2994',
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
       features: opts.features || '',
       second_factor: opts.second_factor || 'SMS',
-      provisional_otp_key: opts.provisional_otp_key || randomOtpKey()
+      provisional_otp_key: opts.provisional_otp_key || '60400'
     }
 
     return {
@@ -185,8 +158,8 @@ module.exports = {
     let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     let reqExternalId = request.external_id || existingExternalId
     let reqUsername = request.username || 'existing-user'
-    let defaultServiceId = randomString()
-    const gatewayAccountIds = request.gateway_account_ids || [randomAccountId(), randomAccountId()]
+    let defaultServiceId = 'cp5wa'
+    const gatewayAccountIds = request.gateway_account_ids || ['758', '772']
 
     let data = {
       external_id: reqExternalId,
@@ -211,8 +184,8 @@ module.exports = {
         'rel': 'self',
         'method': 'GET'
       }],
-      second_factor: request.secondFactor || 'SMS',
-      provisional_otp_key: randomOtpKey()
+      secondFactor: request.secondFactor || 'SMS',
+      provisionalOtpKey: request.provisionalOtp_key || '55970'
     }
 
     return {
@@ -237,9 +210,9 @@ module.exports = {
     const data = []
 
     opts.forEach(intendedUser => {
-      const externalId = intendedUser.external_id || random.randomUuid()
-      const username = intendedUser.username || randomUsername()
-      const gatewayAccountIds = intendedUser.gateway_account_ids || [randomAccountId(), randomAccountId()]
+      const externalId = intendedUser.external_id || '8d8db4f2ad7d4c0c8373a09d9e95468b'
+      const username = intendedUser.username || 'b9g0vm'
+      const gatewayAccountIds = intendedUser.gateway_account_ids || ['213', '270']
 
       data.push({
         external_id: externalId,
@@ -248,7 +221,7 @@ module.exports = {
         service_roles: intendedUser.service_roles || [{
           service: {
             name: 'System Generated',
-            external_id: random.randomUuid(),
+            external_id: '0a9aa1216b93460a963f125b3f12e530',
             gateway_account_ids: gatewayAccountIds
           },
           role: {
@@ -257,8 +230,8 @@ module.exports = {
             permissions: intendedUser.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
           }
         }],
-        otp_key: intendedUser.otp_key || random.randomUuid(),
-        telephone_number: intendedUser.telephone_number || randomTelephoneNumber(),
+        otp_key: intendedUser.otp_key || '7200b91bc4ba4eac958d3d7c33f119b1',
+        telephone_number: intendedUser.telephone_number || '07700 91044',
         '_links': [{
           'href': `http://adminusers.service/v1/api/users/${externalId}`,
           'rel': 'self',
@@ -325,7 +298,7 @@ module.exports = {
 
   validUpdatePasswordRequest: (token, newPassword) => {
     let request = {
-      forgotten_password_code: token || randomString(),
+      forgotten_password_code: token || '5ylaem',
       new_password: newPassword || validPassword()
     }
 
@@ -342,7 +315,7 @@ module.exports = {
 
   validAssignServiceRoleRequest: (serviceExternalId, role) => {
     let request = {
-      service_external_id: serviceExternalId || randomString(),
+      service_external_id: serviceExternalId || '9en17v',
       role_name: role || 'admin'
     }
 
@@ -359,7 +332,7 @@ module.exports = {
 
   validForgottenPasswordResponse: (payload) => {
     let request = payload || {}
-    let code = randomString()
+    let code = 'h41ne'
     let response = {
       user_external_id: request.userExternalId || 'userExternalId',
       code: request.code || code,
