@@ -41,8 +41,7 @@ describe('The transaction view scenarios', function () {
     let permissions = 'transactions-details:read'
     let user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}],
-      features: 'NEW_CHARGE_STATUS_ENABLED'
+      permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 

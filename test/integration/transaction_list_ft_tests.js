@@ -45,8 +45,7 @@ describe('The /transactions endpoint', function () {
     let permissions = 'transactions:read'
     let user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}],
-      features: 'NEW_CHARGE_STATUS_ENABLED'
+      permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -489,8 +488,7 @@ describe('The /transactions endpoint filtering by states)', () => {
     let permissions = 'transactions:read'
     let user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}],
-      features: 'NEW_CHARGE_STATUS_ENABLED'
+      permissions: [{name: permissions}]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
