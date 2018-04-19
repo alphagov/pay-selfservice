@@ -1,6 +1,6 @@
 var path = require('path')
 var assert = require('assert')
-var withCorrelationHeader = require(path.join(__dirname, '/../../app/utils/correlation_header.js')).withCorrelationHeader
+var withCorrelationHeader = require('../../../app/utils/correlation_header.js').withCorrelationHeader
 
 describe('correlation header', function () {
   it('add correlation id header if args exists', function () {

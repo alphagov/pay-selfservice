@@ -1,5 +1,5 @@
 var path = require('path')
-var filters = require(path.join(__dirname, '/../../app/utils/filters.js'))
+var filters = require('../../../app/utils/filters.js')
 var expect = require('chai').expect
 
 describe('session', function () {
