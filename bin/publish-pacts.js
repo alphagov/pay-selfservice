@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 let pact = require('@pact-foundation/pact-node')
 let opts = {
-  pactFilesOrDirs: [`${__dirname}/../pacts/*`],
+  pactFilesOrDirs: [`${__dirname}/../pacts/selfservice-adminusers.json`],
   pactBroker: process.env.PACT_BROKER_URL,
   consumerVersion: process.env.PACT_CONSUMER_VERSION,
   pactBrokerUsername: process.env.PACT_BROKER_USERNAME,

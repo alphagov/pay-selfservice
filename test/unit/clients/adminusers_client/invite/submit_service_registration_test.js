@@ -25,7 +25,7 @@ const INVITE_PATH = '/v1/api/invites'
 
 describe('adminusers client - self register service', function () {
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
