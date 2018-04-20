@@ -38,7 +38,7 @@ describe('adminusers client - get user', function () {
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
-          .withState('a user exists with the given external id')
+          .withState('a user exists with the given external id ' + existingExternalId)
           .withUponReceiving('a valid get user request')
           .withResponseBody(getUserResponse.getPactified())
           .build()
@@ -58,6 +58,8 @@ describe('adminusers client - get user', function () {
         expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)
         expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
         expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
+        expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisionalOtpKey)
+        expect(user.secondFactor).to.be.equal(expectedUserData.secondFactor)
         expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
       }).should.notify(done)
     })
