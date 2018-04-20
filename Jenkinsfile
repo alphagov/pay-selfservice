@@ -40,6 +40,28 @@ pipeline {
     stage('Tests') {
       failFast true
       parallel {
+        stage('Card Payment End-to-End Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runCardPaymentsE2E("selfservice")
+            }
+        }
+        stage('Products End-to-End Tests') {
+            when {
+                anyOf {
+                  branch 'master'
+                  environment name: 'RUN_END_TO_END_ON_PR', value: 'true'
+                }
+            }
+            steps {
+                runProductsE2E("selfservice")
+            }
+        }
         stage('Direct-Debit End-to-End Tests') {
             when {
                 anyOf {
@@ -86,18 +108,9 @@ pipeline {
         deployEcs("selfservice")
       }
     }
-    stage('Smoke Tests') {
-      failFast true
-      parallel {
-        stage('Product Smoke Test') {
-          when { branch 'master' }
-          steps { runProductsSmokeTest() }
-        }
-        stage('Direct Debit Smoke Test') {
-          when { branch 'master' }
-          steps { runDirectDebitSmokeTest() }
-        }
-      }
+    stage('Direct Debit Smoke Test') {
+      when { branch 'master' }
+      steps { runDirectDebitSmokeTest() }
     }
     stage('Complete') {
       failFast true
