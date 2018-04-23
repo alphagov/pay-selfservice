@@ -53,11 +53,6 @@ module.exports = {
     selectBrand: '/card-types/manage-brand',
     summary: '/card-types/summary'
   },
-  OLDpaymentTypes: {
-    selectType: '/payment-types/select-type',
-    selectBrand: '/payment-types/select-brand',
-    summary: '/payment-types/summary'
-  },
   emailNotifications: {
     index: '/email-notifications',
     edit: '/email-notifications/edit',
