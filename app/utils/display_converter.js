@@ -79,11 +79,13 @@ const getAccount = account => {
 }
 
 module.exports = function (req, data, template) {
-  let convertedData = _.clone(data)
-  let user = req.user
-  let account = req.account
-  let originalUrl = req.originalUrl
-  let permissions = getPermissions(user, req.service)
+  const convertedData = _.clone(data)
+  const user = req.user
+  const account = req.account
+  const originalUrl = req.originalUrl
+  const permissions = getPermissions(user, req.service)
+  const paymentMethod = _.get(account, 'paymentMethod', 'card')
+  convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
   convertedData.hideServiceHeader = hideServiceHeader(template)
   convertedData.hideServiceNav = hideServiceNav(template)
@@ -93,8 +95,8 @@ module.exports = function (req, data, template) {
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.currentServiceName = _.get(req, 'service.name')
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions, _.get(account, 'paymentMethod', 'card'))
-    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, _.get(account, 'paymentMethod', 'card'))
+    convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions, paymentMethod)
+    convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod)
   }
   convertedData._features = {}
   if (req.user && req.user.features) {

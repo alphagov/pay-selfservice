@@ -17,6 +17,7 @@ const hasServices = require('./middleware/has_services')
 const resolveService = require('./middleware/resolve_service')
 const trimUsername = require('./middleware/trim_username')
 const permission = require('./middleware/permission')
+const paymentMethodIsCard = require('./middleware/payment-method-card')
 const validateRegistrationInviteCookie = require('./middleware/validate_registration_invite_cookie')
 const otpVerify = require('./middleware/otp_verify')
 const correlationIdMiddleware = require('./middleware/correlation_id')
@@ -159,13 +160,13 @@ module.exports.bind = function (app) {
   app.post(transactions.refund, permission('refunds:create'), getAccount, transactionRefundCtrl)
 
   // CREDENTIALS
-  app.get(credentials.index, permission('gateway-credentials:read'), getAccount, credentialsCtrl.index)
-  app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, credentialsCtrl.editCredentials)
-  app.post(credentials.index, permission('gateway-credentials:update'), getAccount, credentialsCtrl.update)
+  app.get(credentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
+  app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.editCredentials)
+  app.post(credentials.index, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.update)
 
-  app.get(nc.index, permission('gateway-credentials:read'), getAccount, credentialsCtrl.index)
-  app.get(nc.edit, permission('gateway-credentials:update'), getAccount, credentialsCtrl.editNotificationCredentials)
-  app.post(nc.update, permission('gateway-credentials:update'), getAccount, credentialsCtrl.updateNotificationCredentials)
+  app.get(nc.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
+  app.get(nc.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.editNotificationCredentials)
+  app.post(nc.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.updateNotificationCredentials)
 
   // MERCHANT DETAILS
   app.get(merchantDetails.index, permission('merchant-details:read'), editMerchantDetailsCtrlGet.get)
@@ -180,26 +181,26 @@ module.exports.bind = function (app) {
   app.delete(apiKeys.delete, permission('tokens:delete'), getAccount, apiKeysCtrl.destroy)
 
   // PAYMENT TYPES
-  app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentTypesSelectType.selectType)
-  app.post(pt.selectType, permission('payment-types:update'), getAccount, paymentTypesSelectType.updateType)
-  app.get(pt.selectBrand, permission('payment-types:read'), getAccount, paymentTypesSelectBrand.showBrands)
-  app.post(pt.selectBrand, permission('payment-types:update'), getAccount, paymentTypesSelectBrand.updateBrands)
-  app.get(pt.summary, permission('payment-types:read'), getAccount, paymentTypesSummary.showSummary)
+  app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectType.selectType)
+  app.post(pt.selectType, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectType.updateType)
+  app.get(pt.selectBrand, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.showBrands)
+  app.post(pt.selectBrand, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.updateBrands)
+  app.get(pt.summary, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummary.showSummary)
 
-  app.get(OLDpt.selectType, permission('payment-types:read'), getAccount, paymentTypesSelectType.selectType)
-  app.post(OLDpt.selectType, permission('payment-types:update'), getAccount, paymentTypesSelectType.updateType)
-  app.get(OLDpt.selectBrand, permission('payment-types:read'), getAccount, paymentTypesSelectBrand.showBrands)
-  app.post(OLDpt.selectBrand, permission('payment-types:update'), getAccount, paymentTypesSelectBrand.updateBrands)
-  app.get(OLDpt.summary, permission('payment-types:read'), getAccount, paymentTypesSummary.showSummary)
+  app.get(OLDpt.selectType, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectType.selectType)
+  app.post(OLDpt.selectType, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectType.updateType)
+  app.get(OLDpt.selectBrand, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.showBrands)
+  app.post(OLDpt.selectBrand, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.updateBrands)
+  app.get(OLDpt.summary, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummary.showSummary)
 
   // EMAIL
-  app.get(en.index, permission('email-notification-template:read'), getAccount, getEmailNotification, emailNotifications.index)
-  app.get(en.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, emailNotifications.edit)
-  app.post(en.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, emailNotifications.confirm)
-  app.post(en.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, emailNotifications.update)
-  app.post(en.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.off)
-  app.get(en.offConfirm, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.offConfirm)
-  app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, emailNotifications.on)
+  app.get(en.index, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.index)
+  app.get(en.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.edit)
+  app.post(en.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.confirm)
+  app.post(en.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.update)
+  app.post(en.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.off)
+  app.get(en.offConfirm, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.offConfirm)
+  app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.on)
 
   // MY SERVICES
   app.get(serviceSwitcher.index, myServicesCtrl.getIndex)
@@ -224,10 +225,10 @@ module.exports.bind = function (app) {
   app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
 
   // 3D SECURE TOGGLE
-  app.get(t3ds.index, permission('toggle-3ds:read'), getAccount, toggle3ds.index)
-  app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, toggle3ds.onConfirm)
-  app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, toggle3ds.on)
-  app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, toggle3ds.off)
+  app.get(t3ds.index, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3ds.index)
+  app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.onConfirm)
+  app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.on)
+  app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.off)
 
   // Prototyping
   app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.index)
