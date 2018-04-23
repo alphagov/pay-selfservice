@@ -22,7 +22,7 @@ chai.use(chaiAsPromised)
 
 describe('adminusers client - create a new service', function () {
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

@@ -15,7 +15,7 @@ const USER_PATH = '/v1/api/users'
 
 describe('adminusers client - get users', function () {
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

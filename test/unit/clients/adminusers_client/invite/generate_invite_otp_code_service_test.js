@@ -21,7 +21,7 @@ chai.use(chaiAsPromised)
 
 describe('adminusers client - generate otp code for service invite', function () {
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

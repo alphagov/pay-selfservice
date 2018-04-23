@@ -26,7 +26,7 @@ describe('AdminUsersClient - addGatewayAccountToService', () => {
   this.timeout = 5000
 
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

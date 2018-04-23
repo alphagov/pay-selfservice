@@ -211,8 +211,8 @@ module.exports = {
         'rel': 'self',
         'method': 'GET'
       }],
-      secondFactor: request.secondFactor || 'SMS',
-      provisionalOtpKey: request.provisionalOtp_key || randomOtpKey()
+      second_factor: request.secondFactor || 'SMS',
+      provisional_otp_key: randomOtpKey()
     }
 
     return {

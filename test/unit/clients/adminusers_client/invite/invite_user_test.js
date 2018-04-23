@@ -16,7 +16,7 @@ const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}
 describe('adminusers client - invite user', function () {
   let externalServiceId = '12345'
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

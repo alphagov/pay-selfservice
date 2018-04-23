@@ -32,9 +32,10 @@
     "watch-live-reload": "./node_modules/.bin/grunt watch",
     "lint": "./node_modules/.bin/standard",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
-    "test": "./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
+    "test": "rm -rf ./pacts && ./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "npm run snyk-protect",
+    "publish-pacts": "./bin/publish-pacts.js"
   },
   "dependencies": {
     "appmetrics": "3.x",
