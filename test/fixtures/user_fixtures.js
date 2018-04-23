@@ -212,7 +212,7 @@ module.exports = {
         'method': 'GET'
       }],
       second_factor: request.secondFactor || 'SMS',
-      provisional_otp_key: request.provisionalOtp_key || randomOtpKey()
+      provisional_otp_key: randomOtpKey()
     }
 
     return {
