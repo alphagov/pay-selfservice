@@ -3,8 +3,6 @@
 // NPM dependencies
 const _ = require('lodash')
 
-// Custom dependencies
-const random = require('../../app/utils/random')
 const pactBase = require('./pact_base')
 
 // Global setup
@@ -14,11 +12,11 @@ module.exports = {
 
   validInviteRequest: (opts = {}) => {
     const invitee = 'random@example.com'
-    const senderId = random.randomUuid()
+    const senderId = '94b3d61ebb624a6aa6598b96b307ec8c'
     const role = {name: 'admin'}
 
     const data = {
-      service_external_id: opts.externalServiceId || random.randomUuid(),
+      service_external_id: opts.externalServiceId || '2f1920ea261946bface3c89ddb0a9033',
       email: opts.email || invitee,
       sender: opts.sender || senderId,
       role_name: opts.role_name || role
@@ -62,7 +60,7 @@ module.exports = {
   },
 
   invalidInviteRequest: (opts = {}) => {
-    const senderId = random.randomUuid()
+    const senderId = 'e6bbf9a1633044d7aa7700b51d6de373'
     const role = {name: 'admin'}
 
     const data = {
@@ -143,7 +141,7 @@ module.exports = {
 
   validVerifyOtpCodeRequest: (opts = {}) => {
     const data = {
-      code: opts.code || random.randomUuid(),
+      code: opts.code || 'a0fd0284f5a64a248fd148fb26b3d93c',
       otp: opts.otp || '123456'
     }
 
@@ -159,7 +157,7 @@ module.exports = {
 
   validResendOtpCodeRequest: (opts = {}) => {
     const data = {
-      code: opts.code || random.randomUuid(),
+      code: opts.code || '1e1579ebf2b74981b1261913e4b69e06',
       telephone_number: opts.telephone_number || '01234567891'
     }
 
@@ -200,7 +198,7 @@ module.exports = {
     const inviteDisabled = opts.invite.disabled === true
     const inviteUserExist = opts.invite.user_exist === true
     const invite = {
-      code: opts.invite.code || random.randomUuid(),
+      code: opts.invite.code || '7dfe7ef7775a4ea6bf34fd56dcf3327f',
       email: opts.invite.email || inviteInvitee,
       type: opts.invite.type || inviteType,
       disabled: inviteDisabled,
@@ -212,8 +210,8 @@ module.exports = {
 
     const data = {
       invite,
-      user_external_id: opts.user_external_id || random.randomUuid(),
-      service_external_id: opts.service_external_id || random.randomUuid()
+      user_external_id: opts.user_external_id || '0e167175cd194333844fc415131aa5da',
+      service_external_id: opts.service_external_id || '6a149c10cf86493e977fdf6765382f65'
     }
 
     return {

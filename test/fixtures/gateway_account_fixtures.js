@@ -4,9 +4,6 @@
 const path = require('path')
 const _ = require('lodash')
 
-// Custom dependencies
-const random = require(path.join(__dirname, '/../../app/utils/random'))
-
 // Global setup
 const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
@@ -15,10 +12,10 @@ module.exports = {
 
   validGatewayAccountResponse: (opts = {}) => {
     let data = {
-      gateway_account_id: opts.gateway_account_id || random.randomInt(),
-      service_name: opts.service_name || random.randomUuid(),
+      gateway_account_id: opts.gateway_account_id || 31,
+      service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',
       type: opts.type || 'test',
-      analytics_id: opts.analytics_id || random.randomUuid(),
+      analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58',
       toggle_3ds: opts.toggle_3ds || false
     }
 
@@ -33,12 +30,12 @@ module.exports = {
   },
   validDirectDebitGatewayAccountResponse: (opts = {}) => {
     const data = {
-      gateway_account_id: opts.gateway_account_id || random.randomInt(),
-      gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + random.randomUuid(),
-      service_name: opts.service_name || random.randomUuid(),
+      gateway_account_id: opts.gateway_account_id || 73,
+      gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + 'a9c797ab271448bdba21359e15672076',
+      service_name: opts.service_name || '8c0045d0664743c68e25489781e05b1d',
       payment_provider: opts.service_name || 'sandbox',
       type: opts.type || 'test',
-      analytics_id: opts.analytics_id || random.randomUuid()
+      analytics_id: opts.analytics_id || 'd82dae5bcb024828bb686574a932b5a5'
     }
 
     return {

@@ -35,7 +35,7 @@ describe('resolve service', function () {
     const nextSpy = sinon.spy()
 
     const user = userFixtures.validUser({
-      gateway_account_ids: [userFixtures.randomAccountId(), 'DIRECT_DEBIT:randomidhere']
+      gateway_account_ids: ['982', 'DIRECT_DEBIT:randomidhere']
     }).getAsObject()
     const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
 

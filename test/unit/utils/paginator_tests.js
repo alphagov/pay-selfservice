@@ -1,4 +1,4 @@
-var Paginator = require('../../app/utils/paginator.js')
+var Paginator = require('../../../app/utils/paginator.js')
 var assert = require('chai').assert
 var expect = require('chai').expect
 

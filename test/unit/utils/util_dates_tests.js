@@ -1,7 +1,6 @@
-var path = require('path')
-require(path.join(__dirname, '/../test_helpers/html_assertions.js'))
+require('../../test_helpers/html_assertions.js')
 var assert = require('assert')
-var dates = require(path.join(__dirname, '/../../app/utils/dates.js'))
+var dates = require('../../../app/utils/dates.js')
 
 describe('date format', function () {
   // this will need to be improved to take multiple formats
