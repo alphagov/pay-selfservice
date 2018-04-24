@@ -1,4 +1,3 @@
-var path = require('path')
 var filters = require('../../../app/utils/filters.js')
 var expect = require('chai').expect
 

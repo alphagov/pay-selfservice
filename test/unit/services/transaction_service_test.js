@@ -11,15 +11,14 @@ chai.use(chaiAsPromised)
 describe('transaction service', () => {
   describe('search', () => {
     describe('when connector returns correctly', () => {
-
       // Create a class that inherits from EventEmitter so we can replicate the .on('xxxx') functionality the code expects
-      class sTransactions extends EventEmitter {
-        searchTransactions(params, callback) {
+      class STransactions extends EventEmitter {
+        searchTransactions (params, callback) {
           callback(null, {statusCode: 200})
           return this
         }
       }
-      let sTranInst = new sTransactions()
+      let sTranInst = new STransactions()
       let connectorClientStub = {
         ConnectorClient: function () {
           return sTranInst
@@ -37,17 +36,16 @@ describe('transaction service', () => {
     })
 
     describe('when connector is unavailable', () => {
-
       // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
-      class sTransactions extends EventEmitter {
-        searchTransactions() {
+      class STransactions extends EventEmitter {
+        searchTransactions () {
           setTimeout(() => {
             this.emit('connectorError')
           }, 100)
           return this
         }
       }
-      let sTranInst = new sTransactions()
+      let sTranInst = new STransactions()
       let connectorClientStub = {
         ConnectorClient: function () {
           return sTranInst
@@ -59,22 +57,21 @@ describe('transaction service', () => {
         })
 
       it('should return client unavailable', () => {
-          return expect(transactionService.search(123, {}, 'some-unique-id'))
+        return expect(transactionService.search(123, {}, 'some-unique-id'))
             .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
-        }
+      }
       )
     })
 
     describe('when connector returns incorrect response code while retrieving the list of transactions', () => {
-
       // Create a class that inherits from EventEmitter so we can replicate the .on('xxxx') functionality the code expects
-      class sTransactions extends EventEmitter {
-        searchTransactions(params, callback) {
+      class STransactions extends EventEmitter {
+        searchTransactions (params, callback) {
           callback(null, {statusCode: 201})
           return this
         }
       }
-      let sTranInst = new sTransactions()
+      let sTranInst = new STransactions()
       let connectorClientStub = {
         ConnectorClient: function () {
           return sTranInst
@@ -94,14 +91,13 @@ describe('transaction service', () => {
 
   describe('searchAll', () => {
     describe('when connector returns correctly', () => {
-
-      class gaTransactions extends EventEmitter {
-        getAllTransactions(params, callback) {
+      class GaTransactions extends EventEmitter {
+        getAllTransactions (params, callback) {
           callback(null, {statusCode: 200})
           return this
         }
       }
-      let gaTranInst = new gaTransactions()
+      let gaTranInst = new GaTransactions()
       let connectorClientStub = {
         ConnectorClient: function () {
           return gaTranInst
@@ -144,16 +140,15 @@ describe('transaction service', () => {
     })
 
     describe('when connector is unavailable', () => {
-
-      class gaTransactions extends EventEmitter {
-        getAllTransactions(params, callback) {
+      class GaTransactions extends EventEmitter {
+        getAllTransactions (params, callback) {
           setTimeout(() => {
             this.emit('connectorError')
           }, 100)
           return this
         }
       }
-      let gaTranInst = new gaTransactions()
+      let gaTranInst = new GaTransactions()
       let connectorClientStub = {
         ConnectorClient: function () {
           return gaTranInst
@@ -165,23 +160,22 @@ describe('transaction service', () => {
         })
 
       it('should return client unavailable', () => {
-          return expect(transactionService.searchAll(123, {pageSize: 1, page: 100}, 'some-unique-id'))
+        return expect(transactionService.searchAll(123, {pageSize: 1, page: 100}, 'some-unique-id'))
             .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
-        }
+      }
       )
     })
 
     describe('when connector returns incorrect response code', () => {
-
-      class gaTransactions extends EventEmitter {
-        getAllTransactions(params, callback) {
+      class GaTransactions extends EventEmitter {
+        getAllTransactions (params, callback) {
           setTimeout(() => {
             this.emit('connectorError', null, {iam: 'an-object'})
           }, 100)
           return this
         }
       }
-      let gaTranInst = new gaTransactions()
+      let gaTranInst = new GaTransactions()
       let connectorClientStub = {
         ConnectorClient: function () {
           return gaTranInst

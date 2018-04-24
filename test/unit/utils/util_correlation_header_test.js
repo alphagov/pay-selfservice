@@ -1,4 +1,3 @@
-var path = require('path')
 var assert = require('assert')
 var withCorrelationHeader = require('../../../app/utils/correlation_header.js').withCorrelationHeader
 
