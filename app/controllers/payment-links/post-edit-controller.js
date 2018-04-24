@@ -8,7 +8,6 @@ const logger = require('winston')
 // Local dependencies
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
-const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
 const errorView = require('../../utils/response.js').renderErrorView
 
@@ -23,6 +22,7 @@ module.exports = (req, res) => {
       res.redirect(paths.paymentLinks.manage)
     })
     .catch((err) => {
+      console.log(err)
       logger.error(`[requestId=${req.correlationId}] update of payment link failed - ${err.message}`)
       errorView(req, res, 'Internal server error')
     })
