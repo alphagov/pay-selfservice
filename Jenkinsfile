@@ -44,7 +44,12 @@ pipeline {
         }
       }
       steps {
-        runPactTest("pay-adminusers", gitBranchName())
+        script {
+          env.PACT_TAG = gitBranchName()
+        }
+        ws('contract-tests-wp') {
+          runPactTest("pay-adminusers", "${env.PACT_TAG}")
+        }
       }
     }
     stage('E2E Tests') {
