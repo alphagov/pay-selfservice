@@ -6,7 +6,6 @@ pipeline {
   parameters {
     booleanParam(defaultValue: true, description: '', name: 'runEndToEndTestsOnPR')
     booleanParam(defaultValue: false, description: '', name: 'runAcceptTestsOnPR')
-    string(defaultValue:gitBranchName(), name:'projectBranchName', description:'Expected project branch name as pact tag')
   }
 
   options {
@@ -45,8 +44,11 @@ pipeline {
         }
       }
       steps {
+        script {
+          def projectBranchName = gitBranchName()
+        }
         ws('contract-tests-wp') {
-          runPactTest("pay-adminusers", "${params.projectBranchName}")
+          runPactTest("pay-adminusers", "${projectBranchName}")
         }
       }
     }
