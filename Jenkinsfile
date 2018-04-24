@@ -37,7 +37,23 @@ pipeline {
         }
       }
     }
-    stage('Tests') {
+    stage('Contract Tests') {
+      when {
+        not {
+          branch 'master'
+        }
+      }
+      steps {
+        script {
+          env.PACT_TAG = gitBranchName()
+        }
+        ws('contract-tests-wp') {
+          runPactTest("pay-adminusers", "${env.PACT_TAG}")
+          deleteDir()
+        }
+      }
+    }
+    stage('E2E Tests') {
       failFast true
       parallel {
         stage('Card Payment End-to-End Tests') {
@@ -71,17 +87,6 @@ pipeline {
             }
             steps {
                 runDirectDebitE2E("selfservice")
-            }
-        }
-        stage('Accept Tests') {
-            when {
-                anyOf {
-                  branch 'master'
-                  environment name: 'RUN_ACCEPT_ON_PR', value: 'true'
-                }
-            }
-            steps {
-                runAccept("selfservice")
             }
         }
       }
