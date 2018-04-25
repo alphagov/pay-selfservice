@@ -1,7 +1,6 @@
 'use strict'
 
 const proxyquire = require('proxyquire')
-const sinon = require('sinon')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -44,7 +43,7 @@ getDDGatewayAccount = function (id) {
         }
       })
     } else {
-      reject()
+      reject() // eslint-disable-line
     }
   })
 }
@@ -60,7 +59,7 @@ getGatewayAccount = function () {
           resolve(gatewayAccountFixtures.validGatewayAccountResponse(
             {gateway_account_id: gatewayAccountId2, service_name: 'ga 2'}).getPlain())
         } else {
-          reject()
+          reject() // eslint-disable-line
         }
       })
     }
@@ -165,7 +164,7 @@ describe('service service', function () {
       const newServiceName = 'blabla'
 
       connectorClientStub = {
-        ConnectorClient: function() {
+        ConnectorClient: function () {
           return {
             patchServiceName: () => {
               return new Promise(resolve => {
@@ -186,7 +185,7 @@ describe('service service', function () {
       }
       productsClientStub = {
         product: {
-          updateServiceNameOfProductsByGatewayAccountId : () => {
+          updateServiceNameOfProductsByGatewayAccountId: () => {
             return new Promise(resolve => {
               resolve()
             })

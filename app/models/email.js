@@ -1,7 +1,7 @@
 var q = require('q')
 var logger = require('winston')
 var EMAIL_NOTIFICATION_API_PATH = '/v1/api/accounts/{accountId}/email-notification'
-var ConnectorClient = require('../services/clients/connector_client').ConnectorClient
+var ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
 
 var connectorUrl = function (accountID) {
   return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION_API_PATH.replace('{accountId}', accountID)
@@ -17,7 +17,6 @@ module.exports = function (correlationId) {
   var get = function (accountID) {
     var defer = q.defer()
     var startTime = new Date()
-
     connectorClient().getNotificationEmail({
       gatewayAccountId: accountID,
       correlationId: correlationId

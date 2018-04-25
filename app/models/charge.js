@@ -91,8 +91,6 @@ module.exports = function (correlationId) {
     const code = (response || {}).statusCode || (err || {}).errorCode
     if (code === 404) return defer.reject('NOT_FOUND')
     if (code > 200) return defer.reject('GET_FAILED')
-    if (err) defer.reject('CLIENT_UNAVAILABLE')
-
     defer.reject('CLIENT_UNAVAILABLE')
   }
 
