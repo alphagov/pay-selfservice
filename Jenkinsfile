@@ -53,25 +53,6 @@ pipeline {
         }
       }
     }
-    stage('Integration Test') {
-      steps {
-        script {
-          cypress.runTests 'selfservice'
-        }
-      }
-      post {
-        always {
-          script {
-            cypress.cleanUp()
-          }
-        }
-        failure {
-          archive 'cypress/videos/*.mp4'
-          archive 'cypress/screenshots/*.png'
-          postMetric("selfservice.integration-tests.failure", 1)
-        }
-      }
-    }
     stage('Tests') {
       failFast true
       parallel {
