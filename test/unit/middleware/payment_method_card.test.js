@@ -1,13 +1,13 @@
 'use strict'
 
 const sinon = require('sinon')
-const nock = require('nock')
 const chai = require('chai')
 const {expect} = chai
 const chaiAsPromised = require('chai-as-promised')
 const paymentMethodIsCard = require('../../../app/middleware/payment-method-card.js')
 
-let res, next
+let res
+let next
 
 chai.use(chaiAsPromised)
 
@@ -19,7 +19,6 @@ describe('user has payment-method-card middleware', () => {
       render: sinon.spy()
     }
     next = sinon.spy()
-    nock.cleanAll()
   })
 
   it('should call next when user is within card payment service', done => {

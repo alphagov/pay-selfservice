@@ -2,7 +2,6 @@
 
 const path = require('path')
 const sinon = require('sinon')
-const nock = require('nock')
 const chai = require('chai')
 const {expect} = chai
 const chaiAsPromised = require('chai-as-promised')
@@ -21,7 +20,6 @@ describe('user has services middleware', function () {
       status: sinon.spy()
     }
     next = sinon.spy()
-    nock.cleanAll()
   })
 
   it('should call next when user has services', function (done) {

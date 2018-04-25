@@ -1,26 +1,31 @@
+'use strict'
+
+// Node.js core dependencies
 const path = require('path')
 const assert = require('assert')
 const sinon = require('sinon')
-const nock = require('nock')
 const chai = require('chai')
 const {expect} = chai
 const chaiAsPromised = require('chai-as-promised')
-const retrieveEmailNotification = require(path.join(__dirname, '/../../../app/middleware/get_email_notification.js'))
+const proxyquire = require('proxyquire')
 
 chai.use(chaiAsPromised)
 
 describe('retrieve email notification template', function () {
   const response = {
-    status: () => {},
-    render: () => {},
-    setHeader: () => {}
+    status: () => {
+    },
+    render: () => {
+    },
+    setHeader: () => {
+    }
   }
-  let render, next
+  let render
+  let next
 
   beforeEach(function () {
     render = sinon.stub(response, 'render')
     next = sinon.spy()
-    nock.cleanAll()
   })
 
   afterEach(function () {
@@ -28,6 +33,7 @@ describe('retrieve email notification template', function () {
   })
 
   it('should call the error view if connector call fails', function (done) {
+    const retrieveEmailNotification = require(path.join(__dirname, '/../../../app/middleware/get_email_notification.js'))
     const req = {account: {gateway_account_id: 1}, headers: {}}
     retrieveEmailNotification(req, response, next)
     setTimeout(function () {
@@ -38,12 +44,19 @@ describe('retrieve email notification template', function () {
   })
 
   it('should merge account with email notification template data and call next on success', function (done) {
-    nock(process.env.CONNECTOR_URL)
-      .get('/v1/api/accounts/1/email-notification')
-      .reply(200, {template_body: 'hello', enabled: true})
-
+    let emailStub = function () {
+      return {
+        get: function () {
+          return new Promise(function (resolve) {
+            resolve({customEmailText: 'hello', emailEnabled: true})
+          })
+        }
+      }
+    }
+    const retrieveEmailNotification = proxyquire(path.join(__dirname, '/../../../app/middleware/get_email_notification.js'), {
+      '../models/email.js': emailStub
+    })
     const req = {account: {gateway_account_id: 1}, headers: {}}
-
     retrieveEmailNotification(req, response, next).should.be.fulfilled.then(function () {
       expect(req.account).to.deep.equal({
         customEmailText: 'hello',
