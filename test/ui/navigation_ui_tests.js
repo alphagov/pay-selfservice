@@ -76,7 +76,7 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
 
-  it('should render Card Types navigation link when user have card Types read permission', function () {
+  it('should render Card types navigation link when user have card Types read permission', function () {
     let testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
@@ -93,7 +93,7 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('tokens', templateData)
 
-    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Card Types')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Card types')
   })
 
   it('should render 3D Secure navigation link when user have email notification template read permission', function () {
@@ -156,7 +156,7 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
 
-  it('should not render Card Types navigation link when user is using direct debit gateway account', function () {
+  it('should not render Card types navigation link when user is using direct debit gateway account', function () {
     let testPermissions = {
       tokens_update: true,
       gateway_credentials_update: false,
