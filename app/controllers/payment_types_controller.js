@@ -29,7 +29,7 @@ module.exports.reconcileCardsByBrand = function (acceptedType, acceptedCards, al
 
   var getCardUnavailabilityReason = (card) => {
     if (!isCardAvailableRegarding3dsRequirements(card)) {
-      return 'You must <a href=\'/3ds\'>enable 3D Secure</a> to accept Maestro'
+      return '3DS'
     }
     if (!isCardAvailableRegardingTypeRequirements(card)) {
       return 'Not available'
