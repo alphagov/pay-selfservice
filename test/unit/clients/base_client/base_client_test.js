@@ -1,20 +1,31 @@
 'use strict'
+
+// NPM Dependencies
 const correlator = require('correlation-id')
-const config = require('../../../../app/utils/correlation_header')
 const http = require('http')
-const nock = require('nock')
 const {expect} = require('chai')
-const baseClient = require('../../../../app/services/clients/base_client/base_client')
+const proxyquire = require('proxyquire')
+
+// Local Dependencies
+const config = require('../../../../app/utils/correlation_header')
 
 describe('baseClient', () => {
-  afterEach(() => {
-    nock.cleanAll()
+  const requestRetryStub = {
+    defaults: function() {
+      return function(options, callback) {
+        callback(null, { statusCode: 200, request: options })
+      }
+    }
+  }
+  const baseClient = proxyquire('../../../../app/services/clients/base_client/base_client',
+  {
+    'requestretry': requestRetryStub
   })
+
   describe('headers', () => {
     let correlationID, request
     before(done => {
       correlationID = `${Math.floor(Math.random() * 100000) + 1}`
-      nock('http://example.com').get('/').reply(200, 'success')
       correlator.withId(correlationID, () => {
         baseClient.get({url: 'http://example.com/'}, (err, response) => {
           request = response.request
