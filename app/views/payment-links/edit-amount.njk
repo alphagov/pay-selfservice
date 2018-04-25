@@ -1,0 +1,66 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Edit your payment link amount - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+<aside class="column-one-third pad-bottom">
+  <nav role="navigation" class="navigation settings-navigation">
+    <ul class="list">
+      <li><a href="{{ returnToStart }}">Create a payment link</a></li>
+      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+    </ul>
+  </nav>
+</aside>
+{% endblock %}
+
+{% block mainContent %}
+<section class="column-two-thirds">
+  <h1 class="page-title">Is the payment for a fixed amount?</h1>
+  <form action="{{ self }}" class="form" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group{% if flash.genericError %} error{% endif %}">
+      {% if flash.errorType == 'amountType' %}
+      <span class="error-message">
+        Please choose an option
+      </span>
+      {% endif %}
+      <fieldset data-module="show-hide-content" id="fixed-or-variable">
+        <div class="multiple-choice" data-target="fixed-amount">
+          <input id="amount-type-fixed" type="radio" name="amount-type-group" value="fixed" {% if amountType == 'fixed' %}checked{% endif %}>
+          <label for="amount-type-fixed">Yes</label>
+        </div>
+        <div class="panel panel-border-wide {% if amountType == 'fixed' %}{% elif flash.genericError %}{% else %}js-hidden{% endif %}" id="fixed-amount">
+          <label class="form-label" for="contact-email">
+            Enter the amount
+            <span class="visually-hidden">in £</span>
+            {% if flash.errorType == 'paymentAmountFormat' %}
+            <span class="error-message">
+              Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
+            </span>
+            {% endif %}
+          </label>
+         <div class="currency-input__inner">
+           <span class="currency-input__inner__unit">£</span>
+           <input class="form-control form-control-1-4" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric="" type="text" id="payment-amount" value="{% if product.price %}{{ (product.price / 100).toFixed(2) }}{% endif %}" {% if amountType == 'fixed' %}autofocus{% endif %}>
+         </div>
+        </div>
+
+        <div class="multiple-choice">
+          <input id="amount-type-variable" type="radio" name="amount-type-group" value="variable" {% if amountType == 'variable' %}checked{% endif %}>
+          <label for="amount-type-variable">No, the user can choose the amount</label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="form-group">
+      <button class="button" type="submit">Continue</button>
+    </div>
+    <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+  </form>
+  <div>
+    <h3 class="heading-small">Example of what the user will see</h3>
+    <img class="create-payment-link-screenshot" src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
+  </div>
+</section>
+{% endblock %}

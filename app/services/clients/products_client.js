@@ -16,6 +16,7 @@ const baseUrl = `${PRODUCTS_URL}/v1/api`
 module.exports = {
   product: {
     create: createProduct,
+    update: updateProduct,
     disable: disableProduct,
     delete: deleteProduct,
     updateServiceNameOfProductsByGatewayAccountId: updateServiceNameOfProductsByGatewayAccountId,
@@ -63,6 +64,29 @@ function createProduct (options) {
       product_name_path: options.productNamePath
     },
     description: 'create a product for a service',
+    service: SERVICE_NAME
+  }).then(product => new Product(product))
+}
+
+/**
+ * @param {String} productExternalId: the external id of the product you wish to update
+ * @param {Object} options
+ * @param {string} options.name - The name of the product
+ * @param {string=} options.description - The description of the product
+ * @param {number} options.price - The price of product in pence
+ * @returns {Promise<Product>}
+*/
+function updateProduct (gatewayAccountId, productExternalId, options) {
+  return baseClient.patch({
+    baseUrl,
+    url: `/gateway-account/${gatewayAccountId}/products/${productExternalId}`,
+    json: true,
+    body: {
+      name: options.name,
+      description: options.description,
+      price: options.price
+    },
+    description: 'update an existing product',
     service: SERVICE_NAME
   }).then(product => new Product(product))
 }
