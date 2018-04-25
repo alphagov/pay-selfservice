@@ -11,16 +11,16 @@ const config = require('../../../../app/utils/correlation_header')
 
 describe('baseClient', () => {
   const requestRetryStub = {
-    defaults: function() {
-      return function(options, callback) {
+    defaults: function () {
+      return function (options, callback) {
         callback(null, { statusCode: 200, request: options })
       }
     }
   }
   const baseClient = proxyquire('../../../../app/services/clients/base_client/base_client',
-  {
-    'requestretry': requestRetryStub
-  })
+    {
+      'requestretry': requestRetryStub
+    })
 
   describe('headers', () => {
     let correlationID, request
