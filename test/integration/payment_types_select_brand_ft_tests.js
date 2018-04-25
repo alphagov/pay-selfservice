@@ -21,7 +21,7 @@ var CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
 var CONNECTOR_ACCEPTED_CARD_TYPES_FRONTEND_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID + '/card-types'
 
 var NOT_AVAILABLE_BECAUSE_OF_TYPE_REQUIREMENT = 'Not available'
-var NOT_AVAILABLE_BECAUSE_OF_3DS_REQUIREMENT = 'You must <a href=\'/3ds\'>enable 3D Secure</a> to accept Maestro'
+var NOT_AVAILABLE_BECAUSE_OF_3DS_REQUIREMENT = '3DS'
 
 var connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
 
