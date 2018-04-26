@@ -300,12 +300,12 @@ describe('otp send again post enpoint', function () {
 describe('direct login after user registration', function () {
   it('should redirect user to homepage on a successful registration', function (done) {
     let userExternalId = 'an-externalid'
-    let userName = 'bob'
+    let email = 'bob@example.com'
     let gatewayAccountId = '2'
 
     let userResponse = userFixtures.validUserResponse({
       external_id: userExternalId,
-      username: userName,
+      email: email,
       gateway_account_ids: [gatewayAccountId]}).getPlain()
 
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
@@ -334,7 +334,7 @@ describe('direct login after user registration', function () {
       .set('Accept', 'application/json')
       .expect(200)
       .expect((res) => {
-        expect(res.body.name).to.equal(userName)
+        expect(res.body.name).to.equal(email)
         expect(destroyStub.called).to.equal(true)
       })
       .end(done)

@@ -21,9 +21,9 @@ const formattedPathFor = require('../../app/utils/replace_params_in_path')
 
 describe('service users resource', function () {
   let EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3'
-  let USERNAME_LOGGED_IN = 'existing-user'
+  let USERNAME_LOGGED_IN = 'existing-user@example.com'
   let EXTERNAL_ID_OTHER_USER = '393266e872594f1593558549caad95ec'
-  let USERNAME_OTHER_USER = 'other-user'
+  let USERNAME_OTHER_USER = 'other-user@example.com'
 
   afterEach((done) => {
     nock.cleanAll()
@@ -43,7 +43,7 @@ describe('service users resource', function () {
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USERNAME_LOGGED_IN,
       service_roles: serviceRoles
     })
 
@@ -117,7 +117,7 @@ describe('service users resource', function () {
     const userInSession = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USERNAME_LOGGED_IN,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -130,6 +130,7 @@ describe('service users resource', function () {
     const userToView = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
+      email: USERNAME_OTHER_USER,
       service_roles: [{
         service: {
           name: 'System Generated',
@@ -163,7 +164,7 @@ describe('service users resource', function () {
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
-      email: USERNAME_LOGGED_IN + '@example.com',
+      email: USERNAME_LOGGED_IN,
       telephone_number: '+447876548778',
       // TODO: fix to use serviceRoles
       services: [{

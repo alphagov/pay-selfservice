@@ -22,10 +22,15 @@ vi dev-env.json
 
 ```
 
-to test
+to run mocha tests
 ```
 npm run compile && npm test
 ```
+
+to run cypress tests, in separate tabs:
+- `npm run server:cypress`
+- `npm run pact-stub`
+- `npm run test:cypress` or `$(npm bin)/cypress open`
 
 to run
 ```

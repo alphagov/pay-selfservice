@@ -16,7 +16,8 @@
       "after",
       "afterEach",
       "it",
-      "expect"
+      "expect",
+      "cy"
     ],
     "ignore": [
       "app/assets/**/*.js",
@@ -33,6 +34,9 @@
     "lint": "./node_modules/.bin/standard",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "rm -rf ./pacts && ./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
+    "pact-stub": "docker run -t -p 8000:8000 -v \"$(pwd)/pacts/:/app/pacts\" pactfoundation/pact-stub-server -p 8000 -d pacts",
+    "server:cypress": "node -r dotenv/config start.js dotenv_config_path=cypress/test.env",
+    "test:cypress": "cypress run",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
     "publish-pacts": "./bin/publish-pacts.js"
@@ -65,7 +69,7 @@
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "q": "^1.5.0",
-    "qrcode" : "1.2.0",
+    "qrcode": "1.2.0",
     "qs": "^6.4.0",
     "readdir": "0.0.x",
     "requestretry": "^1.12.0",
@@ -91,6 +95,8 @@
     "chai-string": "^1.4.0",
     "cheerio": "^1.0.0-rc.1",
     "chokidar-cli": "latest",
+    "cypress": "^2.1.0",
+    "dotenv": "^5.0.1",
     "envfile": "^2.1.1",
     "errorhandler": "^1.5.0",
     "eslint": "^3.0.0",
@@ -126,6 +132,7 @@
     "sinon": "^4.1.2",
     "snyk": "^1.36.1",
     "standard": "^10.0.3",
+    "start-server-and-test": "^1.4.1",
     "superagent": "^3.5.2",
     "supertest": "^3.0.0",
     "supertest-session": "^3.0.0"

@@ -53,7 +53,7 @@ pipeline {
         }
       }
     }
-    stage('E2E Tests') {
+    stage('Tests') {
       failFast true
       parallel {
         stage('Card Payment End-to-End Tests') {
