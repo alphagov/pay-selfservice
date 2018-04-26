@@ -17,7 +17,7 @@ module.exports = (req, res) => {
   const editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
   productsClient.product.update(gatewayAccountId, req.params.productExternalId, editPaymentLinkData)
     .then(product => {
-      lodash.unset(req, 'session.pageData.editPaymentLinkData')
+      lodash.unset(req, 'session.editPaymentLinkData')
       req.flash('generic', `<h2>Your payment link has been updated</h2>`)
       res.redirect(paths.paymentLinks.manage)
     })

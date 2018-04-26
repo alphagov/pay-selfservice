@@ -2,6 +2,7 @@
 
 // NPM dependencies
 const logger = require('winston')
+const lodash = require('lodash')
 
 // Local dependencies
 const {response} = require('../../utils/response.js')
@@ -16,6 +17,8 @@ const PAGE_PARAMS = {
 }
 
 module.exports = (req, res) => {
+  lodash.unset(req, 'session.editPaymentLinkData')
+
   productsClient.product.getByGatewayAccountId(authService.getCurrentGatewayAccountId(req))
     .then(products => {
       const paymentLinks = products.filter(product => product.type === 'ADHOC')
