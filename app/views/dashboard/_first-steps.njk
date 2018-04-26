@@ -16,8 +16,13 @@
     </article>
     {% elif paymentMethod == 'card'%}
     <article class="flex-grid--column-{% if isTestGateway %}third{% else %}half{% endif %} first-steps__box">
+      {% if permissions.tokens_create %}
       <a href="{{routes.paymentLinks.start}}">
         <h2 class="heading-small">Create a payment link</h2>
+      {% else %}
+      <a href="{{routes.paymentLinks.manage}}">
+        <h2 class="heading-small">View payment links</h2>
+      {% endif %}
         <p>A payment link lets you take payments online even if your service is&nbsp;offline.</p>
       </a>
     </article>
