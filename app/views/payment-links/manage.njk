@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block page_title %}
-Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% if permissions.tokens_create %}Manage{% else %}View{% endif %} a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -11,7 +11,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
       {% if permissions.tokens_create %}
       <li><a href="{{ returnToStart }}">Create a payment link</a></li>
       {% endif %}
-      <li class="active"><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+      <li class="active"><a href="{{ manage }}">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment&nbsp;links</a></li>
     </ul>
   </nav>
 </aside>
@@ -19,12 +19,19 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
 
 {% block mainContent %}
 <section class="column-two-thirds">
-  <h1 class="page-title">Manage payment links</h1>
+{% if not permissions.tokens_create %}
+  <aside class="info-box">
+    <p>You don’t have permission to create or edit payment links. Contact your service admin if you would like to manage payment links.</p>
+  </aside>
+{% endif %}
+  <h1 class="page-title">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment links</h1>
   <p class="payment-links-list--header">
     {% if productsLength === 1 %}
       There is 1 payment link
     {% elif productsLength > 1 %}
       There are {{productsLength}} payment links
+    {% elif not permissions.tokens_create %}
+      There are no payment links.
     {% else %}
       There are no payment links, you can <a href="{{ returnToStart }}">create one now</a>.
     {% endif %}
