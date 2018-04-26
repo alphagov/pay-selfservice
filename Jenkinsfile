@@ -14,7 +14,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@PP-3616-publish-verification-results-2")
   }
 
   environment {
@@ -49,7 +49,13 @@ pipeline {
         }
         ws('contract-tests-wp') {
           runPactTest("pay-adminusers", "${env.PACT_TAG}")
-          deleteDir()
+        }
+      }
+      post {
+        always {
+          ws('contract-tests-wp') {
+            deleteDir()
+          }
         }
       }
     }
