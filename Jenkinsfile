@@ -49,7 +49,13 @@ pipeline {
         }
         ws('contract-tests-wp') {
           runPactTest("pay-adminusers", "${env.PACT_TAG}")
-          deleteDir()
+        }
+      }
+      post {
+        always {
+          ws('contract-tests-wp') {
+            deleteDir()
+          }
         }
       }
     }
