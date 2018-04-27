@@ -48,7 +48,7 @@ pipeline {
           env.PACT_TAG = gitBranchName()
         }
         ws('contract-tests-wp') {
-          runPactTest("pay-adminusers", "${env.PACT_TAG}")
+          runPactProviderTests("pay-adminusers", "${env.PACT_TAG}")
         }
       }
       post {
