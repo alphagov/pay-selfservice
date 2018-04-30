@@ -38,11 +38,6 @@ pipeline {
       }
     }
     stage('Contract Tests') {
-      when {
-        not {
-          branch 'master'
-        }
-      }
       steps {
         script {
           env.PACT_TAG = gitBranchName()
