@@ -1,4 +1,4 @@
-FROM govukpay/nodejs:6.12.2
+FROM govukpay/nodejs:8.11.1
 
 RUN apk update &&\
     apk upgrade &&\
@@ -12,7 +12,7 @@ RUN apk del libc6-compat && apk add glibc-2.26-r0.apk
 
 # add package.json before source for node_module cache layer
 ADD package.json /tmp/package.json
-ADD npm-shrinkwrap.json /tmp/npm-shrinkwrap.json
+ADD package-lock.json /tmp/package-lock.json
 RUN cd /tmp && npm install
 WORKDIR /app
 ENV LD_LIBRARY_PATH /app/node_modules/appmetrics
