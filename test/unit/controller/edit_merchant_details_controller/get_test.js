@@ -48,7 +48,8 @@ describe('edit merchant details controller - get', () => {
             address_line2: 'line2',
             address_city: 'City',
             address_postcode: 'POSTCODE',
-            address_country: 'AR'
+            address_country: 'AR',
+            email: ''
           }
         },
         role: {
@@ -99,7 +100,8 @@ describe('edit merchant details controller - get', () => {
             address_line2: 'line2',
             address_city: 'City',
             address_postcode: 'POSTCODE',
-            address_country: 'AR'
+            address_country: 'AR',
+            email: 'dd-merchant@example.com'
           }
         },
         role: {
@@ -130,6 +132,7 @@ describe('edit merchant details controller - get', () => {
     it(`should pre-fill form values with the merchant details`, () => {
       expect($('#merchant-name').val()).to.equal('name')
       expect($('#telephone-number').val()).to.equal('03069990000')
+      expect($('#merchant-email').val()).to.equal('dd-merchant@example.com')
       expect($('#address-line1').val()).to.equal('line1')
       expect($('#address-line2').val()).to.equal('line2')
       expect($('#address-city').val()).to.equal('City')
@@ -151,7 +154,8 @@ describe('edit merchant details controller - get', () => {
             address_line2: '',
             address_city: '',
             address_postcode: '',
-            address_country: ''
+            address_country: '',
+            email: ''
           }
         },
         role: {
@@ -202,7 +206,8 @@ describe('edit merchant details controller - get', () => {
             address_line2: '',
             address_city: '',
             address_postcode: '',
-            address_country: ''
+            address_country: '',
+            email: ''
           }
         },
         role: {
@@ -233,6 +238,7 @@ describe('edit merchant details controller - get', () => {
     it(`should show empty inputs and GB selected as country`, () => {
       expect($('#merchant-name').val()).to.equal('')
       expect($('#telephone-number').val()).to.equal('')
+      expect($('#merchant-email').val()).to.equal('')
       expect($('#address-line1').val()).to.equal('')
       expect($('#address-line2').val()).to.equal('')
       expect($('#address-city').val()).to.equal('')
@@ -369,12 +375,14 @@ describe('edit merchant details controller - get', () => {
               address_line2: 'line2',
               address_city: 'City',
               address_postcode: 'POSTCODE',
-              address_country: 'GB'
+              address_country: 'GB',
+              email: 'dd-merchant@example.com-invalid'
             },
             has_direct_debit_gateway_account: true,
             errors: {
               'merchant-name': true,
               'telephone-number': true,
+              'merchant-email': true,
               'address-country': true
             }
           }
@@ -393,16 +401,18 @@ describe('edit merchant details controller - get', () => {
       expect(response.statusCode).to.be.equal(200)
     })
     it(`should show a list of errors`, () => {
-      expect($('.error-summary-list li').length).to.equal(3)
+      expect($('.error-summary-list li').length).to.equal(4)
       expect($('.error-summary-list li a[href$="#merchant-name"]').text()).to.equal('Name')
       expect($('.error-summary-list li a[href$="#telephone-number"]').text()).to.equal('Phone number')
+      expect($('.error-summary-list li a[href$="#merchant-email"]').text()).to.equal('Email')
       expect($('.error-summary-list li a[href$="#address-country"]').text()).to.equal('Country')
     })
     it(`should show inline error messages`, () => {
-      expect($('.error-message').length).to.equal(3)
+      expect($('.error-message').length).to.equal(4)
       expect($('.error-message').eq(0).text()).to.contain('Please enter a valid name')
       expect($('.error-message').eq(1).text()).to.contain('Please enter a valid phone number')
-      expect($('.error-message').eq(2).text()).to.contain('Please enter a valid country')
+      expect($('.error-message').eq(2).text()).to.contain('Please enter a valid email')
+      expect($('.error-message').eq(3).text()).to.contain('Please enter a valid country')
     })
     it(`should not show an updated successful banner`, () => {
       expect($('.notification').length).to.equal(0)
@@ -410,6 +420,7 @@ describe('edit merchant details controller - get', () => {
     it(`should show prefilled inputs`, () => {
       expect($('#merchant-name').val()).to.equal('name')
       expect($('#telephone-number').val()).to.equal('invalid-phone')
+      expect($('#merchant-email').val()).to.equal('dd-merchant@example.com-invalid')
       expect($('#address-line1').val()).to.equal('line1')
       expect($('#address-line2').val()).to.equal('line2')
       expect($('#address-city').val()).to.equal('City')
