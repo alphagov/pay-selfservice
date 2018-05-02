@@ -118,6 +118,12 @@ pipeline {
       when { branch 'master' }
       steps { runDirectDebitSmokeTest() }
     }
+    stage('Pact Tag') {
+      steps {
+        echo 'Tagging consumer pact with "test"'
+        tagConsumerPact("selfservice", gitCommit(), "test")
+      }
+    }
     stage('Complete') {
       failFast true
       parallel {
