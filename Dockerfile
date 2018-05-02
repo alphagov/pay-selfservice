@@ -1,7 +1,7 @@
-FROM govukpay/nodejs:6.12.2
+FROM govukpay/nodejs:8.11.1
 
 ADD package.json /tmp/package.json
-ADD npm-shrinkwrap.json /tmp/npm-shrinkwrap.json
+ADD package-lock.json /tmp/package-lock.json
 RUN cd /tmp && npm install --production
 
 ENV PORT 9000
