@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block page_title %}
-Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -28,7 +28,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
           This will not change the title
         </span>
         <span class="create-payment-link-url">
-          {{friendlyURL}}/{{currentServiceName | removeDefinateArticles | slugify}}/
+          {{friendlyURL}}/{{currentService.name | removeDefinateArticles | slugify}}/
         </span>
         {% if flash.genericError %}
         <span class="error-message">

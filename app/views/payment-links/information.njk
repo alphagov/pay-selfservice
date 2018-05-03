@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block page_title %}
-Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -21,7 +21,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
 
   <form action="{{ nextPage }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="service-name-path" value="{{currentServiceName}}">
+    <input type="hidden" name="service-name-path" value="{{currentService.name}}">
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
     {% endif %}
@@ -51,7 +51,7 @@ Create a payment link - {{currentServiceName}} {{currentGatewayAccount.full_type
         {% endif %}
         data-confirmation
         data-confirmation-title="The website address for this payment link will look like:"
-        data-confirmation-label="{{friendlyURL}}/{{currentServiceName | removeDefinateArticles | slugify}}/"
+        data-confirmation-label="{{friendlyURL}}/{{currentService.name | removeDefinateArticles | slugify}}/"
         data-confirmation-filter="slugify"
         {% if change.length %}
           data-confirmation-display="onload"
