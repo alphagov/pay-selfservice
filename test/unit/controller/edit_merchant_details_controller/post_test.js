@@ -20,7 +20,7 @@ describe('edit merchant details controller - post', () => {
   })
 
   const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
-  let serviceRoles = [{
+  const serviceRoles = [{
     service: {
       name: 'System Generated',
       external_id: EXTERNAL_SERVICE_ID,
@@ -47,7 +47,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -98,7 +98,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -146,7 +146,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -195,7 +195,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -209,7 +209,7 @@ describe('edit merchant details controller - post', () => {
         last_url: 'last_url',
         version: 0
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
+      const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
         .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -244,7 +244,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -258,7 +258,7 @@ describe('edit merchant details controller - post', () => {
         last_url: 'last_url',
         version: 0
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
+      const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
         .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -293,7 +293,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -307,7 +307,7 @@ describe('edit merchant details controller - post', () => {
         last_url: 'last_url',
         version: 0
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
+      const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
         .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -342,11 +342,11 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(400, 'Oops something went wrong')
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
-      let app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
         .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
