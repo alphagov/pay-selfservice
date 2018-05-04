@@ -20,7 +20,7 @@ describe('edit merchant details controller - post', () => {
   })
 
   const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
-  let serviceRoles = [{
+  const serviceRoles = [{
     service: {
       name: 'System Generated',
       external_id: EXTERNAL_SERVICE_ID,
@@ -28,6 +28,7 @@ describe('edit merchant details controller - post', () => {
       merchant_details: {
         name: 'name',
         telephone_number: '03069990000',
+        email: 'dd-merchant@example.com',
         address_line1: 'line1',
         address_line2: 'line2',
         address_city: 'City',
@@ -46,7 +47,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -67,6 +68,7 @@ describe('edit merchant details controller - post', () => {
         .send({
           'merchant-name': 'new-name',
           'telephone-number': '03069990001',
+          'merchant-email': 'new-dd-merchant@example.com',
           'address-line1': 'new-line1',
           'address-city': 'new-city',
           'address-postcode': 'new-postcode',
@@ -96,7 +98,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -134,6 +136,7 @@ describe('edit merchant details controller - post', () => {
       expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
         'merchant-name': true,
         'telephone-number': true,
+        'merchant-email': true,
         'address-line1': true
       })
     })
@@ -143,7 +146,7 @@ describe('edit merchant details controller - post', () => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
         .reply(200, response)
-      let userInSession = mockSession.getUser({
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
@@ -164,6 +167,7 @@ describe('edit merchant details controller - post', () => {
         .send({
           'merchant-name': 'new-name',
           'telephone-number': '03069990001',
+          'merchant-email': 'dd-merchant@example.com',
           'address-line1': 'new-line1',
           'address-city': 'new-city',
           'address-postcode': 'wrong',
@@ -186,22 +190,170 @@ describe('edit merchant details controller - post', () => {
       })
     })
   })
-  describe('when the update merchant details call is unsuccessful', () => {
+  describe('when the update merchant details call has invalid telephone number', () => {
     before(done => {
       response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
       adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
-        .reply(400, 'Oops something went wrong')
-      let userInSession = mockSession.getUser({
+        .reply(200, response)
+      const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
-      let app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      session = {
+        csrfSecret: '123',
+        12345: {refunded_amount: 5},
+        passport: {
+          user: userInSession
+        },
+        secondFactor: 'totp',
+        last_url: 'last_url',
+        version: 0
+      }
+      const app = mockSession.createAppWithSession(getApp(), session)
+      supertest(app)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send({
+          'merchant-name': 'new-name',
+          'telephone-number': 'call me maybe',
+          'address-line1': 'new-line1',
+          'address-city': 'new-city',
+          'address-postcode': 'new-postcode',
+          'address-country': 'AR',
+          'merchant-email': 'dd-merchant@example.com',
+          csrfToken: csrf().create('123')
+        })
+        .end((err, res) => {
+          response = res
+          done(err)
+        })
+    })
+    it(`should redirect back to the page`, () => {
+      expect(response.statusCode).to.equal(302)
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+    })
+    it(`should set errors in the session`, () => {
+      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'telephone-number': true
+      })
+    })
+  })
+  describe('when the update merchant details call has invalid email', () => {
+    before(done => {
+      response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
+      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
+        .reply(200, response)
+      const userInSession = mockSession.getUser({
+        external_id: 'exsfjpwoi34op23i4',
+        service_roles: serviceRoles
+      })
+      session = {
+        csrfSecret: '123',
+        12345: {refunded_amount: 5},
+        passport: {
+          user: userInSession
+        },
+        secondFactor: 'totp',
+        last_url: 'last_url',
+        version: 0
+      }
+      const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
         .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
           'telephone-number': '03069990001',
+          'address-line1': 'new-line1',
+          'address-city': 'new-city',
+          'address-postcode': 'new-postcode',
+          'address-country': 'AR',
+          'merchant-email': 'this is not a valid email',
+          csrfToken: csrf().create('123')
+        })
+        .end((err, res) => {
+          response = res
+          done(err)
+        })
+    })
+    it(`should redirect back to the page`, () => {
+      expect(response.statusCode).to.equal(302)
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+    })
+    it(`should set errors in the session`, () => {
+      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'merchant-email': true
+      })
+    })
+  })
+  describe('when the update merchant details call has empty email', () => {
+    before(done => {
+      response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
+      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
+        .reply(200, response)
+      const userInSession = mockSession.getUser({
+        external_id: 'exsfjpwoi34op23i4',
+        service_roles: serviceRoles
+      })
+      session = {
+        csrfSecret: '123',
+        12345: {refunded_amount: 5},
+        passport: {
+          user: userInSession
+        },
+        secondFactor: 'totp',
+        last_url: 'last_url',
+        version: 0
+      }
+      const app = mockSession.createAppWithSession(getApp(), session)
+      supertest(app)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send({
+          'merchant-name': 'new-name',
+          'telephone-number': '03069990001',
+          'address-line1': 'new-line1',
+          'address-city': 'new-city',
+          'address-postcode': 'new-postcode',
+          'address-country': 'AR',
+          'merchant-email': '',
+          csrfToken: csrf().create('123')
+        })
+        .end((err, res) => {
+          response = res
+          done(err)
+        })
+    })
+    it(`should redirect back to the page`, () => {
+      expect(response.statusCode).to.equal(302)
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+    })
+    it(`should set errors in the session`, () => {
+      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'merchant-email': true
+      })
+    })
+  })
+  describe('when the update merchant details call is unsuccessful', () => {
+    before(done => {
+      response = serviceFixtures.validUpdateMerchantDetailsResponse(serviceRoles[0].service.merchant_details).getPlain()
+      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
+        .reply(400, 'Oops something went wrong')
+      const userInSession = mockSession.getUser({
+        external_id: 'exsfjpwoi34op23i4',
+        service_roles: serviceRoles
+      })
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      supertest(app)
+        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send({
+          'merchant-name': 'new-name',
+          'telephone-number': '03069990001',
+          'merchant-email': 'new-dd-merchant@example.com',
           'address-line1': 'new-line1',
           'address-city': 'new-city',
           'address-postcode': 'new-postcode',
