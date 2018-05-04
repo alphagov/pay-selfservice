@@ -29,3 +29,5 @@ staging-2.alpha_staging-2-503.status=success
 staging-2.tag=FAILED-503
 
 staging-2.FAILED-503.date=
+
+staging-2.FAILED-503.status=failed
