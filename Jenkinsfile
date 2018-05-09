@@ -121,7 +121,7 @@ pipeline {
     stage('Pact Tag') {
       steps {
         echo 'Tagging consumer pact with "test"'
-        tagConsumerPact("selfservice", gitCommit(), "test")
+        tagPact("selfservice", gitCommit(), "test")
       }
     }
     stage('Complete') {
