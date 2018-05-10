@@ -48,8 +48,8 @@
       {% endif %}
       {% if permissions.tokens_create %}
        <div class="payment-links-list--item__actions">
-        <a class="payment-links-list--item__actions--link payment-links-list--item__actions" href="manage/edit/{{ product.externalId }}">Edit</a>
-        <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete</a>
+        <a class="payment-links-list--item__actions--link payment-links-list--item__actions" href="manage/edit/{{ product.externalId }}">Edit<span class="visuallyhidden"> payment link called {{product.name}}</span></a>
+        <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete <span class="visuallyhidden">  payment link called {{product.name}}</span></a>
         <div class="target-to-show" id="delete-{{ product.externalId }}">
           <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
               <h1 class="heading-medium error-summary-heading" id="error-summary">
