@@ -48,10 +48,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
   })
@@ -68,10 +68,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
@@ -88,10 +88,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Card types')
   })
@@ -108,10 +108,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('3D Secure')
   })
@@ -128,10 +128,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Email notifications')
   })
@@ -148,10 +148,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
@@ -169,10 +169,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
@@ -189,10 +189,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
@@ -210,10 +210,10 @@ describe('navigation menu', function () {
     let templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/tokens', testPermissions, 'direct debit')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('tokens', templateData)
+    let body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
