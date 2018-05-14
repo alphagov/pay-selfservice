@@ -27,7 +27,7 @@ module.exports = (on, config) => {
 
   const encryptedGatewayAccountCookie = cookieMonster.getCookie('gateway_account', config.env.TEST_SESSION_ENCRYPTION_KEY,
     {
-      currentGatewayAccountId: "666",
+      currentGatewayAccountId: '666',
       icamefrom: 'cypress.io'
     })
 

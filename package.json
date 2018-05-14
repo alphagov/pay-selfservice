@@ -17,7 +17,8 @@
       "afterEach",
       "it",
       "expect",
-      "cy"
+      "cy",
+      "Cypress"
     ],
     "ignore": [
       "app/assets/**/*.js",

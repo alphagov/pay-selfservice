@@ -1,7 +1,7 @@
 const session = require('client-sessions')
 const crypto = require('crypto')
 
-function getCookie(cookieName, secretKey, val) {
+function getCookie (cookieName, secretKey, val) {
   try {
     const encryptionKey = deriveKey(secretKey, 'cookiesession-encryption')
     const signatureKey = deriveKey(secretKey, 'cookiesession-signature')
@@ -20,19 +20,19 @@ function getCookie(cookieName, secretKey, val) {
   }
 }
 
-function forceBuffer(binaryOrBuffer) {
+function forceBuffer (binaryOrBuffer) {
   if (Buffer.isBuffer(binaryOrBuffer)) {
-    return binaryOrBuffer;
+    return binaryOrBuffer
   } else {
-    return new Buffer(binaryOrBuffer, 'binary');
+    return Buffer.from(binaryOrBuffer, 'binary')
   }
 }
 
-function deriveKey(master, type) {
+function deriveKey (master, type) {
   // eventually we want to use HKDF. For now we'll do something simpler.
-  const hmac = crypto.createHmac('sha256', master);
-  hmac.update(type);
-  return forceBuffer(hmac.digest());
+  const hmac = crypto.createHmac('sha256', master)
+  hmac.update(type)
+  return forceBuffer(hmac.digest())
 }
 
 module.exports = {
