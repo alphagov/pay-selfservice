@@ -93,7 +93,7 @@ module.exports = function (req, data, template) {
   convertedData.currentGatewayAccount = getAccount(account)
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
-  convertedData.currentServiceName = _.get(req, 'service.name')
+  convertedData.currentService = _.get(req, 'service')
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions, paymentMethod)
     convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod)

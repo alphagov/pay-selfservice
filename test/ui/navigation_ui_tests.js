@@ -11,7 +11,7 @@ describe('navigation menu', function () {
       currentGatewayAccount: {
         full_type: 'test'
       },
-      currentServiceName: 'Service Name',
+      currentService: {name: 'Service Name'},
       permissions: testPermissions,
       hideServiceNav: false,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
@@ -30,7 +30,7 @@ describe('navigation menu', function () {
       currentGatewayAccount: {
         full_type: 'test'
       },
-      currentServiceName: 'Service Name',
+      currentService: {name: 'Service Name'},
       permissions: testPermissions,
       hideServiceNav: false,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')

@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block page_title %}
-Edit your payment link - {{currentServiceName}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -19,7 +19,7 @@ Edit your payment link - {{currentServiceName}} {{currentGatewayAccount.full_typ
 <section class="column-two-thirds">
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input name="service-name" type="hidden" value="{{currentServiceName}}"/>
+    <input name="service-name" type="hidden" value="{{currentService.name}}"/>
     <h1 class="page-title">Edit your payment link</h1>
     <dl class="govuk-check-your-answers cya-questions-short">
       <div class="review-title">
