@@ -15,11 +15,15 @@ module.exports.init = () => {
 
   if (toggles) {
     toggles.forEach(toggle => {
-      const toggleTarget = toggle.parentElement.querySelector('.target-to-show')
-      const cancel = toggle.parentElement.querySelector('.target-to-show--cancel')
+      const allToggleTargets = Array.prototype.slice.call(document.getElementsByClassName('target-to-show'))
+      const toggleTarget = document.getElementById(toggle.getAttribute('href').split('#')[1])
+      const cancel = Array.prototype.slice.call(toggleTarget.getElementsByClassName('target-to-show--cancel'))[0]
 
       toggle.addEventListener('click', e => {
         e.preventDefault()
+        allToggleTargets.forEach(target => {
+          target.style.display = 'none'
+        })
         toggleTarget.style.display = 'block'
       }, false)
 

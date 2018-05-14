@@ -1,17 +1,17 @@
 'use strict'
 
+const getCreate = require('./get-create-controller')
 const getIndex = require('./get-index-controller')
-const getShow = require('./get-show-controller')
+const getRevoked = require('./get-revoked-controller')
 const postCreate = require('./post-create-controller')
-const postDelete = require('./post-delete-controller')
-const postRevoked = require('./post-revoked-controller')
+const postRevoke = require('./post-revoke-controller')
 const postUpdate = require('./post-update-controller')
 
 module.exports = {
+  getCreate,
   getIndex,
-  getShow,
+  getRevoked,
   postCreate,
-  postDelete,
-  postRevoked,
+  postRevoke,
   postUpdate
 }

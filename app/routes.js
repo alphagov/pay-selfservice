@@ -174,11 +174,11 @@ module.exports.bind = function (app) {
 
   // API KEYS
   app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)
-  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.postRevoked)
-  app.get(apiKeys.show, permission('tokens:create'), getAccount, apiKeysCtrl.getShow)
+  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.getRevoked)
+  app.get(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.getCreate)
   app.post(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.postCreate)
-  app.put(apiKeys.update, permission('tokens:update'), getAccount, apiKeysCtrl.postUpdate)
-  app.delete(apiKeys.delete, permission('tokens:delete'), getAccount, apiKeysCtrl.postDelete)
+  app.post(apiKeys.revoke, permission('tokens:delete'), getAccount, apiKeysCtrl.postRevoke)
+  app.post(apiKeys.update, permission('tokens:update'), getAccount, apiKeysCtrl.postUpdate)
 
   // PAYMENT TYPES
   app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectType.selectType)
