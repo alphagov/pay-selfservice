@@ -107,10 +107,12 @@ pipeline {
       }
     }
     stage('Deploy') {
+      failFast true
       when {
         branch 'master'
       }
       steps {
+        checkPactCompatibility("selfservice", gitCommit(), "test")
         deployEcs("selfservice")
       }
     }
