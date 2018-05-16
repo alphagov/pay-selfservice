@@ -250,7 +250,7 @@ describe('edit merchant details controller - get', () => {
     before(done => {
       user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-      .reply(200, user.getPlain())
+        .reply(200, user.getPlain())
       session = {
         csrfSecret: '123',
         12345: {refunded_amount: 5},
@@ -268,12 +268,12 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-      .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
-      .end((err, res) => {
-        response = res
-        $ = cheerio.load(res.text || '')
-        done(err)
-      })
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .end((err, res) => {
+          response = res
+          $ = cheerio.load(res.text || '')
+          done(err)
+        })
     })
     it(`should get a nice 200 status code`, () => {
       expect(response.statusCode).to.equal(200)
@@ -289,7 +289,7 @@ describe('edit merchant details controller - get', () => {
     before(done => {
       user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-      .reply(200, user.getPlain())
+        .reply(200, user.getPlain())
       session = {
         csrfSecret: '123',
         12345: {refunded_amount: 5},
@@ -319,12 +319,12 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-      .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
-      .end((err, res) => {
-        response = res
-        $ = cheerio.load(res.text || '')
-        done(err)
-      })
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .end((err, res) => {
+          response = res
+          $ = cheerio.load(res.text || '')
+          done(err)
+        })
     })
     it(`should get a nice 200 status code`, () => {
       expect(response.statusCode).to.be.equal(200)

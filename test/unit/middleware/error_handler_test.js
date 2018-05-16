@@ -9,15 +9,16 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 describe('error_handler middleware', function () {
-  const winstonErrorSpy = sinon.spy()
-  const errorHandler = proxyquire(path.join(__dirname, '/../../../app/middleware/error_handler'), {
-    'winston': {
-      error: winstonErrorSpy
-    }
-  })
+  let winstonErrorSpy
+  let errorHandler
 
-  afterEach(() => {
-    winstonErrorSpy.reset()
+  beforeEach(() => {
+    winstonErrorSpy = sinon.spy()
+    errorHandler = proxyquire(path.join(__dirname, '/../../../app/middleware/error_handler'), {
+      'winston': {
+        error: winstonErrorSpy
+      }
+    })
   })
 
   it('should log string error', function (done) {

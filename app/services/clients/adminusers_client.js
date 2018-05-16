@@ -876,7 +876,7 @@ module.exports = function (clientOptions = {}) {
     requestLogger.logRequestStart(context)
 
     baseClient.put(url, params, callbackToPromiseConverter)
-    .on('error', callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
 
     return defer.promise
   }

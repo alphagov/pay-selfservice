@@ -41,7 +41,7 @@ describe('adminusers client - validate otp code for a service', function () {
           .withStatusCode(200)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -69,7 +69,7 @@ describe('adminusers client - validate otp code for a service', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -97,7 +97,7 @@ describe('adminusers client - validate otp code for a service', function () {
           .withStatusCode(404)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -123,7 +123,7 @@ describe('adminusers client - validate otp code for a service', function () {
           .withStatusCode(410)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

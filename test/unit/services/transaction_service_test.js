@@ -58,7 +58,7 @@ describe('transaction service', () => {
 
       it('should return client unavailable', () => {
         return expect(transactionService.search(123, {}, 'some-unique-id'))
-            .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
+          .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
       }
       )
     })
@@ -161,7 +161,7 @@ describe('transaction service', () => {
 
       it('should return client unavailable', () => {
         return expect(transactionService.searchAll(123, {pageSize: 1, page: 100}, 'some-unique-id'))
-            .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
+          .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
       }
       )
     })

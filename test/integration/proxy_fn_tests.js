@@ -47,8 +47,8 @@ describe('request.js client', function () {
             portfinder.getPort(function (err, aPort) {
               if (err) { throw err }
               proxyServer = httpProxy
-                  .createProxyServer({target: {host: 'localhost', port: proxiedServer.address().port}})
-                  .listen(aPort)
+                .createProxyServer({target: {host: 'localhost', port: proxiedServer.address().port}})
+                .listen(aPort)
               proxyUrl = 'http://localhost:' + aPort
 
               proxyServer.on('proxyRes', function (proxyRes, req, res) {

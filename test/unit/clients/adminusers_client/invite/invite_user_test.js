@@ -42,7 +42,7 @@ describe('adminusers client - invite user', function () {
           .withResponseBody(inviteFixtures.validInviteResponse(validInvite.getPlain()).getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -70,7 +70,7 @@ describe('adminusers client - invite user', function () {
           .withStatusCode(404)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -133,7 +133,7 @@ describe('adminusers client - invite user', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -165,7 +165,7 @@ describe('adminusers client - invite user', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

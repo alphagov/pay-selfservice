@@ -48,15 +48,15 @@ module.exports = function (correlationId) {
       correlationId: correlationId,
       gatewayAccountId: accountID
     },
-      function (data, response) {
-        logger.info(`[${correlationId}] - POST to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
-        defer.resolve()
-      }).on('connectorError', function (err, connectorResponse) {
-        if (connectorResponse) return defer.reject(new Error('POST_FAILED'))
+    function (data, response) {
+      logger.info(`[${correlationId}] - POST to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
+      defer.resolve()
+    }).on('connectorError', function (err, connectorResponse) {
+      if (connectorResponse) return defer.reject(new Error('POST_FAILED'))
 
-        logger.info(`[${correlationId}] - POST to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
-        clientUnavailable(err, defer, 'POST', correlationId)
-      })
+      logger.info(`[${correlationId}] - POST to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
+      clientUnavailable(err, defer, 'POST', correlationId)
+    })
     return defer.promise
   }
 

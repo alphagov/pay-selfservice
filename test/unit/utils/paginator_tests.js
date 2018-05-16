@@ -48,18 +48,18 @@ describe('paginator', function () {
     var paginator4 = new Paginator(50, 2, 1)
 
     expect(paginator1.getDisplaySizeOptions()).to.deep.equal([
-          {type: 'small', name: 100, value: 100, active: true},
-          {type: 'large', name: 500, value: 500, active: false}
+      {type: 'small', name: 100, value: 100, active: true},
+      {type: 'large', name: 500, value: 500, active: false}
     ])
 
     expect(paginator2.getDisplaySizeOptions()).to.deep.equal([
-          {type: 'small', name: 100, value: 100, active: false},
-          {type: 'large', name: 500, value: 500, active: true}
+      {type: 'small', name: 100, value: 100, active: false},
+      {type: 'large', name: 500, value: 500, active: true}
     ])
 
     expect(paginator3.getDisplaySizeOptions()).to.deep.equal([
-          {type: 'small', name: 100, value: 100, active: true},
-          {type: 'large', name: 'Show all', value: 500, active: false}
+      {type: 'small', name: 100, value: 100, active: true},
+      {type: 'large', name: 'Show all', value: 500, active: false}
     ])
 
     expect(paginator4.getDisplaySizeOptions()).to.deep.equal([

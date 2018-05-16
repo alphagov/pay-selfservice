@@ -35,9 +35,9 @@ describe('Error handler', function () {
   })
 
   afterEach(() => {
-    setHeaderStub.reset()
-    statusStub.reset()
-    renderStub.reset()
+    setHeaderStub = sinon.spy()
+    statusStub = sinon.spy()
+    renderStub = sinon.spy()
   })
 
   const controller = function (errorCode) {

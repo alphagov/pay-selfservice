@@ -24,8 +24,8 @@ describe('Two factor authenticator configure index POST', () => {
     app = createAppWithSession(getApp(), session)
 
     nock(ADMINUSERS_URL)
-    .post(`/v1/api/users/${VALID_USER.externalId}/second-factor/provision`)
-    .reply(200)
+      .post(`/v1/api/users/${VALID_USER.externalId}/second-factor/provision`)
+      .reply(200)
   })
 
   before('Act', done => {

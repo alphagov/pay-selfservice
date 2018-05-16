@@ -58,9 +58,9 @@ describe('connector client - get gateway account', function () {
     it('should get gateway account successfully', function (done) {
       const getGatewayAccount = validGetGatewayAccountResponse.getPlain()
       connectorClient.getAccount({gatewayAccountId: params.gateway_account_id, correlationId: null})
-      .should.be.fulfilled.then((response) => {
-        expect(response).to.deep.equal(getGatewayAccount)
-      }).should.notify(done)
+        .should.be.fulfilled.then((response) => {
+          expect(response).to.deep.equal(getGatewayAccount)
+        }).should.notify(done)
     })
   })
 })

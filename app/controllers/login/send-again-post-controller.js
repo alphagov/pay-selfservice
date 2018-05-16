@@ -15,10 +15,10 @@ module.exports = (req, res) => {
     userService.sendOTP(req.user, correlationId).then(() => {
       res.redirect(paths.user.otpLogIn)
     })
-    .catch(err => {
-      errorView(req, res)
-      logger.error(err)
-    })
+      .catch(err => {
+        errorView(req, res)
+        logger.error(err)
+      })
   } else {
     errorView(req, res, 'You do not use text messages to sign in')
   }

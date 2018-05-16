@@ -26,13 +26,13 @@ module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 
   productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
-  .then(product => {
+    .then(product => {
     // if product exists we need to alert the user they must use a different URL
-    req.flash('genericError', `<ul class="error-summary-list"><li><a href="#payment-name-path">The website address is already taken</a></li></ul>`)
-    return res.redirect(paths.paymentLinks.webAddress)
-  })
-  .catch((err) => { // eslint-disable-line handle-callback-err
+      req.flash('genericError', `<ul class="error-summary-list"><li><a href="#payment-name-path">The website address is already taken</a></li></ul>`)
+      return res.redirect(paths.paymentLinks.webAddress)
+    })
+    .catch((err) => { // eslint-disable-line handle-callback-err
     // if it errors then it means no product was found and that’s good
-    return res.redirect(paths.paymentLinks.amount)
-  })
+      return res.redirect(paths.paymentLinks.amount)
+    })
 }

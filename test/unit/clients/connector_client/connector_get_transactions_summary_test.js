@@ -64,10 +64,10 @@ describe('connector client - get transaction summary', function () {
     it('should get gateway account successfully', function (done) {
       const getTransactionSummary = validGetTransactionSummaryResponse.getPlain()
       connectorClient.getTransactionSummary(params,
-      (connectorData, connectorResponse) => {
-        expect(connectorResponse.body).to.deep.equal(getTransactionSummary)
-        done()
-      })
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getTransactionSummary)
+          done()
+        })
     })
   })
 })

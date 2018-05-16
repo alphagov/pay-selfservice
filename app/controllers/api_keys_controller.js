@@ -15,27 +15,27 @@ module.exports.index = function (req, res) {
     correlationId: req.correlationId,
     accountId: accountId
   })
-      .then(publicAuthData => {
-        let activeTokens = publicAuthData.tokens || []
-        activeTokens.forEach(function (token) {
-          token.csrfToken = csrf().create(req.session.csrfSecret)
-        })
-
-        logger.debug('Showing tokens view -', {
-          view: 'token'
-        })
-
-        response(req, res, API_KEYS_INDEX, {
-          'active': true,
-          'header': 'available-tokens',
-          'token_state': 'active',
-          'tokens': activeTokens,
-          'tokens_singular': activeTokens.length === 1
-        })
+    .then(publicAuthData => {
+      let activeTokens = publicAuthData.tokens || []
+      activeTokens.forEach(function (token) {
+        token.csrfToken = csrf().create(req.session.csrfSecret)
       })
-      .catch(() => {
-        errorView(req, res)
+
+      logger.debug('Showing tokens view -', {
+        view: 'token'
       })
+
+      response(req, res, API_KEYS_INDEX, {
+        'active': true,
+        'header': 'available-tokens',
+        'token_state': 'active',
+        'tokens': activeTokens,
+        'tokens_singular': activeTokens.length === 1
+      })
+    })
+    .catch(() => {
+      errorView(req, res)
+    })
 }
 
 module.exports.revoked = function (req, res) {
@@ -44,25 +44,25 @@ module.exports.revoked = function (req, res) {
     correlationId: req.correlationId,
     accountId: accountId
   })
-      .then(publicAuthData => {
-        const revokedTokens = publicAuthData.tokens || []
-        revokedTokens.forEach(function (token) {
-          token.csrfToken = csrf().create(req.session.csrfSecret)
-        })
-        logger.info('Showing tokens view -', {
-          view: API_KEYS_INDEX
-        })
-        response(req, res, API_KEYS_INDEX, {
-          'active': false,
-          'header': 'revoked-tokens',
-          'token_state': 'revoked',
-          'tokens': revokedTokens,
-          'tokens_singular': revokedTokens.length === 1
-        })
+    .then(publicAuthData => {
+      const revokedTokens = publicAuthData.tokens || []
+      revokedTokens.forEach(function (token) {
+        token.csrfToken = csrf().create(req.session.csrfSecret)
       })
-      .catch(() => {
-        errorView(req, res)
+      logger.info('Showing tokens view -', {
+        view: API_KEYS_INDEX
       })
+      response(req, res, API_KEYS_INDEX, {
+        'active': false,
+        'header': 'revoked-tokens',
+        'token_state': 'revoked',
+        'tokens': revokedTokens,
+        'tokens_singular': revokedTokens.length === 1
+      })
+    })
+    .catch(() => {
+      errorView(req, res)
+    })
 }
 
 module.exports.show = function (req, res) {

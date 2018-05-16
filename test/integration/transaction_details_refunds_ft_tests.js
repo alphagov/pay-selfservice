@@ -98,16 +98,16 @@ describe('The transaction view - refund scenarios', function () {
     }
 
     request(app)
-    .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('Accept', 'application/json')
-    .send(viewFormData)
-    .expect(302)
-    .end((err, res) => {
-      expect(err).to.equal(null)
-      expect(res.header.location).to.equal('/transactions/12345')
-      done()
-    })
+      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Accept', 'application/json')
+      .send(viewFormData)
+      .expect(302)
+      .end((err, res) => {
+        expect(err).to.equal(null)
+        expect(res.header.location).to.equal('/transactions/12345')
+        done()
+      })
   })
 
   it('should redirect to error view issuing a refund when amount is not available for refund', function (done) {

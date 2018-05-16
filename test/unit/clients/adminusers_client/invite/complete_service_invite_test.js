@@ -64,7 +64,7 @@ describe('adminusers client - complete an invite', function () {
           .withResponseBody(validInviteCompleteResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

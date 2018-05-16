@@ -31,7 +31,12 @@ module.exports = (req, res) => {
   } else if (period === 'custom') {
     fromDateTime = _.get(req, 'query.fromDateTime', null)
     toDateTime = _.get(req, 'query.toDateTime', null)
-    if (!fromDateTime || !toDateTime || !moment(fromDateTime).isValid() || !moment(toDateTime).isValid()) {
+
+    const validFromDateTime = fromDateTime && moment(fromDateTime).isValid()
+    const validToDateTime = toDateTime && moment(toDateTime).isValid()
+    const getCustomDateRangeDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
+
+    if (!validFromDateTime || !validToDateTime || getCustomDateRangeDays(fromDateTime, toDateTime) > 31) {
       logger.error(`[${correlationId}] Invalid custom date range specified`)
       res.status(400)
       response(req, res, 'dashboard/index', {

@@ -37,12 +37,12 @@ module.exports = (req, res) => {
   }
 
   productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
-  .then(product => {
+    .then(product => {
     // if product exists we need to alert the user they must use a different URL
-    return res.redirect(paths.paymentLinks.webAddress)
-  })
-  .catch((err) => { // eslint-disable-line handle-callback-err
+      return res.redirect(paths.paymentLinks.webAddress)
+    })
+    .catch((err) => { // eslint-disable-line handle-callback-err
     // if it errors then it means no product was found and that’s good
-    return res.redirect(paths.paymentLinks.amount)
-  })
+      return res.redirect(paths.paymentLinks.amount)
+    })
 }
