@@ -23,3 +23,5 @@ staging-2.FAILED-510.status=failed
 staging-2.tag=alpha_staging-2-510
 
 staging-2.alpha_staging-2-510.date=2018-05-16:16:13:30
+
+staging-2.alpha_staging-2-510.status=success
