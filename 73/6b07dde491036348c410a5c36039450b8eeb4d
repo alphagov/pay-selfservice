@@ -5,3 +5,5 @@ release.alpha_release-510.date=2018-05-15:10:59:13
 staging-2.tag=FAILED-510
 
 staging-2.FAILED-510.date=
+
+staging-2.FAILED-510.status=failed
