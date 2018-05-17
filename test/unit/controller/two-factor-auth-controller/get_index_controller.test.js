@@ -22,10 +22,10 @@ describe('Two factor authenticator configure index GET', () => {
         permissions: [{name: 'transactions:read'}]
       })
       nock(CONNECTOR_URL)
-      .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-      .reply(200, {
-        payment_provider: 'sandbox'
-      })
+        .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
 
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))
@@ -66,10 +66,10 @@ describe('Two factor authenticator configure index GET', () => {
         second_factor: 'APP'
       })
       nock(CONNECTOR_URL)
-      .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
-      .reply(200, {
-        payment_provider: 'sandbox'
-      })
+        .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+        .reply(200, {
+          payment_provider: 'sandbox'
+        })
 
       session = getMockSession(user)
       supertest(createAppWithSession(getApp(), session))

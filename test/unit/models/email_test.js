@@ -11,7 +11,7 @@ describe('email notification', function () {
   describe('getting the template body', function () {
     describe('when connector is unavailable', function () {
       it('should return client unavailable', function () {
-          // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
+        // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
         class StubConnectorEmailFunctions extends EventEmitter {
           getNotificationEmail () {
             setTimeout(() => {
@@ -19,7 +19,7 @@ describe('email notification', function () {
             }, 100)
             return this
           }
-          }
+        }
         let sCEFinst = new StubConnectorEmailFunctions()
         let connectorClientStub = {
           ConnectorClient: function () {
@@ -31,7 +31,7 @@ describe('email notification', function () {
         })
         const emailModel = Email('some-unique-id')
         return expect(emailModel.get(123))
-            .to.be.rejectedWith('CLIENT_UNAVAILABLE')
+          .to.be.rejectedWith('CLIENT_UNAVAILABLE')
       }
       )
     })
@@ -92,7 +92,7 @@ describe('email notification', function () {
   describe('updating the email notification template body', function () {
     describe('when connector is unavailable', function () {
       it('should return client unavailable', function () {
-          // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
+        // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
         class StubConnectorEmailFunctions extends EventEmitter {
           updateNotificationEmail () {
             setTimeout(() => {
@@ -100,7 +100,7 @@ describe('email notification', function () {
             }, 100)
             return this
           }
-          }
+        }
         let sCEFinst = new StubConnectorEmailFunctions()
         let connectorClientStub = {
           ConnectorClient: function () {
@@ -112,7 +112,7 @@ describe('email notification', function () {
         })
         const emailModel = Email('some-unique-id')
         return expect(emailModel.update(123))
-            .to.be.rejectedWith('CLIENT_UNAVAILABLE')
+          .to.be.rejectedWith('CLIENT_UNAVAILABLE')
       }
       )
     })
@@ -171,7 +171,7 @@ describe('email notification', function () {
     _.each([true, false], function (toggle) {
       describe('when connector is unavailable', function () {
         it('should return client unavailable', function () {
-            // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
+          // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
           class StubConnectorEmailFunctions extends EventEmitter {
             updateNotificationEmailEnabled () {
               setTimeout(() => {
@@ -179,7 +179,7 @@ describe('email notification', function () {
               }, 100)
               return this
             }
-            }
+          }
           let sCEFinst = new StubConnectorEmailFunctions()
           let connectorClientStub = {
             ConnectorClient: function () {
@@ -191,7 +191,7 @@ describe('email notification', function () {
           })
           const emailModel = Email('some-unique-id')
           return expect(emailModel.setEnabled(123, toggle))
-              .to.be.rejectedWith('CLIENT_UNAVAILABLE')
+            .to.be.rejectedWith('CLIENT_UNAVAILABLE')
         }
         )
       })

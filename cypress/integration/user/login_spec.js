@@ -2,6 +2,7 @@ describe('Login Page', () => {
   beforeEach(() => {
     cy.visit('/')
   })
+
   describe('Page content', () => {
     it('should have the page title \'Sign in to GOV.UK Pay\'', () => {
       cy.title().should('eq', 'Sign in to GOV.UK Pay')

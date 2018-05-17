@@ -15,7 +15,7 @@ describe('charge model', function () {
   describe('findWithEvents', function () {
     describe('when connector is unavailable', function () {
       it('should return client unavailable', function () {
-          // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
+        // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
         class StubConnectorChargeFunctions extends EventEmitter {
           getCharge () {
             setTimeout(() => {
@@ -26,7 +26,7 @@ describe('charge model', function () {
           getChargeEvents () {
             return this
           }
-          }
+        }
         let sCCFinst = new StubConnectorChargeFunctions()
         let connectorClientStub = {
           ConnectorClient: function () {
@@ -38,7 +38,7 @@ describe('charge model', function () {
         })
         const chargeModel = Charge('correlation-id')
         return expect(chargeModel.findWithEvents(1, 1))
-            .to.be.rejectedWith('CLIENT_UNAVAILABLE')
+          .to.be.rejectedWith('CLIENT_UNAVAILABLE')
       }
       )
     })

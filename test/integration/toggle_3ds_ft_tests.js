@@ -113,11 +113,11 @@ describe('The 3D Secure index endpoint', function () {
     mockConnectorAcceptedCardTypesEndpoint({'card_types': []})
 
     buildGetRequest(paths.toggle3ds.index, app)
-    .expect(200)
-    .expect(response => {
+      .expect(200)
+      .expect(response => {
         expect(response.body.requires3ds).to.be.true // eslint-disable-line
         expect(response.body.hasAnyCardTypeRequiring3dsSelected).to.be.false // eslint-disable-line
-    })
+      })
       .end(done)
   })
 
@@ -142,10 +142,10 @@ describe('The 3D Secure index endpoint', function () {
 
   it('should display if 3D Secure is off', function (done) {
     connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-       .reply(200, {
-         'payment_provider': 'worldpay',
-         'requires3ds': false
-       })
+      .reply(200, {
+        'payment_provider': 'worldpay',
+        'requires3ds': false
+      })
 
     mockConnectorAcceptedCardTypesEndpoint({'card_types': []})
 
@@ -160,10 +160,10 @@ describe('The 3D Secure index endpoint', function () {
 
   it('should display if 3D Secure is off and has just been toggled', function (done) {
     connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-       .reply(200, {
-         'payment_provider': 'worldpay',
-         'requires3ds': false
-       })
+      .reply(200, {
+        'payment_provider': 'worldpay',
+        'requires3ds': false
+      })
 
     mockConnectorAcceptedCardTypesEndpoint({'card_types': []})
 

@@ -18,10 +18,10 @@ module.exports = (req, res) => {
       req.session.sentCode = true
       res.render('login/otp-login', PAGE_PARAMS)
     })
-    .catch(err => {
-      errorView(req, res)
-      logger.error(err)
-    })
+      .catch(err => {
+        errorView(req, res)
+        logger.error(err)
+      })
   } else {
     res.render('login/otp-login', PAGE_PARAMS)
   }

@@ -1,21 +1,44 @@
 'use strict'
 
-const q = require('q')
-const dates = require('../utils/dates.js')
+// npm dependencies
 const logger = require('winston')
 const json2csv = require('json2csv')
 const lodash = require('lodash')
+
+// local dependencies
+const dates = require('../utils/dates.js')
 const states = require('../utils/states')
 
-module.exports = function (data) {
-  logger.debug('Converting transactions list from json to csv')
-  const defer = q.defer()
+// constants
+const injectionTriggerRegexp = /(^[=@+-])/g
 
-  json2csv(
-    {
-      data: data,
-      defaultValue: '',
-      fields: [
+const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
+  if (typeof (fieldValue) !== 'string') {
+    return fieldValue
+  }
+  return fieldValue.replace(injectionTriggerRegexp, '\'$1')
+}
+
+const getSanitisableFields = fieldArray => {
+  let ret = []
+  for (let i = 0; i < fieldArray.length; i++) {
+    let theField = fieldArray[i]
+    ret.push({
+      label: theField.label,
+      value: function (row) {
+        if (lodash.has(row, theField.value)) return sanitiseAgainstSpreadsheetFormulaInjection(lodash.get(row, theField.value))
+        return null
+      }
+    })
+  }
+  return ret
+}
+
+module.exports = function (data) {
+  return new Promise(function (resolve, reject) {
+    logger.debug('Converting transactions list from json to csv')
+    try {
+      const parseFields = [
         ...getSanitisableFields([
           {label: 'Reference', value: 'reference'},
           {label: 'Description', value: 'description'},
@@ -54,33 +77,13 @@ module.exports = function (data) {
           }
         }
       ]
-    },
-    (err, csv) => {
-      if (err) defer.reject()
-      defer.resolve(csv)
-    })
-  return defer.promise
-}
-
-const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
-  if (typeof (fieldValue) !== 'string') {
-    return fieldValue
-  }
-  const injectionTriggerRegexp = /(^[=@+-])/g
-  return fieldValue.replace(injectionTriggerRegexp, '\'$1')
-}
-
-const getSanitisableFields = fieldArray => {
-  let ret = []
-  for (let i = 0; i < fieldArray.length; i++) {
-    let theField = fieldArray[i]
-    ret.push({
-      label: theField.label,
-      value: function (row) {
-        if (lodash.has(row, theField.value)) return sanitiseAgainstSpreadsheetFormulaInjection(lodash.get(row, theField.value))
-        return null
-      }
-    })
-  }
-  return ret
+      return resolve(json2csv.parse(
+        data, {
+          defaultValue: '',
+          fields: parseFields
+        }))
+    } catch (err) {
+      reject(err)
+    }
+  })
 }

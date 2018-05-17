@@ -58,7 +58,7 @@ describe('adminusers client - complete a user invite', function () {
           .withResponseBody(validInviteCompleteResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -85,7 +85,7 @@ describe('adminusers client - complete a user invite', function () {
           .withStatusCode(404)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -109,7 +109,7 @@ describe('adminusers client - complete a user invite', function () {
           .withStatusCode(410)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

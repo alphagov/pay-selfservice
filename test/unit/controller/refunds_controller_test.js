@@ -50,7 +50,7 @@ describe('Refund scenario:', function () {
       'amount': 500000,
       'refund_amount_available': 5000
     })
-    .reply(202, mockRefundResponse)
+      .reply(202, mockRefundResponse)
 
     refundController(req, res).then(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
@@ -67,7 +67,7 @@ describe('Refund scenario:', function () {
       'amount': 600000,
       'refund_amount_available': 5000
     })
-    .reply(400, mockRefundResponse)
+      .reply(400, mockRefundResponse)
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
@@ -84,7 +84,7 @@ describe('Refund scenario:', function () {
       'amount': 1,
       'refund_amount_available': 5000
     })
-    .reply(400, mockRefundResponse)
+      .reply(400, mockRefundResponse)
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
@@ -101,7 +101,7 @@ describe('Refund scenario:', function () {
       'amount': 1,
       'refund_amount_available': 5000
     })
-    .reply(400, mockRefundResponse)
+      .reply(400, mockRefundResponse)
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
@@ -118,7 +118,7 @@ describe('Refund scenario:', function () {
       'amount': 1,
       'refund_amount_available': 5000
     })
-    .reply(400, mockRefundResponse)
+      .reply(400, mockRefundResponse)
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)
@@ -135,7 +135,7 @@ describe('Refund scenario:', function () {
       'amount': 1,
       'refund_amount_available': 5000
     })
-    .reply(400, mockRefundResponse)
+      .reply(400, mockRefundResponse)
 
     refundController(req, res).catch(() => {
       expect(res.redirect.calledWith('/transactions/123456')).to.equal(true)

@@ -8,9 +8,9 @@ describe('static controller', function () {
   _.each(['get', 'post', 'delete', 'put', 'patch'], function (verb) {
     it('should return an error page', function (done) {
       request(getApp())[verb]('/request-denied')
-      .set('Accept', 'application/json')
-      .expect(400)
-      .end(done)
+        .set('Accept', 'application/json')
+        .expect(400)
+        .end(done)
     })
   })
 })

@@ -48,7 +48,7 @@ describe('adminusers client - generate otp code for user invite', function () {
           .withStatusCode(200)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -76,7 +76,7 @@ describe('adminusers client - generate otp code for user invite', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

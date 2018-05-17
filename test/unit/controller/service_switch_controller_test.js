@@ -15,8 +15,8 @@ const chaiAsPromised = require('chai-as-promised')
 const {expect} = require('chai')
 chai.use(chaiAsPromised)
 
-const renderSpy = sinon.spy()
-const redirectSpy = sinon.spy()
+let renderSpy = sinon.spy()
+let redirectSpy = sinon.spy()
 
 describe('service switch controller: list of accounts', function () {
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('service switch controller: list of accounts', function () {
   })
 
   afterEach(() => {
-    renderSpy.reset()
+    renderSpy = sinon.spy()
   })
 
   it('should render a list of services when user has multiple services', function (done) {
@@ -159,7 +159,7 @@ describe('service switch controller: list of accounts', function () {
 
 describe('service switch controller: switching', function () {
   afterEach(() => {
-    redirectSpy.reset()
+    redirectSpy = sinon.spy()
   })
 
   it('should redirect to / with correct account id set', function () {
@@ -218,7 +218,7 @@ describe('service switch controller: display added to the new service msg', func
   })
 
   afterEach(() => {
-    renderSpy.reset()
+    renderSpy = sinon.spy()
   })
 
   it('should render a list of services when user has multiple services and display added to new service message', function (done) {

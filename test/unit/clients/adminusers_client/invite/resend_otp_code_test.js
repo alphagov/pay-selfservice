@@ -47,7 +47,7 @@ describe('submit resend otp code API', function () {
           .withStatusCode(200)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -76,7 +76,7 @@ describe('submit resend otp code API', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -104,7 +104,7 @@ describe('submit resend otp code API', function () {
           .withStatusCode(404)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

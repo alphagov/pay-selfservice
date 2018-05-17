@@ -21,7 +21,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
-  let provider = Pact({
+  const provider = Pact({
     consumer: 'selfservice',
     provider: 'connector',
     port: port,
@@ -38,7 +38,7 @@ describe('connector client - create gateway account', function () {
     const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
 
     before((done) => {
-      let pactified = validCreateGatewayAccountRequest.getPactified()
+      const pactified = validCreateGatewayAccountRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('a valid create gateway account request')
@@ -73,7 +73,7 @@ describe('connector client - create gateway account', function () {
     }
 
     before((done) => {
-      let pactified = invalidCreateGatewayAccountRequest.getPactified()
+      const pactified = invalidCreateGatewayAccountRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('an invalid create gateway account request')

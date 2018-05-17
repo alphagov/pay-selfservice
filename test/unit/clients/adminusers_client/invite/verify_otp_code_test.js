@@ -40,7 +40,7 @@ describe('adminusers client - submit verification details', function () {
           .withStatusCode(201)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -68,7 +68,7 @@ describe('adminusers client - submit verification details', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -96,7 +96,7 @@ describe('adminusers client - submit verification details', function () {
           .withStatusCode(404)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -122,7 +122,7 @@ describe('adminusers client - submit verification details', function () {
           .withStatusCode(410)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

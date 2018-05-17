@@ -46,10 +46,10 @@ describe('Error handler register service', function () {
   })
 
   afterEach(() => {
-    flashStub.reset()
-    redirectStub.reset()
-    renderStub.reset()
-    statusStub.reset()
+    redirectStub = sinon.spy()
+    renderStub = sinon.spy()
+    statusStub = sinon.spy()
+    flashStub = sinon.spy()
   })
 
   const controller = function (error) {

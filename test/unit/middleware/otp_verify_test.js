@@ -17,12 +17,12 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('otp_verify middleware', function () {
-  const winstonDebugSpy = sinon.spy()
-  const winstonWarnSpy = sinon.spy()
-  const renderErrorViewSpy = sinon.spy()
-  const submitServiceInviteOtpCodeSpy = sinon.spy()
-  const reqFlashSpy = sinon.spy()
-  const resRedirectSpy = sinon.spy()
+  let winstonDebugSpy = sinon.spy()
+  let winstonWarnSpy = sinon.spy()
+  let renderErrorViewSpy = sinon.spy()
+  let submitServiceInviteOtpCodeSpy = sinon.spy()
+  let reqFlashSpy = sinon.spy()
+  let resRedirectSpy = sinon.spy()
 
   let proxyquireObject, otpVerify
   let req, res
@@ -62,12 +62,12 @@ describe('otp_verify middleware', function () {
   })
 
   afterEach(() => {
-    winstonDebugSpy.reset()
-    winstonWarnSpy.reset()
-    renderErrorViewSpy.reset()
-    submitServiceInviteOtpCodeSpy.reset()
-    reqFlashSpy.reset()
-    resRedirectSpy.reset()
+    winstonDebugSpy = sinon.spy()
+    winstonWarnSpy = sinon.spy()
+    renderErrorViewSpy = sinon.spy()
+    submitServiceInviteOtpCodeSpy = sinon.spy()
+    reqFlashSpy = sinon.spy()
+    resRedirectSpy = sinon.spy()
   })
 
   it('should call next on valid otp code', function (done) {

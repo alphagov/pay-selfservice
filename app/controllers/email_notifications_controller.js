@@ -41,9 +41,9 @@ const toggleEmail = function (req, res, enabled) {
   const accountID = req.account.gateway_account_id
   const emailModel = Email(req.headers[CORRELATION_HEADER])
   emailModel.setEnabled(accountID, enabled)
-  .then(() => {
-    res.redirect(303, indexPath)
-  })
+    .then(() => {
+      res.redirect(303, indexPath)
+    })
 }
 
 module.exports.off = (req, res) => {
@@ -61,8 +61,8 @@ module.exports.update = (req, res) => {
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const emailModel = Email(correlationId)
   emailModel.update(accountID, newEmailText)
-  .then(() => {
-    logger.info(`[${correlationId}] - Updated email notifications custom paragraph. user=${req.session.passport.user}, gateway_account=${accountID}`)
-    res.redirect(303, indexPath)
-  })
+    .then(() => {
+      logger.info(`[${correlationId}] - Updated email notifications custom paragraph. user=${req.session.passport.user}, gateway_account=${accountID}`)
+      res.redirect(303, indexPath)
+    })
 }

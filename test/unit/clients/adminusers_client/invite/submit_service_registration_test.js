@@ -50,7 +50,7 @@ describe('adminusers client - self register service', function () {
           .withStatusCode(201)
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
@@ -79,7 +79,7 @@ describe('adminusers client - self register service', function () {
           .withResponseBody(errorResponse.getPactified())
           .build()
       ).then(() => done())
-      .catch(done)
+        .catch(done)
     })
 
     afterEach(() => provider.verify())

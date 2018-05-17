@@ -50,8 +50,8 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
   return Promise.all([fetchCardGatewayAccounts, fetchDirectDebitGatewayAccounts]
     .map(promise => promise))
     .then(results => results
-        .reduce((a, b) => a.concat(b))
-        .filter(p => !(p instanceof Error)))
+      .reduce((a, b) => a.concat(b))
+      .filter(p => !(p instanceof Error)))
 }
 
 /**
