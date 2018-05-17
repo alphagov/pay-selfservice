@@ -96,8 +96,12 @@ describe('Two factor authenticator configure index GET', () => {
       expect($('form').attr('action')).to.equal(paths.user.twoFactorAuth.index)
     })
 
-    it(`should a button with “Set up a different authenticator app”`, () => {
-      expect($('.button').text()).to.contain('Set up a different authenticator app')
+    it(`should a radio with “Set up a different authenticator app”`, () => {
+      expect($('#label-two-fa-method-app').text()).to.contain('Set up a different authenticator app')
+    })
+
+    it(`should a radio with “Send security codes to your phone number”`, () => {
+      expect($('#label-two-fa-method-sms').text()).to.contain('Send security codes to your phone number')
     })
   })
 })
