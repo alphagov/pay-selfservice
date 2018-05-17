@@ -263,4 +263,5 @@ module.exports.bind = function (app) {
   app.post(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.postIndex)
   app.get(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.getConfigure)
   app.post(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.postConfigure)
+  app.post(user.twoFactorAuth.resend, enforceUserAuthenticated, twoFactorAuthCtrl.postResend)
 }

@@ -24,7 +24,7 @@ Enter security code - GOV.UK Pay
   <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     {% if authenticatorMethod == 'SMS' %}
-    <p>We’ve sent you a text message with a security code</p>
+    <p>We have sent you a text message with a security code</p>
     {% endif %}
     {% if authenticatorMethod == 'APP' %}
     <p>Enter the security code shown in your authenticator app</p>

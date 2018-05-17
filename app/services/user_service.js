@@ -68,7 +68,19 @@ module.exports = {
    * @returns {Promise}
    */
   sendOTP: function (user, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).sendSecondFactor(user.externalId)
+    return getAdminUsersClient({ correlationId: correlationId }).sendSecondFactor(user.externalId)
+  },
+
+  /**
+   * @param {User} user
+   * @param correlationId
+   * @returns {Promise}
+   */
+  sendProvisonalOTP: function (user, correlationId) {
+    return getAdminUsersClient({
+      correlationId: correlationId,
+      provisional: true
+    }).sendSecondFactor(user.externalId)
   },
 
   /**
