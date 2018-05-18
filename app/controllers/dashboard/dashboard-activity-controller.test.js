@@ -296,47 +296,135 @@ describe('dashboard-activity-controller', () => {
           .to.contain(moment().tz('Europe/London').startOf('day').subtract(31, 'days').format('D MMMM YYYY h:mm:ssa z'))
       })
     })
+    describe('and the period is set to a custom date range within the allowed threshold', () => {
+      let result, $, app
+
+      const from = '2018-05-14T00:00:00+01:00'
+      const to = '2018-05-16T00:00:00+01:00'
+
+      before('Arrange', () => {
+        const session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{name: 'transactions:read'}]
+        }))
+
+        nock(CONNECTOR_URL)
+          .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
+          .query(obj => {
+            return obj.from_date === from && obj.to_date === to
+          })
+          .reply(200, DASHBOARD_RESPONSE)
+
+        app = createAppWithSession(getApp(), session)
+      })
+
+      before('Act', done => {
+        supertest(app)
+          .get(paths.dashboard.index)
+          .query({
+            period: 'custom',
+            fromDateTime: from,
+            toDateTime: to
+          })
+          .end((err, res) => {
+            result = res
+            $ = cheerio.load(res.text)
+            done(err)
+          })
+      })
+
+      after(() => {
+        nock.cleanAll()
+      })
+
+      it('it should return a statusCode of 200', () => {
+        expect(result.statusCode).to.equal(200)
+      })
+
+      it('it should print the time period in the summary box', () => {
+        expect($('.dashboard-total-explainer').text())
+          .to.contain(moment(from).tz('Europe/London').format('D MMMM YYYY h:mm:ssa z'))
+        expect($('.dashboard-total-explainer').text())
+          .to.contain(moment(to).tz('Europe/London').format('D MMMM YYYY h:mm:ssa z'))
+      })
+    })
   })
   describe('When the dashboard has not been retrieved from connector', () => {
-    let result, $, app
+    describe('due to a 404 coming from connector', () => {
+      let result, $, app
 
-    before('Arrange', () => {
-      const session = getMockSession(getUser({
-        gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'transactions:read'}]
-      }))
+      before('Arrange', () => {
+        const session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{name: 'transactions:read'}]
+        }))
 
-      nock(CONNECTOR_URL)
-        .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
-        .query(obj => {
-          return obj.from_date === moment().tz('Europe/London').startOf('day').format()
-        })
-        .reply(404)
+        nock(CONNECTOR_URL)
+          .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
+          .query(obj => {
+            return obj.from_date === moment().tz('Europe/London').startOf('day').format()
+          })
+          .reply(404)
 
-      app = createAppWithSession(getApp(), session)
+        app = createAppWithSession(getApp(), session)
+      })
+
+      before('Act', done => {
+        supertest(app)
+          .get(paths.dashboard.index)
+          .end((err, res) => {
+            result = res
+            $ = cheerio.load(res.text)
+            done(err)
+          })
+      })
+
+      after(() => {
+        nock.cleanAll()
+      })
+
+      it('it should return a statusCode of 404', () => {
+        expect(result.statusCode).to.equal(404)
+      })
+
+      it('it should print the error message', () => {
+        expect($('.dashboard-total-group__heading').text().trim())
+          .to.equal('Error fetching totals')
+      })
     })
 
-    before('Act', done => {
-      supertest(app)
-        .get(paths.dashboard.index)
-        .end((err, res) => {
-          result = res
-          $ = cheerio.load(res.text)
-          done(err)
-        })
-    })
+    describe('due to a custom data range outside of the allowed threshold', () => {
+      let result, app
 
-    after(() => {
-      nock.cleanAll()
-    })
+      const from = '2017-05-14T00:00:00+01:00'
+      const to = '2018-05-16T00:00:00+01:00'
 
-    it('it should return a statusCode of 404', () => {
-      expect(result.statusCode).to.equal(404)
-    })
+      before('Arrange', () => {
+        const session = getMockSession(getUser({
+          gateway_account_ids: [GATEWAY_ACCOUNT_ID],
+          permissions: [{name: 'transactions:read'}]
+        }))
 
-    it('it should print the error message', () => {
-      expect($('.dashboard-total-group__heading').text().trim())
-        .to.equal('Error fetching totals')
+        app = createAppWithSession(getApp(), session)
+      })
+
+      before('Act', done => {
+        supertest(app)
+          .get(paths.dashboard.index)
+          .query({
+            period: 'custom',
+            fromDateTime: from,
+            toDateTime: to
+          })
+          .end((err, res) => {
+            result = res
+            done(err)
+          })
+      })
+
+      it('it should return a statusCode of 400', () => {
+        expect(result.statusCode).to.equal(400)
+      })
     })
   })
 })
