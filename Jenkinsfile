@@ -5,7 +5,6 @@ pipeline {
 
   parameters {
     booleanParam(defaultValue: true, description: '', name: 'runEndToEndTestsOnPR')
-    booleanParam(defaultValue: false, description: '', name: 'runAcceptTestsOnPR')
   }
 
   options {
@@ -19,7 +18,6 @@ pipeline {
 
   environment {
     RUN_END_TO_END_ON_PR = "${params.runEndToEndTestsOnPR}"
-    RUN_ACCEPT_ON_PR = "${params.runAcceptTestsOnPR}"
   }
 
   stages {
