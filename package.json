@@ -36,8 +36,8 @@
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "npm run snyk-protect && rm -rf ./pacts && ./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
     "pact-stub": "docker run -t -p 8000:8000 -v \"$(pwd)/pacts/:/app/pacts\" pactfoundation/pact-stub-server -p 8000 -d pacts",
-    "server:cypress": "node -r dotenv/config start.js dotenv_config_path=cypress/test.env",
-    "test:cypress": "cypress run",
+    "cypress:server": "node -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
+    "cypress:test": "cypress run",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
     "publish-pacts": "./bin/publish-pacts.js"

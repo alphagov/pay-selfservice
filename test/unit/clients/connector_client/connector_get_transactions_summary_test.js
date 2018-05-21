@@ -37,10 +37,17 @@ describe('connector client - get transaction summary', function () {
   describe('get transaction summary - success', () => {
     // Note: the browser tests attempt to get a custom summary range based on these values.
     // Ensure they match here and in the browser tests, or they refer to the same config file.
+
+    const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
+
+    // Use a known configuration to generate our interaction. This configuration is used in browser testing
+    // where assumptions about users and stubs are relied upon upfront
+    const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+
     const params = {
-      gatewayAccountId: '666',
-      fromDateTime: '2018-05-14T00:00:00+01:00',
-      toDateTime: '2018-05-15T00:00:00+01:00'
+      gatewayAccountId: ssUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      fromDateTime: ssUser.sections.dashboard.transaction_summary.from_date, // 2018-05-14T00:00:00+01:00
+      toDateTime: ssUser.sections.dashboard.transaction_summary.to_date // 2018-05-15T00:00:00+01:00
     }
     const validGetTransactionSummaryResponse = transactionSummaryFixtures.validTransactionSummaryResponse(params)
 

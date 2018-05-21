@@ -1,0 +1,22 @@
+{
+  "description": "defines agreed fixture config that can be relied upon by browser testing tools requiring defined pact/contract data",
+  "config": {
+    "users": [
+      { "isPrimary": "true",
+        "external_id": "7d19aff33f8948deb97ed16b2912dcd3",
+        "gateway_accounts": [
+          {"id": "666", "isPrimary": "true"},
+          {"id": "7", "isPrimary": "false"}
+        ],
+        "sections": {
+          "dashboard": {
+            "transaction_summary": {
+              "from_date": "2018-05-14T00:00:00+01:00",
+              "to_date": "2018-05-15T00:00:00+01:00"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
