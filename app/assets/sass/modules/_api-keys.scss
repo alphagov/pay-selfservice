@@ -47,11 +47,17 @@
 
 .key-list {
   margin-top: 30px;
+  list-style: none;
+  max-width: 700px;
 }
 
 .key-list-item-meta {
   @include core-16;
   margin-bottom: 1em;
+
+  dt {
+    font-weight: bold;
+  }
 
   dt,
   dd {
@@ -59,11 +65,14 @@
   }
 
   p {
-    margin: 0;
+    margin: 0 0 $gutter / 3;
   }
 }
 
 .key-list-item {
+  border-top: 1px solid $grey-2;
+  padding: $gutter 0;
+
   .form-group {
     margin-bottom: $gutter;
     float: none;
@@ -74,13 +83,35 @@
   }
 }
 
-.key-list-item-controls a:last-child {
-  margin-left: 1em;
+.key-list-item-controls {
+  a {
+    margin-right: $gutter / 2;
+  }
 }
 
-// Hide edit options for tokens
-.js-enabled div.js-edit-description,
-.js-enabled .js-revoke-confirmation,
-.js-enabled .js-revoke-confirmed {
-  display: none;
+.copy {
+  &-api-key {
+    width: 100%;
+    outline: 0;
+    border: 0;
+    @include appearance(none);
+  }
+
+  &-button {
+    background-color: $panel-colour;
+    color: $text-colour;
+    margin: $gutter 0;
+    @include box-shadow(0 2px 0 $border-colour);
+
+    &:focus,
+    &:hover {
+      color: $text-colour;
+      background-color: darken($panel-colour, 15%);
+      @include box-shadow(0 2px 0 darken($border-colour, 15%));
+    }
+  }
+}
+
+.update-key-wrap {
+  margin-top: $gutter;
 }

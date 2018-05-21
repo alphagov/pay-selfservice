@@ -34,7 +34,7 @@ const credentialsCtrl = require('./controllers/credentials_controller')
 const loginCtrl = require('./controllers/login')
 const dashboardCtrl = require('./controllers/dashboard')
 const healthcheckCtrl = require('./controllers/healthcheck_controller')
-const apiKeysCtrl = require('./controllers/api_keys_controller')
+const apiKeysCtrl = require('./controllers/api-keys')
 const paymentTypesSelectType = require('./controllers/payment_types_select_type_controller')
 const paymentTypesSelectBrand = require('./controllers/payment_types_select_brand_controller')
 const paymentTypesSummary = require('./controllers/payment_types_summary_controller')
@@ -173,12 +173,12 @@ module.exports.bind = function (app) {
   app.post(merchantDetails.update, permission('merchant-details:update'), editMerchantDetailsCtrlPost.post)
 
   // API KEYS
-  app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysCtrl.index)
-  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.revoked)
-  app.get(apiKeys.show, permission('tokens:create'), getAccount, apiKeysCtrl.show)
-  app.post(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.create)
-  app.put(apiKeys.update, permission('tokens:update'), getAccount, apiKeysCtrl.update)
-  app.delete(apiKeys.delete, permission('tokens:delete'), getAccount, apiKeysCtrl.destroy)
+  app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)
+  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.getRevoked)
+  app.get(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.getCreate)
+  app.post(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.postCreate)
+  app.post(apiKeys.revoke, permission('tokens:delete'), getAccount, apiKeysCtrl.postRevoke)
+  app.post(apiKeys.update, permission('tokens:update'), getAccount, apiKeysCtrl.postUpdate)
 
   // PAYMENT TYPES
   app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectType.selectType)

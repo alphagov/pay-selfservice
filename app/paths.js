@@ -40,14 +40,11 @@ module.exports = {
     index: '/'
   },
   apiKeys: {
-    index: '/tokens',
-    revoked: '/tokens/revoked',
-    // we only show the token once, hence strange url
-    show: '/tokens/generate',
-    create: '/tokens/generate',
-    // should these two not rely take an id in the url?
-    update: '/tokens',
-    delete: '/tokens'
+    index: '/api-keys',
+    revoked: '/api-keys/revoked',
+    create: '/api-keys/create',
+    revoke: '/api-keys/revoke',
+    update: '/api-keys/update'
   },
   paymentTypes: {
     selectType: '/card-types/manage-type',

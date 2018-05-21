@@ -1,11 +1,7 @@
-{% extends "./layout.njk" %}
+{% extends "../layout.njk" %}
 
 {% block page_title %}
 API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
-{% endblock %}
-
-{% block pageSpecificJS %}
-<script src="/public/js/devtokens.js"></script>
 {% endblock %}
 
 {% block side_navigation %}
@@ -25,6 +21,6 @@ API Keys - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK 
     {% endif %}
   </ul>
 
-  {% include "./includes/_token_list.njk" %}
+  {% include "./_keys.njk" %}
 </div>
 {% endblock %}

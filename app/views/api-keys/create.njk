@@ -1,0 +1,49 @@
+{% extends "../layout.njk" %}
+{% block page_title %}
+Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-two-thirds">
+  {% if not token %}
+  <h1 class="page-title">Create an API key</h1>
+    <form class="form" method="post" action="{{routes.apiKeys.create}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+      <div class="form-group">
+        <label class="form-label-bold" for="description">
+          Add a description for the key
+          <span class="form-hint">For example, “John Smith’s API key”</span>
+        </label>
+        <input id="description" name="description" type="text" maxlength="100" class="form-control"/>
+      </div>
+      <p>When generated the key will only be shown once.</p>
+      <input id="generate-button" type="submit" class="button" value="Continue">
+    </form>
+    <p class="add-top-margin">
+      <a href="{{routes.apiKeys.index}}">Cancel</a>
+    </p>
+  {% else %}
+    <h1 class="page-title">New API key</h1>
+    <p>Copy your key to somewhere safe. You won’t be able to see it again once you leave this page.</p>
+
+    <h3 class="heading-small">
+      {{description}}
+    </h3>
+    <div>
+      <span id="token" class="code copy-this-api-key">{{token}}</span>
+    </div>
+    <div>
+      <button class="button copy-button" data-copy-text data-target="copy-this-api-key" data-success="API key has been copied">
+        Copy API key to clipboard
+      </button>
+    </div>
+    <a href="{{routes.apiKeys.index}}" id="finish-link">
+      Back to API keys
+    </a>
+  {% endif %}
+</div>
+{% endblock %}
