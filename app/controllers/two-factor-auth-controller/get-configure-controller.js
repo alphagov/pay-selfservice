@@ -1,6 +1,7 @@
 'use strict'
 
 // NPM dependencies
+const lodash = require('lodash')
 const logger = require('winston')
 const qrcode = require('qrcode')
 
@@ -10,10 +11,9 @@ const paths = require('../../paths')
 
 module.exports = (req, res) => {
   const PAGE_PARAMS = {
-    profile: paths.user.profile,
-    index: paths.user.twoFactorAuth.index,
-    configure: paths.user.twoFactorAuth.configure
+    method: lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
   }
+
   PAGE_PARAMS.prettyPrintedSecret = req.user.provisionalOtpKey.match(/.{4}/g).join(' ')
   const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(req.user.username)}?secret=${encodeURIComponent(req.user.provisionalOtpKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
 

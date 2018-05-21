@@ -24,7 +24,8 @@ module.exports = {
     profile: '/my-profile',
     twoFactorAuth: {
       index: '/my-profile/two-factor-auth',
-      configure: '/my-profile/two-factor-auth/configure'
+      configure: '/my-profile/two-factor-auth/configure',
+      resend: '/my-profile/two-factor-auth/resend'
     },
     otpLogIn: '/otp-login',
     otpSendAgain: '/otp-send-again',

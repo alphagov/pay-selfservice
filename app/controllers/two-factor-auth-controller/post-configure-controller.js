@@ -2,6 +2,7 @@
 
 // NPM dependencies
 const logger = require('winston')
+const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
@@ -9,7 +10,7 @@ const userService = require('../../services/user_service.js')
 
 module.exports = (req, res) => {
   const code = req.body['code'] || ''
-  userService.configureNewOtpKey(req.user.externalId, code, 'APP', req.correlationId)
+  userService.configureNewOtpKey(req.user.externalId, code, lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP'), req.correlationId)
     .then(user => {
       req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>Next time you sign in please use your configured authenticator app</p>`)
       return res.redirect(paths.user.profile)

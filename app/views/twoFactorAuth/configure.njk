@@ -1,19 +1,26 @@
 {% extends "../layout.njk" %}
 
+{% if method == 'APP' %}
+  {% set title = 'Set up an authenticator app' %}
+{% else %}
+  {% set title = 'Check your phone' %}
+{% endif %}
+
 {% block page_title %}
-Set up an authenticator app - GOV.UK Pay
+{{ title }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
 <div class="column-full">
-  <a href="{{profile}}" class="link-back">My profile</a>
+  <a href="{{routes.user.profile}}" class="link-back">My profile</a>
 </div>
 <div class="column-full">
   <h1 class="heading-large page-title">
-    Set up an authenticator app
+    {{ title }}
   </h1>
 </div>
 <div class="column-two-thirds">
+{% if method == 'APP' %}
   <p>Scan the barcode with your authenticator app or enter the secret manually.</p>
   <div class="notice">
     <i class="icon icon-important">
@@ -32,13 +39,27 @@ Set up an authenticator app - GOV.UK Pay
       </p>
     </figcaption>
   </figure>
-  <form method="post" action="{{configure}}" data-validate>
+{% else %}
+  <div class="notice two-fa-notice">
+    <i class="icon icon-important">
+      <span class="visually-hidden">Warning</span>
+    </i>
+    <strong class="bold-small">
+      Once set-up is complete, you will only be able to sign in using text message codes.
+    </strong>
+  </div>
+{% endif %}
+  <form method="post" action="{{routes.user.twoFactorAuth.configure}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group {% if flash.genericError %}error{% endif %}">
       <label class="form-label" for="code">
         Security code
         <span class="form-hint">
+          {% if method == 'APP' %}
           Enter the code shown in your app to complete the set-up
+          {% else %}
+          We have sent you a text message with a security code
+          {% endif %}
         </span>
         {% if flash.genericError %}
           <span class="error-message">Please enter a valid security code</span>
@@ -51,9 +72,19 @@ Set up an authenticator app - GOV.UK Pay
         Complete
       </button>
     </div>
-    <a id="service-name-cancel-link" href="{{index}}">
-      Cancel
-    </a>
   </form>
+  {% if method == 'SMS' %}
+  <form action="{{routes.user.twoFactorAuth.resend}}">
+    <div class="form-group">
+      <button class="button-link" type="submit">
+        Not received a text message?
+      </button>
+    </div>
+  </form>
+  {% endif %}
+
+  <a id="service-name-cancel-link" href="{{routes.user.twoFactorAuth.index}}">
+    Cancel
+  </a>
 </div>
 {% endblock %}

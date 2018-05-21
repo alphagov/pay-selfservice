@@ -1,5 +1,9 @@
+.two-fa-notice {
+  margin-bottom: $gutter;
+}
+
 .qr-code {
-  margin: $gutter 0;
+  margin: 0 0 $gutter;
 
   img {
     margin-left: -1 * ($gutter / 2);

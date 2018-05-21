@@ -1,22 +1,22 @@
 {% extends "../layout.njk" %}
 
 {% block page_title %}
-Sign-in method - GOV.UK Pay
+Change sign-in method - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
 <div class="column-full">
-  <a href="{{profile}}" class="link-back">My profile</a>
+  <a href="{{routes.user.profile}}" class="link-back">My profile</a>
 </div>
 <div class="column-full">
   <h1 class="heading-large page-title">
-    Sign-in method
+    Change sign-in method
   </h1>
 </div>
 <div class="column-two-thirds">
   {% if authenticatorMethod == 'SMS' %}
     <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
-    <form method="post" action="{{index}}">
+    <form method="post" action="{{routes.user.twoFactorAuth.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       <div class="form-group">
         <button class="button" type="submit">
@@ -27,11 +27,23 @@ Sign-in method - GOV.UK Pay
   {% endif %}
   {% if authenticatorMethod == 'APP' %}
     <p>You currently use an authenticator app to sign in to GOV.UK Pay.</p>
-    <form method="post" action="{{index}}">
+    <form method="post" action="{{routes.user.twoFactorAuth.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       <div class="form-group">
+        <div class="multiple-choice">
+          <input id="two-fa-method-app" type="radio" name="two-fa-method" value="APP" checked>
+          <label for="two-fa-method-app" id="label-two-fa-method-app">Set up a different authenticator app</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="two-fa-method-sms" type="radio" name="two-fa-method" value="SMS">
+          <label for="two-fa-method-sms" id="label-two-fa-method-sms">
+            Send security codes to your phone number
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
         <button class="button" type="submit">
-          Set up a different authenticator app
+          Submit
         </button>
       </div>
     </form>
