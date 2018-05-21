@@ -2,6 +2,7 @@
 
 // NPM Dependencies
 const lodash = require('lodash')
+const AWSXRay = require('aws-xray-sdk');
 
 // Local Dependencies
 const response = require('./utils/response.js').response
