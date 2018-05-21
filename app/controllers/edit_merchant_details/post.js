@@ -19,7 +19,7 @@ const MERCHANT_EMAIL = 'merchant-email'
 exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const externalServiceId = req.params.externalServiceId
-  const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount')
+  const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
   const reqMerchantDetails = {
     name: req.body[MERCHANT_NAME],
     telephone_number: req.body[TELEPHONE_NUMBER] ? req.body[TELEPHONE_NUMBER].replace(/\s/g, '') : req.body[TELEPHONE_NUMBER],

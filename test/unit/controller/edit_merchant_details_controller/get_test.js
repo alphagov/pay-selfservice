@@ -191,6 +191,9 @@ describe('edit merchant details controller - get', () => {
       expect($('#address-postcode').val()).to.equal('')
       expect($('#address-country').val()).to.equal('GB')
     })
+    it(`should display the merchant details`, () => {
+      expect($('#merchant-details-info').text()).to.include('Payment card schemes require the details')
+    })
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
     before(done => {
@@ -244,6 +247,66 @@ describe('edit merchant details controller - get', () => {
       expect($('#address-city').val()).to.equal('')
       expect($('#address-postcode').val()).to.equal('')
       expect($('#address-country').val()).to.equal('GB')
+    })
+    it(`should display the merchant details info`, () => {
+      expect($('#merchant-details-info').text()).to.include('Direct Debit requires the details')
+    })
+  })
+  describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT and CREDIT CARD GATEWAY ACCOUNT)', () => {
+    before(done => {
+      let serviceRoles = [{
+        service: {
+          name: 'System Generated',
+          external_id: EXTERNAL_SERVICE_ID,
+          gateway_account_ids: ['DIRECT_DEBIT:somerandomidhere', '12345'],
+          merchant_details: {
+            name: '',
+            telephone_number: '',
+            address_line1: '',
+            address_line2: '',
+            address_city: '',
+            address_postcode: '',
+            address_country: '',
+            email: ''
+          }
+        },
+        role: {
+          name: 'admin',
+          description: 'Administrator',
+          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
+        }
+      }]
+      let userInSession = mockSession.getUser({
+        external_id: EXTERNAL_ID_IN_SESSION,
+        service_roles: serviceRoles
+      })
+      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
+        .reply(200, user.getPlain())
+      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      supertest(app)
+        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .end((err, res) => {
+          response = res
+          $ = cheerio.load(res.text || '')
+          done(err)
+        })
+    })
+    it(`should get a nice 200 status code`, () => {
+      expect(response.statusCode).to.equal(200)
+    })
+    it(`should show empty inputs and GB selected as country`, () => {
+      expect($('#merchant-name').val()).to.equal('')
+      expect($('#telephone-number').val()).to.equal('')
+      expect($('#merchant-email').val()).to.equal('')
+      expect($('#address-line1').val()).to.equal('')
+      expect($('#address-line2').val()).to.equal('')
+      expect($('#address-city').val()).to.equal('')
+      expect($('#address-postcode').val()).to.equal('')
+      expect($('#address-country').val()).to.equal('GB')
+    })
+    it(`should display the merchant details info`, () => {
+      expect($('#merchant-details-info').text()).to.include('Payment card schemes and Direct Debit require the details')
     })
   })
   describe('when success is set in the session', () => {
