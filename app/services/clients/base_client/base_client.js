@@ -4,6 +4,9 @@
 const logger = require('winston')
 const request = require('requestretry')
 const wrapper = require('./wrapper')
+//const AWSXRay = require('aws-xray-sdk');
+//AWSXRay.captureHTTPsGlobal(require('https'));
+//AWSXRay.config([AWSXRay.plugins.ECSPlugin]);
 
 // Local Dependencies
 const customCertificate = require('../../../utils/custom_certificate')
