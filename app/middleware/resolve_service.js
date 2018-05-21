@@ -18,8 +18,31 @@ module.exports = function (req, res, next) {
     return renderErrorView(req, res, 'You do not have the rights to access this service.')
   }
 
-  req.service.hasDirectDebitGatewayAccount =
-    (req.service.gatewayAccountIds || []).some((gatewayAccountId) => isADirectDebitAccount(gatewayAccountId))
+  req.service.hasDirectDebitGatewayAccount = gatewayAccountType(req) === 'has_direct_debit_gateway_account'
+  req.service.hasCardGatewayAccount = gatewayAccountType(req) === 'has_card_gateway_account'
+  req.service.hasCardAndDirectDebitGatewayAccount = gatewayAccountType(req) === 'has_card_and_dd_gateway_account'
 
   next()
+}
+
+function gatewayAccountType (req) {
+  let hasDDAccount = false
+  let hasCardAccount = false
+
+  if (req.service.gatewayAccountIds) {
+    req.service.gatewayAccountIds.forEach((element) => {
+      if (isADirectDebitAccount(element)) {
+        hasDDAccount = true
+      } else {
+        hasCardAccount = true
+      }
+    })
+  }
+  if (hasDDAccount && hasCardAccount) {
+    return 'has_card_and_dd_gateway_account'
+  } else if (hasDDAccount) {
+    return 'has_direct_debit_gateway_account'
+  } else if (hasCardAccount) {
+    return 'has_card_gateway_account'
+  }
 }

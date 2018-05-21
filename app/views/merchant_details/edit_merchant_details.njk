@@ -46,7 +46,17 @@
   {% endif %}
   <h1 class="page-title">Merchant details</h1>
 
-  <p>Payment card schemes require the details of the merchant taking payment to be shown on payment pages. This information is displayed in the footer.</p>
+  {% if has_direct_debit_gateway_account %}
+    <p id="merchant-details-info">Direct Debit requires the details of the merchant taking payment to be shown to the payer. This information is
+      displayed in emails and on payment pages.</p>
+  {% endif %}
+  {% if has_card_gateway_account %}
+    <p id="merchant-details-info">Payment card schemes require the details of the merchant taking payment to be shown on payment pages.</p>
+  {% endif %}
+  {% if has_card_and_dd_gateway_account %}
+    <p id="merchant-details-info">Payment card schemes and Direct Debit require the details of the merchant taking payment to be shown to the
+      payer. This information is displayed in emails and on payment pages.</p>
+  {% endif %}
 
   <form id="merchant-details-form" method="post" action="/merchant-details/{{externalServiceId}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
@@ -64,13 +74,10 @@
       {% endif %}
       <input class="form-control form-control-2-3" id="merchant-name" name="merchant-name" type="text" value="{{merchant_details.name}}">
     </div>
-    {% if has_direct_debit_gateway_account %}
+    {% if has_direct_debit_gateway_account or has_card_and_dd_gateway_account %}
       <div class="form-group">
         <label class="form-label" for="telephone-number">
           <span class="heading-small">Phone number</span>
-          <span class="form-hint form-control-2-3">
-            Required for Direct Debit
-          </span>
         </label>
         {% if errors["telephone-number"] %}
           <span class="error-message">
@@ -82,9 +89,6 @@
       <div class="form-group">
         <label class="form-label" for="merchant-email">
           <span class="heading-small">Merchant email</span>
-          <span class="form-hint form-control-2-3">
-            Required for Direct Debit
-          </span>
         </label>
         {% if errors["merchant-email"] %}
           <span class="error-message">

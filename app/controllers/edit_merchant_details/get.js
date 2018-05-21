@@ -11,6 +11,8 @@ exports.get = (req, res) => {
     pageData = {
       merchant_details: lodash.get(req, 'service.merchantDetails'),
       has_direct_debit_gateway_account: lodash.get(req, 'service.hasDirectDebitGatewayAccount'),
+      has_card_gateway_account: lodash.get(req, 'service.hasCardGatewayAccount'),
+      has_card_and_dd_gateway_account: lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount'),
       externalServiceId
     }
   }
