@@ -14,41 +14,114 @@ const auth = require('../../services/auth_service.js')
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const datetime = require('../../utils/nunjucks-filters/datetime')
 
+const getTimespanDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
+
 module.exports = (req, res) => {
-  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
-  let fromDateTime
-  let toDateTime = moment().tz('Europe/London').format() // Today is the default
-  let daysAgo = 0
+
+  const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const period = _.get(req, 'query.period', 'today')
 
-  if (period === 'yesterday') {
-    daysAgo = 1
-  } else if (period === 'previous-seven-days') {
-    daysAgo = 8 // 7+1 because we count starting from yesterday
-  } else if (period === 'previous-thirty-days') {
-    daysAgo = 31 // 30+1 because we count starting from yesterday
-  } else if (period === 'custom') {
-    fromDateTime = _.get(req, 'query.fromDateTime', null)
-    toDateTime = _.get(req, 'query.toDateTime', null)
+  // Get any custom date ranges
+  const customFomDateTime = _.get(req, 'query.fromDateTime', null)
+  const customToDateTime = _.get(req, 'query.toDateTime', null)
 
-    const validFromDateTime = fromDateTime && moment(fromDateTime).isValid()
-    const validToDateTime = toDateTime && moment(toDateTime).isValid()
-    const getCustomDateRangeDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
+  try {
+    const {fromDateTime, toDateTime} = getTransactionDateRange(period, {
+      fromDateTime: customFomDateTime,
+      toDateTime: customToDateTime
+    })
 
-    if (!validFromDateTime || !validToDateTime || getCustomDateRangeDays(fromDateTime, toDateTime) > 31) {
-      logger.error(`[${correlationId}] Invalid custom date range specified`)
-      res.status(400)
-      response(req, res, 'dashboard/index', {
+    const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
+
+    logger.info(`[${correlationId}] successfully logged in`)
+
+    if (isADirectDebitAccount(gatewayAccountId)) {
+      // todo implement transaction list for direct debit
+      return response(req, res, 'dashboard/index', {
         name: req.user.username,
         serviceId: req.service.externalId,
         activityError: true,
         period
       })
-      return
     }
-    fromDateTime = decodeURIComponent(fromDateTime)
-    toDateTime = decodeURIComponent(toDateTime)
+    connectorClient().getTransactionSummary({
+      gatewayAccountId,
+      correlationId,
+      fromDateTime,
+      toDateTime
+    }, (connectorData, connectorResponse) => {
+      const activityResults = connectorResponse.body
+      response(req, res, 'dashboard/index', {
+        name: req.user.username,
+        serviceId: req.service.externalId,
+        activity: activityResults,
+        successfulTransactionsState: 'payment-success',
+        fromDateTime,
+        toDateTime,
+        period,
+        transactionsPeriodString
+      })
+    })
+      .on('connectorError', (error, connectorResponse) => {
+        const status = _.get(connectorResponse, 'statusCode', 404)
+        logger.error(`[${correlationId}] Calling connector to get transactions summary failed -`, {
+          service: 'connector',
+          method: 'GET',
+          status,
+          error
+        })
+        res.status(status)
+        response(req, res, 'dashboard/index', {
+          name: req.user.username,
+          serviceId: req.service.externalId,
+          activityError: true,
+          period
+        })
+      })
+  } catch (err) {
+    logger.error(`[${correlationId}] ${err.message} -`, {
+      service: 'frontend',
+      method: 'GET',
+      error: err,
+      status: err.status
+    })
+    res.status(err.status)
+    response(req, res, 'dashboard/index', {
+      name: req.user.username,
+      serviceId: req.service.externalId,
+      activityError: true,
+      period
+    })
+  }
+}
+
+function getTransactionDateRange (period, customRange) {
+  let fromDateTime
+  let toDateTime = moment().tz('Europe/London').format() // Today is the default
+  let daysAgo = 0
+
+  switch (period) {
+    case 'yesterday':
+      daysAgo = 1
+      break
+    case 'previous-seven-days':
+      daysAgo = 8 // 7+1 because we count starting from yesterday
+      break
+    case 'previous-thirty-days':
+      daysAgo = 31 // 30+1 because we count starting from yesterday
+      break
+    case 'custom':
+      const validFromDateTime = customRange.fromDateTime && moment(customRange.fromDateTime).isValid()
+      const validToDateTime = customRange.toDateTime && moment(customRange.toDateTime).isValid()
+      if (!validFromDateTime || !validToDateTime || getTimespanDays(customRange.fromDateTime, customRange.toDateTime) > 31) {
+        let customRangeErr = new Error('Invalid custom date range specified')
+        customRangeErr.status = 400
+        throw customRangeErr
+      }
+      fromDateTime = decodeURIComponent(customRange.fromDateTime)
+      toDateTime = decodeURIComponent(customRange.toDateTime)
+      break
   }
 
   if (period !== 'custom') {
@@ -59,51 +132,5 @@ module.exports = (req, res) => {
     }
   }
 
-  const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTime, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTime, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTime, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTime, 'time'))}`
-
-  logger.info(`[${correlationId}] successfully logged in`)
-
-  if (isADirectDebitAccount(gatewayAccountId)) {
-    // todo implement transaction list for direct debit
-    return response(req, res, 'dashboard/index', {
-      name: req.user.username,
-      serviceId: req.service.externalId,
-      activityError: true,
-      period
-    })
-  }
-  connectorClient().getTransactionSummary({
-    gatewayAccountId,
-    correlationId,
-    fromDateTime,
-    toDateTime
-  }, (connectorData, connectorResponse) => {
-    const activityResults = connectorResponse.body
-    response(req, res, 'dashboard/index', {
-      name: req.user.username,
-      serviceId: req.service.externalId,
-      activity: activityResults,
-      successfulTransactionsState: 'payment-success',
-      fromDateTime,
-      toDateTime,
-      period,
-      transactionsPeriodString
-    })
-  })
-    .on('connectorError', (error, connectorResponse) => {
-      const status = _.get(connectorResponse, 'statusCode', 404)
-      logger.error(`[${correlationId}] Calling connector to get transactions summary failed -`, {
-        service: 'connector',
-        method: 'GET',
-        status,
-        error
-      })
-      res.status(status)
-      response(req, res, 'dashboard/index', {
-        name: req.user.username,
-        serviceId: req.service.externalId,
-        activityError: true,
-        period
-      })
-    })
+  return {fromDateTime, toDateTime}
 }
