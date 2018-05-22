@@ -27,8 +27,8 @@ module.exports = {
   },
   validTransactionsResponse: (opts = {}) => {
     let data = {
-      total: 1,
-      count: 1,
+      total: opts.transactions.data.reduce((acc, cv) => acc + cv.amount, 0),
+      count: opts.transactions.data.length,
       page: 1,
       results:
       [...opts.transactions.data],
