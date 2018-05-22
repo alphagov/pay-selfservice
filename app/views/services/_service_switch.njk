@@ -9,12 +9,12 @@
       {{ account.type | title }}
       {% if account.type == 'live' %}
         {% if account.payment_method == 'direct debit' %}
-          direct debit transactions
+          direct debit account
         {% else %}
-          card transactions
+          card account
         {% endif %}
         {% else %}
-        ({{ account.payment_provider }})
+        account ({{ account.payment_provider }})
       {% endif %}
     </button>
     {% if account.type != 'live' %}
