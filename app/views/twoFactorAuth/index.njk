@@ -18,6 +18,7 @@ Change sign-in method - GOV.UK Pay
     <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
     <form method="post" action="{{routes.user.twoFactorAuth.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <input name="two-fa-method" type="hidden" value="APP"/>
       <div class="form-group">
         <button class="button" type="submit">
           Use an authenticator app instead
