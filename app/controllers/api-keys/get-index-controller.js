@@ -12,7 +12,7 @@ module.exports = (req, res) => {
     accountId: accountId
   })
     .then(publicAuthData => {
-      let activeTokens = publicAuthData.tokens || []
+      const activeTokens = publicAuthData.tokens || []
 
       response(req, res, 'api-keys/index', {
         'active': true,

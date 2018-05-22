@@ -1,13 +1,16 @@
 'use strict'
 
-const supertest = require('supertest')
+// NPM dependencies
+const { expect } = require('chai')
+const csrf = require('csrf')
 const nock = require('nock')
+const supertest = require('supertest')
+
+// Local dependencies
 const { getApp } = require('../../../../server')
 const mockSession = require('../../../test_helpers/mock_session')
 const userCreator = require('../../../test_helpers/user_creator')
 const paths = require('../../../../app/paths')
-const { expect } = require('chai')
-const csrf = require('csrf')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '182364'

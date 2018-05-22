@@ -8,7 +8,7 @@ module.exports = (req, res) => {
   // this does not need to be explicitly tied down to account_id
   // right now because the UUID space is big enough that no-one
   // will be able to discover other peoples' tokens to change them
-  let payload = {
+  const payload = {
     token_link: req.body.token_link,
     description: req.body.description
   }

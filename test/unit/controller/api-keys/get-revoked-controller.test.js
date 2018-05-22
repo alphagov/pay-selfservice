@@ -1,12 +1,15 @@
 'use strict'
 
-const supertest = require('supertest')
+// NPM dependencies
+const { expect } = require('chai')
 const nock = require('nock')
+const supertest = require('supertest')
+
+// Local dependencies
 const { getApp } = require('../../../../server')
 const mockSession = require('../../../test_helpers/mock_session')
 const userCreator = require('../../../test_helpers/user_creator')
 const paths = require('../../../../app/paths')
-const { expect } = require('chai')
 
 const { PUBLIC_AUTH_URL, CONNECTOR_URL } = process.env
 
