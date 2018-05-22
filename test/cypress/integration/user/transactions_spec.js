@@ -6,10 +6,10 @@ describe('Transactions', () => {
     cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
   })
 
-  describe('Homepage', () => {
-    it('should have the page title \'Dashboard - System Generated test - GOV.UK Pay\'', () => {
+  describe('Transactions List', () => {
+    it('should have the page title \'Transactions - System Generated test - GOV.UK Pay\'', () => {
       cy.visit(transactionsUrl)
-      cy.title().should('eq', 'Transactions - System Generated test')
+      cy.title().should('eq', 'Transactions - System Generated test - GOV.UK Pay')
     })
   })
 })

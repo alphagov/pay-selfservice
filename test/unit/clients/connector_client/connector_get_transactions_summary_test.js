@@ -75,9 +75,13 @@ describe('connector client', function () {
 
   describe('get transactions', () => {
     const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id // '666'
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      transactions: ssDefaultUser.sections.transactions
     }
     const validGetTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
+
+    // Stop the transactions data being flowed through into anything else
+    delete params.transactions
 
     before((done) => {
       const pactified = validGetTransactionsResponse.getPactified()
