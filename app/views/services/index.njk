@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block page_title %}
-My services - GOV.UK Pay
+Choose service - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -10,14 +10,15 @@ My services - GOV.UK Pay
   <div class="flash-container"><p id="new-service-name" class="notification generic-flash">You have been added to {{new_service_name}}</p></div>
   {% endif %}
 
-  <h1 class="heading-large page-title">My services</h1>
   <div class="grid-row grid-row-align-to-edges">
       <div class="column-two-thirds">
-        {% if services_singular %}
-          <p class="lede service-count">You have {{services.length}} service</p>
-        {% else %}
-          <p class="lede service-count">You have {{services.length}} services</p>
-        {% endif %}
+       <h1 class="heading-large page-title service-count">
+          {% if services_singular %}
+            You have {{services.length}} service
+          {% else %}
+          You have {{services.length}} services
+          {% endif %}
+        </h1>
       </div>
       <div class="column-one-third">
         <a href="{{routes.serviceSwitcher.create}}" class="create-service">
