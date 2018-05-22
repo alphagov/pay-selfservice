@@ -16,14 +16,9 @@ const cookieMonster = require('../integration/utils/cookie-monster')
 module.exports = (on, config) => {
   console.log('Generating encrypted cookies for session and gateway_account...')
 
-  // Get our fixture data which is used to generate contract/pact data from
-  // const gatewayAccountResponseDefaultFixture = require('../../fixtures/gateway_account_fixtures').validGatewayAccountResponse().getPlain()
-  // const userResponseDefaultFixture = require('../../fixtures/user_fixtures').validUserResponse().getPlain()
-
+  // The same fixed user config is used to generate pacts/contracts, so generating cookies from this config
+  // ensures our pact-stub server is ready to return canned responses.
   const ssUserConfig = require('../../fixtures/config/self_service_user.json')
-
-  // Use a known configuration as a basis for our user/gateway cookie.
-  // These match contacts/pacts and ensure that the pact-stub, stub container can match requests/responses
 
   const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
 

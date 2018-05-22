@@ -1,5 +1,4 @@
 describe('Dashboard', () => {
-
   const ssDefaultUser = require('../../../fixtures/config/self_service_user.json')
 
   beforeEach(() => {
@@ -8,7 +7,6 @@ describe('Dashboard', () => {
   })
 
   describe('Homepage', () => {
-
     // Use a known configuration used to generate contracts/stubs.
     // This is also used to generate the session/gateway_account cookies
     const ssUser = ssDefaultUser.config.users.filter(fil => fil.isPrimary === 'true')[0]

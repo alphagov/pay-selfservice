@@ -8,6 +8,11 @@
           {"id": "666", "isPrimary": "true"},
           {"id": "7", "isPrimary": "false"}
         ],
+        "permissions": [
+          {
+            "name": "transactions:read"
+          }
+        ],
         "sections": {
           "dashboard": {
             "transaction_summary": {

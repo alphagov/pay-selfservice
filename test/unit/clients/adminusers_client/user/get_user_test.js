@@ -31,7 +31,6 @@ describe('adminusers client - get user', function () {
     pactfileWriteMode: 'merge'
   })
 
-
   // Use a known configuration to generate our interaction. This configuration is used in browser testing
   // where assumptions about users and stubs are relied upon upfront
   const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
@@ -44,7 +43,8 @@ describe('adminusers client - get user', function () {
 
     const params = {
       external_id: existingExternalId,
-      gateway_account_ids: ssUser.gateway_accounts.map(gam => gam.id)
+      gateway_account_ids: ssUser.gateway_accounts.map(gam => gam.id),
+      permissions: ssUser.permissions
     }
 
     const getUserResponse = userFixtures.validUserResponse(params)
