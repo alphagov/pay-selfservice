@@ -14,7 +14,7 @@ Change sign-in method - GOV.UK Pay
   </h1>
 </div>
 <div class="column-two-thirds">
-  {% if authenticatorMethod == 'SMS' %}
+  {% if authenticatorMethod === 'SMS' %}
     <p>You currently use text message codes to sign in to GOV.UK Pay.</p>
     <form method="post" action="{{routes.user.twoFactorAuth.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -26,7 +26,7 @@ Change sign-in method - GOV.UK Pay
       </div>
     </form>
   {% endif %}
-  {% if authenticatorMethod == 'APP' %}
+  {% if authenticatorMethod === 'APP' %}
     <p>You currently use an authenticator app to sign in to GOV.UK Pay.</p>
     <form method="post" action="{{routes.user.twoFactorAuth.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

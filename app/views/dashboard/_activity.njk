@@ -3,10 +3,10 @@
     <fieldset class="form-group">
       <label for="activity-period" class="visually-hidden">Select a date range</label>
       <select id="activity-period" name="period" class="form-control">
-        <option {% if period == 'today' %}selected{% endif %} value="today">Today</option>
-        <option {% if period == 'yesterday' %}selected{% endif %} value="yesterday">Yesterday</option>
-        <option {% if period == 'previous-seven-days' %}selected{% endif %} value="previous-seven-days">Previous 7 days</option>
-        <option {% if period == 'previous-thirty-days' %}selected{% endif %} value="previous-thirty-days">Previous 30 days</option>
+        <option {% if period === 'today' %}selected{% endif %} value="today">Today</option>
+        <option {% if period === 'yesterday' %}selected{% endif %} value="yesterday">Yesterday</option>
+        <option {% if period === 'previous-seven-days' %}selected{% endif %} value="previous-seven-days">Previous 7 days</option>
+        <option {% if period === 'previous-thirty-days' %}selected{% endif %} value="previous-thirty-days">Previous 30 days</option>
       </select>
       <noscript>
         <button class="button nojs-update-button" type="submit">Update</button>

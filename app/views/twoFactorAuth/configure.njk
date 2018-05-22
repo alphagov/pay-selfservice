@@ -1,6 +1,6 @@
 {% extends "../layout.njk" %}
 
-{% if method == 'APP' %}
+{% if method === 'APP' %}
   {% set title = 'Set up an authenticator app' %}
 {% else %}
   {% set title = 'Check your phone' %}
@@ -20,7 +20,7 @@
   </h1>
 </div>
 <div class="column-two-thirds">
-{% if method == 'APP' %}
+{% if method === 'APP' %}
   <p>Scan the barcode with your authenticator app or enter the secret manually.</p>
   <div class="notice">
     <i class="icon icon-important">
@@ -55,7 +55,7 @@
       <label class="form-label" for="code">
         Security code
         <span class="form-hint">
-          {% if method == 'APP' %}
+          {% if method === 'APP' %}
           Enter the code shown in your app to complete the set-up
           {% else %}
           We have sent you a text message with a security code
@@ -73,7 +73,7 @@
       </button>
     </div>
   </form>
-  {% if method == 'SMS' %}
+  {% if method === 'SMS' %}
   <form action="{{routes.user.twoFactorAuth.resend}}">
     <div class="form-group">
       <button class="button-link" type="submit">

@@ -43,7 +43,7 @@
                 {% if brand.available %}
                   <input class="payment-types-checkbox" type="checkbox" name="acceptedBrands" value="{{ brand.value }}" {{ brand.selected }}>
                 {% else %}
-                  {% if brand.unavailabilityReason == '3DS' %}
+                  {% if brand.unavailabilityReason === '3DS' %}
                     <span>You must <a href="{{routes.toggle3ds.index}}">enable 3D Secure</a> to accept Maestro</span>
                   {% else %}
                     <span>{{ brand.unavailabilityReason }}</span>
