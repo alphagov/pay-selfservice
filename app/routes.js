@@ -196,7 +196,7 @@ module.exports.bind = function (app) {
   app.get(en.offConfirm, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.offConfirm)
   app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.on)
 
-  // MY SERVICES
+  // SERVICE SWITCHER
   app.get(serviceSwitcher.index, myServicesCtrl.getIndex)
   app.post(serviceSwitcher.switch, myServicesCtrl.postIndex)
   app.get(serviceSwitcher.create, createServiceCtrl.get)

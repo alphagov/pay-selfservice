@@ -113,7 +113,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to my services view on a valid service invite with existing user', function (done) {
+    it('should redirect to switch service view on a valid service invite with existing user', function (done) {
       const code = '23rer87t8shjkaf'
       const type = 'service'
       const opts = {

@@ -37,10 +37,10 @@ const serviceTwo = {
 }
 
 describe('The account switcher link', () => {
-  it('should display My services link', () => {
+  it('should display Switch service link', () => {
     body = render('layout', {})
 
-    body.should.containSelector('#my-services').withExactText('My services')
+    body.should.containSelector('#my-services').withExactText('Switch service')
   })
 
   describe('when a user has a single service and is an admin of that service', () => {
@@ -109,7 +109,7 @@ describe('The account switcher link', () => {
 
     body = render('services/index', templateData)
 
-    body.should.containSelector('p.service-count').withText('You have 0 services')
+    body.should.containSelector('.service-count').withText('You have 0 services')
   })
 
   it('should render added to new service message', () => {
