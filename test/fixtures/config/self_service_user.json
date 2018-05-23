@@ -18,6 +18,15 @@
         "permissions": [
           {
             "name": "transactions:read"
+          },
+          {
+            "name": "transactions_email_read"
+          },
+          {
+            "name": "transactions_amount_read"
+          },
+          {
+            "name": "transactions_card_type_read"
           }
         ],
         "sections": {
