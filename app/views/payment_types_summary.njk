@@ -45,7 +45,7 @@ Card types - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.U
                     <span class="payment-types-not-selected">No</span>
                   {% endif %}
                 {% else %}
-                  {% if brand.unavailabilityReason == '3DS' %}
+                  {% if brand.unavailabilityReason === '3DS' %}
                     <span>You must <a href="{{routes.toggle3ds.index}}">enable 3D Secure</a> to accept Maestro</span>
                   {% else %}
                     <span>{{ brand.unavailabilityReason }}</span>
