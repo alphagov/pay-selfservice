@@ -4,7 +4,7 @@ module.exports = string => {
   return slugify(
     string,
     {
-      remove: /[$*_+~.()'"!:@?%=]/g,
+      remove: /[$*_+~.()'"!:@?%=£]/g,
       lower: true
     }
   )

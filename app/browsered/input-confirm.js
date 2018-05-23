@@ -1,7 +1,7 @@
 'use strict'
 
 const slugify = require('../utils/nunjucks-filters/slugify')
-const removeDefinateArticles = require('../utils/nunjucks-filters/remove-definate-articles')
+const removeIndefiniteArticles = require('../utils/nunjucks-filters/remove-indefinite-articles')
 
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
 require('./polyfills')
@@ -20,7 +20,7 @@ module.exports = () => {
   function confirmInput (e) {
     const input = e.target
     // using slugify and also stripping out the (in)definite article (the/a/an)
-    let value = input.dataset.confirmationFilter === 'slugify' ? slugify(removeDefinateArticles(input.value)) : input.value
+    let value = input.dataset.confirmationFilter === 'slugify' ? slugify(removeIndefiniteArticles(input.value)) : input.value
     const confirmationId = `${input.id}-confirmation`
     const confirmationPrepend = input.dataset.confirmationPrepend || ''
     let confirmation = document.getElementById(confirmationId)

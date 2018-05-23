@@ -18,7 +18,7 @@
     <article class="flex-grid--column-{% if isTestGateway %}third{% else %}half{% endif %} links__box">
       {% if permissions.tokens_create %}
       <a href="{{routes.paymentLinks.start}}">
-        <h2 class="heading-small">Create a payment link</h2>
+        <h2 class="heading-small">Create and manage payment links</h2>
       {% else %}
       <a href="{{routes.paymentLinks.manage}}">
         <h2 class="heading-small">View payment links</h2>

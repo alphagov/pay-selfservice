@@ -7,10 +7,10 @@ const lodash = require('lodash')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const slugify = require('../../utils/nunjucks-filters/slugify')
-const removeDefinateArticles = require('../../utils/nunjucks-filters/remove-definate-articles')
+const removeIndefiniteArticles = require('../../utils/nunjucks-filters/remove-indefinite-articles')
 
 const makeNiceURL = string => {
-  return slugify(removeDefinateArticles(string))
+  return slugify(removeIndefiniteArticles(string))
 }
 
 module.exports = (req, res) => {
