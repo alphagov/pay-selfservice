@@ -14,7 +14,7 @@
         <p>Create a reusable link to integrate your service prototype with GOV.UK&nbsp;Pay and test with users.</p>
       </a>
     </article>
-    {% elif paymentMethod == 'card'%}
+    {% elif paymentMethod === 'card'%}
     <article class="flex-grid--column-{% if isTestGateway %}third{% else %}half{% endif %} links__box">
       {% if permissions.tokens_create %}
       <a href="{{routes.paymentLinks.start}}">

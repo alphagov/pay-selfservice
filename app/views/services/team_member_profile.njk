@@ -29,10 +29,10 @@ My profile - GOV.UK Pay
       <tr>
         <td>Sign-in method:</td>
         <td id="two-factor-auth">
-          {% if two_factor_auth == 'APP' %}
+          {% if two_factor_auth === 'APP' %}
             Authenticator app
           {% endif %}
-          {% if two_factor_auth == 'SMS' %}
+          {% if two_factor_auth === 'SMS' %}
             Text message
           {% endif %}
         </td>

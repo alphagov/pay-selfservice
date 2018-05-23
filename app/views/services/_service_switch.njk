@@ -7,8 +7,8 @@
       type="submit"
       role="link">
       {{ account.type | title }}
-      {% if account.type == 'live' %}
-        {% if account.payment_method == 'direct debit' %}
+      {% if account.type === 'live' %}
+        {% if account.payment_method === 'direct debit' %}
           direct debit account
         {% else %}
           card account
@@ -17,7 +17,7 @@
         account ({{ account.payment_provider }})
       {% endif %}
     </button>
-    {% if account.type != 'live' %}
+    {% if account.type !== 'live' %}
       {% if not loop.last %}
         <span class="switch-divider">|</span>
       {% endif %}

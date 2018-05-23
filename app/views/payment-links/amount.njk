@@ -21,21 +21,21 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
   <form action="{{ nextPage }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group{% if flash.genericError %} error{% endif %}">
-      {% if flash.errorType == 'paymentAmountType' %}
+      {% if flash.errorType === 'paymentAmountType' %}
       <span class="error-message">
         Please choose an option
       </span>
       {% endif %}
       <fieldset data-module="show-hide-content" id="fixed-or-variable">
         <div class="multiple-choice" data-target="fixed-amount">
-          <input id="amount-type-fixed" type="radio" name="amount-type-group" value="fixed" {% if paymentAmountType == 'fixed' %}checked{% endif %}>
+          <input id="amount-type-fixed" type="radio" name="amount-type-group" value="fixed" {% if paymentAmountType === 'fixed' %}checked{% endif %}>
           <label for="amount-type-fixed">Yes</label>
         </div>
-        <div class="panel panel-border-wide {% if paymentAmountType == 'fixed' %}{% elif flash.genericError %}{% else %}js-hidden{% endif %}" id="fixed-amount">
+        <div class="panel panel-border-wide {% if paymentAmountType === 'fixed' %}{% elif flash.genericError %}{% else %}js-hidden{% endif %}" id="fixed-amount">
           <label class="form-label" for="contact-email">
             Enter the amount
             <span class="visually-hidden">in £</span>
-            {% if flash.errorType == 'paymentAmountFormat' %}
+            {% if flash.errorType === 'paymentAmountFormat' %}
             <span class="error-message">
               Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
             </span>
@@ -43,12 +43,12 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           </label>
          <div class="currency-input__inner">
            <span class="currency-input__inner__unit">£</span>
-           <input class="form-control form-control-1-4" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric="" type="text" id="payment-amount" value="{{ paymentLinkAmount }}" {% if paymentAmountType == 'fixed' %}autofocus{% endif %}>
+           <input class="form-control form-control-1-4" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric="" type="text" id="payment-amount" value="{{ paymentLinkAmount }}" {% if paymentAmountType === 'fixed' %}autofocus{% endif %}>
          </div>
         </div>
 
         <div class="multiple-choice">
-          <input id="amount-type-variable" type="radio" name="amount-type-group" value="variable" {% if paymentAmountType == 'variable' %}checked{% endif %}>
+          <input id="amount-type-variable" type="radio" name="amount-type-group" value="variable" {% if paymentAmountType === 'variable' %}checked{% endif %}>
           <label for="amount-type-variable">No, the user can choose the amount</label>
         </div>
       </fieldset>
