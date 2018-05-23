@@ -1,6 +1,6 @@
 'use strict'
 
-const removeDefinateArticles = require('../utils/nunjucks-filters/remove-definate-articles')
+const removeIndefiniteArticles = require('../utils/nunjucks-filters/remove-indefinite-articles')
 
 module.exports = () => {
   const inputs = Array.prototype.slice.call(document.querySelectorAll('[data-slugify]'))
@@ -12,6 +12,6 @@ module.exports = () => {
   function niceURL (e) {
     const input = e.target
     // stripping out the (in)definite article (the/a/an) and replacing spaces and other chars with a hyphen
-    input.value = removeDefinateArticles(input.value).replace(/[\s£&$*_+~.()'"!:@]+/g, '-').toLowerCase()
+    input.value = removeIndefiniteArticles(input.value).replace(/[\s£&$*_+~.()'"!:@]+/g, '-').toLowerCase()
   }
 }

@@ -31,6 +31,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         <span class="form-hint">
           Briefly describe what the user is paying for.
           For example, “Pay for a parking permit”.
+          This will also be your website address.
         </span>
         {% if flash.genericError %}
         <span class="error-message">
@@ -51,7 +52,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         {% endif %}
         data-confirmation
         data-confirmation-title="The website address for this payment link will look like:"
-        data-confirmation-label="{{friendlyURL}}/{{currentService.name | removeDefinateArticles | slugify}}/"
+        data-confirmation-label="{{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/"
         data-confirmation-filter="slugify"
         {% if change.length %}
           data-confirmation-display="onload"

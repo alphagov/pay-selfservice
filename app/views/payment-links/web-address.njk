@@ -28,7 +28,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           This will not change the title
         </span>
         <span class="create-payment-link-url">
-          {{friendlyURL}}/{{currentService.name | removeDefinateArticles | slugify}}/
+          {{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/
         </span>
         {% if flash.genericError %}
         <span class="error-message">
