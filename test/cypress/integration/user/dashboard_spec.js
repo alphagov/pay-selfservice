@@ -1,5 +1,5 @@
 describe('Dashboard', () => {
-  const ssDefaultUser = require('../../../fixtures/config/self_service_user.json')
+  const ssUsers = require('../../../fixtures/config/self_service_user.json')
 
   beforeEach(() => {
     cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
@@ -9,7 +9,7 @@ describe('Dashboard', () => {
   describe('Homepage', () => {
     // Use a known configuration used to generate contracts/stubs.
     // This is also used to generate the session/gateway_account cookies
-    const ssUser = ssDefaultUser.config.users.filter(fil => fil.isPrimary === 'true')[0]
+    const ssUser = ssUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
     // Note : these from/to datetime strings exactly match those in the pact/contract, so are essential to match against stubs
     // Either change everything together, or map these do a single place like a .json document so the contracts/tests refer to one place

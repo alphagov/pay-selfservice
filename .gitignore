@@ -29,3 +29,5 @@ pacts/
 test/cypress/screenshots
 test/cypress/videos
 test/cypress/support
+# Stops 'headed' cypress auto generated directory in root
+cypress
