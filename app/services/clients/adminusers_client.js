@@ -281,9 +281,10 @@ module.exports = function (clientOptions = {}) {
    * @param externalId
    * @returns {Promise}
    */
-  const sendSecondFactor = (externalId) => {
+  const sendSecondFactor = (externalId, provisional) => {
     const params = {
-      correlationId: correlationId
+      correlationId: correlationId,
+      provisional
     }
 
     const url = `${userResource}/${externalId}/second-factor`

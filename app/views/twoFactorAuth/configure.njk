@@ -74,7 +74,8 @@
     </div>
   </form>
   {% if method === 'SMS' %}
-  <form action="{{routes.user.twoFactorAuth.resend}}">
+  <form method="post" action="{{routes.user.twoFactorAuth.resend}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="form-group">
       <button class="button-link" type="submit">
         Not received a text message?
