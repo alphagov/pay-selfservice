@@ -284,7 +284,7 @@ module.exports = function (clientOptions = {}) {
   const sendSecondFactor = (externalId, provisional) => {
     const params = {
       correlationId: correlationId,
-      provisional
+      payload: {provisional}
     }
 
     const url = `${userResource}/${externalId}/second-factor`
