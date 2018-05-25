@@ -37,7 +37,7 @@ const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.min.css')
 const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
 const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
 
-const AWSXRay = require('aws-xray-sdk');
+const AWSXRay = require('aws-xray-sdk')
 
 function warnIfAnalyticsNotSet () {
   if (ANALYTICS_TRACKING_ID === '') {
@@ -153,10 +153,11 @@ function listen () {
 function initialise () {
   const app = unconfiguredApp
 
-  AWSXRay.config([AWSXRay.plugins.ECSPlugin]);
-  app.use(AWSXRay.express.openSegment('pay-selfservice'));
 
   app.disable('x-powered-by')
+  AWSXRay.enableManualMode()
+
+  app.use(AWSXRay.express.openSegment('pay_selfservice'))
   app.use(flash())
   initialiseTLS(app)
   initialisePublic(app)
@@ -165,11 +166,11 @@ function initialise () {
   initialiseGlobalMiddleware(app)
   initialiseTemplateEngine(app)
   initialiseRoutes(app)
+
   initialiseErrorHandling(app)
 
   warnIfAnalyticsNotSet()
 
-  app.use(AWSXRay.express.closeSegment());
   return app
 }
 
