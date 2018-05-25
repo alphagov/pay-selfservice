@@ -51,6 +51,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${params.gatewayAccountId}/transactions-summary`)
           .withUponReceiving('a valid transaction summary request')
+          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions`)
           .withMethod('GET')
           .withQuery('from_date', params.fromDateTime)
           .withQuery('to_date', params.toDateTime)
@@ -88,6 +89,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request')
+          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
@@ -135,6 +137,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by from_date only')
+          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions occuring after ${filtered.filtering.from_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
@@ -162,51 +165,6 @@ describe('connector client', function () {
     })
   })
 
-  describe('get filtered transactions with a \'from_date\' defined and an IMPLICIT time specified', () => {
-    const filtered = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'fromdate')[0]
-    const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
-      fromDate: filtered.filtering.from_date_raw,
-      fromTime: filtered.filtering.from_time_raw,
-      transactions: filtered
-    }
-    const validGetFilteredTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
-
-    // Stop the transactions data being flowed through into anything else
-    delete params.transactions
-
-    before((done) => {
-      const pactified = validGetFilteredTransactionsResponse.getPactified()
-      provider.addInteraction(
-        new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
-          .withUponReceiving('a valid transactions request filtered by from_date only')
-          .withMethod('GET')
-          .withQuery('reference', '')
-          .withQuery('email', '')
-          .withQuery('card_brand', '')
-          .withQuery('from_date', filtered.filtering.from_date)
-          .withQuery('to_date', '')
-          .withQuery('page', '1')
-          .withQuery('display_size', '100')
-          .withStatusCode(200)
-          .withResponseBody(pactified)
-          .build()
-      ).then(() => done())
-        .catch(done)
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should get \'from_date\' filtered transactions with an implicit time, successfully', function (done) {
-      const getFilteredTransactions = validGetFilteredTransactionsResponse.getPlain()
-      connectorClient.searchTransactions(params,
-        (connectorData, connectorResponse) => {
-          expect(connectorResponse.body).to.deep.equal(getFilteredTransactions)
-          done()
-        })
-    })
-  })
-
   describe('get filtered transactions with a \'to_date\' defined', () => {
     const filtered = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'todate')[0]
     const params = {
@@ -225,6 +183,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by to_date only')
+          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions occuring before ${filtered.filtering.to_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')

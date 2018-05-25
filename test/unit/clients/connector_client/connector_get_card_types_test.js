@@ -42,6 +42,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
           .withUponReceiving('a valid card types request')
+          .withState('Card types exist in the database')
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)

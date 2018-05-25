@@ -1,7 +1,7 @@
 describe('Transactions', () => {
   const transactionsUrl = `/transactions`
 
-  const ssUsers = require('../../../fixtures/config/self_service_user.json')
+  const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
 
   const convertAmounts = val => '£' + (val / 100).toFixed(2)
 
@@ -13,7 +13,7 @@ describe('Transactions', () => {
 
   describe('Transactions List', () => {
 
-    const ssDefaultUser = ssUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
+    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
     it('should have the page title \'Transactions - System Generated test - GOV.UK Pay\'', () => {
       cy.title().should('eq', 'Transactions - System Generated test - GOV.UK Pay')
@@ -22,7 +22,7 @@ describe('Transactions', () => {
     it('should have the right number of transactions in an unfiltered state', () => {
 
       // Ensure the transactions list has the right number of items
-      const unfilteredTransactions = ssDefaultUser.sections.transactions.data
+      const unfilteredTransactions = selfServiceDefaultUser.sections.transactions.data
       cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
 
       // Ensure the values are displayed correctly
@@ -35,8 +35,8 @@ describe('Transactions', () => {
 
     it('should have the right number of transactions in a filtered state', () => {
 
-      const filteredFrom = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'fromdate')[0]
-      const filteredTo = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'todate')[0]
+      const filteredFrom = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'fromdate')[0]
+      const filteredTo = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'todate')[0]
 
       // 1. Filtering FROM
       // Ensure both the date/time pickers aren't showing
