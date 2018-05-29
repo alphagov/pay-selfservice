@@ -1,9 +1,16 @@
+'use strict'
+
+// npm dependencies
+const _ = require('lodash')
+const winston = require('winston')
+
+// local dependencies
 const auth = require('../services/auth_service.js')
 const Connector = require('../services/clients/connector_client.js').ConnectorClient
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client.js')
-const _ = require('lodash')
-const winston = require('winston')
+
+// constants
 const EPDQ_3DS_ENABLED = process.env.EPDQ_3DS_ENABLED
 const SMARTPAY_3DS_ENABLED = process.env.SMARTPAY_3DS_ENABLED || 'false'
 

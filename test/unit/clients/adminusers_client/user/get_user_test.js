@@ -1,15 +1,24 @@
-let Pact = require('pact')
-let path = require('path')
-let chai = require('chai')
-let chaiAsPromised = require('chai-as-promised')
-let userFixtures = require('../../../../fixtures/user_fixtures')
-let getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
-let PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
-let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
-chai.use(chaiAsPromised)
-const expect = chai.expect
+'use strict'
+
+// npm dependencies
+const Pact = require('pact')
+const path = require('path')
+const chai = require('chai')
+const {expect} = chai
+const chaiAsPromised = require('chai-as-promised')
+
+// user dependencies
+const userFixtures = require('../../../../fixtures/user_fixtures')
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
+
+// constants
+const port = Math.floor(Math.random() * 48127) + 1024
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const USER_PATH = '/v1/api/users'
+const ssUserConfig = require('../../../../fixtures/config/self_service_user.json')
+
+chai.use(chaiAsPromised)
 
 describe('adminusers client - get user', function () {
   let provider = Pact({
@@ -22,18 +31,23 @@ describe('adminusers client - get user', function () {
     pactfileWriteMode: 'merge'
   })
 
+  // Use a known configuration to generate our interaction. This configuration is used in browser testing
+  // where assumptions about users and stubs are relied upon upfront
+  const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
   describe('success', () => {
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const existingExternalId = ssUser.external_id
 
-    let params = {
+    const params = {
       external_id: existingExternalId,
-      gateway_account_ids: ['666', '7']
+      gateway_account_ids: ssUser.gateway_accounts.map(gam => gam.id),
+      permissions: ssUser.permissions
     }
 
-    let getUserResponse = userFixtures.validUserResponse(params)
+    const getUserResponse = userFixtures.validUserResponse(params)
 
     before((done) => {
       provider.addInteraction(
@@ -48,7 +62,7 @@ describe('adminusers client - get user', function () {
     afterEach(() => provider.verify())
 
     it('should find a user successfully', function (done) {
-      let expectedUserData = getUserResponse.getPlain()
+      const expectedUserData = getUserResponse.getPlain()
 
       adminusersClient.getUserByExternalId(params.external_id).should.be.fulfilled.then(function (user) {
         expect(user.externalId).to.be.equal(expectedUserData.external_id)
@@ -66,7 +80,7 @@ describe('adminusers client - get user', function () {
   })
 
   describe('not found', () => {
-    let params = {
+    const params = {
       external_id: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
     }
 
