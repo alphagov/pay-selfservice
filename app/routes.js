@@ -244,6 +244,8 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksCtrl.postInformation)
   app.get(paymentLinks.webAddress, permission('tokens:create'), getAccount, paymentLinksCtrl.getWebAddress)
   app.post(paymentLinks.webAddress, permission('tokens:create'), getAccount, paymentLinksCtrl.postWebAddress)
+  app.get(paymentLinks.reference, permission('tokens:create'), getAccount, paymentLinksCtrl.getReference)
+  app.post(paymentLinks.reference, permission('tokens:create'), getAccount, paymentLinksCtrl.postReference)
   app.get(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksCtrl.getAmount)
   app.post(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksCtrl.postAmount)
   app.get(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksCtrl.getReview)

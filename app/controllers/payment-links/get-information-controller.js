@@ -5,7 +5,6 @@ const lodash = require('lodash')
 
 // Local dependencies
 const {response} = require('../../utils/response.js')
-const paths = require('../../paths')
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
@@ -18,9 +17,6 @@ module.exports = (req, res) => {
     change,
     friendlyURL,
     paymentLinkTitle,
-    paymentLinkDescription,
-    nextPage: paths.paymentLinks.information,
-    returnToStart: paths.paymentLinks.start,
-    manage: paths.paymentLinks.manage
+    paymentLinkDescription
   })
 }

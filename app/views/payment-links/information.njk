@@ -8,8 +8,8 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 <aside class="column-one-third pad-bottom">
   <nav role="navigation" class="navigation settings-navigation">
     <ul class="list">
-       <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
-      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+       <li class="active"><a href="{{ routes.paymentLinks.start }}">Create a payment link</a></li>
+      <li><a href="{{ routes.paymentLinks.manage }}">Manage payment&nbsp;links</a></li>
     </ul>
   </nav>
 </aside>
@@ -19,7 +19,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 <section class="column-two-thirds">
   <h1 class="page-title">Set payment link information</h1>
 
-  <form action="{{ nextPage }}" class="form" method="post" data-validate>
+  <form action="{{ routes.paymentLinks.information }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input type="hidden" name="service-name-path" value="{{currentService.name}}">
     {% if change.length %}
@@ -73,7 +73,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     <div class="form-group">
       <button class="button" type="submit">Continue</button>
     </div>
-    <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+    <p><a class="cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
   <div>
     <h3 class="heading-small">Example of what the user will see</h3>

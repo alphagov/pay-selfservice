@@ -12,30 +12,9 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
 
-function buildProductPayload (payApiToken, gatewayAccountId, paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceName, serviceNamePath, productNamePath) {
-  const productPayload = {
-    payApiToken,
-    gatewayAccountId,
-    name: paymentLinkTitle,
-    serviceName,
-    type: productTypes.ADHOC,
-    serviceNamePath,
-    productNamePath
-  }
-
-  if (paymentLinkDescription) {
-    productPayload.description = paymentLinkDescription
-  }
-
-  if (paymentLinkAmount) {
-    productPayload.price = paymentLinkAmount * 100
-  }
-  return productPayload
-}
-
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const {paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceNamePath, productNamePath} = lodash.get(req, 'session.pageData.createPaymentLink', {})
+  const {paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceNamePath, productNamePath, paymentReferenceType, paymentReferenceLabel, paymentReferenceHint} = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
     return res.redirect(paths.paymentLinks.start)
@@ -49,18 +28,36 @@ module.exports = (req, res) => {
       description: `Token for “${paymentLinkTitle}” payment link`
     }
   })
-    .then(publicAuthData => productsClient.product.create(
-      buildProductPayload(
-        publicAuthData.token,
+    .then(publicAuthData => {
+      const productPayload = {
+        payApiToken: publicAuthData.token,
         gatewayAccountId,
-        paymentLinkTitle,
-        paymentLinkDescription,
-        paymentLinkAmount,
-        req.service.name,
+        name: paymentLinkTitle,
+        serviceName: req.service.name,
+        type: productTypes.ADHOC,
         serviceNamePath,
         productNamePath
-      )
-    ))
+      }
+
+      if (paymentLinkDescription) {
+        productPayload.description = paymentLinkDescription
+      }
+
+      if (paymentLinkAmount) {
+        productPayload.price = paymentLinkAmount * 100
+      }
+
+      productPayload.referenceEnabled = paymentReferenceType === 'custom'
+
+      if (paymentReferenceType === 'custom') {
+        productPayload.referenceLabel = paymentReferenceLabel
+
+        if (paymentReferenceHint) {
+          productPayload.referenceHint = paymentReferenceHint
+        }
+      }
+      return productsClient.product.create(productPayload)
+    })
     .then(product => {
       lodash.unset(req, 'session.pageData.createPaymentLink')
       req.flash('generic', `<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>`)

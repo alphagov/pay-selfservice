@@ -79,7 +79,7 @@ describe('Create payment link information controller', () => {
       })
 
       it('should redirect to the amount page', () => {
-        expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
+        expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.reference)
       })
     })
 
@@ -159,7 +159,7 @@ describe('Create payment link information controller', () => {
     })
 
     it('should redirect to the amount page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.reference)
     })
   })
   describe(`when no paymentLinkTitle is submitted`, () => {

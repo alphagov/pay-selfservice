@@ -33,6 +33,6 @@ module.exports = (req, res) => {
     })
     .catch((err) => { // eslint-disable-line handle-callback-err
     // if it errors then it means no product was found and that’s good
-      return res.redirect(paths.paymentLinks.amount)
+      return res.redirect(paths.paymentLinks.reference)
     })
 }
