@@ -68,8 +68,8 @@ describe('Create payment link web address post controller', () => {
       expect(result.statusCode).to.equal(302)
     })
 
-    it('should redirect to the amount page', () => {
-      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.amount)
+    it('should redirect to the reference page', () => {
+      expect(result.headers).to.have.property('location').to.equal(paths.paymentLinks.reference)
     })
   })
 

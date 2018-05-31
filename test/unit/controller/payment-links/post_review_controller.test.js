@@ -42,7 +42,8 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
   serviceName: VALID_USER.serviceRoles[0].service.name,
   price: PAYMENT_LINK_AMOUNT * 100,
-  type: 'ADHOC'
+  type: 'ADHOC',
+  reference_enabled: false
 }).getPlain()
 
 const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()

@@ -28,7 +28,9 @@ describe('Create payment link review controller', () => {
       session = getMockSession(user)
       lodash.set(session, 'pageData.createPaymentLink', {
         paymentLinkTitle: 'Pay for an offline service',
-        paymentLinkDescription: 'Hello world'
+        paymentLinkDescription: 'Hello world',
+        paymentReferenceType: 'custom',
+        paymentReferenceLabel: 'A reference'
       })
       supertest(createAppWithSession(getApp(), session))
         .get(paths.paymentLinks.review)
@@ -64,6 +66,10 @@ describe('Create payment link review controller', () => {
 
     it(`should display some details in the definition list`, () =>
       expect($(`.review-details .cya-answer`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkDescription)
+    )
+
+    it(`should display the reference in the definition list`, () =>
+      expect($(`.review-reference .cya-answer`).text()).to.contain(session.pageData.createPaymentLink.paymentReferenceLabel)
     )
   })
 })
