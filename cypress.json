@@ -4,5 +4,11 @@
   "viewportWidth": 1280,
   "env": {
     "TEST_SESSION_ENCRYPTION_KEY": "naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwefjkbwfiu24fmjbwfk"
-  }
+  },
+  "fileServerFolder": "./test/cypress",
+  "integrationFolder": "./test/cypress/integration",
+  "pluginsFile": "./test/cypress/plugins",
+  "screenshotsFolder": "./test/cypress/screenshots",
+  "supportFile": false,
+  "videosFolder": "./test/cypress/videos"
 }

@@ -4,11 +4,13 @@ RUN apk update &&\
     apk upgrade &&\
     apk add --update bash ruby
 
+RUN apk --no-cache add ca-certificates wget
+
+RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.27-r0/glibc-2.27-r0.apk
+
 ADD docker/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
 
-RUN apk --no-cache add ca-certificates
-RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.26-r0/glibc-2.26-r0.apk
-RUN apk del libc6-compat && apk add glibc-2.26-r0.apk
+RUN apk del libc6-compat && apk add glibc-2.27-r0.apk
 
 # add package.json before source for node_module cache layer
 ADD package.json /tmp/package.json

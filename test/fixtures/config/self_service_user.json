@@ -1,0 +1,362 @@
+{
+  "description": "defines agreed fixture config that can be relied upon by browser testing tools requiring defined pact/contract data",
+  "config": {
+    "users": [
+      {
+        "isPrimary": "true",
+        "external_id": "7d19aff33f8948deb97ed16b2912dcd3",
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true"
+          },
+          {
+            "id": "7",
+            "isPrimary": "false"
+          }
+        ],
+        "permissions": [
+          {
+            "name": "transactions:read"
+          },
+          {
+            "name": "transactions_email_read"
+          },
+          {
+            "name": "transactions_amount_read"
+          },
+          {
+            "name": "transactions_card_type_read"
+          }
+        ],
+        "sections": {
+          "dashboard": {
+            "transaction_summary": {
+              "from_date": "2018-05-14T00:00:00+01:00",
+              "to_date": "2018-05-15T00:00:00+01:00"
+            }
+          },
+          "transactions": {
+            "description": "a list of raw transactions as returned by connector",
+            "data": [
+              {
+                "amount": 100,
+                "state": {
+                  "finished": true,
+                  "status": "success"
+                },
+                "description": "ref1",
+                "reference": "ref188888",
+                "links": [
+                  {
+                    "rel": "self",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/12345"
+                  },
+                  {
+                    "rel": "refunds",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/12345/refunds"
+                  }
+                ],
+                "charge_id": "12345",
+                "gateway_transaction_id": "4cddd970-cce9-4bf1-b087-f13db1e199bd",
+                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "created_date": "2018-05-01T13:27:00.057Z",
+                "card_details": {
+                  "last_digits_card_number": "0002",
+                  "cardholder_name": "Test User",
+                  "expiry_date": "08/23",
+                  "card_brand": "Visa"
+                },
+                "transaction_type": "charge"
+              },
+              {
+                "amount": 200,
+                "state": {
+                  "finished": true,
+                  "status": "success"
+                },
+                "description": "ref2",
+                "reference": "ref288888",
+                "links": [
+                  {
+                    "rel": "self",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/23456"
+                  },
+                  {
+                    "rel": "refunds",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/23456/refunds"
+                  }
+                ],
+                "charge_id": "23456",
+                "gateway_transaction_id": "c4fa72f2-8b1a-4b55-a0c4-407c6c71851a",
+                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "created_date": "2018-05-02T13:27:00.057Z",
+                "card_details": {
+                  "last_digits_card_number": "0002",
+                  "cardholder_name": "Test User",
+                  "expiry_date": "08/23",
+                  "card_brand": "Visa"
+                },
+                "transaction_type": "charge"
+              },
+              {
+                "amount": 300,
+                "state": {
+                  "finished": true,
+                  "status": "success"
+                },
+                "description": "ref3",
+                "reference": "ref388888",
+                "links": [
+                  {
+                    "rel": "self",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/34567"
+                  },
+                  {
+                    "rel": "refunds",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/34567/refunds"
+                  }
+                ],
+                "charge_id": "34567",
+                "gateway_transaction_id": "ad7ecae2-4942-4d7c-882c-8c3342b8b6f8",
+                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "created_date": "2018-05-03T13:27:00.057Z",
+                "card_details": {
+                  "last_digits_card_number": "0002",
+                  "cardholder_name": "Test User",
+                  "expiry_date": "08/23",
+                  "card_brand": "Visa"
+                },
+                "transaction_type": "charge"
+              },
+              {
+                "amount": 400,
+                "state": {
+                  "finished": true,
+                  "status": "success"
+                },
+                "description": "ref4",
+                "reference": "ref488888",
+                "links": [
+                  {
+                    "rel": "self",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/45678"
+                  },
+                  {
+                    "rel": "refunds",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/45678/refunds"
+                  }
+                ],
+                "charge_id": "45678",
+                "gateway_transaction_id": "0cec51bd-5759-40ed-b946-96b5a0945fed",
+                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "created_date": "2018-05-04T13:27:00.057Z",
+                "card_details": {
+                  "last_digits_card_number": "0002",
+                  "cardholder_name": "Test User",
+                  "expiry_date": "08/23",
+                  "card_brand": "Visa"
+                },
+                "transaction_type": "charge"
+              }
+            ],
+            "links": {
+              "self": {
+                "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&page=1&display_size=100"
+              },
+              "last_page": {
+                "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&page=1&display_size=100"
+              },
+              "first_page": {
+                "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&page=1&display_size=100"
+              }
+            }
+          },
+          "filteredTransactions": {
+            "description": "a list of filtered transactions, which should be logically based on the unfiltered transactions for the given filtering",
+            "data": [
+              {
+                "filtering": {
+                  "kind": "fromdate",
+                  "from_date": "2018-05-03T00:00:00.000Z",
+                  "from_date_raw": "03/5/2018",
+                  "from_time_raw": "01:00:00"
+                },
+                "data": [
+                  {
+                    "amount": 300,
+                    "state": {
+                      "finished": true,
+                      "status": "success"
+                    },
+                    "description": "ref3",
+                    "reference": "ref388888",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/34567"
+                      },
+                      {
+                        "rel": "refunds",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/34567/refunds"
+                      }
+                    ],
+                    "charge_id": "34567",
+                    "gateway_transaction_id": "ad7ecae2-4942-4d7c-882c-8c3342b8b6f8",
+                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "created_date": "2018-05-03T13:27:00.057Z",
+                    "card_details": {
+                      "last_digits_card_number": "0002",
+                      "cardholder_name": "Test User",
+                      "expiry_date": "08/23",
+                      "card_brand": "Visa"
+                    },
+                    "transaction_type": "charge"
+                  },
+                  {
+                    "amount": 400,
+                    "state": {
+                      "finished": true,
+                      "status": "success"
+                    },
+                    "description": "ref4",
+                    "reference": "ref488888",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/45678"
+                      },
+                      {
+                        "rel": "refunds",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/45678/refunds"
+                      }
+                    ],
+                    "charge_id": "45678",
+                    "gateway_transaction_id": "0cec51bd-5759-40ed-b946-96b5a0945fed",
+                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "created_date": "2018-05-04T13:27:00.057Z",
+                    "card_details": {
+                      "last_digits_card_number": "0002",
+                      "cardholder_name": "Test User",
+                      "expiry_date": "08/23",
+                      "card_brand": "Visa"
+                    },
+                    "transaction_type": "charge"
+                  }
+                ],
+                "links": {
+                  "self": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&from_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  },
+                  "last_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&from_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  },
+                  "first_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&from_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  }
+                }
+              },
+              {
+                "filtering": {
+                  "kind": "todate",
+                  "to_date": "2018-05-03T00:00:01.000Z",
+                  "to_date_raw": "03/5/2018",
+                  "to_time_raw": "01:00:00"
+                },
+                "data": [
+                  {
+                    "amount": 100,
+                    "state": {
+                      "finished": true,
+                      "status": "success"
+                    },
+                    "description": "ref1",
+                    "reference": "ref188888",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/12345"
+                      },
+                      {
+                        "rel": "refunds",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/12345/refunds"
+                      }
+                    ],
+                    "charge_id": "12345",
+                    "gateway_transaction_id": "4cddd970-cce9-4bf1-b087-f13db1e199bd",
+                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "created_date": "2018-05-01T13:27:00.057Z",
+                    "card_details": {
+                      "last_digits_card_number": "0002",
+                      "cardholder_name": "Test User",
+                      "expiry_date": "08/23",
+                      "card_brand": "Visa"
+                    },
+                    "transaction_type": "charge"
+                  },
+                  {
+                    "amount": 200,
+                    "state": {
+                      "finished": true,
+                      "status": "success"
+                    },
+                    "description": "ref2",
+                    "reference": "ref288888",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/23456"
+                      },
+                      {
+                        "rel": "refunds",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/23456/refunds"
+                      }
+                    ],
+                    "charge_id": "23456",
+                    "gateway_transaction_id": "c4fa72f2-8b1a-4b55-a0c4-407c6c71851a",
+                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "created_date": "2018-05-02T13:27:00.057Z",
+                    "card_details": {
+                      "last_digits_card_number": "0002",
+                      "cardholder_name": "Test User",
+                      "expiry_date": "08/23",
+                      "card_brand": "Visa"
+                    },
+                    "transaction_type": "charge"
+                  }
+                ],
+                "links": {
+                  "self": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&to_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  },
+                  "last_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&to_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  },
+                  "first_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&to_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
