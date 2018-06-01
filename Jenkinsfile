@@ -13,7 +13,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@run_cypress")
   }
 
   environment {

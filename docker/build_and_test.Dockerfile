@@ -16,6 +16,9 @@ RUN apk del libc6-compat && apk add glibc-2.27-r0.apk
 ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json
 RUN cd /tmp && npm install
+
 WORKDIR /app
+RUN cp -R /tmp/node_modules .
+
 ENV LD_LIBRARY_PATH /app/node_modules/appmetrics
 CMD ./docker/build_and_test.sh
