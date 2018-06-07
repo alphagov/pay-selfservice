@@ -8,8 +8,8 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 <aside class="column-one-third pad-bottom">
   <nav role="navigation" class="navigation settings-navigation">
     <ul class="list">
-       <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
-      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
+       <li class="active"><a href="{{ routes.paymentLinks.start }}">Create a payment link</a></li>
+      <li><a href="{{ routes.paymentLinks.manage }}">Manage payment&nbsp;links</a></li>
     </ul>
   </nav>
 </aside>
@@ -17,7 +17,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
 {% block mainContent %}
 <section class="column-two-thirds">
-  <form action="{{ nextPage }}" class="form" method="post" data-virtual-pageview="/create-payment-link/success" data-parameters="dimension1:service-name">
+  <form action="{{ routes.paymentLinks.review }}" class="form" method="post" data-virtual-pageview="/create-payment-link/success" data-parameters="dimension1:service-name">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input name="service-name" type="hidden" value="{{currentService.name}}"/>
     <h1 class="page-title">Review your payment link details</h1>
@@ -27,10 +27,10 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           Title
         </dt>
         <dd class="cya-answer" id="create-payment-link-title">
-          {{ paymentLinkTitle }}
+          {{ pageData.paymentLinkTitle }}
         </dd>
         <dd class="cya-change">
-          <a href="{{ changeInformation }}?field=payment-link-title">
+          <a href="{{ routes.paymentLinks.information }}?field=payment-link-title">
             Change <span class="visuallyhidden">Title</span>
           </a>
         </dd>
@@ -40,15 +40,37 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           More details
         </dt>
         <dd class="cya-answer" id="create-payment-link-description">
-          {% if paymentLinkDescription %}
-            {{ paymentLinkDescription | striptags(true) | escape | nl2br }}
+          {% if pageData.paymentLinkDescription %}
+            {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
           {% else %}
             <span class="grey">None given</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ changeInformation }}?field=payment-link-description">
+          <a href="{{ routes.paymentLinks.information }}?field=payment-link-description">
             Change <span class="visuallyhidden">More details</span>
+          </a>
+        </dd>
+      </div>
+      <div class="review-reference">
+        <dt class="cya-question">
+          Reference number
+        </dt>
+        <dd class="cya-answer" id="create-payment-link-reference">
+          {% if pageData.paymentReferenceType === 'custom' %}
+            <span>
+            {{ pageData.paymentReferenceLabel }}
+            {% if pageData.paymentReferenceHint %}
+              <br/>{{ pageData.paymentReferenceHint }}
+            {% endif %}
+            </span>
+          {% else %}
+            <span class="grey">Created by GOV.UK Pay</span>
+          {% endif %}
+        </dd>
+        <dd class="cya-change">
+          <a href="{{ routes.paymentLinks.reference }}?change=true">
+            Change <span class="visuallyhidden">payment reference</span>
           </a>
         </dd>
       </div>
@@ -57,14 +79,14 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           Payment amount
         </dt>
         <dd class="cya-answer" id="create-payment-link-amount">
-          {% if paymentLinkAmount %}
-            £{{ paymentLinkAmount }}
+          {% if pageData.paymentLinkAmount %}
+            £{{ pageData.paymentLinkAmount }}
           {% else %}
             <span class="grey">User can choose</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ changeAmount }}">
+          <a href="{{ routes.paymentLinks.amount }}">
             Change <span class="visuallyhidden">payment amount</span>
           </a>
         </dd>
@@ -73,7 +95,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     <div class="form-group">
       <button id="create-payment-link-publish" class="button" type="submit">Create link</button>
     </div>
-    <p><a id="create-payment-link-cancel" class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+    <p><a id="create-payment-link-cancel" class="cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
 </section>
 {% endblock %}

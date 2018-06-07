@@ -61,7 +61,10 @@ function createProduct (options) {
       type: options.type,
       return_url: options.returnUrl,
       service_name_path: options.serviceNamePath,
-      product_name_path: options.productNamePath
+      product_name_path: options.productNamePath,
+      reference_enabled: options.referenceEnabled,
+      reference_label: options.referenceLabel,
+      reference_hint: options.referenceHint
     },
     description: 'create a product for a service',
     service: SERVICE_NAME

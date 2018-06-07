@@ -44,11 +44,16 @@ module.exports = {
       service_name: opts.serviceName || 'Example Service',
       type: opts.type || 'DEMO'
     }
+    if (opts.type === 'ADHOC') data.reference_enabled = opts.reference_enabled || false
     if (opts.description) data.description = opts.description
     if (opts.returnUrl) data.return_url = opts.returnUrl
     if (opts.price) data.price = opts.price
     if (opts.service_name_path) data.service_name_path = opts.service_name_path
     if (opts.product_name_path) data.product_name_path = opts.product_name_path
+    if (opts.reference_enabled) {
+      data.reference_label = opts.reference_label
+      data.reference_hint = opts.reference_hint
+    }
     return {
       getPactified: () => {
         return pactProducts.pactify(data)

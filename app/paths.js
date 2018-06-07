@@ -130,6 +130,7 @@ module.exports = {
     start: '/create-payment-link',
     information: '/create-payment-link/information',
     webAddress: '/create-payment-link/web-address',
+    reference: '/create-payment-link/reference',
     amount: '/create-payment-link/amount',
     review: '/create-payment-link/review',
     manage: '/create-payment-link/manage',
