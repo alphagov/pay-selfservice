@@ -3,6 +3,7 @@
 // NPM Dependencies
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
+AWSXRay.config([AWSXRay.plugins.ECSPlugin])
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -69,7 +70,6 @@ module.exports.generateRoute = generateRoute
 module.exports.paths = paths
 
 module.exports.bind = function (app) {
-
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
   // APPLY CORRELATION MIDDLEWARE
@@ -269,5 +269,4 @@ module.exports.bind = function (app) {
   app.post(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.postConfigure)
   app.post(user.twoFactorAuth.resend, enforceUserAuthenticated, twoFactorAuthCtrl.postResend)
   app.use(AWSXRay.express.closeSegment())
-
 }

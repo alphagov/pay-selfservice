@@ -153,9 +153,11 @@ function listen () {
 function initialise () {
   const app = unconfiguredApp
 
-
   app.disable('x-powered-by')
   AWSXRay.enableManualMode()
+  AWSXRay.setLogger(logger)
+  AWSXRay.middleware.setSamplingRules('aws-xray.rules')
+  AWSXRay.config([AWSXRay.plugins.ECSPlugin])
 
   app.use(AWSXRay.express.openSegment('pay_selfservice'))
   app.use(flash())
