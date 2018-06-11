@@ -51,7 +51,8 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${params.gatewayAccountId}/transactions-summary`)
           .withUponReceiving('a valid transaction summary request')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions
+          between 2018-05-14T00:00:00 and 2018-05-15T00:00:00`)
           .withMethod('GET')
           .withQuery('from_date', params.fromDateTime)
           .withQuery('to_date', params.toDateTime)
