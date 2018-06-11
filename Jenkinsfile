@@ -13,7 +13,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@run_cypress")
   }
 
   environment {
@@ -33,6 +33,11 @@ pipeline {
         failure {
           postMetric("selfservice.docker-build.failure", 1)
         }
+      }
+    }
+    stage('Browser Tests') {
+      steps {
+        cypress('selfservice')
       }
     }
     stage('Contract Tests') {
