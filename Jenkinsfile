@@ -35,6 +35,11 @@ pipeline {
         }
       }
     }
+    stage('Browser Tests') {
+      steps {
+        cypress('selfservice')
+      }
+    }
     stage('Contract Tests') {
       steps {
         script {
