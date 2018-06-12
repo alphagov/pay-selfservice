@@ -1,5 +1,9 @@
 'use strict'
 
+// AWS x-ray
+const AWSXRay = require('aws-xray-sdk')
+AWSXRay.captureHTTPsGlobal(require('http'))
+
 // NPM Dependencies
 const logger = require('winston')
 const request = require('requestretry')

@@ -2,6 +2,8 @@
 
 // NPM Dependencies
 const lodash = require('lodash')
+const AWSXRay = require('aws-xray-sdk')
+AWSXRay.config([AWSXRay.plugins.ECSPlugin])
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -266,4 +268,5 @@ module.exports.bind = function (app) {
   app.get(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.getConfigure)
   app.post(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.postConfigure)
   app.post(user.twoFactorAuth.resend, enforceUserAuthenticated, twoFactorAuthCtrl.postResend)
+  app.use(AWSXRay.express.closeSegment())
 }

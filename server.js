@@ -37,6 +37,8 @@ const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.min.css')
 const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
 const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
 
+const AWSXRay = require('aws-xray-sdk')
+
 function warnIfAnalyticsNotSet () {
   if (ANALYTICS_TRACKING_ID === '') {
     logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
@@ -150,7 +152,14 @@ function listen () {
  */
 function initialise () {
   const app = unconfiguredApp
+
   app.disable('x-powered-by')
+  AWSXRay.enableManualMode()
+  AWSXRay.setLogger(logger)
+  AWSXRay.middleware.setSamplingRules('aws-xray.rules')
+  AWSXRay.config([AWSXRay.plugins.ECSPlugin])
+
+  app.use(AWSXRay.express.openSegment('pay_selfservice'))
   app.use(flash())
   initialiseTLS(app)
   initialisePublic(app)
@@ -159,6 +168,7 @@ function initialise () {
   initialiseGlobalMiddleware(app)
   initialiseTemplateEngine(app)
   initialiseRoutes(app)
+
   initialiseErrorHandling(app)
 
   warnIfAnalyticsNotSet()
