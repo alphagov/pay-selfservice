@@ -10,9 +10,14 @@ const userService = require('../../services/user_service.js')
 
 module.exports = (req, res) => {
   const code = req.body['code'] || ''
-  userService.configureNewOtpKey(req.user.externalId, code, lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP'), req.correlationId)
+  const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', 'APP')
+  userService.configureNewOtpKey(req.user.externalId, code, method, req.correlationId)
     .then(user => {
-      req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>Next time you sign in please use your configured authenticator app</p>`)
+      if (method === 'APP') {
+        req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>Next time you sign in please use your configured authenticator app</p>`)
+      } else {
+        req.flash('generic', `<h2>Your sign-in method has been&nbsp;updated</h2><p>Next time you sign in we’ll send you a text message</p>`)
+      }
       return res.redirect(paths.user.profile)
     })
     .catch((err) => {
