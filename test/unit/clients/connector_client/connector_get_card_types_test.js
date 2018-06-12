@@ -22,7 +22,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client', function () {
   const provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'connector',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
