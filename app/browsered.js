@@ -6,7 +6,7 @@ const $ = window.$ = window.jQuery = require('jquery') // Put this on window for
 
 // Local dependencies
 const multiSelects = require('./browsered/multi-select')
-const fieldValidation = require('./browsered/field-validation')
+const {browsered} = require('@govuk-pay/pay-js-commons')
 const dashboardActivity = require('./browsered/dashboard-activity')
 const targetToShow = require('./browsered/target-to-show')
 const analytics = require('gaap-analytics')
@@ -18,7 +18,7 @@ const copyText = require('./browsered/copy-text')
 require('../govuk_modules/govuk_frontend_toolkit/javascripts/govuk/show-hide-content')
 
 multiSelects.enableMultiSelects()
-fieldValidation.enableFieldValidation()
+browsered.fieldValidation.enableFieldValidation()
 dashboardActivity.init()
 targetToShow.init()
 analytics.eventTracking.init()

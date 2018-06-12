@@ -86,6 +86,7 @@
     "winston": "2.4.x"
   },
   "devDependencies": {
+    "@govuk-pay/pay-js-commons": "^1.1.0",
     "@pact-foundation/pact-node": "6.16.4",
     "babel-core": "^6.26.3",
     "babel-polyfill": "^6.26.0",
