@@ -4,7 +4,7 @@ const ukPostcode = require('uk-postcode')
 const responses = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service_service')
-const {isPhoneNumber, isValidEmail} = require('../../browsered/field-validation-checks')
+const {utils} = require('@govuk-pay/pay-js-commons')
 const formattedPathFor = require('../../utils/replace_params_in_path')
 
 const MERCHANT_NAME = 'merchant-name'
@@ -81,10 +81,10 @@ function isValidForm (req, isDirectDebitForm) {
 
   const errors = validateNotEmpty(req, mandatoryFields)
 
-  if (isDirectDebitForm && req.body[TELEPHONE_NUMBER] && (isPhoneNumber(req.body[TELEPHONE_NUMBER]) !== false)) {
+  if (isDirectDebitForm && req.body[TELEPHONE_NUMBER] && (utils.fieldValidationChecks.isPhoneNumber(req.body[TELEPHONE_NUMBER]) !== false)) {
     errors[TELEPHONE_NUMBER] = true
   }
-  if (isDirectDebitForm && req.body[MERCHANT_EMAIL] && (isValidEmail(req.body[MERCHANT_EMAIL]) !== false)) {
+  if (isDirectDebitForm && req.body[MERCHANT_EMAIL] && (utils.fieldValidationChecks.isValidEmail(req.body[MERCHANT_EMAIL]) !== false)) {
     errors[MERCHANT_EMAIL] = true
   }
 

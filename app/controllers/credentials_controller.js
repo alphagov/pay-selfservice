@@ -11,7 +11,7 @@ var auth = require('../services/auth_service.js')
 var router = require('../routes.js')
 const {CONNECTOR_URL} = process.env
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
-const {isPasswordLessThanTenChars} = require('../browsered/field-validation-checks')
+const {utils} = require('@govuk-pay/pay-js-commons')
 
 var connectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
@@ -95,8 +95,8 @@ module.exports = {
       req.flash('genericError', `<h2>Please enter a valid username</h2>`)
     } else if (!password) {
       req.flash('genericError', `<h2>Please enter a valid password</h2>`)
-    } else if (isPasswordLessThanTenChars(password)) {
-      req.flash('genericError', `<h2>Please enter a valid password</h2> ${isPasswordLessThanTenChars(password)}`)
+    } else if (utils.fieldValidationChecks.isPasswordLessThanTenChars(password)) {
+      req.flash('genericError', `<h2>Please enter a valid password</h2> ${utils.fieldValidationChecks.isPasswordLessThanTenChars(password)}`)
     }
 
     if (_.get(req, 'session.flash.genericError.length')) {
