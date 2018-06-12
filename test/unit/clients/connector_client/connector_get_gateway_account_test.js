@@ -36,7 +36,7 @@ describe('connector client - get gateway account', function () {
 
   describe('get gateway account - success', () => {
     const params = {
-      gateway_account_id: '666'
+      gateway_account_id: 666
     }
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(params)
 
@@ -44,7 +44,7 @@ describe('connector client - get gateway account', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${params.gateway_account_id}`)
           .withUponReceiving('a valid get gateway account request')
-          .withState(`User ${params.gateway_account} exists in the database`)
+          .withState(`User ${params.gateway_account_id} exists in the database`)
           .withMethod('GET')
           .withResponseBody(validGetGatewayAccountResponse.getPactified())
           .withStatusCode(200)
