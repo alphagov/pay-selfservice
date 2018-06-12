@@ -28,6 +28,7 @@
   "scripts": {
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
+    "start-local": "nodemon -e njk start.js",
     "start": "node_modules/forever/bin/forever --minUptime 1000 --spinSleepTime 500 start.js",
     "stop": "node_modules/forever/bin/forever stop start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
@@ -123,6 +124,7 @@
     "jquery": "^3.3.1",
     "mocha": "^5.1.1",
     "nock": "^9.2.6",
+    "nodemon": "^1.17.3",
     "node-sass": "^4.9.0",
     "nunjucksify": "^2.2.0",
     "nyc": "^11.8.0",
