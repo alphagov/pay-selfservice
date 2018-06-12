@@ -17,6 +17,7 @@ const TRANSACTIONS_RESOURCE = '/v2/api/accounts'
 const port = Math.floor(Math.random() * 48127) + 1024
 const connectorClient = new Connector(`http://localhost:${port}`)
 const expect = chai.expect
+
 // Note: the browser tests use values in the fixed config below, which match the defined interations
 const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
 const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
@@ -51,8 +52,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${params.gatewayAccountId}/transactions-summary`)
           .withUponReceiving('a valid transaction summary request')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions
-          between 2018-05-14T00:00:00 and 2018-05-15T00:00:00`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions between 2018-05-14T00:00:00 and 2018-05-15T00:00:00`)
           .withMethod('GET')
           .withQuery('from_date', params.fromDateTime)
           .withQuery('to_date', params.toDateTime)
@@ -90,7 +90,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
@@ -138,7 +138,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by from_date only')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions occuring after ${filtered.filtering.from_date}`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occuring after ${filtered.filtering.from_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
@@ -184,7 +184,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by to_date only')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has available transactions occuring before ${filtered.filtering.to_date}`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occuring before ${filtered.filtering.to_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
