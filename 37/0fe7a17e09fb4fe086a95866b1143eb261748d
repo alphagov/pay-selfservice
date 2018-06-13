@@ -35,3 +35,5 @@ staging-2.tag=alpha_staging-2-531
 staging-2.alpha_staging-2-531.date=2018-06-13:13:39:10
 
 staging-2.alpha_staging-2-531.status=success
+
+production-2.tag=FAILED-531
