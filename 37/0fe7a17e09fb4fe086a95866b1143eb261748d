@@ -29,3 +29,5 @@ staging-2.FAILED-531.status=failed
 release.tag=alpha_release-532
 
 release.alpha_release-532.date=2018-06-13:13:27:25
+
+staging-2.tag=alpha_staging-2-531
