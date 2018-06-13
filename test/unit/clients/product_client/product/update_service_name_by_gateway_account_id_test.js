@@ -24,7 +24,7 @@ function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey
 
 describe('products client - update product service name by gateway account id', () => {
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'products',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

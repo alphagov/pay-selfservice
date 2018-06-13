@@ -25,7 +25,7 @@ function getProductsClient (baseUrl = `http://localhost:${port}`) {
 
 describe('products client - find a product by it\'s product path', function () {
   let provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'products',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
