@@ -25,3 +25,5 @@ staging-2.tag=FAILED-531
 staging-2.FAILED-531.date=
 
 staging-2.FAILED-531.status=failed
+
+release.tag=alpha_release-532
