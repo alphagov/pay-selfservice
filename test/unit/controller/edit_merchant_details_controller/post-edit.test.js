@@ -63,7 +63,7 @@ describe('edit merchant details controller - post', () => {
       }
       let app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -80,17 +80,12 @@ describe('edit merchant details controller - post', () => {
           done(err)
         })
     })
-    it(`should redirect back to the page`, () => {
+    it(`should redirect back to the index page`, () => {
       expect(response.statusCode).to.equal(302)
       expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
     })
     it(`should set the success notification in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.true // eslint-disable-line
-      expect(session.pageData.editMerchantDetails).not.to.have.property('errors')
-    })
-    it(`should set the success notification in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.true // eslint-disable-line
-      expect(session.pageData.editMerchantDetails).not.to.have.property('errors')
+      expect(session.flash.generic).to.have.property('length').to.equal(1)
     })
   })
   describe('when the update merchant details call is missing mandatory fields', () => {
@@ -114,7 +109,7 @@ describe('edit merchant details controller - post', () => {
       }
       let app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'address-city': 'new-city',
@@ -129,7 +124,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
     it(`should the errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -162,7 +157,7 @@ describe('edit merchant details controller - post', () => {
       }
       let app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -181,7 +176,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
     it(`should set errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -211,7 +206,7 @@ describe('edit merchant details controller - post', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -230,7 +225,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
     it(`should set errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -260,7 +255,7 @@ describe('edit merchant details controller - post', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -279,7 +274,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
     it(`should set errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -309,7 +304,7 @@ describe('edit merchant details controller - post', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',
@@ -328,7 +323,7 @@ describe('edit merchant details controller - post', () => {
     })
     it(`should redirect back to the page`, () => {
       expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
     })
     it(`should set errors in the session`, () => {
       expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
@@ -348,7 +343,7 @@ describe('edit merchant details controller - post', () => {
       })
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.update, EXTERNAL_SERVICE_ID))
+        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send({
           'merchant-name': 'new-name',

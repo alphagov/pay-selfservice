@@ -2,7 +2,7 @@ const lodash = require('lodash')
 const responses = require('../../utils/response')
 const countries = require('../../services/countries.js')
 
-exports.get = (req, res) => {
+module.exports = (req, res) => {
   const externalServiceId = req.params.externalServiceId
   let pageData = lodash.get(req, 'session.pageData.editMerchantDetails')
   if (pageData) {
