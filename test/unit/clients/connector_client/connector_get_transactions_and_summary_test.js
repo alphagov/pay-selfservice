@@ -138,7 +138,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by from_date only')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occuring after ${filtered.filtering.from_date}`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occurring after ${filtered.filtering.from_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
@@ -184,7 +184,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by to_date only')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occuring before ${filtered.filtering.to_date}`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occurring before ${filtered.filtering.to_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('email', '')
