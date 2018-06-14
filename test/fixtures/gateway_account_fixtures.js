@@ -15,8 +15,7 @@ module.exports = {
       gateway_account_id: opts.gateway_account_id || 31,
       service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',
       type: opts.type || 'test',
-      analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58',
-      toggle_3ds: opts.toggle_3ds || false
+      analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58'
     }
 
     return {
