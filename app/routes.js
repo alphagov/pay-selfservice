@@ -43,8 +43,7 @@ const forgotPassword = require('./controllers/forgotten_password_controller')
 const myServicesCtrl = require('./controllers/my-services')
 const editServiceNameCtrl = require('./controllers/edit_service_name_controller')
 const serviceUsersController = require('./controllers/service_users_controller')
-const editMerchantDetailsCtrlGet = require('./controllers/edit_merchant_details/get')
-const editMerchantDetailsCtrlPost = require('./controllers/edit_merchant_details/post')
+const merchantDetailsCtrl = require('./controllers/edit_merchant_details')
 const inviteUserController = require('./controllers/invite_user_controller')
 const registerCtrl = require('./controllers/register_user_controller')
 const serviceRolesUpdateController = require('./controllers/service_roles_update_controller')
@@ -171,8 +170,9 @@ module.exports.bind = function (app) {
   app.post(nc.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.updateNotificationCredentials)
 
   // MERCHANT DETAILS
-  app.get(merchantDetails.index, permission('merchant-details:read'), editMerchantDetailsCtrlGet.get)
-  app.post(merchantDetails.update, permission('merchant-details:update'), editMerchantDetailsCtrlPost.post)
+  app.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
+  app.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
+  app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
 
   // API KEYS
   app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)

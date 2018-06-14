@@ -16,7 +16,7 @@ const ADDRESS_POSTCODE = 'address-postcode'
 const ADDRESS_COUNTRY = 'address-country'
 const MERCHANT_EMAIL = 'merchant-email'
 
-exports.post = (req, res) => {
+module.exports = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const externalServiceId = req.params.externalServiceId
   const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
@@ -34,12 +34,7 @@ exports.post = (req, res) => {
   if (lodash.isEmpty(errors)) {
     return serviceService.updateMerchantDetails(externalServiceId, reqMerchantDetails, correlationId)
       .then(() => {
-        lodash.set(req, 'session.pageData.editMerchantDetails', {
-          success: true,
-          merchant_details: reqMerchantDetails,
-          has_direct_debit_gateway_account: hasDirectDebitGatewayAccount,
-          externalServiceId
-        })
+        req.flash('generic', `<h2>Organisation details updated</h2>`)
         res.redirect(formattedPathFor(paths.merchantDetails.index, externalServiceId))
       })
       .catch(err => {
@@ -53,7 +48,7 @@ exports.post = (req, res) => {
       has_direct_debit_gateway_account: hasDirectDebitGatewayAccount,
       externalServiceId
     })
-    res.redirect(formattedPathFor(paths.merchantDetails.index, externalServiceId))
+    res.redirect(formattedPathFor(paths.merchantDetails.edit, externalServiceId))
   }
 }
 
