@@ -56,6 +56,7 @@ const testWithYourUsers = require('./controllers/test_with_your_users')
 const makeADemoPayment = require('./controllers/make_a_demo_payment')
 const paymentLinksCtrl = require('./controllers/payment-links')
 const twoFactorAuthCtrl = require('./controllers/two-factor-auth-controller')
+const feedbackCtrl = require('./controllers/feedback')
 
 // Assignments
 const {
@@ -127,6 +128,10 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.loggedIn)
   app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
   app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
+
+  // Feedback
+  app.get(paths.feedback, validateAndRefreshCsrf, feedbackCtrl.getIndex)
+  app.post(paths.feedback, validateAndRefreshCsrf, feedbackCtrl.postIndex)
 
   // ----------------------
   // AUTHENTICATED ROUTES

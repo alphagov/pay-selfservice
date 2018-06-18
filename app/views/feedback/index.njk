@@ -1,0 +1,65 @@
+{% extends "../layout_logged_out.njk" %}
+
+{% block page_title %}
+Give feedback — GOV.UK Pay
+{% endblock %}
+
+{% block globalBanner %}
+<div id="global-message">
+</div>
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-two-thirds">
+  <h1 class="heading-large page-title">Give feedback</h1>
+
+  <form method="POST" action="{{routes.feedback}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <div class="form-group">
+      <fieldset>
+        <legend>
+          <h2 class="heading-small">
+            Overall, how do you feel about the service you received today?
+          </h2>
+        </legend>
+
+        <div class="multiple-choice">
+          <input id="very-satisfied-radio" type="radio" name="feedback-rating" value="Very satisfied">
+          <label for="very-satisfied-radio">Very satisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="satisfied-radio" type="radio" name="feedback-rating" value="Satisfied">
+          <label for="satisfied-radio">Satisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="neither-satisfied-nor-dissatisfied-radio" type="radio" name="feedback-rating" value="neither-satisfied-nor-dissatisfied-radio">
+          <label for="radio-3">Neither satisfied nor dissatisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="dissatisfied-radio" type="radio" name="feedback-rating" value="Dissatisfied">
+          <label for="dissatisfied-radio">Dissatisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="very-dissatisfied-radio" type="radio" name="feedback-rating" value="Very dissatisfied">
+          <label for="very-dissatisfied-radio">Very dissatisfied</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label-bold" for="feedback-suggestion">
+        How could we improve this service?
+      </label>
+      <textarea class="form-control form-control-3-4" name="feedback-suggestion" id="textarea" rows="5"></textarea>
+      <p>Please do not include any personal or financial information.</p>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="button">
+        Send feedback
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
