@@ -1,8 +1,21 @@
 'use strict'
 
+// NPM dependencies
+const lodash = require('lodash')
+
 // Local dependencies
 const {response} = require('../../utils/response.js')
 
 module.exports = (req, res) => {
-  return response(req, res, 'feedback/index', {})
+  const pageData = {
+    email: req.user.email
+  }
+
+  const sessionFeedback = lodash.get(req, 'session.pageData.feedback', {})
+  if (sessionFeedback) {
+    pageData.suggestion = sessionFeedback['feedback-suggestion']
+    pageData.rating = sessionFeedback['feedback-rating']
+  }
+
+  return response(req, res, 'feedback/index', pageData)
 }

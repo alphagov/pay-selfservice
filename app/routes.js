@@ -129,10 +129,6 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
   app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
 
-  // Feedback
-  app.get(paths.feedback, validateAndRefreshCsrf, feedbackCtrl.getIndex)
-  app.post(paths.feedback, validateAndRefreshCsrf, feedbackCtrl.postIndex)
-
   // ----------------------
   // AUTHENTICATED ROUTES
   // ----------------------
@@ -152,7 +148,8 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
-    ...lodash.values(user.twoFactorAuth)
+    ...lodash.values(user.twoFactorAuth),
+    paths.feedback
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
@@ -266,9 +263,13 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.editAmount, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditAmount)
 
   // Configure 2FA
-  app.get(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.getIndex)
-  app.post(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.postIndex)
-  app.get(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.getConfigure)
-  app.post(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.postConfigure)
-  app.post(user.twoFactorAuth.resend, enforceUserAuthenticated, twoFactorAuthCtrl.postResend)
+  app.get(user.twoFactorAuth.index, twoFactorAuthCtrl.getIndex)
+  app.post(user.twoFactorAuth.index, twoFactorAuthCtrl.postIndex)
+  app.get(user.twoFactorAuth.configure, twoFactorAuthCtrl.getConfigure)
+  app.post(user.twoFactorAuth.configure, twoFactorAuthCtrl.postConfigure)
+  app.post(user.twoFactorAuth.resend, twoFactorAuthCtrl.postResend)
+
+  // Feedback
+  app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
+  app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
 }

@@ -36,7 +36,10 @@
         {% block mainContent %}{% endblock %}
       </div>
     </main>
-    {% include "includes/feedback-banner.njk" %}
+
+    {% if hideFeedbackBanner %}
+      {% include "includes/feedback-banner.njk" %}
+    {% endif %}
   {% endblock %}
 
   {% block footer_top %}
