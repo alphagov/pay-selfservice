@@ -14,8 +14,11 @@ e.emailPost = (req, res) => {
 
   if (emailValidator(username)) {
     return userService.sendPasswordResetToken(username, correlationId)
-      .finally(() => {
+      .then(() => {
         res.redirect(paths.user.passwordRequested)
+      }).catch((error) => {
+        req.flash('genericError', error.message)
+        res.redirect('/reset-password/' + req.params.id)
       })
   } else if (!username) {
     req.flash('error', 'You must enter an email address')
@@ -57,13 +60,17 @@ e.newPasswordPost = (req, res) => {
     })
     .then(function () {
       return userService.logOut(reqUser)
-        .finally(
+        .then(
           () => {
             req.session.destroy()
             req.flash('generic', 'Password has been updated')
             res.redirect('/login')
           }
-        )
+        ).catch(() => {
+          req.session.destroy()
+          req.flash('generic', 'Password has been updated')
+          res.redirect('/login')
+        })
     })
     .catch(function (error) {
       req.flash('genericError', error.message)
