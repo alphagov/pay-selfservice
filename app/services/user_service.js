@@ -1,7 +1,6 @@
 'use strict'
 
 // NPM dependencies
-const q = require('q')
 const commonPassword = require('common-password')
 
 // Custom dependencies
@@ -20,11 +19,10 @@ module.exports = {
    */
   authenticate: function (username, submittedPassword, correlationId) {
     if (!username || !submittedPassword) {
-      const defer = q.defer()
-      defer.reject()
-      return defer.promise
+      return new Promise(function (resolve, reject) {
+        reject(new Error('Failed to authenticate'))
+      })
     }
-
     return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword)
   },
 
@@ -36,9 +34,9 @@ module.exports = {
    */
   authenticateSecondFactor: function (externalId, code, correlationId) {
     if (!externalId || !code) {
-      const defer = q.defer()
-      defer.reject()
-      return defer.promise
+      return new Promise(function (resolve, reject) {
+        reject(new Error('Failed to authenticate second factor'))
+      })
     }
 
     return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code)
@@ -123,19 +121,19 @@ module.exports = {
    * @returns {Promise}
    */
   updatePassword: function (token, newPassword) {
-    const defer = q.defer()
-
-    if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      defer.reject({message: 'Your password must be at least 10 characters.'})
-    } else if (commonPassword(newPassword)) {
-      defer.reject({message: 'The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'})
-    } else {
-      getAdminUsersClient().updatePasswordForUser(token, newPassword)
-        .then(
-          () => defer.resolve(),
-          () => defer.reject({message: 'There has been a problem updating password.'}))
-    }
-    return defer.promise
+    return new Promise(function (resolve, reject) {
+      if (newPassword.length < MIN_PASSWORD_LENGTH) {
+        reject(new Error('Your password must be at least 10 characters.'))
+      } else if (commonPassword(newPassword)) {
+        reject(new Error('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'))
+      } else {
+        getAdminUsersClient().updatePasswordForUser(token, newPassword)
+          .then(
+            () => resolve(),
+            () => reject(new Error('There has been a problem updating password.'))
+          )
+      }
+    })
   },
 
   /**
@@ -198,9 +196,9 @@ module.exports = {
    */
   provisionNewOtpKey: function (externalId, correlationId) {
     if (!externalId) {
-      const defer = q.defer()
-      defer.reject()
-      return defer.promise
+      return new Promise(function (resolve, reject) {
+        reject(new Error('No externalId specified'))
+      })
     }
 
     return getAdminUsersClient({correlationId: correlationId}).provisionNewOtpKey(externalId)
@@ -215,9 +213,9 @@ module.exports = {
    */
   configureNewOtpKey: function (externalId, code, secondFactor, correlationId) {
     if (!externalId) {
-      const defer = q.defer()
-      defer.reject()
-      return defer.promise
+      return new Promise(function (resolve, reject) {
+        reject(new Error('No externalId specified'))
+      })
     }
 
     return getAdminUsersClient({correlationId: correlationId}).configureNewOtpKey(externalId, code, secondFactor)
