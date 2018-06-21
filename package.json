@@ -70,7 +70,6 @@
     "passport": "0.4.x",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
-    "q": "^1.5.1",
     "qrcode": "1.2.0",
     "qs": "^6.5.2",
     "readdir": "0.1.x",
