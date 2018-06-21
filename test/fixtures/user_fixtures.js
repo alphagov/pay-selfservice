@@ -187,6 +187,9 @@ module.exports = {
       second_factor: request.second_factor || 'SMS',
       provisional_otp_key: request.provisional_otp_key || '55970'
     }
+    if (request.merchant_details) {
+      data.service_roles[0].service.merchant_details = request.merchant_details
+    }
 
     return {
       getPactified: () => {
