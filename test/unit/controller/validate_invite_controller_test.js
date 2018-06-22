@@ -1,14 +1,15 @@
 'use strict'
 
+// NPM dependencies
 const path = require('path')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const q = require('q')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 chai.use(chaiAsPromised)
 
+// Constants
 const expect = chai.expect
 
 describe('Error handler', function () {
@@ -45,9 +46,9 @@ describe('Error handler', function () {
       {
         '../services/validate_invite_service': {
           getValidatedInvite: () => {
-            const defer = q.defer()
-            defer.reject({errorCode: errorCode})
-            return defer.promise
+            return new Promise(function (resolve, reject) {
+              reject(new Error({errorCode: errorCode}))
+            })
           }
         }
       })

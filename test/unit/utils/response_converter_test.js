@@ -1,21 +1,24 @@
-let path = require('path')
-let responseConverter = require(path.join(__dirname, '/../../../app/utils/response_converter'))
-let chai = require('chai')
-chai.should()
-let chaiAsPromised = require('chai-as-promised')
-chai.use(chaiAsPromised)
-const expect = chai.expect
-let q = require('q')
+'use strict'
 
-let defer
+// NPM dependencies
+const path = require('path')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+
+// Local dependencies
+const responseConverter = require(path.join(__dirname, '/../../../app/utils/response_converter'))
+
+chai.should()
+chai.use(chaiAsPromised)
+
 let context
+const expect = chai.expect
 
 describe('response converter', function () {
   beforeEach(() => {
-    defer = q.defer()
     context = {
       url: 'http://example.com',
-      defer: defer,
+      defer: {resolve: Promise.resolve(), reject: Promise.reject(new Error())},
       startTime: new Date(),
       correlationId: 'bob',
       method: 'POST',
@@ -27,7 +30,7 @@ describe('response converter', function () {
   let noError
   let body = {}
 
-  it('should resolve if response is any one of success codes', function (done) {
+  it.only('should resolve if response is any one of success codes', function (done) {
     let noOfSuccessCodes = responseConverter.successCodes().length
 
     expect(noOfSuccessCodes).to.be.equal(5)
@@ -35,9 +38,10 @@ describe('response converter', function () {
     responseConverter.successCodes().forEach((code, index) => {
       let converter = responseConverter.createCallbackToPromiseConverter(context)
       let successResponse = {statusCode: code}
+
       converter(noError, successResponse, body)
 
-      defer.promise.should.be.fulfilled
+      converter.should.be.fulfilled
         .notify(() => {
           // call done only if its the last index
           if (index === noOfSuccessCodes - 1) {
@@ -52,7 +56,7 @@ describe('response converter', function () {
     let errorResponse = {statusCode: 401}
     converter(noError, errorResponse, body)
 
-    defer.promise.should.be.rejected.then((res) => {
+    converter.should.be.rejected.then((res) => {
       expect(res.errorCode).to.equal(401)
     }).should.notify(done)
   })
@@ -63,7 +67,7 @@ describe('response converter', function () {
     let error = 'error'
     converter(error, response, body)
 
-    defer.promise.should.be.rejected.then((res) => {
+    converter.should.be.rejected.then((res) => {
       expect(res.error).to.equal('error')
     }).should.notify(done)
   })

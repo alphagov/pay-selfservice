@@ -3,7 +3,6 @@
 // NPM dependencies
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const q = require('q')
 const chai = require('chai')
 
 // Custom dependencies
@@ -57,10 +56,9 @@ describe('Error handler register service', function () {
       {
         '../services/service_registration_service': {
           submitRegistration: () => {
-            const defer = q.defer()
-            defer.reject(error)
-
-            return defer.promise
+            return new Promise(function (resolve, reject) {
+              reject(error)
+            })
           }
         }
       })
