@@ -1,7 +1,6 @@
 'use strict'
 
 // NPM dependencies
-const q = require('q')
 const _ = require('lodash')
 const commonPassword = require('common-password')
 
@@ -30,86 +29,73 @@ const hasValue = (param) => {
 
 module.exports = {
   shouldProceedWithRegistration: (registerInviteCookie) => {
-    const defer = q.defer()
+    return new Promise(function(resolve, reject){
+      if (!registerInviteCookie) {
+        reject('request does not contain a cookie')
+      }
 
-    if (!registerInviteCookie) {
-      defer.reject('request does not contain a cookie')
-      return defer.promise
-    }
-
-    if (hasValue(registerInviteCookie.email) && hasValue(registerInviteCookie.code)) {
-      defer.resolve()
-    } else {
-      defer.reject('registration cookie does not contain the email and/or code')
-    }
-
-    return defer.promise
+      if (hasValue(registerInviteCookie.email) && hasValue(registerInviteCookie.code)) {
+        resolve()
+      } else {
+        reject('registration cookie does not contain the email and/or code')
+      }
+    })
   },
 
   validateUserRegistrationInputs: (telephoneNumber, password) => {
-    const defer = q.defer()
+    return new Promise(function(resolve, reject){
 
-    if (invalidTelephoneNumber(telephoneNumber)) {
-      defer.reject('Invalid phone number')
-      return defer.promise
-    }
+      if (invalidTelephoneNumber(telephoneNumber)) {
+        reject('Invalid phone number')
+      }
 
-    if (!password || password.length < MIN_PASSWORD_LENGTH) {
-      defer.reject('Your password must be at least 10 characters.')
-    } else if (commonPassword(password)) {
-      defer.reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
-    } else {
-      defer.resolve()
-    }
-
-    return defer.promise
+      if (!password || password.length < MIN_PASSWORD_LENGTH) {
+        reject('Your password must be at least 10 characters.')
+      } else if (commonPassword(password)) {
+        reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
+      } else {
+        resolve()
+      }
+    })
   },
 
   validateRegistrationTelephoneNumber: (telephoneNumber) => {
-    const defer = q.defer()
-
-    if (invalidTelephoneNumber(telephoneNumber)) {
-      defer.reject('Invalid phone number')
-    } else {
-      defer.resolve()
-    }
-
-    return defer.promise
+    return new Promise(function(resolve, reject){
+      if (invalidTelephoneNumber(telephoneNumber)) {
+        reject('Invalid phone number')
+      } else {
+        resolve()
+      }
+    })
   },
 
   validateOtp: (otp) => {
-    const defer = q.defer()
-
-    if (!otp || !NUMBERS_ONLY.test(otp)) {
-      defer.reject('Invalid verification code')
-    } else {
-      defer.resolve()
-    }
-
-    return defer.promise
+    return new Promise(function(resolve, reject){
+      if (!otp || !NUMBERS_ONLY.test(otp)) {
+        reject('Invalid verification code')
+      } else {
+        resolve()
+      }
+    })
   },
 
   validateServiceRegistrationInputs: (email, telephoneNumber, password) => {
-    const defer = q.defer()
+    return new Promise(function(resolve, reject){
+      if (!emailValidator(email)) {
+        reject('Invalid email')
+      }
 
-    if (!emailValidator(email)) {
-      defer.reject('Invalid email')
-      return defer.promise
-    }
+      if (invalidTelephoneNumber(telephoneNumber)) {
+        return defer.promise
+      }
 
-    if (invalidTelephoneNumber(telephoneNumber)) {
-      defer.reject('Invalid phone number')
-      return defer.promise
-    }
-
-    if (!password || password.length < MIN_PASSWORD_LENGTH) {
-      defer.reject('Your password must be at least 10 characters.')
-    } else if (commonPassword(password)) {
-      defer.reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
-    } else {
-      defer.resolve()
-    }
-
-    return defer.promise
+      if (!password || password.length < MIN_PASSWORD_LENGTH) {
+        reject('Your password must be at least 10 characters.')
+      } else if (commonPassword(password)) {
+        reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
+      } else {
+        resolve()
+      }
+    })
   }
 }
