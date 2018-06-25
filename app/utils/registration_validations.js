@@ -37,7 +37,7 @@ module.exports = {
       if (hasValue(registerInviteCookie.email) && hasValue(registerInviteCookie.code)) {
         resolve()
       } else {
-        reject(new Error('registration cookie does not contain the email and/or code'))
+        reject('registration cookie does not contain the email and/or code')
       }
     })
   },
@@ -45,13 +45,13 @@ module.exports = {
   validateUserRegistrationInputs: (telephoneNumber, password) => {
     return new Promise(function (resolve, reject) {
       if (invalidTelephoneNumber(telephoneNumber)) {
-        reject(new Error('Invalid phone number'))
+        reject('Invalid phone number')
       }
 
       if (!password || password.length < MIN_PASSWORD_LENGTH) {
-        reject(new Error('Your password must be at least 10 characters.'))
+        reject('Your password must be at least 10 characters.')
       } else if (commonPassword(password)) {
-        reject(new Error('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'))
+        reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
       } else {
         resolve()
       }
@@ -61,7 +61,7 @@ module.exports = {
   validateRegistrationTelephoneNumber: (telephoneNumber) => {
     return new Promise(function (resolve, reject) {
       if (invalidTelephoneNumber(telephoneNumber)) {
-        reject(new Error('Invalid phone number'))
+        reject('Invalid phone number')
       } else {
         resolve()
       }
@@ -71,7 +71,7 @@ module.exports = {
   validateOtp: (otp) => {
     return new Promise(function (resolve, reject) {
       if (!otp || !NUMBERS_ONLY.test(otp)) {
-        reject(new Error('Invalid verification code'))
+        reject('Invalid verification code')
       } else {
         resolve()
       }
@@ -81,17 +81,17 @@ module.exports = {
   validateServiceRegistrationInputs: (email, telephoneNumber, password) => {
     return new Promise(function (resolve, reject) {
       if (!emailValidator(email)) {
-        reject(new Error('Invalid email'))
+        reject('Invalid email')
       }
 
       if (invalidTelephoneNumber(telephoneNumber)) {
-        reject(new Error('Invalid telephone number'))
+        reject('Invalid telephone number')
       }
 
       if (!password || password.length < MIN_PASSWORD_LENGTH) {
-        reject(new Error('Your password must be at least 10 characters.'))
+        reject('Your password must be at least 10 characters.')
       } else if (commonPassword(password)) {
-        reject(new Error('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.'))
+        reject('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
       } else {
         resolve()
       }

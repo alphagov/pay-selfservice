@@ -8,7 +8,7 @@ const getAdminUsersClient = require('./clients/adminusers_client')
 const ConnectorClient = require('../services/clients/connector_client').ConnectorClient
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 
-const completeServiceInvite = function (inviteCode, gatewayAccountIds, correlationId) {
+const completeServiceInvite = (inviteCode, gatewayAccountIds, correlationId) => {
   return getAdminUsersClient({correlationId}).completeInvite(inviteCode, gatewayAccountIds)
 }
 
@@ -37,7 +37,7 @@ module.exports = {
    * @param otpCode
    * @param correlationId
    */
-  submitServiceInviteOtpCode: function (code, otpCode, correlationId) {
+  submitServiceInviteOtpCode: (code, otpCode, correlationId) => {
     return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode)
   },
 

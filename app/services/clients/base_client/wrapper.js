@@ -1,9 +1,15 @@
 'use strict'
+
+// NPM dependencies
 const lodash = require('lodash')
 const joinURL = require('url-join')
 const correlator = require('correlation-id')
+
+// Local dependencies
 const requestLogger = require('../../../utils/request_logger')
 const CORRELATION_HEADER = require('../../../utils/correlation_header').CORRELATION_HEADER
+
+// Constants
 const SUCCESS_CODES = [200, 201, 202, 204, 206]
 
 module.exports = function (method, verb) {
@@ -25,6 +31,11 @@ module.exports = function (method, verb) {
     lodash.set(opts, `headers.${CORRELATION_HEADER}`, context.correlationId)
     opts.headers['Content-Type'] = opts.headers['Content-Type'] || 'application/json'
 
+    const transform = opts.transform || false
+    const handleError = opts.baseClientErrorHandler || 'new'
+    opts.transform = undefined
+    opts.baseClientErrorHandler = undefined
+
     // start request
     requestLogger.logRequestStart(context)
     const call = method(opts, (err, response, body) => {
@@ -32,13 +43,22 @@ module.exports = function (method, verb) {
       if (err) {
         reject(err)
       } else if (response && SUCCESS_CODES.includes(response.statusCode)) {
+        // transform our output if the appropriate function was passed.
+        body = transform ? transform(body) : body
         resolve(body)
       } else {
-        let errors = lodash.get(body, 'message') || lodash.get(body, 'errors')
-        if (errors && errors.constructor.name === 'Array') errors = errors.join(', ')
-        const err = new Error(errors || body || 'Unknown error')
-        err.errorCode = response.statusCode
-        reject(err)
+        if (handleError === 'new') {
+          let errors = lodash.get(body, 'message') || lodash.get(body, 'errors')
+          if (errors && errors.constructor.name === 'Array') errors = errors.join(', ')
+          const err = new Error(errors || body || 'Unknown error')
+          err.errorCode = response.statusCode
+          reject(err)
+        } else {
+          reject({
+            errorCode: response.statusCode,
+            message: response.body
+          })
+        }
       }
     })
     // Add event listeners for logging

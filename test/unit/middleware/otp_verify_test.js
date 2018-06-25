@@ -91,10 +91,8 @@ describe('otp_verify middleware', function () {
 
   it('should handle 401 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error({
-          errorCode: 401
-        }))
+      return Promise.reject({
+        errorCode: 401
       })
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
@@ -110,10 +108,8 @@ describe('otp_verify middleware', function () {
 
   it('should handle 404 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error({
-          errorCode: 404
-        }))
+      return Promise.reject({
+        errorCode: 404
       })
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
@@ -127,10 +123,8 @@ describe('otp_verify middleware', function () {
 
   it('should handle 410 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error({
-          errorCode: 410
-        }))
+      return Promise.reject({
+        errorCode: 410
       })
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
@@ -144,10 +138,8 @@ describe('otp_verify middleware', function () {
 
   it('should handle 500 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error({
-          errorCode: 500
-        }))
+      return Promise.reject({
+        errorCode: 500
       })
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)

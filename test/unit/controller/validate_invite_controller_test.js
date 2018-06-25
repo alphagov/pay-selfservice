@@ -47,7 +47,7 @@ describe('Error handler', function () {
         '../services/validate_invite_service': {
           getValidatedInvite: () => {
             return new Promise(function (resolve, reject) {
-              reject(new Error({errorCode: errorCode}))
+              reject({errorCode: errorCode})
             })
           }
         }

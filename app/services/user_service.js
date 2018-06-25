@@ -47,7 +47,7 @@ module.exports = {
    * @param correlationId
    * @returns {Promise<User>}
    */
-  findByExternalId: function (externalId, correlationId) {
+  findByExternalId: (externalId, correlationId) => {
     return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId)
   },
 
@@ -196,9 +196,7 @@ module.exports = {
    */
   provisionNewOtpKey: function (externalId, correlationId) {
     if (!externalId) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('No externalId specified'))
-      })
+       return Promise.reject('No externalId specified')
     }
 
     return getAdminUsersClient({correlationId: correlationId}).provisionNewOtpKey(externalId)
@@ -213,9 +211,7 @@ module.exports = {
    */
   configureNewOtpKey: function (externalId, code, secondFactor, correlationId) {
     if (!externalId) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('No externalId specified'))
-      })
+        Promise.reject('No externalId specified')
     }
 
     return getAdminUsersClient({correlationId: correlationId}).configureNewOtpKey(externalId, code, secondFactor)

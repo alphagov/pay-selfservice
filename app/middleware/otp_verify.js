@@ -36,7 +36,9 @@ function verifyOtpForServiceInvite (req, res, next) {
   }
 
   return validateOtp(otpCode)
-    .then(() => registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId))
+    .then(() => {
+      return registrationService.submitServiceInviteOtpCode(code, otpCode, correlationId)
+    })
     .then(next)
     .catch(err => {
       logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)

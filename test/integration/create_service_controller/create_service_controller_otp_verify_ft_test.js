@@ -52,23 +52,23 @@ describe('create service otp validation', function () {
       const gatewayAccountId = '1'
 
       const mockConnectorCreateGatewayAccountResponse =
-        gatewayAccountFixtures.validCreateGatewayAccountResponse({
-          gateway_account_id: gatewayAccountId
-        }).getPlain()
+                gatewayAccountFixtures.validCreateGatewayAccountResponse({
+                  gateway_account_id: gatewayAccountId
+                }).getPlain()
       const mockAdminUsersInviteCompleteRequest =
-        inviteFixtures.validInviteCompleteRequest({
-          gateway_account_ids: [gatewayAccountId]
-        }).getPlain()
+                inviteFixtures.validInviteCompleteRequest({
+                  gateway_account_ids: [gatewayAccountId]
+                }).getPlain()
       const mockAdminUsersInviteCompleteResponse =
-        inviteFixtures.validInviteCompleteResponse({
-          invite: {
-            code: inviteCode,
-            type: 'service',
-            disabled: true
-          },
-          user_external_id: userExternalId,
-          service_external_id: serviceExternalId
-        }).getPlain()
+                inviteFixtures.validInviteCompleteResponse({
+                  invite: {
+                    code: inviteCode,
+                    type: 'service',
+                    disabled: true
+                  },
+                  user_external_id: userExternalId,
+                  service_external_id: serviceExternalId
+                }).getPlain()
 
       connectorMock.post(CONNECTOR_ACCOUNTS_URL)
         .reply(201, mockConnectorCreateGatewayAccountResponse)
@@ -118,10 +118,8 @@ describe('create service otp validation', function () {
         code: validServiceInviteOtpRequest.getPlain().code,
         email: 'bob@bob.com'
       }
-
       adminusersMock.post(`${SERVICE_INVITE_OTP_RESOURCE}`, validServiceInviteOtpRequest.getPlain())
         .reply(401)
-
       app = session.getAppWithRegisterInvitesCookie(getApp(), registerInviteData)
       supertest(app)
         .post(paths.selfCreateService.otpVerify)

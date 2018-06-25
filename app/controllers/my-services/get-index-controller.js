@@ -14,8 +14,6 @@ module.exports = (req, res) => {
   const newServiceId = _.get(req, 'query.s')
 
   const displayMyServices = servicesData => {
-    console.log(`Got ${servicesData.length} services`)
-    console.log('yuh-YO ' + JSON.stringify(servicesData))
     const data = {
       services: servicesData,
       services_singular: servicesData.length === 1

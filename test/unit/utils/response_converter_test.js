@@ -3,34 +3,43 @@
 // NPM dependencies
 const path = require('path')
 const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
+const sinon = require('sinon')
 
 // Local dependencies
 const responseConverter = require(path.join(__dirname, '/../../../app/utils/response_converter'))
 
 chai.should()
-chai.use(chaiAsPromised)
 
 let context
 const expect = chai.expect
+let spyResolve
+let spyReject
 
 describe('response converter', function () {
   beforeEach(() => {
     context = {
       url: 'http://example.com',
-      defer: {resolve: Promise.resolve(), reject: Promise.reject(new Error())},
+      defer: {
+        resolve: () => {
+        },
+        reject: () => {
+        }
+      },
       startTime: new Date(),
       correlationId: 'bob',
       method: 'POST',
       description: 'sample request',
       service: 'sample service'
     }
+
+    spyResolve = sinon.spy(context.defer, 'resolve')
+    spyReject = sinon.spy(context.defer, 'reject')
   })
 
   let noError
   let body = {}
 
-  it.only('should resolve if response is any one of success codes', function (done) {
+  it('should resolve if response is any one of success codes', function (done) {
     let noOfSuccessCodes = responseConverter.successCodes().length
 
     expect(noOfSuccessCodes).to.be.equal(5)
@@ -41,13 +50,11 @@ describe('response converter', function () {
 
       converter(noError, successResponse, body)
 
-      converter.should.be.fulfilled
-        .notify(() => {
-          // call done only if its the last index
-          if (index === noOfSuccessCodes - 1) {
-            done()
-          }
-        })
+      sinon.assert.called(spyResolve)
+
+      if (index === noOfSuccessCodes - 1) {
+        done()
+      }
     })
   })
 
@@ -56,9 +63,9 @@ describe('response converter', function () {
     let errorResponse = {statusCode: 401}
     converter(noError, errorResponse, body)
 
-    converter.should.be.rejected.then((res) => {
-      expect(res.errorCode).to.equal(401)
-    }).should.notify(done)
+    sinon.assert.calledWith(spyReject, {errorCode: errorResponse.statusCode, message: undefined})
+
+    done()
   })
 
   it('should reject if response returned with an error', function (done) {
@@ -67,8 +74,8 @@ describe('response converter', function () {
     let error = 'error'
     converter(error, response, body)
 
-    converter.should.be.rejected.then((res) => {
-      expect(res.error).to.equal('error')
-    }).should.notify(done)
+    sinon.assert.calledWith(spyReject, {error: error})
+
+    done()
   })
 })
