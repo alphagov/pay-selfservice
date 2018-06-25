@@ -47,7 +47,6 @@ pipeline {
         }
         ws('contract-tests-wp') {
           runPactProviderTests("pay-adminusers", "${env.PACT_TAG}")
-          runPactProviderTests("pay-connector", "${env.PACT_TAG}")
         }
       }
       post {
