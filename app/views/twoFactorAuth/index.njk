@@ -30,18 +30,23 @@ Change sign-in method - GOV.UK Pay
     <p>You currently use an authenticator app to sign in to GOV.UK Pay.</p>
     <form method="post" action="{{routes.user.twoFactorAuth.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-      <div class="form-group">
-        <div class="multiple-choice">
-          <input id="two-fa-method-app" type="radio" name="two-fa-method" value="APP" checked>
-          <label for="two-fa-method-app" id="label-two-fa-method-app">A different authenticator app</label>
+      <fieldset>
+        <legend>
+          <h2 class="heading-small">Select a new sign-in method</h2>
+        </legend>
+        <div class="form-group">
+          <div class="multiple-choice">
+            <input id="two-fa-method-app" type="radio" name="two-fa-method" value="APP" checked>
+            <label for="two-fa-method-app" id="label-two-fa-method-app">A different authenticator app</label>
+          </div>
+          <div class="multiple-choice">
+            <input id="two-fa-method-sms" type="radio" name="two-fa-method" value="SMS">
+            <label for="two-fa-method-sms" id="label-two-fa-method-sms">
+              By text message
+            </label>
+          </div>
         </div>
-        <div class="multiple-choice">
-          <input id="two-fa-method-sms" type="radio" name="two-fa-method" value="SMS">
-          <label for="two-fa-method-sms" id="label-two-fa-method-sms">
-            By text message
-          </label>
-        </div>
-      </div>
+      </fieldset>
       <div class="form-group">
         <button class="button" type="submit">
           Submit

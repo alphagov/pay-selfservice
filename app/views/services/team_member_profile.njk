@@ -10,24 +10,20 @@ My profile - GOV.UK Pay
       My profile
   </h1>
 </div>
-<div class="column-two-thirds">
+<div class="column-two-thirds admin-list">
   <table>
     <caption class="visually-hidden">Details for {{username}}</caption>
     <tbody>
       <tr>
-        <td>Name:</td>
-        <td colspan="2" id="name">{{username}}</td>
-      </tr>
-      <tr>
-        <td>Email:</td>
+        <th>Email:</th>
         <td colspan="2" id="email">{{email}}</td>
       </tr>
       <tr>
-        <td>Mobile number:</td>
+        <th>Mobile number:</th>
         <td colspan="2" id="telephone-number">{{telephone_number}}</td>
       </tr>
       <tr>
-        <td>Sign-in method:</td>
+        <th>Sign-in method:</th>
         <td id="two-factor-auth">
           {% if two_factor_auth === 'APP' %}
             Authenticator app
@@ -43,7 +39,7 @@ My profile - GOV.UK Pay
     </tbody>
   </table>
 </div>
-<div class="column-one-third">
+<div class="column-one-third admin-list">
   <div class="related-information">
     <p>To change your permission level on a service you need to contact an administrator for that service.</p>
   </div>
