@@ -140,5 +140,6 @@ module.exports = {
     editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
     editAmount: '/create-payment-link/manage/edit/amount/:productExternalId'
   },
+  feedback: '/feedback',
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
 }

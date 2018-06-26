@@ -56,6 +56,7 @@ const testWithYourUsers = require('./controllers/test_with_your_users')
 const makeADemoPayment = require('./controllers/make_a_demo_payment')
 const paymentLinksCtrl = require('./controllers/payment-links')
 const twoFactorAuthCtrl = require('./controllers/two-factor-auth-controller')
+const feedbackCtrl = require('./controllers/feedback')
 
 // Assignments
 const {
@@ -147,7 +148,8 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
-    ...lodash.values(user.twoFactorAuth)
+    ...lodash.values(user.twoFactorAuth),
+    paths.feedback
   ] // Extract all the authenticated paths as a single array
 
   app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
@@ -261,9 +263,13 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.editAmount, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditAmount)
 
   // Configure 2FA
-  app.get(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.getIndex)
-  app.post(user.twoFactorAuth.index, enforceUserAuthenticated, twoFactorAuthCtrl.postIndex)
-  app.get(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.getConfigure)
-  app.post(user.twoFactorAuth.configure, enforceUserAuthenticated, twoFactorAuthCtrl.postConfigure)
-  app.post(user.twoFactorAuth.resend, enforceUserAuthenticated, twoFactorAuthCtrl.postResend)
+  app.get(user.twoFactorAuth.index, twoFactorAuthCtrl.getIndex)
+  app.post(user.twoFactorAuth.index, twoFactorAuthCtrl.postIndex)
+  app.get(user.twoFactorAuth.configure, twoFactorAuthCtrl.getConfigure)
+  app.post(user.twoFactorAuth.configure, twoFactorAuthCtrl.postConfigure)
+  app.post(user.twoFactorAuth.resend, twoFactorAuthCtrl.postResend)
+
+  // Feedback
+  app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
+  app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
 }

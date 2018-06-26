@@ -1,0 +1,63 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+Give feedback — GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-two-thirds">
+  <h1 class="heading-large page-title">Give feedback</h1>
+
+  <form method="POST" action="{{routes.feedback}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="email" name="email" type="hidden" value="{{email}}"/>
+    <input id="service-name" name="service-name" type="hidden" value="{{currentService.name}}"/>
+    <input id="service-external-id" name="service-external-id" type="hidden" value="{{currentService.externalId}}"/>
+    <input id="gateway" name="service-gateway" type="hidden" value="{{currentGatewayAccount.payment_provider}} - {{currentGatewayAccount.type}}"/>
+    <div class="form-group">
+      <fieldset>
+        <legend>
+          <h2 class="heading-small">
+            Overall, how do you feel about the service you received today?
+          </h2>
+        </legend>
+
+        <div class="multiple-choice">
+          <input id="very-satisfied-radio" type="radio" name="feedback-rating" value="Very satisfied" {{"checked" if rating === "Very satisfied"}}>
+          <label for="very-satisfied-radio">Very satisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="satisfied-radio" type="radio" name="feedback-rating" value="Satisfied" {{"checked" if rating === "Satisfied"}}>
+          <label for="satisfied-radio">Satisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="neither-satisfied-nor-dissatisfied-radio" type="radio" name="feedback-rating" value="Neither satisfied nor dissatisfied" {{"checked" if rating === "Neither satisfied nor dissatisfied"}}>
+          <label for="neither-satisfied-nor-dissatisfied-radio">Neither satisfied nor dissatisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="dissatisfied-radio" type="radio" name="feedback-rating" value="Dissatisfied" {{"checked" if rating === "Dissatisfied"}}>
+          <label for="dissatisfied-radio">Dissatisfied</label>
+        </div>
+        <div class="multiple-choice">
+          <input id="very-dissatisfied-radio" type="radio" name="feedback-rating" value="Very dissatisfied" {{"checked" if rating === "Very dissatisfied"}}>
+          <label for="very-dissatisfied-radio">Very dissatisfied</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label-bold" for="feedback-suggestion">
+        How could we improve this service?
+      </label>
+      <textarea class="form-control form-control-3-4" name="feedback-suggestion" id="textarea" rows="5">{{suggestion}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="button">
+        Send feedback
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

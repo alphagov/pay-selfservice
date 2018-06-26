@@ -89,6 +89,7 @@ module.exports = function (req, data, template) {
   convertedData.permissions = permissions
   convertedData.hideServiceHeader = hideServiceHeader(template)
   convertedData.hideServiceNav = hideServiceNav(template)
+  convertedData.hideFeedbackBanner = template === 'feedback/index'
   addGatewayAccountProviderDisplayNames(convertedData)
   convertedData.currentGatewayAccount = getAccount(account)
   convertedData.isTestGateway = _.get(convertedData, 'currentGatewayAccount.type') === 'test'
