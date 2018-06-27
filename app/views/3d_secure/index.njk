@@ -17,12 +17,14 @@
     {% if supports3ds %}
       {% if permissions.toggle_3ds_read %}
         {% if justToggled %}
-          <div id="3ds-toggled" class="govuk-box-highlight">
-            {% if requires3ds %}
-              <p>3D Secure is turned on for this service</p>
-            {% else %}
-              <p>3D Secure is turned off for this service</p>
-            {% endif %}
+          <div id="3ds-toggled" class="flash-container">
+            <div class="notification generic-flash">
+              {% if requires3ds %}
+                <h2>3D Secure is turned on for this service</h2>
+              {% else %}
+                <h2>3D Secure is turned off for this service</h2>
+              {% endif %}
+            </div>
           </div>
         {% endif %}
       {% endif %}
