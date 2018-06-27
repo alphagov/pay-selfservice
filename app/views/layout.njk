@@ -37,7 +37,7 @@
       </div>
     </main>
 
-    {% if hideFeedbackBanner %}
+    {% if not hideFeedbackBanner %}
       {% include "includes/feedback-banner.njk" %}
     {% endif %}
   {% endblock %}
