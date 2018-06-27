@@ -12,7 +12,8 @@ const zendeskConfig = require('../../../config/zendesk')
 const zendesk = zendeskClient.createClient({
   username: 'zd-api-pay@digital.cabinet-office.gov.uk',
   token: process.env.ZENDESK_API_KEY,
-  remoteUri: 'https://govuk.zendesk.com/api/v2'
+  remoteUri: 'https://govuk.zendesk.com/api/v2',
+  proxy: process.env.http_proxy
 })
 
 module.exports = (req, res) => {
