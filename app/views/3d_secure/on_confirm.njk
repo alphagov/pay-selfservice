@@ -9,21 +9,23 @@
 {% endblock %}
 
 {% block mainContent %}
-  <h1 class="page-title">3D Secure</h1>
+  <div class="column-two-thirds">
+    <h1 class="page-title">3D Secure</h1>
 
-  {% if permissions.toggle_3ds_update %}
-    {% if showHelper3ds %}
-      <div id="3ds-helper-text-worldpay">
-        <h2 class="heading-medium remove-top-margin">Has your merchant code been configured to support 3D Secure?</h2>
-        <p>If you haven’t confirmed this with Worldpay, 3D Secure won’t work on your service’s payment pages.</p>
-      </div>
-    {% endif %}
-    <form class="permission-main" method="post" action="{{ routes.toggle3ds.on }}">
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-      <div class="form-group">
-        <input id="3ds-confirm-on-button" class="button" type="submit" value="Yes, turn on 3D Secure">
-      </div>
-      <a href="{{ routes.toggle3ds.index }}" class="remove-cancel">No, cancel</a>
-    </form>
+    {% if permissions.toggle_3ds_update %}
+      {% if showHelper3ds %}
+        <div id="3ds-helper-text-worldpay">
+          <h2 class="heading-medium remove-top-margin">Has your merchant code been configured to support 3D Secure?</h2>
+          <p>If you haven’t confirmed this with Worldpay, 3D Secure won’t work on your service’s payment pages.</p>
+        </div>
+      {% endif %}
+      <form class="permission-main" method="post" action="{{ routes.toggle3ds.on }}">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+        <div class="form-group">
+          <input id="3ds-confirm-on-button" class="button" type="submit" value="Yes, turn on 3D Secure">
+        </div>
+        <a href="{{ routes.toggle3ds.index }}" class="remove-cancel">No, cancel</a>
+      </form>
+    </div>
   {% endif %}
 {% endblock %}
