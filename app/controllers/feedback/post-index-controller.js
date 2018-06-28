@@ -37,8 +37,7 @@ ${req.body['feedback-suggestion']}`
       },
       group_id: zendeskConfig.GROUP_ID,
       organization_id: zendeskConfig.ORG_ID,
-      tags: ['general_feedback'],
-      assignee_id: zendeskConfig.ASSIGNEE_ID
+      tags: ['general_feedback']
     }
   }, (err, request, result) => {
     if (err) {
