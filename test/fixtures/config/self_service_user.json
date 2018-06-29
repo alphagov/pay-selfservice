@@ -41,10 +41,10 @@
           },
           "transactions": {
             "description": "a list of raw transactions as returned by connector, as well as available refunds",
-            "details_data" : [
+            "details_data": [
               {
                 "charge_id": "12345",
-                "refund_summary" : {
+                "refund_summary": {
                   "status": "available",
                   "amount_available": 100,
                   "amount_submitted": 0
@@ -60,7 +60,42 @@
                   "city": "GB",
                   "county": "somecounty",
                   "country": "GB"
-                }
+                },
+                "charge_events": [
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "created",
+                      "finished": false
+                    },
+                    "amount": 100,
+                    "updated": "2018-05-01T13:27:00.063Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "started",
+                      "finished": false
+                    },
+                    "amount": 100,
+                    "updated": "2018-05-01T13:27:00.974Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "succeeded",
+                      "finished": true
+                    },
+                    "amount": 100,
+                    "updated": "2018-05-01T13:27:18.126Z",
+                    "refund_reference": null
+                  }
+                ]
               }
             ],
             "data": [
@@ -94,7 +129,8 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge"
+                "transaction_type": "charge",
+                "payment_provider": "cypress"
               },
               {
                 "amount": 200,
@@ -126,7 +162,8 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge"
+                "transaction_type": "charge",
+                "payment_provider": "cypress"
               },
               {
                 "amount": 300,
@@ -158,7 +195,8 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge"
+                "transaction_type": "charge",
+                "payment_provider": "cypress"
               },
               {
                 "amount": 400,
@@ -190,7 +228,8 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge"
+                "transaction_type": "charge",
+                "payment_provider": "cypress"
               }
             ],
             "links": {

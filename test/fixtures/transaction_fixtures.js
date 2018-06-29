@@ -112,6 +112,43 @@ module.exports = {
         return data
       }
     }
+  },
+  validChargeEventsResponse: (opts = {}) => {
+    let data = {
+      "charge_id": opts.chargeId || "ht439nfg2l1e303k0dmifrn4fc",
+      "events": opts.events ||
+      [{
+        "type": "PAYMENT",
+        "submitted_by": null,
+        "state": {"status": "created", "finished": false},
+        "amount": 20000,
+        "updated": "2018-05-01T13:27:00.063Z",
+        "refund_reference": null
+      }, {
+        "type": "PAYMENT",
+        "submitted_by": null,
+        "state": {"status": "started", "finished": false},
+        "amount": 20000,
+        "updated": "2018-05-01T13:27:00.974Z",
+        "refund_reference": null
+      }, {
+        "type": "PAYMENT",
+        "submitted_by": null,
+        "state": {"status": "failed", "finished": true, "code": "P0010", "message": "Payment method rejected"},
+        "amount": 20000,
+        "updated": "2018-05-01T13:27:18.126Z",
+        "refund_reference": null
+      }]
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
   }
 
 }

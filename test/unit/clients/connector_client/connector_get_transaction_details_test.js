@@ -9,7 +9,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const Connector = require('../../../../app/services/clients/connector_client').ConnectorClient
-const transactionSummaryFixtures = require('../../../fixtures/transaction_fixtures')
+const transactionDetailsFixtures = require('../../../fixtures/transaction_fixtures')
 
 // Constants
 const CHARGES_RESOURCE = '/v1/api/accounts'
@@ -46,7 +46,7 @@ describe('connector client', function () {
       gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
       chargeId: firstCharge.charge_id
     }
-    const validGetTransactionDetailsResponse = transactionSummaryFixtures.validTransactionDetailsResponse(
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse(
       {
         summaryObject: firstCharge,
         gateway_account_id: params.gatewayAccountId,
@@ -77,6 +77,45 @@ describe('connector client', function () {
       connectorClient.getCharge(params,
         (connectorData, connectorResponse) => {
           expect(connectorResponse.body).to.deep.equal(getTransactionDetails)
+          done()
+        })
+    })
+  })
+
+  describe('get charge events', () => {
+
+    const firstCharge = ssDefaultUser.sections.transactions.data[0]
+    const chargeDetails = ssDefaultUser.sections.transactions.details_data.filter(x => x.charge_id === firstCharge.charge_id)[0]
+    const params = {
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      chargeId: firstCharge.charge_id
+    }
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validChargeEventsResponse({
+      chargeId: params.chargeId,
+      events: chargeDetails.charge_events
+    })
+
+    before((done) => {
+      const pactified = validGetTransactionDetailsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}/events`)
+          .withUponReceiving('a valid charge events request')
+          .withState(`User ${params.gatewayAccountId} exists in the database, has an available charge with id ${firstCharge.charge_id} and has available charge events`)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get charge events successfully', function (done) {
+      const getChargeEvents = validGetTransactionDetailsResponse.getPlain()
+      connectorClient.getChargeEvents(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getChargeEvents)
           done()
         })
     })
