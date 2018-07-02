@@ -1,60 +1,40 @@
-const path = require('path')
-require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+require('../test_helpers/serialize_mock.js')
 const request = require('supertest')
-const auth = require(path.join(__dirname, '/../../app/services/auth_service.js'))
-const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-const getAppWithSessionAndGatewayAccountCookies = mockSession.getAppWithSessionAndGatewayAccountCookies
-const getAppWithLoggedInUser = mockSession.getAppWithLoggedInUser
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const server = require(path.join(__dirname, '/../../server.js'))
+const { getAppWithLoggedInUser, getAppWithSessionAndGatewayAccountCookies, getUser, getAppWithSessionWithoutSecondFactor } = require('../test_helpers/mock_session.js')
+const paths = require('../../app/paths.js')
+const server = require('../../server.js')
 
 let app
 
-function addUnprotectedEndpointToApp (app) {
-  app.get('/unprotected', function (req, res) {
-    res.send('Hello, World!')
-  })
-}
-
-function addProtectedEndpointToApp (app) {
-  app.get('/protected', auth.enforceUserAuthenticated, function (req, res) {
-    res.send('Hello, World!')
-  })
-}
-
-describe('An endpoint not protected', function () {
-  afterEach(function () {
+describe('An endpoint not protected', () => {
+  afterEach(() => {
     app = null
   })
 
-  it('allows access if not authenticated', function (done) {
+  it('allows access if not authenticated', done => {
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {})
-    addUnprotectedEndpointToApp(app)
     request(app)
-      .get('/unprotected')
+      .get(paths.user.logIn)
       .expect(200)
-      .expect('Hello, World!')
       .end(done)
   })
 
-  it('allows access if authenticated', function (done) {
-    const user = mockSession.getUser()
+  it('allows access if authenticated', done => {
+    const user = getUser()
     app = getAppWithLoggedInUser(server.getApp(), user)
-    addUnprotectedEndpointToApp(app)
     request(app)
-      .get('/unprotected')
-      .expect(200)
-      .expect('Hello, World!')
+      .get(paths.user.logIn)
+      .expect(302)
+      .expect('Location', paths.dashboard.index)
       .end(done)
   })
 
-  it('redirects to noaccess if user disabled', function (done) {
-    const user = mockSession.getUser()
+  it('redirects to noaccess if user disabled', done => {
+    const user = getUser()
     user.disabled = true
     app = getAppWithLoggedInUser(server.getApp(), user)
-    addProtectedEndpointToApp(app)
     request(app)
-      .get('/protected')
+      .get(paths.dashboard.index)
       .expect(302)
       .expect('Location', paths.user.noAccess)
       .end(done)
@@ -66,38 +46,31 @@ describe('An endpoint protected by auth.enforceUserBothFactors', function () {
     app = null
   })
 
-  it('redirects to /login if not authenticated', function (done) {
+  it('redirects to /login if not authenticated', done => {
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), {})
-    addProtectedEndpointToApp(app)
-
     request(app)
-      .get('/protected')
+      .get(paths.dashboard.index)
       .expect(302)
       .expect('Location', paths.user.logIn)
       .end(done)
   })
 
-  it('allows access if authenticated', function (done) {
-    const user = mockSession.getUser()
-
+  it('allows access if authenticated (redirects to dashboard)', done => {
+    const user = getUser()
     app = getAppWithLoggedInUser(server.getApp(), user)
-    addProtectedEndpointToApp(app)
-
     request(app)
-      .get('/protected')
-      .expect(200)
-      .expect('Hello, World!')
+      .get(paths.user.logIn)
+      .expect(302)
+      .expect('Location', paths.dashboard.index)
       .end(done)
   })
 
-  it('redirects if not second factor loggedin', function (done) {
-    const user = mockSession.getUser()
+  it('redirects if not second factor loggedin', done => {
+    const user = getUser()
 
-    app = mockSession.getAppWithSessionWithoutSecondFactor(server.getApp(), user)
-    addProtectedEndpointToApp(app)
-
+    app = getAppWithSessionWithoutSecondFactor(server.getApp(), user)
     request(app)
-      .get('/protected')
+      .get(paths.dashboard.index)
       .expect(302)
       .expect('Location', paths.user.otpLogIn)
       .end(done)
