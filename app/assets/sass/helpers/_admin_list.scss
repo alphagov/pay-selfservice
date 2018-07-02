@@ -1,4 +1,5 @@
 .admin-list-group {
+  margin-top: $gutter;
   .admin-list-group-heading:first-of-type {
     @include bold-24;
     margin: 0 0 $gutter;
@@ -75,4 +76,9 @@
 
 #edit-permissions-link {
   text-align: right;
+}
+
+#invite-team-member-link {
+  float: right;
+  margin-bottom: $gutter;
 }

@@ -38,7 +38,29 @@ module.exports = {
     }
     return pactServices.withPactified(response)
   },
-
+  /**
+   * @param invites Array params override get invites for service response
+   * @return {{getPactified: (function()) Pact response, getPlain: (function()) request with overrides applied}}
+   */
+  validListInvitesForServiceResponse: (invites) => {
+    const data = invites || [{
+      email: 'esdfkjh@email.test',
+      telephone_number: '',
+      disabled: false,
+      role: 'admin',
+      expired: false,
+      user_exist: false,
+      attempt_counter: 0
+    }]
+    return {
+      getPactified: () => {
+        return pactServices.pactifyNestedArray(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
+  },
   validCreateServiceRequest: (opts) => {
     opts = opts || {}
 
