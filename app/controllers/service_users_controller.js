@@ -33,6 +33,22 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
   return userRolesMap
 }
 
+const mapInvitesByRoles = function (invitedUsers) {
+  const userRolesMap = {}
+  for (const role in roles) {
+    userRolesMap[roles[role].name] = []
+  }
+  invitedUsers.map((user) => {
+    if (roles[user.role]) {
+      const mappedUser = {
+        username: user.email,
+        expired: user.expired
+      }
+      userRolesMap[user.role].push(mappedUser)
+    }
+  })
+  return userRolesMap
+}
 module.exports = {
 
   /**
@@ -43,12 +59,13 @@ module.exports = {
   index: (req, res) => {
     const externalServiceId = req.params.externalServiceId
 
-    const onSuccess = function (data) {
-      const teamMembers = mapByRoles(data, externalServiceId, req.user)
+    const onSuccess = function ([members, invitedMembers]) {
+      const teamMembers = mapByRoles(members, externalServiceId, req.user)
       const numberOfAdminMembers = teamMembers.admin.length
       const numberOfViewOnlyMembers = teamMembers[roles['view-only'].name].length
       const numberOfViewAndRefundMembers = teamMembers[roles['view-and-refund'].name].length
       const numberActiveMembers = numberOfAdminMembers + numberOfViewOnlyMembers + numberOfViewAndRefundMembers
+      const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
       const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
 
       successResponse(req, res, 'services/team_members', {
@@ -57,11 +74,18 @@ module.exports = {
         inviteTeamMemberLink: inviteTeamMemberLink,
         number_admin_members: numberOfAdminMembers,
         'number_view-only_members': numberOfViewOnlyMembers,
-        'number_view-and-refund_members': numberOfViewAndRefundMembers
+        'number_view-and-refund_members': numberOfViewAndRefundMembers,
+        invited_team_members: invitedTeamMembers,
+        number_invited_members: invitedMembers.length,
+        number_admin_invited_members: invitedTeamMembers.admin.length,
+        'number_view-only_invited_members': invitedTeamMembers[roles['view-only'].name].length,
+        'number_view-and-refund_invited_members': invitedTeamMembers[roles['view-and-refund'].name].length
       })
     }
-
-    return userService.getServiceUsers(externalServiceId, req.correlationId)
+    return Promise.all([
+      userService.getServiceUsers(externalServiceId, req.correlationId),
+      userService.getInvitedUsersList(externalServiceId, req.correlationId)
+    ])
       .then(onSuccess)
       .catch((err) => {
         logger.error(`[requestId=${req.correlationId}] error retrieving users for service ${externalServiceId}. [${err}]`)

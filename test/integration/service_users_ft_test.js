@@ -12,6 +12,7 @@ const expect = chai.expect
 const chaiAsPromised = require('chai-as-promised')
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const SERVICE_RESOURCE = '/v1/api/services'
+const INVITE_RESOURCE = '/v1/api/invites'
 const USER_RESOURCE = '/v1/api/users'
 
 let app
@@ -48,10 +49,12 @@ describe('service users resource', function () {
     })
 
     const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
+    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())
-
+    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
+      .reply(200, getInvitesRes.getPlain())
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
@@ -96,10 +99,12 @@ describe('service users resource', function () {
       external_id: EXTERNAL_ID_OTHER_USER,
       service_roles: serviceRoles
     }])
+    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())
-
+    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
+      .reply(200, getInvitesRes.getPlain())
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     supertest(app)
@@ -340,6 +345,67 @@ describe('service users resource', function () {
         expect(res.body.link.link).to.equal(`/service/${externalServiceId}`)
         expect(res.body.link.text).to.equal('View all team members')
         expect(res.body.enable_link).to.equal(true)
+      })
+      .end(done)
+  })
+
+  it('get list of invited users', function (done) {
+    const externalServiceId = '734rgw76jhka'
+    const serviceRoles = [{
+      service: {
+        name: 'System Generated',
+        external_id: externalServiceId
+      },
+      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
+    }]
+    const user = session.getUser({
+      external_id: EXTERNAL_ID_LOGGED_IN,
+      username: USERNAME_LOGGED_IN,
+      email: USERNAME_LOGGED_IN,
+      service_roles: serviceRoles
+    })
+    const FIRST_EMAIL = 'esdfkjh@email.test'
+    const SECOND_EMAIL = 'esdfkjh2@email.test'
+    const invites = [{
+      email: FIRST_EMAIL,
+      telephone_number: '',
+      disabled: false,
+      role: 'admin',
+      expired: false,
+      user_exist: false,
+      attempt_counter: 0
+    }, {
+      email: SECOND_EMAIL,
+      telephone_number: '',
+      disabled: false,
+      role: 'view-only',
+      expired: false,
+      user_exist: false,
+      attempt_counter: 0
+    }]
+    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
+    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse(invites)
+
+    adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
+      .reply(200, serviceUsersRes.getPlain())
+    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${externalServiceId}`)
+      .reply(200, getInvitesRes.getPlain())
+    app = session.getAppWithLoggedInUser(getApp(), user)
+
+    supertest(app)
+      .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
+      .set('Accept', 'application/json')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.number_invited_members).to.equal(2)
+        expect(res.body.number_admin_invited_members).to.equal(1)
+        expect(res.body['number_view-only_invited_members']).to.equal(1)
+        expect(res.body['number_view-and-refund_invited_members']).to.equal(0)
+        expect(res.body.invited_team_members.admin.length).to.equal(1)
+        expect(res.body.invited_team_members.admin[0].username).to.equal(FIRST_EMAIL)
+        expect(res.body.invited_team_members['view-only'].length).to.equal(1)
+        expect(res.body.invited_team_members['view-only'][0].username).to.equal(SECOND_EMAIL)
+        expect(res.body.invited_team_members['view-and-refund'].length).to.equal(0)
       })
       .end(done)
   })

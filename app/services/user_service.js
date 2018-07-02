@@ -173,6 +173,14 @@ module.exports = {
   },
 
   /**
+   * @param externalServiceId
+   * @param correlationId
+   */
+  getInvitedUsersList: function (externalServiceId, correlationId) {
+    return getAdminUsersClient({correlationId: correlationId}).getInvitedUsersList(externalServiceId)
+  },
+
+  /**
    *
    * @param externalServiceId
    * @param removerExternalId

@@ -52,7 +52,6 @@ describe('The team members view', function () {
     body.should.containSelector('div#team-members-view-and-refund-list ul').havingItemAt(1).withText('username6')
     body.should.containSelector('div#team-members-view-and-refund-list ul').havingItemAt(1).withALinkTo('view-username6-link')
   })
-
   it('should render all team members without links if user does not have read permissions', function () {
     let templateData = {
       'number_active_members': 2,
@@ -122,5 +121,71 @@ describe('The team members view', function () {
     let body = renderTemplate('services/team_members', templateData)
 
     body.should.not.containSelector('a#invite-team-member-link')
+  })
+  it('should render all invited team members grouped by role', function () {
+    let templateData = {
+      'number_invited_members': 5,
+      'number_admin_invited_members': 2,
+      'number_view-only_invited_members': 1,
+      'number_view-and-refund_invited_members': 2,
+      'invited_team_members': {
+        'admin': [
+          {username: 'username1'},
+          {username: 'username2'}
+        ],
+        'view-only': [
+          {username: 'username3'}
+        ],
+        'view-and-refund': [
+          {username: 'username6'},
+          {username: 'username5'}
+        ]
+      },
+      permissions: {
+        'users_service_read': true
+      }
+    }
+
+    let body = renderTemplate('services/team_members', templateData)
+
+    body.should.containSelector('h2#invited-team-members-heading').withExactText('Invited (5)')
+    body.should.containSelector('h3#invited-team-members-admin-role-header').withExactText('Administrators (2)')
+    body.should.containSelector('h3#invited-team-members-view-only-role-header').withExactText('View only (1)')
+    body.should.containSelector('h3#invited-team-members-view-and-refund-role-header').withExactText('View and refund (2)')
+
+    body.should.containSelector('div#invited-team-members-admin-list ul').havingNumberOfItems(2)
+    body.should.containSelector('div#invited-team-members-admin-list ul').havingItemAt(1).withText('username1')
+    body.should.containSelector('div#invited-team-members-admin-list ul').havingItemAt(2).withText('username2')
+
+    body.should.containSelector('div#invited-team-members-view-only-list ul').havingNumberOfItems(1)
+    body.should.containSelector('div#invited-team-members-view-only-list ul').havingItemAt(1).withText('username3')
+
+    body.should.containSelector('div#invited-team-members-view-and-refund-list ul').havingNumberOfItems(2)
+    body.should.containSelector('div#invited-team-members-view-and-refund-list ul').havingItemAt(1).withText('username6')
+    body.should.containSelector('div#invited-team-members-view-and-refund-list ul').havingItemAt(2).withText('username5')
+  })
+  it('should render number of invited members of a role as 0 if no users are grouped in that role', function () {
+    let templateData = {
+      'number_invited_members': 5,
+      'number_admin_invited_members': 2,
+      'number_view-only_invited_members': 0,
+      'number_view-and-refund_invited_members': 2,
+      'invited_team_members': {
+        'admin': [
+          {username: 'username1'},
+          {username: 'username2'}
+        ],
+        'view-only': [],
+        'view-and-refund': [
+          {username: 'username6'},
+          {username: 'username5'}
+        ]
+      }
+    }
+
+    let body = renderTemplate('services/team_members', templateData)
+
+    body.should.containSelector('h3#invited-team-members-view-only-role-header').withExactText('View only (0)')
+    body.should.containSelector('div#invited-team-members-view-only-list').havingNumberOfRows(0)
   })
 })

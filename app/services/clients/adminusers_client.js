@@ -488,6 +488,42 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   *
+   * @param serviceExternalId
+   * @returns {Promise}
+   */
+  const getInvitedUsersList = (serviceExternalId) => {
+    console.log(inviteResource)
+    console.log(serviceExternalId)
+    const params = {
+      correlationId: correlationId,
+      qs: {
+        serviceId: serviceExternalId
+      }
+    }
+    const url = `${inviteResource}`
+    const defer = q.defer()
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: defer,
+      startTime: startTime,
+      correlationId: correlationId,
+      method: 'GET',
+      description: 'get invited users for a service',
+      service: SERVICE_NAME
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+    requestLogger.logRequestStart(context)
+
+    baseClient.get(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+
+    return defer.promise
+  }
+
+  /**
    * Get a valid invite or error if it's expired
    * @param inviteCode
    */
@@ -1020,6 +1056,7 @@ module.exports = function (clientOptions = {}) {
     // Invite-related Methods
     verifyOtpForServiceInvite,
     inviteUser,
+    getInvitedUsersList,
     getValidatedInvite,
     generateInviteOtpCode,
     completeInvite,
