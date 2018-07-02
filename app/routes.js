@@ -272,4 +272,9 @@ module.exports.bind = function (app) {
   // Feedback
   app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
   app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
+
+  app.all('*', (req, res) => {
+    res.status(404)
+    res.render('404')
+  })
 }

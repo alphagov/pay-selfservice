@@ -158,8 +158,8 @@ function initialise () {
   initialiseAuth(app)
   initialiseGlobalMiddleware(app)
   initialiseTemplateEngine(app)
-  initialiseRoutes(app)
   initialiseErrorHandling(app)
+  initialiseRoutes(app) // This contains the 404 overrider and so should be last
 
   warnIfAnalyticsNotSet()
 
