@@ -16,6 +16,7 @@ const validateRegistrationInputs = validations.validateUserRegistrationInputs
 const validateRegistrationTelephoneNumber = validations.validateRegistrationTelephoneNumber
 const validateOtp = validations.validateOtp
 
+// Constants
 const messages = {
   missingCookie: 'Unable to process registration at this time',
   internalError: 'Unable to process registration at this time',
@@ -161,7 +162,7 @@ module.exports = {
     const verifyOtpAndCreateUser = function () {
       registrationService.verifyOtpAndCreateUser(code, verificationCode, correlationId)
         .then((user) => {
-          loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
+          loginController.setupDirectLoginAfterRegister(req, res, user.external_id)
           redirectToAutoLogin(req, res)
         })
         .catch(err => {

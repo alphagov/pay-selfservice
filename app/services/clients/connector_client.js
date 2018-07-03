@@ -1,16 +1,19 @@
 'use strict'
+
+// NPM dependencies
 const _ = require('lodash')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const logger = require('winston')
 const querystring = require('querystring')
-const q = require('q')
 
+// Local dependencies
 const baseClient = require('./old_base_client')
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 
+// Constants
 const SERVICE_NAME = 'connector'
 const ACCOUNTS_API_PATH = '/v1/api/accounts'
 const ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
@@ -244,25 +247,24 @@ ConnectorClient.prototype = {
    *@return {Promise}
    */
   getAccount: function (params) {
-    let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
-    let defer = q.defer()
-    let startTime = new Date()
-    let context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: params.correlationId,
-      method: 'GET',
-      description: 'get an account',
-      service: SERVICE_NAME
-    }
+    return new Promise((resolve, reject) => {
+      let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+      let startTime = new Date()
+      let context = {
+        url: url,
+        defer: {resolve: resolve, reject: reject},
+        startTime: startTime,
+        correlationId: params.correlationId,
+        method: 'GET',
+        description: 'get an account',
+        service: SERVICE_NAME
+      }
 
-    let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+      let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    baseClient.get(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
-
-    return defer.promise
+      baseClient.get(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**
@@ -277,40 +279,39 @@ ConnectorClient.prototype = {
    * @returns {*|Constructor|promise}
    */
   createGatewayAccount: function (paymentProvider, type, serviceName, analyticsId, correlationId) {
-    const url = this.connectorUrl + ACCOUNTS_API_PATH
-    const defer = q.defer()
-    const startTime = new Date()
-    const context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'POST',
-      description: 'create a gateway account',
-      service: SERVICE_NAME
-    }
-
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-    const params = {
-      payload: {
-        payment_provider: paymentProvider
+    return new Promise((resolve, reject) => {
+      const url = this.connectorUrl + ACCOUNTS_API_PATH
+      const startTime = new Date()
+      const context = {
+        url: url,
+        defer: {resolve: resolve, reject: reject},
+        startTime: startTime,
+        correlationId: correlationId,
+        method: 'POST',
+        description: 'create a gateway account',
+        service: SERVICE_NAME
       }
-    }
-    if (type) {
-      params.payload.type = type
-    }
-    if (serviceName) {
-      params.payload.service_name = serviceName
-    }
-    if (analyticsId) {
-      params.payload.analytics_id = analyticsId
-    }
 
-    baseClient.post(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    return defer.promise
+      const params = {
+        payload: {
+          payment_provider: paymentProvider
+        }
+      }
+      if (type) {
+        params.payload.type = type
+      }
+      if (serviceName) {
+        params.payload.service_name = serviceName
+      }
+      if (analyticsId) {
+        params.payload.analytics_id = analyticsId
+      }
+
+      baseClient.post(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**
@@ -362,11 +363,13 @@ ConnectorClient.prototype = {
    */
   getAcceptedCardsForAccount: function (params, successCallback) {
     let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
+
     logger.debug('Calling connector to get accepted card types for account -', {
       service: 'connector',
       method: 'GET',
       url: url
     })
+
     baseClient.get(url, params, this.responseHandler(successCallback))
     return this
   },
@@ -383,6 +386,7 @@ ConnectorClient.prototype = {
    */
   postAcceptedCardsForAccount: function (params, successCallback) {
     let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
+
     logger.debug('Calling connector to post accepted card types for account -', {
       service: 'connector',
       method: 'POST',
@@ -423,35 +427,34 @@ ConnectorClient.prototype = {
    * @returns {Promise<Object>}
    */
   patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
-    const params = {
-      gatewayAccountId: gatewayAccountId,
-      payload: {
-        service_name: serviceName
-      },
-      correlationId: correlationId
-    }
+    return new Promise((resolve, reject) => {
+      const params = {
+        gatewayAccountId: gatewayAccountId,
+        payload: {
+          service_name: serviceName
+        },
+        correlationId: correlationId
+      }
 
-    const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
-    const defer = q.defer()
-    const startTime = new Date()
-    const context = {
-      url: url,
-      defer: defer,
-      startTime: startTime,
-      correlationId: correlationId,
-      method: 'PATCH',
-      description: 'update service name',
-      service: SERVICE_NAME
-    }
+      const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
+      const startTime = new Date()
+      const context = {
+        url: url,
+        defer: {resolve: resolve, reject: reject},
+        startTime: startTime,
+        correlationId: correlationId,
+        method: 'PATCH',
+        description: 'update service name',
+        service: SERVICE_NAME
+      }
 
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    requestLogger.logRequestStart(context)
+      requestLogger.logRequestStart(context)
 
-    baseClient.patch(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
-
-    return defer.promise
+      baseClient.patch(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**

@@ -5,7 +5,6 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const q = require('q')
 
 // Custom dependencies
 const paths = require('../../../app/paths')
@@ -92,11 +91,9 @@ describe('otp_verify middleware', function () {
 
   it('should handle 401 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      const defer = q.defer()
-      defer.reject({
+      return Promise.reject({
         errorCode: 401
       })
-      return defer.promise
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()
@@ -111,11 +108,9 @@ describe('otp_verify middleware', function () {
 
   it('should handle 404 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      const defer = q.defer()
-      defer.reject({
+      return Promise.reject({
         errorCode: 404
       })
-      return defer.promise
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()
@@ -128,11 +123,9 @@ describe('otp_verify middleware', function () {
 
   it('should handle 410 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      const defer = q.defer()
-      defer.reject({
+      return Promise.reject({
         errorCode: 410
       })
-      return defer.promise
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()
@@ -145,11 +138,9 @@ describe('otp_verify middleware', function () {
 
   it('should handle 500 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      const defer = q.defer()
-      defer.reject({
+      return Promise.reject({
         errorCode: 500
       })
-      return defer.promise
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()

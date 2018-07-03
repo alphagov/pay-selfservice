@@ -13,19 +13,15 @@ module.exports = (req, res) => {
   lodash.set(req, 'session.pageData.twoFactorAuthMethod', method)
 
   const sendSMS = (method, user) => {
-    return new Promise((resolve, reject) => {
       if (method === 'SMS') {
-        userService.sendProvisonalOTP(user, req.correlationId)
-          .then(() => resolve())
-          .catch(err => reject(err))
+        return userService.sendProvisonalOTP(user, req.correlationId)
       }
-      return resolve()
-    })
+      return Promise.resolve()
   }
 
   userService.provisionNewOtpKey(req.user.externalId, req.correlationId)
     .then(user => sendSMS(method, user))
-    .then(user => {
+    .then(() => {
       return res.redirect(paths.user.twoFactorAuth.configure)
     })
     .catch(err => {

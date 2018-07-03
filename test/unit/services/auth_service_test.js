@@ -7,7 +7,6 @@ const assert = require('assert')
 // NPM Dependencies
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const q = require('q')
 const _ = require('lodash')
 const {expect} = require('chai')
 
@@ -79,10 +78,10 @@ describe('auth service', function () {
       })
       const userServiceMock = {
         findByExternalId: (externalId) => {
-          expect(externalId).to.be.equal(EXTERNAL_ID_IN_SESSION)
-          const defer = q.defer()
-          defer.resolve(user)
-          return defer.promise
+          return new Promise(function (resolve, reject) {
+            expect(externalId).to.be.equal(EXTERNAL_ID_IN_SESSION)
+            resolve(user)
+          })
         }
       }
 
@@ -164,12 +163,12 @@ describe('auth service', function () {
       })
       const userServiceMock = {
         authenticate: (username, password, correlationId) => {
-          expect(username).to.be.equal(user.username)
-          expect(password).to.be.equal('correctPassword')
-          expect(correlationId).to.be.equal('corrId')
-          const defer = q.defer()
-          defer.resolve(user)
-          return defer.promise
+          return new Promise(function (resolve, reject) {
+            expect(username).to.be.equal(user.username)
+            expect(password).to.be.equal('correctPassword')
+            expect(correlationId).to.be.equal('corrId')
+            resolve(user)
+          })
         }
       }
 
@@ -194,12 +193,12 @@ describe('auth service', function () {
       })
       const userServiceMock = {
         authenticate: (username, password, correlationId) => {
-          expect(username).to.be.equal('user@example.com')
-          expect(password).to.be.equal('imagineThisIsInvalid')
-          expect(correlationId).to.be.equal('corrId')
-          const defer = q.defer()
-          defer.reject()
-          return defer.promise
+          return new Promise(function (resolve, reject) {
+            expect(username).to.be.equal('user@example.com')
+            expect(password).to.be.equal('imagineThisIsInvalid')
+            expect(correlationId).to.be.equal('corrId')
+            reject(new Error())
+          })
         }
       }
 
@@ -231,9 +230,9 @@ describe('auth service', function () {
       }
       const userServiceMock = {
         findByExternalId: () => {
-          const defer = q.defer()
-          defer.resolve(user)
-          return defer.promise
+          return new Promise(function (resolve, reject) {
+            resolve(user)
+          })
         }
       }
 

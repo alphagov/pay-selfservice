@@ -97,11 +97,14 @@ describe('create populated service', function () {
     const completeServiceInviteMock = adminusersMock.post(`${ADMINUSERS_INVITES_URL}/${inviteCode}/complete`, mockAdminUsersInviteCompleteRequest)
       .reply(500)
 
-    serviceRegistrationService.createPopulatedService(inviteCode).should.be.rejected.then(error => {
+    serviceRegistrationService.createPopulatedService(inviteCode).then(() => {
+      done('should not be called')
+    }).catch(error => {
       expect(createGatewayAccountMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(completeServiceInviteMock.isDone()).to.be.true // eslint-disable-line no-unused-expressions
       expect(error.errorCode).to.equal(500)
-    }).should.notify(done)
+      done()
+    })
   })
 
   it('should error if creation of a gateway account succeeded and complete invite succeeded, but user already exists', function (done) {

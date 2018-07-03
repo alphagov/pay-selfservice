@@ -1,8 +1,10 @@
 'use strict'
 
-const q = require('q')
+// NPM dependencies
 const logger = require('winston')
 const lodash = require('lodash')
+
+// Local dependencies
 const userService = require('../services/user_service')
 const transactionView = require('../utils/transaction_view.js')
 const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
@@ -12,86 +14,83 @@ module.exports = function (correlationId) {
   correlationId = correlationId || ''
 
   function findWithEvents (accountId, chargeId) {
-    const defer = q.defer()
-    const params = {
-      gatewayAccountId: accountId,
-      chargeId: chargeId,
-      correlationId: correlationId
-    }
-
-    connector.getCharge(params, function (chargeData) {
-      connector.getChargeEvents(params, function (eventsData) {
-        let userIds = eventsData.events.filter(event => event.submitted_by)
-          .map(event => event.submitted_by)
-        userIds = lodash.uniq(userIds)
-        if (userIds.length <= 0) {
-          defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, []))
-        } else {
-          userService.findMultipleByExternalIds(userIds, correlationId)
-            .then(users => {
-              defer.resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
-            })
-            .catch(err => findWithEventsError(err, undefined, defer))
-        }
+    return new Promise(function (resolve, reject) {
+      const params = {
+        gatewayAccountId: accountId,
+        chargeId: chargeId,
+        correlationId: correlationId
+      }
+      connector.getCharge(params, function (chargeData) {
+        connector.getChargeEvents(params, function (eventsData) {
+          let userIds = eventsData.events.filter(event => event.submitted_by)
+            .map(event => event.submitted_by)
+          userIds = lodash.uniq(userIds)
+          if (userIds.length <= 0) {
+            resolve(transactionView.buildPaymentView(chargeData, eventsData, []))
+          } else {
+            userService.findMultipleByExternalIds(userIds, correlationId)
+              .then(users => {
+                resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
+              })
+              .catch(err => findWithEventsError(err, undefined, reject))
+          }
+        }).on('connectorError', (err, response) => {
+          findWithEventsError(err, response, reject)
+        })
       }).on('connectorError', (err, response) => {
-        findWithEventsError(err, response, defer)
+        findWithEventsError(err, response, reject)
       })
-    }).on('connectorError', (err, response) => {
-      findWithEventsError(err, response, defer)
     })
-    return defer.promise
   }
 
   function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
-    const defer = q.defer()
-
-    const payload = {
-      amount: amount,
-      refund_amount_available: refundAmountAvailable,
-      user_external_id: userExternalId
-    }
-
-    logger.log('info', 'Submitting a refund for a charge', {
-      'chargeId': chargeId,
-      'amount': amount,
-      'refundAmountAvailable': refundAmountAvailable,
-      'userExternalId': userExternalId
-    })
-
-    const params = {
-      gatewayAccountId: accountId,
-      chargeId: chargeId,
-      payload: payload,
-      correlationId: correlationId
-    }
-
-    connector.postChargeRefund(params, function () {
-      defer.resolve()
-    }).on('connectorError', (err, response, body) => {
-      err = 'REFUND_FAILED'
-      if (response && response.statusCode === 400) {
-        if (body.reason) {
-          err = body.reason
-        }
+    return new Promise(function (resolve, reject) {
+      const payload = {
+        amount: amount,
+        refund_amount_available: refundAmountAvailable,
+        user_external_id: userExternalId
       }
-      if (response && response.statusCode === 412) {
-        if (body.reason) {
-          err = body.reason
-        } else {
-          err = 'refund_amount_available_mismatch'
-        }
-      }
-      defer.reject(err)
-    })
 
-    return defer.promise
+      logger.log('info', 'Submitting a refund for a charge', {
+        'chargeId': chargeId,
+        'amount': amount,
+        'refundAmountAvailable': refundAmountAvailable,
+        'userExternalId': userExternalId
+      })
+
+      const params = {
+        gatewayAccountId: accountId,
+        chargeId: chargeId,
+        payload: payload,
+        correlationId: correlationId
+      }
+
+      connector.postChargeRefund(params, function () {
+        resolve()
+      }).on('connectorError', (err, response, body) => {
+        err = 'REFUND_FAILED'
+        if (response && response.statusCode === 400) {
+          if (body.reason) {
+            err = body.reason
+          }
+        }
+        if (response && response.statusCode === 412) {
+          if (body.reason) {
+            err = body.reason
+          } else {
+            err = 'refund_amount_available_mismatch'
+          }
+        }
+        reject(err)
+      })
+    })
   }
 
-  function findWithEventsError (err, response, defer) {
+  function findWithEventsError (err, response, reject) {
     const code = (response || {}).statusCode || (err || {}).errorCode
-    if (code === 404) return defer.reject('NOT_FOUND')
-    if (code > 200) return defer.reject('GET_FAILED')
-    defer.reject('CLIENT_UNAVAILABLE')
+    if (code === 404) return reject('NOT_FOUND')
+    if (code > 200) return reject('GET_FAILED')
+    reject('CLIENT_UNAVAILABLE')
   }
 
   return {

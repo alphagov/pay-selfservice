@@ -29,6 +29,7 @@ let forgottenPassword = function (commonPasswordMock) {
 }
 
 let adminusersMock = nock(process.env.ADMINUSERS_URL)
+
 const USER_RESOURCE = '/v1/api/users'
 const FORGOTTEN_PASSWORD_RESOURCE = '/v1/api/forgotten-passwords'
 const RESET_PASSWORD_RESOURCE = '/v1/api/reset-password'
@@ -96,11 +97,11 @@ describe('forgotten_password_controller', function () {
     let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token})
     let userResponse = userFixtures.validUserResponse({external_id: userExternalId})
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse.getPlain())
-
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain())
+
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
+      .reply(200, forgottenPasswordResponse.getPlain())
 
     adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
       .validUpdatePasswordRequest(token, req.body.password)
@@ -108,8 +109,7 @@ describe('forgotten_password_controller', function () {
       .reply(204)
 
     adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
-      .validIncrementSessionVersionRequest()
-      .getPlain())
+      .validIncrementSessionVersionRequest().getPlain())
       .reply(200)
 
     forgottenPasswordController.newPasswordPost(req, res).should.be.fulfilled

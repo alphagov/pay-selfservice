@@ -1,15 +1,14 @@
 'use strict'
 
 // NPM dependencies
-const q = require('q')
 const logger = require('winston')
 
-// Custom dependencies
+// Local dependencies
 const getAdminUsersClient = require('./clients/adminusers_client')
 const ConnectorClient = require('../services/clients/connector_client').ConnectorClient
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
-// Global functions
-const completeServiceInvite = function (inviteCode, gatewayAccountIds, correlationId) {
+
+const completeServiceInvite = (inviteCode, gatewayAccountIds, correlationId) => {
   return getAdminUsersClient({correlationId}).completeInvite(inviteCode, gatewayAccountIds)
 }
 
@@ -38,7 +37,7 @@ module.exports = {
    * @param otpCode
    * @param correlationId
    */
-  submitServiceInviteOtpCode: function (code, otpCode, correlationId) {
+  submitServiceInviteOtpCode: (code, otpCode, correlationId) => {
     return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode)
   },
 
@@ -46,23 +45,21 @@ module.exports = {
    * Creates a service containing a sandbox gateway account and a user
    */
   createPopulatedService: (inviteCode, correlationId) => {
-    const defer = q.defer()
-
-    let gatewayAccountId
-    createGatewayAccount(correlationId)
-      .then(gatewayAccount => {
-        gatewayAccountId = gatewayAccount.gateway_account_id
-        return completeServiceInvite(inviteCode, [gatewayAccountId], correlationId)
-      })
-      .then(completeServiceInviteResponse => {
-        defer.resolve(completeServiceInviteResponse)
-      })
-      .catch(error => {
-        logger.error(`[requestId=${correlationId}] Create populated service orchestration error -`, error)
-        defer.reject(error)
-      })
-
-    return defer.promise
+    return new Promise(function (resolve, reject) {
+      let gatewayAccountId
+      createGatewayAccount(correlationId)
+        .then(gatewayAccount => {
+          gatewayAccountId = gatewayAccount.gateway_account_id
+          return completeServiceInvite(inviteCode, [gatewayAccountId], correlationId)
+        })
+        .then(completeServiceInviteResponse => {
+          resolve(completeServiceInviteResponse)
+        })
+        .catch(error => {
+          logger.error(`[requestId=${correlationId}] Create populated service orchestration error -`, error)
+          reject(error)
+        })
+    })
   },
 
   /**

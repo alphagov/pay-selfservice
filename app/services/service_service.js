@@ -1,7 +1,10 @@
 'use strict'
 
-const q = require('q')
+// NPM dependencies
 const lodash = require('lodash')
+const winston = require('winston')
+
+// Local dependencies
 const getAdminUsersClient = require('./clients/adminusers_client')
 const {ConnectorClient} = require('../services/clients/connector_client')
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client')
@@ -9,10 +12,8 @@ const {isADirectDebitAccount} = directDebitConnectorClient
 const productsClient = require('../services/clients/products_client')
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const Service = require('../models/Service.class')
-const winston = require('winston')
-
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
-// Exports
+
 module.exports = {
   getGatewayAccounts,
   updateServiceName,
@@ -63,24 +64,27 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
  * @returns {Promise<Service>} the updated service
  */
 function updateServiceName (serviceExternalId, serviceName, correlationId) {
-  if (!serviceExternalId) return q.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-  if (!serviceName) serviceName = 'System Generated'
+  return new Promise(function (resolve, reject) {
+    if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
+    if (!serviceName) serviceName = 'System Generated'
 
-  return getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName)
-    .then(result => {
-      const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
-      // Update gateway account service names
-      if (gatewayAccountIds.length <= 0) {
-        return q.resolve(new Service(result))
-      } else {
-        const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
-        return q.all([
-          ...accounts[1].map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
-          ...accounts[1].map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
-        ])
-          .then(() => q.resolve(new Service(result)))
-      }
-    })
+    getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName)
+      .then(result => {
+        const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
+
+        // Update gateway account service names
+        if (gatewayAccountIds.length <= 0) {
+          return resolve(new Service(result))
+        } else {
+          const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
+          return Promise.all([
+            ...accounts[1].map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
+            ...accounts[1].map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
+          ])
+            .then(() => resolve(new Service(result)))
+        }
+      })
+  })
 }
 
 /**
@@ -92,13 +96,17 @@ function updateServiceName (serviceExternalId, serviceName, correlationId) {
  * @returns {Promise<Service>} the updated service
  */
 function updateMerchantDetails (serviceExternalId, merchantDetails, correlationId) {
-  if (!serviceExternalId) return q.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-  if (!merchantDetails) return q.reject(new Error(`argument: 'merchantDetails' cannot be undefined`))
-
-  return getAdminUsersClient({correlationId}).updateMerchantDetails(serviceExternalId, merchantDetails)
-    .then(result => {
-      return q.resolve(new Service(result))
-    })
+  return new Promise(function (resolve, reject) {
+    if (!serviceExternalId) return reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
+    if (!merchantDetails) return reject(new Error(`argument: 'merchantDetails' cannot be undefined`))
+    getAdminUsersClient({correlationId}).updateMerchantDetails(serviceExternalId, merchantDetails)
+      .then(result => {
+        return resolve(new Service(result))
+      })
+      .catch(function (err) {
+        return reject(err)
+      })
+  })
 }
 
 /**
