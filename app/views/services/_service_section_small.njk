@@ -1,0 +1,53 @@
+<div class="flex-grid--row service_list_item">
+  <div class="flex-grid--heading-group marked">
+    <h2 class="heading-medium service-name">
+      {{ service.name }}
+      {% if service.permissions.service_name_update %}
+      <a href="/service/{{ service.external_id }}/edit-name" class="edit-service-name">
+        Edit name
+      </a>
+      {% endif %}
+    </h2>
+  </div>
+  <div class="flex-grid--column-half tight marked">
+    {% if service.gateway_accounts.cardAccounts.length %}
+    <h3 class="heading-small page-title">Card payments</h3>
+    <ul class="list service-list">
+    {% for account in service.gateway_accounts.cardAccounts %}
+      {% include "./_service_switch.njk" %}
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if service.gateway_accounts.directdebitAccounts.length %}
+    <h3 class="heading-small">Direct debit payments</h3>
+    <ul class="list service-list">
+    {% for account in service.gateway_accounts.directdebitAccounts %}
+      {% include "./_service_switch.njk" %}
+    {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  <div id="team-members" class="flex-grid--column-half tight marked">
+    <ul>
+      <li>
+      {% if service.permissions.users_service_create %}
+        <p>
+          <a href="/service/{{ service.external_id }}" class="manage-team-members">Manage team members</a>
+        </p>
+      {% else %}
+        <p>
+          <a href="/service/{{ service.external_id }}" class="view-team-members">View team members</a>
+        </p>
+      {% endif %}
+      </li>
+      <li>
+      {% if service.permissions.merchant_details_read %}
+        <p>
+          <a href="/merchant-details/{{ service.external_id }}" class="edit-merchant-details">Edit merchant details</a>
+        </p>
+      {% endif %}
+      </li>
+    </ul>
+  </div>
+</div>
