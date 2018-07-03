@@ -2,11 +2,8 @@
 
 module.exports = {
   reflect: promise => {
-    return promise.then(function (v) {
-      return {v: v, status: 'resolved'}
-    },
-    function (e) {
-      return {e: e, status: 'rejected'}
-    })
+    return promise.then(result => ({v: result, status: 'resolved'}),
+      error => ({e: error, status: 'rejected'})
+    )
   }
 }
