@@ -1,13 +1,14 @@
 .admin-list-group {
-  margin-top: $gutter;
   .admin-list-group-heading:first-of-type {
     @include bold-24;
-    margin: 0 0 $gutter;
+    margin: 0 0 20px;
   }
 }
-
+.grid-row .admin-list-group:nth-child(n+2) {
+  margin-top: $gutter*2;
+}
 .admin-list {
-  margin-top: $gutter;
+  margin-top: 20px;
 
   .admin-list-heading {
     @include bold-16;
