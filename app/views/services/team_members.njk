@@ -21,13 +21,13 @@ Team members - GOV.UK Pay
     {% endif %}
   </div>
 </div>
+{% if permissions.users_service_create %}
+  <a id="invite-team-member-link" class="button" href="{{inviteTeamMemberLink}}">
+    Invite a team member
+  </a>
+{% endif %}
 <div class="grid-row">
-  <div class="column-full admin-list-group">
-    {% if permissions.users_service_create %}
-      <a id="invite-team-member-link" class="button" href="{{inviteTeamMemberLink}}">
-        Invite a team member
-      </a>
-    {% endif %}
+  <div class="column-two-thirds admin-list-group">
     <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
     <div class="admin-list" id="team-members-admin-list">
       <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{team_members["admin"].length}})</h3>
@@ -90,7 +90,8 @@ Team members - GOV.UK Pay
       </ul>
     </div>
   </div>
-  <div class="column-full admin-list-group">
+  {% if number_invited_members > 0 %}
+  <div class="column-two-thirds admin-list-group">
     <h2 id="invited-team-members-heading" class="admin-list-group-heading">Invited ({{number_invited_members}})</h2>
     <div class="admin-list" id="invited-team-members-admin-list">
       <h3 id="invited-team-members-admin-role-header" class="admin-list-heading">Administrators ({{invited_team_members["admin"].length}})</h3>
@@ -128,4 +129,5 @@ Team members - GOV.UK Pay
         {% endfor %}
       </ul>
     </div>
+  {% endif %}
 {% endblock %}

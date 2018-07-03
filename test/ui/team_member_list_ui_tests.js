@@ -188,4 +188,27 @@ describe('The team members view', function () {
     body.should.containSelector('h3#invited-team-members-view-only-role-header').withExactText('View only (0)')
     body.should.containSelector('div#invited-team-members-view-only-list').havingNumberOfRows(0)
   })
+  it('should not render invited team members list if there are no invitations', function () {
+    let templateData = {
+      'number_invited_members': 0,
+      'number_admin_invited_members': 0,
+      'number_view-only_invited_members': 0,
+      'number_view-and-refund_invited_members': 0,
+      'invited_team_members': {
+        'admin': [],
+        'view-only': [],
+        'view-and-refund': []
+      }
+    }
+
+    let body = renderTemplate('services/team_members', templateData)
+    body.should.not.containSelector('h2#invited-team-members-heading')
+    body.should.not.containSelector('h3#invited-team-members-admin-role-header')
+    body.should.not.containSelector('h3#invited-team-members-view-only-role-header')
+    body.should.not.containSelector('h3#invited-team-members-view-and-refund-role-header')
+
+    body.should.not.containSelector('div#invited-team-members-admin-list')
+    body.should.not.containSelector('div#invited-team-members-view-only-list')
+    body.should.not.containSelector('div#invited-team-members-view-and-refund-list')
+  })
 })

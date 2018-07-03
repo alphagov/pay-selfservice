@@ -493,8 +493,6 @@ module.exports = function (clientOptions = {}) {
    * @returns {Promise}
    */
   const getInvitedUsersList = (serviceExternalId) => {
-    console.log(inviteResource)
-    console.log(serviceExternalId)
     const params = {
       correlationId: correlationId,
       qs: {
