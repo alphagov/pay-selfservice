@@ -32,24 +32,35 @@ describe('service switch controller: list of accounts', function () {
     const service2gatewayAccountIds = ['3', '6', '7']
     const service3gatewayAccountIds = ['4', '9']
     const directDebitGatewayAccountIds = ['DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34']
-    const gatewayAccountIds = _.concat(service1gatewayAccountIds, service2gatewayAccountIds, service3gatewayAccountIds)
 
-    gatewayAccountIds.forEach(gid => {
-      connectorMock.get(ACCOUNTS_FRONTEND_PATH + `/${gid}`)
-        .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({
-          gateway_account_id: gid,
-          service_name: `account ${gid}`,
-          type: _.sample(['test', 'live'])
-        }).getPlain())
-    })
-    directDebitGatewayAccountIds.forEach(gid => {
-      directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `/${gid}`)
-        .reply(200, gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
-          gateway_account_id: gid,
-          service_name: `account ${gid}`,
-          type: _.sample(['test', 'live'])
-        }).getPlain())
-    })
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${service1gatewayAccountIds.join(',')}`)
+      .reply(200, service1gatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
+        gateway_account_id: iter,
+        service_name: `account ${iter}`,
+        type: _.sample(['test', 'live'])
+      }).getPlain()))
+
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `?accountIds=${service2gatewayAccountIds.join(',')}`)
+      .reply(200, service2gatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
+        gateway_account_id: iter,
+        service_name: `account ${iter}`,
+        type: _.sample(['test', 'live'])
+      }).getPlain()))
+
+    connectorMock.get(ACCOUNTS_FRONTEND_PATH + `accountIds=${service3gatewayAccountIds.join(',')}`)
+      .reply(200, service3gatewayAccountIds.map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
+        gateway_account_id: iter,
+        service_name: `account ${iter}`,
+        type: _.sample(['test', 'live'])
+      }).getPlain()))
+
+    directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `/accountIds=${directDebitGatewayAccountIds.join(',')}`)
+      .reply(200, directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
+        gateway_account_id: iter,
+        service_name: `account ${iter}`,
+        type: _.sample(['test', 'live'])
+      }).getPlain()))
+
     const req = {
       correlationId: 'correlationId',
       user: userFixtures.validUserResponse({

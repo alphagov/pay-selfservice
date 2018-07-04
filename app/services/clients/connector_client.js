@@ -76,6 +76,11 @@ function _accountUrlFor (gatewayAccountId, url) {
 }
 
 /** @private */
+function _accountsUrlFor (gatewayAccountIds, url) {
+  return url + ACCOUNTS_FRONTEND_PATH + '?accountIds=' + gatewayAccountIds.join(',')
+}
+
+/** @private */
 function _accountNotificationCredentialsUrlFor (gatewayAccountId, url) {
   return url + ACCOUNT_NOTIFICATION_CREDENTIALS_PATH.replace('{accountId}', gatewayAccountId)
 }
@@ -249,6 +254,35 @@ ConnectorClient.prototype = {
   getAccount: function (params) {
     return new Promise((resolve, reject) => {
       let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+      let startTime = new Date()
+      let context = {
+        url: url,
+        defer: {resolve: resolve, reject: reject},
+        startTime: startTime,
+        correlationId: params.correlationId,
+        method: 'GET',
+        description: 'get an account',
+        service: SERVICE_NAME
+      }
+
+      let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      baseClient.get(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
+  },
+
+  /**
+   * Retrieves multiple gateway accounts for a given array of ids
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountIds (required)
+   *            correlationId (optional)
+   *@return {Promise}
+   */
+  getAccounts: function (params) {
+    return new Promise((resolve, reject) => {
+      let url = _accountsUrlFor(params.gatewayAccountIds, this.connectorUrl)
       let startTime = new Date()
       let context = {
         url: url,

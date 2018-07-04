@@ -3,12 +3,11 @@
 // Local Dependencies
 const GatewayAccount = require('../../models/DirectDebitGatewayAccount.class')
 const baseClient = require('./base_client/base_client')
-const DIRECT_DEBIT_CONNECTOR_URL = process.env.DIRECT_DEBIT_CONNECTOR_URL
-const DIRECT_DEBIT_TOKEN_PREFIX = 'DIRECT_DEBIT:'
-// Use baseurl to create a baseclient for the direct debit microservice
-const baseUrl = `${DIRECT_DEBIT_CONNECTOR_URL}/v1/api`
 
 // Constants
+const DIRECT_DEBIT_CONNECTOR_URL = process.env.DIRECT_DEBIT_CONNECTOR_URL
+const DIRECT_DEBIT_TOKEN_PREFIX = 'DIRECT_DEBIT:'
+const baseUrl = `${DIRECT_DEBIT_CONNECTOR_URL}/v1/api`
 const SERVICE_NAME = 'directdebit-connector'
 
 // Exports
@@ -17,6 +16,9 @@ module.exports = {
   gatewayAccount: {
     create: createGatewayAccount,
     get: getGatewayAccountByExternalId
+  },
+  gatewayAccounts: {
+    get: getGatewayAccountsByExternalIds
   }
 }
 
@@ -51,4 +53,15 @@ function getGatewayAccountByExternalId (params) {
     description: `find a gateway account by external id`,
     service: SERVICE_NAME
   }).then(ga => new GatewayAccount(ga))
+}
+
+function getGatewayAccountsByExternalIds (params) {
+  return baseClient.get({
+    baseUrl,
+    url: `/accounts/?accountIds=${params.gatewayAccountIds.join(',')}`,
+    correlationId: params.correlationId,
+    json: true,
+    description: `find gateway accounts by external ids`,
+    service: SERVICE_NAME
+  })
 }
