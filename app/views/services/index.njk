@@ -26,9 +26,20 @@ Choose service - GOV.UK Pay
       </a>
     </div>
   </div>
+  {% if services.length > 0 %}
+  <div class="js-show flex-grid--row">
+    <div class="flex-grid--column-half tight">
+      <label class="form-label-bold" for="service-filter">Filter services</label>
+      <div id="service-filter-container"></div>
+    </div>
+    <div class="flex-grid--column-half tight">
+      <button class="services-clear-filters" id="clear-filters">Clear filter</button>
+    </div>
+  </div>
+  {% endif %}
   <div class="flex-grid">
     {% for service in services %}
-      {% if services.length > 9 %}
+      {% if services.length > 7 %}
         {% include "./_service_section_small.njk" %}
       {% else %}
         {% include "./_service_section.njk" %}

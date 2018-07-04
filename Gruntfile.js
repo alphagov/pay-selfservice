@@ -11,7 +11,8 @@ module.exports = function (grunt) {
           sourcemap: true,
           includePaths: [
             'govuk_modules/govuk_frontend_toolkit/stylesheets',
-            'node_modules/govuk-elements-sass/public/sass/'
+            'node_modules/govuk-elements-sass/public/sass/',
+            'govuk_modules/accessible-autocomplete/'
           ],
           outputStyle: 'expanded'
         },
@@ -61,6 +62,13 @@ module.exports = function (grunt) {
             src: '**',
             dest: 'govuk_modules/govuk_template/',
             rename: (dest, src) => dest + src.replace('html', 'njk')
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/accessible-autocomplete/dist',
+            src: '*.css',
+            dest: 'govuk_modules/accessible-autocomplete/',
+            rename: (dest, src) => dest + src.replace('min.css', 'scss')
           }
         ]
       },
