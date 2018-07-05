@@ -45,16 +45,14 @@
   </div>
   {% endif %}
   <h1 class="page-title">Organisation details</h1>
-  {% if has_direct_debit_gateway_account %}
-    <p id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
-      displayed in emails and on payment pages.</p>
-  {% endif %}
-  {% if has_card_gateway_account %}
-    <p id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
-  {% endif %}
   {% if has_card_and_dd_gateway_account %}
     <p id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
       payer. This information is displayed in emails and on payment pages.</p>
+  {% elif has_direct_debit_gateway_account %}
+    <p id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
+      displayed in emails and on payment pages.</p>
+  {% elif has_card_gateway_account %}
+    <p id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
   {% endif %}
 
   <form id="merchant-details-form" method="post" action="/organisation-details/edit/{{externalServiceId}}">
