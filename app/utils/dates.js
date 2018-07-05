@@ -29,10 +29,20 @@ module.exports = (function () {
     return moment(date).tz('Europe/London').format('DD MMM YYYY — HH:mm:ss')
   }
 
+  const utcToDate = function (date) {
+    return moment(date).tz('Europe/London').format('DD MMM YYYY')
+  }
+
+  const utcToTime = function (date) {
+    return moment(date).tz('Europe/London').format('HH:mm:ss')
+  }
+
   return {
     dateToDefaultFormat: dateToDefaultFormat,
     fromDateToApiFormat: fromDateToApiFormat,
     toDateToApiFormat: toDateToApiFormat,
-    utcToDisplay: utcToDisplay
+    utcToDisplay: utcToDisplay,
+    utcToDate: utcToDate,
+    utcToTime: utcToTime
   }
 }())
