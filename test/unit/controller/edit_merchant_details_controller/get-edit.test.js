@@ -67,7 +67,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -119,7 +119,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -173,7 +173,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -228,7 +228,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -285,7 +285,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -307,45 +307,6 @@ describe('edit merchant details controller - get', () => {
     })
     it(`should display the merchant details info`, () => {
       expect($('#merchant-details-info').text()).to.include('Payment card schemes and Direct Debit require the details')
-    })
-  })
-  describe('when success is set in the session', () => {
-    before(done => {
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      session = {
-        csrfSecret: '123',
-        12345: {refunded_amount: 5},
-        passport: {
-          user: userInSession
-        },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0,
-        pageData: {
-          editMerchantDetails: {
-            success: true
-          }
-        }
-      }
-      const app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
-        .end((err, res) => {
-          response = res
-          $ = cheerio.load(res.text || '')
-          done(err)
-        })
-    })
-    it(`should get a nice 200 status code`, () => {
-      expect(response.statusCode).to.equal(200)
-    })
-    it(`should show an updated successful banner`, () => {
-      expect($('.notification').text()).to.contain('Merchant details updated')
-    })
-    it(`should not show any error`, () => {
-      expect($('.error-summary').length).to.equal(0)
     })
   })
   describe('when errors and merchant details are set in the session (CREDIT CARD GATEWAY ACCOUNT)', () => {
@@ -382,7 +343,7 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
@@ -453,7 +414,7 @@ describe('edit merchant details controller - get', () => {
       }
       const app = mockSession.createAppWithSession(getApp(), session)
       supertest(app)
-        .get(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+        .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
           response = res
           $ = cheerio.load(res.text || '')
