@@ -70,8 +70,8 @@ module.exports = {
     update: '/service/:externalServiceId/edit-name'
   },
   merchantDetails: {
-    index: '/merchant-details/:externalServiceId',
-    update: '/merchant-details/:externalServiceId'
+    index: '/organisation-details/:externalServiceId',
+    edit: '/organisation-details/edit/:externalServiceId'
   },
   teamMembers: {
     index: '/service/:externalServiceId',

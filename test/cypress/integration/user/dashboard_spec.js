@@ -2,8 +2,8 @@ describe('Dashboard', () => {
   const selfServceUsers = require('../../../fixtures/config/self_service_user.json')
 
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.setCookie('session', Cypress.env('encryptedSessionCookieUser1'))
+    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookieUser1'))
   })
 
   describe('Homepage', () => {

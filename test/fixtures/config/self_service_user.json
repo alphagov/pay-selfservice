@@ -15,6 +15,18 @@
             "isPrimary": "false"
           }
         ],
+        "services": [
+          {
+            "isPrimary": "true",
+            "external_id": "cp5wa",
+            "name": "The Public Office of Jon Heslop",
+            "address_line1": "7th Floor",
+            "address_line2": "Rue de la Résistance 18",
+            "address_city": "Paris",
+            "address_postcode": "56878",
+            "address_country": "GB"
+          }
+        ],
         "permissions": [
           {
             "name": "transactions:read"
@@ -27,6 +39,12 @@
           },
           {
             "name": "transactions_card_type_read"
+          },
+          {
+            "name": "merchant-details:read"
+          },
+          {
+            "name": "merchant-details:update"
           }
         ],
         "sections": {
@@ -355,6 +373,49 @@
               }
             ]
           }
+        }
+      },
+      {
+        "isPrimary": "false",
+        "external_id": "c78b302dd34f4926877c0c57a037f81d",
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true"
+          }
+        ],
+        "services": [
+          {
+            "isPrimary": "true",
+            "external_id": "cp5wa",
+            "name": "The Benevolent Society of Front End Developers",
+            "address_line1": "Flat 9",
+            "address_line2": "19 Street Road",
+            "address_city": "London",
+            "address_postcode": "N1 1AB",
+            "address_country": "GB"
+          }
+        ],
+        "merchant_details": {
+          "name": "The Benevolent Society of Front End Developers",
+          "address_line1": "Flat 9",
+          "address_line2": "19 Street Road",
+          "address_city": "London",
+          "address_postcode": "N1 1AB",
+          "address_country": "GB",
+          "telephone": "07777777777",
+          "email": "test@email.com"
+        },
+        "permissions": [
+          {
+            "name": "merchant-details:read"
+          },
+          {
+            "name": "merchant-details:update"
+          }
+        ],
+        "sections": {
+
         }
       }
     ]

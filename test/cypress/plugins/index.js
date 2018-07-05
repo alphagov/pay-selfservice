@@ -20,27 +20,50 @@ module.exports = (on, config) => {
   // ensures our pact-stub server is ready to return canned responses.
   const ssUserConfig = require('../../fixtures/config/self_service_user.json')
 
-  const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+  const ssPrimaryUser = ssUserConfig.config.users.filter(user => user.isPrimary === 'true')[0]
 
-  const encryptedSessionCookie = cookieMonster.getCookie('session', config.env.TEST_SESSION_ENCRYPTION_KEY,
+  const ssSecondaryUser = ssUserConfig.config.users[1]
+
+  const encryptedSessionCookieUser1 = cookieMonster.getCookie('session', config.env.TEST_SESSION_ENCRYPTION_KEY,
     {
-      passport: {user: ssUser.external_id},
+      passport: { user: ssPrimaryUser.external_id},
       secondFactor: 'totp',
       version: 0,
       icamefrom: 'cypress.io'
     })
 
-  const encryptedGatewayAccountCookie = cookieMonster.getCookie('gateway_account', config.env.TEST_SESSION_ENCRYPTION_KEY,
+  const encryptedGatewayAccountCookieUser1 = cookieMonster.getCookie('gateway_account', config.env.TEST_SESSION_ENCRYPTION_KEY,
     {
-      currentGatewayAccountId: ssUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      currentGatewayAccountId: ssPrimaryUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
       icamefrom: 'cypress.io'
     })
 
-  config.env.encryptedSessionCookie = encryptedSessionCookie
-  config.env.encryptedGatewayAccountCookie = encryptedGatewayAccountCookie
+  const encryptedSessionCookieUser2 = cookieMonster.getCookie('session', config.env.TEST_SESSION_ENCRYPTION_KEY,
+    {
+      passport: { user: ssSecondaryUser.external_id },
+      secondFactor: 'totp',
+      version: 0,
+      icamefrom: 'cypress.io'
+    })
 
-  console.log(`test encrypted session cookie: ${encryptedSessionCookie}`)
-  console.log(`test encrypted gateway account cookie: ${encryptedSessionCookie}`)
+  const encryptedGatewayAccountCookieUser2 = cookieMonster.getCookie('gateway_account', config.env.TEST_SESSION_ENCRYPTION_KEY,
+    {
+      currentGatewayAccountId: ssSecondaryUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      icamefrom: 'cypress.io'
+    })
+
+
+  config.env.encryptedSessionCookieUser1 = encryptedSessionCookieUser1
+  config.env.encryptedGatewayAccountCookieUser1 = encryptedGatewayAccountCookieUser1
+
+  console.log(`test encrypted session cookie User 1: ${encryptedSessionCookieUser1}`)
+  console.log(`test encrypted gateway account cookie User 1: ${encryptedGatewayAccountCookieUser1}`)
+
+  config.env.encryptedSessionCookieUser2 = encryptedSessionCookieUser2
+  config.env.encryptedGatewayAccountCookieUser2 = encryptedGatewayAccountCookieUser2
+
+  console.log(`test encrypted session cookie User 2: ${encryptedSessionCookieUser2}`)
+  console.log(`test encrypted gateway account cookie User 2: ${encryptedGatewayAccountCookieUser2}`)
 
   // send back the modified config object
   return config

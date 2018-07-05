@@ -6,8 +6,8 @@ describe('Transactions', () => {
   const convertAmounts = val => '£' + (val / 100).toFixed(2)
 
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.setCookie('session', Cypress.env('encryptedSessionCookieUser1'))
+    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookieUser1'))
     cy.visit(transactionsUrl)
   })
 
