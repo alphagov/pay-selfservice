@@ -428,8 +428,6 @@ module.exports = function (clientOptions = {}) {
         correlationId: correlationId,
         description: 'submit otp code',
         service: SERVICE_NAME,
-        // TODO : Double check this
-        // transform: responseBodyToUserTransformer,
         baseClientErrorHandler: 'old'
       }
     )
@@ -511,8 +509,8 @@ module.exports = function (clientOptions = {}) {
           headers: {}
         },
         headers: headers,
-        userDelete: userExternalId, // TODO : Copied over from last implementation. Is this used anywhere?
-        userRemover: removerExternalId, // TODO : Copied over from last implementation. Is this used anywhere?
+        userDelete: userExternalId,
+        userRemover: removerExternalId,
         correlationId: correlationId,
         description: 'delete a user from a service',
         service: SERVICE_NAME,
