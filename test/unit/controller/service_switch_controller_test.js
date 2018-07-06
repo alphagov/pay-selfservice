@@ -33,7 +33,7 @@ describe('service switch controller: list of accounts', function () {
         type: _.sample(['test', 'live'])
       }).getPlain()) })
 
-    directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `?accountIds=${directDebitGatewayAccountIds.join(',')}`)
+    directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `?externalAccountIds=${directDebitGatewayAccountIds.join(',')}`)
       .reply(200, { accounts : directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
         gateway_account_id: iter,
         service_name: `account ${iter}`,

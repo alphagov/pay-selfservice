@@ -58,7 +58,7 @@ function getGatewayAccountByExternalId (params) {
 function getGatewayAccountsByExternalIds (params) {
   return baseClient.get({
     baseUrl,
-    url: `/accounts?accountIds=${params.gatewayAccountIds.join(',')}`,
+    url: `/accounts?externalAccountIds=${params.gatewayAccountIds.join(',')}`,
     correlationId: params.correlationId,
     json: true,
     description: `find gateway accounts by external ids`,
