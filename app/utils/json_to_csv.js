@@ -55,7 +55,6 @@ module.exports = function (data) {
           {label: 'Cardholder Name', value: 'card_details.cardholder_name'},
           {label: 'Card Expiry Date', value: 'card_details.expiry_date'},
           {label: 'Card Number', value: 'card_details.last_digits_card_number'}
-
         ]),
         {
           label: 'State',
@@ -73,7 +72,13 @@ module.exports = function (data) {
         {
           label: 'Date Created',
           value: row => {
-            return dates.utcToDisplay(row.created_date)
+            return dates.utcToDate(row.created_date)
+          }
+        },
+        {
+          label: 'Time Created',
+          value: row => {
+            return dates.utcToTime(row.created_date)
           }
         }
       ]
