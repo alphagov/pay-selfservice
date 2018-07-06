@@ -5,7 +5,6 @@ const _ = require('lodash')
 
 // local dependencies
 const {response} = require('../../utils/response')
-const {reflect} = require('../../utils/reflect')
 const serviceService = require('../../services/service_service')
 const getHeldPermissions = require('../../utils/get_held_permissions')
 
@@ -29,32 +28,24 @@ module.exports = (req, res) => {
     return response(req, res, 'services/index', data)
   }
 
-  const reflectPromises = servicesRoles.map(serviceRole => {
-    return new Promise(function (resolve, reject) {
-      serviceService.getGatewayAccounts(serviceRole.service.gatewayAccountIds, req.correlationId)
-        .then(accounts => {
-          accounts.sort((a, b) => a.type === b.type ? 0 : a.type === 'live' ? -1 : 1)
-          const cardAccounts = accounts.filter(account => account.payment_method === undefined)
-          const directdebitAccounts = accounts.filter(account => account.payment_method === 'direct debit')
-          resolve({
-            name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
-            external_id: serviceRole.service.externalId,
-            gateway_accounts: {
-              cardAccounts,
-              directdebitAccounts
-            },
-            permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
-          })
-        })
-        .catch(() => reject(new Error('Error getting gateway account')))
-    })
-  })
+  const aggregatedGatewayAccountIds = servicesRoles
+    .map(servicesRole => servicesRole.service.gatewayAccountIds)
+    .reduce((accumulator, currentValue) => { return accumulator.concat(currentValue) }, [])
 
-  return Promise.all(reflectPromises.map(reflect))
-    .then(serviceDataPromises =>
-      serviceDataPromises
-        .filter(promise => promise.status === 'resolved')
-        .map(promise => promise.v)
-    )
+  serviceService.getGatewayAccounts(aggregatedGatewayAccountIds, req.correlationId)
+    .then(aggregatedGatewayAccounts => {
+      return servicesRoles.map(serviceRole => {
+        const gatewayAccounts = aggregatedGatewayAccounts.filter(gatewayAccount => serviceRole.service.gatewayAccountIds.includes(gatewayAccount.id.toString()))
+        return {
+          name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
+          external_id: serviceRole.service.externalId,
+          gateway_accounts: {
+            cardAccounts: gatewayAccounts.filter(gatewayAccount => gatewayAccount.payment_method !== 'direct debit'),
+            directdebitAccounts: gatewayAccounts.filter(gatewayAccount => gatewayAccount.payment_method === 'direct debit')
+          },
+          permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
+        }
+      })
+    })
     .then(displayMyServices)
 }
