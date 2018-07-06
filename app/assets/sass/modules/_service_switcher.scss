@@ -70,3 +70,34 @@
   display: inline-block;
   margin-top: 10px;
 }
+
+.service-list {
+  margin-bottom: 0;
+}
+
+.services-clear-filters {
+  @include appearance(none);
+  @include core-16;
+
+  display: inline;
+  margin-top: $gutter * 1.5;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  text-decoration: underline;
+  color: $link-colour;
+  text-align: left;
+
+  &:hover {
+  color: $link-hover-colour;
+  }
+}
+
+.js-show {
+  display: none!important;
+}
+
+.js-enabled .js-show {
+  display: flex!important;
+}

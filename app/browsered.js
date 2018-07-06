@@ -13,6 +13,7 @@ const analytics = require('gaap-analytics')
 const inputConfirm = require('./browsered/input-confirm')
 const niceURL = require('./browsered/nice-url')
 const copyText = require('./browsered/copy-text')
+const accessibleAutocomplete = require('./browsered/autocomplete')
 
 // GOV.UK Frontend Toolkit dependencies
 require('../govuk_modules/govuk_frontend_toolkit/javascripts/govuk/show-hide-content')
@@ -26,6 +27,7 @@ analytics.virtualPageview.init()
 inputConfirm()
 niceURL()
 copyText()
+accessibleAutocomplete()
 
 $(document).ready($ => {
   const showHideContent = new window.GOVUK.ShowHideContent()

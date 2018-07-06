@@ -31,19 +31,20 @@
 
     @include media(tablet) {
       flex: 0 0 auto;
-
-      &.marked:nth-child(even) {
-        border-right: solid 1px $grey-2;
-      }
     }
   }
 
   &--column-third {
     @extend .column-third;
     margin-bottom: $gutter;
+  }
 
-    @include media(tablet) {
-      &.marked:nth-child(even) {
+  &--column-half,
+  &--column-third {
+    &.marked {
+      margin-bottom: 0;
+
+      &:nth-child(even) {
         border-right: solid 1px $grey-2;
       }
     }
