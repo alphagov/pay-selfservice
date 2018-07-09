@@ -19,7 +19,7 @@ class DirectDebitGatewayAccount {
    * @param {string} gatewayAccountData.payment_provider - The payment provider of the gateway account
    * @param {string} gatewayAccountData.description - The description of the gateway account
    * @param {string} gatewayAccountData.analytics_id - Google analytics_id of the gateway account
-   * @param {boolean} gatewayAccountData.external_id - external id of the gateway account
+   * @param {boolean} gatewayAccountData.gateway_account_external_id - external id of the gateway account
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
