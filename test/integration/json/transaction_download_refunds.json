@@ -34,5 +34,40 @@
       "user_external_id": "thisisauser"
     },
     "transaction_type": "refund"
+  },
+  {
+    "amount": 12345,
+    "state": {
+      "status": "success",
+      "finished": false
+    },
+    "card_brand": "Visa",
+    "description": "=calc+z!A0",
+    "reference": "+red",
+    "email": "-alice.111@mail.fake",
+    "links": [
+
+    ],
+    "charge_id": "charge2",
+    "gateway_transaction_id": "transaction-1",
+    "return_url": "https:\/\/demoservice.pymnt.localdomain:443\/return\/red",
+    "payment_provider": "sandbox",
+    "created_date": "2016-05-12T16:37:29.245Z",
+    "card_details": {
+      "billing_address": {
+        "city": "TEST01",
+        "country": "GB",
+        "line1": "TEST",
+        "line2": "TEST - DO NOT PROCESS",
+        "postcode": "SE1 3UZ"
+      },
+      "card_brand": "@Visa",
+      "cardholder_name": "TEST01",
+      "expiry_date": "12\/19",
+      "last_digits_card_number": "4242"
+    },
+    "refund_summary": {
+    },
+    "transaction_type": "refund"
   }
 ]

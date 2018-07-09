@@ -23,6 +23,7 @@ module.exports = (req, res) => {
       let userIds = json.results
         .filter(res => res.transaction_type === 'refund')
         .map(res => res.refund_summary.user_external_id)
+        .filter(userId => userId)
       userIds = lodash.uniq(userIds)
       if (userIds.length === 0) {
         return jsonToCsv(json.results)

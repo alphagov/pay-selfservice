@@ -171,6 +171,7 @@ describe('Transaction download endpoints', function () {
           let arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"')
           expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","thisisausername","12 May 2016","17:37:29"')
+          expect(arrayOfLines[2]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge2","","12 May 2016","17:37:29"')
           done()
         })
     })
