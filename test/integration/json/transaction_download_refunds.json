@@ -30,6 +30,9 @@
       "expiry_date": "12\/19",
       "last_digits_card_number": "4242"
     },
+    "refund_summary": {
+      "user_external_id": "thisisauser"
+    },
     "transaction_type": "refund"
   }
 ]

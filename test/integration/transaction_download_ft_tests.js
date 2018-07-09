@@ -15,11 +15,13 @@ const assert = require('chai').assert
 const expect = require('chai').expect
 const getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 
+const userFixture = require('../../test/fixtures/user_fixtures')
 const gatewayAccountId = '651342'
 let app
 
 const CHARGES_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
 const connectorMock = nock(process.env.CONNECTOR_URL)
+const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 function connectorMockResponds (code, data, searchParameters) {
   searchParameters.pageSize = searchParameters.pageSize || 500
@@ -62,6 +64,7 @@ describe('Transaction download endpoints', function () {
           next_page: {href: 'http://localhost:8000/bar'}
         }
       }
+      adminusersMock.get('/v1/api/users').reply(200, [])
 
       let secondPageMock = nock('http://localhost:8000')
       let secondResults = _.cloneDeep(results)
@@ -83,19 +86,19 @@ describe('Transaction download endpoints', function () {
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
           assert(5, arrayOfLines.length)
-          assert.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","12 May 2016","17:37:29"', arrayOfLines[1])
-          assert.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","12 Apr 2015","19:55:29"', arrayOfLines[2])
+          assert.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29"', arrayOfLines[1])
+          assert.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"', arrayOfLines[2])
         })
         .end(function (err, res) {
           if (err) return done(err)
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines.length).to.equal(5)
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created","Time Created"')
-          expect(arrayOfLines[1]).to.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","12 May 2016","17:37:29"')
-          expect(arrayOfLines[2]).to.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","12 Apr 2015","19:55:29"')
-          expect(arrayOfLines[3]).to.equal('"red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","12 May 2016","17:37:29"')
-          expect(arrayOfLines[4]).to.equal('"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","12 Apr 2015","19:55:29"')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"')
+          expect(arrayOfLines[1]).to.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29"')
+          expect(arrayOfLines[2]).to.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"')
+          expect(arrayOfLines[3]).to.equal('"red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29"')
+          expect(arrayOfLines[4]).to.equal('"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"')
           done()
         })
     })
@@ -117,6 +120,7 @@ describe('Transaction download endpoints', function () {
         .reply(200, {
           results: results
         })
+      adminusersMock.get('/v1/api/users').reply(200, [])
 
       connectorMockResponds(200, mockJson, {})
 
@@ -128,8 +132,8 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created","Time Created"')
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","12 May 2016","17:37:29"')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29"')
           done()
         })
     })
@@ -143,16 +147,18 @@ describe('Transaction download endpoints', function () {
           next_page: {href: 'http://localhost:8000/bar'}
         }
       }
-
       let secondPageMock = nock('http://localhost:8000')
 
       secondPageMock.get('/bar')
         .reply(200, {
           results: results
         })
+      let user = userFixture.validUser({
+        username: 'thisisausername'
+      }).getPlain()
 
       connectorMockResponds(200, mockJson, {refund_states: 'success'})
-
+      adminusersMock.get('/v1/api/users?ids=thisisauser').reply(200, [user])
       request(app)
         .get(paths.transactions.download + '?refund_states=success')
         .set('Accept', 'application/json')
@@ -163,8 +169,8 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created","Time Created"')
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","12 May 2016","17:37:29"')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","thisisausername","12 May 2016","17:37:29"')
           done()
         })
     })
@@ -185,8 +191,8 @@ describe('Transaction download endpoints', function () {
         .reply(200, {
           results: results
         })
-
       connectorMockResponds(200, mockJson, {payment_states: 'success'})
+      adminusersMock.get('/v1/api/users').reply(200, [])
 
       request(app)
         .get(paths.transactions.download + '?payment_states=success')
@@ -198,8 +204,8 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Date Created","Time Created"')
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","12 May 2016","17:37:29"')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29"')
           done()
         })
     })

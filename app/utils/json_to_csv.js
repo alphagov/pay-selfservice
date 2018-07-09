@@ -67,7 +67,8 @@ module.exports = function (data) {
           {label: 'Error Code', value: 'state.code'},
           {label: 'Error Message', value: 'state.message'},
           {label: 'Provider ID', value: 'gateway_transaction_id'},
-          {label: 'GOV.UK Payment ID', value: 'charge_id'}
+          {label: 'GOV.UK Payment ID', value: 'charge_id'},
+          {label: 'Issued By', value: 'refund_summary.user_external_id'}
         ]),
         {
           label: 'Date Created',
