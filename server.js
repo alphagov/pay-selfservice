@@ -7,6 +7,8 @@ if (!process.env.DISABLE_APPMETRICS) {
 }
 
 // NPM dependencies
+// TODO : Remove/enable
+// const AWSXRay = require('aws-xray-sdk')
 const express = require('express')
 const nunjucks = require('nunjucks')
 const httpsAgent = require('https').globalAgent
@@ -151,6 +153,14 @@ function listen () {
 function initialise () {
   const app = unconfiguredApp
   app.disable('x-powered-by')
+
+  // TODO : Remove/enable
+  // AWSXRay.enableManualMode()
+  // AWSXRay.setLogger(logger)
+  // AWSXRay.middleware.setSamplingRules('aws-xray.rules')
+  // AWSXRay.config([AWSXRay.plugins.ECSPlugin])
+  // app.use(AWSXRay.express.openSegment('pay_selfservice'))
+
   app.use(flash())
   initialiseTLS(app)
   initialisePublic(app)

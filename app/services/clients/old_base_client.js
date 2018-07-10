@@ -1,23 +1,27 @@
 'use strict'
 
+// NPM dependences
 const path = require('path')
 const https = require('https')
-const httpAgent = require('http').globalAgent
+const http = require('http')
 const urlParse = require('url').parse
 const _ = require('lodash')
 const logger = require('winston')
 const request = require('requestretry')
+
+
+// Local dependencies
 const customCertificate = require('../../utils/custom_certificate')
 const getRequestContext = require('../../middleware/get_request_context').getRequestContext
 const CORRELATION_HEADER_NAME = require(path.join(__dirname, '/../../utils/correlation_header')).CORRELATION_HEADER
-const FEATURE_FLAGS_HEADER_NAME = 'features'
 
+// Constants
+const FEATURE_FLAGS_HEADER_NAME = 'features'
+const RETRIABLE_ERRORS = ['ECONNRESET']
 const agentOptions = {
   keepAlive: true,
   maxSockets: process.env.MAX_SOCKETS || 100
 }
-
-const RETRIABLE_ERRORS = ['ECONNRESET']
 
 function retryOnEconnreset (err) {
   return err && _.includes(RETRIABLE_ERRORS, err.code)
@@ -26,6 +30,7 @@ function retryOnEconnreset (err) {
 /**
  * @type {https.Agent}
  */
+const httpAgent = http.globalAgent
 const httpsAgent = new https.Agent(agentOptions)
 
 if (process.env.DISABLE_INTERNAL_HTTPS !== 'true') {

@@ -2,6 +2,8 @@
 
 // NPM Dependencies
 const lodash = require('lodash')
+const AWSXRay = require('aws-xray-sdk')
+const logger = require('winston')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -68,6 +70,14 @@ module.exports.generateRoute = generateRoute
 module.exports.paths = paths
 
 module.exports.bind = function (app) {
+
+  AWSXRay.captureHTTPsGlobal()
+  AWSXRay.enableManualMode()
+  AWSXRay.setLogger(logger)
+  AWSXRay.middleware.setSamplingRules('aws-xray.rules')
+  AWSXRay.config([AWSXRay.plugins.ECSPlugin])
+  app.use(AWSXRay.express.openSegment('pay_selfservice'))
+
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
   // APPLY CORRELATION MIDDLEWARE
@@ -277,4 +287,6 @@ module.exports.bind = function (app) {
     res.status(404)
     res.render('404')
   })
+
+  app.use(AWSXRay.express.closeSegment())
 }
