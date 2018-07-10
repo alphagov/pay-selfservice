@@ -40,15 +40,17 @@ describe('connector client', function () {
 
   describe('get transaction details', () => {
 
+    const gatewayAccount = ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
     const firstCharge = ssDefaultUser.sections.transactions.data[0]
     const chargeDetails = ssDefaultUser.sections.transactions.details_data.filter(x => x.charge_id === firstCharge.charge_id)[0]
     const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      gatewayAccountId: gatewayAccount.id,
       chargeId: firstCharge.charge_id
     }
     const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse(
       {
         summaryObject: firstCharge,
+        payment_provider: gatewayAccount.name,
         gateway_account_id: params.gatewayAccountId,
         refund_summary: chargeDetails.refund_summary,
         settlement_summary: chargeDetails.settlement_summary,

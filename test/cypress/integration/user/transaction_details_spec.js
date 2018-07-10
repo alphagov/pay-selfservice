@@ -26,6 +26,8 @@ describe('Transactions details page', () => {
 
   const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
+  const gatewayAccount = selfServiceDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
+
   const aSmartpayCharge = selfServiceDefaultUser.sections.transactions.data[0]
   const aSmartpayChargeDetails = selfServiceDefaultUser.sections.transactions.details_data[0]
 
@@ -64,7 +66,7 @@ describe('Transactions details page', () => {
         formatDate(new Date(aSmartpayChargeDetails.charge_events[0].updated)))
       // Provider
       cy.get('.transaction-details tbody').find('tr').eq(5).find('td').eq(1).should('have.text',
-        capitalise(aSmartpayCharge.payment_provider))
+        capitalise(gatewayAccount.name))
       // Provider ID
       cy.get('.transaction-details tbody').find('tr').eq(6).find('td').eq(1).should('have.text',
         aSmartpayCharge.gateway_transaction_id)

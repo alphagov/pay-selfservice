@@ -8,11 +8,13 @@
         "gateway_accounts": [
           {
             "id": "666",
-            "isPrimary": "true"
+            "isPrimary": "true",
+            "name": "sandbox"
           },
           {
             "id": "7",
-            "isPrimary": "false"
+            "isPrimary": "false",
+            "name": "nonsandbox"
           }
         ],
         "permissions": [
@@ -135,8 +137,7 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge",
-                "payment_provider": "sandbox"
+                "transaction_type": "charge"
               },
               {
                 "amount": 200,
@@ -168,8 +169,7 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge",
-                "payment_provider": "sandbox"
+                "transaction_type": "charge"
               },
               {
                 "amount": 300,
@@ -201,8 +201,7 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge",
-                "payment_provider": "sandbox"
+                "transaction_type": "charge"
               },
               {
                 "amount": 400,
@@ -234,8 +233,7 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge",
-                "payment_provider": "sandbox"
+                "transaction_type": "charge"
               }
             ],
             "links": {

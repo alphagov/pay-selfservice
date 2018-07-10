@@ -77,7 +77,7 @@ module.exports = {
         ? `https://demoservice.pymnt.localdomain:443/return/532aad2f833a3b8234921ca85a98ca5b/${opts.summaryObject.reference}`
         : 'https://demoservice.pymnt.localdomain:443/return/532aad2f833a3b8234921ca85a98ca5b/ref188888',
       email: opts.summaryObject.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
-      payment_provider: opts.summaryObject.payment_provider || 'sandbox',
+      payment_provider: opts.payment_provider || 'sandbox',
       created_date: opts.summaryObject.created_data || '2018-05-01T13:27:00.057Z',
       refund_summary: opts.refund_summary || {
         status: 'unavailable',
