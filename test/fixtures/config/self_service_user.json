@@ -8,11 +8,13 @@
         "gateway_accounts": [
           {
             "id": "666",
-            "isPrimary": "true"
+            "isPrimary": "true",
+            "name": "sandbox"
           },
           {
             "id": "7",
-            "isPrimary": "false"
+            "isPrimary": "false",
+            "name": "nonsandbox"
           }
         ],
         "permissions": [
@@ -27,6 +29,15 @@
           },
           {
             "name": "transactions_card_type_read"
+          },
+          {
+            "name": "transactions-details:read"
+          },
+          {
+            "name": "refunds_create"
+          },
+          {
+            "name": "refunds:create"
           }
         ],
         "sections": {
@@ -37,7 +48,64 @@
             }
           },
           "transactions": {
-            "description": "a list of raw transactions as returned by connector",
+            "description": "a list of raw transactions as returned by connector, as well as available refunds",
+            "details_data": [
+              {
+                "charge_id": "12345",
+                "refund_summary": {
+                  "status": "available",
+                  "amount_available": 100,
+                  "amount_submitted": 0
+                },
+                "settlement_summary": {
+                  "capture_submit_time": "2018-05-01T13:27:00.057Z",
+                  "captured_date": "2018-05-01T13:27:00.057Z"
+                },
+                "billing_address": {
+                  "line1": "address line 1",
+                  "line2": "address line 2",
+                  "postcode": "AB1A 1AB",
+                  "city": "GB",
+                  "county": "somecounty",
+                  "country": "GB"
+                },
+                "charge_events": [
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "created",
+                      "finished": false
+                    },
+                    "amount": 100,
+                    "updated": "2018-05-01T13:27:00.063Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "started",
+                      "finished": false
+                    },
+                    "amount": 100,
+                    "updated": "2018-05-01T13:27:00.974Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "succeeded",
+                      "finished": true
+                    },
+                    "amount": 100,
+                    "updated": "2018-05-01T13:27:18.126Z",
+                    "refund_reference": null
+                  }
+                ]
+              }
+            ],
             "data": [
               {
                 "amount": 100,
