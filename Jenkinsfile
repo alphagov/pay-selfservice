@@ -43,7 +43,8 @@ pipeline {
     stage('Contract Tests') {
       steps {
         script {
-          env.PACT_TAG = gitBranchName()
+          env.PACT_TAG = sh(script: "git symbolic-ref HEAD|sed -e 's|refs/heads/||'", returnStdout: true).trim()
+          echo 'Branch name is ' + env.PACT_TAG
         }
         ws('contract-tests-wp') {
           runPactProviderTests("pay-adminusers", "${env.PACT_TAG}")
