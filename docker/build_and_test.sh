@@ -6,4 +6,8 @@ npm run compile
 # disabled while promise rejections not returning error objects need to be addressed
 # npm run lint
 npm test -- --forbid-only --forbid-pending
+# prevent publish of any pacts with 'to-be' in their name
+for i in ./pacts/*-to-be-*.json; do mv "$i" "${i%.json}.ignore"; done
 npm run publish-pacts
+# restore 'to-be' pacts
+for i in ./pacts/*.ignore; do mv "$i" "${i%.ignore}.json"; done
