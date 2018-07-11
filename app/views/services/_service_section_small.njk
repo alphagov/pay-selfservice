@@ -43,9 +43,7 @@
       </li>
       <li>
       {% if service.permissions.merchant_details_read %}
-        <p>
-          <a href="/merchant-details/{{ service.external_id }}" class="edit-merchant-details">Edit merchant details</a>
-        </p>
+        <a href="/organisation-details/{{ service.external_id }}" class="edit-merchant-details">Organisation details</a>
       {% endif %}
       </li>
     </ul>
