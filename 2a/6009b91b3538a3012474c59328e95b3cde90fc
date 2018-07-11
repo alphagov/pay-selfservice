@@ -11,3 +11,5 @@ staging-2.FAILED-555.status=failed
 staging-2.tag=alpha_staging-2-555
 
 staging-2.alpha_staging-2-555.date=2018-07-11:15:04:49
+
+staging-2.alpha_staging-2-555.status=success
