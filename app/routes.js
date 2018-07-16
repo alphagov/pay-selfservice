@@ -4,6 +4,7 @@
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const logger = require('winston')
+const {getNamespace, createNamespace} = require('continuation-local-storage')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -25,6 +26,7 @@ const otpVerify = require('./middleware/otp_verify')
 const correlationIdMiddleware = require('./middleware/correlation_id')
 const getRequestContext = require('./middleware/get_request_context').middleware
 const restrictToSandbox = require('./middleware/restrict_to_sandbox')
+const xraySegmentCls = require('./middleware/x_ray')
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -69,19 +71,32 @@ const {
 module.exports.generateRoute = generateRoute
 module.exports.paths = paths
 
+// Constants
+const clsXrayConfig = require('../config/xray-cls')
+
 module.exports.bind = function (app) {
 
-  AWSXRay.captureHTTPsGlobal()
   AWSXRay.enableManualMode()
   AWSXRay.setLogger(logger)
   AWSXRay.middleware.setSamplingRules('aws-xray.rules')
   AWSXRay.config([AWSXRay.plugins.ECSPlugin])
   app.use(AWSXRay.express.openSegment('pay_selfservice'))
 
+  createNamespace(clsXrayConfig.nameSpaceName)
+
   app.get('/style-guide', (req, res) => response(req, res, 'style_guide'))
 
   // APPLY CORRELATION MIDDLEWARE
   app.use('*', correlationIdMiddleware, getRequestContext)
+
+  app.use((req, res, next) => {
+    const namespace = getNamespace(clsXrayConfig.nameSpaceName)
+    namespace.bindEmitter(req)
+    namespace.bindEmitter(res)
+    namespace.run(() => {
+      next()
+    })
+  })
 
   app.all(lockOutDisabledUsers) // On all requests, if there is a user, and its disabled, lock out.
 
@@ -93,50 +108,50 @@ module.exports.bind = function (app) {
   app.get(healthcheck.path, healthcheckCtrl.healthcheck)
 
   // STATIC
-  app.all(staticPaths.naxsiError, staticCtrl.naxsiError)
+  app.all(staticPaths.naxsiError, xraySegmentCls, staticCtrl.naxsiError)
 
   // VALIDATE INVITE
-  app.get(inviteValidation.validateInvite, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationCtrl.validateInvite)
+  app.get(inviteValidation.validateInvite, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationCtrl.validateInvite)
 
   // REGISTER USER
-  app.get(registerUser.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration)
-  app.get(registerUser.subscribeService, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.subscribeService)
-  app.post(registerUser.registration, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration)
-  app.get(registerUser.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify)
-  app.post(registerUser.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify)
-  app.get(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone)
-  app.post(registerUser.reVerifyPhone, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
+  app.get(registerUser.registration, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration)
+  app.get(registerUser.subscribeService, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.subscribeService)
+  app.post(registerUser.registration, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration)
+  app.get(registerUser.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify)
+  app.post(registerUser.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify)
+  app.get(registerUser.reVerifyPhone, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone)
+  app.post(registerUser.reVerifyPhone, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone)
+  app.get(registerUser.logUserIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
 
   // LOGIN
-  app.get(user.logIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.loginGet)
-  app.post(user.logIn, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, getAccount, loginCtrl.postLogin)
-  app.get(dashboard.index, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
-  app.get(user.noAccess, loginCtrl.noAccess)
-  app.get(user.logOut, loginCtrl.logout)
-  app.get(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet)
-  app.post(user.otpSendAgain, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost)
-  app.get(user.otpLogIn, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.otpLogin)
-  app.post(user.otpLogIn, validateAndRefreshCsrf, loginCtrl.loginUserOTP, loginCtrl.afterOTPLogin)
+  app.get(user.logIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.loginGet)
+  app.post(user.logIn, xraySegmentCls, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, getAccount, loginCtrl.postLogin)
+  app.get(dashboard.index, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
+  app.get(user.noAccess, xraySegmentCls, loginCtrl.noAccess)
+  app.get(user.logOut, xraySegmentCls, loginCtrl.logout)
+  app.get(user.otpSendAgain, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet)
+  app.post(user.otpSendAgain, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost)
+  app.get(user.otpLogIn, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.otpLogin)
+  app.post(user.otpLogIn, xraySegmentCls, validateAndRefreshCsrf, loginCtrl.loginUserOTP, loginCtrl.afterOTPLogin)
 
   // FORGOTTEN PASSWORD
-  app.get(user.forgottenPassword, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet)
-  app.post(user.forgottenPassword, trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost)
-  app.get(user.passwordRequested, forgotPassword.passwordRequested)
-  app.get(user.forgottenPasswordReset, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.newPasswordGet)
-  app.post(user.forgottenPasswordReset, validateAndRefreshCsrf, forgotPassword.newPasswordPost)
+  app.get(user.forgottenPassword, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet)
+  app.post(user.forgottenPassword, xraySegmentCls, trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost)
+  app.get(user.passwordRequested, xraySegmentCls, forgotPassword.passwordRequested)
+  app.get(user.forgottenPasswordReset, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.newPasswordGet)
+  app.post(user.forgottenPasswordReset, xraySegmentCls, validateAndRefreshCsrf, forgotPassword.newPasswordPost)
 
   // SELF CREATE SERVICE
-  app.get(selfCreateService.register, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration)
-  app.post(selfCreateService.register, trimUsername, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
-  app.get(selfCreateService.confirm, selfCreateServiceCtrl.showConfirmation)
-  app.get(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
-  app.post(selfCreateService.otpVerify, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, otpVerify.verifyOtpForServiceInvite, selfCreateServiceCtrl.createPopulatedService)
-  app.get(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
-  app.post(selfCreateService.otpResend, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
-  app.get(selfCreateService.logUserIn, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.loggedIn)
-  app.get(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
-  app.post(selfCreateService.serviceNaming, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
+  app.get(selfCreateService.register, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration)
+  app.post(selfCreateService.register, xraySegmentCls, trimUsername, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
+  app.get(selfCreateService.confirm, xraySegmentCls, selfCreateServiceCtrl.showConfirmation)
+  app.get(selfCreateService.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
+  app.post(selfCreateService.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, otpVerify.verifyOtpForServiceInvite, selfCreateServiceCtrl.createPopulatedService)
+  app.get(selfCreateService.otpResend, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
+  app.post(selfCreateService.otpResend, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
+  app.get(selfCreateService.logUserIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.loggedIn)
+  app.get(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
+  app.post(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
 
   // ----------------------
   // AUTHENTICATED ROUTES
@@ -161,127 +176,127 @@ module.exports.bind = function (app) {
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
-  app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), hasServices) // Require services everywhere but the switcher page
+  app.use(authenticatedPaths, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
+  app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), xraySegmentCls, hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS
-  app.get(transactions.index, permission('transactions:read'), getAccount, transactionsListCtrl)
-  app.get(transactions.download, permission('transactions-download:read'), getAccount, transactionsDownloadCtrl)
-  app.get(transactions.detail, permission('transactions-details:read'), getAccount, transactionDetailCtrl)
-  app.post(transactions.refund, permission('refunds:create'), getAccount, transactionRefundCtrl)
+  app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, transactionsListCtrl)
+  app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, transactionsDownloadCtrl)
+  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, transactionDetailCtrl)
+  app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, transactionRefundCtrl)
 
   // CREDENTIALS
-  app.get(credentials.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
-  app.get(credentials.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.editCredentials)
-  app.post(credentials.index, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.update)
+  app.get(credentials.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
+  app.get(credentials.edit, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.editCredentials)
+  app.post(credentials.index, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.update)
 
-  app.get(nc.index, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
-  app.get(nc.edit, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.editNotificationCredentials)
-  app.post(nc.update, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.updateNotificationCredentials)
+  app.get(nc.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
+  app.get(nc.edit, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.editNotificationCredentials)
+  app.post(nc.update, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.updateNotificationCredentials)
 
   // MERCHANT DETAILS
-  app.get(merchantDetails.index, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
-  app.get(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
-  app.post(merchantDetails.edit, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
+  app.get(merchantDetails.index, xraySegmentCls, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
+  app.get(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
+  app.post(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
 
   // API KEYS
-  app.get(apiKeys.index, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)
-  app.get(apiKeys.revoked, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.getRevoked)
-  app.get(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.getCreate)
-  app.post(apiKeys.create, permission('tokens:create'), getAccount, apiKeysCtrl.postCreate)
-  app.post(apiKeys.revoke, permission('tokens:delete'), getAccount, apiKeysCtrl.postRevoke)
-  app.post(apiKeys.update, permission('tokens:update'), getAccount, apiKeysCtrl.postUpdate)
+  app.get(apiKeys.index, xraySegmentCls, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)
+  app.get(apiKeys.revoked, xraySegmentCls, permission('tokens-revoked:read'), getAccount, apiKeysCtrl.getRevoked)
+  app.get(apiKeys.create, xraySegmentCls, permission('tokens:create'), getAccount, apiKeysCtrl.getCreate)
+  app.post(apiKeys.create, xraySegmentCls, permission('tokens:create'), getAccount, apiKeysCtrl.postCreate)
+  app.post(apiKeys.revoke, xraySegmentCls, permission('tokens:delete'), getAccount, apiKeysCtrl.postRevoke)
+  app.post(apiKeys.update, xraySegmentCls, permission('tokens:update'), getAccount, apiKeysCtrl.postUpdate)
 
   // PAYMENT TYPES
-  app.get(pt.selectType, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectType.selectType)
-  app.post(pt.selectType, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectType.updateType)
-  app.get(pt.selectBrand, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.showBrands)
-  app.post(pt.selectBrand, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.updateBrands)
-  app.get(pt.summary, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummary.showSummary)
+  app.get(pt.selectType, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectType.selectType)
+  app.post(pt.selectType, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectType.updateType)
+  app.get(pt.selectBrand, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.showBrands)
+  app.post(pt.selectBrand, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrand.updateBrands)
+  app.get(pt.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummary.showSummary)
 
   // EMAIL
-  app.get(en.index, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.index)
-  app.get(en.edit, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.edit)
-  app.post(en.confirm, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.confirm)
-  app.post(en.update, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.update)
-  app.post(en.off, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.off)
-  app.get(en.offConfirm, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.offConfirm)
-  app.post(en.on, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.on)
+  app.get(en.index, xraySegmentCls, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.index)
+  app.get(en.edit, xraySegmentCls, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.edit)
+  app.post(en.confirm, xraySegmentCls, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.confirm)
+  app.post(en.update, xraySegmentCls, permission('email-notification-paragraph:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.update)
+  app.post(en.off, xraySegmentCls, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.off)
+  app.get(en.offConfirm, xraySegmentCls, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.offConfirm)
+  app.post(en.on, xraySegmentCls, permission('email-notification-toggle:update'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotifications.on)
 
   // SERVICE SWITCHER
-  app.get(serviceSwitcher.index, myServicesCtrl.getIndex)
-  app.post(serviceSwitcher.switch, myServicesCtrl.postIndex)
-  app.get(serviceSwitcher.create, createServiceCtrl.get)
-  app.post(serviceSwitcher.create, createServiceCtrl.post)
+  app.get(serviceSwitcher.index, xraySegmentCls, myServicesCtrl.getIndex)
+  app.post(serviceSwitcher.switch, xraySegmentCls, myServicesCtrl.postIndex)
+  app.get(serviceSwitcher.create, xraySegmentCls, createServiceCtrl.get)
+  app.post(serviceSwitcher.create, xraySegmentCls, createServiceCtrl.post)
 
   // EDIT SERVICE NAME
-  app.get(editServiceName.index, permission('service-name:update'), editServiceNameCtrl.get)
-  app.post(editServiceName.update, permission('service-name:update'), editServiceNameCtrl.post)
+  app.get(editServiceName.index, xraySegmentCls, permission('service-name:update'), editServiceNameCtrl.get)
+  app.post(editServiceName.update, xraySegmentCls, permission('service-name:update'), editServiceNameCtrl.post)
 
   // TEAM MEMBERS - USER PROFILE
-  app.get(teamMembers.index, resolveService, serviceUsersController.index)
-  app.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
-  app.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
-  app.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
-  app.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.delete)
-  app.get(user.profile, enforceUserAuthenticated, serviceUsersController.profile)
+  app.get(teamMembers.index, xraySegmentCls, resolveService, serviceUsersController.index)
+  app.get(teamMembers.show, xraySegmentCls, permission('users-service:read'), serviceUsersController.show)
+  app.get(teamMembers.permissions, xraySegmentCls, permission('users-service:create'), serviceRolesUpdateController.index)
+  app.post(teamMembers.permissions, xraySegmentCls, permission('users-service:create'), serviceRolesUpdateController.update)
+  app.post(teamMembers.delete, xraySegmentCls, permission('users-service:delete'), serviceUsersController.delete)
+  app.get(user.profile, xraySegmentCls, enforceUserAuthenticated, serviceUsersController.profile)
 
   // TEAM MEMBERS - INVITE
-  app.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)
-  app.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
+  app.get(teamMembers.invite, xraySegmentCls, permission('users-service:create'), inviteUserController.index)
+  app.post(teamMembers.invite, xraySegmentCls, permission('users-service:create'), inviteUserController.invite)
 
   // 3D SECURE TOGGLE
-  app.get(t3ds.index, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3ds.index)
-  app.post(t3ds.onConfirm, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.onConfirm)
-  app.post(t3ds.on, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.on)
-  app.post(t3ds.off, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.off)
+  app.get(t3ds.index, xraySegmentCls, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3ds.index)
+  app.post(t3ds.onConfirm, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.onConfirm)
+  app.post(t3ds.on, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.on)
+  app.post(t3ds.off, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.off)
 
   // Prototyping
-  app.get(prototyping.demoService.index, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.index)
-  app.get(prototyping.demoService.links, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.links)
-  app.get(prototyping.demoService.create, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.create)
-  app.post(prototyping.demoService.confirm, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.submit)
-  app.get(prototyping.demoService.disable, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.disable)
+  app.get(prototyping.demoService.index, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.index)
+  app.get(prototyping.demoService.links, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.links)
+  app.get(prototyping.demoService.create, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.create)
+  app.post(prototyping.demoService.confirm, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.submit)
+  app.get(prototyping.demoService.disable, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.disable)
 
-  app.get(prototyping.demoPayment.index, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
-  app.post(prototyping.demoPayment.index, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
-  app.get(prototyping.demoPayment.editDescription, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
-  app.get(prototyping.demoPayment.editAmount, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
-  app.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.mockCardDetails)
-  app.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.goToPayment)
+  app.get(prototyping.demoPayment.index, xraySegmentCls, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
+  app.post(prototyping.demoPayment.index, xraySegmentCls, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.index)
+  app.get(prototyping.demoPayment.editDescription, xraySegmentCls, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
+  app.get(prototyping.demoPayment.editAmount, xraySegmentCls, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.edit)
+  app.get(prototyping.demoPayment.mockCardDetails, xraySegmentCls, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.mockCardDetails)
+  app.post(prototyping.demoPayment.goToPaymentScreens, xraySegmentCls, permission('transactions:read'), getAccount, restrictToSandbox, makeADemoPayment.goToPayment)
 
   // Create payment link
-  app.get(paymentLinks.start, permission('tokens:create'), getAccount, paymentLinksCtrl.getStart)
-  app.get(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksCtrl.getInformation)
-  app.post(paymentLinks.information, permission('tokens:create'), getAccount, paymentLinksCtrl.postInformation)
-  app.get(paymentLinks.webAddress, permission('tokens:create'), getAccount, paymentLinksCtrl.getWebAddress)
-  app.post(paymentLinks.webAddress, permission('tokens:create'), getAccount, paymentLinksCtrl.postWebAddress)
-  app.get(paymentLinks.reference, permission('tokens:create'), getAccount, paymentLinksCtrl.getReference)
-  app.post(paymentLinks.reference, permission('tokens:create'), getAccount, paymentLinksCtrl.postReference)
-  app.get(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksCtrl.getAmount)
-  app.post(paymentLinks.amount, permission('tokens:create'), getAccount, paymentLinksCtrl.postAmount)
-  app.get(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksCtrl.getReview)
-  app.post(paymentLinks.review, permission('tokens:create'), getAccount, paymentLinksCtrl.postReview)
-  app.get(paymentLinks.manage, permission('transactions:read'), getAccount, paymentLinksCtrl.getManage)
-  app.get(paymentLinks.disable, permission('tokens:create'), getAccount, paymentLinksCtrl.getDisable)
-  app.get(paymentLinks.delete, permission('tokens:create'), getAccount, paymentLinksCtrl.getDelete)
-  app.get(paymentLinks.edit, permission('tokens:create'), getAccount, paymentLinksCtrl.getEdit)
-  app.post(paymentLinks.edit, permission('tokens:create'), getAccount, paymentLinksCtrl.postEdit)
-  app.get(paymentLinks.editInformation, permission('tokens:create'), getAccount, paymentLinksCtrl.getEditInformation)
-  app.post(paymentLinks.editInformation, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditInformation)
-  app.get(paymentLinks.editAmount, permission('tokens:create'), getAccount, paymentLinksCtrl.getEditAmount)
-  app.post(paymentLinks.editAmount, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditAmount)
+  app.get(paymentLinks.start, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getStart)
+  app.get(paymentLinks.information, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getInformation)
+  app.post(paymentLinks.information, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postInformation)
+  app.get(paymentLinks.webAddress, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getWebAddress)
+  app.post(paymentLinks.webAddress, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postWebAddress)
+  app.get(paymentLinks.reference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getReference)
+  app.post(paymentLinks.reference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postReference)
+  app.get(paymentLinks.amount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getAmount)
+  app.post(paymentLinks.amount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postAmount)
+  app.get(paymentLinks.review, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getReview)
+  app.post(paymentLinks.review, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postReview)
+  app.get(paymentLinks.manage, xraySegmentCls, permission('transactions:read'), getAccount, paymentLinksCtrl.getManage)
+  app.get(paymentLinks.disable, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getDisable)
+  app.get(paymentLinks.delete, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getDelete)
+  app.get(paymentLinks.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getEdit)
+  app.post(paymentLinks.edit, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postEdit)
+  app.get(paymentLinks.editInformation, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getEditInformation)
+  app.post(paymentLinks.editInformation, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditInformation)
+  app.get(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.getEditAmount)
+  app.post(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksCtrl.postEditAmount)
 
   // Configure 2FA
-  app.get(user.twoFactorAuth.index, twoFactorAuthCtrl.getIndex)
-  app.post(user.twoFactorAuth.index, twoFactorAuthCtrl.postIndex)
-  app.get(user.twoFactorAuth.configure, twoFactorAuthCtrl.getConfigure)
-  app.post(user.twoFactorAuth.configure, twoFactorAuthCtrl.postConfigure)
-  app.post(user.twoFactorAuth.resend, twoFactorAuthCtrl.postResend)
+  app.get(user.twoFactorAuth.index, xraySegmentCls, twoFactorAuthCtrl.getIndex)
+  app.post(user.twoFactorAuth.index, xraySegmentCls, twoFactorAuthCtrl.postIndex)
+  app.get(user.twoFactorAuth.configure, xraySegmentCls, twoFactorAuthCtrl.getConfigure)
+  app.post(user.twoFactorAuth.configure, xraySegmentCls, twoFactorAuthCtrl.postConfigure)
+  app.post(user.twoFactorAuth.resend, xraySegmentCls, twoFactorAuthCtrl.postResend)
 
   // Feedback
-  app.get(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
-  app.post(paths.feedback, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
+  app.get(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
+  app.post(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
 
   app.all('*', (req, res) => {
     res.status(404)

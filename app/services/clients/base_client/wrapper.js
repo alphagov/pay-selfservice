@@ -4,6 +4,8 @@
 const lodash = require('lodash')
 const joinURL = require('url-join')
 const correlator = require('correlation-id')
+const getNamespace = require('continuation-local-storage').getNamespace
+const AWSXRay = require('aws-xray-sdk')
 
 // Local dependencies
 const requestLogger = require('../../../utils/request_logger')
@@ -11,9 +13,14 @@ const CORRELATION_HEADER = require('../../../utils/correlation_header').CORRELAT
 
 // Constants
 const SUCCESS_CODES = [200, 201, 202, 204, 206]
+const clsXrayConfig = require('../../../../config/xray-cls')
 
 module.exports = function (method, verb) {
   return (uri, opts, cb) => new Promise((resolve, reject) => {
+
+    const namespace = getNamespace(clsXrayConfig.nameSpaceName)
+    const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName): null
+
     const args = [uri, opts, cb]
     uri = args.find(arg => typeof arg === 'string')
     opts = args.find(arg => typeof arg === 'object') || {}
@@ -28,9 +35,16 @@ module.exports = function (method, verb) {
       description: opts.description,
       service: opts.service
     }
+
+    // Set headers and optional x-ray trace headers
     lodash.set(opts, `headers.${CORRELATION_HEADER}`, context.correlationId)
+    if (clsSegment) {
+      const subSegment = opts.subSegment || new AWSXRay.Segment('_request_nbc', null, clsSegment.trace_id)
+      opts.headers['X-Amzn-Trace-Id'] = 'Root=' + clsSegment.trace_id + ';Parent=' + subSegment.id + ';Sampled=1'
+    }
     opts.headers['Content-Type'] = opts.headers['Content-Type'] || 'application/json'
 
+    // Set up post response and error handling method
     const transform = opts.transform || false
     const handleError = opts.baseClientErrorHandler || 'new'
     opts.transform = undefined
@@ -43,6 +57,7 @@ module.exports = function (method, verb) {
       if (err) {
         reject(err)
       } else if (response && SUCCESS_CODES.includes(response.statusCode)) {
+
         // transform our output if the appropriate function was passed.
         body = transform ? transform(body) : body
         resolve(body)
@@ -73,5 +88,8 @@ module.exports = function (method, verb) {
       }
     })
     return call
+
+
+
   })
 }

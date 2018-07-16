@@ -8,7 +8,8 @@ const urlParse = require('url').parse
 const _ = require('lodash')
 const logger = require('winston')
 const request = require('requestretry')
-
+const getNamespace = require('continuation-local-storage').getNamespace
+const AWSXRay = require('aws-xray-sdk')
 
 // Local dependencies
 const customCertificate = require('../../utils/custom_certificate')
@@ -22,6 +23,7 @@ const agentOptions = {
   keepAlive: true,
   maxSockets: process.env.MAX_SOCKETS || 100
 }
+const clsXrayConfig = require('../../../config/xray-cls')
 
 function retryOnEconnreset (err) {
   return err && _.includes(RETRIABLE_ERRORS, err.code)
@@ -48,13 +50,18 @@ const client = request
     retryStrategy: retryOnEconnreset
   })
 
-const getHeaders = function getHeaders (args) {
+const getHeaders = function getHeaders (args, segmentData) {
   const requestContext = getRequestContext(args.correlationId || '') || {}
 
   let headers = {}
   headers['Content-Type'] = 'application/json'
   headers[CORRELATION_HEADER_NAME] = args.correlationId || ''
   headers[FEATURE_FLAGS_HEADER_NAME] = (requestContext.features || []).toString()
+
+  if (segmentData.clsSegment) {
+    const subSegment = segmentData.subSegment || new AWSXRay.Segment('_request', null, segmentData.clsSegment.trace_id)
+    headers['X-Amzn-Trace-Id'] = 'Root=' + segmentData.clsSegment.trace_id + ';Parent=' + subSegment.id + ';Sampled=1'
+  }
   _.merge(headers, args.headers)
 
   return headers
@@ -70,23 +77,23 @@ const getHeaders = function getHeaders (args) {
  *
  * @private
  */
-const _request = function request (methodName, url, args, callback) {
-  let agent = urlParse(url).protocol === 'http:' ? httpAgent : httpsAgent
+const _request = function request (methodName, url, args, callback, subSegment) {
+  const agent = urlParse(url).protocol === 'http:' ? httpAgent : httpsAgent
+  const namespace = getNamespace(clsXrayConfig.nameSpaceName)
+  const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName) : null
 
   const requestOptions = {
     uri: url,
     method: methodName,
     agent: agent,
-    headers: getHeaders(args)
+    headers: getHeaders(args, { clsSegment: clsSegment, subSegment: subSegment})
   }
-
   if (args.qs) {
     requestOptions.qs = args.qs
   }
   if (args.payload) {
     requestOptions.body = args.payload
   }
-
   return client(requestOptions, callback)
 }
 
@@ -102,8 +109,8 @@ module.exports = {
    *
    * @returns {OutgoingMessage}
    */
-  get: function (url, args, callback) {
-    return _request('GET', url, args, callback)
+  get: function (url, args, callback, subsegment) {
+    return _request('GET', url, args, callback, subsegment)
   },
 
   /**

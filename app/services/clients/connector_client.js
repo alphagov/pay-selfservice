@@ -6,6 +6,8 @@ const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const logger = require('winston')
 const querystring = require('querystring')
+//const AWSXRay = require('aws-xray-sdk')
+const getNamespace = require('continuation-local-storage').getNamespace
 
 // Local dependencies
 const baseClient = require('./old_base_client')
@@ -32,6 +34,8 @@ const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
+
+const clsXrayConfig = require('../../../config/xray-cls')
 
 /**
  * @private
@@ -253,23 +257,25 @@ ConnectorClient.prototype = {
    */
   getAccount: function (params) {
     return new Promise((resolve, reject) => {
-      let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
-      let startTime = new Date()
-      let context = {
-        url: url,
-        defer: {resolve: resolve, reject: reject},
-        startTime: startTime,
-        correlationId: params.correlationId,
-        method: 'GET',
-        description: 'get an account',
-        service: SERVICE_NAME
-      }
+        let url = _accountUrlFor(params.gatewayAccountId, this.connectorUrl)
+        let startTime = new Date()
+        let context = {
+          url: url,
+          //subsegment: subsegment,
+          defer: {resolve: resolve, reject: reject},
+          startTime: startTime,
+          correlationId: params.correlationId,
+          method: 'GET',
+          description: 'get an account',
+          service: SERVICE_NAME
+        }
 
-      let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+        let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-      baseClient.get(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
+        baseClient.get(url, params, callbackToPromiseConverter, null)
+          .on('error', callbackToPromiseConverter)
     })
+
   },
 
   /**
@@ -568,14 +574,15 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  getTransactionSummary: function (params, successCallback) {
+  getTransactionSummary: function (params, successCallback, subsegment) {
+
     const queryStrings = {
       from_date: params.fromDateTime,
       to_date: params.toDateTime
     }
     const period = querystring.stringify(queryStrings)
     let url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period, this.connectorUrl)
-    baseClient.get(url, params, this.responseHandler(successCallback))
+    baseClient.get(url, params, this.responseHandler(successCallback), subsegment)
 
     return this
   }

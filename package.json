@@ -29,6 +29,7 @@
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
     "start-local": "nodemon -e njk start.js",
+    "start-debug": "node start.js --inspect",
     "start": "node start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
