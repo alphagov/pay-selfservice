@@ -88,8 +88,5 @@ module.exports = function (method, verb) {
       }
     })
     return call
-
-
-
   })
 }

@@ -6,8 +6,6 @@ const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const logger = require('winston')
 const querystring = require('querystring')
-//const AWSXRay = require('aws-xray-sdk')
-const getNamespace = require('continuation-local-storage').getNamespace
 
 // Local dependencies
 const baseClient = require('./old_base_client')
@@ -34,8 +32,6 @@ const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
-
-const clsXrayConfig = require('../../../config/xray-cls')
 
 /**
  * @private
@@ -261,7 +257,6 @@ ConnectorClient.prototype = {
         let startTime = new Date()
         let context = {
           url: url,
-          //subsegment: subsegment,
           defer: {resolve: resolve, reject: reject},
           startTime: startTime,
           correlationId: params.correlationId,
