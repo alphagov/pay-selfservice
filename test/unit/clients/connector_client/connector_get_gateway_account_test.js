@@ -20,7 +20,12 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
+// Note: the browser tests use values in the fixed config below, which match the defined interations
+const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
+const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+
 describe('connector client - get gateway account', function () {
+
   let provider = Pact({
     consumer: 'selfservice',
     provider: 'connector',
@@ -34,9 +39,9 @@ describe('connector client - get gateway account', function () {
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
-  describe('get gateway account - success', () => {
+  describe('get single gateway account - success', () => {
     const params = {
-      gateway_account_id: 666
+      gateway_account_id: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
     }
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(params)
 
@@ -60,8 +65,9 @@ describe('connector client - get gateway account', function () {
       const getGatewayAccount = validGetGatewayAccountResponse.getPlain()
       connectorClient.getAccount({gatewayAccountId: params.gateway_account_id, correlationId: null})
         .should.be.fulfilled.then((response) => {
-          expect(response).to.deep.equal(getGatewayAccount)
-        }).should.notify(done)
+        expect(response).to.deep.equal(getGatewayAccount)
+      }).should.notify(done)
     })
   })
+
 })
