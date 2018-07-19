@@ -8,7 +8,6 @@ const {isADirectDebitAccount} = require('../services/clients/direct_debit_connec
 module.exports = function (req, res, next) {
   const externalServiceId = req.params.externalServiceId
   const gatewayAccountId = _.get(req, 'gateway_account.currentGatewayAccountId')
-
   if (externalServiceId) {
     req.service = _.get(req.user.serviceRoles.find(serviceRole => serviceRole.service.externalId === externalServiceId), 'service')
   } else if (gatewayAccountId) {

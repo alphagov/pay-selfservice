@@ -41,7 +41,7 @@ describe('connector client - get gateway account', function () {
 
   describe('get single gateway account - success', () => {
     const params = {
-      gateway_account_id: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      gateway_account_id: parseInt(ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id) // 666
     }
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(params)
 

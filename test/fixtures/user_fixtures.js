@@ -6,7 +6,11 @@ const _ = require('lodash')
 // Custom dependencies
 let User = require('../../app/models/User.class')
 let pactBase = require('./pact_base')
-let pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids', 'service_roles', 'services', '_links']})
+let pactUsers = pactBase(
+  {
+    array: ['permissions', 'gateway_account_ids', 'service_ids', 'service_roles', 'services', '_links'],
+    length: [{key: 'permissions', length: 1}]
+  })
 
 function validPassword () {
   return 'G0VUkPay2017Rocks'
@@ -132,7 +136,6 @@ module.exports = {
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
-      features: opts.features || '',
       second_factor: opts.second_factor || 'SMS',
       provisional_otp_key: opts.provisional_otp_key || '60400'
     }
@@ -159,7 +162,7 @@ module.exports = {
     let reqExternalId = request.external_id || existingExternalId
     let reqEmail = request.email || `${request.username || 'existing-user'}@example.com`
     let defaultServiceId = 'cp5wa'
-    const gatewayAccountIds = request.gateway_account_ids || ['758', '772']
+    const gatewayAccountIds = request.gateway_account_ids || [758, 772]
 
     let data = {
       external_id: reqExternalId,
@@ -358,7 +361,6 @@ module.exports = {
         external_id: opts.external_id || '09283568e105442da3928d1fa99fb0eb',
         username: opts.username || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
         email: opts.email || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
-        gateway_account_ids: opts.gateway_account_ids || [],
         otp_key: opts.otp_key || 'nlcj80ivce10tkjdbnaicf6brk',
         telephone_number: opts.telephone_number || '9797219',
         service_roles: opts.service_roles || [
@@ -384,10 +386,8 @@ module.exports = {
             }
           }
         ],
-        features: opts.features || null,
         second_factor: opts.second_factor || 'SMS',
         provisional_otp_key: opts.provisional_otp_key || null,
-        provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
         services: opts.services || [{
           id: 857,
           external_id: '0ab3525259894209bbc8d2a5b0538fc0',
@@ -476,5 +476,4 @@ module.exports = {
 
     return pactUsers.withPactified(response)
   }
-
 }

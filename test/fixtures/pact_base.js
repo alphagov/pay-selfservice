@@ -19,9 +19,15 @@ module.exports = function (options = {}) {
     let pactified = {}
     _.forIn(object, (value, key) => {
       if (options.array && options.array.indexOf(key) !== -1) {
-        pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]), {min: value.length})
+        let length
+        if (options.length && options.length.find(lengthKey => lengthKey.key === key)) {
+          length = options.length.find(lengthKey => lengthKey.key === key).length
+        } else {
+          length = value.length
+        }
+        pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]), {min: length})
       } else if (value.constructor === Array) {
-          pactified[key] = pactifySimpleArray(value)
+        pactified[key] = pactifySimpleArray(value)
       } else if (value.constructor === Object) {
         pactified[key] = pactify(value)
       } else {
