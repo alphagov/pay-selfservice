@@ -19,17 +19,21 @@ describe('Login Page', () => {
   })
 
   describe('Form validation', () => {
-    // describe('Valid submissions', () => {
-    //   it('should progress to 2FA page if provided valid username and password', () => {
-    //     cy.getCookie('session')
-    //     cy.get('#username').type('existing-user')
-    //     cy.get('#password').type('password')
-    //     cy.contains('Continue').click()
-    //     cy.title().should('eq', 'Enter security code - GOV.UK Pay')
-    //     cy.url().should('include', '/otp-login')
-    //     // TODO: This will currently fail pending the addition of a connector/get-gateway-account pact for use in the stubs
-    //   })
-    // })
+
+    const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
+    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
+
+    describe('Valid submissions', () => {
+      it('should progress to 2FA page if provided valid username and password', () => {
+        cy.getCookie('session')
+        cy.get('#username').type(selfServiceDefaultUser.username)
+        cy.get('#password').type(selfServiceDefaultUser.valid_password)
+        cy.contains('Continue').click()
+        cy.title().should('eq', 'Enter security code - GOV.UK Pay')
+        cy.url().should('include', '/otp-login')
+      })
+    })
+
     describe('Invalid submissions', () => {
       it('should show inline errors if no password is supplied', () => {
         cy.get('#username').type('fake@example.com')
@@ -56,6 +60,15 @@ describe('Login Page', () => {
           .children('.error-message')
           .contains('This field cannot be blank')
       })
+
+      it('should deny access to selfservice if the password is incorrect', () => {
+        cy.get('#username').type(selfServiceDefaultUser.username)
+        cy.get('#password').type(selfServiceDefaultUser.invalid_password)
+        cy.contains('Continue').click()
+        cy.title().should('eq', 'Sign in to GOV.UK Pay')
+        cy.url().should('include', '/login')
+      })
+
     })
   })
 })

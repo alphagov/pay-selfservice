@@ -6,7 +6,7 @@ const _ = require('lodash')
 // Custom dependencies
 let User = require('../../app/models/User.class')
 let pactBase = require('./pact_base')
-let pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids']})
+let pactUsers = pactBase({array: ['permissions', 'gateway_account_ids', 'service_ids', 'service_roles', 'services', '_links']})
 
 function validPassword () {
   return 'G0VUkPay2017Rocks'
@@ -174,7 +174,7 @@ module.exports = {
         role: {
           name: 'admin',
           description: 'Administrator',
-          permissions: request.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
+          permissions: [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
         }
       }],
       otp_key: request.otp_key || '43c3c4t',
@@ -320,6 +320,117 @@ module.exports = {
     }
 
     return pactUsers.withPactified(request)
+  },
+
+  validPasswordAuthenticateRequest: (opts = {}) => {
+
+    const usernameGenerate = opts.username || 'validuser'
+    const usernameMatcher = opts.usernameMatcher || 'validuser'
+
+    const passwordGenerate = opts.password || 'validpassword'
+    const passwordMatcher = opts.passwordMatcher || 'validpassword'
+
+    return {
+      username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
+      password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
+    }
+
+  },
+
+  invalidPasswordAuthenticateRequest: (opts = {}) => {
+
+    const usernameGenerate = opts.username || 'validuser'
+    const usernameMatcher = opts.usernameMatcher || 'validuser'
+
+    const passwordGenerate = opts.password || 'invalidpassword'
+    const passwordMatcher = opts.passwordMatcher || 'invalidpassword'
+
+    return {
+      username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
+      password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
+    }
+
+  },
+
+  validPasswordAuthenticateResponse: (opts = {}) => {
+    let response =
+      {
+        external_id: opts.external_id || '09283568e105442da3928d1fa99fb0eb',
+        username: opts.username || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
+        email: opts.email || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
+        gateway_account_ids: opts.gateway_account_ids || [],
+        otp_key: opts.otp_key || 'nlcj80ivce10tkjdbnaicf6brk',
+        telephone_number: opts.telephone_number || '9797219',
+        service_roles: opts.service_roles || [
+          {
+            service: {
+              id: 857,
+              external_id: '0ab3525259894209bbc8d2a5b0538fc0',
+              name: 'System Generated',
+              gateway_account_ids: [
+                '923'
+              ],
+              _links: []
+            },
+            role: {
+              name: 'admin',
+              description: 'Administrator',
+              permissions: [
+                {
+                  name: 'users-service:read',
+                  description: 'Viewusersinservice'
+                }
+              ]
+            }
+          }
+        ],
+        features: opts.features || null,
+        second_factor: opts.second_factor || 'SMS',
+        provisional_otp_key: opts.provisional_otp_key || null,
+        provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
+        services: opts.services || [{
+          id: 857,
+          external_id: '0ab3525259894209bbc8d2a5b0538fc0',
+          name: 'System Generated',
+          gateway_account_ids: [
+            '923'
+          ],
+          _links: []
+        }],
+        disabled: opts.disabled || false,
+        login_counter: opts.login_counter || 0,
+        session_version: opts.session_version || 0,
+        service_ids: opts.service_ids || ['857'],
+        _links: opts._links || [{
+          rel: 'self',
+          method: 'GET',
+          href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
+        }],
+        role: opts.role || {
+          name: 'admin',
+          description:
+            'Administrator',
+          permissions:
+            [
+              {
+                name: 'users-service:read',
+                description: 'Viewusersinservice'
+              }
+            ]
+        },
+        permissions: opts.permissions || [
+          'users-service:read'
+        ]
+      }
+    return pactUsers.withPactified(response)
+  },
+
+  invalidPasswordAuthenticateResponse: () => {
+    let response = {
+      errors: ['invalid username and/or password']
+    }
+
+    return pactUsers.withPactified(response)
   },
 
   validForgottenPasswordCreateRequest: (username) => {

@@ -21,7 +21,7 @@ module.exports = function (options = {}) {
       if (options.array && options.array.indexOf(key) !== -1) {
         pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]), {min: value.length})
       } else if (value.constructor === Array) {
-        pactified[key] = pactifySimpleArray(value)
+          pactified[key] = pactifySimpleArray(value)
       } else if (value.constructor === Object) {
         pactified[key] = pactify(value)
       } else {
@@ -38,7 +38,12 @@ module.exports = function (options = {}) {
     }
   }
 
+  let pactifyMatch = (generate, matcher) => {
+    return matchers.term({generate: generate, matcher: matcher})
+  }
+
   return {
+    pactifyMatch: pactifyMatch,
     pactifyNestedArray: pactifyNestedArray,
     pactify: pactify,
     withPactified: withPactified
