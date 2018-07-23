@@ -19,6 +19,9 @@ module.exports = {
   },
   gatewayAccounts: {
     get: getGatewayAccountsByExternalIds
+  },
+  gocardless: {
+    get: getOAuthAuthorise
   }
 }
 
@@ -63,5 +66,18 @@ function getGatewayAccountsByExternalIds (params) {
     json: true,
     description: `find gateway accounts by external ids`,
     service: SERVICE_NAME
+  })
+}
+
+function getOAuthAuthorise (params) {
+  return baseClient.get({
+    baseUrl: params.baseUrl,
+    url: `/oauth/access_token`,
+    client_id: params.clientId,
+    redirect_uri: baseUrl + `/oauth/complete`,
+    scope: `read_write`,
+    response_type: `code`,
+    initial_view: `login`,
+    access_type: `offline`
   })
 }

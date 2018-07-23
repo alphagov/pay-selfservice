@@ -141,5 +141,9 @@ module.exports = {
     editAmount: '/create-payment-link/manage/edit/amount/:productExternalId'
   },
   feedback: '/feedback',
+  gocardless: {
+    linkAccount: '/link-account',
+    oauthComplete: '/oauth/complete'
+  },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
 }
