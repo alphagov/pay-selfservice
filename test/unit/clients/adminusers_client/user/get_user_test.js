@@ -44,7 +44,7 @@ describe('adminusers client - get user', function () {
     const params = {
       external_id: existingExternalId,
       gateway_account_ids: ssUser.gateway_accounts.map(gam => gam.id),
-      permissions: ssUser.permissions
+      service_roles: ssUser.service_roles
     }
 
     const getUserResponse = userFixtures.validUserResponse(params)
