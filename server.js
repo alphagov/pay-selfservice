@@ -150,8 +150,10 @@ function listen () {
  */
 function initialise () {
   const app = unconfiguredApp
+
   app.disable('x-powered-by')
   app.use(flash())
+
   initialiseTLS(app)
   initialisePublic(app)
   initialiseCookies(app)
@@ -160,7 +162,6 @@ function initialise () {
   initialiseTemplateEngine(app)
   initialiseErrorHandling(app)
   initialiseRoutes(app) // This contains the 404 overrider and so should be last
-
   warnIfAnalyticsNotSet()
 
   return app

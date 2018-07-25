@@ -4,6 +4,8 @@
 const logger = require('winston')
 const _ = require('lodash')
 const moment = require('moment-timezone')
+const AWSXRay = require('aws-xray-sdk')
+const getNamespace = require('continuation-local-storage').getNamespace
 
 // Custom dependencies
 const response = require('../../utils/response').response
@@ -13,8 +15,10 @@ const {isADirectDebitAccount} = require('../../services/clients/direct_debit_con
 const auth = require('../../services/auth_service.js')
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const datetime = require('../../utils/nunjucks-filters/datetime')
-
 const getTimespanDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
+
+// Constants
+const clsXrayConfig = require('../../../config/xray-cls')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
@@ -45,40 +49,51 @@ module.exports = (req, res) => {
         period
       })
     }
-    connectorClient().getTransactionSummary({
-      gatewayAccountId,
-      correlationId,
-      fromDateTime,
-      toDateTime
-    }, (connectorData, connectorResponse) => {
-      const activityResults = connectorResponse.body
-      response(req, res, 'dashboard/index', {
-        name: req.user.username,
-        serviceId: req.service.externalId,
-        activity: activityResults,
-        successfulTransactionsState: 'payment-success',
+
+    const namespace = getNamespace(clsXrayConfig.nameSpaceName)
+    const clsSegment = namespace.get(clsXrayConfig.segmentKeyName)
+
+    AWSXRay.captureAsyncFunc  ('connectorClient_getTransactionSummary', function (subsegment) {
+
+      connectorClient().getTransactionSummary({
+        gatewayAccountId,
+        correlationId,
         fromDateTime,
-        toDateTime,
-        period,
-        transactionsPeriodString
-      })
-    })
-      .on('connectorError', (error, connectorResponse) => {
-        const status = _.get(connectorResponse, 'statusCode', 404)
-        logger.error(`[${correlationId}] Calling connector to get transactions summary failed -`, {
-          service: 'connector',
-          method: 'GET',
-          status,
-          error
-        })
-        res.status(status)
+        toDateTime
+      }, (connectorData, connectorResponse) => {
+        subsegment.close()
+        const activityResults = connectorResponse.body
         response(req, res, 'dashboard/index', {
           name: req.user.username,
           serviceId: req.service.externalId,
-          activityError: true,
-          period
+          activity: activityResults,
+          successfulTransactionsState: 'payment-success',
+          fromDateTime,
+          toDateTime,
+          period,
+          transactionsPeriodString
         })
-      })
+      }, subsegment)
+        .on('connectorError', (error, connectorResponse) => {
+          subsegment.close(error)
+          const status = _.get(connectorResponse, 'statusCode', 404)
+          logger.error(`[${correlationId}] Calling connector to get transactions summary failed -`, {
+            service: 'connector',
+            method: 'GET',
+            status,
+            error
+          })
+          res.status(status)
+          response(req, res, 'dashboard/index', {
+            name: req.user.username,
+            serviceId: req.service.externalId,
+            activityError: true,
+            period
+          })
+        })
+
+    }, clsSegment)
+
   } catch (err) {
     logger.error(`[${correlationId}] ${err.message} -`, {
       service: 'frontend',

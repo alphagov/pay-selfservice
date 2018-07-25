@@ -1,10 +1,9 @@
 'use strict'
 
-// Core Dependencies
+// NPM Dependencies
 const path = require('path')
 const assert = require('assert')
-
-// NPM Dependencies
+const AWSXRay = require('aws-xray-sdk')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const _ = require('lodash')
@@ -70,12 +69,26 @@ describe('auth service', function () {
     it('should find user by external id', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth_service.js'),
-          {'./user_service.js': userMock})
+          {'./user_service.js': userMock,
+            'aws-xray-sdk': {
+              captureAsyncFunc: function (name, callback) {
+                callback(new AWSXRay.Segment('stub-subsegment'))
+              }
+            },
+            'continuation-local-storage': {
+              getNamespace: function () {
+                return {
+                  run: function(callback) {
+                    callback()
+                  },
+                  set: () => {}
+                }
+              }
+            }
+          })
       }
 
       const user = mockUser()
-      const doneSpy = sinon.spy(() => {
-      })
       const userServiceMock = {
         findByExternalId: (externalId) => {
           return new Promise(function (resolve, reject) {
@@ -85,11 +98,11 @@ describe('auth service', function () {
         }
       }
 
-      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, EXTERNAL_ID_IN_SESSION, doneSpy)
-        .then(() => {
-          assert(doneSpy.calledWithExactly(null, user))
-          done()
-        })
+      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, EXTERNAL_ID_IN_SESSION, function(err, returnedUser) {
+        expect(err).to.be.null
+        expect(returnedUser).to.deep.equal(user)
+        done()
+      })
     })
   })
 

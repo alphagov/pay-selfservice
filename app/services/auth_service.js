@@ -6,6 +6,8 @@ const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
+const AWSXRay = require('aws-xray-sdk')
+const getNamespace = require('continuation-local-storage').getNamespace
 
 // TODO: Remove when issue solved
 /*
@@ -21,6 +23,7 @@ const paths = require('../paths.js')
 const userService = require('./user_service.js')
 const csrf = require('../middleware/csrf')
 const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const clsXrayConfig = require('../../config/xray-cls')
 
 // Exports
 module.exports = {
@@ -165,18 +168,28 @@ function initialise (app) {
   passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth))
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
   passport.use('localDirect', new CustomStrategy(localDirectStrategy))
-
   passport.serializeUser(serializeUser)
   passport.deserializeUser(deserializeUser)
 }
 
 function deserializeUser (req, externalId, done) {
-  return userService.findByExternalId(externalId, req.headers[CORRELATION_HEADER] || '')
-    .then((user) => done(null, user))
-    .catch(err => {
-      logger.info(`[${req.correlationId}]: Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
-      done(err)
-    })
+  const segment = new AWSXRay.Segment('deserialize')
+  const namespace = getNamespace(clsXrayConfig.nameSpaceName)
+  namespace.run(() => {
+    namespace.set(clsXrayConfig.segmentKeyName, segment)
+    AWSXRay.captureAsyncFunc('auth_service_deserializeUser', function (subSegment) {
+      return userService.findByExternalId(externalId, req.headers[CORRELATION_HEADER] || '', subSegment)
+        .then((user) => {
+          segment.close()
+          done(null, user)
+        })
+        .catch(err => {
+          segment.close(err)
+          logger.info(`[${req.correlationId}]: Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
+          done(err)
+        })
+    }, segment)
+  })
 }
 
 function serializeUser (user, done) {

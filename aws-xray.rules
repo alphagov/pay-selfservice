@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "description": "Exclude healthchecks",
+      "service_name": "*",
+      "http_method": "*",
+      "url_path": "/healthcheck",
+      "fixed_target": 0,
+      "rate": 0.0
+    },
+    {
+      "description": "Exclude content",
+      "service_name": "*",
+      "http_method": "*",
+      "url_path": "/public",
+      "fixed_target": 0,
+      "rate": 0.0
+    }
+  ],
+  "default": {
+    "fixed_target": 1,
+    "rate": 0.1
+  },
+  "version": 1
+}

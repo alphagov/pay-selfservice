@@ -18,10 +18,14 @@ module.exports = {
       requestLogger.logRequestEnd(context)
 
       if (error) {
+        // TODO : Once anything using response converted has a segment passed, this can be removed.
+        if (context.subsegment) { context.subsegment.close(error) }
         requestLogger.logRequestError(context, error)
         defer.reject({error: error})
         return
       }
+      // TODO : Verify
+      if (context.subsegment) { context.subsegment.close() }
 
       if (response && SUCCESS_CODES.indexOf(response.statusCode) !== -1) {
         if (body && transformer && typeof transformer === 'function') {
