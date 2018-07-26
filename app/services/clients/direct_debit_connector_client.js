@@ -15,13 +15,11 @@ module.exports = {
   isADirectDebitAccount,
   gatewayAccount: {
     create: createGatewayAccount,
-    get: getGatewayAccountByExternalId
+    get: getGatewayAccountByExternalId,
+    patch: patchGatewayAccount
   },
   gatewayAccounts: {
     get: getGatewayAccountsByExternalIds
-  },
-  gocardless: {
-    get: getOAuthAuthorise
   }
 }
 
@@ -69,15 +67,27 @@ function getGatewayAccountsByExternalIds (params) {
   })
 }
 
-function getOAuthAuthorise (params) {
-  return baseClient.get({
-    baseUrl: params.baseUrl,
-    url: `/oauth/access_token`,
-    client_id: params.clientId,
-    redirect_uri: baseUrl + `/oauth/complete`,
-    scope: `read_write`,
-    response_type: `code`,
-    initial_view: `login`,
-    access_type: `offline`
+function patchGatewayAccount (params) {
+  const payload = [
+    {
+      op: 'replace',
+      path: 'access_token',
+      value: params.access_token
+    },
+    {
+      op: 'replace',
+      path: 'organisation',
+      value: params.organisation_id
+    }
+  ]
+
+  return baseClient.patch({
+    baseUrl,
+    url: `/accounts/${params.gatewayAccountId}`,
+    json: true,
+    body: payload,
+    correlationId: params.correlationId,
+    description: 'update an existing gateway account with access token and organisation id',
+    service: SERVICE_NAME
   })
 }

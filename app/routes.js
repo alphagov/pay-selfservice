@@ -154,6 +154,9 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
   app.post(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
 
+  // GoCardless OAuth endpoint
+  app.get(paths.gocardless.oauthComplete, gocardlessCtrl.oauthCompleteGet)
+
   // ----------------------
   // AUTHENTICATED ROUTES
   // ----------------------
@@ -302,7 +305,6 @@ module.exports.bind = function (app) {
 
   // Link GoCardless account
   app.get(paths.gocardless.linkAccount, getAccount, gocardlessCtrl.index)
-  // app.get(paths.gocardless.oauthComplete, gocardlessCtrl.oauthGet)
 
   app.all('*', (req, res) => {
     res.status(404)
