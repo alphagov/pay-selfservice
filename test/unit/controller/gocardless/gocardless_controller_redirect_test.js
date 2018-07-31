@@ -3,7 +3,6 @@
 const chai = require('chai')
 const {expect} = require('chai')
 
-const sinon = require('sinon')
 const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies

@@ -67,6 +67,16 @@ function getGatewayAccountsByExternalIds (params) {
   })
 }
 
+/**
+ * PATCH a gateway account with GoCardless OAuth access_token and organisation_id
+ * Both fields are required. Need to pass a gatewayAccountId as well
+ * @param {Object} params                   An object with the following properties
+ * @param {String} params.access_token      The access token that we received from GoCardless     [required]
+ * @param {String} params.organisation_id   The organisation id value that we get from GoCardless [required]
+ * @param {String} params.gatewayAccountId  The external id for the gateway account to be patched [required]
+ * @param {String} params.correlationId     The correlation id for this request                   [required]
+ * @returns {Promise}
+ */
 function patchGatewayAccount (params) {
   const payload = [
     {
