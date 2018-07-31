@@ -15,11 +15,14 @@ module.exports = {
   isADirectDebitAccount,
   gatewayAccount: {
     create: createGatewayAccount,
-    get: getGatewayAccountByExternalId,
-    patch: patchGatewayAccount
+    get: getGatewayAccountByExternalId
   },
   gatewayAccounts: {
     get: getGatewayAccountsByExternalIds
+  },
+  partnerApp: {
+    createState: createPartnerAppState,
+    exchangeAccessCode
   }
 }
 
@@ -68,36 +71,45 @@ function getGatewayAccountsByExternalIds (params) {
 }
 
 /**
- * PATCH a gateway account with GoCardless OAuth access_token and organisation_id
- * Both fields are required. Need to pass a gatewayAccountId as well
+ * POST a gatewayAccountId and redirectUri and get a state token for GoCardless Partner app OAuth
  * @param {Object} params                   An object with the following properties
- * @param {String} params.access_token      The access token that we received from GoCardless     [required]
- * @param {String} params.organisation_id   The organisation id value that we get from GoCardless [required]
+ * @param {String} params.redirectUri       The redirect uri that is registered with GoCardless   [required]
  * @param {String} params.gatewayAccountId  The external id for the gateway account to be patched [required]
- * @param {String} params.correlationId     The correlation id for this request                   [required]
  * @returns {Promise}
  */
-function patchGatewayAccount (params) {
-  const payload = [
-    {
-      op: 'replace',
-      path: 'access_token',
-      value: params.access_token
-    },
-    {
-      op: 'replace',
-      path: 'organisation',
-      value: params.organisation_id
-    }
-  ]
-
-  return baseClient.patch({
+function createPartnerAppState (params) {
+  return baseClient.post({
     baseUrl,
-    url: `/accounts/${params.gatewayAccountId}`,
+    url: '/gocardless/partnerapp/tokens',
     json: true,
-    body: payload,
-    correlationId: params.correlationId,
-    description: 'update an existing gateway account with access token and organisation id',
+    body: {
+      gateway_account_id: params.gatewayAccountId,
+      redirect_uri: params.redirectUri
+    },
+    description: 'create a partner app state token',
+    service: SERVICE_NAME
+  })
+}
+
+/**
+ * Exchanges a GoCardless access code with a permanent access token
+ * @param {Object} params
+ * @param {String} params.gocardlessUrl The base URL for GoCardless OAuth connect
+ * @param {String} params.clientId      The GOV.UK Pay client id that is provided by GoCardless when creating a Partner app
+ * @param {String} params.clientSecret  The GOV.UK Pay client secret that is provided by GoCardless when creating a Partner app
+ * @param {String} params.code          The code that is provided by GoCardless when a Merchant links its account to Pay
+ * @returns {Promise}
+ */
+function exchangeAccessCode (params) {
+  return baseClient.post({
+    baseUrl,
+    url: `/gocardless/partnerapp/codes`,
+    json: true,
+    body: {
+      access_code: params.code,
+      partner_state: params.state
+    },
+    description: 'Exchange GoCardless code for token',
     service: SERVICE_NAME
   })
 }

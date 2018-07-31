@@ -2,19 +2,21 @@
 
 const controller = require('../../../../app/controllers/direct_debit/gocardless_oauth_controller')
 const baseClient = require('../../../../app/services/clients/base_client/base_client')
-const gocardlessClient = require('../../../../app/services/clients/gocardless_client')
+const directDebitClient = require('../../../../app/services/clients/direct_debit_connector_client')
 
 const {expect} = require('chai')
 const sinon = require('sinon')
 
-let req, res, stubbedBaseClientPost, stubbedBaseClientPatch
+let req, res, stubbedBaseClientPost, stubbedGetGatewayAccount
 
 describe('When GoCardless Controller receives a GET request', function () {
   beforeEach(function () {
     req = {
-      correlationId: 'some-correlation-id',
+      account: {
+        type: 'test'
+      },
       query: {
-        state: 'a-csrf-token.123',
+        state: 'some-test-state',
         code: 'a-test-code'
       }
     }
@@ -26,41 +28,23 @@ describe('When GoCardless Controller receives a GET request', function () {
     }
 
     stubbedBaseClientPost = baseClient.post = sinon.stub()
-    stubbedBaseClientPost.resolves({
-      access_token: 'e72e16c7e42f292c6912e7710c123347ae178b4a',
-      scope: 'read_write',
-      token_type: 'bearer',
-      email: 'accounts@example.com',
-      organisation_id: 'OR123'
-    })
+    stubbedBaseClientPost.resolves({})
 
-    stubbedBaseClientPatch = baseClient.patch = sinon.stub()
-    stubbedBaseClientPatch.resolves({})
+    stubbedGetGatewayAccount = directDebitClient.gatewayAccount.get = sinon.stub()
+    stubbedGetGatewayAccount.resolves({
+      type: 'test'
+    })
   })
 
   afterEach(() => {
     stubbedBaseClientPost.reset()
-    stubbedBaseClientPatch.reset()
+    stubbedGetGatewayAccount.reset()
   })
 
-  it('successfully parses the GET request and creates a POST request', () => {
-    res.status = (code) => {
-      expect(code).to.equal(200)
-    }
-    controller.oauthCompleteGet(req, res)
-  })
-
-  describe('and invalid correlation id', () => {
-    beforeEach(() => {
-      req.correlationId = ''
-    })
-    afterEach(() => {
-      req.correlationId = 'some-correlation-id'
-    })
-
-    it('returns bad request', () => {
+  describe('with all required parameters', () => {
+    it('successfully parses the GET request and creates a POST request', () => {
       res.status = (code) => {
-        expect(code).to.equal(400)
+        expect(code).to.equal(200)
       }
       controller.oauthCompleteGet(req, res)
     })
@@ -71,7 +55,7 @@ describe('When GoCardless Controller receives a GET request', function () {
       req.query.state = 'i-am-a-wrong-state'
     })
     afterEach(() => {
-      req.query.state = 'a-csrf-token.123'
+      req.query.state = 'some-test-state'
     })
 
     it('returns bad request', () => {
@@ -92,23 +76,6 @@ describe('When GoCardless Controller receives a GET request', function () {
     it('then returns bad request', () => {
       res.status = (code) => {
         expect(code).to.equal(400)
-      }
-      controller.oauthCompleteGet(req, res)
-    })
-  })
-
-  describe('and making a POST request to GoCardless throws exception', () => {
-    let stubbedPostOAuthToken
-    beforeEach(() => {
-      stubbedPostOAuthToken = gocardlessClient.postOAuthToken = sinon.stub()
-      stubbedPostOAuthToken.rejects(new Error('oh noes!'))
-    })
-    afterEach(() => {
-      stubbedPostOAuthToken.reset()
-    })
-    it('returns internal server error', () => {
-      res.status = (code) => {
-        expect(code).to.equal(500)
       }
       controller.oauthCompleteGet(req, res)
     })

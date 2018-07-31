@@ -2,20 +2,19 @@
 
 const gocardlessClient = require('../../services/clients/gocardless_client')
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
+const REDIRECT_URI = process.env.SELFSERVICE_BASE + '/oauth/complete'
 
 const logger = require('winston')
 
-const GOCARDLESS_CLIENT_ID = process.env.GOCARDLESS_CLIENT_ID
-const GOCARDLESS_CLIENT_SECRET = process.env.GOCARDLESS_CLIENT_SECRET
-
 exports.index = (req, res) => {
-  const gatewayAccountId = req.gateway_account.currentGatewayAccountId
-  gocardlessClient.redirectToGocardless(
-    req,
-    res,
-    {
-      clientId: GOCARDLESS_CLIENT_ID,
-      state: 'a-csrf-token' + '.' + gatewayAccountId
+  const gatewayAccountId = req.account.externalId
+
+  directDebitConnectorClient.partnerApp.createState({gatewayAccountId, redirectUri: REDIRECT_URI})
+    .then(response => {
+      redirectToGoCardlessConnect(req, res, response.token)
+    })
+    .catch(err => {
+      handleServerError(res, 'There was an error getting a state token from Direct Debit Connector', err)
     })
 }
 
@@ -37,48 +36,36 @@ exports.oauthCompleteGet = (req, res) => {
   }
 }
 
+function redirectToGoCardlessConnect (req, res, stateToken) {
+  gocardlessClient.redirectToGocardless(
+    req,
+    res,
+    {
+      gocardlessOauthUrl: getGoCardlessOAuthUrl(req.account),
+      clientId: getGoCardlessOAuthClientId(req.account),
+      state: stateToken
+    })
+}
+
 function validateGetRequest (req, res) {
-  const csrfToken = req.query.state.split('.')[0]
-  const gatewayAccountId = req.query.state.split('.')[1]
-  const correlationId = req.correlationId
+  const stateToken = req.query.state
   const gocardlessCode = req.query.code
-  if (!csrfToken || !gatewayAccountId || !correlationId || !gocardlessCode) {
+  if (!stateToken || !gocardlessCode) {
     handleBadRequest(res, 'Bad request to /oauth/complete')
   } else {
     return {
-      csrfToken,
-      gatewayAccountId,
-      correlationId,
-      gocardlessCode
+      code: gocardlessCode,
+      state: stateToken
     }
   }
 }
 
 function processPayload (getPayload, res) {
-  return gocardlessClient.postOAuthToken({
-    clientId: GOCARDLESS_CLIENT_ID,
-    clientSecret: GOCARDLESS_CLIENT_SECRET,
-    code: getPayload.gocardlessCode
-  }).then(response => {
-    patchGatewayAccount(getPayload.correlationId, getPayload.gatewayAccountId, response, res)
-  })
-    .catch(err => handleServerError(res, 'Failed to PATCH gateway account ' + getPayload.gatewayAccountId, err))
-}
-
-function patchGatewayAccount (correlationId, gatewayAccountId, response, res) {
-  return directDebitConnectorClient.gatewayAccount.patch({
-    correlationId: correlationId,
-    gatewayAccountId: gatewayAccountId,
-    access_token: response.access_token,
-    organisation_id: response.organisation_id
-  }).then(() => {
-    res.status(200)
-    res.end()
-  })
-    .catch(err => {
-      // todo: add a retry mechanism if this fails
-      logger.info('Failed to call PATCH resource' + err)
+  return directDebitConnectorClient.partnerApp.exchangeAccessCode(getPayload)
+    .then(response => {
+      // todo: show a message to the user
     })
+    .catch(err => handleServerError(res, 'Failed to get the token from Direct Debit Connector', err))
 }
 
 function handleBadRequest (res, msg, err) {
@@ -91,4 +78,12 @@ function handleServerError (res, msg, err) {
   logger.info(`${msg} ${JSON.stringify(err)}`)
   res.status(500)
   res.end()
+}
+
+function getGoCardlessOAuthUrl (gatewayAccount) {
+  return (gatewayAccount.type === 'test') ? process.env.GOCARDLESS_TEST_OAUTH_BASE_URL : process.env.GOCARDLESS_LIVE_OAUTH_BASE_URL
+}
+
+function getGoCardlessOAuthClientId (gatewayAccount) {
+  return (gatewayAccount.type === 'test') ? process.env.GOCARDLESS_TEST_CLIENT_ID : process.env.GOCARDLESS_LIVE_CLIENT_ID
 }
