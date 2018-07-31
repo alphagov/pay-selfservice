@@ -18,13 +18,13 @@ module.exports = {
       requestLogger.logRequestEnd(context)
 
       if (error) {
-        // TODO : Once anything using response converted has a segment passed, this can be removed.
+        // TODO : Once anything using response converter has a segment passed, the 'if' test can be removed, with just the .close() function call remaining
         if (context.subsegment) { context.subsegment.close(error) }
         requestLogger.logRequestError(context, error)
         defer.reject({error: error})
         return
       }
-      // TODO : Verify
+      // TODO : Same as above
       if (context.subsegment) { context.subsegment.close() }
 
       if (response && SUCCESS_CODES.indexOf(response.statusCode) !== -1) {

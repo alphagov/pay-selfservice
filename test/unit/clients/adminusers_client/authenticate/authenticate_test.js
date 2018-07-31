@@ -24,32 +24,6 @@ const expect = chai.expect
 const ssUserConfig = require('../../../../fixtures/config/self_service_user')
 const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
-function transformUserFixture(userData) {
-  userData.permissions = userData.permissions.map(permission => permission.name)
-  userData.gateway_account_ids = userData.gateway_accounts.map(gatewayAccount => gatewayAccount.id)
-  userData.service_ids = userData.services.map(service => service.external_id)
-  userData.service_roles = userData.services.map(service => {
-    return {
-      service: {
-          external_id: service.external_id,
-          name: service.name,
-          gateway_account_ids: service.gateway_account_ids,
-          _links: []
-        },
-      role: service.role
-    }
-  })
-  userData.services = userData.services.map(service => {
-    return {
-      external_id: service.external_id,
-      name: service.name,
-      gateway_account_ids: service.gateway_account_ids,
-      _links: []
-    }
-  })
-  return userData
-}
-
 describe('adminusers client - authenticate', function () {
   let provider = Pact({
     consumer: 'selfservice-to-be',
@@ -65,8 +39,7 @@ describe('adminusers client - authenticate', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('success', () => {
-
-    const validPasswordResponse = userFixtures.validPasswordAuthenticateResponse(transformUserFixture(ssDefaultUser))
+    const validPasswordResponse = userFixtures.validPasswordAuthenticateResponse(ssDefaultUser)
     const validPasswordRequestPactified = userFixtures
       .validPasswordAuthenticateRequest({
         username: ssDefaultUser.username,

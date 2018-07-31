@@ -147,7 +147,6 @@ describe('email notification', function () {
       it('should update the email notification template body', function () {
         class StubConnectorEmailFunctions extends EventEmitter {
           updateNotificationEmail (params, callback) {
-            console.log('BOOM!')
             callback()
             return this
           }

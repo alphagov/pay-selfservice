@@ -16,28 +16,24 @@
         "telephone_number": "9127979",
         "second_factor": "SMS",
         "provisional_otp_key": "NOTSET",
-        "provisional_otp_key_created_at": "NOTSET",
+        "provisional_otp_key_created_at": null,
         "disabled": false,
         "login_counter": 0,
         "session_version": 0,
-        "features": "NOTSET",
         "gateway_accounts": [
           {
             "id": "666",
             "isPrimary": "true",
             "name": "sandbox"
-          },
-          {
-            "id": "7",
-            "isPrimary": "false",
-            "name": "nonsandbox"
           }
         ],
-        "_links": [{
-          "rel": "self",
-          "method": "GET",
-          "href": "http://myconnector.local/v1/api/users/7d19aff33f8948deb97ed16b2912dcd3"
-        }],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/7d19aff33f8948deb97ed16b2912dcd3"
+          }
+        ],
         "role": {
           "name": "admin",
           "description": "Administrator",
@@ -176,11 +172,19 @@
             }
           ]
         },
-        "services": [
+        "service_ids": [
+          "cp5wa"
+        ],
+        "service_roles": [
           {
-            "external_id": "cp5wa",
-            "name": "System Generated",
-            "gateway_account_ids": ["666", "7"],
+            "service": {
+              "external_id": "cp5wa",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": []
+            },
             "role": {
               "name": "admin",
               "description": "Administrator",
@@ -321,109 +325,49 @@
             }
           }
         ],
-        "permissions": [
+        "services": [
           {
-            "name": "transactions:read"
-          },
-          {
-            "name": "transactions_email_read"
-          },
-          {
-            "name": "transactions_amount_read"
-          },
-          {
-            "name": "transactions_card_type_read"
-          },
-          {
-            "name": "transactions-details:read"
-          },
-          {
-            "name": "refunds_create"
-          },
-          {
-            "name": "refunds:create"
-          },
-          {
-            "name": "users-service:read"
-          },
-          {
-            "name": "users-service:create"
-          },
-          {
-            "name": "tokens-active:read"
-          },
-          {
-            "name": "tokens-revoked:read"
-          },
-          {
-            "name": "tokens:create"
-          },
-          {
-            "name": "tokens:update"
-          },
-          {
-            "name": "tokens:delete"
-          },
-          {
-            "name": "transactions-by-date:read"
-          },
-          {
-            "name": "transactions-by-fields:read"
-          },
-          {
-            "name": "transactions-download:read"
-          },
-          {
-            "name": "transactions-events:read"
-          },
-          {
-            "name": "transactions-description:read"
-          },
-          {
-            "name": "gateway-credentials:read"
-          },
-          {
-            "name": "gateway-credentials:update"
-          },
-          {
-            "name": "service-name:read"
-          },
-          {
-            "name": "service-name:update"
-          },
-          {
-            "name": "payment-types:read"
-          },
-          {
-            "name": "payment-types:update"
-          },
-          {
-            "name": "email-notification-template:read"
-          },
-          {
-            "name": "email-notification-paragraph:update"
-          },
-          {
-            "name": "email-notification-toggle:update"
-          },
-          {
-            "name": "tokens:read"
-          },
-          {
-            "name": "toggle-3ds:read"
-          },
-          {
-            "name": "toggle-3ds:update"
-          },
-          {
-            "name": "users-service:delete"
-          },
-          {
-            "name": "merchant-details:read"
-          },
-          {
-            "name": "merchant-details:update"
+            "external_id": "cp5wa",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ]
           }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update"
         ],
         "sections": {
           "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service",

@@ -31,28 +31,24 @@ describe('adminusers client - get user', function () {
     pactfileWriteMode: 'merge'
   })
 
-  // Use a known configuration to generate our interaction. This configuration is used in browser testing
-  // where assumptions about users and stubs are relied upon upfront
-  const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+  const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
   describe('success', () => {
-    const existingExternalId = ssUser.external_id
+    const existingExternalId = ssDefaultUser.external_id
 
     const params = {
-      external_id: existingExternalId,
-      gateway_account_ids: ssUser.gateway_accounts.map(gam => gam.id),
-      service_roles: ssUser.service_roles
+      external_id: existingExternalId
     }
 
-    const getUserResponse = userFixtures.validUserResponse(params)
+    const getUserResponse = userFixtures.validPasswordAuthenticateResponse(ssDefaultUser)
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
-          .withState('a user exists with the given external id ' + existingExternalId)
+          .withState(`a user exists with the given external id ${existingExternalId}`)
           .withUponReceiving('a valid get user request')
           .withResponseBody(getUserResponse.getPactified())
           .build()
@@ -69,7 +65,7 @@ describe('adminusers client - get user', function () {
         expect(user.username).to.be.equal(expectedUserData.username)
         expect(user.email).to.be.equal(expectedUserData.email)
         expect(user.serviceRoles.length).to.be.equal(1)
-        expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)
+        expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(1)
         expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
         expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
         expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)

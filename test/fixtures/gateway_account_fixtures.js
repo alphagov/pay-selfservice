@@ -27,6 +27,40 @@ module.exports = {
       }
     }
   },
+  validGatewayAccountsResponse: (opts = {}) => {
+    let data = {
+      accounts: opts.accounts ||
+      [{
+        type: "test",
+        gateway_account_id: 100,
+        payment_provider: "sandbox",
+        service_name: "Gateway Account 1 (test)",
+        _links: { self: { href: "https://connector.pymnt.localdomain/v1/api/accounts/100"}}
+      }, {
+        type: "test",
+        gateway_account_id: 101,
+        payment_provider: "sandbox",
+        service_name: "Gateway Account 2 (test)",
+        _links: { self: { href: "https://connector.pymnt.localdomain/v1/api/accounts/101"}}
+      }, {
+        type: "test",
+        gateway_account_id: 102,
+        payment_provider: "sandbox",
+        service_name: "Gateway Account 3 (test)",
+        _links: { self: { href: "https://connector.pymnt.localdomain/v1/api/accounts/102"}}
+      },
+      ]
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
+  },
   validDirectDebitGatewayAccountResponse: (opts = {}) => {
     const data = {
       gateway_account_id: opts.gateway_account_id || 73,
