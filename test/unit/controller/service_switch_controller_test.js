@@ -80,7 +80,7 @@ describe('service switch controller: list of accounts', function () {
           },
           {
             service: {
-              name: 'Direct debit service',
+              name: 'Direct Debit service',
               external_id: 'service-external-id-4',
               gateway_account_ids: directDebitGatewayAccountIds
             },
@@ -99,7 +99,7 @@ describe('service switch controller: list of accounts', function () {
         const renderData = arguments[1]
 
         expect(path).to.equal('services/index')
-        expect(renderData.services.map(service => service.name)).to.have.lengthOf(4).and.to.include('My Service 1', 'My Service 2', '', 'Direct debit service')
+        expect(renderData.services.map(service => service.name)).to.have.lengthOf(4).and.to.include('My Service 1', 'My Service 2', '', 'Direct Debit service')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
