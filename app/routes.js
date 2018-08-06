@@ -180,10 +180,10 @@ module.exports.bind = function (app) {
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), xraySegmentCls, hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS
-  app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, transactionsListCtrl)
-  app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, transactionsDownloadCtrl)
-  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, transactionDetailCtrl)
-  app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, transactionRefundCtrl)
+  app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListCtrl)
+  app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadCtrl)
+  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailCtrl)
+  app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundCtrl)
 
   // CREDENTIALS
   app.get(credentials.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsCtrl.index)
