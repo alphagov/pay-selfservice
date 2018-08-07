@@ -1,13 +1,13 @@
-let path = require('path')
-let renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const path = require('path')
+const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
 const {serviceNavigationItems, adminNavigationItems} = require(path.join(__dirname, '../../app/utils/navBuilder'))
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_read: true
     }
-    let templateData = {
+    const templateData = {
       currentGatewayAccount: {
         full_type: 'test'
       },
@@ -17,16 +17,16 @@ describe('navigation menu', function () {
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
     }
 
-    let body = renderTemplate('dashboard/index', templateData)
+    const body = renderTemplate('dashboard/index', templateData)
 
     body.should.containSelector('.service-navigation--list-item:nth-child(1)').withExactText('Dashboard')
   })
 
-  it('should render Transactions navigation link when user have transactions read permission', function () {
-    let testPermissions = {
+  it('should render Transactions navigation link when user have transactions read permission and payment type is card', function () {
+    const testPermissions = {
       transactions_read: true
     }
-    let templateData = {
+    const templateData = {
       currentGatewayAccount: {
         full_type: 'test'
       },
@@ -36,28 +36,47 @@ describe('navigation menu', function () {
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
     }
 
-    let body = renderTemplate('dashboard/index', templateData)
+    const body = renderTemplate('dashboard/index', templateData)
 
-    body.should.containSelector('.service-navigation--list-item:nth-child(2)').withExactText('Transactions')
+    body.should.containSelector('#navigation-menu-transactions').withExactText('Transactions')
+  })
+
+  it('should render Transactions navigation link when user have transactions read permission and payment type is direct debit', function () {
+    const testPermissions = {
+      transactions_read: true
+    }
+    const templateData = {
+      currentGatewayAccount: {
+        full_type: 'test'
+      },
+      currentService: {name: 'Service Name'},
+      permissions: testPermissions,
+      hideServiceNav: false,
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'direct debit')
+    }
+
+    const body = renderTemplate('dashboard/index', templateData)
+
+    body.should.containNoSelector('#navigation-menu-transactions')
   })
 
   it('should render API keys navigation link when user have tokens read permission', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: true
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
   })
 
   it('should render Accounts credentials navigation link when user have gateway credentials read permission', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: true,
       service_name_read: false,
@@ -65,19 +84,19 @@ describe('navigation menu', function () {
       toggle_3ds_read: false,
       email_notification_template_read: false
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
   })
 
   it('should render Card types navigation link when user have card Types read permission', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
       service_name_read: false,
@@ -85,19 +104,19 @@ describe('navigation menu', function () {
       toggle_3ds_read: false,
       email_notification_template_read: false
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Card types')
   })
 
   it('should render 3D Secure navigation link when user have email notification template read permission', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
       service_name_read: false,
@@ -105,19 +124,19 @@ describe('navigation menu', function () {
       toggle_3ds_read: true,
       email_notification_template_read: false
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('3D Secure')
   })
 
   it('should render Email notifications navigation link when user have email notification template read permission', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
       service_name_read: false,
@@ -125,18 +144,18 @@ describe('navigation menu', function () {
       toggle_3ds_read: false,
       email_notification_template_read: true
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Email notifications')
   })
   it('should not render Accounts credentials navigation link when user is using direct debit gateway account', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: true,
       gateway_credentials_update: true,
       service_name_read: false,
@@ -145,19 +164,19 @@ describe('navigation menu', function () {
       toggle_3ds_read: false,
       email_notification_template_read: false
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
 
   it('should not render Card types navigation link when user is using direct debit gateway account', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: true,
       gateway_credentials_update: false,
       service_name_read: false,
@@ -166,18 +185,18 @@ describe('navigation menu', function () {
       toggle_3ds_read: false,
       email_notification_template_read: false
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
   it('should not render 3D Secure navigation link when user is using direct debit gateway account', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: true,
       gateway_credentials_update: false,
       service_name_read: false,
@@ -186,19 +205,19 @@ describe('navigation menu', function () {
       toggle_3ds_read: true,
       email_notification_template_read: false
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })
 
   it('should not render Email notifications navigation link when user is using direct debit gateway account', function () {
-    let testPermissions = {
+    const testPermissions = {
       tokens_update: true,
       gateway_credentials_update: false,
       service_name_read: false,
@@ -207,13 +226,13 @@ describe('navigation menu', function () {
       toggle_3ds_read: false,
       email_notification_template_read: true
     }
-    let templateData = {
+    const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
       adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
     }
 
-    let body = renderTemplate('api-keys/index', templateData)
+    const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li').withExactText('API keys')
   })

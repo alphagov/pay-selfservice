@@ -17,42 +17,45 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
     settingsPath = paths.emailNotifications.index
   }
 
-  return [
-    {
-      id: 'navigation-menu-home',
-      name: 'Dashboard',
-      url: paths.dashboard.index,
-      current: originalUrl === paths.dashboard.index,
-      permissions: true
-    },
-    {
+  const navigationItems = []
+  navigationItems.push({
+    id: 'navigation-menu-home',
+    name: 'Dashboard',
+    url: paths.dashboard.index,
+    current: originalUrl === paths.dashboard.index,
+    permissions: true
+  })
+  if (type === 'card') {
+    navigationItems.push({
       id: 'navigation-menu-transactions',
       name: 'Transactions',
       url: paths.transactions.index,
       current: pathLookup(originalUrl, paths.transactions.index),
       permissions: permissions.transactions_read
-    },
-    {
-      id: 'navigation-menu-settings',
-      name: 'Settings',
-      url: settingsPath,
-      current: pathLookup(originalUrl, [
-        paths.credentials,
-        paths.notificationCredentials,
-        paths.toggle3ds,
-        paths.apiKeys,
-        paths.emailNotifications,
-        paths.paymentTypes
-      ]),
-      permissions: _.some([
-        permissions.tokens_read,
-        permissions.gateway_credentials_read,
-        permissions.payment_types_read,
-        permissions.toggle_3ds_read,
-        permissions.email_notification_template_read
-      ], Boolean)
-    }
-  ]
+    })
+  }
+  navigationItems.push({
+    id: 'navigation-menu-settings',
+    name: 'Settings',
+    url: settingsPath,
+    current: pathLookup(originalUrl, [
+      paths.credentials,
+      paths.notificationCredentials,
+      paths.toggle3ds,
+      paths.apiKeys,
+      paths.emailNotifications,
+      paths.paymentTypes
+    ]),
+    permissions: _.some([
+      permissions.tokens_read,
+      permissions.gateway_credentials_read,
+      permissions.payment_types_read,
+      permissions.toggle_3ds_read,
+      permissions.email_notification_template_read
+    ], Boolean)
+  })
+
+  return navigationItems
 }
 
 const adminNavigationItems = (originalUrl, permissions, type) => {
