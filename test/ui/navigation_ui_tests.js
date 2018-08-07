@@ -22,7 +22,7 @@ describe('navigation menu', function () {
     body.should.containSelector('.service-navigation--list-item:nth-child(1)').withExactText('Dashboard')
   })
 
-  it('should render Transactions navigation link when user have transactions read permission', function () {
+  it('should render Transactions navigation link when user have transactions read permission and payment type is card', function () {
     let testPermissions = {
       transactions_read: true
     }
@@ -38,7 +38,26 @@ describe('navigation menu', function () {
 
     let body = renderTemplate('dashboard/index', templateData)
 
-    body.should.containSelector('.service-navigation--list-item:nth-child(2)').withExactText('Transactions')
+    body.should.containSelector('#navigation-menu-transactions').withExactText('Transactions')
+  })
+
+  it('should render Transactions navigation link when user have transactions read permission and payment type is direct debit', function () {
+    let testPermissions = {
+      transactions_read: true
+    }
+    let templateData = {
+      currentGatewayAccount: {
+        full_type: 'test'
+      },
+      currentService: {name: 'Service Name'},
+      permissions: testPermissions,
+      hideServiceNav: false,
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'direct debit')
+    }
+
+    let body = renderTemplate('dashboard/index', templateData)
+
+    body.should.containNoSelector('#navigation-menu-transactions')
   })
 
   it('should render API keys navigation link when user have tokens read permission', function () {
