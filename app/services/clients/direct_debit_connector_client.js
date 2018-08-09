@@ -19,6 +19,10 @@ module.exports = {
   },
   gatewayAccounts: {
     get: getGatewayAccountsByExternalIds
+  },
+  partnerApp: {
+    createState: createPartnerAppState,
+    exchangeAccessCode
   }
 }
 
@@ -62,6 +66,50 @@ function getGatewayAccountsByExternalIds (params) {
     correlationId: params.correlationId,
     json: true,
     description: `find gateway accounts by external ids`,
+    service: SERVICE_NAME
+  })
+}
+
+/**
+ * POST a gatewayAccountId and redirectUri and get a state token for GoCardless Partner app OAuth
+ * @param {Object} params                   An object with the following properties
+ * @param {String} params.redirectUri       The redirect uri that is registered with GoCardless   [required]
+ * @param {String} params.gatewayAccountId  The external id for the gateway account to be patched [required]
+ * @returns {Promise}
+ */
+function createPartnerAppState (params) {
+  return baseClient.post({
+    baseUrl,
+    url: '/gocardless/partnerapp/tokens',
+    json: true,
+    body: {
+      gateway_account_id: params.gatewayAccountId,
+      redirect_uri: params.redirectUri
+    },
+    description: 'create a partner app state token',
+    service: SERVICE_NAME
+  })
+}
+
+/**
+ * Exchanges a GoCardless access code with a permanent access token
+ * @param {Object} params
+ * @param {String} params.gocardlessUrl The base URL for GoCardless OAuth connect
+ * @param {String} params.clientId      The GOV.UK Pay client id that is provided by GoCardless when creating a Partner app
+ * @param {String} params.clientSecret  The GOV.UK Pay client secret that is provided by GoCardless when creating a Partner app
+ * @param {String} params.code          The code that is provided by GoCardless when a Merchant links its account to Pay
+ * @returns {Promise}
+ */
+function exchangeAccessCode (params) {
+  return baseClient.post({
+    baseUrl,
+    url: `/gocardless/partnerapp/codes`,
+    json: true,
+    body: {
+      access_code: params.code,
+      partner_state: params.state
+    },
+    description: 'Exchange GoCardless code for token',
     service: SERVICE_NAME
   })
 }

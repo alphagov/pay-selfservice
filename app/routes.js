@@ -60,12 +60,13 @@ const makeADemoPayment = require('./controllers/make_a_demo_payment')
 const paymentLinksCtrl = require('./controllers/payment-links')
 const twoFactorAuthCtrl = require('./controllers/two-factor-auth-controller')
 const feedbackCtrl = require('./controllers/feedback')
+const gocardlessCtrl = require('./controllers/direct_debit/gocardless_oauth_controller')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks} = paths
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks, gocardless} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -153,6 +154,9 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
   app.post(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
 
+  // GoCardless OAuth endpoint
+  app.get(paths.gocardless.oauthComplete, gocardlessCtrl.oauthCompleteGet)
+
   // ----------------------
   // AUTHENTICATED ROUTES
   // ----------------------
@@ -173,6 +177,7 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
     ...lodash.values(user.twoFactorAuth),
+    ...lodash.values(gocardless.linkAccount),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -297,6 +302,9 @@ module.exports.bind = function (app) {
   // Feedback
   app.get(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
   app.post(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
+
+  // Link GoCardless account
+  app.get(paths.gocardless.linkAccount, getAccount, gocardlessCtrl.index)
 
   app.all('*', (req, res) => {
     res.status(404)
