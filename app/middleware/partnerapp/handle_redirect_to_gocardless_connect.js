@@ -11,7 +11,7 @@ exports.index = (req, res) => {
 
   return directDebitConnectorClient.partnerApp.createState({gatewayAccountId, redirectUri: REDIRECT_URI})
     .then(response => {
-      redirectToGoCardlessConnect(req, res, {state: response.token, redirectUri: REDIRECT_URI})
+      redirectToGoCardlessConnect(req, res, {state: response.state, redirectUri: REDIRECT_URI})
     })
     .catch(err => {
       logger.info(`'There was an error getting a state token from Direct Debit Connector' ${JSON.stringify(err)}`)
