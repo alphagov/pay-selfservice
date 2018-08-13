@@ -80,7 +80,7 @@ function getGatewayAccountsByExternalIds (params) {
 function createPartnerAppState (params) {
   return baseClient.post({
     baseUrl,
-    url: '/gocardless/partnerapp/tokens',
+    url: '/gocardless/partnerapp/states',
     json: true,
     body: {
       gateway_account_id: params.gatewayAccountId,
@@ -103,11 +103,11 @@ function createPartnerAppState (params) {
 function exchangeAccessCode (params) {
   return baseClient.post({
     baseUrl,
-    url: `/gocardless/partnerapp/codes`,
+    url: `/gocardless/partnerapp/tokens`,
     json: true,
     body: {
-      access_code: params.code,
-      partner_state: params.state
+      code: params.code,
+      state_token: params.state
     },
     description: 'Exchange GoCardless code for token',
     service: SERVICE_NAME
