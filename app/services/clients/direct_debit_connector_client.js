@@ -98,6 +98,7 @@ function createPartnerAppState (params) {
  * @param {String} params.clientId      The GOV.UK Pay client id that is provided by GoCardless when creating a Partner app
  * @param {String} params.clientSecret  The GOV.UK Pay client secret that is provided by GoCardless when creating a Partner app
  * @param {String} params.code          The code that is provided by GoCardless when a Merchant links its account to Pay
+ * @param {String} params.state         The state that is provided by Direct Debit Connector when sending initial OAuth request to GoCardless
  * @returns {Promise}
  */
 function exchangeAccessCode (params) {
@@ -107,7 +108,7 @@ function exchangeAccessCode (params) {
     json: true,
     body: {
       code: params.code,
-      state_token: params.state
+      state: params.state
     },
     description: 'Exchange GoCardless code for token',
     service: SERVICE_NAME
