@@ -94,6 +94,13 @@ const adminNavigationItems = (originalUrl, permissions, type) => {
       url: paths.emailNotifications.index,
       current: pathLookup(originalUrl, paths.emailNotifications.index),
       permissions: permissions.email_notification_template_read && type === 'card'
+    },
+    {
+      id: 'navigation-menu-link-gocardless-app',
+      name: 'Link GoCardless Merchant Account',
+      url: paths.partnerApp.linkAccount,
+      current: pathLookup(originalUrl, paths.partnerApp.linkAccount),
+      permissions: permissions.tokens_update && type === 'direct debit'
     }
   ]
 }

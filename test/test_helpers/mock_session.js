@@ -13,7 +13,7 @@ const getUser = (opts) => {
 }
 
 const createAppWithSession = function (app, sessionData, gatewayAccountData, registerInviteData) {
-  var proxyApp = express()
+  let proxyApp = express()
   proxyApp.all('*', function (req, res, next) {
     sessionData.destroy = sinon.stub()
     req.session = req.session || sessionData || {}

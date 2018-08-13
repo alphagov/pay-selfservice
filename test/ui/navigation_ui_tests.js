@@ -172,7 +172,8 @@ describe('navigation menu', function () {
 
     const body = renderTemplate('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
   })
 
   it('should not render Card types navigation link when user is using direct debit gateway account', function () {
@@ -193,7 +194,8 @@ describe('navigation menu', function () {
 
     const body = renderTemplate('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
   })
   it('should not render 3D Secure navigation link when user is using direct debit gateway account', function () {
     const testPermissions = {
@@ -213,7 +215,8 @@ describe('navigation menu', function () {
 
     const body = renderTemplate('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
   })
 
   it('should not render Email notifications navigation link when user is using direct debit gateway account', function () {
@@ -234,6 +237,22 @@ describe('navigation menu', function () {
 
     const body = renderTemplate('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
+  })
+
+  it('should render Link GoCardless Merchant Account navigation link when user have tokens read permission', function () {
+    const testPermissions = {
+      tokens_update: true
+    }
+    const templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
+    }
+
+    const body = renderTemplate('api-keys/index', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
   })
 })

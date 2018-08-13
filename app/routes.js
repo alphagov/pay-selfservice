@@ -27,6 +27,8 @@ const correlationIdMiddleware = require('./middleware/correlation_id')
 const getRequestContext = require('./middleware/get_request_context').middleware
 const restrictToSandbox = require('./middleware/restrict_to_sandbox')
 const xraySegmentCls = require('./middleware/x_ray')
+const goCardlessRedirect = require('./middleware/partnerapp/handle_redirect_to_gocardless_connect')
+const goCardlessOAuthGet = require('./middleware/partnerapp/handle_gocardless_connect_get')
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -65,7 +67,8 @@ const feedbackCtrl = require('./controllers/feedback')
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks} = paths
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks, partnerApp
+} = paths
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -153,6 +156,9 @@ module.exports.bind = function (app) {
   app.get(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
   app.post(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
 
+  // GOCARDLESS PARTNER APP
+  app.get(partnerApp.oauthComplete, xraySegmentCls, goCardlessOAuthGet.index)
+
   // ----------------------
   // AUTHENTICATED ROUTES
   // ----------------------
@@ -173,6 +179,7 @@ module.exports.bind = function (app) {
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
     ...lodash.values(user.twoFactorAuth),
+    ...lodash.values(partnerApp),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -297,6 +304,9 @@ module.exports.bind = function (app) {
   // Feedback
   app.get(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackCtrl.getIndex)
   app.post(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackCtrl.postIndex)
+
+  // Partner app link GoCardless account
+  app.get(paths.partnerApp.linkAccount, xraySegmentCls, getAccount, goCardlessRedirect.index)
 
   app.all('*', (req, res) => {
     res.status(404)

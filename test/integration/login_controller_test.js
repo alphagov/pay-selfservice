@@ -1,43 +1,38 @@
-var path = require('path')
-require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
-var request = require('supertest')
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var nock = require('nock')
-var assert = require('assert')
-var notp = require('notp')
-var chai = require('chai')
-var _ = require('lodash')
-var userFixtures = require('../fixtures/user_fixtures')
-var sinon = require('sinon')
+'use strict'
 
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
-var mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-var loginController = require(path.join(__dirname, '/../../app/controllers/login'))
-var mockRes = require('../fixtures/response')
+const path = require('path')
+require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+const request = require('supertest')
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const nock = require('nock')
+const assert = require('assert')
+const notp = require('notp')
+const chai = require('chai')
+const _ = require('lodash')
+const userFixtures = require('../fixtures/user_fixtures')
+const sinon = require('sinon')
+
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
+const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
+const mockRes = require('../fixtures/response')
 const {CONNECTOR_URL} = process.env
 
-var chaiAsPromised = require('chai-as-promised')
+const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-var adminusersMock = nock(process.env.ADMINUSERS_URL)
-var ACCOUNT_ID = '182364'
+const adminusersMock = nock(process.env.ADMINUSERS_URL)
+const ACCOUNT_ID = '182364'
 const USER_RESOURCE = '/v1/api/users'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts'
 
-var user = mockSession.getUser()
+let user = mockSession.getUser()
 user.serviceRoles[0].service.gatewayAccountIds = [ACCOUNT_ID]
-function testController (controller, req, res) {
-  _.assign(req, {
-    headers: {'x-request-id': 'some-unique-id'},
-    flash: sinon.stub()
-  })
-  controller(req, res)
-};
 
 describe('The logged in endpoint', function () {
   it('should render ok when logged in', function (done) {
-    var app = mockSession.getAppWithLoggedInUser(getApp(), user)
+    const app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
     nock(CONNECTOR_URL)
       .get(`/v1/api/accounts/${ACCOUNT_ID}/transactions-summary`)
@@ -53,8 +48,8 @@ describe('The logged in endpoint', function () {
       .end(done)
   })
 
-  it('should redirecect to login if not logged in', function (done) {
-    var app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), {})
+  it('should redirect to login if not logged in', function (done) {
+    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), {})
     request(app)
       .get('/')
       .expect(302)
@@ -62,8 +57,8 @@ describe('The logged in endpoint', function () {
       .end(done)
   })
 
-  it('should redirecect to otp login if no otp', function (done) {
-    var app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({gateway_account_ids: [ACCOUNT_ID]}))
+  it('should redirect to otp login if no otp', function (done) {
+    const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({gateway_account_ids: [ACCOUNT_ID]}))
     request(app)
       .get('/')
       .expect(302)
@@ -74,7 +69,7 @@ describe('The logged in endpoint', function () {
 
 describe('The logout endpoint', function () {
   it('should redirect to login', function (done) {
-    var app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), {})
+    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), {})
     request(app)
       .get('/logout')
       .expect(302)
@@ -121,9 +116,9 @@ describe('The otplogin endpoint', function () {
   })
 
   it('should render and send key on first time', function (done) {
-    var user = mockSession.getUser()
+    const user = mockSession.getUser()
 
-    var sessionData = {
+    const sessionData = {
       csrfSecret: '123',
       passport: {
         user: user
@@ -133,7 +128,7 @@ describe('The otplogin endpoint', function () {
     adminusersMock.post(`${USER_RESOURCE}/${user.externalId}/second-factor`)
       .reply(200)
 
-    var app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
+    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
     request(app)
       .get('/otp-login')
       .expect(200)
@@ -143,10 +138,10 @@ describe('The otplogin endpoint', function () {
       })
   })
 
-  it('should render and not send key on seccond time', function (done) {
-    var user = mockSession.getUser()
+  it('should render and not send key on second time', function (done) {
+    const user = mockSession.getUser()
 
-    var sessionData = {
+    const sessionData = {
       csrfSecret: '123',
       passport: {
         user: user
@@ -154,7 +149,7 @@ describe('The otplogin endpoint', function () {
       sentCode: true
     }
 
-    var app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
+    const app = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), sessionData)
 
     request(app)
       .get('/otp-login')
@@ -167,22 +162,22 @@ describe('The otplogin endpoint', function () {
 
 describe('The afterOtpLogin endpoint', function () {
   it('should redirect to login to the last url', function (done) {
-    var user = mockSession.getUser()
-    var session = mockSession.getMockSession(user)
-    var req = {
+    const user = mockSession.getUser()
+    const session = mockSession.getMockSession(user)
+    const req = {
       session: session,
       headers: {'x-request-id': 'some-unique-id'},
       user: user
     }
-    var lastUrl = session.last_url
-    var res = mockRes.getStubbedRes()
+    const lastUrl = session.last_url
+    const res = mockRes.getStubbedRes()
 
     loginController.afterOTPLogin(req, res)
     expect(res.redirect.calledWith(lastUrl)).to.equal(true)
     done()
   })
 
-  it('should redirect to root if lasturl is not defined', function (done) {
+  it('should redirect to root if last url is not defined', function (done) {
     const user = mockSession.getUser()
     user.sessionVersion = 1
     const req = {
@@ -205,8 +200,8 @@ describe('The afterOtpLogin endpoint', function () {
 
 describe('login get endpoint', function () {
   it('should set the right flash message if both fields are empty', function (done) {
-    var req = { 'body': { 'username': '', 'password': '' } }
-    var res = mockRes.getStubbedRes()
+    const req = { 'body': { 'username': '', 'password': '' } }
+    const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_all')
@@ -218,8 +213,8 @@ describe('login get endpoint', function () {
   })
 
   it('should set the right flash message if individual fields are empty', function (done) {
-    var req = { 'body': { 'username': '', 'password': '123' } }
-    var res = mockRes.getStubbedRes()
+    const req = { 'body': { 'username': '', 'password': '123' } }
+    const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_username')
@@ -233,8 +228,8 @@ describe('login get endpoint', function () {
 
 describe('login post endpoint', function () {
   it('should set the right flash message if both fields are empty', function (done) {
-    var req = { 'body': { 'username': '', 'password': '' } }
-    var res = mockRes.getStubbedRes()
+    const req = { 'body': { 'username': '', 'password': '' } }
+    const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_all')
@@ -242,8 +237,8 @@ describe('login post endpoint', function () {
   })
 
   it('should set the right flash message if individual fields are empty', function (done) {
-    var req = { 'body': { 'username': '', 'password': '123' } }
-    var res = mockRes.getStubbedRes()
+    const req = { 'body': { 'username': '', 'password': '123' } }
+    const res = mockRes.getStubbedRes()
 
     testController(loginController.loginUser, req, res)
     expect(req.flash('error') === 'empty_username')
@@ -261,13 +256,13 @@ describe('login post endpoint', function () {
   })
 })
 
-describe('otp login post enpoint', function () {
+describe('otp login post endpoint', function () {
   it('should display an error if csrf token does not exist for the login post', function (done) {
-    var user = mockSession.getUser()
-    var session = mockSession.getMockSession(user)
+    const user = mockSession.getUser()
+    const session = mockSession.getMockSession(user)
     delete session.csrfSecret
 
-    var app2 = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), session)
+    const app2 = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), session)
 
     request(app2)
       .post(paths.user.otpLogIn)
@@ -279,13 +274,13 @@ describe('otp login post enpoint', function () {
   })
 })
 
-describe('otp send again post enpoint', function () {
+describe('otp send again post endpoint', function () {
   it('should display an error if csrf token does not exist for the send again post', function (done) {
-    var user = mockSession.getUser()
-    var session = mockSession.getMockSession(user)
+    const user = mockSession.getUser()
+    const session = mockSession.getMockSession(user)
     delete session.csrfSecret
 
-    var app2 = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), session)
+    const app2 = mockSession.getAppWithSessionAndGatewayAccountCookies(getApp(), session)
 
     request(app2)
       .post(paths.user.otpSendAgain)
@@ -340,3 +335,11 @@ describe('direct login after user registration', function () {
       .end(done)
   })
 })
+
+function testController (controller, req, res) {
+  _.assign(req, {
+    headers: {'x-request-id': 'some-unique-id'},
+    flash: sinon.stub()
+  })
+  controller(req, res)
+}

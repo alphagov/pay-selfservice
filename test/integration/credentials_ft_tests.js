@@ -1,46 +1,28 @@
-var path = require('path')
-require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
-var userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
-var request = require('supertest')
-var getApp = require(path.join(__dirname, '/../../server.js')).getApp
-var nock = require('nock')
-var csrf = require('csrf')
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
-var app
-var mockSession = require('../test_helpers/mock_session.js')
-var {expect} = require('chai')
-var ACCOUNT_ID = '182364'
-var CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
-var CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + '/credentials'
-var CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/notification-credentials'
+'use strict'
 
-var requestId = 'some-unique-id'
-var defaultCorrelationHeader = {
+const path = require('path')
+require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+const userCreator = require(path.join(__dirname, '/../test_helpers/user_creator.js'))
+const request = require('supertest')
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const nock = require('nock')
+const csrf = require('csrf')
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const mockSession = require('../test_helpers/mock_session.js')
+const {expect} = require('chai')
+const ACCOUNT_ID = '182364'
+const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
+const CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + '/credentials'
+const CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts/' + ACCOUNT_ID + '/notification-credentials'
+
+const requestId = 'some-unique-id'
+const defaultCorrelationHeader = {
   reqheaders: {'x-request-id': requestId}
 }
 
-var connectorMock = nock(process.env.CONNECTOR_URL, defaultCorrelationHeader)
+const connectorMock = nock(process.env.CONNECTOR_URL, defaultCorrelationHeader)
 
-function buildGetRequest (path, app) {
-  return request(app)
-    .get(path)
-    .set('Accept', 'application/json')
-    .set('x-request-id', requestId)
-}
-
-function buildFormPostRequest (path, sendData, sendCSRF, app) {
-  sendCSRF = (sendCSRF === undefined) ? true : sendCSRF
-  if (sendCSRF) {
-    sendData.csrfToken = csrf().create('123')
-  }
-
-  return request(app)
-    .post(path)
-    .set('Accept', 'application/json')
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .set('x-request-id', requestId)
-    .send(sendData)
-}
+let app
 
 describe('Credentials endpoints', () => {
   describe('The ' + paths.credentials.index + ' endpoint', function () {
@@ -50,8 +32,8 @@ describe('Credentials endpoints', () => {
     })
 
     beforeEach(function (done) {
-      let permissions = 'gateway-credentials:read'
-      var user = mockSession.getUser({
+      const permissions = 'gateway-credentials:read'
+      const user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
@@ -145,8 +127,8 @@ describe('Credentials endpoints', () => {
     })
 
     beforeEach(function (done) {
-      let permissions = 'gateway-credentials:update'
-      var user = mockSession.getUser({
+      const permissions = 'gateway-credentials:update'
+      const user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
@@ -256,8 +238,8 @@ describe('Credentials endpoints', () => {
     })
 
     beforeEach(function (done) {
-      let permissions = 'gateway-credentials:update'
-      var user = mockSession.getUser({
+      const permissions = 'gateway-credentials:update'
+      const user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
@@ -367,8 +349,8 @@ describe('Credentials endpoints', () => {
     })
 
     beforeEach(function (done) {
-      let permissions = 'gateway-credentials:read'
-      var user = mockSession.getUser({
+      const permissions = 'gateway-credentials:read'
+      const user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
@@ -404,8 +386,8 @@ describe('Credentials endpoints', () => {
     })
 
     beforeEach(function (done) {
-      let permissions = 'gateway-credentials:update'
-      var user = mockSession.getUser({
+      const permissions = 'gateway-credentials:update'
+      const user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
@@ -422,9 +404,9 @@ describe('Credentials endpoints', () => {
         }
       }).reply(200, {})
 
-      var sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'}
-      var expectedLocation = paths.credentials.index
-      var path = paths.credentials.index
+      const sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'}
+      const expectedLocation = paths.credentials.index
+      const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(303, {})
         .expect('Location', expectedLocation)
@@ -443,15 +425,15 @@ describe('Credentials endpoints', () => {
         }
       }).reply(200, {})
 
-      var sendData = {
+      const sendData = {
         'username': 'a-username',
         'password': 'a-password',
         'merchantId': 'a-psp-id',
         'shaInPassphrase': 'a-sha-in-passphrase',
         'shaOutPassphrase': 'a-sha-out-passphrase'
       }
-      var expectedLocation = paths.credentials.index
-      var path = paths.credentials.index
+      const expectedLocation = paths.credentials.index
+      const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(303, {})
         .expect('Location', expectedLocation)
@@ -467,9 +449,9 @@ describe('Credentials endpoints', () => {
       })
         .reply(200, {})
 
-      var sendData = {'username': 'a-username', 'password': 'a-password'}
-      var expectedLocation = paths.credentials.index
-      var path = paths.credentials.index
+      const sendData = {'username': 'a-username', 'password': 'a-password'}
+      const expectedLocation = paths.credentials.index
+      const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(303, {})
         .expect('Location', expectedLocation)
@@ -485,9 +467,9 @@ describe('Credentials endpoints', () => {
           'message': 'Error message'
         })
 
-      var sendData = {'username': 'a-username', 'password': 'a-password'}
-      var expectedData = {'message': 'There is a problem with the payments platform'}
-      var path = paths.credentials.index
+      const sendData = {'username': 'a-username', 'password': 'a-password'}
+      const expectedData = {'message': 'There is a problem with the payments platform'}
+      const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(500, expectedData)
         .end(done)
@@ -496,9 +478,9 @@ describe('Credentials endpoints', () => {
     it('should display an error if the connection to connector fails', function (done) {
       // No connectorMock defined on purpose to mock a network failure
 
-      var sendData = {'username': 'a-username', 'password': 'a-password'}
-      var expectedData = {'message': 'There is a problem with the payments platform'}
-      var path = paths.credentials.index
+      const sendData = {'username': 'a-username', 'password': 'a-password'}
+      const expectedData = {'message': 'There is a problem with the payments platform'}
+      const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(500, expectedData)
         .end(done)
@@ -526,8 +508,8 @@ describe('Credentials endpoints', () => {
     })
 
     beforeEach(function (done) {
-      let permissions = 'gateway-credentials:update'
-      var user = mockSession.getUser({
+      const permissions = 'gateway-credentials:update'
+      const user = mockSession.getUser({
         gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
       })
       session = mockSession.getMockSession(user)
@@ -543,9 +525,9 @@ describe('Credentials endpoints', () => {
       })
         .reply(200, {})
 
-      var sendData = {'username': 'a-notification-username', 'password': 'a-notification-password'}
-      var expectedLocation = paths.credentials.index
-      var path = paths.notificationCredentials.update
+      const sendData = {'username': 'a-notification-username', 'password': 'a-notification-password'}
+      const expectedLocation = paths.credentials.index
+      const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .expect(303, {})
         .expect('Location', expectedLocation)
@@ -553,8 +535,8 @@ describe('Credentials endpoints', () => {
     })
 
     it('should should flash a relevant error if no password is sent', function (done) {
-      var sendData = {'password': 'a-notification-password'}
-      var path = paths.notificationCredentials.update
+      const sendData = {'password': 'a-notification-password'}
+      const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
           if (err) done(err)
@@ -566,8 +548,8 @@ describe('Credentials endpoints', () => {
         })
     })
     it('should should flash a relevant error if no password is sent', function (done) {
-      var sendData = {'username': 'a-notification-username'}
-      var path = paths.notificationCredentials.update
+      const sendData = {'username': 'a-notification-username'}
+      const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
           if (err) done(err)
@@ -580,8 +562,8 @@ describe('Credentials endpoints', () => {
     })
 
     it('should should flash a relevant error if too short a password is sent', function (done) {
-      var sendData = {'username': 'a-notification-username', 'password': '123456789'}
-      var path = paths.notificationCredentials.update
+      const sendData = {'username': 'a-notification-username', 'password': '123456789'}
+      const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
           if (err) done(err)
@@ -594,3 +576,24 @@ describe('Credentials endpoints', () => {
     })
   })
 })
+
+function buildGetRequest (path, app) {
+  return request(app)
+    .get(path)
+    .set('Accept', 'application/json')
+    .set('x-request-id', requestId)
+}
+
+function buildFormPostRequest (path, sendData, sendCSRF, app) {
+  sendCSRF = (sendCSRF === undefined) ? true : sendCSRF
+  if (sendCSRF) {
+    sendData.csrfToken = csrf().create('123')
+  }
+
+  return request(app)
+    .post(path)
+    .set('Accept', 'application/json')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .set('x-request-id', requestId)
+    .send(sendData)
+}
