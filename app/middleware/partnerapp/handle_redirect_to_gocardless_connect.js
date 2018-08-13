@@ -8,16 +8,20 @@ const logger = require('winston')
 
 exports.index = (req, res) => {
   const gatewayAccountId = req.account.externalId
-
-  return directDebitConnectorClient.partnerApp.createState({gatewayAccountId, redirectUri: REDIRECT_URI})
-    .then(response => {
-      redirectToGoCardlessConnect(req, res, {state: response.state, redirectUri: REDIRECT_URI})
-    })
-    .catch(err => {
-      logger.info(`'There was an error getting a state token from Direct Debit Connector' ${JSON.stringify(err)}`)
-      res.status(500)
-      res.end()
-    })
+  if (directDebitConnectorClient.isADirectDebitAccount(gatewayAccountId)) {
+    return directDebitConnectorClient.partnerApp.createState({gatewayAccountId, redirectUri: REDIRECT_URI})
+      .then(response => {
+        redirectToGoCardlessConnect(req, res, {state: response.state, redirectUri: REDIRECT_URI})
+      })
+      .catch(err => {
+        logger.info(`'There was an error getting a state token from Direct Debit Connector' ${JSON.stringify(err)}`)
+        res.status(500)
+        res.end()
+      })
+  } else {
+    res.status(400)
+    res.end()
+  }
 }
 
 function redirectToGoCardlessConnect (req, res, params) {
