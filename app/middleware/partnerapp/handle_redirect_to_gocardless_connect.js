@@ -2,7 +2,7 @@
 
 const gocardlessClient = require('../../services/clients/gocardless_connect_client')
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
-const REDIRECT_URI = process.env.SELFSERVICE_BASE + '/oauth/complete'
+const REDIRECT_URI = process.env.SELFSERVICE_URL + '/oauth/complete'
 
 const logger = require('winston')
 
