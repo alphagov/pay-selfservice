@@ -9,7 +9,7 @@ const directDebitClient = require('../../../app/services/clients/direct_debit_co
 const paths = require('../../../app/paths.js')
 const server = require('../../../server.js')
 
-const REDIRECT_URI = process.env.SELFSERVICE_BASE + '/oauth/complete'
+const REDIRECT_URI = process.env.SELFSERVICE_URL + '/oauth/complete'
 const CLIENT_ID = process.env.GOCARDLESS_LIVE_CLIENT_ID
 const GOCARDLESS_URL = process.env.GOCARDLESS_TEST_OAUTH_BASE_URL + '/oauth/authorize'
 
