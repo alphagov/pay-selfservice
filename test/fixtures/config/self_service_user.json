@@ -434,6 +434,61 @@
                     "refund_reference": null
                   }
                 ]
+              },
+              {
+                "charge_id": "45678",
+                "refund_summary": {
+                  "status": "error",
+                  "amount_available": 400,
+                  "amount_submitted": 0
+                },
+                "settlement_summary": {
+                  "capture_submit_time": "2018-05-01T13:27:00.057Z",
+                  "captured_date": "2018-05-01T13:27:00.057Z"
+                },
+                "billing_address": {
+                  "line1": "address line 1",
+                  "line2": "address line 2",
+                  "postcode": "AB1A 1AB",
+                  "city": "GB",
+                  "county": "somecounty",
+                  "country": "GB"
+                },
+                "charge_events": [
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "created",
+                      "finished": false
+                    },
+                    "amount": 400,
+                    "updated": "2018-05-01T13:27:00.063Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "started",
+                      "finished": false
+                    },
+                    "amount": 400,
+                    "updated": "2018-05-01T13:27:00.974Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "succeeded",
+                      "finished": true
+                    },
+                    "amount": 400,
+                    "updated": "2018-05-01T13:27:18.126Z",
+                    "refund_reference": null
+                  }
+                ]
               }
             ],
             "data": [
@@ -537,7 +592,7 @@
                 "amount": 400,
                 "state": {
                   "finished": true,
-                  "status": "success"
+                  "status": "error"
                 },
                 "description": "ref4",
                 "reference": "ref488888",
@@ -625,7 +680,7 @@
                     "amount": 400,
                     "state": {
                       "finished": true,
-                      "status": "success"
+                      "status": "error"
                     },
                     "description": "ref4",
                     "reference": "ref488888",

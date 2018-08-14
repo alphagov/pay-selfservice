@@ -9,7 +9,6 @@ const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 
 module.exports = {
-
   validGatewayAccountResponse: (opts = {}) => {
     let data = {
       gateway_account_id: opts.gateway_account_id || 31,
@@ -31,24 +30,24 @@ module.exports = {
     let data = {
       accounts: opts.accounts ||
       [{
-        type: "test",
+        type: 'test',
         gateway_account_id: 100,
-        payment_provider: "sandbox",
-        service_name: "Gateway Account 1 (test)",
-        _links: { self: { href: "https://connector.pymnt.localdomain/v1/api/accounts/100"}}
+        payment_provider: 'sandbox',
+        service_name: 'Gateway Account 1 (test)',
+        _links: { self: { href: 'https://connector.pymnt.localdomain/v1/api/accounts/100'}}
       }, {
-        type: "test",
+        type: 'test',
         gateway_account_id: 101,
-        payment_provider: "sandbox",
-        service_name: "Gateway Account 2 (test)",
-        _links: { self: { href: "https://connector.pymnt.localdomain/v1/api/accounts/101"}}
+        payment_provider: 'sandbox',
+        service_name: 'Gateway Account 2 (test)',
+        _links: { self: { href: 'https://connector.pymnt.localdomain/v1/api/accounts/101'}}
       }, {
-        type: "test",
+        type: 'test',
         gateway_account_id: 102,
-        payment_provider: "sandbox",
-        service_name: "Gateway Account 3 (test)",
-        _links: { self: { href: "https://connector.pymnt.localdomain/v1/api/accounts/102"}}
-      },
+        payment_provider: 'sandbox',
+        service_name: 'Gateway Account 3 (test)',
+        _links: { self: { href: 'https://connector.pymnt.localdomain/v1/api/accounts/102'}}
+      }
       ]
     }
 
@@ -97,7 +96,6 @@ module.exports = {
       }
     }
   },
-
   validCreateGatewayAccountResponse: (opts = {}) => {
     const data = {
       gateway_account_id: opts.gateway_account_id || '1',
@@ -120,5 +118,4 @@ module.exports = {
       }
     }
   }
-
 }

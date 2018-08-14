@@ -34,7 +34,6 @@ module.exports = function (clientOptions = {}) {
      * @return {Promise<User>} A promise of a User
      */
   const getUserByExternalId = (externalId, subSegment) => {
-
     return baseClient.get(
       {
         baseUrl,

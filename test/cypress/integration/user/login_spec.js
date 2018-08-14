@@ -19,7 +19,6 @@ describe('Login Page', () => {
   })
 
   describe('Form validation', () => {
-
     const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
     const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
@@ -68,7 +67,6 @@ describe('Login Page', () => {
         cy.title().should('eq', 'Sign in to GOV.UK Pay')
         cy.url().should('include', '/login')
       })
-
     })
   })
 })

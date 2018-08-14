@@ -29,17 +29,16 @@ module.exports = {
  * @returns {Promise<GatewayAccount[]>} promise of collection of gateway accounts which belong to this service
  */
 function getGatewayAccounts (gatewayAccountIds, correlationId) {
-
   const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
 
-  const fetchCardGatewayAccounts = accounts[1].length > 0 ?
-    connectorClient.getAccounts({
+  const fetchCardGatewayAccounts = accounts[1].length > 0
+    ? connectorClient.getAccounts({
       gatewayAccountIds: accounts[1],
       correlationId: correlationId
     }) : Promise.resolve([])
 
-  const fetchDirectDebitGatewayAccounts = accounts[0].length > 0 ?
-    directDebitConnectorClient.gatewayAccounts.get({
+  const fetchDirectDebitGatewayAccounts = accounts[0].length > 0
+    ? directDebitConnectorClient.gatewayAccounts.get({
       gatewayAccountIds: accounts[0],
       correlationId: correlationId
     }) : Promise.resolve([])

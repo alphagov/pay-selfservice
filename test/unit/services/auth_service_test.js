@@ -78,7 +78,7 @@ describe('auth service', function () {
             'continuation-local-storage': {
               getNamespace: function () {
                 return {
-                  run: function(callback) {
+                  run: function (callback) {
                     callback()
                   },
                   set: () => {}
@@ -98,7 +98,7 @@ describe('auth service', function () {
         }
       }
 
-      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, EXTERNAL_ID_IN_SESSION, function(err, returnedUser) {
+      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, EXTERNAL_ID_IN_SESSION, function (err, returnedUser) {
         expect(err).to.be.null
         expect(returnedUser).to.deep.equal(user)
         done()

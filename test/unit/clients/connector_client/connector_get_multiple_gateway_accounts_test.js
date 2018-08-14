@@ -25,7 +25,6 @@ const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
 const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
 describe('connector client - get multiple gateway accounts', function () {
-
   let provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
@@ -40,7 +39,6 @@ describe('connector client - get multiple gateway accounts', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('get multiple gateway accounts - success', () => {
-
     const sortDescending = (GatewayAccoutA, GatewayAccoutB) => GatewayAccoutB.id - GatewayAccoutA.id
 
     const params = {
@@ -83,9 +81,8 @@ describe('connector client - get multiple gateway accounts', function () {
       const getGatewayAccounts = validGetGatewayAccountsResponse.getPlain()
       connectorClient.getAccounts({gatewayAccountIds: params.gateway_account_ids, correlationId: null})
         .should.be.fulfilled.then((response) => {
-        expect(response).to.deep.equal(getGatewayAccounts)
-      }).should.notify(done)
+          expect(response).to.deep.equal(getGatewayAccounts)
+        }).should.notify(done)
     })
   })
-
 })

@@ -2,7 +2,6 @@ const capitalise = string => string[0].toUpperCase() + string.slice(1)
 const convertAmounts = val => '£' + (val / 100).toFixed(2)
 
 function formatDate (date) {
-
   const monthNames = [
     'January', 'February', 'March',
     'April', 'May', 'June', 'July',
@@ -10,16 +9,15 @@ function formatDate (date) {
     'November', 'December'
   ]
 
-  let day = date.getDate();
+  let day = date.getDate()
   day = day.toString().length > 1 ? day : '0' + day
-  const monthIndex = date.getMonth();
+  const monthIndex = date.getMonth()
   const year = date.getFullYear()
 
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' — '
 }
 
 describe('Transactions details page', () => {
-
   const transactionsUrl = `/transactions`
 
   const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
@@ -31,17 +29,15 @@ describe('Transactions details page', () => {
   const aSmartpayCharge = selfServiceDefaultUser.sections.transactions.data[0]
   const aSmartpayChargeDetails = selfServiceDefaultUser.sections.transactions.details_data[0]
 
+  const aFailedRefundCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.state.status === 'error')[0]
+
   beforeEach(() => {
     cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
     cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
-
-    cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
   })
 
   describe('page content', () => {
-
     it('should display transaction details correctly', () => {
-
       cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
 
       // Ensure page title is correct
@@ -88,14 +84,12 @@ describe('Transactions details page', () => {
       // Email
       cy.get('.transaction-details tbody').find('tr').eq(13).find('td').eq(1).should('have.text',
         aSmartpayCharge.email)
-
     })
-
   })
 
   describe('refunds', () => {
-
     it('should fail when an invalid refund amount is specified', () => {
+      cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
 
       // Click the refund button
       cy.get('.refund__toggle').click()
@@ -113,9 +107,26 @@ describe('Transactions details page', () => {
       cy.get('.flash-container').should('be.visible')
 
       cy.get('.flash-container').find('.error-summary').should('contain', 'The amount you tried to refund is greater than the transaction total')
-
     })
 
-  })
+    it('should allow a refund to be re-attempted in the event of a failed refund', () => {
+      cy.visit(`${transactionsUrl}/${aFailedRefundCharge.charge_id}`)
 
+      // Ensure the refund button is available
+      cy.get('.refund__toggle').should('be.visible')
+      cy.get('.refund__toggle').should('be.enabled')
+
+      // Click the refund button
+      cy.get('.refund__toggle').click()
+
+      // Select partial refund
+      cy.get('#partial').click()
+
+      // Select partial refund
+      cy.get('#refund-amount').type(aFailedRefundCharge.amount / 100)
+
+      // Click the refund submit button
+      cy.get('.refund__submit-button').click()
+    })
+  })
 })
