@@ -19,7 +19,7 @@ module.exports = function (method, verb) {
   return (uri, opts, cb) => new Promise((resolve, reject) => {
 
     const namespace = getNamespace(clsXrayConfig.nameSpaceName)
-    const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName): null
+    const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName) : null
 
     const args = [uri, opts, cb]
     uri = args.find(arg => typeof arg === 'string')
