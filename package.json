@@ -55,6 +55,7 @@
     "client-sessions": "^0.8.0",
     "common-password": "^0.1.2",
     "connect-flash": "^0.1.1",
+    "continuation-local-storage": "^3.2.1",
     "cookie-parser": "1.4.x",
     "correlation-id": "^2.1.2",
     "csrf": "3.0.x",
