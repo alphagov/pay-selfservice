@@ -8,7 +8,6 @@ const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 
 module.exports = {
-
   validTransactionSummaryResponse: () => {
     let data = {
       successful_payments: {count: 1, total_in_pence: 2},
@@ -84,12 +83,12 @@ module.exports = {
         amount_available: 20000,
         amount_submitted: 0
       },
-      settlement_summary: opts.settlement_summary ||{
+      settlement_summary: opts.settlement_summary || {
         capture_submit_time: null,
         captured_date: null
       },
       card_details: {
-        last_digits_card_number: opts.summaryObject.last_digits_card_number ||'0002',
+        last_digits_card_number: opts.summaryObject.last_digits_card_number || '0002',
         cardholder_name: opts.summaryObject.cardholder_name || 'Test User',
         expiry_date: opts.summaryObject.expiry_data || '08/23',
         billing_address: opts.billing_address || {
@@ -115,30 +114,46 @@ module.exports = {
   },
   validChargeEventsResponse: (opts = {}) => {
     let data = {
-      "charge_id": opts.chargeId || "ht439nfg2l1e303k0dmifrn4fc",
-      "events": opts.events ||
-      [{
-        "type": "PAYMENT",
-        "submitted_by": null,
-        "state": {"status": "created", "finished": false},
-        "amount": 20000,
-        "updated": "2018-05-01T13:27:00.063Z",
-        "refund_reference": null
-      }, {
-        "type": "PAYMENT",
-        "submitted_by": null,
-        "state": {"status": "started", "finished": false},
-        "amount": 20000,
-        "updated": "2018-05-01T13:27:00.974Z",
-        "refund_reference": null
-      }, {
-        "type": "PAYMENT",
-        "submitted_by": null,
-        "state": {"status": "failed", "finished": true, "code": "P0010", "message": "Payment method rejected"},
-        "amount": 20000,
-        "updated": "2018-05-01T13:27:18.126Z",
-        "refund_reference": null
-      }]
+      'charge_id': opts.chargeId || 'ht439nfg2l1e303k0dmifrn4fc',
+      'events': opts.events ||
+        [{
+          'type': 'PAYMENT',
+          'submitted_by': null,
+          'state': {'status': 'created', 'finished': false},
+          'amount': 20000,
+          'updated': '2018-05-01T13:27:00.063Z',
+          'refund_reference': null
+        }, {
+          'type': 'PAYMENT',
+          'submitted_by': null,
+          'state': {'status': 'started', 'finished': false},
+          'amount': 20000,
+          'updated': '2018-05-01T13:27:00.974Z',
+          'refund_reference': null
+        }, {
+          'type': 'PAYMENT',
+          'submitted_by': null,
+          'state': {'status': 'failed', 'finished': true, 'code': 'P0010', 'message': 'Payment method rejected'},
+          'amount': 20000,
+          'updated': '2018-05-01T13:27:18.126Z',
+          'refund_reference': null
+        }]
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
+  },
+  validTransactionRefundRequest: (opts = {}) => {
+    const data = {
+      amount: opts.amount || 101,
+      refund_amount_available: opts.refund_amount_available || 100,
+      user_external_id: opts.user_external_id || '3b7b5f33-24ea-4405-88d2-0a1b13efb20c'
     }
 
     return {
@@ -152,9 +167,9 @@ module.exports = {
   },
   invalidTransactionRefundRequest: (opts = {}) => {
     const data = {
-        amount: opts.amount || 101,
-        refund_amount_available: opts.refund_amount_available || 100,
-        user_external_id: opts.user_external_id || '3b7b5f33-24ea-4405-88d2-0a1b13efb20c'
+      amount: opts.amount || 100,
+      refund_amount_available: opts.refund_amount_available || 100,
+      user_external_id: opts.user_external_id || '3b7b5f33-24ea-4405-88d2-0a1b13efb20c'
     }
 
     return {
@@ -165,11 +180,10 @@ module.exports = {
         return data
       }
     }
-
   },
-  invalidTransactionRefundResponse : (opts = {}) => {
+  invalidTransactionRefundResponse: (opts = {}) => {
     let data = {
-      reason : opts.reason || 'amount_not_available'
+      reason: opts.reason || 'amount_not_available'
     }
 
     return {
@@ -180,6 +194,5 @@ module.exports = {
         return data
       }
     }
-
   }
 }

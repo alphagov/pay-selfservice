@@ -78,7 +78,6 @@ module.exports.paths = paths
 const clsXrayConfig = require('../config/xray-cls')
 
 module.exports.bind = function (app) {
-
   AWSXRay.enableManualMode()
   AWSXRay.setLogger(logger)
   AWSXRay.middleware.setSamplingRules('aws-xray.rules')

@@ -326,7 +326,6 @@ module.exports = {
   },
 
   validPasswordAuthenticateRequest: (opts = {}) => {
-
     const usernameGenerate = opts.username || 'validuser'
     const usernameMatcher = opts.usernameMatcher || 'validuser'
 
@@ -337,11 +336,9 @@ module.exports = {
       username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
       password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
     }
-
   },
 
   invalidPasswordAuthenticateRequest: (opts = {}) => {
-
     const usernameGenerate = opts.username || 'validuser'
     const usernameMatcher = opts.usernameMatcher || 'validuser'
 
@@ -352,7 +349,6 @@ module.exports = {
       username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
       password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
     }
-
   },
 
   validPasswordAuthenticateResponse: (opts = {}) => {

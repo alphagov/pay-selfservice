@@ -20,7 +20,6 @@ const SMARTPAY_3DS_ENABLED = process.env.SMARTPAY_3DS_ENABLED || 'false'
 const clsXrayConfig = require('../../config/xray-cls')
 
 module.exports = function (req, res, next) {
-
   const accountId = auth.getCurrentGatewayAccountId(req)
   const params = {
     gatewayAccountId: accountId,

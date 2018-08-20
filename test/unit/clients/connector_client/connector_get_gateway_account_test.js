@@ -25,7 +25,6 @@ const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
 const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
 describe('connector client - get gateway account', function () {
-
   let provider = Pact({
     consumer: 'selfservice',
     provider: 'connector',
@@ -65,9 +64,8 @@ describe('connector client - get gateway account', function () {
       const getGatewayAccount = validGetGatewayAccountResponse.getPlain()
       connectorClient.getAccount({gatewayAccountId: params.gateway_account_id, correlationId: null})
         .should.be.fulfilled.then((response) => {
-        expect(response).to.deep.equal(getGatewayAccount)
-      }).should.notify(done)
+          expect(response).to.deep.equal(getGatewayAccount)
+        }).should.notify(done)
     })
   })
-
 })

@@ -72,7 +72,6 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('failure', () => {
-
     const invalidPasswordResponse = userFixtures.invalidPasswordAuthenticateResponse()
     const invalidPasswordRequestPactified = userFixtures
       .invalidPasswordAuthenticateRequest({
@@ -107,5 +106,4 @@ describe('adminusers client - authenticate', function () {
       })
     })
   })
-
 })

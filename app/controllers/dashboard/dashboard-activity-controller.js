@@ -53,8 +53,7 @@ module.exports = (req, res) => {
     const namespace = getNamespace(clsXrayConfig.nameSpaceName)
     const clsSegment = namespace.get(clsXrayConfig.segmentKeyName)
 
-    AWSXRay.captureAsyncFunc  ('connectorClient_getTransactionSummary', function (subsegment) {
-
+    AWSXRay.captureAsyncFunc('connectorClient_getTransactionSummary', function (subsegment) {
       connectorClient().getTransactionSummary({
         gatewayAccountId,
         correlationId,
@@ -91,9 +90,7 @@ module.exports = (req, res) => {
             period
           })
         })
-
     }, clsSegment)
-
   } catch (err) {
     logger.error(`[${correlationId}] ${err.message} -`, {
       service: 'frontend',

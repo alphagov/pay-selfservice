@@ -12,7 +12,6 @@ describe('Transactions', () => {
   })
 
   describe('Transactions List', () => {
-
     const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
     it('should have the page title \'Transactions - System Generated test - GOV.UK Pay\'', () => {
@@ -20,7 +19,6 @@ describe('Transactions', () => {
     })
 
     it('should have the right number of transactions in an unfiltered state', () => {
-
       // Ensure the transactions list has the right number of items
       const unfilteredTransactions = selfServiceDefaultUser.sections.transactions.data
       cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
@@ -30,11 +28,9 @@ describe('Transactions', () => {
       cy.get('#transactions-list tbody').find('tr').eq(1).find('td').eq(1).should('have.text', convertAmounts(unfilteredTransactions[1].amount))
       cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('have.text', convertAmounts(unfilteredTransactions[2].amount))
       cy.get('#transactions-list tbody').find('tr').eq(3).find('td').eq(1).should('have.text', convertAmounts(unfilteredTransactions[3].amount))
-
     })
 
     it('should have the right number of transactions in a filtered state', () => {
-
       const filteredFrom = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'fromdate')[0]
       const filteredTo = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'todate')[0]
 
@@ -96,8 +92,6 @@ describe('Transactions', () => {
       // Ensure the values are displayed correctly
       cy.get('#transactions-list tbody').find('tr').first().find('td').eq(1).should('have.text', convertAmounts(filteredTo.data[0].amount))
       cy.get('#transactions-list tbody').find('tr').eq(1).find('td').eq(1).should('have.text', convertAmounts(filteredTo.data[1].amount))
-
     })
-
   })
 })

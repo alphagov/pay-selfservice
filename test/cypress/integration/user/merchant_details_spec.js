@@ -9,7 +9,6 @@ describe('Dashboard', () => {
   describe('Homepage', () => {
     // Use a known configuration used to generate contracts/stubs.
     // This is also used to generate the session/gateway_account cookies
-    const ssUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
     it('should have the page title \'Dashboard - System Generated test - GOV.UK Pay\'', () => {
       cy.visit('/my-services')
@@ -36,10 +35,6 @@ describe('Dashboard', () => {
         .should('have.attr', 'href', '#address-postcode')
       cy.get('.error-message')
         .contains('Please enter a valid postcode')
-
-
-
-
     })
   })
 })

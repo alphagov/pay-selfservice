@@ -196,7 +196,7 @@ module.exports = {
    */
   provisionNewOtpKey: function (externalId, correlationId) {
     if (!externalId) {
-       return Promise.reject('No externalId specified')
+      return Promise.reject('No externalId specified')
     }
 
     return getAdminUsersClient({correlationId: correlationId}).provisionNewOtpKey(externalId)
@@ -211,7 +211,7 @@ module.exports = {
    */
   configureNewOtpKey: function (externalId, code, secondFactor, correlationId) {
     if (!externalId) {
-        Promise.reject('No externalId specified')
+      Promise.reject('No externalId specified')
     }
 
     return getAdminUsersClient({correlationId: correlationId}).configureNewOtpKey(externalId, code, secondFactor)

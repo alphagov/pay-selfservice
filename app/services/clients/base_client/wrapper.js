@@ -17,7 +17,6 @@ const clsXrayConfig = require('../../../../config/xray-cls')
 
 module.exports = function (method, verb) {
   return (uri, opts, cb) => new Promise((resolve, reject) => {
-
     const namespace = getNamespace(clsXrayConfig.nameSpaceName)
     const clsSegment = namespace ? namespace.get(clsXrayConfig.segmentKeyName) : null
 
@@ -57,7 +56,6 @@ module.exports = function (method, verb) {
       if (err) {
         reject(err)
       } else if (response && SUCCESS_CODES.includes(response.statusCode)) {
-
         // transform our output if the appropriate function was passed.
         body = transform ? transform(body) : body
         resolve(body)

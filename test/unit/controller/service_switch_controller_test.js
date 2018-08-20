@@ -34,7 +34,7 @@ describe('service switch controller: list of accounts', function () {
       }).getPlain()) })
 
     directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `?externalAccountIds=${directDebitGatewayAccountIds.join(',')}`)
-      .reply(200, { accounts : directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
+      .reply(200, { accounts: directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
         gateway_account_id: iter,
         service_name: `account ${iter}`,
         type: _.sample(['test', 'live'])
@@ -94,7 +94,7 @@ describe('service switch controller: list of accounts', function () {
     }
 
     const res = {
-      render: function() {
+      render: function () {
         const path = arguments[0]
         const renderData = arguments[1]
 
@@ -113,11 +113,9 @@ describe('service switch controller: list of accounts', function () {
     const directDebitGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.directdebitAccounts.map(g => g.service_name)
 
     serviceSwitchController.getIndex(req, res)
-
   })
 
   it('should render page with no data even if user does not belong to any service', function (done) {
-
     const req = {
       user: userFixtures.validUserResponse({
         username: 'bob',
@@ -137,12 +135,10 @@ describe('service switch controller: list of accounts', function () {
     }
 
     serviceSwitchController.getIndex(req, res)
-
   })
 })
 
 describe('service switch controller: switching', function () {
-
   it('should redirect to / with correct account id set', function () {
     const session = {}
     const gatewayAccount = {}
@@ -161,7 +157,7 @@ describe('service switch controller: switching', function () {
     }
 
     const res = {
-      redirect: function() {
+      redirect: function () {
         expect(gatewayAccount.currentGatewayAccountId).to.be.equal('6')
         expect(arguments[0]).to.equal(302)
         expect(arguments[1]).to.equal('/')
@@ -169,7 +165,6 @@ describe('service switch controller: switching', function () {
     }
 
     serviceSwitchController.postIndex(req, res)
-
   })
 
   it('should not switch id if user not authorised to see account id', function () {
@@ -193,7 +188,6 @@ describe('service switch controller: switching', function () {
     }
 
     serviceSwitchController.postIndex(req, res)
-
   })
 })
 
@@ -254,7 +248,7 @@ describe('service switch controller: display added to the new service msg', func
     }
 
     const res = {
-      render: function() {
+      render: function () {
         const path = arguments[0]
         const renderData = arguments[1]
         expect(path).to.equal('services/index')
@@ -264,6 +258,5 @@ describe('service switch controller: display added to the new service msg', func
     }
 
     serviceSwitchController.getIndex(req, res)
-
   })
 })

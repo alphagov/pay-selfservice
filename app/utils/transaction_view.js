@@ -94,7 +94,7 @@ module.exports = {
       }
     }
 
-    chargeData.refundable = chargeData.refund_summary.status === 'available'
+    chargeData.refundable = chargeData.refund_summary.status === 'available' || chargeData.refund_summary.status === 'error'
     chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
     chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted)
     chargeData.refunded = chargeData.refund_summary.amount_submitted !== 0
