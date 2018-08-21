@@ -1,16 +1,8 @@
-FROM govukpay/nodejs:8.11.3
+FROM govukpay/nodejs:alpine-3.8
 
 RUN apk update &&\
     apk upgrade &&\
     apk add --update bash ruby
-
-RUN apk --no-cache add ca-certificates wget
-
-RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.27-r0/glibc-2.27-r0.apk
-
-ADD docker/sgerrand.rsa.pub /etc/apk/keys/sgerrand.rsa.pub
-
-RUN apk del libc6-compat && apk add glibc-2.27-r0.apk
 
 # add package.json before source for node_module cache layer
 ADD package.json /tmp/package.json
