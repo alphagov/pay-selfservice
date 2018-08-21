@@ -1,4 +1,4 @@
-FROM govukpay/nodejs:8.11.3
+FROM govukpay/nodejs:alpine-3.8
 
 ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json
