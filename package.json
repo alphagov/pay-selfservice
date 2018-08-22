@@ -61,6 +61,7 @@
     "csrf": "3.0.x",
     "currency-formatter": "^1.4.2",
     "express": "4.16.x",
+    "govuk-frontend": "^2.0.0",
     "hogan.js": "3.0.x",
     "http-proxy": "1.17.x",
     "json2csv": "4.1.x",

@@ -10,6 +10,7 @@ module.exports = function (grunt) {
           style: 'expanded',
           sourcemap: true,
           includePaths: [
+            'node_modules',
             'govuk_modules/govuk_frontend_toolkit/stylesheets',
             'node_modules/govuk-elements-sass/public/sass/',
             'govuk_modules/accessible-autocomplete/'
