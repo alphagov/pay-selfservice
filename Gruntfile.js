@@ -14,7 +14,7 @@ module.exports = function (grunt) {
             'node_modules/govuk-elements-sass/public/sass/',
             'govuk_modules/accessible-autocomplete/'
           ],
-          outputStyle: 'expanded'
+          outputStyle: 'compressed'
         },
         files: [
           {
@@ -22,21 +22,9 @@ module.exports = function (grunt) {
             cwd: 'app/assets/sass',
             src: ['*.scss'],
             dest: 'public/stylesheets/',
-            ext: '.css'
+            ext: '.min.css'
           }
         ]
-      }
-    },
-
-    cssmin: {
-      target: {
-        files: [{
-          expand: true,
-          cwd: 'public/stylesheets',
-          src: ['*.css', '!*.min.css'],
-          dest: 'public/stylesheets',
-          ext: '.min.css'
-        }]
       }
     },
 
@@ -194,7 +182,6 @@ module.exports = function (grunt) {
     'grunt-contrib-watch',
     'grunt-contrib-clean',
     'grunt-contrib-uglify',
-    'grunt-contrib-cssmin',
     'grunt-sass',
     'grunt-nodemon',
     'grunt-browserify',
@@ -210,8 +197,7 @@ module.exports = function (grunt) {
     'replace',
     'browserify',
     'uglify',
-    'sass',
-    'cssmin'
+    'sass'
   ])
 
   const defaultTasks = ['generate-assets', 'concurrent:target']
