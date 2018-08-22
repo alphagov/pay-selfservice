@@ -33,7 +33,6 @@ const nunjucksFilters = require('./app/utils/nunjucks-filters')
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
 const {NODE_ENV} = process.env
-const CSS_PATH = staticify.getVersionedPath('/stylesheets/application.min.css')
 const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
 const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
 
@@ -96,7 +95,7 @@ function initialiseTemplateEngine (app) {
 
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
-  nunjucksEnvironment.addGlobal('css_path', NODE_ENV === 'production' ? CSS_PATH : staticify.getVersionedPath('/stylesheets/application.css'))
+  nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/stylesheets/application.min.css'))
   nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 
   // Load custom Nunjucks filters
