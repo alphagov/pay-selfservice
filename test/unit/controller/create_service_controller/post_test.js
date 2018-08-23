@@ -14,7 +14,7 @@ const addServiceCtrl = proxyquire('../../../../app/controllers/create_service_co
 })
 let req, res
 
-describe('Controller: createService, Method: post', () => {
+describe.only('Controller: createService, Method: post', () => {
   describe('when the service name is not empty', () => {
     before(done => {
       mockServiceService.createService = sinon.stub().resolves({external_id: 'r378y387y8weriyi'})
@@ -24,7 +24,8 @@ describe('Controller: createService, Method: post', () => {
         user: {externalId: '38475y38q4758ow4'},
         correlationId: random.randomUuid(),
         body: {
-          'service-name': 'A brand spanking new service name'
+          'service-name': 'A brand spanking new service name',
+          'service-name-cy': 'Some Cymraeg new service name'
         }
       }
       res = {
@@ -51,7 +52,8 @@ describe('Controller: createService, Method: post', () => {
       req = {
         correlationId: random.randomUuid(),
         body: {
-          'service-name': 'A brand spanking new service name'
+          'service-name': 'A brand spanking new service name',
+          'service-name-cy': 'Some Cymraeg new service name'
         }
       }
       res = {}
@@ -81,7 +83,8 @@ describe('Controller: createService, Method: post', () => {
         user: {externalId: '38475y38q4758ow4'},
         correlationId: random.randomUuid(),
         body: {
-          'service-name': 'A brand spanking new service name'
+          'service-name': 'A brand spanking new service name',
+          'service-name-cy': 'Some Cymraeg new service name'
         }
       }
       res = {}
@@ -133,6 +136,66 @@ describe('Controller: createService, Method: post', () => {
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.createServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
       expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({service_name: 'This field cannot be blank'})
+    })
+  })
+
+  describe('when the Welsh service name is empty', () => {
+    before(done => {
+      mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
+      mockUserService.assignServiceRole = sinon.stub().resolves()
+      mockResponses.response = sinon.spy()
+      req = {
+        user: { externalId: '38475y38q4758ow4' },
+        correlationId: random.randomUuid(),
+        body: {
+          'service-name': 'A brand spanking new service name',
+          'service-name-cy': ''
+        }
+      }
+      res = {
+        redirect: sinon.spy()
+      }
+      const result = addServiceCtrl.post(req, res)
+      if (result) {
+        result.then(() => done()).catch(done)
+      } else {
+        done(new Error('Didn\'t return a promise'))
+      }
+    })
+
+    it(`should call 'res.redirect' with '/my-service'`, () => {
+      expect(res.redirect.called).to.equal(true)
+      expect(res.redirect.args[0]).to.include('/my-services')
+    })
+  })
+
+  describe('when the Welsh service name is filled in', () => {
+    before(done => {
+      mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
+      mockUserService.assignServiceRole = sinon.stub().resolves()
+      mockResponses.response = sinon.spy()
+      req = {
+        user: { externalId: '38475y38q4758ow4' },
+        correlationId: random.randomUuid(),
+        body: {
+          'service-name': 'A brand spanking new service name',
+          'service-name-cy': ''
+        }
+      }
+      res = {
+        redirect: sinon.spy()
+      }
+      const result = addServiceCtrl.post(req, res)
+      if (result) {
+        result.then(() => done()).catch(done)
+      } else {
+        done(new Error('Didn\'t return a promise'))
+      }
+    })
+
+    it(`should call 'res.redirect' with '/my-service'`, () => {
+      expect(res.redirect.called).to.equal(true)
+      expect(res.redirect.args[0]).to.include('/my-services')
     })
   })
 })
