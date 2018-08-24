@@ -34,17 +34,17 @@ describe('adminusers client - update service name', function () {
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
-  describe('success', () => {
+  describe('success with en and cy', () => {
     const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequest()
-    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponse({
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy()
+    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponseWithEnAndCy({
       external_id: existingServiceExternalId
     })
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
-          .withUponReceiving('a valid update service name request')
+          .withUponReceiving('a valid update service name request with en and cy')
           .withMethod('PATCH')
           .withRequestBody(validUpdateServiceNameRequest.getPactified())
           .withStatusCode(200)
@@ -57,17 +57,88 @@ describe('adminusers client - update service name', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update service name', function (done) {
-      adminusersClient.updateServiceName(existingServiceExternalId, validUpdateServiceNameRequest.getPlain().value).should.be.fulfilled.then(service => {
+    it('should update service name for en and cy', function (done) {
+      const serviceNameEn = validUpdateServiceNameRequest.getPlain()[0].value
+      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
+      adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn, serviceNameCy)
+        .should.be.fulfilled.then(service => {
         expect(service.external_id).to.equal(existingServiceExternalId)
-        expect(service.name).to.equal(validUpdateServiceNameRequest.getPlain().value)
+        expect(service.name).to.equal(serviceNameEn)
+        expect(service.service_name.en).to.equal(serviceNameEn)
+        expect(service.service_name.cy).to.equal(serviceNameCy)
+      }).should.notify(done)
+    })
+  })
+
+  describe('success with en', () => {
+    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEn()
+    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponseWithEn({
+      external_id: existingServiceExternalId
+    })
+
+    before((done) => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
+          .withUponReceiving('a valid update service name request with en')
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateServiceNameRequest.getPactified())
+          .withStatusCode(200)
+          .withResponseBody(validUpdateServiceNameResponse.getPactified())
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update service name for en', function (done) {
+      const serviceNameEn = validUpdateServiceNameRequest.getPlain()[0].value
+      adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn).should.be.fulfilled.then(service => {
+        expect(service.external_id).to.equal(existingServiceExternalId)
+        expect(service.name).to.equal(serviceNameEn)
+        expect(service.service_name.en).to.equal(serviceNameEn)
+      }).should.notify(done)
+    })
+  })
+
+  describe('success with cy', () => {
+    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithCy()
+    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponseWithCy({
+      external_id: existingServiceExternalId
+    })
+
+    before((done) => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
+          .withUponReceiving('a valid update service name request with cy')
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateServiceNameRequest.getPactified())
+          .withStatusCode(200)
+          .withResponseBody(validUpdateServiceNameResponse.getPactified())
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should update service name for cy', function (done) {
+      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[0].value
+
+      adminusersClient.updateServiceName(existingServiceExternalId, null, serviceNameCy).should.be.fulfilled.then(service => {
+        expect(service.external_id).to.equal(existingServiceExternalId)
+        expect(service.service_name.cy).to.equal(serviceNameCy)
       }).should.notify(done)
     })
   })
 
   describe('not found', () => {
     const nonExistentServiceExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequest()
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy()
 
     before((done) => {
       provider.addInteraction(
@@ -85,34 +156,10 @@ describe('adminusers client - update service name', function () {
     afterEach(() => provider.verify())
 
     it('should return not found if service not exist', function (done) {
-      adminusersClient.updateServiceName(nonExistentServiceExternalId, validUpdateServiceNameRequest.getPlain().value).should.be.rejected.then(response => {
+      const serviceNameEn = validUpdateServiceNameRequest.getPlain()[0].value
+      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
+      adminusersClient.updateServiceName(nonExistentServiceExternalId, serviceNameEn, serviceNameCy).should.be.rejected.then(response => {
         expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
-    })
-  })
-
-  describe('bad request', () => {
-    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const invalidUpdateServiceNameRequest = serviceFixtures.badRequestWithInvalidPathWhenUpdateServiceNameRequest()
-
-    before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
-          .withUponReceiving('an invalid update service name request - bad request')
-          .withMethod('PATCH')
-          .withRequestBody(invalidUpdateServiceNameRequest.getPactified())
-          .withStatusCode(400)
-          .build()
-      )
-        .then(() => done())
-        .catch(done)
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should return bad request if invalid request body', function (done) {
-      adminusersClient.updateServiceName(existingServiceExternalId, invalidUpdateServiceNameRequest.getPlain().value).should.be.rejected.then(response => {
-        expect(response.errorCode).to.equal(400)
       }).should.notify(done)
     })
   })

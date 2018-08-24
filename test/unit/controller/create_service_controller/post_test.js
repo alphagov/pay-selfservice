@@ -14,7 +14,7 @@ const addServiceCtrl = proxyquire('../../../../app/controllers/create_service_co
 })
 let req, res
 
-describe.only('Controller: createService, Method: post', () => {
+describe('Controller: createService, Method: post', () => {
   describe('when the service name is not empty', () => {
     before(done => {
       mockServiceService.createService = sinon.stub().resolves({external_id: 'r378y387y8weriyi'})

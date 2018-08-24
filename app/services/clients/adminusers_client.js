@@ -565,16 +565,24 @@ module.exports = function (clientOptions = {}) {
      * @returns {*|Constructor|promise}
      */
   const updateServiceName = (serviceExternalId, serviceName, serviceNameCy) => {
-    const body = {
-      op: 'replace',
-      path: 'name',
-      value: serviceName
+    const body = []
+    if (serviceName) {
+       body.push(
+         {
+           op: 'replace',
+           path: 'service_name/en',
+           value: serviceName
+         }
+       )
     }
     if (serviceNameCy) {
-      body.value = {
-        en: serviceName,
-        cy: serviceNameCy
-      }
+      body.push(
+        {
+          op: 'replace',
+          path: 'service_name/cy',
+          value: serviceNameCy
+        }
+      )
     }
     return baseClient.patch(
       {

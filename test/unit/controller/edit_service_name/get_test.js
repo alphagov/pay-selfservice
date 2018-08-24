@@ -17,7 +17,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service'})
+        service: new Service({external_id: random.randomUuid(), name: 'Example Service', service_name: { en: 'Example En Service', cy: 'Example Cy Service'}})
       }
       editServiceNameCtrl.get(req, res)
     })
@@ -33,7 +33,7 @@ describe('Controller: editServiceName, Method: get', () => {
     })
 
     it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name of 'req.service'`, () => {
-      expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal(req.service.name)
+      expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal(req.service.serviceName)
     })
 
     it(`should pass pageData to the responses.response method that does not have an 'errors' property`, () => {
@@ -51,7 +51,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
-        service: new Service({external_id: random.randomUuid(), name: 'System Generated'})
+        service: new Service({external_id: random.randomUuid(), name: 'System Generated', serviceName: {en: 'System Generated', cy: ''}})
 
       }
       editServiceNameCtrl.get(req, res)
@@ -61,8 +61,8 @@ describe('Controller: editServiceName, Method: get', () => {
       expect(mockResponses.response.called).to.equal(true)
     })
 
-    it(`should pass pageData to the responses.response method with a 'current_name' property equal to the name of 'req.service'`, () => {
-      expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('')
+    it(`should pass pageData to the responses.response method with a 'current_name' property equal to the serviceName of 'req.service'`, () => {
+      expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal(req.service.serviceName)
     })
   })
 

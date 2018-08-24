@@ -53,13 +53,13 @@ describe('create service - service naming', function () {
       .post(paths.selfCreateService.serviceNaming)
       .send({
         'service-name': request.service_name,
+        'service-name-cy': '',
         csrfToken: csrf().create('123')
       })
       .expect(303)
       .expect('Location', paths.dashboard.index)
       .end(done)
   })
-
   it('should redirect to name your service page if user input invalid', function (done) {
     const invalidServiceNameRequest = selfRegisterFixtures.invalidServiceNameRequest()
 
@@ -70,6 +70,7 @@ describe('create service - service naming', function () {
       .post(paths.selfCreateService.serviceNaming)
       .send({
         'service-name': request.service_name,
+        'service-name-cy': '',
         csrfToken: csrf().create('123')
       })
       .expect(303)

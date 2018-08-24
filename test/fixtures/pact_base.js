@@ -50,6 +50,7 @@ module.exports = function (options = {}) {
 
   return {
     pactifyMatch: pactifyMatch,
+    pactifySimpleArray: pactifySimpleArray,
     pactifyNestedArray: pactifyNestedArray,
     pactify: pactify,
     withPactified: withPactified

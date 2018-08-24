@@ -9,7 +9,7 @@ const createServiceCtrl = proxyquire('../../../../app/controllers/create_service
 })
 let req, res
 
-describe.only('Controller: createService, Method: get', () => {
+describe('Controller: createService, Method: get', () => {
   describe('when there is no pre-existing pageData', () => {
     before(() => {
       mockResponses.response = sinon.spy()
