@@ -1,4 +1,6 @@
 .transactions-filter {
+  padding: 0 15px;
+
   .form-hint {
     @include core-14;
     color: $black;
@@ -10,20 +12,26 @@
     }
   }
 
-  padding: 0 15px;
+  input {
+    font-size: 16px;
+  }
+
   form {
     background: $panel-colour;
   }
+
   .filter-submit {
-    float: right;
     display: block;
-    margin-top: 65px;
-    padding-right: 20px;
+    padding-left: $gutter / 2;
+    margin-top: $gutter / 2;
+    margin-bottom: $gutter / 2;
+
     @include respond-to-max(860px) {
       margin-top: 0;
       margin-right: 15px;
       padding-right: 0;
     }
+
     @include respond-to-max(640px) {
       width: 100%;
       margin: 15px 0;
@@ -34,14 +42,14 @@
   .button {
     padding-top: 5px;
     padding-bottom:1px;
-    float: left;
     margin-right: 0;
     margin-bottom: 15px;
     width: 100%;
-    @include respond-to-max(860px) {
-      float: right;
-    }
+    font-size: 19px;
 
+    @include media(tablet) {
+      width: calc(25% - 24px);
+    }
   }
 
   legend {
@@ -50,36 +58,25 @@
 
   .clear-filter {
     @include core-14;
-    float: right;
-    margin-left: 15px;
-    margin-right: 0;
-    margin-top: 4px;
+    position: relative;
+    top: 4px;
 
-    @include respond-to-max(860px) {
-      margin-right: 15px;
+    @include media(tablet) {
+      margin-left: $gutter;
     }
+
   }
 
   .column-half {
-
     margin: 15px 0;
   }
-  .column-third {
 
+  .column-third {
     margin: 15px 0;
   }
 
   .column-quarter {
     padding-top: 15px;
-
-    @include respond-to-max(1040px) {
-      width: 50%;
-      margin-bottom: $gutter;
-    }
-    @include respond-to-max(mobile) {
-      width: 100%;
-      margin-bottom: $gutter-half;
-    }
   }
 
   .column-half.date-from,
@@ -88,19 +85,6 @@
     float: left;
     @include respond-to-max(mobile) {
       margin-bottom: $gutter-half;
-    }
-  }
-
-  .datetime-pair {
-    width: 80%;
-    width: calc(100% - 200px);
-
-    @include respond-to-max(860px) {
-      width: 100%;
-    }
-
-    @include respond-to-max(mobile) {
-      margin-top: 15px;
     }
   }
 
@@ -113,7 +97,7 @@
 
     .form-label {
       @include core-14;
-      padding-bottom: 5px;
+      padding-bottom: 7px;
     }
 
     .selector {
@@ -151,13 +135,14 @@
 
   .datetime-separator {
     text-align: left;
-    line-height: 32px;
     font-weight: normal;
+    font-size: 14px;
+    margin-top: 5px;
 
     @include media(tablet) {
+      margin-top: 34px;
       width: 10%;
       float: left;
-      line-height: 86px;
       text-align: center;
     }
   }
@@ -172,9 +157,14 @@
 .datepicker .datepicker-days table tr td.day:hover {
     background: $yellow;
 }
+
 .datepicker .datepicker-days table tr td.active:active,
 .datepicker .datepicker-days table tr td.active.highlighted:active,
 .datepicker .datepicker-days table tr td.active.active,
 .datepicker .datepicker-days table tr td.active.highlighted.active {
   background: $govuk-blue;
+}
+
+.form-label-small {
+  font-size: 16px;
 }
