@@ -1,5 +1,8 @@
 'use strict'
 
+// NPM dependencies
+const lodash = require('lodash')
+
 // Local dependencies
 const baseClient = require('./base_client/base_client')
 const User = require('../../models/User.class')
@@ -527,7 +530,7 @@ module.exports = function (clientOptions = {}) {
      * @param gatewayAccountIds
      * @returns {*|promise|Constructor}
      */
-  const createService = (serviceName, gatewayAccountIds) => {
+  const createService = (serviceName, serviceNameCy, gatewayAccountIds) => {
     let postBody = {
       baseUrl,
       url: `${serviceResource}`,
@@ -541,11 +544,14 @@ module.exports = function (clientOptions = {}) {
 
     if (serviceName) {
       postBody.body.name = serviceName
+      postBody.body.service_name = lodash.merge(postBody.body.service_name, {en: serviceName})
+    }
+    if (serviceNameCy) {
+      postBody.body.service_name = lodash.merge(postBody.body.service_name, {cy: serviceNameCy})
     }
     if (gatewayAccountIds) {
       postBody.body.gateway_account_ids = gatewayAccountIds
     }
-
     return baseClient.post(
       postBody
     )
@@ -558,17 +564,32 @@ module.exports = function (clientOptions = {}) {
      * @param serviceName
      * @returns {*|Constructor|promise}
      */
-  const updateServiceName = (serviceExternalId, serviceName) => {
+  const updateServiceName = (serviceExternalId, serviceName, serviceNameCy) => {
+    const body = []
+    if (serviceName) {
+       body.push(
+         {
+           op: 'replace',
+           path: 'service_name/en',
+           value: serviceName
+         }
+       )
+    }
+    if (serviceNameCy) {
+      body.push(
+        {
+          op: 'replace',
+          path: 'service_name/cy',
+          value: serviceNameCy
+        }
+      )
+    }
     return baseClient.patch(
       {
         baseUrl,
         url: `${serviceResource}/${serviceExternalId}`,
         json: true,
-        body: {
-          op: 'replace',
-          path: 'name',
-          value: serviceName
-        },
+        body,
         correlationId: correlationId,
         description: 'update service name',
         service: SERVICE_NAME,

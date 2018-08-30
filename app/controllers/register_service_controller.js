@@ -225,16 +225,18 @@ module.exports = {
   submitYourServiceName: (req, res) => {
     const correlationId = req.correlationId
     const serviceName = req.body['service-name']
-    const validationErrors = validateServiceName(serviceName)
+    const serviceNameCy = req.body['service-name-cy']
+    const validationErrors = validateServiceName(serviceName, 'service-name-en', true)
+    const validationErrorsCy = validateServiceName(serviceNameCy, 'service-name-cy', false)
 
-    if (validationErrors) {
+    if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
       _.set(req, 'session.pageData.submitYourServiceName', {
         errors: validationErrors,
-        current_name: serviceName
+        current_name: _.merge({}, { en: serviceName, cy: serviceNameCy })
       })
       res.redirect(303, paths.selfCreateService.serviceNaming)
     } else {
-      return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, correlationId)
+      return serviceService.updateServiceName(req.user.serviceRoles[0].service.externalId, serviceName, serviceNameCy, correlationId)
         .then(() => {
           _.unset(req, 'session.pageData.submitYourServiceName')
           res.redirect(303, paths.dashboard.index)

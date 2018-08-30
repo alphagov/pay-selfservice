@@ -18,6 +18,7 @@ exports.get = (req, res) => {
   } else {
     pageData = {}
     pageData.current_name = ''
+    pageData.current_name_cy = ''
   }
 
   pageData.submit_link = paths.serviceSwitcher.create
@@ -29,15 +30,18 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceName = lodash.get(req, 'body.service-name')
-  const validationErrors = validateServiceName(serviceName)
-  if (validationErrors) {
+  const serviceNameCy = lodash.get(req, 'body.service-name-cy')
+  const validationErrors = validateServiceName(serviceName, 'service_name', true)
+  const validationErrorsCy = validateServiceName(serviceNameCy, 'service_name_cy', false)
+  if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
     lodash.set(req, 'session.pageData.createServiceName', {
-      errors: validationErrors,
-      current_name: serviceName
+      errors: {...validationErrors, ...validationErrorsCy},
+      current_name: serviceName,
+      current_name_cy: serviceNameCy
     })
     res.redirect(paths.serviceSwitcher.create)
   } else {
-    return serviceService.createService(serviceName, correlationId)
+    return serviceService.createService(serviceName, serviceNameCy, correlationId)
       .then((service) => userService.assignServiceRole(req.user.externalId, service.external_id, 'admin', correlationId))
       .then(() => {
         res.redirect(paths.serviceSwitcher.index)

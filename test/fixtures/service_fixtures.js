@@ -67,6 +67,7 @@ module.exports = {
     const data = {}
     if (opts.name) {
       data.name = opts.name
+      data.service_name = { en: opts.name }
     }
     if (opts.gateway_account_ids) {
       data.gateway_account_ids = opts.gateway_account_ids
@@ -105,13 +106,46 @@ module.exports = {
     }
   },
 
-  validUpdateServiceNameRequest: (opts) => {
+  validUpdateServiceNameRequestWithEnAndCy: (opts) => {
     opts = opts || {}
 
+    const data = [
+      {
+        op: 'replace',
+        path: 'service_name/en',
+        value: opts.name || 'new-en-name'
+      },
+      {
+        op: 'replace',
+        path: 'service_name/cy',
+        value: opts.nameCy || 'new-cy-name'
+      }
+    ]
+
+    return {
+      getPactified: () => {
+        return pactServices.pactifyNestedArray(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validUpdateServiceNameResponseWithEnAndCy: (opts) => {
+    opts = opts || {}
+
+    const externalId = opts.external_id || 'externalId'
+    const serviceName = opts.name || 'new-en-name'
+    const serviceNameCy = opts.nameCy || 'new-cy-name'
+
     const data = {
-      op: 'replace',
-      path: 'name',
-      value: opts.name || 'updated-service-name'
+      external_id: externalId,
+      name: serviceName,
+      service_name: {
+        en: serviceName,
+        cy: serviceNameCy
+      }
     }
 
     return {
@@ -124,15 +158,82 @@ module.exports = {
     }
   },
 
-  validUpdateServiceNameResponse: (opts) => {
+  validUpdateServiceNameRequestWithEn: (opts) => {
+    opts = opts || {}
+
+    const data = [{
+        op: 'replace',
+        path: 'service_name/en',
+        value: opts.name || 'new-en-name'
+      }]
+
+    return {
+      getPactified: () => {
+        return pactServices.pactifySimpleArray(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validUpdateServiceNameResponseWithEn: (opts) => {
     opts = opts || {}
 
     const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'updated-service-name'
+    const serviceName = opts.name || 'new-en-name'
 
     const data = {
       external_id: externalId,
-      name: serviceName
+      name: serviceName,
+      service_name: {
+        en: serviceName,
+      }
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validUpdateServiceNameRequestWithCy: (opts) => {
+    opts = opts || {}
+
+    const data = [{
+      op: 'replace',
+      path: 'service_name/cy',
+      value: opts.name || 'new-cy-name'
+    }]
+
+    return {
+      getPactified: () => {
+        return pactServices.pactifySimpleArray(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validUpdateServiceNameResponseWithCy: (opts) => {
+    opts = opts || {}
+
+    const externalId = opts.external_id || 'externalId'
+    const serviceName = opts.name || 'new-en-name'
+    const serviceNameCy = opts.nameCy || 'new-cy-name'
+
+    const data = {
+      external_id: externalId,
+      name: serviceName,
+      service_name: {
+        en: serviceName,
+        cy: serviceNameCy
+      }
     }
 
     return {
@@ -148,15 +249,17 @@ module.exports = {
   badRequestWithInvalidPathWhenUpdateServiceNameRequest: (opts) => {
     opts = opts || {}
 
-    const data = {
-      op: 'replace',
-      path: 'invalid-path',
-      value: opts.name || 'updated-service-name'
-    }
+    const data = [
+      {
+        op: 'replace',
+        path: 'invalid-path',
+        value: opts.name || 'updated-service-name'
+      }
+    ]
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactServices.pactifySimpleArray(data)
       },
       getPlain: () => {
         return _.clone(data)

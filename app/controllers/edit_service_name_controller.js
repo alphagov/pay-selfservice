@@ -17,7 +17,7 @@ exports.get = (req, res) => {
     delete req.session.pageData.editServiceName
   } else {
     pageData = {}
-    pageData.current_name = req.service.name === 'System Generated' ? '' : req.service.name
+    pageData.current_name = req.service.serviceName
   }
 
   pageData.submit_link = formatPath(paths.editServiceName.update, req.service.externalId)
@@ -30,15 +30,19 @@ exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceExternalId = lodash.get(req, 'service.externalId')
   const serviceName = lodash.get(req, 'body.service-name')
-  const validationErrors = validateServiceName(serviceName)
-  if (validationErrors) {
+  const hasServiceNameCy = lodash.get(req, 'body.welsh-service-name-bool')
+  const serviceNameCy = hasServiceNameCy ? lodash.get(req, 'body.service-name-cy') : ''
+  const validationErrors = validateServiceName(serviceName, 'service_name', true)
+  const validationErrorsCy = validateServiceName(serviceNameCy, 'service_name_cy', false)
+
+  if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
     lodash.set(req, 'session.pageData.editServiceName', {
       errors: validationErrors,
-      current_name: serviceName
+      current_name: lodash.merge({}, { en: serviceName, cy: serviceNameCy })
     })
     res.redirect(formatPath(paths.editServiceName.index, req.service.externalId))
   } else {
-    return serviceService.updateServiceName(serviceExternalId, serviceName, correlationId)
+    return serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId)
       .then(() => {
         res.redirect(paths.serviceSwitcher.index)
       })

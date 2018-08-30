@@ -63,7 +63,7 @@ describe('adminusers client - create a new service', function () {
   })
 
   describe('create a service sending gateway account ids - success', () => {
-    const validRequest = serviceFixtures.validCreateServiceRequest({gatewayAccountIds: ['1', '5']})
+    const validRequest = serviceFixtures.validCreateServiceRequest({gateway_account_ids: ['1', '5']})
     const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
 
     before((done) => {
@@ -83,7 +83,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should create a new service', function (done) {
-      adminusersClient.createService(null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
+      adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
         expect(service.external_id).to.equal('externalId')
         expect(service.name).to.equal('System Generated')
         expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
@@ -112,7 +112,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should create a new service', function (done) {
-      adminusersClient.createService('Service name', null).should.be.fulfilled.then(service => {
+      adminusersClient.createService('Service name', null, null).should.be.fulfilled.then(service => {
         expect(service.external_id).to.equal('externalId')
         expect(service.name).to.equal('Service name')
         expect(service.gateway_account_ids).to.deep.equal([])
@@ -141,9 +141,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on invalid gateway account ids', function (done) {
-      adminusersClient.createService(
-        null, ['non-numeric-id']
-      ).should.be.rejected.then(function (response) {
+      adminusersClient.createService( null, null, ['non-numeric-id']).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)

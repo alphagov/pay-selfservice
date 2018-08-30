@@ -15,6 +15,9 @@ Add a new service - GOV.UK Pay
         {% if errors.service_name %}
         <li><a href="#service-name">Service name</a></li>
         {% endif %}
+        {% if errors.service_name_cy %}
+          <li><a href="#service-name">Welsh Service name</a></li>
+        {% endif %}
       </ul>
     </div>
     {% endif %}
@@ -36,6 +39,22 @@ Add a new service - GOV.UK Pay
         {% endif %}
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
         <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{current_name}}" data-validate="required isFieldGreaterThanMaxLengthChars" data-validate-max-length="50">
+      </div>
+
+      <div class="cf">
+        <div class="form-group multiple-choice {% if errors.service_name_cy %}error{% endif %}" data-target="welsh-service-name">
+          <input id="checkbox-service-name-cy" name="welsh-service-name-bool" type="checkbox" value="true">
+          <label for="checkbox-service-name-cy">Add a Welsh service name
+            <span class="form-hint">To translate your payment pages you need to <a href="https://docs.payments.service.gov.uk/integration_details/#creating-a-payment">integrate with our API</a></span>
+          </label>
+        </div>
+        <div class="form-group panel panel-border-narrow js-hidden" id="welsh-service-name">
+          <label class="form-label" for="service-name-cy">Welsh (Cymraeg) service name</label>
+          {% if errors.service_name_cy %}
+            <span class="error-message">{{errors.service_name_cy}}</span>
+          {% endif %}
+          <input class="form-control" data-module="" id="service-name-cy" name="service-name-cy" type="text" value="{{current_name_cy}}" data-validate="isFieldGreaterThanMaxLengthChars" data-validate-max-length="50" lang="cy">
+        </div>
       </div>
 
       <div class="form-group call-to-action-group">

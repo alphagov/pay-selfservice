@@ -69,7 +69,7 @@ module.exports = {
 
   invalidServiceNameRequest: (opts = {}) => {
     const data = {
-      service_name: opts.service_name || ' '
+      service_name: opts.service_name || ''
     }
 
     return {

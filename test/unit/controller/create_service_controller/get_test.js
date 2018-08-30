@@ -32,6 +32,10 @@ describe('Controller: createService, Method: get', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('')
     })
 
+    it(`should pass pageData to the responses.response method with a 'current_name_cy' property equal to ''`, () => {
+      expect(mockResponses.response.args[0][3]).to.have.property('current_name_cy').to.equal('')
+    })
+
     it(`should pass pageData to the responses.response method that does not have an 'errors' property`, () => {
       expect(mockResponses.response.args[0][3]).to.not.have.property('errors')
     })
@@ -51,8 +55,12 @@ describe('Controller: createService, Method: get', () => {
           pageData: {
             createServiceName: {
               current_name: 'Blah',
+              current_name_cy: 'Some Cymraeg service name',
               errors: {
                 service_name: {
+                  'invalid': true
+                },
+                service_name_cy: {
                   'invalid': true
                 }
               }
@@ -71,9 +79,16 @@ describe('Controller: createService, Method: get', () => {
       expect(mockResponses.response.args[0][3]).to.have.property('current_name').to.equal('Blah')
     })
 
+    it(`should pass pageData to the responses.response method with a 'current_name_cy' property equal to the name in the pre-existing pageData`, () => {
+      expect(mockResponses.response.args[0][3]).to.have.property('current_name_cy').to.equal('Some Cymraeg service name')
+    })
+
     it(`should pass pageData to the responses.response method with 'errors' property equal to the 'errors' property of the pre-existing pageData`, () => {
       expect(mockResponses.response.args[0][3]).to.have.property('errors').to.deep.equal({
         service_name: {
+          'invalid': true
+        },
+        service_name_cy: {
           'invalid': true
         }
       })

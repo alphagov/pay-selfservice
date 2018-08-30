@@ -69,12 +69,12 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
  * @param correlationId
  * @returns {Promise<Service>} the updated service
  */
-function updateServiceName (serviceExternalId, serviceName, correlationId) {
+function updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId) {
   return new Promise(function (resolve, reject) {
     if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
     if (!serviceName) serviceName = 'System Generated'
 
-    getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName)
+    getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
       .then(result => {
         const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
 
@@ -121,11 +121,12 @@ function updateMerchantDetails (serviceExternalId, merchantDetails, correlationI
  * @param correlationId
  * @returns {*|Promise|Promise<Service>} the created service
  */
-function createService (serviceName, correlationId) {
+function createService (serviceName, serviceNameCy, correlationId) {
   if (!serviceName) serviceName = 'System Generated'
+  if (!serviceNameCy) serviceNameCy = ''
 
   return connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, correlationId)
     .then(gatewayAccount =>
-      getAdminUsersClient({correlationId}).createService(serviceName, [gatewayAccount.gateway_account_id])
+      getAdminUsersClient({ correlationId }).createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id])
     )
 }

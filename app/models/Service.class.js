@@ -18,6 +18,7 @@ class Service {
   constructor (serviceData) {
     this.externalId = serviceData.external_id
     this.name = serviceData.name
+    this.serviceName = serviceData.service_name
     this.gatewayAccountIds = serviceData.gateway_account_ids
     this.merchantDetails = serviceData.merchant_details
   }
@@ -30,6 +31,7 @@ class Service {
     return {
       external_id: this.externalId,
       name: this.name,
+      serviceName: this.serviceName,
       gateway_account_ids: this.gatewayAccountIds,
       merchant_details: this.merchantDetails
     }

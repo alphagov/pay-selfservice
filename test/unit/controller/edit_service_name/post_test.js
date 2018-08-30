@@ -22,7 +22,8 @@ describe('Controller: editServiceName, Method: get', () => {
         correlationId: random.randomUuid(),
         service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
         body: {
-          'service-name': 'A brand spanking new service name'
+          'service-name': 'A brand spanking new English service name',
+          'service-name-cy': 'A brand spanking new Welsh service name'
         }
       }
       res = {
@@ -50,7 +51,8 @@ describe('Controller: editServiceName, Method: get', () => {
         correlationId: random.randomUuid(),
         service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
         body: {
-          'service-name': 'A brand spanking new service name'
+          'service-name': 'A brand spanking new English service name',
+          'service-name-cy': 'A brand spanking new Welsh service name'
         }
       }
       res = {}
@@ -79,7 +81,8 @@ describe('Controller: editServiceName, Method: get', () => {
         correlationId: random.randomUuid(),
         service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
         body: {
-          'service-name': ''
+          'service-name': '',
+          'service-name-cy': ''
         }
       }
       res = {
@@ -99,7 +102,8 @@ describe('Controller: editServiceName, Method: get', () => {
     })
 
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
-      expect(req.session.pageData.editServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
+      expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
+      expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
       expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({service_name: 'This field cannot be blank'})
     })
   })
