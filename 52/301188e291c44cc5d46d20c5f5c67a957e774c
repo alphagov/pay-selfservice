@@ -7,3 +7,5 @@ staging-2.tag=alpha_staging-2-571
 staging-2.alpha_staging-2-571.date=2018-08-30:12:36:22
 
 staging-2.alpha_staging-2-571.status=success
+
+production-2.tag=FAILED-571
