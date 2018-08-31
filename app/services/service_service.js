@@ -69,11 +69,9 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
  * @param correlationId
  * @returns {Promise<Service>} the updated service
  */
-function updateServiceName(serviceExternalId, serviceName, serviceNameCy, correlationId) {
+function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
   return new Promise(function (resolve, reject) {
     if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-    if (!serviceName) serviceName = 'System Generated'
-
     getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
       .then(result => {
         const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])

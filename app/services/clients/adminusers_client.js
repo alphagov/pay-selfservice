@@ -565,31 +565,23 @@ module.exports = function (clientOptions = {}) {
      * @returns {*|Constructor|promise}
      */
   const updateServiceName = (serviceExternalId, serviceName, serviceNameCy) => {
-    const body = []
-    if (serviceName) {
-       body.push(
-         {
-           op: 'replace',
-           path: 'service_name/en',
-           value: serviceName
-         }
-       )
-    }
-    if (serviceNameCy) {
-      body.push(
-        {
-          op: 'replace',
-          path: 'service_name/cy',
-          value: serviceNameCy
-        }
-      )
-    }
     return baseClient.patch(
       {
         baseUrl,
         url: `${serviceResource}/${serviceExternalId}`,
         json: true,
-        body,
+        body: [
+          {
+            op: 'replace',
+            path: 'service_name/en',
+            value: serviceName || 'System Generated'
+          },
+          {
+            op: 'replace',
+            path: 'service_name/cy',
+            value: serviceNameCy || ''
+          }
+        ],
         correlationId: correlationId,
         description: 'update service name',
         service: SERVICE_NAME,
