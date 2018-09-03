@@ -1,7 +1,7 @@
 <div class="grid-row transactions-filter">
   <form class="form" method="get" action="{{search_path}}">
     <fieldset>
-        <div class="column-third reference-number">
+        <div class="column-quarter reference-number">
           <label class="form-label form-label-small" for="reference">
             <strong>Reference number</strong>
             <span class="form-hint">Enter full or partial number</span>
@@ -9,7 +9,7 @@
           <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
         </div>
 
-        <div class="column-third email">
+        <div class="column-quarter email">
           <label class="form-label form-label-small" for="email">
             <strong>Email address</strong>
             <span class="form-hint">Enter full or partial email</span>
@@ -17,13 +17,21 @@
           <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
         </div>
 
-        <div class="column-third">
+        <div class="column-quarter">
           <label class="form-label form-label-small" for="cardholderName">
             <strong>Name on card</strong>
             <span class="form-hint">Enter full or partial name</span>
           </label>
           <input class="form-control large" id="cardholderName" name="cardholderName" type="text" value="{{filters.cardholderName}}" autofocus />
         </div>
+
+      <div class="column-quarter">
+        <label class="form-label form-label-small" for="lastDigitsCardNumber">
+          <strong>Last 4 card numbers</strong>
+          <span class="form-hint">Last 4 digits of associated card</span>
+        </label>
+        <input class="form-control large" id="cardholderName" name="lastDigitsCardNumber" type="text" value="{{filters.lastDigitsCardNumber}}" autofocus />
+      </div>
 
         <div class="column-quarter">
           <label class="form-label form-label-small" for="card-brand">
