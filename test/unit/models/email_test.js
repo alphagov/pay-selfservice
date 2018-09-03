@@ -67,7 +67,7 @@ describe('email notification', function () {
         // Create a class that inherits from EventEmitter
         class StubConnectorEmailFunctions extends EventEmitter {
           getNotificationEmail (params, callback) {
-            callback({template_body: 'some template here', enabled: true}) // eslint-disable-line
+            callback({template_body: 'some template here', enabled: true, emailCollectionMode: 0, refundEmailEnabled: true}) // eslint-disable-line
             return this
           }
         }
@@ -83,7 +83,7 @@ describe('email notification', function () {
         const emailModel = Email('some-unique-id')
         return expect(emailModel.get(123))
           .to.be.fulfilled.then(function (response) {
-            expect(response).to.deep.equal({customEmailText: 'some template here', emailEnabled: true})
+            expect(response).to.deep.equal({customEmailText: 'some template here', emailEnabled: true, emailCollectionMode: 0, refundEmailEnabled: true})
           })
       })
     })
@@ -189,7 +189,7 @@ describe('email notification', function () {
             '../services/clients/connector_client.js': connectorClientStub
           })
           const emailModel = Email('some-unique-id')
-          return expect(emailModel.setEnabled(123, toggle))
+          return expect(emailModel.setConfirmationEnabled(123, toggle))
             .to.be.rejectedWith('CLIENT_UNAVAILABLE')
         }
         )
@@ -216,7 +216,7 @@ describe('email notification', function () {
             '../services/clients/connector_client.js': connectorClientStub
           })
           const emailModel = Email('some-unique-id')
-          return expect(emailModel.setEnabled(123, true))
+          return expect(emailModel.setConfirmationEnabled(123, true))
             .to.be.rejectedWith('PATCH_FAILED')
         })
       })
@@ -240,7 +240,7 @@ describe('email notification', function () {
             '../services/clients/connector_client.js': connectorClientStub
           })
           const emailModel = Email('some-unique-id')
-          return expect(emailModel.setEnabled(123, true)).to.be.fulfilled
+          return expect(emailModel.setConfirmationEnabled(123, true)).to.be.fulfilled
         })
       })
     })

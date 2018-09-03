@@ -62,11 +62,11 @@ describe('adminusers client - update service name', function () {
       const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
       adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn, serviceNameCy)
         .should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal(existingServiceExternalId)
-        expect(service.name).to.equal(serviceNameEn)
-        expect(service.service_name.en).to.equal(serviceNameEn)
-        expect(service.service_name.cy).to.equal(serviceNameCy)
-      }).should.notify(done)
+          expect(service.external_id).to.equal(existingServiceExternalId)
+          expect(service.name).to.equal(serviceNameEn)
+          expect(service.service_name.en).to.equal(serviceNameEn)
+          expect(service.service_name.cy).to.equal(serviceNameCy)
+        }).should.notify(done)
     })
   })
 

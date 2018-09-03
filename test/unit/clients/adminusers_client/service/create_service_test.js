@@ -141,7 +141,7 @@ describe('adminusers client - create a new service', function () {
     afterEach(() => provider.verify())
 
     it('should return 400 on invalid gateway account ids', function (done) {
-      adminusersClient.createService( null, null, ['non-numeric-id']).should.be.rejected.then(function (response) {
+      adminusersClient.createService(null, null, ['non-numeric-id']).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
         expect(response.message.errors.length).to.equal(1)
         expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)

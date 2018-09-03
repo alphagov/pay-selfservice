@@ -1,4 +1,4 @@
 module.exports = {
-  nameSpaceName : 'selfservice',
-  segmentKeyName : 'xraysegment'
+  nameSpaceName: 'selfservice',
+  segmentKeyName: 'xraysegment'
 }

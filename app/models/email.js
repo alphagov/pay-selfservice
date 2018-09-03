@@ -30,7 +30,9 @@ module.exports = function (correlationId) {
         logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
         resolve({
           customEmailText: data.template_body,
-          emailEnabled: data.enabled
+          emailEnabled: data.enabled,
+          emailCollectionMode: data.emailCollectionMode,
+          refundEmailEnabled: data.refundEmailEnabled
         })
       }).on('connectorError', function (err, connectorResponse) {
         logger.info(`[${correlationId}] - GET to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
@@ -64,12 +66,52 @@ module.exports = function (correlationId) {
     })
   }
 
-  const setEnabled = function (accountID, enabled) {
+  const setEmailCollectionMode = function (accountID, collectionMode) {
+    return new Promise(function (resolve, reject) {
+      logger.debug('model', connectorUrl(accountID), {'op': 'replace', 'path': 'collection', 'value': collectionMode})
+      const startTime = new Date()
+      const patch = {'op': 'replace', 'path': 'collection', 'value': collectionMode}
+      connectorClient().updateEmailCollectionMode({
+        payload: patch,
+        correlationId: correlationId,
+        gatewayAccountId: accountID
+      }, function () {
+        logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
+        resolve()
+      }).on('connectorError', function (err, connectorResponse) {
+        if (connectorResponse) return reject(new Error('PATCH_FAILED'))
+        logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
+        clientUnavailable(err, reject, 'PATCH', correlationId)
+      })
+    })
+  }
+
+  const setConfirmationEnabled = function (accountID, enabled) {
     return new Promise(function (resolve, reject) {
       logger.debug('model', connectorUrl(accountID), {'op': 'replace', 'path': 'enabled', 'value': enabled})
       const startTime = new Date()
       const patch = {'op': 'replace', 'path': 'enabled', 'value': enabled}
       connectorClient().updateNotificationEmailEnabled({
+        payload: patch,
+        correlationId: correlationId,
+        gatewayAccountId: accountID
+      }, function () {
+        logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
+        resolve()
+      }).on('connectorError', function (err, connectorResponse) {
+        if (connectorResponse) return reject(new Error('PATCH_FAILED'))
+        logger.info(`[${correlationId}] - PATCH to %s ended - elapsed time: %s ms`, connectorUrl(accountID), new Date() - startTime)
+        clientUnavailable(err, reject, 'PATCH', correlationId)
+      })
+    })
+  }
+
+  const setRefundEmailEnabled = function (accountID, enabled) {
+    return new Promise(function (resolve, reject) {
+      logger.debug('model', connectorUrl(accountID), {'op': 'replace', 'path': 'refund', 'value': enabled})
+      const startTime = new Date()
+      const patch = {'op': 'replace', 'path': 'refund', 'value': enabled}
+      connectorClient().updateRefundEmailEnabled({
         payload: patch,
         correlationId: correlationId,
         gatewayAccountId: accountID
@@ -96,6 +138,8 @@ module.exports = function (correlationId) {
   return {
     get: get,
     update: update,
-    setEnabled: setEnabled
+    setEmailCollectionMode: setEmailCollectionMode,
+    setConfirmationEnabled: setConfirmationEnabled,
+    setRefundEmailEnabled: setRefundEmailEnabled
   }
 }

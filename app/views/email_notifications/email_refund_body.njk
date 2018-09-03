@@ -1,0 +1,44 @@
+<div class="email-template">
+
+    <div class="email-meta-item">
+        <span class="email-meta-key">
+            From
+        </span>
+        <span class="email-meta-value">
+            GOV.UK Pay
+        </span>
+    </div>
+    <div class="email-meta-item">
+        <span class="email-meta-key">
+            To
+        </span>
+        <span class="email-meta-value">
+            <span class="grey">[email address]</span>
+        </span>
+    </div>
+    <div class="email-meta-item">
+        <span class="email-meta-key">
+            Subject
+        </span>
+        <span class="email-meta-value">
+            You have been refunded £<span class="grey">[amount]</span> by <span class="grey">{{ serviceName }}</span>
+        </span>
+    </div>
+
+    <div class="email-body">
+
+        <p class="heading-medium email-heading">Your payment of £<span class="grey">[amount]</span> to <span class="grey">{{ serviceName }}</span> was successful</p>
+        <ul class="list">
+            <li>Refund for: <span class="grey">[description]</span></li>
+            <li>Reference: <span class="grey">[service reference]</span></li>
+            <li>Date of original payment: <span class="grey">[date]</span></li>
+        </ul>
+
+        <p>Your refund may take up to 6 days to appear in your account.</p>
+
+        <p> This email address is not monitored. If you have any questions about your refund, contact the service you made the original payment to directly.</p>
+
+    </div>
+
+</div>
+

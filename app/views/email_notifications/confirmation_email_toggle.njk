@@ -1,0 +1,65 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+  Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-two-thirds">
+  <a href="{{emailNotificationsIndexLink}}" class="link-back">Back</a>
+</div>
+<div class="column-two-thirds">
+  {% if not permissions.email_notification_toggle_update %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
+
+  {% if permissions.email_notification_template_read %}
+
+  <h2 class="heading-medium">Do you want GOV.UK Pay to send users payment confirmation emails?</h2>
+   <span class="form-hint">This means your users will receive email confirmation of their payment from GOV.UK Pay</span>
+   <form id="confirmation-email-form" method="post" action="{{emailConfirmationToggleSubmitLink}}">
+          <div class="form-group">
+            <fieldset>
+              <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+              <div class="multiple-choice">
+                <input id="email-confirmation-yes-input" type="radio" name="email-confirmation-enabled" value="true" checked>
+                <label for="email-confirmation-yes-input">
+                  <span class="heading-small">Yes</span>
+                </label>
+              </div>
+              {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
+              <div class="panel panel-border-narrow" id="contact-by-email" style="margin-bottom:30px;" aria-hidden="false">
+                  <div class="notice">
+                    <i class="icon icon-important">
+                      <span class="visually-hidden">Warning</span>
+                    </i>
+                    <strong class="bold-small">
+                        You are not currently collecting email addresses on the payment page. Turn on email collection if you want GOV.UK Pay to send confirmation emails.
+                    </strong>
+                  </div>
+              </div>
+              {% endif %}
+              <div class="multiple-choice">
+                <input id="email-confirmation-no-input" type="radio" name="email-confirmation-enabled" value="false">
+                <label for="email-confirmation-no-input">
+                  <span class="heading-small">No</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="form-group call-to-action-group">
+            <input type="submit" class="button" value="Save changes">
+            <a id="service-name-cancel-link" href="{{emailNotificationsIndexLink}}">
+                Cancel
+            </a>
+          </div>
+        </form>
+
+  {% endif %}
+
+</div>
+{% endblock %}

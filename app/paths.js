@@ -53,12 +53,15 @@ module.exports = {
   },
   emailNotifications: {
     index: '/email-notifications',
+    indexRefundTabEnabled: '/email-notifications-refund',
     edit: '/email-notifications/edit',
     confirm: '/email-notifications/confirm',
     update: '/email-notifications/update',
     off: '/email-notifications/off',
-    offConfirm: '/email-notifications/off-confirm',
-    on: '/email-notifications/on'
+    on: '/email-notifications/on',
+    collection: '/email-settings-collection',
+    confirmation: '/email-settings-confirmation',
+    refund: '/email-settings-refund'
   },
   serviceSwitcher: {
     index: '/my-services',

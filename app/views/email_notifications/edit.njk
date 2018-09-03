@@ -10,30 +10,43 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
 
 {% block mainContent %}
 <div class="column-two-thirds">
-  <h1 class="page-title heading-large">Add a custom paragraph to the email</h1>
-  <h2 class="heading-medium">Current email template</h2>
-  {% include "./email_body.njk" %}
+  <h1 class="page-title heading-large">Add a custom paragraph</h1>
 
-  {% if customEmailText %}
-  <h2 class="heading-medium">Edit custom paragraph</h2>
-  {% else %}
-  <h2 class="heading-medium">Add a custom paragraph</h2>
-  {% endif %}
+    <p>
+        You can add a custom paragraph to give users more information about your service. For example, you can tell users:
+    </p>
 
-  <h3 class="heading-small push-bottom">Guidance on providing extra information</h3>
+    <ul class="list-bullet push-bottom">
+        <li>what they need to do next</li>
+        <li>how long it will take to process the payment</li>
+        <li>about delivery dates</li>
+    </ul>
 
-  <ul class="list-bullet push-bottom">
-    <li>let the user know if they need to do something else to complete the service or application</li>
-    <li>include information regarding delivery dates or how long it will take to process the payment</li>
-    <li>don’t request personal data, passwords or payment details</li>
-    <li>link to a page on GOV.UK if you want to provide details to contact the service</li>
-    <li>don’t link directly to a sign-in page</li>
-    <li>don’t use redirects or tracking links</li>
-    <li>links must use HTTPS where available, point to a gov.uk domain, and show the URL in full. For example: apply now at https://www.gov.uk/example</li>
-  </ul>
+    <p>
+        If you include a link in your custom paragraph you must:
+    </p>
 
-  <h2 class="heading-small">Enter extra information</h2>
-  <p>This will appear after the payment summary in the email</p>
+    <ul class="list-bullet push-bottom">
+      <li>only link to a gov.uk domain</li>
+      <li>use HTTPS where available</li>
+      <li>show the URL in full - for example, ‘Apply now at https://www.stratford.gov.uk’</li>
+    </ul>
+
+    <p>
+        Do not include contact details in the custom paragraph. If you want to provide contact details, you must link to a page on a gov.uk domain.
+    </p>
+
+    <p>
+        You should not:
+    </p>
+
+    <ul class="list-bullet push-bottom">
+        <li>request personal data, passwords or payment details</li>
+        <li>link directly to a sign-in page</li>
+        <li>use redirects or tracking links</li>
+    </ul>
+
+    <h3 id="custom-paragraph-header">Enter a custom paragraph</h3>
 
   <form method="post" action="{{routes.emailNotifications.confirm}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

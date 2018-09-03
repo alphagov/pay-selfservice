@@ -14,7 +14,10 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
   <p>This email will be sent to users when they successfully complete a payment within your service.</p>
 
   <h2 class="heading-medium">New email template</h2>
-  {% include "./email_body.njk" %}
+
+  <div id="email-templates" class="form-group">
+    {% include "./email_confirmation_body.njk" %}
+  </div>
 
   <form method="post" action="{{routes.emailNotifications.update}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>

@@ -19,37 +19,153 @@
   </h1>
 
   {% if permissions.email_notification_template_read %}
-    {% if emailEnabled %}
-      <p>Payment confirmation emails are turned on for this account</p>
 
-      {% if permissions.email_notification_toggle_update %}
-      <a href="{{routes.emailNotifications.offConfirm}}" class="qa-off-confirm-link"> Turn off email notifications</a>
-      {% endif %}
+  <h2 class="heading-medium">Settings</h2>
 
-      <h2 class="heading-medium">Current email template</h2>
+      <div id="email-notifications" class="form-group">
+         <div id="email-nofifications-toggle-summary" class="form-group">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="table-data-label">
+                            {% if emailCollectionMode === 1 %}
+                                <span>
+                                    Email collection on card payments is optional
+                                </span>
+                            {% elif emailCollectionMode === 2 %}
+                                <span>
+                                    Emails will not be collected for card payments
+                                </span>
+                            {% else %}
+                                <span>
+                                    Email collection on card payments is mandatory
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="table-data-change">
+                            <span>
+                                <a id="email-notifications-toggle-collection" href="{{routes.emailNotifications.collection}}">Change</a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-data-label">
+                            {% if emailEnabled %}
+                                <span>
+                                    Payment confirmation emails are turned on
+                                </span>
+                                {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
+                                    <span class="grey">
+                                        Confirmation emails can only be sent if email addresses are collected on the payment page
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span>
+                                    Payment confirmation emails are turned off
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="table-data-change">
+                            <span>
+                                <a id="email-notifications-toggle-confirmation" href="{{routes.emailNotifications.confirmation}}">Change</a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table-data-label">
+                            {% if refundEmailEnabled %}
+                                <span>
+                                    Refund receipt emails are turned on
+                                </span>
+                                {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
+                                    <span class="grey">
+                                        Refund emails can only be sent if email addresses are collected on the payment page
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                 <span>
+                                     Refund receipt emails are turned off
+                                 </span>
+                            {% endif %}
+                        </td>
+                        <td class="table-data-change">
+                            <span>
+                                <a id="email-notifications-toggle-refund" href="{{routes.emailNotifications.refund}}">Change</a>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-      {% include "./email_body.njk" %}
-
-      <p class="small push-top">The optional custom paragraph should give users extra information related to your service.</p>
-
-      {% if permissions.email_notification_paragraph_update %}
-        {% if customEmailText %}
-          <a class="button qa-edit-link" href="/email-notifications/edit">Edit custom paragraph</a>
-        {% else %}
-          <a class="button qa-edit-link" href="/email-notifications/edit">Add a custom paragraph</a>
-        {% endif %}
-      {% endif %}
-    {% else %}
-      <h1 class="heading-medium">Email notifications are turned off</h1>
-
-      {% if permissions.email_notification_toggle_update %}
-        <p>Turn on payment confirmation emails so your users receive<br/>helpful information relating to their payments.</p>
-        <form method="post" action="{{routes.emailNotifications.on}}">
-            <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-            <input name="email-on" type="submit" class="button push-top qa-on" value="Turn on email notifications">
-        </form>
-      {% endif %}
-    {% endif %}
   {% endif %}
+
+  {% if permissions.email_notification_template_read %}
+
+        <h1 class="page-title">
+            Email templates
+        </h1>
+
+        <div id="email-templates" class="form-group">
+
+            <ul class="tabs">
+              {% if confirmationTabActive %}
+              <li class="current">Confirmation email</li>
+              <li><a id="revoked-keys-tab" href="{{ routes.emailNotifications.indexRefundTabEnabled }}">Refund email</a></li>
+              {% else %}
+              <li><a id="active-keys-tab" href="{{ routes.emailNotifications.index }}">Confirmation email</a></li>
+              <li class="current">Refund email</li>
+              {% endif %}
+            </ul>
+
+            {% if confirmationTabActive %}
+
+                <h2 class="heading-medium">Confirmation email template</h2>
+
+                <div class="tab-content current">
+
+                    {% include "./email_confirmation_body.njk" %}
+
+                    <h2 class="heading-medium">Custom paragraph</h2>
+
+                    <p>
+                        You can add a custom paragraph to give users extra information related to your service. For example, how long it will take to process the payment.
+                    </p>
+
+                    <a id="add-custom-paragraph-link" href="{{ routes.emailNotifications.edit }}" class="button">
+                        Add a custom paragraph
+                    </a>
+
+                    <h2 class="heading-medium">What we mean by ‘description’</h2>
+
+                    <p>
+                        You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link, the description is taken from the payment link title.
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <h2 class="heading-medium">Refund email template</h2>
+
+                <div class="tab-content current">
+
+                    {% include "./email_refund_body.njk" %}
+
+                    <h2 class="heading-medium">What we mean by ‘description’</h2>
+
+                    <p>
+                        You added a payment description when you created a new payment call to the Pay API. If you’re using a payment link, the description is taken from the payment link title.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
 </div>
 {% endblock %}
