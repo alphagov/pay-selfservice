@@ -1,14 +1,12 @@
-
-
-div.multi-select {
+.multi-select {
   position: relative;
   @extend %contain-floats;
   width:100%;
 }
 
-button.multi-select-title {
+.multi-select-title {
   border-radius: 0;
-  min-height: 38px;
+  min-height: 34px;
   background-color: $white;
   text-align: left;
   background-image: url("/public/images/dd-arrow.svg");
@@ -16,6 +14,7 @@ button.multi-select-title {
   background-position: right 13px top 4px;
   -webkit-appearance: none;
   max-width: 100%;
+  font-size: 16px;
 
   display: block;
   cursor: pointer;
@@ -34,8 +33,6 @@ button.multi-select-title {
   }
 }
 
-
-
 .multi-select-dropdown{
   top: 0;
   left:0;
@@ -44,6 +41,7 @@ button.multi-select-title {
   position: absolute;
   border:2px solid $black;
   width:100%;
+  font-size: 16px;
   @extend %contain-floats;
 
   .multi-select-dropdown-inner-container {

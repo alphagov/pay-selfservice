@@ -208,6 +208,207 @@ describe('The search transactions endpoint', function () {
       .end(done)
   })
 
+  it('should return a list of transactions for the gateway account when searching by cardholder name', function (done) {
+    let connectorData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': 5000,
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'success',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Mr. Coffee McPayment',
+            'card_brand': 'Visa'
+          },
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
+        },
+        {
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': 2000,
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'cancelled',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Ineedcoffee',
+            'card_brand': 'Visa'
+          },
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+        }
+      ]
+    }
+    let searchParameters = {'cardholder_name': 'coffee'}
+    connectorMockResponds(connectorData, searchParameters)
+
+    let expectedData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': '£50.00',
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'success',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Mr. Coffee McPayment',
+            'card_brand': 'Visa'
+          },
+          'state_friendly': 'Success',
+          'gateway_account_id': '452345',
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+
+        },
+        {
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': '£20.00',
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'cancelled',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Ineedcoffee',
+            'card_brand': 'Visa'
+          },
+          'state_friendly': 'Cancelled',
+          'gateway_account_id': '452345',
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+
+        }
+      ]
+    }
+
+    searchTransactions(searchParameters)
+      .expect(200)
+      .expect(function (res) {
+        res.body.results.should.eql(expectedData.results)
+      })
+      .end(done)
+  })
+
+  it('should return a list of transactions for the gateway account when searching by last 4 digits of card number', function (done) {
+    let connectorData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': 5000,
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'success',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Mr. Coffee McPayment',
+            'last_digits_card_number': '2468',
+            'card_brand': 'Visa'
+          },
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE
+        },
+        {
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': 2000,
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'cancelled',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Ineedcoffee',
+            'last_digits_card_number': '1234',
+            'card_brand': 'Visa'
+          },
+          'updated': CONNECTOR_DATE,
+          'created_date': CONNECTOR_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+        }
+      ]
+    }
+
+    let searchParameters = {'last_digits_card_number': '2468'}
+    connectorMockResponds(connectorData, searchParameters)
+
+    let expectedData = {
+      'results': [
+        {
+          'charge_id': '100',
+          'gateway_transaction_id': 'tnx-id-1',
+          'amount': '£50.00',
+          'reference': 'ref1',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'success',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Mr. Coffee McPayment',
+            'last_digits_card_number': '2468',
+            'card_brand': 'Visa'
+          },
+          'state_friendly': 'Success',
+          'gateway_account_id': '452345',
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+
+        },
+        {
+          'charge_id': '101',
+          'gateway_transaction_id': 'tnx-id-2',
+          'amount': '£20.00',
+          'reference': 'ref2',
+          'email': 'alice.111@mail.fake',
+          'state': {
+            'status': 'cancelled',
+            'finished': false
+          },
+          card_details: {
+            'cardholder_name': 'Ineedcoffee',
+            'last_digits_card_number': '1234',
+            'card_brand': 'Visa'
+          },
+          'state_friendly': 'Cancelled',
+          'gateway_account_id': '452345',
+          'updated': DISPLAY_DATE,
+          'created': DISPLAY_DATE,
+          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+
+        }
+      ]
+    }
+
+    searchTransactions(searchParameters)
+      .expect(200)
+      .expect(function (res) {
+        res.body.results.should.eql(expectedData.results)
+      })
+      .end(done)
+  })
+
   it('should return a list of transactions for the gateway account when searching by partial email', function (done) {
     let connectorData = {
       'results': [

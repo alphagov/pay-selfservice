@@ -7,6 +7,8 @@ function getQueryStringForParams (params = {}) {
   const queryStrings = {
     reference: params.reference,
     email: params.email,
+    cardholder_name: params.cardholderName,
+    last_digits_card_number: params.lastDigitsCardNumber,
     card_brand: params.brand,
     from_date: dates.fromDateToApiFormat(params.fromDate, params.fromTime),
     to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
