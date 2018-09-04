@@ -93,6 +93,8 @@ describe('connector client', function () {
           .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
           .withMethod('GET')
           .withQuery('reference', '')
+          .withQuery('cardholder_name', '')
+          .withQuery('last_digits_card_number', '')
           .withQuery('email', '')
           .withQuery('card_brand', '')
           .withQuery('from_date', '')
@@ -118,6 +120,7 @@ describe('connector client', function () {
     })
   })
 
+  // these date tests replace some end-to-end tests
   describe('get filtered transactions with a \'from_date\' defined and an EXPLICIT time specified', () => {
     // from the connector POV, there is always a date/time specified, but this pact/contract and the implicit one (below)
     // cover scenarios where the UI will compute a date/time
@@ -141,6 +144,8 @@ describe('connector client', function () {
           .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occurring after ${filtered.filtering.from_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
+          .withQuery('cardholder_name', '')
+          .withQuery('last_digits_card_number', '')
           .withQuery('email', '')
           .withQuery('card_brand', '')
           .withQuery('from_date', filtered.filtering.from_date)
@@ -187,6 +192,8 @@ describe('connector client', function () {
           .withState(`User ${params.gatewayAccountId} exists in the database and has 2 available transactions occurring before ${filtered.filtering.to_date}`)
           .withMethod('GET')
           .withQuery('reference', '')
+          .withQuery('cardholder_name', '')
+          .withQuery('last_digits_card_number', '')
           .withQuery('email', '')
           .withQuery('card_brand', '')
           .withQuery('from_date', '')
