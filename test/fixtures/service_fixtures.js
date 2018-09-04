@@ -161,11 +161,18 @@ module.exports = {
   validUpdateServiceNameRequestWithEn: (opts) => {
     opts = opts || {}
 
-    const data = [{
+    const data = [
+      {
         op: 'replace',
         path: 'service_name/en',
         value: opts.name || 'new-en-name'
-      }]
+      },
+      {
+        op: 'replace',
+        path: 'service_name/cy',
+        value: ''
+      }
+    ]
 
     return {
       getPactified: () => {
@@ -187,7 +194,7 @@ module.exports = {
       external_id: externalId,
       name: serviceName,
       service_name: {
-        en: serviceName,
+        en: serviceName
       }
     }
 
@@ -204,11 +211,18 @@ module.exports = {
   validUpdateServiceNameRequestWithCy: (opts) => {
     opts = opts || {}
 
-    const data = [{
-      op: 'replace',
-      path: 'service_name/cy',
-      value: opts.name || 'new-cy-name'
-    }]
+    const data = [
+      {
+        op: 'replace',
+        path: 'service_name/en',
+        value: 'new-en-name'
+      },
+      {
+        op: 'replace',
+        path: 'service_name/cy',
+        value: opts.name || 'new-cy-name'
+      }
+    ]
 
     return {
       getPactified: () => {
