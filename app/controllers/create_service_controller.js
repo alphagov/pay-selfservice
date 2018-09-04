@@ -30,7 +30,8 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceName = lodash.get(req, 'body.service-name')
-  const serviceNameCy = lodash.get(req, 'body.service-name-cy')
+  const serviceHasNameCy = lodash.get(req, 'body.checkbox-service-name-cy')
+  const serviceNameCy = serviceHasNameCy ? lodash.get(req, 'body.service-name-cy') : ''
   const validationErrors = validateServiceName(serviceName, 'service_name', true)
   const validationErrorsCy = validateServiceName(serviceNameCy, 'service_name_cy', false)
   if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {

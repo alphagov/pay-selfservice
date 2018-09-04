@@ -127,7 +127,7 @@ describe('adminusers client - update service name', function () {
     afterEach(() => provider.verify())
 
     it('should update service name for cy', function (done) {
-      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[0].value
+      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
 
       adminusersClient.updateServiceName(existingServiceExternalId, null, serviceNameCy).should.be.fulfilled.then(service => {
         expect(service.external_id).to.equal(existingServiceExternalId)
