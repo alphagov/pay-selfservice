@@ -85,3 +85,16 @@ input[type='checkbox'].form-control {
     *zoom: 1;
     margin-bottom: 30px;
 }
+
+.form-group.panel-border-narrow {
+  margin-left: $gutter / 2;
+  padding-left: $gutter;
+
+  .form-hint {
+    margin-top: $gutter / 2;
+  }
+}
+
+.margin-top {
+  margin-top: $gutter / 2;
+}

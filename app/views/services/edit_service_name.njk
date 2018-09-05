@@ -33,21 +33,31 @@ Edit service name - GOV.UK Pay
         <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{current_name.en}}" data-validate="required isFieldGreaterThanMaxLengthChars" data-validate-max-length="50">
       </div>
 
+      {% if current_name.cy %}
+      <div class="form-group {% if errors.service_name %}error{% endif %}">
+        <label class="form-label" for="service-name">Welsh (Cymraeg) service name</label>
+        {% if errors.service_name %}
+          <span class="error-message">{{errors.service_name}}</span>
+        {% endif %}
+        <input class="form-control" data-module="" id="service-name-cy" name="service-name-cy" type="text" value="{{current_name.cy}}" data-validate="isFieldGreaterThanMaxLengthChars" data-validate-max-length="50" lang="cy">
+        <p class="form-hint margin-top">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</p>
+      </div>
+      {% else %}
       <div class="cf">
         <div class="form-group multiple-choice {% if errors.service_name_cy %}error{% endif %}" data-target="welsh-service-name">
           <input id="checkbox-service-name-cy" name="welsh-service-name-bool" type="checkbox" value="true" {% if current_name.cy %}checked{% endif %}>
-          <label for="checkbox-service-name-cy">Add a Welsh service name
-            <span class="form-hint">To translate your payment pages you need to <a href="https://docs.payments.service.gov.uk/integration_details/#creating-a-payment">integrate with our API</a></span>
-          </label>
+          <label for="checkbox-service-name-cy">Add a Welsh (Cymraeg) service name</label>
         </div>
         <div class="form-group panel panel-border-narrow js-hidden" id="welsh-service-name">
-          <label class="form-label" for="service-name-cy">Welsh (Cymraeg) service name</label>
+          <label class="form-label" for="service-name-cy">Welsh service name</label>
           {% if errors.service_name_cy %}
             <span class="error-message">{{errors.service_name_cy}}</span>
           {% endif %}
           <input class="form-control" data-module="" id="service-name-cy" name="service-name-cy" type="text" value="{{current_name.cy}}" data-validate="isFieldGreaterThanMaxLengthChars" data-validate-max-length="50" lang="cy">
+          <p class="form-hint">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</p>
         </div>
       </div>
+      {% endif %}
 
       <div class="form-group call-to-action-group">
         <input class="button" type="submit" value="Save">
