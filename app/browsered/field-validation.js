@@ -12,22 +12,32 @@ const checks = require('./field-validation-checks')
 // Global constants
 const validationErrorsTemplate = require('../views/includes/validation-errors.njk')
 
+const isGOVUKFrontend = document.body.classList.contains('govuk-template__body')
+// Because we’re running old new design system simultaneously we need to change our CSS selectors based on which the current page is using
+
+const ERROR_MESSAGE_CLASS = isGOVUKFrontend ? '.govuk-error-message' : '.error-message'
+const ERROR_SUMMARY_CLASS = isGOVUKFrontend ? '.govuk-error-summary' : '.error-summary'
+const FORM_GROUP = isGOVUKFrontend ? '.govuk-form-group' : '.form-group'
+const FORM_GROUP_WITH_ERROR = isGOVUKFrontend ? '.govuk-form-group--error' : '.form-group.error'
+const FORM_GROUP_ERROR_CLASSNAME = isGOVUKFrontend ? 'govuk-form-group--error' : 'error'
+const ERROR_LABEL_CLASSNAME = isGOVUKFrontend ? 'govuk-error-message' : 'error-message'
+
 exports.enableFieldValidation = function () {
   const allForms = Array.prototype.slice.call(document.getElementsByTagName('form'))
 
   allForms.filter(form => {
     return form.hasAttribute('data-validate')
   }).map(form => {
-    form.addEventListener('submit', initValidation, false)
+    return form.addEventListener('submit', initValidation, false)
   })
 }
 
 function initValidation (e) {
-  let form = e.target
+  const form = e.target
   e.preventDefault()
   clearPreviousErrors()
 
-  let validatedFields = findFields(form)
+  const validatedFields = findFields(form)
     .map(field => validateField(form, field))
 
   if (every(validatedFields)) {
@@ -38,11 +48,13 @@ function initValidation (e) {
 }
 
 function clearPreviousErrors () {
-  let previousErrorsMessages = Array.prototype.slice.call(document.querySelectorAll('.error-message, .error-summary'))
-  let previousErrorsFields = Array.prototype.slice.call(document.querySelectorAll('.form-group.error'))
+  const previousErrorsMessages = Array.prototype.slice.call(document.querySelectorAll(`${ERROR_MESSAGE_CLASS}, ${ERROR_SUMMARY_CLASS}`))
+  const previousErrorsFields = Array.prototype.slice.call(document.querySelectorAll(FORM_GROUP_WITH_ERROR))
+  const previousErroredInputs = Array.prototype.slice.call(document.querySelectorAll('.govuk-input--error'))
 
+  previousErroredInputs.map(errorField => errorField.classList.remove('govuk-input--error'))
   previousErrorsMessages.map(error => error.remove())
-  previousErrorsFields.map(errorField => errorField.classList.remove('error'))
+  previousErrorsFields.map(errorField => errorField.classList.remove(FORM_GROUP_ERROR_CLASSNAME))
 }
 
 function findFields (form) {
@@ -55,35 +67,35 @@ function findFields (form) {
 
 function validateField (form, field) {
   let result
-  let validationTypes = field.getAttribute('data-validate').split(' ')
+  const validationTypes = field.getAttribute('data-validate').split(' ')
 
   validationTypes.forEach(validationType => {
     switch (validationType) {
-      case 'currency' :
+      case 'currency':
         result = checks.isCurrency(field.value)
         break
-      case 'email' :
+      case 'email':
         result = checks.isValidEmail(field.value)
         break
-      case 'phone' :
+      case 'phone':
         result = checks.isPhoneNumber(field.value)
         break
-      case 'https' :
+      case 'https':
         result = checks.isHttps(field.value)
         break
-      case 'belowMaxAmount' :
+      case 'belowMaxAmount':
         result = checks.isAboveMaxAmount(field.value)
         break
-      case 'passwordLessThanTenChars' :
+      case 'passwordLessThanTenChars':
         result = checks.isPasswordLessThanTenChars(field.value)
         break
-      case 'isFieldGreaterThanMaxLengthChars' :
+      case 'isFieldGreaterThanMaxLengthChars':
         result = checks.isFieldGreaterThanMaxLengthChars(field.value, field.getAttribute('data-validate-max-length'))
         break
-      case 'isNaxsiSafe' :
+      case 'isNaxsiSafe':
         result = checks.isNaxsiSafe(field.value)
         break
-      default :
+      default:
         result = checks.isEmpty(field.value)
         break
     }
@@ -92,26 +104,28 @@ function validateField (form, field) {
     }
   })
 
-  return !field.closest('.form-group').classList.contains('error')
+  return !field.closest(FORM_GROUP).classList.contains(FORM_GROUP_ERROR_CLASSNAME)
 }
 
 function applyErrorMessaging (form, field, result) {
-  let formGroup = field.closest('.form-group')
-  if (!formGroup.classList.contains('error')) {
-    formGroup.classList.add('error')
+  field.classList.add('govuk-input--error')
+  const formGroup = field.closest(FORM_GROUP)
+  if (!formGroup.classList.contains(FORM_GROUP_ERROR_CLASSNAME)) {
+    formGroup.classList.add(FORM_GROUP_ERROR_CLASSNAME)
     document.querySelector('label[for="' + field.id + '"]').insertAdjacentHTML('beforeend',
-      '<span class="error-message">' + result + '</span>')
+      `<span class="${ERROR_LABEL_CLASSNAME}">${result}</span>`)
   }
 }
 
 function populateErrorSummary (form) {
-  let erroringFields = Array.prototype.slice.call(form.querySelectorAll('.form-group.error label'))
-  let configuration = {
+  const erroringFields = Array.prototype.slice.call(form.querySelectorAll(`${FORM_GROUP_WITH_ERROR} label`))
+  const configuration = {
     fields: erroringFields.map(field => {
-      let label = field.innerHTML.split('<')[0].trim()
-      let id = field.getAttribute('for')
+      const label = field.innerHTML.split('<')[0].trim()
+      const id = field.getAttribute('for')
       return {label, id}
-    })
+    }),
+    newLayout: isGOVUKFrontend
   }
 
   form.parentNode.insertAdjacentHTML(
