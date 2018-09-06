@@ -29,6 +29,7 @@ const restrictToSandbox = require('./middleware/restrict_to_sandbox')
 const xraySegmentCls = require('./middleware/x_ray')
 const goCardlessRedirect = require('./middleware/partnerapp/handle_redirect_to_gocardless_connect')
 const goCardlessOAuthGet = require('./middleware/partnerapp/handle_gocardless_connect_get')
+const cookieMessage = require('./middleware/cookie_message')
 
 // - Controllers
 const staticCtrl = require('./controllers/static_controller')
@@ -113,50 +114,50 @@ module.exports.bind = function (app) {
   app.all(staticPaths.naxsiError, xraySegmentCls, staticCtrl.naxsiError)
 
   // VALIDATE INVITE
-  app.get(inviteValidation.validateInvite, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationCtrl.validateInvite)
+  app.get(inviteValidation.validateInvite, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, inviteValidationCtrl.validateInvite)
 
   // REGISTER USER
-  app.get(registerUser.registration, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration)
-  app.get(registerUser.subscribeService, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.subscribeService)
-  app.post(registerUser.registration, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration)
-  app.get(registerUser.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify)
-  app.post(registerUser.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify)
-  app.get(registerUser.reVerifyPhone, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone)
-  app.post(registerUser.reVerifyPhone, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone)
-  app.get(registerUser.logUserIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
+  app.get(registerUser.registration, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showRegistration)
+  app.get(registerUser.subscribeService, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.subscribeService)
+  app.post(registerUser.registration, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitRegistration)
+  app.get(registerUser.otpVerify, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showOtpVerify)
+  app.post(registerUser.otpVerify, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitOtpVerify)
+  app.get(registerUser.reVerifyPhone, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.showReVerifyPhone)
+  app.post(registerUser.reVerifyPhone, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, registerCtrl.submitReVerifyPhone)
+  app.get(registerUser.logUserIn, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
 
   // LOGIN
-  app.get(user.logIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.loginGet)
-  app.post(user.logIn, xraySegmentCls, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, getAccount, loginCtrl.postLogin)
-  app.get(dashboard.index, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
-  app.get(user.noAccess, xraySegmentCls, loginCtrl.noAccess)
-  app.get(user.logOut, xraySegmentCls, loginCtrl.logout)
-  app.get(user.otpSendAgain, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet)
-  app.post(user.otpSendAgain, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost)
-  app.get(user.otpLogIn, xraySegmentCls, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.otpLogin)
-  app.post(user.otpLogIn, xraySegmentCls, validateAndRefreshCsrf, loginCtrl.loginUserOTP, loginCtrl.afterOTPLogin)
+  app.get(user.logIn, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.loginGet)
+  app.post(user.logIn, xraySegmentCls, cookieMessage, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, getAccount, loginCtrl.postLogin)
+  app.get(dashboard.index, xraySegmentCls, cookieMessage, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
+  app.get(user.noAccess, xraySegmentCls, cookieMessage, loginCtrl.noAccess)
+  app.get(user.logOut, xraySegmentCls, cookieMessage, loginCtrl.logout)
+  app.get(user.otpSendAgain, xraySegmentCls, cookieMessage, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainGet)
+  app.post(user.otpSendAgain, xraySegmentCls, cookieMessage, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.sendAgainPost)
+  app.get(user.otpLogIn, xraySegmentCls, cookieMessage, enforceUserFirstFactor, validateAndRefreshCsrf, loginCtrl.otpLogin)
+  app.post(user.otpLogIn, xraySegmentCls, cookieMessage, validateAndRefreshCsrf, loginCtrl.loginUserOTP, loginCtrl.afterOTPLogin)
 
   // FORGOTTEN PASSWORD
-  app.get(user.forgottenPassword, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet)
-  app.post(user.forgottenPassword, xraySegmentCls, trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost)
-  app.get(user.passwordRequested, xraySegmentCls, forgotPassword.passwordRequested)
-  app.get(user.forgottenPasswordReset, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.newPasswordGet)
-  app.post(user.forgottenPasswordReset, xraySegmentCls, validateAndRefreshCsrf, forgotPassword.newPasswordPost)
+  app.get(user.forgottenPassword, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.emailGet)
+  app.post(user.forgottenPassword, xraySegmentCls, cookieMessage, trimUsername, validateAndRefreshCsrf, forgotPassword.emailPost)
+  app.get(user.passwordRequested, xraySegmentCls, cookieMessage, forgotPassword.passwordRequested)
+  app.get(user.forgottenPasswordReset, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, forgotPassword.newPasswordGet)
+  app.post(user.forgottenPasswordReset, xraySegmentCls, cookieMessage, validateAndRefreshCsrf, forgotPassword.newPasswordPost)
 
   // SELF CREATE SERVICE
-  app.get(selfCreateService.register, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration)
-  app.post(selfCreateService.register, xraySegmentCls, trimUsername, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
-  app.get(selfCreateService.confirm, xraySegmentCls, selfCreateServiceCtrl.showConfirmation)
-  app.get(selfCreateService.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
-  app.post(selfCreateService.otpVerify, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, otpVerify.verifyOtpForServiceInvite, selfCreateServiceCtrl.createPopulatedService)
-  app.get(selfCreateService.otpResend, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
-  app.post(selfCreateService.otpResend, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
-  app.get(selfCreateService.logUserIn, xraySegmentCls, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.loggedIn)
-  app.get(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
-  app.post(selfCreateService.serviceNaming, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
+  app.get(selfCreateService.register, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.showRegistration)
+  app.post(selfCreateService.register, xraySegmentCls, cookieMessage, trimUsername, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, selfCreateServiceCtrl.submitRegistration)
+  app.get(selfCreateService.confirm, xraySegmentCls, cookieMessage, selfCreateServiceCtrl.showConfirmation)
+  app.get(selfCreateService.otpVerify, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpVerify)
+  app.post(selfCreateService.otpVerify, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, otpVerify.verifyOtpForServiceInvite, selfCreateServiceCtrl.createPopulatedService)
+  app.get(selfCreateService.otpResend, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.showOtpResend)
+  app.post(selfCreateService.otpResend, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, validateRegistrationInviteCookie, selfCreateServiceCtrl.submitOtpResend)
+  app.get(selfCreateService.logUserIn, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, loginCtrl.loginAfterRegister, enforceUserAuthenticated, getAccount, selfCreateServiceCtrl.loggedIn)
+  app.get(selfCreateService.serviceNaming, xraySegmentCls, cookieMessage, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.showNameYourService)
+  app.post(selfCreateService.serviceNaming, xraySegmentCls, cookieMessage, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceCtrl.submitYourServiceName)
 
   // GOCARDLESS PARTNER APP
-  app.get(partnerApp.oauthComplete, xraySegmentCls, goCardlessOAuthGet.index)
+  app.get(partnerApp.oauthComplete, xraySegmentCls, cookieMessage, goCardlessOAuthGet.index)
 
   // ----------------------
   // AUTHENTICATED ROUTES
@@ -182,7 +183,7 @@ module.exports.bind = function (app) {
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
-  app.use(authenticatedPaths, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf) // Enforce authentication on all get requests
+  app.use(authenticatedPaths, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), xraySegmentCls, hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS

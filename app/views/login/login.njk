@@ -1,23 +1,20 @@
-{% extends "../layout_logged_out.njk" %}
+{% extends "../layout_logged_out-new.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
 Sign in to GOV.UK Pay
 {% endblock %}
 
-{% block globalBanner %}
-<div id="global-message">
-</div>
-{% endblock %}
-
 {% block mainContent %}
-
-<div class="column-two-thirds">
+<div class="govuk-grid-column-two-thirds">
   {% if flash.error %}
-  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+  <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
       There was a problem with the details you gave for:
     </h2>
-    <ul class="error-summary-list">
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
       {% block messages %}
         {% block username %}
         <li><a href="#username">Email</a></li>
@@ -26,43 +23,71 @@ Sign in to GOV.UK Pay
         <li><a href="#password">Password</a></li>
         {% endblock %}
       {% endblock %}
-    </ul>
+      </ul>
+    </div>
   </div>
   {% endif %}
 
-  <h1 class="heading-large page-title">Sign in</h1>
+  <h1 class="govuk-heading-l page-title">Sign in</h1>
 
-  <p>If you do not have an account, you can <a href="{{ routes.selfCreateService.register }}" class="register-link">create one now</a>.</p>
+  <p class="govuk-body">If you do not have an account, you can <a href="{{ routes.selfCreateService.register }}" class="register-link govuk-link">create one now</a>.</p>
 
-  <form data-validate action="/login" method="post" name="userLoginForm" class="push-bottom">
-  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group{% if flash.error.messages.username %} error{% endif %}">
-      <label for="username" class="form-label">
-        Email address
-        {% if flash.error.messages.username %}
-        <span class="error-message">
-          {{flash.error.messages.username}}
-        </span>
-        {% endif %}
-      </label>
-      <input class="form-control form-control-2-3" data-validate="required" data-module="" id="username" name="username" rows="8" type="email" value="">
-    </div>
-    <div class="form-group{% if flash.error.messages.password %} error{% endif %}">
-      <label for="password" class="form-label">
-        Password
-        {% if flash.error.messages.password %}
-        <span class="error-message">
-          {{flash.error.messages.password}}
-        </span>
-        {% endif %}
-      </label>
-      <input data-validate="required" class="form-control form-control-2-3" data-module="" id="password" name="password" rows="8" type="password" value="">
-    </div>
-    <div>
-    <input type="submit" class="button" value="Continue">
-    </div>
+  <form action="/login" method="post" name="userLoginForm">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    {% set emailError = false %}
+    {% if flash.error.messages.username %}
+      {% set emailError = {
+        text: flash.error.messages.username
+      } %}
+    {% endif %}
+
+    {{ govukInput({
+        label: {
+          text: "Email address",
+          classes: "govuk-!-width-two-thirds govuk-error"
+        },
+        errorMessage: emailError,
+        id: "username",
+        name: "username",
+        classes: "govuk-!-width-two-thirds",
+        type: "email",
+        attributes: {
+          "data-validate": "required"
+        }
+      })
+    }}
+
+    {% set passwordError = false %}
+    {% if flash.error.messages.password %}
+      {% set passwordError = {
+        text: flash.error.messages.password
+      } %}
+    {% endif %}
+
+    {{ govukInput({
+        label: {
+          text: "Password",
+          classes: "govuk-!-width-two-thirds"
+        },
+        errorMessage: passwordError,
+        id: "password",
+        name: "password",
+        classes: "govuk-!-width-two-thirds",
+        type: "password",
+        attributes: {
+          "data-validate": "required"
+        }
+      })
+    }}
+
+    {{ govukButton({
+    text: "Continue"
+    }) }}
   </form>
-  <a href="/reset-password" class="reset-password clear">Forgot your password?</a>
+  <p class="govuk-body">
+    <a href="/reset-password" class="reset-password govuk-link clear">Forgot your password?</a>
+  </p>
 </div>
 
 {% endblock %}

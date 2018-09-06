@@ -2,12 +2,12 @@
 
 const session = require('client-sessions')
 
-let _30_DAYS = 2592000000 // 30 days in ms
-let _1_HOUR = 60 * 60 * 1000
+const _30_DAYS = 2592000000 // 30 days in ms
+const _1_HOUR = 60 * 60 * 1000
 const DISABLE_INTERNAL_HTTPS = process.env.DISABLE_INTERNAL_HTTPS === 'true'
-let COOKIE_MAX_AGE_GATEWAY_ACCOUNT = process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT
+const COOKIE_MAX_AGE_GATEWAY_ACCOUNT = process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT
   ? parseInt(process.env.COOKIE_MAX_AGE_GATEWAY_ACCOUNT) : _30_DAYS
-let COOKIE_MAX_AGE_REGISTRATION = process.env.COOKIE_MAX_AGE_REGISTRATION
+const COOKIE_MAX_AGE_REGISTRATION = process.env.COOKIE_MAX_AGE_REGISTRATION
   ? parseInt(process.env.COOKIE_MAX_AGE_REGISTRATION) : _1_HOUR
 
 function checkEnv () {
@@ -64,8 +64,24 @@ function registrationCookie () {
   })
 }
 
+function cookieMessageCookie () {
+  checkEnv()
+  return session({
+    cookieName: 'seen_cookie_message', // cookie name dictates the key name added to the request object
+    secret: process.env.SESSION_ENCRYPTION_KEY,
+    duration: parseInt(_30_DAYS), // how long the session will stay valid in ms
+    proxy: true,
+    cookie: {
+      ephemeral: false, // when true, cookie expires when the browser closes
+      httpOnly: true, // when true, cookie is not accessible from javascript
+      secureProxy: !DISABLE_INTERNAL_HTTPS
+    }
+  })
+}
+
 module.exports = {
-  sessionCookie: sessionCookie,
-  gatewayAccountCookie: gatewayAccountCookie,
-  registrationCookie: registrationCookie
+  sessionCookie,
+  gatewayAccountCookie,
+  registrationCookie,
+  cookieMessageCookie
 }

@@ -78,6 +78,7 @@ function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
+    path.join(__dirname, 'node_modules/govuk-frontend/'),
     path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
     path.join(__dirname, '/app/views')
   ], {
@@ -96,6 +97,7 @@ function initialiseTemplateEngine (app) {
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
   nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/stylesheets/application.min.css'))
+  nunjucksEnvironment.addGlobal('new_css_path', staticify.getVersionedPath('/stylesheets/application-new.min.css'))
   nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 
   // Load custom Nunjucks filters
@@ -109,6 +111,7 @@ function initialisePublic (app) {
   app.use('/public', express.static(path.join(__dirname, '/public')))
   app.use('/public', express.static(path.join(__dirname, '/govuk_modules/govuk_frontend_toolkit')))
   app.use('/public', express.static(path.join(__dirname, '/govuk_modules/govuk_template/assets')))
+  app.use('/', express.static(path.join(__dirname, '/node_modules/govuk-frontend/')))
 }
 
 function initialiseRoutes (app) {
@@ -131,6 +134,7 @@ function initialiseCookies (app) {
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()))
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.gatewayAccountCookie()))
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()))
+  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.cookieMessageCookie()))
 }
 
 function initialiseErrorHandling (app) {
