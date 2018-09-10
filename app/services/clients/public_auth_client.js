@@ -162,7 +162,8 @@ module.exports = {
    *  accountId: accountId,
    *  correlationId: correlationId,
    *  payload: {
-   *    token_link: token_link,
+   *    <token_link>: token_link,
+   *    <token_hash>: token_hash
    *  }
    * }
    *

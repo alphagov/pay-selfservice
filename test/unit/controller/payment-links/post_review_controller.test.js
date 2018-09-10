@@ -29,6 +29,7 @@ const VALID_USER = getUser({
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
   created_by: VALID_USER.email,
+  type: 'PRODUCTS',
   description: `Token for “${PAYMENT_TITLE}” payment link`
 }
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
