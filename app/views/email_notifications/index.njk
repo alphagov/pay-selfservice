@@ -18,6 +18,10 @@
     Email notifications
   </h1>
 
+  <p>
+    GOV.UK Pay can send notifications to users who enter an email address.
+  </p>
+
   {% if permissions.email_notification_template_read %}
 
   <h2 class="heading-medium">Settings</h2>
@@ -30,15 +34,15 @@
                         <td class="table-data-label">
                             {% if emailCollectionMode === 1 %}
                                 <span>
-                                    Email collection on card payments is optional
+                                    Users can choose to enter an email address
                                 </span>
                             {% elif emailCollectionMode === 2 %}
                                 <span>
-                                    Emails will not be collected for card payments
+                                    Users do not have the option to enter an email address
                                 </span>
                             {% else %}
                                 <span>
-                                    Email collection on card payments is mandatory
+                                    Users must enter an email address
                                 </span>
                             {% endif %}
                         </td>
@@ -52,16 +56,16 @@
                         <td class="table-data-label">
                             {% if emailEnabled %}
                                 <span>
-                                    Payment confirmation emails are turned on
+                                    Payment confirmation emails are on
                                 </span>
                                 {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
                                     <span class="grey">
-                                        Confirmation emails can only be sent if email addresses are collected on the payment page
+                                        Users must enter an email address to receive notifications
                                     </span>
                                 {% endif %}
                             {% else %}
                                 <span>
-                                    Payment confirmation emails are turned off
+                                    Payment confirmation emails are off
                                 </span>
                             {% endif %}
                         </td>
@@ -75,16 +79,16 @@
                         <td class="table-data-label">
                             {% if refundEmailEnabled %}
                                 <span>
-                                    Refund receipt emails are turned on
+                                    Refund emails are on
                                 </span>
                                 {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
                                     <span class="grey">
-                                        Refund emails can only be sent if email addresses are collected on the payment page
+                                        Users must enter an email address to receive notifications
                                     </span>
                                 {% endif %}
                             {% else %}
                                  <span>
-                                     Refund receipt emails are turned off
+                                     Refund emails are off
                                  </span>
                             {% endif %}
                         </td>

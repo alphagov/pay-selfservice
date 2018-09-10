@@ -12,12 +12,11 @@
   .table-data-label {
     img, span {
       float: left;
-      margin: $gutter-half 0 $gutter-half 10px;
+      margin: 0 0 0 10px;
     }
 
     span {
       font-size: 19px;
-      margin-top: 22px;
       margin-left: 0;
       width: 50%;
 
@@ -41,9 +40,13 @@
 
 #email-templates {
 
+  .heading-medium {
+    margin-bottom: 0;
+  }
+
   .email-template {
 
-    border: 1px solid #bfc1c3;
+    border: 1px solid $border-colour;
     padding-top: 30px;
     padding-bottom: 20px;
 
@@ -54,7 +57,7 @@
     .email-meta-item {
 
       padding: 10px 0px 10px 15px;
-      border-bottom: 1px solid #bfc1c3;
+      border-bottom: 1px solid $border-colour;
 
       .email-meta-key {
         float: left;

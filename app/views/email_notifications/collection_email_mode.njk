@@ -28,27 +28,28 @@
             <div class="multiple-choice">
               <input id="email-collection-mandatory-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.mandatory}}" checked>
               <label for="email-collection-mandatory-input">
-                <span class="heading-small">Yes – as a mandatory field</span>
-                <ul class="question-advice form-hint">
-                  <li>This means users need to enter an email address to complete a payment</li>
-                </ul>
+                Yes – as a mandatory field
+                <p class="form-hint">
+                  This means users need to enter an email address to complete a payment
+                </p>
               </label>
             </div>
             <div class="multiple-choice">
               <input id="email-collection-optional-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.optional}}">
               <label for="email-collection-optional-input">
-                <span class="heading-small">Yes – as an optional field</span>
-                <ul class="question-advice form-hint">
-                  <li>This means users don’t need to enter an email address to complete a payment</li>
-               </ul>
+                Yes – as an optional field
+                <p class="form-hint">
+                  This means users don’t need to enter an email address to complete a payment
+               </p>
               </label>
             </div>
             <div class="multiple-choice">
               <input id="email-collection-no-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.no}}">
-              <label for="email-collection-no-input"><span class="heading-small">No</span>
-                <ul class="question-advice form-hint">
-                  <li>This means users won’t be asked to enter an email address. You can still give GOV.UK Pay user emails via the api if you want GOV.UK Pay to send confirmation or refund emails.</li>
-                </ul>
+              <label for="email-collection-no-input">
+                No
+                <p class="form-hint">
+                  This means users won’t be asked to enter an email address. You can still give GOV.UK Pay user emails via the api if you want GOV.UK Pay to send confirmation or refund emails.
+                </p>
               </label>
             </div>
           </fieldset>
