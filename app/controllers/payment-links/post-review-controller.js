@@ -25,6 +25,7 @@ module.exports = (req, res) => {
     payload: {
       account_id: gatewayAccountId,
       created_by: req.user.email,
+      type: 'PRODUCTS',
       description: `Token for “${paymentLinkTitle}” payment link`
     }
   })

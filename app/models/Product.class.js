@@ -28,6 +28,7 @@ class Product {
    * @param {Object} opts - raw 'product' object from server
    * @param {string} opts.external_id - The external ID of the product
    * @param {string} opts.gateway_account_id - The id of the product's associated gateway account
+   * @param {string} opts.pay_api_token - The token used to make payments on behalf of the service
    * @param {string} opts.name - The name of the product
    * @param {number} opts.price - price of the product in pence
    * @param {string} opts.govuk_status - the current status of the gov.uk pay charge
@@ -46,6 +47,7 @@ class Product {
     this.name = opts.name
     this.price = opts.price
     this.govukStatus = opts.govuk_status
+    this.apiToken = opts.pay_api_token
     this.serviceName = opts.service_name
     this.description = opts.description
     this.type = opts.type
