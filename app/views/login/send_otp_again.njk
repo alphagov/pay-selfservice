@@ -1,27 +1,25 @@
-{% extends "../layout_logged_out.njk" %}
+{% extends "../layout_logged_out-new.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block $pageTitle %}
+{% block pageTitle %}
 Resend security code - GOV.UK Pay
 {% endblock %}
+
 {% block mainContent %}
-<div class="column-two-thirds">
-  <h1 class="form-title heading-large">
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l page-title">
     Resend verification code
   </h1>
-  <p>
+  <p class="govuk-body">
     Text messages sometimes take a few minutes to arrive. If you did not receive the text, you can resend it.
   </p>
-  <p>
-    If you no longer have access to the phone with the number registered for this service,
-    speak to your service manager to reset the number
+  <p class="govuk-body">
+    If you no longer have access to the phone with the number registered for this service, speak to your service manager to reset the number
   </p>
   <form action="/otp-send-again" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    <div class="form-group">
-      <input type="hidden" name="send" value="true">
-      <input class="button" type="submit" value="Resend verification code">
-    </div>
+    <input type="hidden" name="send" value="true">
+    {{ govukButton({ text: "Resend verification code" }) }}
   </form>
 </div>
-
 {% endblock %}
