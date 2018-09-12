@@ -37,7 +37,7 @@ ${req.body['feedback-suggestion']}`
       },
       group_id: zendeskConfig.GROUP_ID,
       organization_id: zendeskConfig.ORG_ID,
-      tags: ['general_feedback'],
+      tags: ['general_feedback', 'govuk_pay_support'],
       assignee_id: zendeskConfig.ASSIGNEE_ID
     }
   }, (err, request, result) => {
