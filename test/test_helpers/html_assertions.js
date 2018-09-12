@@ -5,7 +5,7 @@ const router = require('../../app/routes.js')
 const nunjucksFilters = require('../../app/utils/nunjucks-filters')
 
 const environment = nunjucks.configure([
-  'node_modules/govuk-frontend/',
+  './node_modules/govuk-frontend/',
   './app/views',
   './govuk_modules/govuk_template/views/layouts'
 ], {
@@ -70,7 +70,7 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withText', function (msg) {
-    let actual = this._obj.text()
+    let actual = this._obj.text().trim()
     this.assert(actual.indexOf(msg) > -1,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
@@ -80,7 +80,7 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withExactText', function (msg) {
-    let actual = this._obj.text()
+    let actual = this._obj.text().trim()
     this.assert(actual === msg,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
