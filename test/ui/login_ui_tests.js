@@ -17,9 +17,9 @@ describe('Login view', function () {
       }
 
       const body = renderTemplate('login/login', templateDate)
-      body.should.containSelector('.error-summary-heading')
-      body.should.containSelector('label[for="username"] .error-message').withText(templateDate.flash.error.messages.username)
-      body.should.containSelector('label[for="password"] .error-message').withText(templateDate.flash.error.messages.password)
+      body.should.containSelector('.govuk-error-summary__title')
+      body.should.containSelector('label[for="username"] + .govuk-error-message').withText(templateDate.flash.error.messages.username)
+      body.should.containSelector('label[for="password"] + .govuk-error-message').withText(templateDate.flash.error.messages.password)
     })
 
     it('should render send otp code form', function (done) {
@@ -69,7 +69,7 @@ describe('Login view', function () {
       done()
     })
   })
-  describe('if using an authenticatior APP', () => {
+  describe('if using an authenticator APP', () => {
     it('should render the right messaging when there are errors with user information', function () {
       const templateDate = {
         flash: {
@@ -83,9 +83,9 @@ describe('Login view', function () {
       }
 
       const body = renderTemplate('login/login', templateDate)
-      body.should.containSelector('.error-summary-heading')
-      body.should.containSelector('label[for="username"] .error-message').withText(templateDate.flash.error.messages.username)
-      body.should.containSelector('label[for="password"] .error-message').withText(templateDate.flash.error.messages.password)
+      body.should.containSelector('.govuk-error-summary__title')
+      body.should.containSelector('label[for="username"] + .govuk-error-message').withText(templateDate.flash.error.messages.username)
+      body.should.containSelector('label[for="password"] + .govuk-error-message').withText(templateDate.flash.error.messages.password)
     })
 
     it('should render send otp code form', function (done) {

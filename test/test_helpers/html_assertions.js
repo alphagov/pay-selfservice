@@ -5,6 +5,7 @@ const router = require('../../app/routes.js')
 const nunjucksFilters = require('../../app/utils/nunjucks-filters')
 
 const environment = nunjucks.configure([
+  'node_modules/govuk-frontend/',
   './app/views',
   './govuk_modules/govuk_template/views/layouts'
 ], {

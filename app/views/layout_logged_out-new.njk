@@ -1,0 +1,36 @@
+{% extends "template.njk" %}
+
+{% block page_title %}GOV.UK Pay Self Service{% endblock %}
+
+{% set newLayout = true %}
+
+{% block head %}
+  {% include "includes/head.njk" %}
+  {% block pageSpecificStyle %}
+  {% endblock %}
+{% endblock %}
+
+{% block header %}
+  {% include "includes/header.njk" %}
+{% endblock %}
+
+{% block bodyStart %}
+  {% include "includes/cookie-message.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    {% include "includes/flash.njk" %}
+    {% block mainContent %}{% endblock %}
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {% include "includes/footer.njk" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {% include "includes/scripts.njk" %}
+  {% block pageSpecificJS %}
+  {% endblock %}
+{% endblock %}
