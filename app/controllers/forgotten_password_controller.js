@@ -9,7 +9,7 @@ const userService = require('../services/user_service.js')
 module.exports = {
 
   emailGet: (req, res) => {
-    res.render('forgotten_password/username_get')
+    res.render('forgotten_password/index')
   },
 
   emailPost: (req, res) => {
