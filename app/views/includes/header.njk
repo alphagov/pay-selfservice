@@ -1,5 +1,5 @@
 <header class="govuk-header " role="banner" data-module="header">
-  <div class="govuk-header__container govuk-width-container">
+  <div class="govuk-header__container govuk-width-container govuk-header__container--{{accountType}}">
 
     <div class="govuk-header__logo">
       <a href="/" class="govuk-header__link govuk-header__link--homepage">
@@ -28,26 +28,49 @@
     <button role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
     <nav>
       <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
-            <li class="govuk-header__navigation-item">
-              <a class="govuk-header__link" href="https://www.payments.service.gov.uk/#main">
-                About
-              </a>
-            </li>
-            <li class="govuk-header__navigation-item">
-              <a class="govuk-header__link" href="https://docs.payments.service.gov.uk">
-                Documentation
-              </a>
-            </li>
-            <li class="govuk-header__navigation-item">
-              <a class="govuk-header__link" href="https://www.payments.service.gov.uk/support/">
-                Support
-              </a>
-            </li>
-            <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
-              <a class="govuk-header__link" href="/login" id="login">
-                Sign in
-              </a>
-            </li>
+      {% if loggedIn %}
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link {% if services %}govuk-header__navigation-item--active{% endif %}" href="{{ routes.serviceSwitcher.index }}" title="Switch service" id="my-services">
+            Switch service
+          </a>
+        </li>
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link" href="{{ routes.user.profile }}" title="My profile" id="my-profile">
+            My profile
+          </a>
+        </li>
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link" href="https://docs.payments.service.gov.uk">
+            Documentation
+          </a>
+        </li>
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link" href="/logout" title="Log me out" id="logout">
+            Sign out
+          </a>
+        </li>
+      {% else %}
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link" href="https://www.payments.service.gov.uk/#main">
+            About
+          </a>
+        </li>
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link" href="https://docs.payments.service.gov.uk">
+            Documentation
+          </a>
+        </li>
+        <li class="govuk-header__navigation-item">
+          <a class="govuk-header__link" href="https://www.payments.service.gov.uk/support/">
+            Support
+          </a>
+        </li>
+        <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
+          <a class="govuk-header__link" href="/login" id="login">
+            Sign in
+          </a>
+        </li>
+      {% endif %}
       </ul>
     </nav>
     </div>
