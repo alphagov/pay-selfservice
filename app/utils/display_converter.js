@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const url = require('url')
 const getHeldPermissions = require('./get_held_permissions')
 const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
 
@@ -82,7 +83,7 @@ module.exports = function (req, data, template) {
   const convertedData = _.clone(data)
   const user = req.user
   const account = req.account
-  const originalUrl = req.originalUrl
+  const originalUrl = req.originalUrl || ''
   const permissions = getPermissions(user, req.service)
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
   convertedData.paymentMethod = paymentMethod
@@ -96,7 +97,7 @@ module.exports = function (req, data, template) {
   convertedData.isSandbox = _.get(convertedData, 'currentGatewayAccount.payment_provider') === 'sandbox'
   convertedData.currentService = _.get(req, 'service')
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(originalUrl, permissions, paymentMethod)
+    convertedData.serviceNavigationItems = serviceNavigationItems(url.parse(originalUrl).pathname, permissions, paymentMethod)
     convertedData.adminNavigationItems = adminNavigationItems(originalUrl, permissions, paymentMethod)
   }
   convertedData._features = {}
