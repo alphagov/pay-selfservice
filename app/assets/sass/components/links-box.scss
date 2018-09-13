@@ -1,0 +1,52 @@
+.links__box {
+  position: relative;
+
+  a {
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  a:link {
+    h2 {
+      color: $govuk-link-colour;
+      text-decoration: underline;
+    }
+  }
+
+  a:visited {
+    h2 {
+      color: $govuk-link-visited-colour;
+    }
+  }
+
+  a:hover {
+    h2 {
+      color: $govuk-link-hover-colour;
+    }
+  }
+
+  a:focus {
+    background-color: $govuk-focus-colour;
+    outline: 3px solid $govuk-focus-colour;
+
+    h2 {
+      color: $govuk-text-colour;
+    }
+  }
+
+  @include govuk-media-query(tablet) {
+    &.border-bottom {
+      margin-bottom: 45px;
+
+      &:after {
+        content: "";
+        position: absolute;
+        bottom: - govuk-spacing(6);
+        height: 1px;
+        background-color:  govuk-colour("grey-3");
+        right: govuk-spacing(3);
+        left: govuk-spacing(3);
+      }
+    }
+  }
+}
