@@ -45,7 +45,7 @@ Sign in to GOV.UK Pay
     {{ govukInput({
         label: {
           text: "Email address",
-          classes: "govuk-!-width-two-thirds govuk-error"
+          classes: "govuk-!-width-two-thirds"
         },
         errorMessage: emailError,
         id: "username",
@@ -81,9 +81,7 @@ Sign in to GOV.UK Pay
       })
     }}
 
-    {{ govukButton({
-    text: "Continue"
-    }) }}
+    {{ govukButton({ text: "Continue" }) }}
   </form>
   <p class="govuk-body">
     <a href="/reset-password" class="reset-password govuk-link clear">Forgot your password?</a>

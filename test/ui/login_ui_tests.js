@@ -32,13 +32,12 @@ describe('Login view', function () {
       body.should.containSelector('h1').withExactText('Check your phone')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
-      body.should.containSelector('input#sms_code').withAttribute('value', '')
 
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withExactText('Not received a text message?')
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withAttribute('href', paths.user.otpSendAgain)
+      body.should.containSelector('.text-messsage-link').withExactText('Not received a text message?')
+      body.should.containSelector('.text-messsage-link').withAttribute('href', paths.user.otpSendAgain)
 
-      body.should.containSelector('div#display-otp-login > p:nth-child(4) > a').withExactText('Cancel')
-      body.should.containSelector('div#display-otp-login > p:nth-child(4) > a').withAttribute('href', paths.user.logOut)
+      body.should.containSelector('.cancel-link').withExactText('Cancel')
+      body.should.containSelector('.cancel-link').withAttribute('href', paths.user.logOut)
 
       done()
     })
@@ -55,16 +54,15 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Check your phone')
 
-      body.should.containSelector('.error-message').withExactText('Invalid security code')
+      body.should.containSelector('.govuk-error-message').withExactText('Invalid security code')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
-      body.should.containSelector('input#sms_code').withAttribute('value', '')
 
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withExactText('Not received a text message?')
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withAttribute('href', paths.user.otpSendAgain)
+      body.should.containSelector('.text-messsage-link').withExactText('Not received a text message?')
+      body.should.containSelector('.text-messsage-link').withAttribute('href', paths.user.otpSendAgain)
 
-      body.should.containSelector('div#display-otp-login > p:nth-child(4) > a').withExactText('Cancel')
-      body.should.containSelector('div#display-otp-login > p:nth-child(4) > a').withAttribute('href', paths.user.logOut)
+      body.should.containSelector('.cancel-link').withExactText('Cancel')
+      body.should.containSelector('.cancel-link').withAttribute('href', paths.user.logOut)
 
       done()
     })
@@ -98,10 +96,9 @@ describe('Login view', function () {
       body.should.containSelector('h1').withExactText('Use your authenticator app')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
-      body.should.containSelector('input#sms_code').withAttribute('value', '')
 
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withExactText('Cancel')
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withAttribute('href', paths.user.logOut)
+      body.should.containSelector('.cancel-link').withExactText('Cancel')
+      body.should.containSelector('.cancel-link').withAttribute('href', paths.user.logOut)
 
       done()
     })
@@ -118,13 +115,12 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Use your authenticator app')
 
-      body.should.containSelector('.error-message').withExactText('Invalid security code')
+      body.should.containSelector('.govuk-error-message').withExactText('Invalid security code')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
-      body.should.containSelector('input#sms_code').withAttribute('value', '')
 
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withExactText('Cancel')
-      body.should.containSelector('div#display-otp-login > p:nth-child(3) > a').withAttribute('href', paths.user.logOut)
+      body.should.containSelector('.cancel-link').withExactText('Cancel')
+      body.should.containSelector('.cancel-link').withAttribute('href', paths.user.logOut)
 
       done()
     })
