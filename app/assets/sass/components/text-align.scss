@@ -1,0 +1,9 @@
+.govuk-text-align-right {
+  text-align: right;
+}
+
+.govuk-text-align-right-l {
+  @include govuk-media-query(tablet) {
+    text-align: right;
+  }
+}

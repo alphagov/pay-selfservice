@@ -1,0 +1,19 @@
+.button-as-link {
+  @include govuk-font($size: 16);
+
+  display: inline;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  text-decoration: underline;
+  color: $govuk-link-colour;
+  text-align: left;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  &:hover {
+  color: $govuk-link-hover-colour;
+  }
+}
