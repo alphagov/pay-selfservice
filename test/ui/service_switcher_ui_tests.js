@@ -37,10 +37,10 @@ const serviceTwo = {
 }
 
 describe('The account switcher link', () => {
-  it('should display Switch service link', () => {
+  it('should display My services link', () => {
     body = render('layout', {})
 
-    body.should.containSelector('#my-services').withExactText('Switch service')
+    body.should.containSelector('#my-services').withExactText('My services')
   })
 
   describe('when a user has a single service and is an admin of that service', () => {
