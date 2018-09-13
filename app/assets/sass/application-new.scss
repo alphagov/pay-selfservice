@@ -1,5 +1,11 @@
 @import "govuk-frontend/all";
 
 @import "components/cookie-message";
-@import "components/navigation";
+@import "components/header";
 @import "components/phase-tag";
+@import "components/navigation";
+@import "components/environment-tag";
+@import "components/feedback-banner";
+@import "components/dashboard-activity";
+@import "components/flex-grid";
+@import "components/links-box";

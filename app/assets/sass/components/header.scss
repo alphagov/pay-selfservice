@@ -1,0 +1,9 @@
+.govuk-header__container {
+  &--test {
+    border-color:  govuk-colour("blue");
+  }
+
+  &--test {
+    border-color:  govuk-colour("yellow");
+  }
+}

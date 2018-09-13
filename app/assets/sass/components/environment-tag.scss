@@ -1,0 +1,16 @@
+.environment-tag {
+  @include govuk-font($size: 14, $weight: bold);
+  line-height: 1.25!important;
+  padding: 3px govuk-spacing(1) 1px;
+  margin: 0 0 0 govuk-spacing(6);
+  position: relative;
+  top: -2px;
+
+  &-sandbox {
+    background-color: govuk-colour("yellow");
+  }
+
+  &-live {
+    background-color: govuk-colour("blue");
+  }
+}
