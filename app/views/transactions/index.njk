@@ -37,7 +37,7 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
   {% if permissions.transactions_download_read %}
     {% if (hasResults) %}
       {% if showCsvDownload %}
-        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download a spreadsheet of these transactions </a>
+        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download all transaction details as a CSV file </a>
       {% else %}
         <p class="push-bottom-sml">You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search</p>
       {% endif %}
