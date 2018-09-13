@@ -63,12 +63,11 @@ describe('connector client - patch email confirmation toggle', function () {
     afterEach(() => provider.verify())
 
     it('should toggle successfully', function (done) {
-      const payload = {'op': 'replace', 'path': 'enabled', 'value': true}
-      connectorClient.updateNotificationEmailEnabled({gatewayAccountId: params.gatewayAccountId, payload: payload}, (connectorData, connectorResponse) => {
+      const payload = {'op': 'replace', 'path': '/confirmation/enabled', 'value': true}
+      connectorClient.updateConfirmationEmailEnabled({gatewayAccountId: params.gatewayAccountId, payload: payload}, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)
         done()
       })
     })
   })
-
 })

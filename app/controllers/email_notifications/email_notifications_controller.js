@@ -9,13 +9,8 @@ const response = require('../../utils/response.js').response
 const Email = require('../../models/email.js')
 const paths = require('../../paths.js')
 const CORRELATION_HEADER = require('../../utils/correlation_header.js').CORRELATION_HEADER
-const formattedPathFor = require('../../../app/utils/replace_params_in_path')
 
 // Constants
-const emailConfirmationToggleSubmitLink = formattedPathFor(paths.emailNotifications.confirmation)
-const emailRefundToggleSubmitLink = formattedPathFor(paths.emailNotifications.refund)
-const emailNotificationsIndexLink = formattedPathFor(paths.emailNotifications.index)
-const emailCollectionModeSubmitLink = formattedPathFor(paths.emailNotifications.collection)
 const indexPath = paths.emailNotifications.index
 
 const showEmail = function (req, res, resource, locals) {
@@ -52,18 +47,16 @@ const toggleConfirmationEmail = function (req, res, enabled) {
 module.exports.collectionEmailIndex = (req, res) => {
   showCollectionEmail(req, res, 'collection_email_mode', {
     emailCollectionModes: {
-      mandatory: 0,
-      optional: 1,
-      no: 2
+      mandatory: 'MANDATORY',
+      optional: 'OPTIONAL',
+      no: 'OFF'
     },
-    emailCollectionMode: req.account.emailCollectionMode,
-    emailCollectionModeSubmitLink,
-    emailNotificationsIndexLink
+    emailCollectionMode: req.account.emailCollectionMode
   })
 }
 
 module.exports.collectionEmailUpdate = (req, res) => {
-  const emailCollectionMode = parseInt(req.body['email-collection-mode'])
+  const emailCollectionMode = req.body['email-collection-mode']
   const accountID = req.account.gateway_account_id
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const emailModel = Email(correlationId)
@@ -77,9 +70,7 @@ module.exports.collectionEmailUpdate = (req, res) => {
 module.exports.confirmationEmailIndex = (req, res) => {
   showConfirmationEmail(req, res, 'confirmation_email_toggle', {
     confirmationEnabled: req.account.confirmationEmailEnabled,
-    emailCollectionMode: req.account.emailCollectionMode,
-    emailConfirmationToggleSubmitLink,
-    emailNotificationsIndexLink
+    emailCollectionMode: req.account.emailCollectionMode
   })
 }
 
@@ -103,9 +94,7 @@ module.exports.confirmationEmailOff = (req, res) => {
 module.exports.refundEmailIndex = (req, res) => {
   showRefundEmail(req, res, 'refund_email_toggle', {
     refundEmailEnabled: req.account.refundEmailEnabled,
-    emailCollectionMode: req.account.emailCollectionMode,
-    emailRefundToggleSubmitLink,
-    emailNotificationsIndexLink
+    emailCollectionMode: req.account.emailCollectionMode
   })
 }
 
@@ -162,7 +151,7 @@ module.exports.update = (req, res) => {
   const accountID = req.account.gateway_account_id
   const correlationId = _.get(req, 'headers.' + CORRELATION_HEADER, '')
   const emailModel = Email(correlationId)
-  emailModel.update(accountID, newEmailText)
+  emailModel.updateConfirmationTemplate(accountID, newEmailText)
     .then(() => {
       logger.info(`[${correlationId}] - Updated email notifications custom paragraph. user=${req.session.passport.user}, gateway_account=${accountID}`)
       res.redirect(303, indexPath)

@@ -71,6 +71,11 @@ function isInArray (value, array) {
 }
 
 /** @private */
+function _accountApiUrlFor (gatewayAccountId, url) {
+  return url + ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+}
+
+/** @private */
 function _accountUrlFor (gatewayAccountId, url) {
   return url + ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
@@ -515,15 +520,14 @@ ConnectorClient.prototype = {
     baseClient.post(url, params, this.responseHandler(successCallback))
     return this
   },
-
   /**
    *
    * @param {Object} params
    * @param {Function} successCallback
    */
-  getNotificationEmail: function (params, successCallback) {
+  updateConfirmationEmail: function (params, successCallback) {
     let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.get(url, params, this.responseHandler(successCallback))
+    baseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -533,19 +537,7 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  updateNotificationEmail: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.post(url, params, this.responseHandler(successCallback))
-
-    return this
-  },
-
-  /**
-   *
-   * @param {Object} params
-   * @param {Function} successCallback
-   */
-  updateNotificationEmailEnabled: function (params, successCallback) {
+  updateConfirmationEmailEnabled: function (params, successCallback) {
     let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
     baseClient.patch(url, params, this.responseHandler(successCallback))
 
@@ -558,7 +550,7 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   updateEmailCollectionMode: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
+    let url = _accountApiUrlFor(params.gatewayAccountId, this.connectorUrl)
     baseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this

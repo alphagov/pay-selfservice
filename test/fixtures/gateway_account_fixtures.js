@@ -12,7 +12,7 @@ module.exports = {
   validGatewayAccountEmailRefundToggleRequest: (opts = {}) => {
     const data = {
       op: opts.op || 'replace',
-      path: opts.path || 'refund',
+      path: opts.path || '/refund/enabled',
       value: opts.enabled || true
     }
 
@@ -28,7 +28,7 @@ module.exports = {
   validGatewayAccountEmailConfirmationToggleRequest: (opts = {}) => {
     const data = {
       op: opts.op || 'replace',
-      path: opts.path || 'enabled',
+      path: opts.path || '/confirmation/enabled',
       value: opts.enabled || true
     }
 
@@ -44,8 +44,8 @@ module.exports = {
   validGatewayAccountEmailCollectionModeRequest: (opts = {}) => {
     const data = {
       op: opts.op || 'replace',
-      path: opts.path || 'collection',
-      value: opts.collectionMode || 0
+      path: opts.path || 'email_collection_mode',
+      value: opts.collectionMode || 'MANDATORY'
     }
 
     return {
@@ -60,14 +60,14 @@ module.exports = {
   validGatewayAccountTokensResponse: (opts = {}) => {
     let data = {
       tokens:
-      [{
-        issued_date: opts.issued_date || '03 Sep 2018 - 10:05',
-        last_used: opts.last_used || null,
-        token_link: opts.token_link || '32fa3cdd-23c8-4602-a415-b48ede66b5e4',
-        description: opts.description || 'Created from command line',
-        token_type: opts.token_type || 'CARD',
-        created_by: opts.created_by || 'System generated'
-      }]
+        [{
+          issued_date: opts.issued_date || '03 Sep 2018 - 10:05',
+          last_used: opts.last_used || null,
+          token_link: opts.token_link || '32fa3cdd-23c8-4602-a415-b48ede66b5e4',
+          description: opts.description || 'Created from command line',
+          token_type: opts.token_type || 'CARD',
+          created_by: opts.created_by || 'System generated'
+        }]
     }
 
     return {
@@ -166,7 +166,19 @@ module.exports = {
       gateway_account_id: opts.gateway_account_id || 31,
       service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',
       type: opts.type || 'test',
-      analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58'
+      analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58',
+      emailCollectionMode: opts.emailCollectionMode || 'MANDATORY',
+      emailNotifications: opts.emailNotifications || {
+        PAYMENT_CONFIRMED: {
+          version: 1,
+          enabled: true,
+          template_body: 'template here'
+        },
+        REFUND_ISSUED: {
+          version: 1,
+          enabled: true
+        }
+      }
     }
 
     return {
@@ -181,26 +193,55 @@ module.exports = {
   validGatewayAccountsResponse: (opts = {}) => {
     let data = {
       accounts: opts.accounts ||
-      [{
-        type: 'test',
-        gateway_account_id: 100,
-        payment_provider: 'sandbox',
-        service_name: 'Gateway Account 1 (test)',
-        _links: { self: { href: 'https://connector.pymnt.localdomain/v1/api/accounts/100'}}
-      }, {
-        type: 'test',
-        gateway_account_id: 101,
-        payment_provider: 'sandbox',
-        service_name: 'Gateway Account 2 (test)',
-        _links: { self: { href: 'https://connector.pymnt.localdomain/v1/api/accounts/101'}}
-      }, {
-        type: 'test',
-        gateway_account_id: 102,
-        payment_provider: 'sandbox',
-        service_name: 'Gateway Account 3 (test)',
-        _links: { self: { href: 'https://connector.pymnt.localdomain/v1/api/accounts/102'}}
-      }
-      ]
+        [{
+          type: 'test',
+          gateway_account_id: 100,
+          payment_provider: 'sandbox',
+          service_name: 'Gateway Account 1 (test)',
+          emailCollectionMode: 'MANDATORY',
+          emailNotifications: {
+            PAYMENT_CONFIRMED: {
+              version: 1,
+              enabled: true,
+              template_body: null
+            }
+          },
+          _links: {self: {href: 'https://connector.pymnt.localdomain/v1/api/accounts/100'}}
+        }, {
+          type: 'test',
+          gateway_account_id: 101,
+          payment_provider: 'sandbox',
+          service_name: 'Gateway Account 2 (test)',
+          emailCollectionMode: 'OPTIONAL',
+          emailNotifications: {
+            PAYMENT_CONFIRMED: {
+              version: 1,
+              enabled: true,
+              template_body: null
+            },
+            REFUND_ISSUED: {
+              version: 1,
+              enabled: true,
+              template_body: null
+            }
+          },
+          _links: {self: {href: 'https://connector.pymnt.localdomain/v1/api/accounts/101'}}
+        }, {
+          type: 'test',
+          gateway_account_id: 102,
+          payment_provider: 'sandbox',
+          service_name: 'Gateway Account 3 (test)',
+          emailCollectionMode: 'OFF',
+          emailNotifications: {
+            PAYMENT_CONFIRMED: {
+              version: 1,
+              enabled: true,
+              template_body: null
+            }
+          },
+          _links: {self: {href: 'https://connector.pymnt.localdomain/v1/api/accounts/102'}}
+        }
+        ]
     }
 
     return {

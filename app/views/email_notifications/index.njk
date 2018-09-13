@@ -32,11 +32,11 @@
                 <tbody>
                     <tr>
                         <td class="table-data-label">
-                            {% if emailCollectionMode === 1 %}
+                            {% if emailCollectionMode === 'OPTIONAL' %}
                                 <span>
                                     Users can choose to enter an email address
                                 </span>
-                            {% elif emailCollectionMode === 2 %}
+                            {% elif emailCollectionMode === 'OFF' %}
                                 <span>
                                     Users do not have the option to enter an email address
                                 </span>
@@ -58,7 +58,7 @@
                                 <span>
                                     Payment confirmation emails are on
                                 </span>
-                                {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
+                                {% if (emailCollectionMode === 'OPTIONAL') or (emailCollectionMode === 'OFF') %}
                                     <span class="grey">
                                         Users must enter an email address to receive notifications
                                     </span>
@@ -81,7 +81,7 @@
                                 <span>
                                     Refund emails are on
                                 </span>
-                                {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
+                                {% if (emailCollectionMode === 'OPTIONAL') or (emailCollectionMode === 'OFF') %}
                                     <span class="grey">
                                         Users must enter an email address to receive notifications
                                     </span>

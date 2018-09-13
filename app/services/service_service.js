@@ -2,7 +2,6 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const winston = require('winston')
 
 // Local dependencies
 const getAdminUsersClient = require('./clients/adminusers_client')

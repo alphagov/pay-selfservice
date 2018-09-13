@@ -10,7 +10,7 @@
 
 {% block mainContent %}
 <div class="column-two-thirds">
-  <a href="{{emailNotificationsIndexLink}}" class="link-back">Back</a>
+  <a href="{{routes.emailNotifications.index}}" class="link-back">Back</a>
 </div>
 <div class="column-two-thirds">
   {% if not permissions.email_notification_toggle_update %}
@@ -21,34 +21,34 @@
 
   <h2 class="heading-medium">Do you want to ask users for an email address on the card payment page?</h2>
 
-  <form id="collection-email-form" method="post" action="{{emailCollectionModeSubmitLink}}">
+  <form id="collection-email-form" method="post" action="{{routes.emailNotifications.collection}}">
         <div class="form-group">
           <fieldset>
             <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
             <div class="multiple-choice">
-              <input id="email-collection-mandatory-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.mandatory}}" checked>
+              <input id="email-collection-mandatory-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.mandatory}}" {{'checked' if emailCollectionMode === 'MANDATORY' else ''}}>
               <label for="email-collection-mandatory-input">
                 Yes – as a mandatory field
                 <p class="form-hint">
-                  This means users need to enter an email address to complete a payment
+                  Users must enter an email address to complete a payment – they can receive notifications
                 </p>
               </label>
             </div>
             <div class="multiple-choice">
-              <input id="email-collection-optional-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.optional}}">
+              <input id="email-collection-optional-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.optional}}" {{'checked' if emailCollectionMode === 'OPTIONAL' else ''}}>
               <label for="email-collection-optional-input">
                 Yes – as an optional field
                 <p class="form-hint">
-                  This means users don’t need to enter an email address to complete a payment
+                  Users can choose to enter an email address – if they do, they can receive notifications
                </p>
               </label>
             </div>
             <div class="multiple-choice">
-              <input id="email-collection-no-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.no}}">
+              <input id="email-collection-no-input" type="radio" name="email-collection-mode" value="{{emailCollectionModes.no}}" {{'checked' if emailCollectionMode === 'OFF' else ''}}>
               <label for="email-collection-no-input">
                 No
                 <p class="form-hint">
-                  This means users won’t be asked to enter an email address. You can still give GOV.UK Pay user emails via the api if you want GOV.UK Pay to send confirmation or refund emails.
+                  Users do not have the option to enter an email address – they will not receive notifications
                 </p>
               </label>
             </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="form-group call-to-action-group">
           <input type="submit" class="button" value="Save changes">
-          <a id="service-name-cancel-link" href="{{emailNotificationsIndexLink}}">
+          <a id="service-name-cancel-link" href="{{routes.emailNotifications.index}}">
               Cancel
           </a>
         </div>

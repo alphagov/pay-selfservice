@@ -96,7 +96,6 @@ describe('Transactions', () => {
 
     // https://payments-platform.atlassian.net/browse/PP-4215
     it('should have the right number of transactions when filtering by state = success, multiple card brands and a partial email', () => {
-
       const filteredPartialEmail = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'partialemail')[0]
 
       cy.get('#card-brand').click()

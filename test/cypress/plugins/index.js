@@ -40,7 +40,7 @@ module.exports = (on, config) => {
   config.env.encryptedGatewayAccountCookie = encryptedGatewayAccountCookie
 
   console.log(`test encrypted session cookie: ${encryptedSessionCookie}`)
-  console.log(`test encrypted gateway account cookie: ${encryptedSessionCookie}`)
+  console.log(`test encrypted gateway account cookie: ${encryptedGatewayAccountCookie}`)
 
   // send back the modified config object
   return config

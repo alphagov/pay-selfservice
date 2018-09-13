@@ -14,7 +14,7 @@ describe('The email body view', function () {
     const body = renderTemplate('email_notifications/email_confirmation_body', templateData)
 
     body.should.not.containSelector('span.grey.push-bottom.qa-custom-p')
-    body.should.containSelector('p.push-bottom.qa-custom-p').withText('Custom text')
+    body.should.containSelector('pre').withText('Custom text')
     body.should.containSelector('p').withText('This email address is not monitored. If you have any questions about your payment, contact the service you made the payment to directly.')
   })
 

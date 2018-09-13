@@ -16,7 +16,6 @@ module.exports = {
 
     return (error, response, body) => {
       requestLogger.logRequestEnd(context)
-
       if (error) {
         // TODO : Once anything using response converter has a segment passed, the 'if' test can be removed, with just the .close() function call remaining
         if (context.subsegment) { context.subsegment.close(error) }

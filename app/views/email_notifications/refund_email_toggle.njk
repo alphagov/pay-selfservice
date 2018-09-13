@@ -10,7 +10,7 @@
 
 {% block mainContent %}
 <div class="column-two-thirds">
-  <a href="{{emailNotificationsIndexLink}}" class="link-back">Back</a>
+  <a href="{{routes.emailNotifications.index}}" class="link-back">Back</a>
 </div>
 <div class="column-two-thirds">
   {% if not permissions.email_notification_toggle_update %}
@@ -19,10 +19,10 @@
 
   {% if permissions.email_notification_template_read %}
 
-  <h2 class="heading-medium">Do you want GOV.UK Pay to send users refund receipt emails?</h2>
+  <h2 class="heading-medium">Do you want to send refund emails?</h2>
 
-     <span class="form-hint">This means your users will receive email confirmation of their payment from GOV.UK Pay</span>
-     <form id="refund-email-form" method="post" action="{{emailRefundToggleSubmitLink}}">
+     <span class="form-hint">Users will receive an email confirming their refund from GOV.UK Pay</span>
+     <form id="refund-email-form" method="post" action="{{routes.emailNotifications.refund}}">
             <div class="form-group">
               <fieldset>
                 <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -39,7 +39,7 @@
                         <span class="visually-hidden">Warning</span>
                       </i>
                       <strong class="bold-small">
-                        You are not currently collecting email addresses on the payment page. Turn on email collection if you want GOV.UK Pay to send refund receipt emails.
+                        Users will not receive refund emails because they do not have the option to enter an email address. Change your settings to let them enter an email address.
                       </strong>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
             </div>
             <div class="form-group call-to-action-group">
               <input type="submit" class="button" value="Save changes">
-              <a id="service-name-cancel-link" href="{{emailNotificationsIndexLink}}">
+              <a id="service-name-cancel-link" href="{{routes.emailNotifications.index}}">
                   Cancel
               </a>
             </div>
