@@ -133,5 +133,12 @@ describe('states', function () {
         message: 'Kaz'
       }, 'payment')).to.equal('Error')
     })
+    it('should get display name for charge with delayed capture for connector state', function () {
+      expect(states.getDisplayNameForConnectorState({status: 'created'}, 'payment', true)).to.equal('In progress - ready for capture')
+    })
+
+    it('should get event display name for charge with delayed capture for connector state', function () {
+      expect(states.getEventDisplayNameForConnectorState({status: 'created'}, 'payment', true)).to.equal('Created - delayed capture on')
+    })
   })
 })

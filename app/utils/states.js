@@ -5,15 +5,19 @@ const lodash = require('lodash')
 const PAYMENT_STATE_DESCRIPTIONS = {
   'created': {
     displayName: 'In progress',
-    eventDisplayName: 'Created'
+    eventDisplayName: 'Created',
+    delayedCaptureEventDisplayName: 'Created - delayed capture on'
   },
   'started': {
     displayName: 'In progress',
+    delayedCaptureDisplayName: 'In progress - delayed capture on',
     eventDisplayName: 'Started'
   },
   'submitted': {
     displayName: 'In progress',
-    eventDisplayName: 'Submitted'
+    eventDisplayName: 'Submitted',
+    delayedCaptureDisplayName: 'In progress - ready for capture',
+    delayedCaptureSyntheticEventDisplayName: 'Ready for capture'
   },
   'success': {
     displayName: 'Success'
@@ -56,9 +60,18 @@ const ERROR_CODE_TO_DISPLAY_STATE = {
 exports.allDisplayStates = () => [...uniqueDisplayStates(PAYMENT_STATE_DESCRIPTIONS), ...uniqueDisplayStates(REFUND_STATE_DESCRIPTIONS)]
 exports.displayStatesToConnectorStates = (displayStatesArray) => toConnectorStates(displayStatesArray)
 exports.allDisplayStateSelectorObjects = () => exports.allDisplayStates().map(state => toSelectorObject(state))
-exports.getDisplayNameForConnectorState = (connectorState, type = 'payment') => {
+exports.getDisplayNameForConnectorState = (connectorState, type = 'payment', isDelayedCapture = false) => {
   const sanitisedType = (type.toLowerCase() === 'charge') ? 'payment' : type.toLowerCase()
-  return displayNameForConnectorState(connectorState, sanitisedType).displayName
+  if (isDelayedCapture === true) {
+    const displayState = displayNameForConnectorState(connectorState, sanitisedType)
+    if (displayState.delayedCaptureDisplayName) {
+      return displayState.delayedCaptureDisplayName
+    } else {
+      return displayNameForConnectorState(connectorState, sanitisedType).displayName
+    }
+  } else {
+    return displayNameForConnectorState(connectorState, sanitisedType).displayName
+  }
 }
 
 // TODO: leaving this toSelector Object structure for backward compatibility.
@@ -135,8 +148,11 @@ function toConnectorStates (displayStates) {
   return result
 }
 
-exports.getEventDisplayNameForConnectorState = (state, type) => {  // eslint-disable-line
+exports.getEventDisplayNameForConnectorState = (state, type, isDelayedCapture = false) => {  // eslint-disable-line
   const displayName = displayNameForConnectorState(state, type.toLowerCase())
+  if (isDelayedCapture === true && displayName.delayedCaptureEventDisplayName) {
+    return displayName.delayedCaptureEventDisplayName
+  }
   if (displayName.eventDisplayName) {
     return displayName.eventDisplayName
   } else {

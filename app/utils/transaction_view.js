@@ -76,7 +76,7 @@ module.exports = {
   },
 
   buildPaymentView: function (chargeData, eventsData, users = []) {
-    chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
+    chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type, chargeData.delayed_capture)
 
     chargeData.amount = asGBP(chargeData.amount)
 
@@ -102,10 +102,16 @@ module.exports = {
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
-    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
+    chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData, chargeData.delayed_capture)).reverse()
     chargeData.events.forEach(event => {
       if (event.submitted_by && event.state_friendly === 'Refund submitted') {
         event.submitted_by_friendly = lodash.get(users.find(user => user.externalId === event.submitted_by) || {}, 'email')
+      }
+      if (event.state.status === 'submitted') {
+        const newEvent = createSyntheticEvent(event, 'Test friendly status')
+        // chargeData.events.add(new TransactionEvent())
+
+        console.log(`+++ I need to insert a Ready for capture event here [${JSON.stringify(newEvent)}] at [${chargeData.events.indexOf(event)}]`)
       }
     })
     delete chargeData['links']
@@ -153,4 +159,11 @@ function getCurrentPageSize (connectorData) {
 function hasPageSizeLinks (connectorData) {
   let paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
   return paginator.showDisplaySizeLinks()
+}
+
+function createSyntheticEvent (transactionEvent, newFriendlyStatus) {
+  let newTransactionEvent = lodash.cloneDeep(transactionEvent)
+  newTransactionEvent.state_friendly = newFriendlyStatus
+
+  return newTransactionEvent
 }

@@ -8,7 +8,7 @@ const states = require('../utils/states')
 const dates = require('../utils/dates')
 
 class TransactionEvent {
-  constructor (eventData) {
+  constructor (eventData, isDelayedCapture = false) {
     this.type = eventData.type
     this.amount = eventData.amount
     this.updated = eventData.updated
@@ -21,7 +21,7 @@ class TransactionEvent {
       message: lodash.get(eventData, 'state.message')
     }
 
-    this.state_friendly = states.getEventDisplayNameForConnectorState(this.state, this.type)
+    this.state_friendly = states.getEventDisplayNameForConnectorState(this.state, this.type, isDelayedCapture)
     this.updated_friendly = dates.utcToDisplay(this.updated)
     this.amount_friendly = currencyFormatter.format((this.amount / 100).toFixed(2), {code: 'GBP'})
     if (this.amount && this.type.toLowerCase() === 'refund') {
