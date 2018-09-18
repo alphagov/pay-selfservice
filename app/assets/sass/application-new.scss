@@ -1,4 +1,5 @@
 @import "govuk-frontend/all";
+@import "accessible-autocomplete";
 
 @import "components/cookie-message";
 @import "components/header";
@@ -9,3 +10,7 @@
 @import "components/dashboard-activity";
 @import "components/flex-grid";
 @import "components/links-box";
+@import "components/flash";
+@import "components/text-align";
+@import "components/button-as-link";
+@import "components/accessible-autocomplete";

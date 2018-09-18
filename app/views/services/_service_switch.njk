@@ -3,7 +3,7 @@
     <input name="csrfToken" type="hidden" value="{{csrf}}" />
     <input name="gatewayAccountId" type="hidden" value="{{ account.external_id }}"/>
     <button
-      class="service-switcher {{ account.type }} {{ account.payment_provider }}"
+      class="button-as-link service-switcher {{ account.type }} {{ account.payment_provider }}"
       type="submit"
       role="link">
       {{ account.type | title }}
@@ -19,7 +19,7 @@
     </button>
     {% if account.type !== 'live' %}
       {% if not loop.last %}
-        <span class="switch-divider">|</span>
+        <span class="govuk-body govuk-!-margin-left-1 govuk-!-margin-right-1">|</span>
       {% endif %}
     {% endif %}
   </form>
