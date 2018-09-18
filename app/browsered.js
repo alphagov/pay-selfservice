@@ -18,6 +18,9 @@ const accessibleAutocomplete = require('./browsered/autocomplete')
 // GOV.UK Frontend Toolkit dependencies
 require('../govuk_modules/govuk_frontend_toolkit/javascripts/govuk/show-hide-content')
 
+// GOV.UK Frontend js bundle
+const GOVUKFrontend = require('govuk-frontend')
+
 multiSelects.enableMultiSelects()
 fieldValidation.enableFieldValidation()
 dashboardActivity.init()
@@ -28,6 +31,7 @@ inputConfirm()
 niceURL()
 copyText()
 accessibleAutocomplete()
+GOVUKFrontend.initAll()
 
 $(document).ready($ => {
   const showHideContent = new window.GOVUK.ShowHideContent()

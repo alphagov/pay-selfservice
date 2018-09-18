@@ -1,11 +1,15 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Edit service name - GOV.UK Pay
+{% block pageTitle %}
+  Edit service name - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="column-two-thirds">
+  <div class="govuk-grid-column-two-thirds">
     {% if errors %}
     <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
         <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
@@ -19,51 +23,93 @@ Edit service name - GOV.UK Pay
     </div>
     {% endif %}
 
-    <h1 class="heading-large page-title">Edit service name</h1>
-    <p>
+    <h1 class="govuk-heading-l">Edit service name</h1>
+    <p class="govuk-body">
         Changing your service name affects both live and test environments, including user-facing payment pages and emails.
     </p>
     <form id="edit-service-name-form" method="post" action="{{submit_link}}" data-validate="true">
-      <div class="form-group {% if errors.service_name %}error{% endif %}">
-        <label class="form-label" for="service-name">Service name</label>
-        {% if errors.service_name %}
-          <span class="error-message">{{errors.service_name}}</span>
-        {% endif %}
-        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-        <input class="form-control" data-module="" id="service-name" name="service-name" type="text" value="{{current_name.en}}" data-validate="required isFieldGreaterThanMaxLengthChars" data-validate-max-length="50">
-      </div>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-      {% if current_name.cy %}
-      <div class="form-group {% if errors.service_name %}error{% endif %}">
-        <label class="form-label" for="service-name">Welsh (Cymraeg) service name</label>
-        {% if errors.service_name %}
-          <span class="error-message">{{errors.service_name}}</span>
-        {% endif %}
-        <input class="form-control" data-module="" id="service-name-cy" name="service-name-cy" type="text" value="{{current_name.cy}}" data-validate="isFieldGreaterThanMaxLengthChars" data-validate-max-length="50" lang="cy">
-        <p class="form-hint margin-top">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</p>
-      </div>
-      {% else %}
-      <div class="cf">
-        <div class="form-group multiple-choice {% if errors.service_name_cy %}error{% endif %}" data-target="welsh-service-name">
-          <input id="checkbox-service-name-cy" name="welsh-service-name-bool" type="checkbox" value="true" {% if current_name.cy %}checked{% endif %}>
-          <label for="checkbox-service-name-cy">Add a Welsh (Cymraeg) service name</label>
-        </div>
-        <div class="form-group panel panel-border-narrow js-hidden" id="welsh-service-name">
-          <label class="form-label" for="service-name-cy">Welsh service name</label>
-          {% if errors.service_name_cy %}
-            <span class="error-message">{{errors.service_name_cy}}</span>
-          {% endif %}
-          <input class="form-control" data-module="" id="service-name-cy" name="service-name-cy" type="text" value="{{current_name.cy}}" data-validate="isFieldGreaterThanMaxLengthChars" data-validate-max-length="50" lang="cy">
-          <p class="form-hint">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</p>
-        </div>
-      </div>
+      {% set enNameError = false %}
+      {% if errors.service_name %}
+        {% set enNameError = {
+          text: errors.service_name
+        } %}
       {% endif %}
 
-      <div class="form-group call-to-action-group">
-        <input class="button" type="submit" value="Save">
-        <a id="service-name-cancel-link" href="{{my_services}}">Cancel</a>
-        <a id="service-nam-guidance" href="https://www.gov.uk/service-manual/design/naming-your-service">Get guidance on choosing a name for your service</a>
-      </div>
+      {{ govukInput({
+          label: {
+            text: "Service name"
+          },
+          errorMessage: enNameError,
+          id: "service-name",
+          name: "service-name",
+          value: current_name.en,
+          classes: "govuk-!-width-one-half",
+          type: "text",
+          attributes: {
+            "data-validate": "required isFieldGreaterThanMaxLengthChars",
+            "data-validate-max-length": "50"
+          }
+        })
+      }}
+
+      {% set cyNameError = false %}
+      {% if errors.service_name %}
+        {% set cyNameError = {
+          text: errors.service_name_cy
+        } %}
+      {% endif %}
+
+      {% set welshServiceNameHTML %}
+        {{ govukInput({
+          id: "service-name-cy",
+          name: "service-name-cy",
+          type: "text",
+          value: current_name.cy,
+          errorMessage: cyNameError,
+          classes: "govuk-!-width-two-thirds",
+          label: {
+            text: "Welsh service name"
+          },
+          attributes: {
+            "data-validate": "isFieldGreaterThanMaxLengthChars",
+            "data-validate-max-length": "50",
+            "lang": "cy"
+          }
+        }) }}
+        <p class="govuk-hint">To turn on Welsh translations, follow the instructions in our&nbsp;documentation</p>
+      {% endset -%}
+
+      {% if current_name.cy %}
+        {{ welshServiceNameHTML | safe }}
+      {% else %}
+        {{ govukCheckboxes({
+          idPrefix: "checkbox-service-name-cy",
+          name: "welsh-service-name-bool",
+          items: [
+            {
+              value: "true",
+              text: "Add a Welsh (Cymraeg) service name",
+              conditional: {
+                html: welshServiceNameHTML
+              }
+            }
+          ]
+        }) }}
+      {% endif %}
+
+      {{ govukButton({ text: "Add Service" })}}
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{my_services}}">
+            Cancel
+        </a>
+      </p>
+      <p class="govuk-body">
+        <a class="govuk-link" id="service-nam-guidance" href="https://www.gov.uk/service-manual/design/naming-your-service">
+          Get guidance on choosing a name for your service
+        </a>
+      </p>
     </form>
   </div>
 {% endblock %}
