@@ -18,7 +18,7 @@ const VALID_USER = getUser({
 })
 
 const VALID_USER_RESPONSE = {
-  externalId: '121391373c1844dd99cb3416b70785c8',
+  external_id: '121391373c1844dd99cb3416b70785c8',
   username: 'm87bmh',
   email: 'm87bmh@example.com',
   service_roles: [],
@@ -37,10 +37,9 @@ describe('Two factor authenticator configure index POST', () => {
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
-
       nock(ADMINUSERS_URL)
         .post(`/v1/api/users/${VALID_USER.externalId}/second-factor/provision`)
-        .reply(200)
+        .reply(200, VALID_USER_RESPONSE)
     })
 
     before('Act', done => {
@@ -73,7 +72,6 @@ describe('Two factor authenticator configure index POST', () => {
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
-
       nock(ADMINUSERS_URL)
         .post(`/v1/api/users/${VALID_USER.externalId}/second-factor/provision`)
         .reply(200, VALID_USER_RESPONSE)

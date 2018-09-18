@@ -653,6 +653,7 @@ module.exports = function (clientOptions = {}) {
         json: true,
         correlationId: correlationId,
         description: 'create a new 2FA provisional OTP key',
+        transform: responseBodyToUserTransformer,
         service: SERVICE_NAME,
         baseClientErrorHandler: 'old'
       }
