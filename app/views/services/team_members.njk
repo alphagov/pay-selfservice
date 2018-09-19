@@ -1,133 +1,161 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
 Team members - GOV.UK Pay
 {% endblock %}
 
-{% block pageSpecificJS %}
-  <script src="/public/js/components/link-follower.js"></script>
-{% endblock %}
-
 {% block mainContent %}
-  <div class="column-full">
-    <a href="/my-services" class="link-back">Back to My services</a>
+  <div class="govuk-grid-column-full">
+    {{ govukBackLink({ text: "Back to My services", href: routes.serviceSwitcher.index }) }}
   </div>
-  <div class="column-two-thirds">
-    <h1 class="page-title">Team members</h1>
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l page-title">Team members</h1>
     {% if permissions.users_service_create %}
-      <p class="admin-lede">Team member changes affect both live and test environments.</p>
+      <p class="govuk-body admin-lede">Team member changes affect both live and test environments.</p>
     {% else %}
-      <p class="admin-lede">Contact an administrator to invite team members and change permissions.</p>
+      <p class="govuk-body admin-lede">Contact an administrator to invite team members and change permissions.</p>
     {% endif %}
   </div>
-</div>
-{% if permissions.users_service_create %}
-  <a id="invite-team-member-link" class="button" href="{{inviteTeamMemberLink}}">
-    Invite a team member
-  </a>
-{% endif %}
-<div class="grid-row">
-  <div class="column-two-thirds admin-list-group">
-    <h2 id="active-team-members-heading" class="admin-list-group-heading">Active ({{number_active_members}})</h2>
+  <div class="govuk-grid-column-one-third govuk-text-align-right">
+    {% if permissions.users_service_create %}
+      {{
+        govukButton({
+          text: "Invite a team member",
+          href: inviteTeamMemberLink,
+          attributes: {
+            id: "invite-team-member-link"
+          }
+        })
+      }}
+    {% endif %}
+  </div>
+  <div class="govuk-grid-column-two-thirds admin-list-group">
+    <h2 id="active-team-members-heading" class="govuk-heading-m">Active ({{number_active_members}})</h2>
     <div class="admin-list" id="team-members-admin-list">
-      <h3 id="admin-role-header" class="admin-list-heading">Administrators ({{team_members["admin"].length}})</h3>
-      <ul>
-        {% for admin in team_members["admin"] %}
-          <li>
-            {% if permissions.users_service_read %}
-              <a id="admin-{{ loop.index }}-link" href="{{ admin.link }}">
-            {% else %}
-              <span>
-            {% endif %}
-            {{ admin.username }} {% if admin.is_current %}(you){% endif %}
-            {% if permissions.users_service_read %}
-              </a>
-            {% else %}
-              </span>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="admin-role-header" class="govuk-heading-s">Administrators ({{team_members["admin"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for admin in team_members["admin"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-display-block" id="admin-{{ loop.index }}-trnk" href="{{ admin.link }}">
+                {% else %}
+                  <span>
+                {% endif %}
+                {{ admin.username }} {% if admin.is_current %}(you){% endif %}
+                {% if permissions.users_service_read %}
+                  </a>
+                {% else %}
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     <div class="admin-list" id="team-members-view-and-refund-list">
-      <h3 id="view-and-refund-role-header" class="admin-list-heading">View and refund ({{team_members["view-and-refund"].length}})</h3>
-      <ul>
-        {% for team_member in team_members["view-and-refund"] %}
-          <li>
-            {% if permissions.users_service_read %}
-              <a id="view-refund-member-{{ loop.index }}-link" href="{{ team_member.link }}">
-            {% else %}
-              <span>
-            {% endif %}
-            {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
-            {% if permissions.users_service_read %}
-              </a>
-            {% else %}
-              </span>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="view-and-refund-role-header" class="govuk-heading-s">View and refund ({{team_members["view-and-refund"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in team_members["view-and-refund"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-display-block" id="view-refund-member-{{ loop.index }}-link" href="{{ team_member.link }}">
+                {% else %}
+                  <span>
+                {% endif %}
+                {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% if permissions.users_service_read %}
+                  </a>
+                {% else %}
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     <div class="admin-list" id="team-members-view-only-list">
-      <h3 id="view-only-role-header" class="admin-list-heading">View only ({{team_members["view-only"].length}})</h3>
-      <ul>
-        {% for team_member in team_members["view-only"] %}
-          <li>
-            {% if permissions.users_service_read %}
-              <a id="view-only-member-{{ loop.index }}-link" href="{{ team_member.link }}">
-            {% else %}
-              <span>
-            {% endif %}
-            {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
-            {% if permissions.users_service_read %}
-              </a>
-            {% else %}
-              </span>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="view-only-role-header" class="govuk-heading-s">View only ({{team_members["view-only"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in team_members["view-only"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                {% if permissions.users_service_read %}
+                  <a class="govuk-link govuk-link--no-visited-state govuk-display-block" id="view-only-member-{{ loop.index }}-link" href="{{ team_member.link }}">
+                {% else %}
+                  <span>
+                {% endif %}
+                {{ team_member.username }} {% if team_member.is_current %}(you){% endif %}
+                {% if permissions.users_service_read %}
+                  </a>
+                {% else %}
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
   {% if number_invited_members > 0 %}
-  <div class="column-two-thirds admin-list-group">
-    <h2 id="invited-team-members-heading" class="admin-list-group-heading">Invited ({{number_invited_members}})</h2>
+  <div class="govuk-grid-column-two-thirds admin-list-group">
+    <h2 id="invited-team-members-heading" class="govuk-heading-m">Invited ({{number_invited_members}})</h2>
     <div class="admin-list" id="invited-team-members-admin-list">
-      <h3 id="invited-team-members-admin-role-header" class="admin-list-heading">Administrators ({{invited_team_members["admin"].length}})</h3>
-      <ul>
-        {% for admin in invited_team_members["admin"] %}
-          <li>
-              <span>
-                {{ admin.username }}
-            </span>
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators ({{invited_team_members["admin"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for admin in invited_team_members["admin"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ admin.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     <div class="admin-list" id="invited-team-members-view-and-refund-list">
-      <h3 id="invited-team-members-view-and-refund-role-header" class="admin-list-heading">View and refund ({{invited_team_members["view-and-refund"].length}})</h3>
-      <ul>
-        {% for team_member in invited_team_members["view-and-refund"] %}
-          <li>
-              <span>
-                {{ team_member.username }}
-            </span>
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="invited-team-members-view-and-refund-role-header" class="govuk-heading-s">View and refund ({{invited_team_members["view-and-refund"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in invited_team_members["view-and-refund"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ team_member.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
     <div class="admin-list" id="invited-team-members-view-only-list">
-      <h3 id="invited-team-members-view-only-role-header" class="admin-list-heading">View only ({{invited_team_members["view-only"].length}})</h3>
-      <ul>
-        {% for team_member in invited_team_members["view-only"] %}
-          <li>
-              <span>
-                {{ team_member.username }}
-            </span>
-          </li>
-        {% endfor %}
-      </ul>
+      <h3 id="invited-team-members-view-only-role-header" class="govuk-heading-s">View only ({{invited_team_members["view-only"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in invited_team_members["view-only"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ team_member.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   {% endif %}
 {% endblock %}
