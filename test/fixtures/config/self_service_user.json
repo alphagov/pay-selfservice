@@ -489,6 +489,61 @@
                     "refund_reference": null
                   }
                 ]
+              },
+              {
+                "charge_id": "23456",
+                "refund_summary": {
+                  "status": "available",
+                  "amount_available": 500,
+                  "amount_submitted": 0
+                },
+                "settlement_summary": {
+                  "capture_submit_time": "2018-05-01T13:27:00.057Z",
+                  "captured_date": "2018-05-01T13:27:00.057Z"
+                },
+                "billing_address": {
+                  "line1": "address line 1",
+                  "line2": "address line 2",
+                  "postcode": "AB1A 1AB",
+                  "city": "GB",
+                  "county": "somecounty",
+                  "country": "GB"
+                },
+                "charge_events": [
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "created",
+                      "finished": false
+                    },
+                    "amount": 500,
+                    "updated": "2018-05-01T13:27:00.063Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "started",
+                      "finished": false
+                    },
+                    "amount": 500,
+                    "updated": "2018-05-01T13:27:00.974Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "succeeded",
+                      "finished": true
+                    },
+                    "amount": 500,
+                    "updated": "2018-05-01T13:27:18.126Z",
+                    "refund_reference": null
+                  }
+                ]
               }
             ],
             "data": [
@@ -554,7 +609,8 @@
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
                 },
-                "transaction_type": "charge"
+                "transaction_type": "charge",
+                "delayed_capture": true
               },
               {
                 "amount": 300,

@@ -37,7 +37,7 @@ describe('Transactions details page', () => {
   })
 
   describe('page content', () => {
-    it('should display transaction details correctly', () => {
+    it('should display transaction details correctly when delayed capture is OFF', () => {
       cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
 
       // Ensure page title is correct
@@ -84,6 +84,62 @@ describe('Transactions details page', () => {
       // Email
       cy.get('.transaction-details tbody').find('tr').eq(13).find('td').eq(1).should('have.text',
         aSmartpayCharge.email)
+      cy.get('#delayed-capture-id').should('not.exist')
+    })
+
+    it('should display transaction details correctly when delayed capture is ON', () => {
+      const chargeWithDelayedCapture = selfServiceDefaultUser.sections.transactions.data[1]
+      const chargeDetails = selfServiceDefaultUser.sections.transactions.details_data.filter(item => item.charge_id === chargeWithDelayedCapture.charge_id)[0]
+
+      cy.visit(`${transactionsUrl}/${chargeWithDelayedCapture.charge_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${chargeWithDelayedCapture.reference} - System Generated test - GOV.UK Pay`)
+
+      // Ensure page details match up
+
+      // Reference number
+      cy.get('.transaction-details tbody').find('tr').first().find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.reference)
+      // Status
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').eq(1).should('have.text',
+        capitalise(chargeWithDelayedCapture.state.status))
+      // Amount
+      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').eq(1).should('have.text',
+        convertAmounts(chargeWithDelayedCapture.amount))
+      // Refunded amount
+      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').eq(1).should('have.text',
+        convertAmounts(chargeDetails.refund_summary.amount_submitted))
+      // Date created
+      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').eq(1).should('contain',
+        formatDate(new Date(chargeDetails.charge_events[0].updated)))
+      // Provider
+      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').eq(1).should('have.text',
+        capitalise(gatewayAccount.name))
+      // Provider ID
+      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.gateway_transaction_id)
+      // GOVUK Payment ID
+      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.charge_id)
+      // Delayed capture
+      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').eq(1).should('have.text',
+        'ON')
+      // Payment method
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.card_details.card_brand)
+      // Name on card
+      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.card_details.cardholder_name)
+      // Card number
+      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').eq(1).should('have.text',
+        `**** **** **** ${chargeWithDelayedCapture.card_details.last_digits_card_number}`)
+      // Card expiry date
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.card_details.expiry_date)
+      // Email
+      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').eq(1).should('have.text',
+        chargeWithDelayedCapture.email)
     })
   })
 

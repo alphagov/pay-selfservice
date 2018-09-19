@@ -38,7 +38,7 @@ describe('connector client', function () {
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
-  describe('get transaction details', () => {
+  describe('get transaction details with delayed capture OFF', () => {
     const gatewayAccount = ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
     const firstCharge = ssDefaultUser.sections.transactions.data[0]
     const chargeDetails = ssDefaultUser.sections.transactions.details_data.filter(x => x.charge_id === firstCharge.charge_id)[0]
@@ -61,7 +61,53 @@ describe('connector client', function () {
       const pactified = validGetTransactionDetailsResponse.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
-          .withUponReceiving('a valid transaction details request')
+          .withUponReceiving('a valid transaction details request with delayed capture OFF')
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get transaction details successfully', function (done) {
+      const getTransactionDetails = validGetTransactionDetailsResponse.getPlain()
+      connectorClient.getCharge(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getTransactionDetails)
+          done()
+        })
+    })
+  })
+
+  describe('get transaction details with delayed capture ON', () => {
+    const gatewayAccount = ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
+    const transactions = ssDefaultUser.sections.transactions
+    const chargeWithDelayedCapture = transactions.data.filter(item => item.charge_id === '23456')[0]
+    const chargeDetails = transactions.details_data.filter(x => x.charge_id === chargeWithDelayedCapture.charge_id)[0]
+    const params = {
+      gatewayAccountId: gatewayAccount.id,
+      chargeId: chargeWithDelayedCapture.charge_id
+    }
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse(
+      {
+        summaryObject: chargeWithDelayedCapture,
+        payment_provider: gatewayAccount.name,
+        gateway_account_id: params.gatewayAccountId,
+        refund_summary: chargeDetails.refund_summary,
+        settlement_summary: chargeDetails.settlement_summary,
+        billing_address: chargeDetails.billing_address
+      }
+    )
+
+    before((done) => {
+      const pactified = validGetTransactionDetailsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
+          .withUponReceiving('a valid transaction details request with delayed capture ON')
           .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
@@ -159,6 +205,44 @@ describe('connector client', function () {
     afterEach(() => provider.verify())
 
     it('should get charge events successfully', function (done) {
+      const getChargeEvents = validGetTransactionDetailsResponse.getPlain()
+      connectorClient.getChargeEvents(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getChargeEvents)
+          done()
+        })
+    })
+  })
+
+  describe('get charge events for delayed_capture on', () => {
+    const firstCharge = ssDefaultUser.sections.transactions.data.filter(item => item.charge_id === '23456')[0]
+    const chargeDetails = ssDefaultUser.sections.transactions.details_data.filter(x => x.charge_id === firstCharge.charge_id)[0]
+    const params = {
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      chargeId: firstCharge.charge_id
+    }
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validChargeEventsResponse({
+      chargeId: params.chargeId,
+      events: chargeDetails.charge_events
+    })
+
+    before((done) => {
+      const pactified = validGetTransactionDetailsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}/events`)
+          .withUponReceiving('a valid charge events request')
+          .withState(`User ${params.gatewayAccountId} exists in the database, has an available charge with id ${firstCharge.charge_id} and has available charge events`)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get charge events successfully for delayed_capture on', function (done) {
       const getChargeEvents = validGetTransactionDetailsResponse.getPlain()
       connectorClient.getChargeEvents(params,
         (connectorData, connectorResponse) => {
