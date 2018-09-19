@@ -27,7 +27,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#active-team-members-heading').withExactText('Active (6)')
     body.should.containSelector('#admin-role-header').withExactText('Administrators (2)')
@@ -69,7 +69,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(1).withNoLink()
   })
@@ -91,7 +91,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#view-only-role-header').withExactText('View only (0)')
     body.should.containSelector('#team-members-view-only-list').havingNumberOfRows(0)
@@ -105,7 +105,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#invite-team-member-link')
   })
@@ -118,7 +118,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.not.containSelector('#invite-team-member-link')
   })
@@ -146,7 +146,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#invited-team-members-heading').withExactText('Invited (5)')
     body.should.containSelector('#invited-team-members-admin-role-header').withExactText('Administrators (2)')
@@ -183,7 +183,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#invited-team-members-view-only-role-header').withExactText('View only (0)')
     body.should.containSelector('#invited-team-members-view-only-list').havingNumberOfRows(0)
@@ -201,7 +201,7 @@ describe('The team members view', function () {
       }
     }
 
-    let body = renderTemplate('services/team_members', templateData)
+    let body = renderTemplate('team-members/team_members', templateData)
     body.should.not.containSelector('#invited-team-members-heading')
     body.should.not.containSelector('#invited-team-members-admin-role-header')
     body.should.not.containSelector('#invited-team-members-view-only-role-header')

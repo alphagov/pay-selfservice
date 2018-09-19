@@ -11,11 +11,11 @@ const hideServiceHeaderTemplates = [
 
 const hideServiceNavTemplates = [
   'merchant_details/edit_merchant_details',
-  'services/team_members',
-  'services/team_member_invite',
-  'services/team_member_details',
-  'services/team_member_profile',
-  'services/team_member_permissions'
+  'team-members/team_members',
+  'team-members/team_member_invite',
+  'team-members/team_member_details',
+  'team-members/team_member_profile',
+  'team-members/team_member_permissions'
 ]
 
 /**

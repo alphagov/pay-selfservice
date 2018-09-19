@@ -11,7 +11,7 @@ describe('The service role update view', function () {
       editPermissionsLink: 'some-link'
     }
 
-    let body = renderTemplate('services/team_member_permissions', templateData)
+    let body = renderTemplate('team-members/team_member_permissions', templateData)
 
     body.should.containSelector('#email').withExactText('oscar.smith@example.com')
     body.should.containSelector('form#role-update-form').withAttribute('action', 'some-link')
