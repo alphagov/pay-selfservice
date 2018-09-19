@@ -68,7 +68,7 @@ module.exports = {
       const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
       const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
 
-      successResponse(req, res, 'services/team_members', {
+      successResponse(req, res, 'team-members/team_members', {
         team_members: teamMembers,
         number_active_members: numberActiveMembers,
         inviteTeamMemberLink: inviteTeamMemberLink,
@@ -113,7 +113,7 @@ module.exports = {
       const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
 
       if (roleInList && hasSameService) {
-        successResponse(req, res, 'services/team_member_details', {
+        successResponse(req, res, 'team-members/team_member_details', {
           username: user.username,
           email: user.email,
           role: roleInList.description,
@@ -180,7 +180,7 @@ module.exports = {
    */
   profile: (req, res) => {
     const onSuccess = (user) => {
-      successResponse(req, res, 'services/team_member_profile', {
+      successResponse(req, res, 'team-members/team_member_profile', {
         username: user.username,
         email: user.email,
         telephone_number: user.telephoneNumber,

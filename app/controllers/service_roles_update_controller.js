@@ -71,7 +71,7 @@ module.exports = {
         if (!hasSameService(req.user, user, serviceExternalId)) {
           serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId)
         } else {
-          successResponse(req, res, 'services/team_member_permissions', viewData(user))
+          successResponse(req, res, 'team-members/team_member_permissions', viewData(user))
         }
       })
       .catch(err => {
