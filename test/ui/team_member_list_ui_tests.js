@@ -29,28 +29,28 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.containSelector('h2#active-team-members-heading').withExactText('Active (6)')
-    body.should.containSelector('h3#admin-role-header').withExactText('Administrators (2)')
-    body.should.containSelector('h3#view-only-role-header').withExactText('View only (3)')
-    body.should.containSelector('h3#view-and-refund-role-header').withExactText('View and refund (1)')
+    body.should.containSelector('#active-team-members-heading').withExactText('Active (6)')
+    body.should.containSelector('#admin-role-header').withExactText('Administrators (2)')
+    body.should.containSelector('#view-only-role-header').withExactText('View only (3)')
+    body.should.containSelector('#view-and-refund-role-header').withExactText('View and refund (1)')
 
-    body.should.containSelector('div#team-members-admin-list ul').havingNumberOfItems(2)
-    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(1).withText('username1')
-    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(1).withALinkTo('view-username1-link')
-    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(2).withText('username2 (you)')
-    body.should.containSelector('div#team-members-admin-list ul').havingItemAt(2).withALinkTo('view-username2-my-profile-link')
+    body.should.containSelector('#team-members-admin-list .govuk-table').havingNumberOfRows(2)
+    body.should.containSelector('#team-members-admin-list .govuk-table').havingRowAt(1).withText('username1')
+    body.should.containSelector('#team-members-admin-list .govuk-table').havingRowAt(1).withALinkTo('view-username1-link')
+    body.should.containSelector('#team-members-admin-list .govuk-table').havingRowAt(2).withText('username2 (you)')
+    body.should.containSelector('#team-members-admin-list .govuk-table').havingRowAt(2).withALinkTo('view-username2-my-profile-link')
 
-    body.should.containSelector('div#team-members-view-only-list ul').havingNumberOfItems(3)
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(1).withText('username3')
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(1).withALinkTo('view-username3-link')
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(2).withText('username4')
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(2).withALinkTo('view-username4-link')
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(3).withText('username5')
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(3).withALinkTo('view-username5-link')
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingNumberOfRows(3)
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(1).withText('username3')
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(1).withALinkTo('view-username3-link')
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(2).withText('username4')
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(2).withALinkTo('view-username4-link')
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(3).withText('username5')
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(3).withALinkTo('view-username5-link')
 
-    body.should.containSelector('div#team-members-view-and-refund-list ul').havingNumberOfItems(1)
-    body.should.containSelector('div#team-members-view-and-refund-list ul').havingItemAt(1).withText('username6')
-    body.should.containSelector('div#team-members-view-and-refund-list ul').havingItemAt(1).withALinkTo('view-username6-link')
+    body.should.containSelector('#team-members-view-and-refund-list .govuk-table').havingNumberOfRows(1)
+    body.should.containSelector('#team-members-view-and-refund-list .govuk-table').havingRowAt(1).withText('username6')
+    body.should.containSelector('#team-members-view-and-refund-list .govuk-table').havingRowAt(1).withALinkTo('view-username6-link')
   })
   it('should render all team members without links if user does not have read permissions', function () {
     let templateData = {
@@ -71,7 +71,7 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.containSelector('div#team-members-view-only-list ul').havingItemAt(1).withNoLink()
+    body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(1).withNoLink()
   })
 
   it('should render number of users of a role as 0 if no users are grouped in that role', function () {
@@ -93,8 +93,8 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.containSelector('h3#view-only-role-header').withExactText('View only (0)')
-    body.should.containSelector('div#team-members-view-only-list').havingNumberOfRows(0)
+    body.should.containSelector('#view-only-role-header').withExactText('View only (0)')
+    body.should.containSelector('#team-members-view-only-list').havingNumberOfRows(0)
   })
 
   it('should render invite a team member option when user has create permissions', function () {
@@ -107,7 +107,7 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.containSelector('a#invite-team-member-link')
+    body.should.containSelector('#invite-team-member-link')
   })
 
   it('should not render invite a team member option when user has no create permissions', function () {
@@ -120,7 +120,7 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.not.containSelector('a#invite-team-member-link')
+    body.should.not.containSelector('#invite-team-member-link')
   })
   it('should render all invited team members grouped by role', function () {
     let templateData = {
@@ -148,21 +148,21 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.containSelector('h2#invited-team-members-heading').withExactText('Invited (5)')
-    body.should.containSelector('h3#invited-team-members-admin-role-header').withExactText('Administrators (2)')
-    body.should.containSelector('h3#invited-team-members-view-only-role-header').withExactText('View only (1)')
-    body.should.containSelector('h3#invited-team-members-view-and-refund-role-header').withExactText('View and refund (2)')
+    body.should.containSelector('#invited-team-members-heading').withExactText('Invited (5)')
+    body.should.containSelector('#invited-team-members-admin-role-header').withExactText('Administrators (2)')
+    body.should.containSelector('#invited-team-members-view-only-role-header').withExactText('View only (1)')
+    body.should.containSelector('#invited-team-members-view-and-refund-role-header').withExactText('View and refund (2)')
 
-    body.should.containSelector('div#invited-team-members-admin-list ul').havingNumberOfItems(2)
-    body.should.containSelector('div#invited-team-members-admin-list ul').havingItemAt(1).withText('username1')
-    body.should.containSelector('div#invited-team-members-admin-list ul').havingItemAt(2).withText('username2')
+    body.should.containSelector('#invited-team-members-admin-list .govuk-table').havingNumberOfRows(2)
+    body.should.containSelector('#invited-team-members-admin-list .govuk-table').havingRowAt(1).withText('username1')
+    body.should.containSelector('#invited-team-members-admin-list .govuk-table').havingRowAt(2).withText('username2')
 
-    body.should.containSelector('div#invited-team-members-view-only-list ul').havingNumberOfItems(1)
-    body.should.containSelector('div#invited-team-members-view-only-list ul').havingItemAt(1).withText('username3')
+    body.should.containSelector('#invited-team-members-view-only-list .govuk-table').havingNumberOfRows(1)
+    body.should.containSelector('#invited-team-members-view-only-list .govuk-table').havingRowAt(1).withText('username3')
 
-    body.should.containSelector('div#invited-team-members-view-and-refund-list ul').havingNumberOfItems(2)
-    body.should.containSelector('div#invited-team-members-view-and-refund-list ul').havingItemAt(1).withText('username6')
-    body.should.containSelector('div#invited-team-members-view-and-refund-list ul').havingItemAt(2).withText('username5')
+    body.should.containSelector('#invited-team-members-view-and-refund-list .govuk-table').havingNumberOfRows(2)
+    body.should.containSelector('#invited-team-members-view-and-refund-list .govuk-table').havingRowAt(1).withText('username6')
+    body.should.containSelector('#invited-team-members-view-and-refund-list .govuk-table').havingRowAt(2).withText('username5')
   })
   it('should render number of invited members of a role as 0 if no users are grouped in that role', function () {
     let templateData = {
@@ -185,8 +185,8 @@ describe('The team members view', function () {
 
     let body = renderTemplate('services/team_members', templateData)
 
-    body.should.containSelector('h3#invited-team-members-view-only-role-header').withExactText('View only (0)')
-    body.should.containSelector('div#invited-team-members-view-only-list').havingNumberOfRows(0)
+    body.should.containSelector('#invited-team-members-view-only-role-header').withExactText('View only (0)')
+    body.should.containSelector('#invited-team-members-view-only-list').havingNumberOfRows(0)
   })
   it('should not render invited team members list if there are no invitations', function () {
     let templateData = {
@@ -202,13 +202,13 @@ describe('The team members view', function () {
     }
 
     let body = renderTemplate('services/team_members', templateData)
-    body.should.not.containSelector('h2#invited-team-members-heading')
-    body.should.not.containSelector('h3#invited-team-members-admin-role-header')
-    body.should.not.containSelector('h3#invited-team-members-view-only-role-header')
-    body.should.not.containSelector('h3#invited-team-members-view-and-refund-role-header')
+    body.should.not.containSelector('#invited-team-members-heading')
+    body.should.not.containSelector('#invited-team-members-admin-role-header')
+    body.should.not.containSelector('#invited-team-members-view-only-role-header')
+    body.should.not.containSelector('#invited-team-members-view-and-refund-role-header')
 
-    body.should.not.containSelector('div#invited-team-members-admin-list')
-    body.should.not.containSelector('div#invited-team-members-view-only-list')
-    body.should.not.containSelector('div#invited-team-members-view-and-refund-list')
+    body.should.not.containSelector('#invited-team-members-admin-list')
+    body.should.not.containSelector('#invited-team-members-view-only-list')
+    body.should.not.containSelector('#invited-team-members-view-and-refund-list')
   })
 })
