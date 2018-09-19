@@ -1,7 +1,12 @@
 .flash-container {
   @extend .govuk-error-summary;
+  margin-top: govuk-spacing(6);
 
     &--good {
     border-color:  govuk-colour("green");
+  }
+
+  .notification {
+    @include govuk-font($size: 19);
   }
 }
