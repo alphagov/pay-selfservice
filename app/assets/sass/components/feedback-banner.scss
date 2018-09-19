@@ -11,8 +11,8 @@
       margin: govuk-spacing(6) govuk-spacing(6) 0;
     }
 
- @media (min-width: 960px + govuk-spacing(9)) {
-      max-width: 960px;
+    @include govuk-media-query($and: "(min-width: #{($govuk-page-width + $govuk-gutter * 2)})") {
+    max-width: 930px;
       margin: govuk-spacing(6) auto 0;
     }
   }
