@@ -1,74 +1,85 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/radios/macro.njk" import govukRadios %}
 
-{% block page_title %}
+{% block pageTitle %}
 Invite a new team member - GOV.UK Pay
 {% endblock %}
 
-{% block pageSpecificJS %}
-  <script src="/public/js/components/link-follower.js"></script>
-{% endblock %}
-
 {% block mainContent %}
-  <div class="column-two-thirds">
-    <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukBackLink({ text: "See all team members", href: teamMemberIndexLink }) }}
     <div>
-      <h1 class="heading-large underline">
-        <span class="heading-secondary">Team members</span>
+      <h1 class="govuk-heading-l underline">
+        <span class="govuk-caption-l">Team members</span>
         Invite a team member</h1>
     </div>
   </div>
-  <div class="column-full remove-left-margin">
-    <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}">
-      <div class="form-group">
-        <label class="form-label" for="invitee-email">
-            Email address
-        </label>
-        <input type="text" class="form-control" id="invitee-email" name="invitee-email" value="{{invitee}}">
-      </div>
-      <div class="form-group">
-        <fieldset>
-          <legend class="heading-small">Permission level</legend>
-          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-          <div class="multiple-choice">
-            <input id="role-admin-input" type="radio" name="role-input" value="{{admin.id}}">
-            <label for="role-admin-input">
-              <span class="heading-small">Administrator</span>
-              <ul class="question-advice form-hint">
-                <li>View transactions</li>
-                <li>Refund payments</li>
-                <li>Manage settings</li>
-              </ul>
-            </label>
-          </div>
-          <div class="multiple-choice">
-            <input id="role-view-and-refund-input" type="radio" name="role-input" value="{{viewAndRefund.id}}">
-            <label for="role-view-and-refund-input">
-              <span class="heading-small">View and refund</span>
-              <ul class="question-advice form-hint">
-                <li>View transactions</li>
-                <li>Refund payments</li>
-                <li>Cannot manage settings</li>
-             </ul>
-            </label>
-          </div>
-          <div class="multiple-choice">
-            <input id="role-view-input" type="radio" name="role-input" value="{{view.id}}" checked>
-            <label for="role-view-input"><span class="heading-small">View only</span>
-              <ul class="question-advice form-hint">
-                <li>View transactions</li>
-                <li>Cannot refund payments</li>
-                <li>Cannot manage settings</li>
-              </ul>
-            </label>
-          </div>
-        </fieldset>
-      </div>
-      <div class="form-group call-to-action-group">
-        <input type="submit" class="button" value="Send invitation email">
-        <a id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
-            Cancel
-        </a>
-      </div>
-    </form>
-  </div>
+  <form id="invite-member-form" method="post" action="{{teamMemberInviteSubmitLink}}" class="govuk-grid-column-two-thirds">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukInput({
+        label: {
+          text: "Email address"
+        },
+        id: "invitee-email",
+        name: "invitee-email",
+        classes: "govuk-!-width-two-thirds",
+        type: "email"
+      })
+    }}
+
+    {{ govukRadios({
+      idPrefix: "role-input",
+      name: "role-input",
+      fieldset: {
+        legend: {
+          text: "Permission level",
+          classes: "govuk-label--s"
+        }
+      },
+      items: [
+        {
+          value: admin.id,
+          text: "Administrator",
+          label: {
+            classes: "govuk-label--s"
+          },
+          hint: {
+            html: "View transactions<br/>Refund payments</br/>Manage settings"
+          }
+        },
+        {
+          value: viewAndRefund.id,
+          text: "View and refund",
+          label: {
+            classes: "govuk-label--s"
+          },
+          hint: {
+            html: "View transactions<br/>Refund payments</br/>Cannot manage settings"
+          }
+        },
+        {
+          value: view.id,
+          text: "View only",
+          label: {
+            classes: "govuk-label--s"
+          },
+          checked: true,
+          hint: {
+            html: "View transactions<br/>Cannot
+            refund payments</br/>Cannot manage settings"
+          }
+        }
+      ]
+    }) }}
+
+    {{ govukButton({ text: "Send invitation email" }) }}
+    <p class="govuk-body">
+      <a id="service-name-cancel-link" class="govuk-link govuk-link--no-visited-state" href="{{teamMemberIndexLink}}">
+        Cancel
+      </a>
+    </p>
+  </form>
 {% endblock %}
