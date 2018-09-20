@@ -124,7 +124,7 @@ describe('Transactions details page', () => {
         chargeWithDelayedCapture.charge_id)
       // Delayed capture
       cy.get('.transaction-details tbody').find('tr').eq(9).find('td').eq(1).should('have.text',
-        'ON')
+        'On')
       // Payment method
       cy.get('.transaction-details tbody').find('tr').eq(10).find('td').eq(1).should('have.text',
         chargeWithDelayedCapture.card_details.card_brand)

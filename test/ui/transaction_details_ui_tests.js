@@ -86,7 +86,7 @@ describe('The transaction details view', function () {
     $('#cardholder_name').text().should.equal('Data unavailable')
     $('#card_number').text().should.equal('**** **** **** ****')
     $('#card_expiry_date').text().should.equal('Data unavailable')
-    $('#delayed-capture-id').text().should.equal('ON')
+    $('#delayed-capture-id').text().should.equal('On')
     //
     templateData.events.forEach((transactionData, ix) => {
       body.should.containSelector('table.transaction-events')
