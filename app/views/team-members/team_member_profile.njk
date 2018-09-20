@@ -1,30 +1,30 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
 
-{% block page_title %}
+{% block pageTitle %}
 My profile - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-full">
-  <h1 id="details-for" class="heading-large page-title">
+<div class="govuk-grid-column-full">
+  <h1 id="details-for" class="govuk-heading-l page-title">
       My profile
   </h1>
 </div>
-<div class="column-two-thirds admin-list">
-  <table>
-    <caption class="visually-hidden">Details for {{username}}</caption>
-    <tbody>
-      <tr>
-        <th>Email:</th>
-        <td colspan="2" id="email">{{email}}</td>
+<div class="govuk-grid-column-two-thirds">
+  <table class="govuk-table govuk-!-font-size-16">
+    <caption class="govuk-visually-hidden">Details for {{username}}</caption>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Email:</th>
+        <td class="govuk-table__cell" colspan="2" id="email">{{email}}</td>
       </tr>
-      <tr>
-        <th>Mobile number:</th>
-        <td colspan="2" id="telephone-number">{{telephone_number}}</td>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Mobile number:</th>
+        <td class="govuk-table__cell" colspan="2" id="telephone-number">{{telephone_number}}</td>
       </tr>
-      <tr>
-        <th>Sign-in method:</th>
-        <td id="two-factor-auth">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Sign-in method:</th>
+        <td class="govuk-table__cell" id="two-factor-auth">
           {% if two_factor_auth === 'APP' %}
             Authenticator app
           {% endif %}
@@ -32,16 +32,16 @@ My profile - GOV.UK Pay
             Text message
           {% endif %}
         </td>
-        <td>
+        <td class="govuk-table__cell">
           <a href="{{two_factor_auth_link}}">Change</a>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
-<div class="column-one-third admin-list">
+<div class="govuk-grid-column-one-third">
   <div class="related-information">
-    <p>To change your permission level on a service you need to contact an administrator for that service.</p>
+    <p class="govuk-body govuk-!-font-size-16">To change your permission level on a service you need to contact an administrator for that service.</p>
   </div>
 </div>
 {% endblock %}
