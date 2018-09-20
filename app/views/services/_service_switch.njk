@@ -17,10 +17,5 @@
         account ({{ account.payment_provider }})
       {% endif %}
     </button>
-    {% if account.type !== 'live' %}
-      {% if not loop.last %}
-        <span class="govuk-body govuk-!-margin-left-1 govuk-!-margin-right-1">|</span>
-      {% endif %}
-    {% endif %}
   </form>
 </li>
