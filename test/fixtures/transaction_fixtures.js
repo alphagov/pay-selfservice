@@ -100,7 +100,8 @@ module.exports = {
           country: 'GB'
         },
         card_brand: opts.summaryObject.card_brand || 'Visa'
-      }
+      },
+      delayed_capture: opts.summaryObject.delayed_capture || false
     }
 
     return {

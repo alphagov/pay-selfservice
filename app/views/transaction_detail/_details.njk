@@ -49,5 +49,12 @@
     <td>GOV.UK payment ID:</td>
     <td id="payment-id">{{charge_id}}</td>
   </tr>
+
+  {% if delayed_capture %}
+  <tr>
+    <td>Delayed capture:</td>
+    <td id="delayed-capture">On</td>
+  </tr>
+  {% endif %}
   </tbody>
 </table>
