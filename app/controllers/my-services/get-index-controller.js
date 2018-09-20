@@ -41,15 +41,18 @@ module.exports = (req, res) => {
         const gatewayAccounts =
           aggregatedGatewayAccounts.filter(gatewayAccount => serviceRole.service.gatewayAccountIds.includes(gatewayAccount.external_id.toString()) ||
             serviceRole.service.gatewayAccountIds.includes(gatewayAccount.id.toString()))
-        return {
+        const cardAccounts = gatewayAccounts.filter(gatewayAccount => gatewayAccount.payment_method !== 'direct debit')
+        const directdebitAccounts = gatewayAccounts.filter(gatewayAccount => gatewayAccount.payment_method === 'direct debit')
+        const payload = {
           name: serviceRole.service.name === 'System Generated' ? 'Temporary Service Name' : serviceRole.service.name,
           external_id: serviceRole.service.externalId,
           gateway_accounts: {
-            cardAccounts: gatewayAccounts.filter(gatewayAccount => gatewayAccount.payment_method !== 'direct debit'),
-            directdebitAccounts: gatewayAccounts.filter(gatewayAccount => gatewayAccount.payment_method === 'direct debit')
+            cardAccounts: _.sortBy(cardAccounts, 'type', 'asc'),
+            directdebitAccounts
           },
           permissions: getHeldPermissions(serviceRole.role.permissions.map(permission => permission.name))
         }
+        return payload
       })
     })
     .then(displayMyServices)
