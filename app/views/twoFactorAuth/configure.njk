@@ -1,4 +1,8 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/warning-text/macro.njk" import govukWarningText %}
 
 {% if method === 'APP' %}
   {% set title = 'Set up an authenticator app' %}
@@ -6,86 +10,95 @@
   {% set title = 'Check your phone' %}
 {% endif %}
 
-{% block page_title %}
-{{ title }} - GOV.UK Pay
+{% block pageTitle %}
+  {{ title }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-full">
-  <a href="{{routes.user.profile}}" class="link-back">My profile</a>
+<div class="govuk-grid-column-full">
+    {{ govukBackLink({ text: "My profile", href: routes.user.profile }) }}
 </div>
-<div class="column-full">
-  <h1 class="heading-large page-title">
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l page-title">
     {{ title }}
   </h1>
 </div>
-<div class="column-two-thirds">
+<div class="govuk-grid-column-two-thirds">
 {% if method === 'APP' %}
-  <p>Scan the barcode with your authenticator app or enter the secret manually.</p>
-  <div class="notice">
-    <i class="icon icon-important">
-      <span class="visually-hidden">Warning</span>
-    </i>
-    <strong class="bold-small">
-      Once setup is complete, you will only be able to use this authenticator app to sign in.
-    </strong>
-  </div>
-  <figure class="qr-code">
-    <img src="{{qrCodeDataUrl}}" alt="If you cannot view or scan the barcode, please enter the secret manually">
+  <p class="govuk-body">Scan the barcode with your authenticator app or enter the secret manually.</p>
+  {{
+    govukWarningText({
+      text: "Once setup is complete, you will only be able to use this authenticator app to sign in.",
+      classes: "govuk-!-margin-bottom-0"
+    })
+  }}
+  <figure class="govuk-!-margin-top-0 govuk-!-margin-left-0 govuk-!-margin-bottom-6">
+    <img class="qr-code govuk-!-negative-margin-h-3" src="{{qrCodeDataUrl}}" alt="If you cannot view or scan the barcode, please enter the secret manually">
     <figcaption>
-      <h4>Secret</h4>
-      <p class="small">
-        <span class="code">{{prettyPrintedSecret}}</span>
-      </p>
+      <h4 class="govuk-body">Secret</h4>
+      <code class="code">{{prettyPrintedSecret}}</code>
     </figcaption>
   </figure>
 {% else %}
-  <div class="notice two-fa-notice">
-    <i class="icon icon-important">
-      <span class="visually-hidden">Warning</span>
-    </i>
-    <strong class="bold-small">
-      Once set-up is complete, you will only be able to sign in using text message codes.
-    </strong>
-  </div>
+  {{
+    govukWarningText({
+      text: "Once set-up is complete, you will only be able to sign in using text message codes."
+    })
+  }}
 {% endif %}
   <form method="post" action="{{routes.user.twoFactorAuth.configure}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group {% if flash.genericError %}error{% endif %}">
-      <label class="form-label" for="code">
-        Security code
-        <span class="form-hint">
-          {% if method === 'APP' %}
-          Enter the code shown in your app to complete the setup
-          {% else %}
-          We have sent you a text message with a security code
-          {% endif %}
-        </span>
-        {% if flash.genericError %}
-          <span class="error-message">Please enter a valid security code</span>
-        {% endif %}
-      </label>
-      <input autofocus type="text" class="form-control" id="code" name="code" data-validate="required" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <button class="button" type="submit">
-        Complete
-      </button>
-    </div>
+
+    {% set codeError = false %}
+    {% if flash.genericError %}
+      {% set codeError = {
+        text: "Please enter a valid security code"
+      } %}
+    {% endif %}
+
+    {% set codeHint = "Enter the code shown in your app to complete the setup" %}
+    {% if method === 'SMS' %}
+      {% set codeHint = "We have sent you a text message with a security code" %}
+    {% endif %}
+
+    {{ govukInput({
+        label: {
+          text: "Security code"
+        },
+        hint: {
+          text: codeHint
+        },
+        errorMessage: codeError,
+        id: "code",
+        name: "code",
+        classes: "govuk-input--width-10",
+        type: "text",
+        attributes: {
+          "data-validate": "required",
+          "autocomplete": "off",
+          "autofocus": true
+        }
+      })
+    }}
+
+    {{ govukButton({ text: "Complete" }) }}
   </form>
+
   {% if method === 'SMS' %}
   <form method="post" action="{{routes.user.twoFactorAuth.resend}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group">
-      <button class="button-link" type="submit">
+    <div class="govuk-form-group">
+      <button class="button-as-link govuk-!-font-size-19" type="submit">
         Not received a text message?
       </button>
     </div>
   </form>
   {% endif %}
 
-  <a id="service-name-cancel-link" href="{{routes.user.twoFactorAuth.index}}">
-    Cancel
-  </a>
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{routes.user.twoFactorAuth.index}}">
+      Cancel
+    </a>
+  </p>
 </div>
 {% endblock %}
