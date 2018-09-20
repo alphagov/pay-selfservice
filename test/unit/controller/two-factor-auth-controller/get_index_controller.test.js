@@ -45,7 +45,7 @@ describe('Two factor authenticator configure index GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.link-back').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
     })
 
     it(`should have itself as the form action`, () => {
@@ -53,7 +53,7 @@ describe('Two factor authenticator configure index GET', () => {
     })
 
     it(`should a button with “Use an authenticator app instead”`, () => {
-      expect($('.button').text()).to.contain('Use an authenticator app instead')
+      expect($('.govuk-button').text()).to.contain('Use an authenticator app instead')
     })
   })
 
@@ -89,7 +89,7 @@ describe('Two factor authenticator configure index GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.link-back').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
     })
 
     it(`should have itself as the form action`, () => {
@@ -97,11 +97,11 @@ describe('Two factor authenticator configure index GET', () => {
     })
 
     it(`should a radio with “A different authenticator app”`, () => {
-      expect($('#label-two-fa-method-app').text()).to.contain('A different authenticator app')
+      expect($('label[for="two-fa-method-1"]').text()).to.contain('A different authenticator app')
     })
 
     it(`should a radio with “By text message”`, () => {
-      expect($('#label-two-fa-method-sms').text()).to.contain('By text message')
+      expect($('label[for="two-fa-method-2"]').text()).to.contain('By text message')
     })
   })
 })
