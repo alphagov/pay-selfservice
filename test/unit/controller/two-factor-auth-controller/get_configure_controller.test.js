@@ -48,7 +48,7 @@ describe('Two factor authenticator configure page GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.link-back').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
     })
 
     it(`should have itself as the form action`, () => {
@@ -56,7 +56,7 @@ describe('Two factor authenticator configure page GET', () => {
     })
 
     it(`should have a base64 encoded image in the image src for the QR code`, () => {
-      expect($('.qr-code img').attr('src')).to.contain('data:image/png;base64')
+      expect($('.qr-code').attr('src')).to.contain('data:image/png;base64')
     })
   })
   describe('if setting up SMS', () => {
@@ -92,7 +92,7 @@ describe('Two factor authenticator configure page GET', () => {
     })
 
     it(`should include a link to My Profile`, () => {
-      expect($('.link-back').attr('href')).to.equal(paths.user.profile)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.user.profile)
     })
 
     it(`should have itself as the form action`, () => {
