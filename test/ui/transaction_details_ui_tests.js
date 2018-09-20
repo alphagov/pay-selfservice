@@ -86,7 +86,7 @@ describe('The transaction details view', function () {
     $('#cardholder_name').text().should.equal('Data unavailable')
     $('#card_number').text().should.equal('**** **** **** ****')
     $('#card_expiry_date').text().should.equal('Data unavailable')
-    $('#delayed-capture-id').text().should.equal('On')
+    $('#delayed-capture').text().should.equal('On')
     //
     templateData.events.forEach((transactionData, ix) => {
       body.should.containSelector('table.transaction-events')
@@ -191,7 +191,7 @@ describe('The transaction details view', function () {
     $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name)
     $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number)
     $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date)
-    body.should.not.containSelector('#delayed-capture-id')
+    body.should.not.containSelector('#delayed-capture')
 
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')

@@ -84,7 +84,7 @@ describe('Transactions details page', () => {
       // Email
       cy.get('.transaction-details tbody').find('tr').eq(13).find('td').eq(1).should('have.text',
         aSmartpayCharge.email)
-      cy.get('#delayed-capture-id').should('not.exist')
+      cy.get('#delayed-capture').should('not.exist')
     })
 
     it('should display transaction details correctly when delayed capture is ON', () => {
