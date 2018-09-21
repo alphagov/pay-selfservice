@@ -963,13 +963,13 @@
                 ],
                 "links": {
                   "self": {
-                    "href": "https://myconnector.local/v2/api/accounts/666/charges?xxxxxxxxxxxxxxxxxxxxxx&page=1&display_size=100"
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?reference=ref38&cardholder_name=&last_digits_card_number=&email=&card_brand=&from_date=2018-05-03T00%3A00%3A00.000Z&to_date=2018-05-04T00%3A00%3A01.000Z&page=1&display_size=100&payment_states=created%2Cstarted%2Csubmitted%2Csuccess"
                   },
                   "last_page": {
-                    "href": "https://myconnector.local/v2/api/accounts/666/charges?xxxxxxxxxxxxxxxxxxxxxx&page=1&display_size=100"
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?reference=ref38&cardholder_name=&last_digits_card_number=&email=&card_brand=&from_date=2018-05-03T00%3A00%3A00.000Z&to_date=2018-05-04T00%3A00%3A01.000Z&page=1&display_size=100&payment_states=created%2Cstarted%2Csubmitted%2Csuccess"
                   },
                   "first_page": {
-                    "href": "https://myconnector.local/v2/api/accounts/666/charges?xxxxxxxxxxxxxxxxxxxxxx&page=1&display_size=100"
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?reference=ref38&cardholder_name=&last_digits_card_number=&email=&card_brand=&from_date=2018-05-03T00%3A00%3A00.000Z&to_date=2018-05-04T00%3A00%3A01.000Z&page=1&display_size=100&payment_states=created%2Cstarted%2Csubmitted%2Csuccess"
                   }
                 }
               }
