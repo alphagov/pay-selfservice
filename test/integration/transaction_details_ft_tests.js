@@ -130,7 +130,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Mastercard',
           'cardholder_name': 'TEST',
           'expiry_date': '12/19',
-          'last_digits_card_number': '4242'
+          'last_digits_card_number': '4242',
+          'first_digits_card_number': '424242'
         },
         'refund_summary': {
           'status': 'available',
@@ -180,7 +181,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Mastercard',
           'cardholder_name': 'TEST',
           'expiry_date': '12/19',
-          'last_digits_card_number': '4242'
+          'last_digits_card_number': '4242',
+          'first_digits_card_number': '4242 42'
         },
         'state_friendly': 'Success',
         'refund_summary': {
@@ -352,7 +354,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Data unavailable',
           'cardholder_name': 'Data unavailable',
           'expiry_date': 'Data unavailable',
-          'last_digits_card_number': '****'
+          'last_digits_card_number': '****',
+          'first_digits_card_number': '**** **'
         },
         'state_friendly': 'In progress',
         'refund_summary': {
@@ -448,7 +451,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Mastercard',
           'cardholder_name': null,
           'expiry_date': null,
-          'last_digits_card_number': null
+          'last_digits_card_number': null,
+          'first_digits_card_number': null
         },
         'refund_summary': {
           'status': 'available',
@@ -492,7 +496,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Mastercard',
           'cardholder_name': 'Data unavailable',
           'expiry_date': 'Data unavailable',
-          'last_digits_card_number': '****'
+          'last_digits_card_number': '****',
+          'first_digits_card_number': '**** **'
         },
         'state_friendly': 'In progress',
         'refund_summary': {
@@ -625,7 +630,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Mastercard',
           'cardholder_name': 'TEST',
           'expiry_date': '12/19',
-          'last_digits_card_number': '4242'
+          'last_digits_card_number': '4242',
+          'first_digits_card_number': '424242'
         },
         'refund_summary': {
           'status': 'full',
@@ -670,7 +676,8 @@ describe('The transaction view scenarios', function () {
           'card_brand': 'Mastercard',
           'cardholder_name': 'TEST',
           'expiry_date': '12/19',
-          'last_digits_card_number': '4242'
+          'last_digits_card_number': '4242',
+          'first_digits_card_number': '4242 42'
         },
         'refund_summary': {
           'status': 'full',

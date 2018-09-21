@@ -85,15 +85,18 @@ module.exports = {
       if (chargeData.card_details.cardholder_name == null) chargeData.card_details.cardholder_name = DATA_UNAVAILABLE
       if (chargeData.card_details.expiry_date == null) chargeData.card_details.expiry_date = DATA_UNAVAILABLE
       if (chargeData.card_details.last_digits_card_number == null) chargeData.card_details.last_digits_card_number = '****'
+      if (chargeData.card_details.first_digits_card_number == null) chargeData.card_details.first_digits_card_number = '**** **'
     } else {
       chargeData.card_details = {
         card_brand: DATA_UNAVAILABLE,
         cardholder_name: DATA_UNAVAILABLE,
         expiry_date: DATA_UNAVAILABLE,
-        last_digits_card_number: '****'
+        last_digits_card_number: '****',
+        first_digits_card_number: '**** **'
       }
     }
 
+    chargeData.card_details.first_digits_card_number = formatFirstSixDigitsCardNumber(chargeData.card_details.first_digits_card_number)
     chargeData.refundable = chargeData.refund_summary.status === 'available' || chargeData.refund_summary.status === 'error'
     chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
     chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted)
@@ -114,6 +117,12 @@ module.exports = {
   }
 }
 
+function formatFirstSixDigitsCardNumber (number) {
+  if (number.charAt(4) !== ' ') {
+    return number.substr(0, 4) + ' ' + number.substr(4)
+  }
+  return number
+}
 function asGBP (amountInPence) {
   return currencyFormatter.format((amountInPence / 100).toFixed(2), {code: 'GBP'})
 }

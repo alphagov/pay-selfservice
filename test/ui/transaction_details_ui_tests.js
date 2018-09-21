@@ -32,7 +32,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Data unavailable',
         'cardholder_name': 'Data unavailable',
         'expiry_date': 'Data unavailable',
-        'last_digits_card_number': '****'
+        'last_digits_card_number': '****',
+        'first_digits_card_number': '**** **'
       },
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
       'events': [
@@ -124,7 +125,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Visa',
         'cardholder_name': 'TEST',
         'expiry_date': '12/19',
-        'last_digits_card_number': '4242'
+        'last_digits_card_number': '4242',
+        'first_digits_card_number': '4242 42'
       },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
@@ -189,7 +191,7 @@ describe('The transaction details view', function () {
     $('#brand').text().should.equal(templateData.card_brand)
     $('#refunded-amount').text().should.contain('£0.00')
     $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name)
-    $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number)
+    $('#card_number').text().should.equal(templateData.card_details.first_digits_card_number + '** **** ' + templateData.card_details.last_digits_card_number)
     $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date)
     body.should.not.containSelector('#delayed-capture')
 
@@ -229,7 +231,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Visa',
         'cardholder_name': 'TEST',
         'expiry_date': '12/19',
-        'last_digits_card_number': '4242'
+        'last_digits_card_number': '4242',
+        'first_digits_card_number': '4242 42'
       },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
@@ -303,7 +306,7 @@ describe('The transaction details view', function () {
     $('#state').text().should.equal(templateData.state_friendly)
     $('#brand').text().should.equal(templateData.card_brand)
     $('#cardholder_name').text().should.equal(templateData.card_details.cardholder_name)
-    $('#card_number').text().should.equal('**** **** **** ' + templateData.card_details.last_digits_card_number)
+    $('#card_number').text().should.equal(templateData.card_details.first_digits_card_number + '** **** ' + templateData.card_details.last_digits_card_number)
     $('#card_expiry_date').text().should.equal(templateData.card_details.expiry_date)
 
     templateData.events.forEach((event, index) => {
@@ -430,7 +433,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Visa',
         'cardholder_name': 'TEST',
         'expiry_date': '12/19',
-        'last_digits_card_number': '4242'
+        'last_digits_card_number': '4242',
+        'first_digits_card_number': '4242 42'
       },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
@@ -483,7 +487,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Visa',
         'cardholder_name': 'TEST',
         'expiry_date': '12/19',
-        'last_digits_card_number': '4242'
+        'last_digits_card_number': '4242',
+        'first_digits_card_number': '4242 42'
       },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
@@ -528,7 +533,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Visa',
         'cardholder_name': 'TEST',
         'expiry_date': '12/19',
-        'last_digits_card_number': '4242'
+        'last_digits_card_number': '4242',
+        'first_digits_card_number': '4242 42'
       },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
@@ -573,7 +579,8 @@ describe('The transaction details view', function () {
         'card_brand': 'Visa',
         'cardholder_name': 'TEST',
         'expiry_date': '12/19',
-        'last_digits_card_number': '4242'
+        'last_digits_card_number': '4242',
+        'first_digits_card_number': '4242 42'
       },
       'state_friendly': 'Success',
       'gateway_transaction_id': '938c54a7-4186-4506-bfbe-72a122da6528',
