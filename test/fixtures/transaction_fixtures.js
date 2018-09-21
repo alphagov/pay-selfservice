@@ -26,12 +26,12 @@ module.exports = {
   },
   validTransactionsResponse: (opts = {}) => {
     let data = {
-      total: opts.transactions.data.length,
-      count: opts.transactions.data.length,
+      total: opts.transactions.length,
+      count: opts.transactions.length,
       page: 1,
       results:
-        [...opts.transactions.data],
-      _links: opts.transactions.links
+        [...opts.transactions],
+      _links: opts.links
     }
 
     return {

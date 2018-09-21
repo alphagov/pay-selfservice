@@ -569,7 +569,7 @@
                 ],
                 "charge_id": "12345",
                 "gateway_transaction_id": "4cddd970-cce9-4bf1-b087-f13db1e199bd",
-                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "email": "gds1-payments-team-smoke@digital.cabinet-office.gov.uk",
                 "created_date": "2018-05-01T13:27:00.057Z",
                 "card_details": {
                   "last_digits_card_number": "0002",
@@ -601,7 +601,7 @@
                 ],
                 "charge_id": "23456",
                 "gateway_transaction_id": "c4fa72f2-8b1a-4b55-a0c4-407c6c71851a",
-                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "email": "gds2-payments-team-smoke@digital.cabinet-office.gov.uk",
                 "created_date": "2018-05-02T13:27:00.057Z",
                 "card_details": {
                   "last_digits_card_number": "0002",
@@ -634,7 +634,7 @@
                 ],
                 "charge_id": "34567",
                 "gateway_transaction_id": "ad7ecae2-4942-4d7c-882c-8c3342b8b6f8",
-                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "email": "gds3-payments-team-smoke@digital.cabinet-office.gov.uk",
                 "created_date": "2018-05-03T13:27:00.057Z",
                 "card_details": {
                   "last_digits_card_number": "0002",
@@ -666,7 +666,7 @@
                 ],
                 "charge_id": "45678",
                 "gateway_transaction_id": "0cec51bd-5759-40ed-b946-96b5a0945fed",
-                "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "email": "gds4-payments-team-smoke@digital.cabinet-office.gov.uk",
                 "created_date": "2018-05-04T13:27:00.057Z",
                 "card_details": {
                   "last_digits_card_number": "0002",
@@ -722,7 +722,7 @@
                     ],
                     "charge_id": "34567",
                     "gateway_transaction_id": "ad7ecae2-4942-4d7c-882c-8c3342b8b6f8",
-                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "email": "gds3-payments-team-smoke@digital.cabinet-office.gov.uk",
                     "created_date": "2018-05-03T13:27:00.057Z",
                     "card_details": {
                       "last_digits_card_number": "0002",
@@ -754,7 +754,7 @@
                     ],
                     "charge_id": "45678",
                     "gateway_transaction_id": "0cec51bd-5759-40ed-b946-96b5a0945fed",
-                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "email": "gds4-payments-team-smoke@digital.cabinet-office.gov.uk",
                     "created_date": "2018-05-04T13:27:00.057Z",
                     "card_details": {
                       "last_digits_card_number": "0002",
@@ -807,7 +807,7 @@
                     ],
                     "charge_id": "12345",
                     "gateway_transaction_id": "4cddd970-cce9-4bf1-b087-f13db1e199bd",
-                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "email": "gds1-payments-team-smoke@digital.cabinet-office.gov.uk",
                     "created_date": "2018-05-01T13:27:00.057Z",
                     "card_details": {
                       "last_digits_card_number": "0002",
@@ -839,7 +839,7 @@
                     ],
                     "charge_id": "23456",
                     "gateway_transaction_id": "c4fa72f2-8b1a-4b55-a0c4-407c6c71851a",
-                    "email": "gds-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "email": "gds2-payments-team-smoke@digital.cabinet-office.gov.uk",
                     "created_date": "2018-05-02T13:27:00.057Z",
                     "card_details": {
                       "last_digits_card_number": "0002",
@@ -859,6 +859,117 @@
                   },
                   "first_page": {
                     "href": "https://myconnector.local/v2/api/accounts/666/charges?email=&to_date=2018-05-03T00%3A00Z&page=1&display_size=100"
+                  }
+                }
+              },
+              {
+                "filtering": {
+                  "kind": "partialemail",
+                  "email": "gds4",
+                  "card_brand": ["visa"]
+                },
+                "data": [
+                  {
+                    "amount": 400,
+                    "state": {
+                      "finished": true,
+                      "status": "error"
+                    },
+                    "description": "ref4",
+                    "reference": "ref488888",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/45678"
+                      },
+                      {
+                        "rel": "refunds",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/45678/refunds"
+                      }
+                    ],
+                    "charge_id": "45678",
+                    "gateway_transaction_id": "0cec51bd-5759-40ed-b946-96b5a0945fed",
+                    "email": "gds4-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "created_date": "2018-05-04T13:27:00.057Z",
+                    "card_details": {
+                      "last_digits_card_number": "0002",
+                      "cardholder_name": "Test User",
+                      "expiry_date": "08/23",
+                      "card_brand": "Visa"
+                    },
+                    "transaction_type": "charge"
+                  }
+                ],
+                "links": {
+                  "self": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=gds4&page=1&display_size=100"
+                  },
+                  "last_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=gds4&page=1&display_size=100"
+                  },
+                  "first_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?email=gds4&page=1&display_size=100"
+                  }
+                }
+              },
+              {
+                "filtering": {
+                  "kind": "multiplestates-partialref-startenddate",
+                  "reference": "ref38",
+                  "payment_states": ["Success", "In progress"],
+                  "payment_states_expanded": ["created", "started", "submitted", "success"],
+                  "from_date": "2018-05-03T00:00:00.000Z",
+                  "from_date_raw": "03/5/2018",
+                  "from_time_raw": "01:00:00",
+                  "to_date": "2018-05-04T00:00:01.000Z",
+                  "to_date_raw": "04/5/2018",
+                  "to_time_raw": "01:00:00"
+                },
+                "data": [
+                  {
+                    "amount": 300,
+                    "state": {
+                      "finished": true,
+                      "status": "success"
+                    },
+                    "description": "ref3",
+                    "reference": "ref388888",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/34567"
+                      },
+                      {
+                        "rel": "refunds",
+                        "method": "GET",
+                        "href": "https://myconnector.local/v1/api/accounts/666/charges/34567/refunds"
+                      }
+                    ],
+                    "charge_id": "34567",
+                    "gateway_transaction_id": "ad7ecae2-4942-4d7c-882c-8c3342b8b6f8",
+                    "email": "gds3-payments-team-smoke@digital.cabinet-office.gov.uk",
+                    "created_date": "2018-05-03T13:27:00.057Z",
+                    "card_details": {
+                      "last_digits_card_number": "0002",
+                      "cardholder_name": "Test User",
+                      "expiry_date": "08/23",
+                      "card_brand": "Visa"
+                    },
+                    "transaction_type": "charge"
+                  }
+                ],
+                "links": {
+                  "self": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?xxxxxxxxxxxxxxxxxxxxxx&page=1&display_size=100"
+                  },
+                  "last_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?xxxxxxxxxxxxxxxxxxxxxx&page=1&display_size=100"
+                  },
+                  "first_page": {
+                    "href": "https://myconnector.local/v2/api/accounts/666/charges?xxxxxxxxxxxxxxxxxxxxxx&page=1&display_size=100"
                   }
                 }
               }
