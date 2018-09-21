@@ -93,5 +93,44 @@ describe('Transactions', () => {
       cy.get('#transactions-list tbody').find('tr').first().find('td').eq(1).should('have.text', convertAmounts(filteredTo.data[0].amount))
       cy.get('#transactions-list tbody').find('tr').eq(1).find('td').eq(1).should('have.text', convertAmounts(filteredTo.data[1].amount))
     })
+
+    // https://payments-platform.atlassian.net/browse/PP-4215
+    it('should have the right number of transactions when filtering by state = success, multiple card brands and a partial email', () => {
+
+      const filteredPartialEmail = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'partialemail')[0]
+
+      cy.get('#card-brand').click()
+      filteredPartialEmail.filtering.card_brand.forEach(brand => {
+        cy.get(`#card-brand .multi-select-item[value=${brand}]`).click()
+      })
+      cy.get('#email').type(filteredPartialEmail.filtering.email)
+      cy.get('#filter').click()
+
+      // Ensure the right number of transactions is displayed
+      cy.get('#transactions-list tbody').find('tr').should('have.length', filteredPartialEmail.data.length)
+
+      // Ensure the values are displayed correctly
+      cy.get('#transactions-list tbody').find('tr').first().find('td').eq(1).should('have.text', convertAmounts(filteredPartialEmail.data[0].amount))
+    })
+
+    // https://payments-platform.atlassian.net/browse/PP-4215
+    it('should have the right number of transactions when filtering by multiple payment states, a start and end date and a partial reference', () => {
+      const filteredMultipleStates = selfServiceDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'multiplestates-partialref-startenddate')[0]
+
+      cy.get('#state').click()
+      filteredMultipleStates.filtering.payment_states.forEach(state => {
+        cy.get(`#state .multi-select-item[value='${state}']`).click()
+      })
+      cy.get('#reference').type(filteredMultipleStates.filtering.reference)
+      cy.get('#fromDate').type(filteredMultipleStates.filtering.from_date_raw)
+      cy.get('#fromTime').type(filteredMultipleStates.filtering.from_time_raw)
+      cy.get('#toDate').type(filteredMultipleStates.filtering.to_date_raw)
+      cy.get('#toTime').type(filteredMultipleStates.filtering.to_time_raw)
+      cy.get('#filter').click()
+      // Ensure the right number of transactions is displayed
+      cy.get('#transactions-list tbody').find('tr').should('have.length', filteredMultipleStates.data.length)
+      // Ensure the values are displayed correctly
+      cy.get('#transactions-list tbody').find('tr').first().find('td').eq(1).should('have.text', convertAmounts(filteredMultipleStates.data[0].amount))
+    })
   })
 })

@@ -27,7 +27,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client', function () {
   const provider = Pact({
-    consumer: 'selfservice',
+    consumer: 'selfservice-to-be',
     provider: 'connector',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -41,9 +41,9 @@ describe('connector client', function () {
 
   describe('get transaction summary', () => {
     const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
-      fromDateTime: ssDefaultUser.sections.dashboard.transaction_summary.from_date, // 2018-05-14T00:00:00+01:00
-      toDateTime: ssDefaultUser.sections.dashboard.transaction_summary.to_date // 2018-05-15T00:00:00+01:00
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      fromDateTime: ssDefaultUser.sections.dashboard.transaction_summary.from_date,
+      toDateTime: ssDefaultUser.sections.dashboard.transaction_summary.to_date
     }
     const validGetTransactionSummaryResponse = transactionSummaryFixtures.validTransactionSummaryResponse()
 
@@ -77,8 +77,9 @@ describe('connector client', function () {
 
   describe('get transactions', () => {
     const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
-      transactions: ssDefaultUser.sections.transactions
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      transactions: ssDefaultUser.sections.transactions.data,
+      links: ssDefaultUser.sections.transactions.links
     }
     const validGetTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
 
@@ -126,10 +127,11 @@ describe('connector client', function () {
     // cover scenarios where the UI will compute a date/time
     const filtered = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'fromdate')[0]
     const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
       fromDate: filtered.filtering.from_date_raw,
       fromTime: filtered.filtering.from_time_raw,
-      transactions: filtered
+      transactions: filtered.data,
+      links: filtered.links
     }
     const validGetFilteredTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
 
@@ -174,10 +176,11 @@ describe('connector client', function () {
   describe('get filtered transactions with a \'to_date\' defined', () => {
     const filtered = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'todate')[0]
     const params = {
-      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
       toDate: filtered.filtering.to_date_raw,
       toTime: filtered.filtering.to_time_raw,
-      transactions: filtered
+      transactions: filtered.data,
+      links: filtered.links
     }
     const validGetFilteredTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
 
@@ -210,6 +213,109 @@ describe('connector client', function () {
     afterEach(() => provider.verify())
 
     it('should get \'to_date\' filtered transactions successfully', function (done) {
+      const getFilteredTransactions = validGetFilteredTransactionsResponse.getPlain()
+      connectorClient.searchTransactions(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getFilteredTransactions)
+          done()
+        })
+    })
+  })
+
+  describe('get filtered transactions with multiple values for \'card_brand\' and a value for \'email\' defined', () => {
+    const filtered = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'partialemail')[0]
+    const params = {
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      email: filtered.filtering.email,
+      brand: filtered.filtering.card_brand,
+      transactions: filtered.data,
+      links: filtered.links
+    }
+    const validGetFilteredTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
+
+    // Stop the transactions data being flowed through into anything else
+    delete params.transactions
+
+    before((done) => {
+      const pactified = validGetFilteredTransactionsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
+          .withUponReceiving('a valid transactions request filtered by partial email and card_brand of visa')
+          .withState(`Account ${params.gatewayAccountId} exists in the database and has 1 available transaction with a card brand of ${filtered.filtering.card_brand[0]}, and a partial email matching ${filtered.filtering.email}`)
+          .withMethod('GET')
+          .withQuery('reference', '')
+          .withQuery('cardholder_name', '')
+          .withQuery('last_digits_card_number', '')
+          .withQuery('email', filtered.filtering.email)
+          .withQuery('card_brand', filtered.filtering.card_brand[0])
+          .withQuery('from_date', '')
+          .withQuery('to_date', '')
+          .withQuery('page', '1')
+          .withQuery('display_size', '100')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get partial email filtered transactions successfully', function (done) {
+      const getFilteredTransactions = validGetFilteredTransactionsResponse.getPlain()
+      connectorClient.searchTransactions(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getFilteredTransactions)
+          done()
+        })
+    })
+  })
+
+  describe('get filtered transactions with multiple values for \'payment_states\', a partial value for \'reference\' and a to/from date defined', () => {
+    const filtered = ssDefaultUser.sections.filteredTransactions.data.filter(fil => fil.filtering.kind === 'multiplestates-partialref-startenddate')[0]
+    const params = {
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      reference: filtered.filtering.reference,
+      payment_states: filtered.filtering.payment_states_expanded,
+      fromDate: filtered.filtering.from_date_raw,
+      fromTime: filtered.filtering.from_time_raw,
+      toDate: filtered.filtering.to_date_raw,
+      toTime: filtered.filtering.to_time_raw,
+      transactions: filtered.data,
+      links: filtered.links
+    }
+    const validGetFilteredTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse(params)
+
+    // Stop the transactions data being flowed through into anything else
+    delete params.transactions
+
+    before((done) => {
+      const pactified = validGetFilteredTransactionsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
+          .withUponReceiving('a valid transactions request filtered by payment states, a date range and a partial reference')
+          .withState(`Account ${params.gatewayAccountId} exists in the database and has 1 available transaction with a payment state of success, a reference matching the partial search ${filtered.filtering.reference} and falls between the date range ${filtered.filtering.from_date} amd ${filtered.filtering.to_date}`)
+          .withMethod('GET')
+          .withQuery('reference', filtered.filtering.reference)
+          .withQuery('cardholder_name', '')
+          .withQuery('last_digits_card_number', '')
+          .withQuery('email', '')
+          .withQuery('card_brand', '')
+          .withQuery('from_date', filtered.filtering.from_date)
+          .withQuery('to_date', filtered.filtering.to_date)
+          .withQuery('page', '1')
+          .withQuery('display_size', '100')
+          .withQuery('payment_states', filtered.filtering.payment_states_expanded.join(','))
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get partial email filtered transactions successfully', function (done) {
       const getFilteredTransactions = validGetFilteredTransactionsResponse.getPlain()
       connectorClient.searchTransactions(params,
         (connectorData, connectorResponse) => {
