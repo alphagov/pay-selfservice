@@ -28,12 +28,12 @@ describe('Dashboard', () => {
       // Try and save
       cy.get('#save-merchant-details').click()
 
-      cy.get('.error-summary-list').should('have.length', 1)
-      cy.get('.error-summary-list').first()
-      cy.get('.error-summary-list').first()
+      cy.get('.govuk-error-summary__list').should('have.length', 1)
+      cy.get('.govuk-error-summary__list').first()
+      cy.get('.govuk-error-summary__list').first()
         .contains('Postcode')
         .should('have.attr', 'href', '#address-postcode')
-      cy.get('.error-message')
+      cy.get('.govuk-error-message')
         .contains('Please enter a valid postcode')
     })
   })
