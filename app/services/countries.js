@@ -8,10 +8,20 @@ let countries = require('../data/countries.json')
 const extensions = require('../data/country-record-extension.json')
 
 // Exports
-exports.retrieveCountries = (selectedCountry) => {
-  let countriesList = lodash.clone(countries)
+exports.retrieveCountries = selectedCountry => {
+  const countriesList = lodash.clone(countries)
   countriesList.forEach(country => {
     country.entry.selected = country.entry.country === (selectedCountry || 'GB')
+  })
+  return countriesList
+}
+
+exports.govukFrontendFormatted = selectedCountry => {
+  const countriesList = lodash.clone(countries)
+  countriesList.forEach(country => {
+    country.selected = country.entry.country === (selectedCountry || 'GB')
+    country.value = country.entry.country
+    country.text = country.entry.name
   })
   return countriesList
 }
