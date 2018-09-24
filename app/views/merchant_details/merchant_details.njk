@@ -45,7 +45,7 @@
           {% endif %}
           {{merchant_details.address_city}}<br/>
           {{merchant_details.address_postcode}}<br/>
-          {{merchant_details.address_country}}
+          {{merchant_details.address_country | countryISOtoName}}
         </td>
         <td class="govuk-table__cell govuk-text-align-right">
           <a class="govuk-link govuk-link--no-visited-state" href="{{editPath}}">Change<span class="govuk-visually-hidden"> organisation address</span></a>
