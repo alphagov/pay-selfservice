@@ -355,6 +355,7 @@ module.exports = {
     let response =
       {
         external_id: opts.external_id || '09283568e105442da3928d1fa99fb0eb',
+        is_platform_admin: opts.is_platform_admin || false,
         username: opts.username || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
         email: opts.email || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
         otp_key: opts.otp_key || 'nlcj80ivce10tkjdbnaicf6brk',

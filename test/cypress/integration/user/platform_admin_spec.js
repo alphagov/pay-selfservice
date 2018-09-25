@@ -7,14 +7,12 @@ describe('Dashboard', () => {
   })
 
   describe('Homepage', () => {
-    // Use a known configuration used to generate contracts/stubs.
-    // This is also used to generate the session/gateway_account cookies
-    const ssUser = selfServiceUsers.config.users.filter(fil => fil.is_primary)[0]
+    const platformAdminUser = selfServiceUsers.config.users.filter(fil => fil.is_primary)[0]
 
     // Note : these from/to datetime strings exactly match those in the pact/contract, so are essential to match against stubs
     // Either change everything together, or map these do a single place like a .json document so the contracts/tests refer to one place
-    const from = encodeURIComponent(ssUser.sections.dashboard.transaction_summary.from_date)
-    const to = encodeURIComponent(ssUser.sections.dashboard.transaction_summary.to_date)
+    const from = encodeURIComponent(platformAdminUser.sections.dashboard.transaction_summary.from_date)
+    const to = encodeURIComponent(platformAdminUser.sections.dashboard.transaction_summary.to_date)
 
     it('should have the page title \'Dashboard - System Generated test - GOV.UK Pay\'', () => {
       const dashboardUrl = `/?period=custom&fromDateTime=${from}&toDateTime=${to}`

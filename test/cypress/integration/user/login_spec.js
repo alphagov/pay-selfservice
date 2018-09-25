@@ -20,7 +20,7 @@ describe('Login Page', () => {
 
   describe('Form validation', () => {
     const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
-    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
+    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.is_primary)[0]
 
     describe('Valid submissions', () => {
       it('should progress to 2FA page if provided valid username and password', () => {

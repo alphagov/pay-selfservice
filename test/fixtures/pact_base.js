@@ -19,13 +19,19 @@ module.exports = function (options = {}) {
     let pactified = {}
     _.forIn(object, (value, key) => {
       if (options.array && options.array.indexOf(key) !== -1) {
+        // Treatment for named arrays
         let length
         if (options.length && options.length.find(lengthKey => lengthKey.key === key)) {
           length = options.length.find(lengthKey => lengthKey.key === key).length
         } else {
           length = value.length
         }
-        pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]), {min: length})
+        if (value.length > 0) {
+          pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]), {min: length})
+        } else {
+          // Named array is empty in this scenario
+          pactified[key] = pactifySimpleArray(value)
+        }
       } else if (value.constructor === Array) {
         pactified[key] = pactifySimpleArray(value)
       } else if (value.constructor === Object) {

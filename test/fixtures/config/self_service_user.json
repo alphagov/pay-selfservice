@@ -3,7 +3,7 @@
   "config": {
     "users": [
       {
-        "isPrimary": "true",
+        "is_primary": true,
         "invalid_password": "some-password",
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
@@ -1064,6 +1064,213 @@
               }
             ]
           }
+        }
+      },
+      {
+        "is_primary": false,
+        "is_platform_admin": true,
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "b024542d0e414cde837a9899fd008a7e",
+        "username": "some-platform-admin-user@gov.uk",
+        "usernameMatcher": "some-platform-admin-user@gov\\.uk",
+        "email": "some-platform-admin-user@gov.uk",
+        "otp_key": "iolpd3s7o91h1jfphvlk5jhu6",
+        "telephone_number": "8647375",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/b024542d0e414cde837a9899fd008a7e"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            }
+          ]
+        },
+        "service_ids": [],
+        "service_roles": [],
+        "services": [],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
         }
       }
     ]

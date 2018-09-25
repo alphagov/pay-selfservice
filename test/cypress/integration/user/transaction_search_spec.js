@@ -6,13 +6,13 @@ describe('Transactions', () => {
   const convertAmounts = val => '£' + (val / 100).toFixed(2)
 
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.setCookie('session', Cypress.env('encryptedSessionCookieDefaultUser'))
+    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookieDefaultUser'))
     cy.visit(transactionsUrl)
   })
 
   describe('Transactions List', () => {
-    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
+    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.is_primary)[0]
 
     it('should have the page title \'Transactions - System Generated test - GOV.UK Pay\'', () => {
       cy.title().should('eq', 'Transactions - System Generated test - GOV.UK Pay')

@@ -1,7 +1,7 @@
 describe('Dashboard', () => {
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.setCookie('session', Cypress.env('encryptedSessionCookieDefaultUser'))
+    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookieDefaultUser'))
   })
 
   describe('Homepage', () => {

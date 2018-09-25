@@ -21,6 +21,7 @@ class User {
    * @constructor Create an instance of User
    * @param {Object} userData - raw 'user' object from server
    * @param {string} userData.external_id - The user's external ID
+   * @param {string} userData.is_platform_admin - Whether the user is a platform admin
    * @param {string} userData.username - The user's username
    * @param {string} userData.email - The user's email address
    * @param {string} userData.otp_key - The user's OTP key
@@ -37,6 +38,7 @@ class User {
       throw Error('Must provide username')
     }
     this.externalId = userData.external_id
+    this.isPlatformAdmin = userData.is_platform_admin
     this.username = userData.username
     this.email = userData.email || ''
     this.serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData))

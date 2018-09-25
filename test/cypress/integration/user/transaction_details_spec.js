@@ -22,7 +22,7 @@ describe('Transactions details page', () => {
 
   const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
 
-  const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
+  const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.is_primary)[0]
 
   const gatewayAccount = selfServiceDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
 
@@ -34,8 +34,8 @@ describe('Transactions details page', () => {
   const aCorporateCardSurchargeCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.corporate_card_surcharge !== undefined)[0]
 
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.setCookie('session', Cypress.env('encryptedSessionCookieDefaultUser'))
+    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookieDefaultUser'))
   })
 
   describe('page content', () => {
