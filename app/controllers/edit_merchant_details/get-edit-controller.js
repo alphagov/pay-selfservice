@@ -16,6 +16,6 @@ module.exports = (req, res) => {
       externalServiceId
     }
   }
-  pageData.countries = countries.retrieveCountries(lodash.get(pageData.merchant_details, 'address_country'))
+  pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData.merchant_details, 'address_country'))
   return responses.response(req, res, 'merchant_details/edit_merchant_details', pageData)
 }

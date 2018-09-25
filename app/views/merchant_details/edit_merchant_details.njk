@@ -1,167 +1,236 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/select/macro.njk" import govukSelect %}
+{% from "components/fieldset/macro.njk" import govukFieldset %}
 
-{% block page_title %}
+{% block pageTitle %}
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-full">
-  <a href="/my-services" class="link-back">Back to My services</a>
+<div class="govuk-grid-column-full">
+  {{ govukBackLink({ text: "My services", href: routes.serviceSwitcher.index }) }}
 </div>
-<div class="column-two-thirds">
-  {% if success %}
-  <div class="notification">
-      Organisation details updated
-  </div>
-  {% endif %}
+<div class="govuk-grid-column-two-thirds">
   {% if errors %}
-  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+  <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
       There was a problem with the details you gave for:
     </h2>
-    <ul class="error-summary-list">
-      {% if errors["merchant-name"] %}
-      <li><a href="#merchant-name">Name</a></li>
-      {% endif %}
-      {% if errors["telephone-number"] %}
-        <li><a href="#telephone-number">Phone number</a></li>
-      {% endif %}
-      {% if errors["merchant-email"] %}
-        <li><a href="#merchant-email">Email</a></li>
-      {% endif %}
-      {% if errors["address-line1"] %}
-      <li><a href="#address-line1">Address</a></li>
-      {% endif %}
-      {% if errors["address-city"] %}
-      <li><a href="#address-city">City</a></li>
-      {% endif %}
-      {% if errors["address-postcode"] %}
-      <li><a href="#address-postcode">Postcode</a></li>
-      {% endif %}
-      {% if errors["address-country"] %}
-      <li><a href="#address-country">Country</a></li>
-      {% endif %}
-    </ul>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        {% if errors["merchant-name"] %}
+        <li><a href="#merchant-name">Name</a></li>
+        {% endif %}
+        {% if errors["telephone-number"] %}
+          <li><a href="#telephone-number">Phone number</a></li>
+        {% endif %}
+        {% if errors["merchant-email"] %}
+          <li><a href="#merchant-email">Email</a></li>
+        {% endif %}
+        {% if errors["address-line1"] %}
+        <li><a href="#address-line1">Address</a></li>
+        {% endif %}
+        {% if errors["address-city"] %}
+        <li><a href="#address-city">City</a></li>
+        {% endif %}
+        {% if errors["address-postcode"] %}
+        <li><a href="#address-postcode">Postcode</a></li>
+        {% endif %}
+        {% if errors["address-country"] %}
+        <li><a href="#address-country">Country</a></li>
+        {% endif %}
+      </ul>
+    </div>
   </div>
   {% endif %}
-  <h1 class="page-title">Organisation details</h1>
+  <h1 class="govuk-heading-l page-title">Organisation details</h1>
   {% if has_card_and_dd_gateway_account %}
-    <p id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
+    <p class="govuk-body" id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
       payer. This information is displayed in emails and on payment pages.</p>
   {% elif has_direct_debit_gateway_account %}
-    <p id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
+    <p class="govuk-body" id="merchant-details-info">Direct Debit requires the details of the organisation taking payment to be shown to the payer. This information is
       displayed in emails and on payment pages.</p>
   {% elif has_card_gateway_account %}
-    <p id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
+    <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
   {% endif %}
 
   <form id="merchant-details-form" method="post" action="/organisation-details/edit/{{externalServiceId}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    <div class="form-group">
-      <label class="form-label" for="merchant-name">
-        <span class="heading-small">Name</span>
-        <span class="form-hint form-control-2-3">
-          Organisation or department that holds the bank account with payment service provider
-        </span>
-      </label>
-      {% if errors["merchant-name"] %}
-        <span class="error-message">
-          Please enter a valid name
-        </span>
-      {% endif %}
-      <input class="form-control form-control-2-3" id="merchant-name" name="merchant-name" type="text" value="{{merchant_details.name}}">
-    </div>
-    {% if has_direct_debit_gateway_account or has_card_and_dd_gateway_account %}
-      <div class="form-group">
-        <label class="form-label" for="telephone-number">
-          <span class="heading-small">Phone number</span>
-        </label>
-        {% if errors["telephone-number"] %}
-          <span class="error-message">
-            Please enter a valid phone number
-          </span>
-        {% endif %}
-        <input class="form-control form-control-2-3" id="telephone-number" name="telephone-number" type="text" value="{{merchant_details.telephone_number}}">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="merchant-email">
-          <span class="heading-small">Email</span>
-        </label>
-        {% if errors["merchant-email"] %}
-          <span class="error-message">
-            Please enter a valid email
-          </span>
-        {% endif %}
-        <input class="form-control form-control-2-3" id="merchant-email" name="merchant-email" type="email" value="{{merchant_details.email}}">
-      </div>
+
+    {% set nameError = false %}
+    {% if errors["merchant-name"] %}
+      {% set nameError = {
+        text: "Please enter a valid name"
+      } %}
     {% endif %}
-    <div class="form-group">
-      <h2 class="heading-small billing-address-label">Address</h2>
-      <div class="payment-type-intro">
-      </div>
-      <fieldset>
-        <div class="form-group">
-            <label class="form-label" for="address-line1">
-              Building name/number and street
-            </label>
-            {% if errors["address-line1"] %}
-            <span class="error-message">
-              Please enter a valid address
-            </span>
-            {% endif %}
-            <input class="form-control form-control-2-3" id="address-line1" name="address-line1" type="text" value="{{merchant_details.address_line1}}">
-            <input class="form-control form-control-2-3" id="address-line2" name="address-line2" type="text" value="{{merchant_details.address_line2}}">
-        </div>
-        <div class="form-group reduced-margin">
-          <label class="form-label" for="address-city">
-            Town or city
-          </label>
-          {% if errors["address-city"] %}
-          <span class="error-message">
-            Please enter a valid town or city
-          </span>
-          {% endif %}
-          <input class="form-control  form-control-2-3" id="address-city" name="address-city" type="text" value="{{merchant_details.address_city}}">
-        </div>
-        <div class="form-group reduced-margin">
-          <label class="form-label" for="address-postcode">
-            Postcode
-          </label>
-          {% if errors["address-postcode"] %}
-          <span class="error-message">
-            Please enter a valid postcode
-          </span>
-          {% endif %}
-          <input class="form-control form-control-2-3" id="address-postcode" name="address-postcode" type="text" value="{{merchant_details.address_postcode}}">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="address-country">
-              Country
-          </label>
-          {% if errors["address-country"] %}
-          <span class="error-message">
-            Please enter a valid country
-          </span>
-          {% endif %}
-          <div class="dropdown">
-            <select name="address-country" class="form-control form-control-2-3" id="address-country">
-              {% for country in countries %}
-              <option
-                value="{{ country.entry.country }}"
-                data-aliases="{{ country.entry.aliases }}"
-                data-weighting="{{ country.entry.weighting }}"
-                {% if country.entry.selected %}selected="selected"{% endif %}>{{ country.entry.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-      </fieldset>
-    </div>
-    <div class="form-group">
-        <button id="save-merchant-details" class="button" type="submit">
-          Save organisation details
-        </button>
-    </div>
+
+    {{
+      govukInput({
+        value: merchant_details.name,
+        label: {
+          text: "Name"
+        },
+        hint: {
+          text: "Organisation or department that holds the bank account with payment service provider",
+          classes: "govuk-!-width-two-thirds"
+        },
+        errorMessage: nameError,
+        id: "merchant-name",
+        name: "merchant-name",
+        classes: "govuk-!-width-two-thirds",
+        type: "text",
+        attributes: {
+          "data-validate": "required"
+        }
+      })
+    }}
+
+    {% if has_direct_debit_gateway_account or has_card_and_dd_gateway_account %}
+
+      {% set phoneError = false %}
+      {% if errors["telephone-number"] %}
+        {% set phoneError = {
+          text: "Please enter a valid phone number"
+        } %}
+      {% endif %}
+
+      {{
+        govukInput({
+        value: merchant_details.telephone_number,
+          label: {
+            text: "Phone number"
+          },
+          errorMessage: phoneError,
+          id: "telephone-number",
+          name: "telephone-number",
+          classes: "govuk-!-width-two-thirds",
+          type: "tel"
+        })
+      }}
+
+      {% set emailError = false %}
+      {% if errors["merchant-email"] %}
+        {% set emailError = {
+          text: "Please enter a valid email"
+        } %}
+      {% endif %}
+
+      {{
+        govukInput({
+          value: merchant_details.email,
+          label: {
+            text: "Email"
+          },
+          errorMessage: emailError,
+          id: "merchant-email",
+          name: "merchant-email",
+          classes: "govuk-!-width-two-thirds",
+          type: "email"
+        })
+      }}
+    {% endif %}
+
+    {% set addressLine1Error = false %}
+    {% if errors["address-line1"] %}
+      {% set addressLine1Error = {
+        text: "Please enter a valid address"
+      } %}
+    {% endif %}
+
+    {% set cityError = false %}
+    {% if errors["address-city"] %}
+      {% set cityError = {
+        text: "Please enter a valid town or city"
+      } %}
+    {% endif %}
+
+    {% set postcodeError = false %}
+    {% if errors["address-postcode"] %}
+      {% set postcodeError = {
+        text: "Please enter a valid postcode"
+      } %}
+    {% endif %}
+
+    {% set countryError = false %}
+    {% if errors["address-country"] %}
+      {% set countryError = {
+        text: "Please enter a valid country"
+      } %}
+    {% endif %}
+
+    {% call govukFieldset({
+      legend: {
+        text: "Address",
+        classes: "govuk-fieldset__legend--s",
+        isPageHeading: true
+      }
+    }) %}
+
+      {{ govukInput({
+        label: {
+          html: 'Building name/number and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-line1",
+        name: "address-line1",
+        errorMessage: addressLine1Error,
+        value: merchant_details.address_line1
+      }) }}
+
+      {{ govukInput({
+        label: {
+          html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-line2",
+        name: "address-line2",
+        value: merchant_details.address_line2
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Town or city"
+        },
+        classes: "govuk-!-width-one-half",
+        id: "address-city",
+        name: "address-city",
+        errorMessage: cityError,
+        value: merchant_details.address_city
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Postcode"
+        },
+        classes: "govuk-input--width-10",
+        id: "address-postcode",
+        name: "address-postcode",
+        errorMessage: postcodeError,
+        value: merchant_details.address_postcode
+      }) }}
+
+      {{ govukSelect({
+        id: "address-country",
+        classes: "govuk-!-width-one-half",
+        name: "address-country",
+        errorMessage: countryError,
+        label: {
+          text: "Country"
+        },
+        items: countries
+      }) }}
+
+    {% endcall %}
+
+    {{ govukButton({
+      text: "Save organisation details",
+      attributes: {
+        id: "save-merchant-details"
+      }
+    }) }}
   </form>
 </div>
 {% endblock %}

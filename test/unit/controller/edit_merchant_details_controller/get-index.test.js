@@ -32,7 +32,7 @@ describe('Organisation details controller - get', () => {
             address_line2: 'line2',
             address_city: 'City',
             address_postcode: 'POSTCODE',
-            address_country: 'AR',
+            address_country: 'GB',
             email: ''
           }
         },
@@ -67,7 +67,7 @@ describe('Organisation details controller - get', () => {
       expect($('#merchant-address').text()).to.contain('line2')
       expect($('#merchant-address').text()).to.contain('City')
       expect($('#merchant-address').text()).to.contain('POSTCODE')
-      expect($('#merchant-address').text()).to.contain('AR')
+      expect($('#merchant-address').text()).to.contain('United Kingdom')
     })
   })
   describe('when the merchant already has details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
@@ -84,7 +84,7 @@ describe('Organisation details controller - get', () => {
             address_line2: 'line2',
             address_city: 'City',
             address_postcode: 'POSTCODE',
-            address_country: 'AR',
+            address_country: 'GB',
             email: 'dd-merchant@example.com'
           }
         },
@@ -121,7 +121,7 @@ describe('Organisation details controller - get', () => {
       expect($('#merchant-address').text()).to.contain('line2')
       expect($('#merchant-address').text()).to.contain('City')
       expect($('#merchant-address').text()).to.contain('POSTCODE')
-      expect($('#merchant-address').text()).to.contain('AR')
+      expect($('#merchant-address').text()).to.contain('United Kingdom')
     })
   })
   describe('when the merchant has empty details (CREDIT CARD GATEWAY ACCOUNT)', () => {
