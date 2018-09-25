@@ -128,7 +128,7 @@ module.exports.bind = function (app) {
 
   // LOGIN
   app.get(user.logIn, xraySegmentCls, cookieMessage, ensureSessionHasCsrfSecret, validateAndRefreshCsrf, redirectLoggedInUser, loginCtrl.loginGet)
-  app.post(user.logIn, xraySegmentCls, cookieMessage, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, getAccount, loginCtrl.postLogin)
+  app.post(user.logIn, xraySegmentCls, cookieMessage, validateAndRefreshCsrf, trimUsername, loginCtrl.loginUser, hasServices, resolveService, getAccount, loginCtrl.postLogin)
   app.get(dashboard.index, xraySegmentCls, cookieMessage, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, resolveService, getAccount, dashboardCtrl.dashboardActivity)
   app.get(user.noAccess, xraySegmentCls, cookieMessage, loginCtrl.noAccess)
   app.get(user.logOut, xraySegmentCls, cookieMessage, loginCtrl.logout)
