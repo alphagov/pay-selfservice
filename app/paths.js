@@ -19,6 +19,9 @@ module.exports = {
     edit: '/notification-credentials/edit',
     update: '/notification-credentials'
   },
+  admin: {
+    platformAdmin: '/platform-admin'
+  },
   user: {
     logIn: '/login',
     profile: '/my-profile',

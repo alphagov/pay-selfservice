@@ -1233,6 +1233,40 @@
         },
         "service_ids": [],
         "service_roles": [],
+        "admin_service_roles": [
+          {
+            "service": {
+              "external_id": "hj6gd",
+              "name": "Live service 1",
+              "gateway_account_ids": [
+                "198",
+                "876"
+              ],
+              "_links": []
+            }
+          },
+          {
+            "service": {
+              "external_id": "du5os",
+              "name": "Live service 2",
+              "gateway_account_ids": [
+                "394",
+                "872"
+              ],
+              "_links": []
+            }
+          },
+          {
+            "service": {
+              "external_id": "du5os",
+              "name": "Beta service 3",
+              "gateway_account_ids": [
+                "446"
+              ],
+              "_links": []
+            }
+          }
+        ],
         "services": [],
         "permissions": [
           "users-service:read",

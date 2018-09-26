@@ -28,12 +28,22 @@ function errorResponse (req, res, msg, status) {
   render(req, res, ERROR_VIEW, data)
 }
 
+function setSecurityTrimmedTemplateData (req, data) {
+  // Sets data on any template rendering operations to enable/disable optional ui elements based on admin permissions
+  if (req.user && req.user.isPlatformAdmin) {
+    data.admin = {
+      isPlatformAdmin: true
+      // TODO : any other role/admin setup here
+    }
+  }
+}
+
 function render (req, res, template, data) {
   if (process.env.NODE_ENV !== 'production' && _.get(req, 'headers.accept') === 'application/json') {
     res.setHeader('Content-Type', 'application/json')
-
     res.json(data)
   } else {
+    setSecurityTrimmedTemplateData(req, data)
     res.render(template, data)
   }
 }

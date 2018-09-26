@@ -1,6 +1,9 @@
 'use strict'
 
+// NPM dependencies
 const _ = require('lodash')
+
+// Local dependencies
 const ServiceRole = require('./ServiceRole.class')
 
 /**
@@ -14,6 +17,8 @@ const ServiceRole = require('./ServiceRole.class')
  * @property {string} telephoneNumber - The user's telephone number
  * @property {boolean} disabled - Whether or not the user is disabled
  * @property {ServiceRole[]} serviceRoles - An array of the user's serviceRoles
+ * @property {ServiceRole[]} adminServiceRoles - An array of serviceRoles a platform admin has access to, other than their own
+
  *
  */
 class User {
@@ -29,6 +34,7 @@ class User {
    * @param {boolean} userData.disabled - Whether or not the user's account is locked
    * @param {number} userData.session_version - The user's current session version
    * @param {Object[]} userData.service_roles - An array of the user's serviceRoles
+   * @param {Object[]} userData.admin_service_roles - (For a platform admin) An array of all serviceRoles the user is not directly a member of
    * @param {Object} userData.service_roles[].service - A raw service object see {@link Service.constructor}
    * @param {Object} userData.service_roles[].role - A raw role object
    * @param {String[]} userData.features - An array of the user's active feature flags
@@ -38,10 +44,11 @@ class User {
       throw Error('Must provide username')
     }
     this.externalId = userData.external_id
-    this.isPlatformAdmin = userData.is_platform_admin
+    this.isPlatformAdmin = userData.is_platform_admin || false
     this.username = userData.username
     this.email = userData.email || ''
     this.serviceRoles = userData.service_roles.map(serviceRoleData => new ServiceRole(serviceRoleData))
+    this.adminServiceRoles = (userData.admin_service_roles || []).map(serviceRoleData => new ServiceRole(serviceRoleData))
     this.otpKey = userData.otp_key || ''
     this.telephoneNumber = userData.telephone_number || ''
     this.disabled = userData.disabled ? userData.disabled : false

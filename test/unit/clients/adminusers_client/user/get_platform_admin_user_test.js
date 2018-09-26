@@ -62,14 +62,14 @@ describe('adminusers client - get platform admin user', function () {
 
       adminusersClient.getUserByExternalId(params.external_id).should.be.fulfilled.then(function (user) {
         expect(user.externalId).to.be.equal(expectedUserData.external_id)
-        expect(user.isPlatformAdmin).to.be.equal(expectedUserData.is_platform_admin)
         expect(user.username).to.be.equal(expectedUserData.username)
         expect(user.email).to.be.equal(expectedUserData.email)
-        expect(user.serviceRoles.length).to.be.equal(0)
+        expect(user.serviceRoles.length).to.be.equal(expectedUserData.service_roles.length)
         expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
         expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
         expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)
         expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
+        expect(user.adminServiceRoles.length).to.equal(expectedUserData.admin_service_roles.length)
       }).should.notify(done)
     })
   })

@@ -66,7 +66,7 @@ const feedbackCtrl = require('./controllers/feedback')
 
 // Assignments
 const {
-  healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
+  healthcheck, registerUser, admin, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks, partnerApp
 } = paths

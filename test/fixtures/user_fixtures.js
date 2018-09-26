@@ -419,6 +419,10 @@ module.exports = {
           'users-service:read'
         ]
       }
+    // Only add admin_service_roles to the fixture if it has been specified
+    if (opts.admin_service_roles) {
+      response.admin_service_roles = opts.admin_service_roles
+    }
     return pactUsers.withPactified(response)
   },
 
