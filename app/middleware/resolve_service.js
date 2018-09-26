@@ -13,6 +13,11 @@ module.exports = function (req, res, next) {
   } else if (gatewayAccountId) {
     req.service = _.get(req.user.serviceRoles.find(serviceRole => serviceRole.service.gatewayAccountIds.includes(gatewayAccountId)), 'service')
   }
+
+  if (!req.service && req.user.serviceRoles.length) {
+    req.service = _.get(req.user.serviceRoles[0], 'service')
+  }
+
   if (!req.service) {
     return renderErrorView(req, res, 'You do not have the rights to access this service.')
   }

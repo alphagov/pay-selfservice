@@ -122,7 +122,7 @@ module.exports = {
           removeTeamMemberLink: removeTeamMemberLink
         })
       } else {
-        errorResponse(req, res, 'Error displaying this user of the current service')
+        errorResponse(req, res, 'You do not have the rights to access this service.')
       }
     }
 
