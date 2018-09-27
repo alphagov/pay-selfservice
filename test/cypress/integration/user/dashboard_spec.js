@@ -21,5 +21,12 @@ describe('Dashboard', () => {
       cy.visit(dashboardUrl)
       cy.title().should('eq', 'Dashboard - System Generated test - GOV.UK Pay')
     })
+
+    it('should not show platform admin navigation elements', () => {
+      cy.get('li a.govuk-header__link').should(($li) => {
+        expect($li).to.have.length(4)
+        expect($li.eq(2)).to.contain('Documentation')
+      })
+    })
   })
 })
