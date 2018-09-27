@@ -12,11 +12,16 @@ module.exports = () => {
     document.body.appendChild(temp)
     const targetElement = e.target.dataset.target
     const textToCopy = document.getElementsByClassName(targetElement)[0].innerText
+    const originalLabelText = e.target.innerText
 
     temp.value = textToCopy
     temp.select()
     document.execCommand('copy')
     temp.remove()
     e.target.innerText = e.target.dataset.success
+
+    window.setTimeout(() => {
+      e.target.innerText = originalLabelText
+    }, 3000)
   }
 }
