@@ -26,6 +26,24 @@
       background-color: darken($govuk-error-colour, 10%);
     }
   }
+
+  &--copy {
+    background-color: govuk-colour("grey-3");
+    color: $govuk-text-colour;
+    margin: govuk-spacing(3) 0;
+    -webkit-box-shadow: 0 2px 0 $govuk-border-colour;
+    -moz-box-shadow: 0 2px 0 $govuk-border-colour;
+    box-shadow: 0 2px 0 $govuk-border-colour;
+
+    &:focus,
+    &:hover {
+      color: $govuk-text-colour;
+      background-color: darken(govuk-colour("grey-3"), 15%);
+      -webkit-box-shadow: 0 2px 0 darken($govuk-border-colour, 15%);
+      -moz-box-shadow: 0 2px 0 darken($govuk-border-colour, 15%);
+      box-shadow: 0 2px 0 darken($govuk-border-colour, 15%);
+    }
+  }
 }
 
 
