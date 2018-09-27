@@ -20,10 +20,10 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/worldpay', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials')
+    body.should.containSelector('#view-title').withExactText('Your Worldpay Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
+      .withAttribute('class', 'govuk-button')
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
@@ -36,7 +36,7 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('#username-value').withExactText('a-username')
 
     body.should.containSelector('#password-key').withExactText('Password')
-    body.should.containSelector('#password-value').withExactText('****')
+    body.should.containSelector('#password-value').withExactText('●●●●●●●●')
   })
 
   it('should not display notification credentials for worldpay', function () {
@@ -55,13 +55,13 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/worldpay', templateData)
 
-    body.should.not.containSelector('h4#view-notification-title')
+    body.should.not.containSelector('#view-notification-title')
   })
 
   it('should display credentials view for a smartpay account', function () {
     var templateData = {
       currentGatewayAccount: {
-        'payment_provider': 'Smartpay',
+        'payment_provider': 'SmartPay',
         'credentials': {
           'username': 'a-username',
           'merchant_id': 'a-merchant-id'
@@ -74,10 +74,10 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/smartpay', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials')
+    body.should.containSelector('#view-title').withExactText('Your SmartPay Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
+      .withAttribute('class', 'govuk-button')
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
@@ -90,13 +90,13 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('#username-value').withExactText('a-username')
 
     body.should.containSelector('#password-key').withExactText('Password')
-    body.should.containSelector('#password-value').withExactText('****')
+    body.should.containSelector('#password-value').withExactText('●●●●●●●●')
   })
 
   it('should display notification credentials view for a smartpay account', function () {
     var templateData = {
       currentGatewayAccount: {
-        'payment_provider': 'Smartpay',
+        'payment_provider': 'SmartPay',
         'credentials': {
           'username': 'a-username',
           'merchant_id': 'a-merchant-id'
@@ -113,10 +113,10 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/smartpay', templateData)
 
-    body.should.containSelector('h4#view-notification-title').withExactText('Your Smartpay Notification Credentials')
+    body.should.containSelector('#view-notification-title').withExactText('Your SmartPay Notification Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
+      .withAttribute('class', 'govuk-button')
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
@@ -129,7 +129,7 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('#notification-username-value').withExactText('a-notification-username')
 
     body.should.containSelector('#notification-password-key').withExactText('Password')
-    body.should.containSelector('#notification-password-value').withExactText('****')
+    body.should.containSelector('#notification-password-value').withExactText('●●●●●●●●')
   })
 
   it('should display credentials view for an ePDQ account', function () {
@@ -149,10 +149,10 @@ describe('The credentials view in normal mode', function () {
 
     let body = renderTemplate('provider_credentials/epdq', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your ePDQ Credentials')
+    body.should.containSelector('#view-title').withExactText('Your ePDQ Credentials')
 
     body.should.containSelector('a#edit-credentials-link')
-      .withAttribute('class', 'button')
+      .withAttribute('class', 'govuk-button')
       .withAttribute('href', paths.credentials.edit)
       .withText('Edit credentials')
 
@@ -165,13 +165,13 @@ describe('The credentials view in normal mode', function () {
     body.should.containSelector('#username-value').withExactText('a-username')
 
     body.should.containSelector('#password-key').withExactText('Password')
-    body.should.containSelector('#password-value').withExactText('****')
+    body.should.containSelector('#password-value').withExactText('●●●●●●●●')
 
     body.should.containSelector('#sha-in-passphrase-key').withExactText('SHA-IN passphrase')
-    body.should.containSelector('#sha-in-passphrase-value').withExactText('****')
+    body.should.containSelector('#sha-in-passphrase-value').withExactText('●●●●●●●●')
 
     body.should.containSelector('#sha-out-passphrase-key').withExactText('SHA-OUT passphrase')
-    body.should.containSelector('#sha-out-passphrase-value').withExactText('****')
+    body.should.containSelector('#sha-out-passphrase-value').withExactText('●●●●●●●●')
   })
 
   it('should not display notification credentials for ePDQ', function () {
@@ -190,7 +190,7 @@ describe('The credentials view in normal mode', function () {
 
     var body = renderTemplate('provider_credentials/epdq', templateData)
 
-    body.should.not.containSelector('h4#view-notification-title')
+    body.should.not.containSelector('#view-notification-title')
   })
 
   it('should display credentials view for a sandbox account', function () {
@@ -238,7 +238,7 @@ describe('The credentials view in edit mode', function () {
 
     var body = renderTemplate('provider_credentials/worldpay', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your Worldpay Credentials')
+    body.should.containSelector('#view-title').withExactText('Your Worldpay Credentials')
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -255,16 +255,15 @@ describe('The credentials view in edit mode', function () {
       .withLabel('Username')
 
     body.should.containInputField('password', 'password')
-      .withAttribute('value', '')
       .withLabel('Password')
 
-    body.should.containInputField('submitCredentials', 'submit')
+    body.should.containSelector('#submitCredentials')
   })
 
   it('should display credentials view for a smartpay account', function () {
     var templateData = {
       currentGatewayAccount: {
-        'payment_provider': 'Smartpay',
+        'payment_provider': 'SmartPay',
         'credentials': {
           'username': 'a-username',
           'merchant_id': 'a-merchant-id'
@@ -278,7 +277,7 @@ describe('The credentials view in edit mode', function () {
 
     var body = renderTemplate('provider_credentials/smartpay', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your Smartpay Credentials')
+    body.should.containSelector('#view-title').withExactText('Your SmartPay Credentials')
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -295,10 +294,9 @@ describe('The credentials view in edit mode', function () {
       .withLabel('Username')
 
     body.should.containInputField('password', 'password')
-      .withAttribute('value', '')
       .withLabel('Password')
 
-    body.should.containInputField('submitCredentials', 'submit')
+    body.should.containSelector('#submitCredentials')
   })
 
   it('should display credentials view for a ePDQ account', function () {
@@ -318,7 +316,7 @@ describe('The credentials view in edit mode', function () {
 
     let body = renderTemplate('provider_credentials/epdq', templateData)
 
-    body.should.containSelector('h4#view-title').withExactText('Your ePDQ Credentials')
+    body.should.containSelector('#view-title').withExactText('Your ePDQ Credentials')
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -335,18 +333,15 @@ describe('The credentials view in edit mode', function () {
       .withLabel('Username')
 
     body.should.containInputField('password', 'password')
-      .withAttribute('value', '')
       .withLabel('Password')
 
     body.should.containInputField('shaInPassphrase', 'password')
-      .withAttribute('value', '')
       .withLabel('SHA-IN passphrase')
 
     body.should.containInputField('shaOutPassphrase', 'password')
-      .withAttribute('value', '')
       .withLabel('SHA-OUT passphrase')
 
-    body.should.containInputField('submitCredentials', 'submit')
+    body.should.containSelector('#submitCredentials')
   })
 
   it('should display credentials view for a sandbox account', function () {

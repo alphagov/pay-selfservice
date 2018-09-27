@@ -1,71 +1,136 @@
 {% extends "../credentials.njk" %}
+{% from "components/table/macro.njk" import govukTable %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
 
 {% block provider_content %}
-  <h4 class="heading-small" id="view-title">Your ePDQ Credentials</h4>
 
   {% if permissions.gateway_credentials_read %}
     {% if not editMode %}
-      <table id="credentials">
-        <tbody>
-          <tr>
-            <th id="merchant-id-key">PSP ID</th>
-            <td id="merchant-id-value" class="font-small">{{currentGatewayAccount.credentials.merchant_id}}</td>
+      <table class="govuk-table" id="credentials">
+        <caption class="govuk-table__caption govuk-!-margin-bottom-3" id="view-title">Your ePDQ Credentials</caption>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="row" id="merchant-id-key">PSP ID</th>
+            <td class="govuk-table__cell" id="merchant-id-value">{{currentGatewayAccount.credentials.merchant_id}}</td>
           </tr>
-          <tr>
-            <th id="username-key">Username</th>
-            <td id="username-value" class="font-small">{{currentGatewayAccount.credentials.username}}</td>
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="row" id="username-key">Username</th>
+            <td class="govuk-table__cell" id="username-value">{{currentGatewayAccount.credentials.username}}</td>
           </tr>
-          <tr>
-            <th id="password-key">Password</th>
-            <td id="password-value" class="font-small">{% if currentGatewayAccount.credentials.username %}****{% endif %}</td>
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="row" id="password-key">Password</th>
+            <td class="govuk-table__cell" id="password-value">{% if currentGatewayAccount.credentials.username %}●●●●●●●●{% endif %}</td>
           </tr>
-          <tr>
-            <th id="sha-in-passphrase-key">SHA-IN passphrase</th>
-            <td id="sha-in-passphrase-value" class="font-small">{% if currentGatewayAccount.credentials.username %}****{% endif %}</td>
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="row" id="sha-in-passphrase-key">SHA-IN passphrase</th>
+            <td class="govuk-table__cell" id="sha-in-passphrase-value">{% if currentGatewayAccount.credentials.username %}●●●●●●●●{% endif %}</td>
           </tr>
-          <tr>
-            <th id="sha-out-passphrase-key">SHA-OUT passphrase</th>
-            <td id="sha-out-passphrase-value" class="font-small">{% if currentGatewayAccount.credentials.username %}****{% endif %}</td>
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="row" id="sha-out-passphrase-key">SHA-OUT passphrase</th>
+            <td class="govuk-table__cell" id="sha-out-passphrase-value">{% if currentGatewayAccount.credentials.username %}●●●●●●●●{% endif %}</td>
           </tr>
         </tbody>
       </table>
-      <a id="edit-credentials-link" class="button" href="{{routes.credentials.edit}}">
-          Edit credentials
-      </a>
+      {{
+        govukButton({
+          text: "Edit credentials",
+          href: routes.credentials.edit,
+          attributes: {
+            id: "edit-credentials-link"
+          }
+        })
+      }}
     {% endif %}
   {% endif %}
 
   {% if permissions.gateway_credentials_update %}
     {% if editMode %}
+      <h4 class="govuk-heading-s" id="view-title">Your {{currentGatewayAccount.payment_provider}} Credentials</h4>
       <form id="credentials-form" method="post" action="{{routes.credentials.create}}">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-        <div class="form-group">
-          <label class="form-label" for="merchantId">PSP ID</label>
-          <input class="form-control" id="merchantId" name="merchantId" type="text" value="{{currentGatewayAccount.credentials.merchant_id}}">
-        </div>
 
-        <div class="form-group">
-          <label class="form-label" for="username">Username</label>
-          <input class="form-control" id="username" name="username" type="text" value="{{currentGatewayAccount.credentials.username}}">
-        </div>
+        {{ govukInput({
+            label: {
+              text: "PSP ID"
+            },
+            id: "merchantId",
+            name: "merchantId",
+            classes: "govuk-input--width-20",
+            type: "text",
+            attributes: {
+              "data-validate": "required"
+            },
+            value: currentGatewayAccount.credentials.merchant_id
+          })
+        }}
 
-        <div class="form-group">
-          <label class="form-label" for="password">Password</label>
-          <input class="form-control" id="password" name="password" type="password" value="">
-        </div>
+        {{ govukInput({
+            label: {
+              text: "Username"
+            },
+            id: "username",
+            name: "username",
+            classes: "govuk-input--width-20",
+            type: "text",
+            attributes: {
+              "data-validate": "required"
+            },
+            value: currentGatewayAccount.credentials.username
+          })
+        }}
 
-        <div class="form-group">
-          <label class="form-label" for="shaInPassphrase">SHA-IN passphrase</label>
-          <input class="form-control" id="shaInPassphrase" name="shaInPassphrase" type="password" value="">
-        </div>
+        {{ govukInput({
+            label: {
+              text: "Password"
+            },
+            id: "password",
+            name: "password",
+            classes: "govuk-input--width-20",
+            type: "password",
+            attributes: {
+              "data-validate": "required"
+            },
+            value: currentGatewayAccount.credentials.password
+          })
+        }}
 
-        <div class="form-group">
-          <label class="form-label" for="shaOutPassphrase">SHA-OUT passphrase</label>
-          <input class="form-control" id="shaOutPassphrase" name="shaOutPassphrase" type="password" value="">
-        </div>
+        {{ govukInput({
+            label: {
+              text: "SHA-IN passphrase"
+            },
+            id: "shaInPassphrase",
+            name: "shaInPassphrase",
+            classes: "govuk-input--width-20",
+            type: "password",
+            attributes: {
+              "data-validate": "required"
+            }
+          })
+        }}
 
-        <input id="submitCredentials" name="submitCredentials" type="submit" class="button" value="Save credentials">
+        {{ govukInput({
+            label: {
+              text: "SHA-OUT passphrase"
+            },
+            id: "shaOutPassphrase",
+            name: "shaOutPassphrase",
+            classes: "govuk-input--width-20",
+            type: "password",
+            attributes: {
+              "data-validate": "required"
+            }
+          })
+        }}
 
+        {{
+          govukButton({
+            text: "Save credentials",
+            attributes: {
+              id: "submitCredentials"
+            }
+          })
+        }}
       </form>
     {% endif %}
   {% endif %}
