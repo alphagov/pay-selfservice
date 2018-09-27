@@ -14,10 +14,11 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const USER_PATH = '/v1/api/users'
 const ssUserConfig = require('../../../../fixtures/config/self_service_user.json')
 
+// setup
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 chai.use(chaiAsPromised)
 
 describe('adminusers client - get platform admin user', function () {

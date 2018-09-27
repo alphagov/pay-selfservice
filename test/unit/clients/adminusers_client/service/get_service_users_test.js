@@ -14,7 +14,7 @@ var port = Math.floor(Math.random() * 48127) + 1024
 var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
 describe('adminusers client - service users', function () {
-  let serviceExternalId = '12345'
+  let serviceExternalId = 'cp5wa'
   let nonExistingServiceId = '500'
   let responseParams = {
     service_roles: [{

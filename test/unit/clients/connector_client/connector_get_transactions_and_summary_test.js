@@ -20,7 +20,7 @@ const expect = chai.expect
 
 // Note: the browser tests use values in the fixed config below, which match the defined interations
 const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
-const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.is_primary)[0]
+const ssDefaultUser = ssUserConfig.config.users.find(fil => fil.is_primary)
 
 // Global setup
 chai.use(chaiAsPromised)

@@ -240,6 +240,27 @@ module.exports = {
         return _.clone(response)
       }
     }
+  },
+
+  validServiceInvitesResponse: (opts = {}) => {
+    const data = opts.invites || [{
+      type: 'user',
+      email: 'some.person@digital.cabinet-office.gov.uk',
+      role: 'view-only',
+      disabled: false,
+      attempt_counter: 0,
+      _links: [],
+      user_exist: false,
+      expired: false
+    }]
+    return {
+      getPactified: () => {
+        return data.map(pactInvites.pactify)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
   }
 
 }

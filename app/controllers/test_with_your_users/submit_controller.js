@@ -12,7 +12,7 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const authService = require('../../services/auth_service.js')
 const {isCurrency, isHttps, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
-const {poundsToPence, penceToPounds, sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
+const {penceToPounds, sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
   const params = {

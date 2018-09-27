@@ -1,54 +1,19 @@
+'use strict'
+
+// NPM dependencies
 const _ = require('lodash')
 const logger = require('winston')
-const response = require('../utils/response.js')
-const userService = require('../services/user_service.js')
-const paths = require('../paths.js')
+
+// Local dependencies
+const response = require('../utils/response')
+const userService = require('../services/user_service')
+const paths = require('../paths')
 const successResponse = response.response
 const errorResponse = response.renderErrorView
-const roles = require('../utils/roles').roles
+const {roles, mapByRoles, mapInvitesByRoles} = require('../utils/roles')
 
 const formattedPathFor = require('../utils/replace_params_in_path')
 
-const mapByRoles = function (users, externalServiceId, currentUser) {
-  const userRolesMap = {}
-  for (const role in roles) {
-    userRolesMap[roles[role].name] = []
-  }
-  users.map((user) => {
-    const userRoleName = _.get(user.getRoleForService(externalServiceId), 'name')
-    if (roles[userRoleName]) {
-      const mappedUser = {
-        username: user.username,
-        external_id: user.externalId
-      }
-      if (currentUser.externalId === user.externalId) {
-        mappedUser.is_current = true
-        mappedUser.link = paths.user.profile
-      } else {
-        mappedUser.link = formattedPathFor(paths.teamMembers.show, externalServiceId, user.externalId)
-      }
-      userRolesMap[userRoleName].push(mappedUser)
-    }
-  })
-  return userRolesMap
-}
-
-const mapInvitesByRoles = function (invitedUsers) {
-  const userRolesMap = {}
-  for (const role in roles) {
-    userRolesMap[roles[role].name] = []
-  }
-  invitedUsers.map((user) => {
-    if (roles[user.role]) {
-      const mappedUser = {
-        username: user.email,
-        expired: user.expired
-      }
-      userRolesMap[user.role].push(mappedUser)
-    }
-  })
-  return userRolesMap
-}
 module.exports = {
 
   /**

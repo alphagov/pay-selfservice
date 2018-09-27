@@ -1,0 +1,118 @@
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+
+{% block pageTitle %}
+Team members - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-full">
+    {{ govukBackLink({ text: "Back", href: routes.admin.indexPlatformAdmin }) }}
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l page-title">Team members</h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds admin-list-group">
+    <h2 id="active-team-members-heading" class="govuk-heading-m">Active ({{number_active_members}})</h2>
+    <div class="admin-list" id="team-members-admin-list">
+      <h3 id="admin-role-header" class="govuk-heading-s">Administrators ({{team_members["admin"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for admin in team_members["admin"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                  <span>
+                    {{ admin.username }}
+                  </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-list" id="team-members-view-and-refund-list">
+      <h3 id="view-and-refund-role-header" class="govuk-heading-s">View and refund ({{team_members["view-and-refund"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in team_members["view-and-refund"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                  <span>
+                    {{ team_member.username }}
+                  <span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-list" id="team-members-view-only-list">
+      <h3 id="view-only-role-header" class="govuk-heading-s">View only ({{team_members["view-only"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in team_members["view-only"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                  <span>
+                {{ team_member.username }}
+                  </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% if number_invited_members > 0 %}
+  <div class="govuk-grid-column-two-thirds admin-list-group">
+    <h2 id="invited-team-members-heading" class="govuk-heading-m">Invited ({{number_invited_members}})</h2>
+    <div class="admin-list" id="invited-team-members-admin-list">
+      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators ({{invited_team_members["admin"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for admin in invited_team_members["admin"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ admin.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-list" id="invited-team-members-view-and-refund-list">
+      <h3 id="invited-team-members-view-and-refund-role-header" class="govuk-heading-s">View and refund ({{invited_team_members["view-and-refund"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in invited_team_members["view-and-refund"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ team_member.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-list" id="invited-team-members-view-only-list">
+      <h3 id="invited-team-members-view-only-role-header" class="govuk-heading-s">View only ({{invited_team_members["view-only"].length}})</h3>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for team_member in invited_team_members["view-only"] %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <span>
+                  {{ team_member.username }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+<div class="flex-grid--row service_list_item" data-name="{{ service.name }}">
+  <div class="flex-grid--heading-group marked">
+    <h2 class="govuk-heading-m service-name">
+      {{ service.name }}
+    </h2>
+  </div>
+  <div class="flex-grid--column-half tight marked">
+    {% if service.gateway_accounts.cardAccounts.length %}
+    <h3 class="govuk-heading-s">Card payments</h3>
+    <ul class="govuk-list service-list">
+    {% for account in service.gateway_accounts.cardAccounts %}
+      {% include "./_service_switch.njk" %}
+    {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  <div id="team-members" class="flex-grid--column-half tight marked">
+    <ul class="govuk-list">
+      <li>
+        <p>
+          <a class="govuk-link govuk-link--no-visited-state manage-team-members" href="{{ routes.admin.serviceTeamMembers | replace(':externalServiceId', service.external_id) }}">
+            View team members
+          </a>
+        </p>
+      </li>
+      <li>
+        <a class="govuk-link govuk-link--no-visited-state edit-merchant-details" href="{{ routes.admin.serviceOrganisationDetails | replace(':externalServiceId', service.external_id)}}">
+          View organisation details
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

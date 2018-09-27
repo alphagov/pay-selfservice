@@ -1,0 +1,67 @@
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+
+{% block pageTitle %}
+  Organisation details - {{serviceName}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+
+<div class="govuk-grid-column-full">
+  {{ govukBackLink({ text: "Back", href: routes.admin.indexPlatformAdmin }) }}
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l">Organisation details</h1>
+
+  <table class="govuk-table">
+    <tbody class="govuk-table__body">
+
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">
+          Name
+        </th>
+        <td class="govuk-table__cell" id="merchant-name">
+          {{serviceName}}
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">
+          Address
+        </th>
+        <td class="govuk-table__cell" id="merchant-address">
+          {{merchantDetails.address_line1}}<br/>
+          {% if merchantDetails.address_line2 %}
+          {{merchantDetails.address_line2}}<br/>
+          {% endif %}
+          {{merchantDetails.address_city}}<br/>
+          {{merchantDetails.address_postcode}}<br/>
+          {{merchantDetails.address_country | countryISOtoName}}
+        </td>
+      </tr>
+      {% if merchantDetails.telephone_number %}
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">
+          Phone number
+        </th>
+        <td class="govuk-table__cell" id="telephone-number">
+          {{merchantDetails.telephone_number}}
+        </td>
+      </tr>
+      {% endif %}
+      {% if merchantDetails.email %}
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">
+          Email
+        </th>
+        <td class="govuk-table__cell" id="merchant-email">
+          {{merchantDetails.email}}
+        </td>
+      </tr>
+      {% endif %}
+
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -20,7 +20,10 @@ module.exports = {
     update: '/notification-credentials'
   },
   admin: {
-    platformAdmin: '/platform-admin'
+    indexPlatformAdmin: '/platform-admin',
+    indexPlatformAdminTrialServices: '/platform-admin-trial-services',
+    serviceTeamMembers: '/platform-admin/service/:externalServiceId',
+    serviceOrganisationDetails: '/platform-admin/organisation-details/:externalServiceId'
   },
   user: {
     logIn: '/login',

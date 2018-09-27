@@ -183,6 +183,14 @@
               "gateway_account_ids": [
                 "666"
               ],
+              "merchant_details": {
+                "name": "GOV.UK Pay",
+                "address_line1": "Address line 1",
+                "address_line2": "Address line 2",
+                "address_city": "Pay Town",
+                "address_postcode": "E1 1XX",
+                "address_country": "GB"
+              },
               "_links": []
             },
             "role": {
@@ -955,7 +963,9 @@
                 "filtering": {
                   "kind": "partialemail",
                   "email": "gds4",
-                  "card_brand": ["visa"]
+                  "card_brand": [
+                    "visa"
+                  ]
                 },
                 "data": [
                   {
@@ -1007,8 +1017,16 @@
                 "filtering": {
                   "kind": "multiplestates-partialref-startenddate",
                   "reference": "ref38",
-                  "payment_states": ["Success", "In progress"],
-                  "payment_states_expanded": ["created", "started", "submitted", "success"],
+                  "payment_states": [
+                    "Success",
+                    "In progress"
+                  ],
+                  "payment_states_expanded": [
+                    "created",
+                    "started",
+                    "submitted",
+                    "success"
+                  ],
                   "from_date": "2018-05-03T00:00:00.000Z",
                   "from_date_raw": "03/5/2018",
                   "from_time_raw": "01:00:00",
@@ -1085,7 +1103,13 @@
         "disabled": false,
         "login_counter": 0,
         "session_version": 0,
-        "gateway_accounts": [],
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
         "_links": [
           {
             "rel": "self",
@@ -1231,43 +1255,216 @@
             }
           ]
         },
-        "service_ids": [],
-        "service_roles": [],
-        "admin_service_roles": [
+        "service_ids": [
+          "cp5wa"
+        ],
+        "service_roles": [
           {
             "service": {
-              "external_id": "hj6gd",
-              "name": "Live service 1",
+              "external_id": "cp5wa",
+              "name": "System Generated",
               "gateway_account_ids": [
-                "198",
-                "876"
+                "666"
               ],
               "_links": []
-            }
-          },
-          {
-            "service": {
-              "external_id": "du5os",
-              "name": "Live service 2",
-              "gateway_account_ids": [
-                "394",
-                "872"
-              ],
-              "_links": []
-            }
-          },
-          {
-            "service": {
-              "external_id": "du5os",
-              "name": "Beta service 3",
-              "gateway_account_ids": [
-                "446"
-              ],
-              "_links": []
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                }
+              ]
             }
           }
         ],
-        "services": [],
+        "services": [
+          {
+            "external_id": "12345",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "978",
+              "976"
+            ]
+          }
+        ],
+        "admin_service_roles": {
+          "role": {
+            "name": "platform-admin",
+            "description": "Platform administrator",
+            "permissions": [
+              {
+                "name": "platform-admin:read"
+              },
+              {
+                "name": "platform-admin:update"
+              }
+            ]
+          },
+          "services": [
+            {
+                "external_id": "cp5wa",
+                "name": "System Generated",
+                "gateway_account_ids": [
+                  "666"
+                ],
+                "_links": [],
+                "notes": "Maps to existing 'adminusers client - service users' contract test to get service users",
+                "is_live": true
+            },
+            {
+                "external_id": "du5os",
+                "name": "Live service 1",
+                "gateway_account_ids": [
+                  "394",
+                  "872"
+                ],
+                "_links": [],
+                "notes": "",
+                "is_live": true
+            },
+            {
+                "external_id": "ix6ys",
+                "name": "Trial service 2",
+                "gateway_account_ids": [
+                  "446"
+                ],
+                "_links": [],
+                "notes": "",
+                "is_live": false
+            }
+          ]
+        },
         "permissions": [
           "users-service:read",
           "users-service:create",

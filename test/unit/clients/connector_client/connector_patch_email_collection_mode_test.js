@@ -20,9 +20,9 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-// Note: the browser tests use values in the fixed config below, which match the defined interations
+// Note: the browser tests use values in the fixed config below, which match the defined interactions
 const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
-const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+const ssDefaultUser = ssUserConfig.config.users.find(fil => fil.is_primary)
 
 describe('connector client - patch email collection mode', function () {
   let provider = Pact({

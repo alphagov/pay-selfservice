@@ -14,10 +14,11 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const USER_PATH = '/v1/api/users'
 const ssUserConfig = require('../../../../fixtures/config/self_service_user.json')
 
+// setup
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 chai.use(chaiAsPromised)
 
 describe('adminusers client - get user', function () {
@@ -31,7 +32,7 @@ describe('adminusers client - get user', function () {
     pactfileWriteMode: 'merge'
   })
 
-  const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.is_primary)[0]
+  const ssDefaultUser = ssUserConfig.config.users.find(fil => fil.is_primary)
 
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
@@ -72,7 +73,7 @@ describe('adminusers client - get user', function () {
         expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
         expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
         // No platform admin roles should exist on a non admin user
-        expect(user.adminServiceRoles).to.deep.equal([])
+        expect(user.adminServiceRoles).to.deep.equal({})
       }).should.notify(done)
     })
   })

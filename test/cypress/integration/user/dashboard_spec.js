@@ -28,5 +28,11 @@ describe('Dashboard', () => {
         expect($li.eq(2)).to.contain('Documentation')
       })
     })
+
+    it('should not allow direct access to the platform admin pages', () => {
+      cy.visit('/platform-admin')
+      cy.get('.page-title').contains('An error occurred:')
+      cy.get('#errorMsg').contains('You do not have the administrator rights to perform this operation.')
+    })
   })
 })

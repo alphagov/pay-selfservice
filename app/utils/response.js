@@ -33,7 +33,6 @@ function setSecurityTrimmedTemplateData (req, data) {
   if (req.user && req.user.isPlatformAdmin) {
     data.admin = {
       isPlatformAdmin: true
-      // TODO : any other role/admin setup here
     }
   }
 }

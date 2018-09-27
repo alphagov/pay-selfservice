@@ -30,7 +30,7 @@ describe('publicauth client - get tokens', function () {
     pactfileWriteMode: 'merge'
   })
 
-  const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+  const ssDefaultUser = ssUserConfig.config.users.find(fil => fil.is_primary)
 
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))

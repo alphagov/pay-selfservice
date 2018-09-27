@@ -42,7 +42,7 @@ describe('The payment select type view', () => {
       .withAttribute('class', 'govuk-button')
   })
 
-  it('should not display select type form without correct permission',() => {
+  it('should not display select type form without correct permission', () => {
     const templateData = {
       allCardOption: {
         type: TYPES.ALL,

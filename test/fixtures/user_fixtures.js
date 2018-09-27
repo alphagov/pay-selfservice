@@ -4,9 +4,9 @@
 const _ = require('lodash')
 
 // Custom dependencies
-let User = require('../../app/models/User.class')
-let pactBase = require('./pact_base')
-let pactUsers = pactBase(
+const User = require('../../app/models/User.class')
+const pactBase = require('./pact_base')
+const pactUsers = pactBase(
   {
     array: ['permissions', 'gateway_account_ids', 'service_ids', 'service_roles', 'services', '_links'],
     length: [{key: 'permissions', length: 1}]
@@ -30,12 +30,12 @@ function merchantDetailsFixture () {
 module.exports = {
 
   validMinimalUser: () => {
-    let newExternalId = '8e1a29e4f66e409693d6e530bff7a642'
-    let newUsername = '5nxja'
-    let defaultServiceId = '535'
-    let accountIds = ['507']
+    const newExternalId = '8e1a29e4f66e409693d6e530bff7a642'
+    const newUsername = '5nxja'
+    const defaultServiceId = '535'
+    const accountIds = ['507']
 
-    let data = {
+    const data = {
       external_id: newExternalId,
       username: newUsername,
       email: `${newUsername}@example.com`,
@@ -68,13 +68,13 @@ module.exports = {
     }
   },
   validUserWithMerchantDetails: (opts = {}) => {
-    let newExternalId = '79d686ec43bc4768b2600d2e1e41e54e'
-    let newUsername = '6fu6kr'
-    let defaultServiceId = opts.default_service_id || '946'
-    let gatewayAccountIds = opts.gateway_account_ids || ['218']
-    let merchantDetails = opts.merchant_details || merchantDetailsFixture()
+    const newExternalId = '79d686ec43bc4768b2600d2e1e41e54e'
+    const newUsername = '6fu6kr'
+    const defaultServiceId = opts.default_service_id || '946'
+    const gatewayAccountIds = opts.gateway_account_ids || ['218']
+    const merchantDetails = opts.merchant_details || merchantDetailsFixture()
 
-    let data = {
+    const data = {
       external_id: opts.external_id || newExternalId,
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
@@ -110,12 +110,12 @@ module.exports = {
     }
   },
   validUser: (opts = {}) => {
-    let newExternalId = '121391373c1844dd99cb3416b70785c8'
-    let newUsername = 'm87bmh'
-    let defaultServiceId = opts.default_service_id || '193'
-    let gatewayAccountIds = opts.gateway_account_ids || ['540']
+    const newExternalId = '121391373c1844dd99cb3416b70785c8'
+    const newUsername = 'm87bmh'
+    const defaultServiceId = opts.default_service_id || '193'
+    const gatewayAccountIds = opts.gateway_account_ids || ['540']
 
-    let data = {
+    const data = {
       external_id: opts.external_id || newExternalId,
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
@@ -158,13 +158,13 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validUserResponse: (request = {}) => {
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let reqExternalId = request.external_id || existingExternalId
-    let reqEmail = request.email || `${request.username || 'existing-user'}@example.com`
-    let defaultServiceId = 'cp5wa'
+    const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const reqExternalId = request.external_id || existingExternalId
+    const reqEmail = request.email || `${request.username || 'existing-user'}@example.com`
+    const defaultServiceId = 'cp5wa'
     const gatewayAccountIds = request.gateway_account_ids || [758, 772]
 
-    let data = {
+    const data = {
       external_id: reqExternalId,
       username: reqEmail,
       email: reqEmail,
@@ -257,7 +257,7 @@ module.exports = {
   },
 
   validAuthenticateRequest: (options) => {
-    let request = {
+    const request = {
       username: options.username || 'username',
       password: options.password || 'password'
     }
@@ -266,7 +266,7 @@ module.exports = {
   },
 
   unauthorizedUserResponse: () => {
-    let response = {
+    const response = {
       errors: ['invalid username and/or password']
     }
 
@@ -274,7 +274,7 @@ module.exports = {
   },
 
   badAuthenticateResponse: () => {
-    let response = {
+    const response = {
       errors: ['Field [username] is required', 'Field [password] is required']
     }
 
@@ -282,7 +282,7 @@ module.exports = {
   },
 
   validIncrementSessionVersionRequest: () => {
-    let request = {
+    const request = {
       op: 'append',
       path: 'sessionVersion',
       value: 1
@@ -292,7 +292,7 @@ module.exports = {
   },
 
   validAuthenticateSecondFactorRequest: (code) => {
-    let request = {
+    const request = {
       code: code || '123456'
     }
 
@@ -300,7 +300,7 @@ module.exports = {
   },
 
   validUpdatePasswordRequest: (token, newPassword) => {
-    let request = {
+    const request = {
       forgotten_password_code: token || '5ylaem',
       new_password: newPassword || validPassword()
     }
@@ -309,7 +309,7 @@ module.exports = {
   },
 
   validUpdateServiceRoleRequest: (role) => {
-    let request = {
+    const request = {
       role_name: role || 'admin'
     }
 
@@ -317,7 +317,7 @@ module.exports = {
   },
 
   validAssignServiceRoleRequest: (serviceExternalId, role) => {
-    let request = {
+    const request = {
       service_external_id: serviceExternalId || '9en17v',
       role_name: role || 'admin'
     }
@@ -352,7 +352,7 @@ module.exports = {
   },
 
   validPasswordAuthenticateResponse: (opts = {}) => {
-    let response =
+    const response =
       {
         external_id: opts.external_id || '09283568e105442da3928d1fa99fb0eb',
         is_platform_admin: opts.is_platform_admin || false,
@@ -427,7 +427,7 @@ module.exports = {
   },
 
   invalidPasswordAuthenticateResponse: () => {
-    let response = {
+    const response = {
       errors: ['invalid username and/or password']
     }
 
@@ -435,7 +435,7 @@ module.exports = {
   },
 
   validForgottenPasswordCreateRequest: (username) => {
-    let request = {
+    const request = {
       username: username || 'username@email.com'
     }
 
@@ -443,9 +443,9 @@ module.exports = {
   },
 
   validForgottenPasswordResponse: (payload) => {
-    let request = payload || {}
-    let code = 'h41ne'
-    let response = {
+    const request = payload || {}
+    const code = 'h41ne'
+    const response = {
       user_external_id: request.userExternalId || 'userExternalId',
       code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
@@ -460,7 +460,7 @@ module.exports = {
   },
 
   badForgottenPasswordResponse: () => {
-    let response = {
+    const response = {
       errors: ['Field [username] is required']
     }
 
