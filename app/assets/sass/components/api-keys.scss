@@ -1,0 +1,54 @@
+.key-list-item-meta {
+  @include govuk-font($size: 16);
+  margin-bottom: 1em;
+
+  dl {
+    margin: 0;
+  }
+
+  dt {
+    font-weight: bold;
+  }
+
+  dt,
+  dd {
+    display: inline;
+    margin: 0;
+  }
+
+  p {
+    margin: 0 0 govuk-spacing(2);
+  }
+}
+
+.key-list-item {
+  border-top: 1px solid $govuk-border-colour;
+  padding: govuk-spacing(6) 0;
+}
+
+// .copy {
+//   &-api-key {
+//     width: 100%;
+//     outline: 0;
+//     border: 0;
+//     @include appearance(none);
+//   }
+
+//   &-button {
+//     background-color: $panel-colour;
+//     color: $text-colour;
+//     margin: $gutter 0;
+//     @include box-shadow(0 2px 0 $border-colour);
+
+//     &:focus,
+//     &:hover {
+//       color: $text-colour;
+//       background-color: darken($panel-colour, 15%);
+//       @include box-shadow(0 2px 0 darken($border-colour, 15%));
+//     }
+//   }
+// }
+
+// .update-key-wrap {
+//   margin-top: $gutter;
+// }
