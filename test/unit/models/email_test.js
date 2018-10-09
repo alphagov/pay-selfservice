@@ -44,8 +44,8 @@ describe('email notification', function () {
                 service_name: '8b9370c1a83c4d71a538a1691236acc2',
                 type: 'test',
                 analytics_id: '8b02c7e542e74423aa9e6d0f0628fd58',
-                emailCollectionMode: 'MANDATORY',
-                emailNotifications: {
+                email_collection_mode: 'MANDATORY',
+                email_notifications: {
                   PAYMENT_CONFIRMED: {
                     version: 1,
                     enabled: true,

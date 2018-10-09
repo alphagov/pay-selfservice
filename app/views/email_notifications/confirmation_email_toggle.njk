@@ -26,7 +26,7 @@
             <fieldset>
               <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
               <div class="multiple-choice">
-                <input id="email-confirmation-yes-input" type="radio" name="email-confirmation-enabled" value="true" checked>
+                <input id="email-confirmation-yes-input" type="radio" name="email-confirmation-enabled" value="true" {{'checked' if confirmationEnabled === true else ''}}>
                 <label for="email-confirmation-yes-input">
                   Yes
                 </label>
@@ -44,7 +44,7 @@
               </div>
               {% endif %}
               <div class="multiple-choice">
-                <input id="email-confirmation-no-input" type="radio" name="email-confirmation-enabled" value="false">
+                <input id="email-confirmation-no-input" type="radio" name="email-confirmation-enabled" value="false" {{'checked' if confirmationEnabled === false else ''}}>
                 <label for="email-confirmation-no-input">
                   No
                 </label>

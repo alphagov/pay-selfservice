@@ -27,7 +27,7 @@
               <fieldset>
                 <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
                 <div class="multiple-choice">
-                  <input id="email-refund-yes-input" type="radio" name="email-refund-enabled" value="true" checked>
+                  <input id="email-refund-yes-input" type="radio" name="email-refund-enabled" value="true" {{'checked' if refundEmailEnabled === true else ''}}>
                   <label for="email-refund-yes-input">
                     Yes
                   </label>
@@ -45,7 +45,7 @@
                 </div>
                 {% endif %}
                 <div class="multiple-choice">
-                  <input id="email-refund-no-input" type="radio" name="email-refund-enabled" value="false">
+                  <input id="email-refund-no-input" type="radio" name="email-refund-enabled" value="false"  {{'checked' if refundEmailEnabled === false else ''}}>
                   <label for="email-refund-no-input">
                     No
                   </label>

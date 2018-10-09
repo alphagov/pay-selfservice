@@ -69,7 +69,7 @@ module.exports.collectionEmailUpdate = (req, res) => {
 
 module.exports.confirmationEmailIndex = (req, res) => {
   showConfirmationEmail(req, res, 'confirmation_email_toggle', {
-    confirmationEnabled: req.account.confirmationEmailEnabled,
+    confirmationEnabled: req.account.emailEnabled,
     emailCollectionMode: req.account.emailCollectionMode
   })
 }

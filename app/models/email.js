@@ -31,10 +31,10 @@ module.exports = function (correlationId) {
         .then(data => {
           logger.info(`[${correlationId}] - GET account %s ended - elapsed time: %s ms`, accountID, new Date() - startTime)
           resolve({
-            customEmailText: data.emailNotifications.PAYMENT_CONFIRMED.template_body,
-            emailEnabled: data.emailNotifications.PAYMENT_CONFIRMED.enabled,
-            emailCollectionMode: data.emailCollectionMode,
-            refundEmailEnabled: data.emailNotifications.REFUND_ISSUED && data.emailNotifications.REFUND_ISSUED.enabled
+            customEmailText: data.email_notifications.PAYMENT_CONFIRMED.template_body,
+            emailEnabled: data.email_notifications.PAYMENT_CONFIRMED.enabled,
+            emailCollectionMode: data.email_collection_mode,
+            refundEmailEnabled: data.email_notifications.REFUND_ISSUED && data.email_notifications.REFUND_ISSUED.enabled
           })
         })
         .catch(err => {

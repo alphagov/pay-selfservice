@@ -167,8 +167,8 @@ module.exports = {
       service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',
       type: opts.type || 'test',
       analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58',
-      emailCollectionMode: opts.emailCollectionMode || 'MANDATORY',
-      emailNotifications: opts.emailNotifications || {
+      email_collection_mode: opts.email_collection_mode || 'MANDATORY',
+      email_notifications: opts.email_notifications || {
         PAYMENT_CONFIRMED: {
           version: 1,
           enabled: true,
@@ -198,7 +198,7 @@ module.exports = {
           gateway_account_id: 100,
           payment_provider: 'sandbox',
           service_name: 'Gateway Account 1 (test)',
-          emailCollectionMode: 'MANDATORY',
+          email_collection_mode: 'MANDATORY',
           emailNotifications: {
             PAYMENT_CONFIRMED: {
               version: 1,
@@ -212,8 +212,8 @@ module.exports = {
           gateway_account_id: 101,
           payment_provider: 'sandbox',
           service_name: 'Gateway Account 2 (test)',
-          emailCollectionMode: 'OPTIONAL',
-          emailNotifications: {
+          email_collection_mode: 'OPTIONAL',
+          email_notifications: {
             PAYMENT_CONFIRMED: {
               version: 1,
               enabled: true,
@@ -231,8 +231,8 @@ module.exports = {
           gateway_account_id: 102,
           payment_provider: 'sandbox',
           service_name: 'Gateway Account 3 (test)',
-          emailCollectionMode: 'OFF',
-          emailNotifications: {
+          email_collection_mode: 'OFF',
+          email_notifications: {
             PAYMENT_CONFIRMED: {
               version: 1,
               enabled: true,
