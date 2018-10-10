@@ -1,0 +1,66 @@
+{% extends "../layout.njk" %}
+
+{% block page_title %}
+  Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="column-two-thirds">
+  <a href="{{routes.emailNotifications.index}}" class="link-back">Back</a>
+</div>
+<div class="column-two-thirds">
+  {% if not permissions.email_notification_toggle_update %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
+
+  {% if permissions.email_notification_template_read %}
+
+  <h2 class="heading-medium">Do you want to send refund emails?</h2>
+
+     <span class="form-hint">Users will receive an email confirming their refund from GOV.UK Pay</span>
+     <form id="refund-email-form" method="post" action="{{routes.emailNotifications.refund}}">
+            <div class="form-group">
+              <fieldset>
+                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                <div class="multiple-choice">
+                  <input id="email-refund-yes-input" type="radio" name="email-refund-enabled" value="true" {{'checked' if refundEmailEnabled === true else ''}}>
+                  <label for="email-refund-yes-input">
+                    Yes
+                  </label>
+                </div>
+                {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
+                <div class="panel panel-border-narrow" id="contact-by-email" style="margin-bottom:30px;" aria-hidden="false">
+                    <div class="notice">
+                      <i class="icon icon-important icon-top">
+                        <span class="visually-hidden">Warning</span>
+                      </i>
+                      <strong class="bold-small">
+                        Users will not receive refund emails because they do not have the option to enter an email address. Change your settings to let them enter an email address.
+                      </strong>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="multiple-choice">
+                  <input id="email-refund-no-input" type="radio" name="email-refund-enabled" value="false"  {{'checked' if refundEmailEnabled === false else ''}}>
+                  <label for="email-refund-no-input">
+                    No
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="form-group call-to-action-group">
+              <input type="submit" class="button" value="Save changes">
+              <a id="service-name-cancel-link" href="{{routes.emailNotifications.index}}">
+                  Cancel
+              </a>
+            </div>
+          </form>
+
+  {% endif %}
+
+</div>
+{% endblock %}

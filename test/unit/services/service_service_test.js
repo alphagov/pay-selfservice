@@ -59,9 +59,7 @@ const getDDGatewayAccounts = function (obj) {
 
 describe('service service', function () {
   describe('when getting gateway accounts', function () {
-
     it('should return gateway accounts for the valid ids', function (done) {
-
       directDebitClientStub = {
         gatewayAccounts: {
           get: getDDGatewayAccounts

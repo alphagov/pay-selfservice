@@ -71,6 +71,11 @@ function isInArray (value, array) {
 }
 
 /** @private */
+function _accountApiUrlFor (gatewayAccountId, url) {
+  return url + ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId)
+}
+
+/** @private */
 function _accountUrlFor (gatewayAccountId, url) {
   return url + ACCOUNT_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
@@ -116,13 +121,13 @@ function _chargeRefundsUrlFor (gatewayAccountId, chargeId, url) {
 }
 
 /** @private */
-var _getNotificationEmailUrlFor = function (accountID) {
-  return process.env.CONNECTOR_URL + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
+var _getNotificationEmailUrlFor = function (accountID, url) {
+  return url + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
 }
 
 /** @private */
-var _getToggle3dsUrlFor = function (accountID) {
-  return process.env.CONNECTOR_URL + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
+var _getToggle3dsUrlFor = function (accountID, url) {
+  return url + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
 }
 
 /** @private */
@@ -515,15 +520,14 @@ ConnectorClient.prototype = {
     baseClient.post(url, params, this.responseHandler(successCallback))
     return this
   },
-
   /**
    *
    * @param {Object} params
    * @param {Function} successCallback
    */
-  getNotificationEmail: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId)
-    baseClient.get(url, params, this.responseHandler(successCallback))
+  updateConfirmationEmail: function (params, successCallback) {
+    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
+    baseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -533,9 +537,9 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  updateNotificationEmail: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId)
-    baseClient.post(url, params, this.responseHandler(successCallback))
+  updateConfirmationEmailEnabled: function (params, successCallback) {
+    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
+    baseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -545,8 +549,20 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  updateNotificationEmailEnabled: function (params, successCallback) {
-    let url = _getNotificationEmailUrlFor(params.gatewayAccountId)
+  updateEmailCollectionMode: function (params, successCallback) {
+    let url = _accountApiUrlFor(params.gatewayAccountId, this.connectorUrl)
+    baseClient.patch(url, params, this.responseHandler(successCallback))
+
+    return this
+  },
+
+  /**
+   *
+   * @param {Object} params
+   * @param {Function} successCallback
+   */
+  updateRefundEmailEnabled: function (params, successCallback) {
+    let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
     baseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
@@ -558,7 +574,7 @@ ConnectorClient.prototype = {
    * @param {Function} successCallback
    */
   update3dsEnabled: function (params, successCallback) {
-    let url = _getToggle3dsUrlFor(params.gatewayAccountId)
+    let url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
     baseClient.patch(url, params, this.responseHandler(successCallback))
     return this
   },

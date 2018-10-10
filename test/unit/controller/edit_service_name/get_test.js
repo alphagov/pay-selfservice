@@ -17,7 +17,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service', service_name: { en: 'Example En Service', cy: 'Example Cy Service'}})
+        service: new Service({external_id: random.randomUuid(), name: 'Example Service', service_name: {en: 'Example En Service', cy: 'Example Cy Service'}})
       }
       editServiceNameCtrl.get(req, res)
     })

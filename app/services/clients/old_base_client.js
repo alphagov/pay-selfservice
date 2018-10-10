@@ -86,7 +86,7 @@ const _request = function request (methodName, url, args, callback, subSegment) 
     uri: url,
     method: methodName,
     agent: agent,
-    headers: getHeaders(args, { clsSegment: clsSegment, subSegment: subSegment})
+    headers: getHeaders(args, {clsSegment: clsSegment, subSegment: subSegment})
   }
   if (args.qs) {
     requestOptions.qs = args.qs

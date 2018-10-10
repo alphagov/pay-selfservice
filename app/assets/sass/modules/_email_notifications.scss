@@ -1,0 +1,75 @@
+#email-notifications {
+
+  table {
+    margin-top: 30px;
+    max-width: 600px;
+  }
+
+  .table-header-accept {
+    text-align: right;
+  }
+
+  .table-data-label {
+    img, span {
+      float: left;
+      margin: 0 0 0 10px;
+    }
+
+    span {
+      font-size: 19px;
+      margin-left: 0;
+      width: 50%;
+
+      @include media(tablet) {
+        margin-left: 0;
+        width: auto;
+      }
+    }
+  }
+
+  .table-data-change {
+    text-align: right;
+    font-size: 16px;
+  }
+
+  #email-nofifications-toggle-summary {
+    margin-bottom: 0px;
+  }
+
+}
+
+#email-templates {
+
+  .heading-medium {
+    margin-bottom: 0;
+  }
+
+  .email-template {
+
+    border: 1px solid $border-colour;
+    padding-top: 30px;
+    padding-bottom: 20px;
+
+    .email-body {
+      padding: 10px 0px 10px 15px;
+    }
+
+    .email-meta-item {
+
+      padding: 10px 0px 10px 15px;
+      border-bottom: 1px solid $border-colour;
+
+      .email-meta-key {
+        float: left;
+        width: 100px;
+      }
+
+    }
+
+  }
+
+}
+
+#custom-paragraph-header {
+  font-weight: 700;
+}
