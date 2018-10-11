@@ -29,29 +29,29 @@ describe('Settings', () => {
     })
   })
 
-  describe('Email collection mode page', () => {
-    it('should have the page title \'Email notifications - System Generated test - GOV.UK Pay\'', () => {
-      const emailNotificationsUrl = `/email-notifications`
-      cy.visit(emailNotificationsUrl)
-
-      // Access the collection mode page
-      cy.get('#email-notifications-toggle-collection').click()
-      cy.title().should('eq', 'Email notifications - System Generated test - GOV.UK Pay')
-      cy.url().should('include', '/email-settings-collection')
-
-      cy.get('.heading-medium').first().should('contain', 'Do you want to ask users for an email address on the card payment page?')
-
-      // Test the save button
-      cy.contains('Save changes').click()
-      cy.url().should('include', '/email-notifications')
-
-      // Access the collection mode page again
-      cy.get('#email-notifications-toggle-collection').click()
-      // Test the cancel button
-      cy.contains('Cancel').click()
-      cy.url().should('include', '/email-notifications')
-    })
-  })
+  // describe('Email collection mode page', () => {
+  //   it('should have the page title \'Email notifications - System Generated test - GOV.UK Pay\'', () => {
+  //     const emailNotificationsUrl = `/email-notifications`
+  //     cy.visit(emailNotificationsUrl)
+  //
+  //     // Access the collection mode page
+  //     cy.get('#email-notifications-toggle-collection').click()
+  //     cy.title().should('eq', 'Email notifications - System Generated test - GOV.UK Pay')
+  //     cy.url().should('include', '/email-settings-collection')
+  //
+  //     cy.get('.heading-medium').first().should('contain', 'Do you want to ask users for an email address on the card payment page?')
+  //
+  //     // Test the save button
+  //     cy.contains('Save changes').click()
+  //     cy.url().should('include', '/email-notifications')
+  //
+  //     // Access the collection mode page again
+  //     cy.get('#email-notifications-toggle-collection').click()
+  //     // Test the cancel button
+  //     cy.contains('Cancel').click()
+  //     cy.url().should('include', '/email-notifications')
+  //   })
+  // })
 
   describe('Confirmation email toggle page', () => {
     it('should have the page title \'Email notifications - System Generated test - GOV.UK Pay\'', () => {
