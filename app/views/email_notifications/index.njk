@@ -19,7 +19,7 @@
   </h1>
 
   <p>
-    GOV.UK Pay can send notifications to users who enter an email address.
+    GOV.UK Pay can send notifications to users. {% if false %}who enter an email address.{% endif %}
   </p>
 
   {% if permissions.email_notification_template_read %}
@@ -30,6 +30,7 @@
          <div id="email-nofifications-toggle-summary" class="form-group">
             <table>
                 <tbody>
+                    {% if false %}
                     <tr>
                         <td class="table-data-label">
                             {% if emailCollectionMode === 'OPTIONAL' %}
@@ -52,6 +53,7 @@
                             </span>
                         </td>
                     </tr>
+                    {% endif %}
                     <tr>
                         <td class="table-data-label">
                             {% if emailEnabled %}
