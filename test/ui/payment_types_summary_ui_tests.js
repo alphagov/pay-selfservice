@@ -29,7 +29,7 @@ describe('The card Types summary view', function () {
     var body = renderTemplate('payment_types_summary', model)
 
     body.should.containSelector('a#payment-types-manage-button')
-      .withAttribute('class', 'button')
+      .withAttribute('class', 'govuk-button')
       .withAttribute('href', '/card-types/manage-type')
       .withText('Manage')
   })
@@ -42,7 +42,7 @@ describe('The card Types summary view', function () {
 
     var body = renderTemplate('payment_types_summary', model)
 
-    body.should.containSelector('p#payment-types-accept-all-types-message')
+    body.should.containSelector('#payment-types-accept-all-types-message')
       .withText('Debit and credit cards are currently accepted')
   })
 
@@ -54,7 +54,7 @@ describe('The card Types summary view', function () {
 
     var body = renderTemplate('payment_types_summary', model)
 
-    body.should.containSelector('p#payment-types-accept-debit-types-message')
+    body.should.containSelector('#payment-types-accept-debit-types-message')
       .withText('Debit cards only accepted')
   })
 
@@ -67,7 +67,7 @@ describe('The card Types summary view', function () {
 
     var body = renderTemplate('payment_types_summary', model)
 
-    body.should.containSelector('tr#payment-types-visa-brand.payment-types-not-available')
+    body.should.containSelector('#payment-types-visa-brand.govuk-text-grey')
 
     body.should.containSelector('td.table-data-accept span')
       .withText('Not available')

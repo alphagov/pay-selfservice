@@ -49,7 +49,7 @@ describe('The payment select brand view', function () {
 
     var body = renderTemplate('payment_types_select_brand', model)
 
-    body.should.containSelector('p#payment-types-accept-all-types-message')
+    body.should.containSelector('#payment-types-accept-all-types-message')
       .withText('You have chosen to accept debit and credit cards')
   })
 
@@ -61,7 +61,7 @@ describe('The payment select brand view', function () {
 
     var body = renderTemplate('payment_types_select_brand', model)
 
-    body.should.containSelector('p#payment-types-accept-debit-types-message')
+    body.should.containSelector('#payment-types-accept-debit-types-message')
       .withText('You have chosen to only accept debit cards')
   })
 
@@ -74,7 +74,7 @@ describe('The payment select brand view', function () {
 
     var body = renderTemplate('payment_types_select_brand', model)
 
-    body.should.containSelector('tr#payment-types-visa-brand.payment-types-not-available')
+    body.should.containSelector('tr#payment-types-visa-brand.govuk-text-grey')
 
     body.should.containSelector('td.table-data-accept span')
       .withText('Not available')

@@ -1,29 +1,52 @@
 {% extends "payment_types.njk" %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
 Manage card Types - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block page_content %}
   {% if permissions.payment_types_update %}
-    <form id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
+    <form class="govuk-!-margin-top-6" id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-      <div class="form-group">
-        <fieldset>
-          <legend>
-            <h1 class="heading-medium">What card types do you want to accept?</h1>
-          </legend>
-          <div class="multiple-choice">
-            <input id="payment-types-all-type" type="radio" name="payment-types-card-type" value="{{allCardOption.type}}" {{allCardOption.selected}}>
-            <label for="payment-types-all-type">Debit and credit cards</label>
-          </div>
-          <div class="multiple-choice">
-            <input id="payment-types-debit-type" type="radio" name="payment-types-card-type" value="{{debitCardOption.type}}" {{debitCardOption.selected}}>
-            <label for="payment-types-debit-type">Debit cards only</label>
-          </div>
-        </fieldset>
-      </div>
-      <input id="payment-types-continue-button" name="payment-types-continue-button" type="submit" class="button" value="Continue">
+
+      {% set allChecked = allCardOption.selected === 'checked' %}
+      {% set debitChecked = debitCardOption.selected === 'checked' %}
+
+      {{ govukRadios({
+        name: "payment-types-card-type",
+        fieldset: {
+          legend: {
+            text: "What card types do you want to accept?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: allCardOption.type,
+            text: "Debit and credit cards",
+            checked: allChecked,
+            id: "payment-types-all-type"
+          },
+          {
+            value: debitCardOption.type,
+            text: "Debit cards only",
+            id: "payment-types-debit-type",
+            checked: debitChecked
+          }
+        ]
+      }) }}
+
+      {{
+        govukButton({
+          text: "Continue",
+          attributes: {
+            id: "payment-types-continue-button"
+          }
+        })
+      }}
   </form>
   {% endif %}
 {% endblock %}

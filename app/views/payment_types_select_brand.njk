@@ -1,4 +1,10 @@
 {% extends "payment_types.njk" %}
+{% from "components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageSpecificJS %}
+  <script src="/public/js/components/checkbox-row-selection.js"></script>
+{% endblock %}
 
 {% block page_content %}
   {% if permissions.payment_types_update %}
@@ -8,40 +14,58 @@
 
     <div class="panel panel-border-wide">
       {% if isAcceptedTypeAll %}
-      <p id="payment-types-accept-all-types-message">You have chosen to accept debit and credit cards</p>
+        {{ govukInsetText({
+          text: "You have chosen to accept debit and credit cards",
+          attributes: {
+            id: "payment-types-accept-all-types-message"
+          }
+        }) }}
       {% else %}
-      <p id="payment-types-accept-debit-types-message">You have chosen to only accept debit cards</p>
+        {{ govukInsetText({
+          text: "You have chosen to only accept debit cards",
+          attributes: {
+            id: "payment-types-accept-debit-types-message"
+          }
+        }) }}
       {% endif %}
     </div>
-    <h2 class="heading-small">Now choose the card brands you want to accept?</h2>
-    <div class="form-group">
-      <fieldset>
-        <legend class="visuallyhidden">Now choose the card brands you want to accept?</legend>
-        <table class="checkbox-row-selection">
-          <thead>
-          <tr>
-            <th>Card brand</th>
-            <th class="table-header-accept">Accept</th>
-          </tr>
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+          <h1 class="govuk-fieldset__heading">
+            Now choose the card brands you want to accept?
+          </h1>
+        </legend>
+        <table class="govuk-table checkbox-row-selection">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Card brand</th>
+              <th class="govuk-table__header govuk-text-align-right" scope="col">Accept</th>
+            </tr>
           </thead>
-          <tbody>
+          <tbody class="govuk-table__body">
           {% for brand in brands %}
           {% if brand.available %}
-            <tr id="{{ brand.id }}">
+            <tr class="govuk-table__row" id="{{ brand.id }}">
           {% else %}
-            <tr id="{{ brand.id }}" class="payment-types-not-available">
+            <tr class="govuk-table__row govuk-text-grey payment-types-not-available" id="{{ brand.id }}">
           {% endif %}
-            <td class="table-data-label">
+            <td class="govuk-table__cell table-data-label">
                 {% if brand.available %}
-                  <img src="/public/images/{{ brand.value }}-color.png" alt="" height="34" width="50" />
+                  <img class="govuk-float--left  govuk-!-margin-2" src="/public/images/{{ brand.value }}-color.png" alt="" height="34" width="50" />
                 {% else %}
-                  <img src="/public/images/{{ brand.value }}-bw.png" alt="" height="34" width="50" />
+                  <img class="govuk-float--left  govuk-!-margin-2" src="/public/images/{{ brand.value }}-bw.png" alt="" height="34" width="50" />
                 {% endif %}
-                <span class="payment-types-label {{ brand.value }}">{{ brand.label }}</span>
+                <span class="govuk-float--left govuk-!-margin-left-2 govuk-!-margin-top-3 {{ brand.value }}">
+                  {{ brand.label | upper if brand.label === 'Jcb' else brand.label }}
+                </span>
               </td>
-              <td class="table-data-accept">
+              <td class="govuk-table__cell table-data-accept govuk-text-align-right pay-checkbox__wrapper">
                 {% if brand.available %}
-                  <input class="payment-types-checkbox" type="checkbox" name="acceptedBrands" value="{{ brand.value }}" {{ brand.selected }}>
+                  <input id="checkbox-{{ brand.value }}" class="payment-types-checkbox pay-checkbox__input" type="checkbox" name="acceptedBrands" value="{{ brand.value }}" {{ brand.selected }}>
+                  <label class="pay-checkbox__label" for="checkbox-{{ brand.value }}">
+                    <span class="govuk-visually-hidden">{{ brand.value }}</span>
+                  </label>
                 {% else %}
                   {% if brand.unavailabilityReason === '3DS' %}
                     <span>You must <a href="{{routes.toggle3ds.index}}">enable 3D Secure</a> to accept Maestro</span>
@@ -56,15 +80,24 @@
         </table>
       </fieldset>
       {% if error %}
-      <div class="form-group error">
-          <span class="error-message" id="payment-types-error-message">{{error}}</span>
+      <div class="govuk-form-group govuk-form-group--error">
+          <span class="govuk-error-message" id="payment-types-error-message">{{error}}</span>
       </div>
       {% endif %}
     </div>
-    <input id="payment-types-save-button" type="submit" class="button" value="Save changes">
-    <a id="payment-types-cancel-link" href="{{routes.paymentTypes.summary}}">
-        Cancel
-    </a>
+    {{
+      govukButton({
+        text: "Save changes",
+        attributes: {
+          id: "payment-types-save-button"
+        }
+      })
+    }}
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" id="payment-types-cancel-link" href="{{routes.paymentTypes.summary}}">
+          Cancel
+      </a>
+    </p>
   </form>
   {% endif %}
 {% endblock %}

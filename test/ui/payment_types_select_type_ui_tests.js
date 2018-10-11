@@ -22,23 +22,20 @@ describe('The payment select type view', function () {
 
     var body = renderTemplate('payment_types_select_type', templateData)
 
-    body.should.containSelector('h1.page-title').withExactText('Card types')
+    body.should.containSelector('.page-title').withExactText('Card types')
 
-    body.should.containSelector('input#payment-types-all-type')
+    body.should.containSelector('#payment-types-all-type')
       .withAttribute('name', 'payment-types-card-type')
       .withAttribute('value', TYPES.ALL)
       .withAttribute('checked')
 
-    body.should.containSelector('input#payment-types-debit-type')
+    body.should.containSelector('#payment-types-debit-type')
       .withAttribute('name', 'payment-types-card-type')
       .withAttribute('value', TYPES.DEBIT)
       .withAttribute('checked')
 
-    body.should.containSelector('input#payment-types-continue-button')
-      .withAttribute('name', 'payment-types-continue-button')
-      .withAttribute('class', 'button')
-      .withAttribute('type', 'submit')
-      .withAttribute('value', 'Continue')
+    body.should.containSelector('#payment-types-continue-button')
+      .withAttribute('class', 'govuk-button')
   })
 
   it('should not display select type form without correct permission', function () {
