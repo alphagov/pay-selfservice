@@ -1,5 +1,10 @@
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+
 <div id="{{token.token_link}}" class="key-list-item">
-  <h3 id="description-{{token.token_link}}" class="heading-small remove-top-margin js-edit-description js-old-description">{{token.description}}</h3>
+  {% if token.description %}
+    <h3 id="description-{{token.token_link}}" class="govuk-heading-s govuk-!-margin-bottom-1 js-edit-description js-old-description">{{token.description}}</h3>
+  {% endif %}
   <div class="key-list-item-meta">
     <dl class="qa-created-by" id="created-by-{{token.token_link}}">
       <dt>Created by: </dt>
@@ -15,22 +20,22 @@
       <dd>{{token.last_used}}</dd>
     </dl>
     {% else %}
-    <p class="qa-last-used">Not used</p>
+    <p class="qa-last-used govuk-body govuk-!-font-size-16 govuk-!-font-weight-bold">Not used</p>
     {% endif %}
     {% if token.revoked %}
-      <p id="revoked-{{token.token_link}}">Key was revoked on {{token.revoked}}</p>
+      <p class="govuk-body govuk-!-font-size-16" id="revoked-{{token.token_link}}">Key was revoked on {{token.revoked}}</p>
     {% endif %}
   </div>
 
   {% if not token.revoked %}
-  <div class="key-list-item-controls">
+  <div>
     {% if permissions.tokens_update %}
-      <a href="#update-{{token.token_link}}" class="target-to-show--toggle js-toggle-description">
-        Update key<span class="visuallyhidden"> for {{token.description}}</span></a>
+      <a href="#update-{{token.token_link}}" class="govuk-link govuk-link--no-visited-state target-to-show--toggle js-toggle-description">
+        Update key<span class="govuk-visually-hidden"> for {{token.description}}</span></a>
     {% endif %}
     {% if permissions.tokens_delete %}
-      <a href="#delete-{{token.token_link}}" class="target-to-show--toggle js-toggle-revoke">
-        Revoke key<span class="visuallyhidden"> for {{token.description}}</span>
+      <a href="#delete-{{token.token_link}}" class="govuk-link govuk-link--no-visited-state target-to-show--toggle js-toggle-revoke govuk-!-margin-left-3">
+        Revoke key<span class="govuk-visually-hidden"> for {{token.description}}</span>
       </a>
     {% endif %}
 
@@ -38,39 +43,55 @@
     <form class="target-to-show" id="delete-{{token.token_link}}" method="POST" action="{{routes.apiKeys.revoke}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
       <input type="hidden" name="token_link" value="{{token.token_link}}"/>
-      <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading" id="error-summary">
+      <div class="govuk-error-summary govuk-!-margin-top-6" role="group" aria-labelledby="error-summary" tabindex="-1">
+        <h2 class="govuk-error-summary__title" id="error-summary">
           Are you sure you want to revoke this API key?
-        </h1>
+        </h2>
         <p>
           If revoked it will no longer enable integration with the platform.
         </p>
         <div class="button-group">
-          <button id="revoke-token-{{token.token_link}}" class="button delete js-revoke-token" type="submit">
+          <button id="revoke-token-{{token.token_link}}" class="govuk-button govuk-button--red js-revoke-token" type="submit">
             Yes, revoke this API key
           </button>
-          <a class="target-to-show--cancel" href="#main">Cancel</a>
+          <a class="govuk-link govuk-link--no-visited-state
+govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
         </div>
       </div>
     </form>
     {% endif %}
     {% if permissions.tokens_update %}
-      <form class="target-to-show" id="update-{{token.token_link}}" method="POST" action="{{routes.apiKeys.update}}">
+      <form class="target-to-show govuk-!-margin-top-6" id="update-{{token.token_link}}" method="POST" action="{{routes.apiKeys.update}}">
         <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
         <input type="hidden" name="token_link" value="{{token.token_link}}"/>
-        <div class="form-group update-key-wrap">
-          <label class="form-label-bold" for="description">
-            Edit API key description
-            <span class="form-hint">For example, “John Smith’s API key”</span>
-          </label>
-          <input id="description" name="description" type="text" maxlength="100" class="form-control js-new-description" value="{{token.description}}"/>
-        </div>
-        <div class="button-group">
-          <button id="update-token-{{token.token_link}}" class="button js-save-description" type="submit">
-            Save changes
-          </button>
-          <a class="target-to-show--cancel button-link js-toggle-description" href="#main">Cancel</a>
-        </div>
+        {{
+          govukInput({
+            id: "description",
+            name: "description",
+            value: token.description,
+            label: {
+              text: "Edit API key description"
+            },
+            type: "text",
+            classes: "govuk-input--width-20 js-new-description",
+            attributes: {
+              maxlength: "100"
+            }
+          })
+        }}
+
+        {% set buttonID %}update-token-{{token.token_link}}{% endset %}
+        {{
+          govukButton({
+            text: "Save changes",
+            classes: "js-save-description",
+            attributes: {
+              id: buttonID
+            }
+          })
+        }}
+        <a class="govuk-link govuk-link--no-visited-state
+govuk-link--no-visited-state target-to-show--cancel js-toggle-description" href="#main">Cancel</a>
       </form>
     {% endif %}
   </div>
