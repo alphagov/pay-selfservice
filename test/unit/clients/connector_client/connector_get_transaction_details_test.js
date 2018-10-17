@@ -62,7 +62,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid transaction details request with delayed capture OFF')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -108,7 +108,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid transaction details request with delayed capture ON')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -154,7 +154,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid transaction details request with corporate card surcharge')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -201,7 +201,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid failed refund transaction details request')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)

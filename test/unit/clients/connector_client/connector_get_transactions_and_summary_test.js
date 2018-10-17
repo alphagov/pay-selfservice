@@ -91,7 +91,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('cardholder_name', '')
