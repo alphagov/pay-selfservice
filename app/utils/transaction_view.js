@@ -79,6 +79,12 @@ module.exports = {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
 
     chargeData.amount = asGBP(chargeData.amount)
+    if (chargeData.total_amount) {
+      chargeData.total_amount = asGBP(chargeData.total_amount)
+    }
+    if (chargeData.corporate_card_surcharge) {
+      chargeData.corporate_card_surcharge = asGBP(chargeData.corporate_card_surcharge)
+    }
 
     if (chargeData.card_details) {
       if (chargeData.card_details.card_brand == null) chargeData.card_details.card_brand = DATA_UNAVAILABLE

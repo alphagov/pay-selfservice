@@ -544,6 +544,61 @@
                     "refund_reference": null
                   }
                 ]
+              },
+              {
+                "charge_id": "52345",
+                "refund_summary": {
+                  "status": "available",
+                  "amount_available": 550,
+                  "amount_submitted": 0
+                },
+                "settlement_summary": {
+                  "capture_submit_time": "2018-05-01T13:27:00.057Z",
+                  "captured_date": "2018-05-01T13:27:00.057Z"
+                },
+                "billing_address": {
+                  "line1": "address line 1",
+                  "line2": "address line 2",
+                  "postcode": "AB1A 1AB",
+                  "city": "GB",
+                  "county": "somecounty",
+                  "country": "GB"
+                },
+                "charge_events": [
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "created",
+                      "finished": false
+                    },
+                    "amount": 550,
+                    "updated": "2018-05-01T13:27:00.063Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "started",
+                      "finished": false
+                    },
+                    "amount": 550,
+                    "updated": "2018-05-01T13:27:00.974Z",
+                    "refund_reference": null
+                  },
+                  {
+                    "type": "PAYMENT",
+                    "submitted_by": null,
+                    "state": {
+                      "status": "succeeded",
+                      "finished": true
+                    },
+                    "amount": 550,
+                    "updated": "2018-05-01T13:27:18.126Z",
+                    "refund_reference": null
+                  }
+                ]
               }
             ],
             "data": [
@@ -670,6 +725,40 @@
                 "created_date": "2018-05-04T13:27:00.057Z",
                 "card_details": {
                   "last_digits_card_number": "0002",
+                  "cardholder_name": "Test User",
+                  "expiry_date": "08/23",
+                  "card_brand": "Visa"
+                },
+                "transaction_type": "charge"
+              },
+              {
+                "amount": 500,
+                "corporate_card_surcharge": 50,
+                "total_amount": 550,
+                "state": {
+                  "finished": true,
+                  "status": "success"
+                },
+                "description": "ref5",
+                "reference": "ref588888",
+                "links": [
+                  {
+                    "rel": "self",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/52345"
+                  },
+                  {
+                    "rel": "refunds",
+                    "method": "GET",
+                    "href": "https://myconnector.local/v1/api/accounts/666/charges/52345/refunds"
+                  }
+                ],
+                "charge_id": "52345",
+                "gateway_transaction_id": "17be4b24-d308-4917-a9fe-8bc24c327415",
+                "email": "gds5-payments-team-smoke@digital.cabinet-office.gov.uk",
+                "created_date": "2018-05-01T13:27:00.057Z",
+                "card_details": {
+                  "last_digits_card_number": "0007",
                   "cardholder_name": "Test User",
                   "expiry_date": "08/23",
                   "card_brand": "Visa"
