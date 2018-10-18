@@ -31,6 +31,8 @@ describe('Transactions details page', () => {
 
   const aFailedRefundCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.state.status === 'error')[0]
 
+  const aCorporateCardSurchargeCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.corporate_card_surcharge !== undefined)[0]
+
   beforeEach(() => {
     cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
     cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
@@ -140,6 +142,19 @@ describe('Transactions details page', () => {
       // Email
       cy.get('.transaction-details tbody').find('tr').eq(14).find('td').eq(1).should('have.text',
         chargeWithDelayedCapture.email)
+    })
+
+    it('should display corporate card surcharge in the amount field correctly when there is a corporate card surcharge', () => {
+      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeCharge.reference} - System Generated test - GOV.UK Pay`)
+
+      // Ensure page details match up
+
+      // Amount
+      cy.get('#amount').should('have.text',
+        `${convertAmounts(aCorporateCardSurchargeCharge.total_amount)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
     })
   })
 

@@ -62,7 +62,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid transaction details request with delayed capture OFF')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -108,7 +108,53 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid transaction details request with delayed capture ON')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get transaction details successfully', function (done) {
+      const getTransactionDetails = validGetTransactionDetailsResponse.getPlain()
+      connectorClient.getCharge(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getTransactionDetails)
+          done()
+        })
+    })
+  })
+
+  describe('get transaction details with corporate card surcharge', () => {
+    const gatewayAccount = ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
+    const transactions = ssDefaultUser.sections.transactions
+    const corporateCardSurchargeCharge = transactions.data.filter(item => item.charge_id === '52345')[0]
+    const chargeDetails = transactions.details_data.filter(x => x.charge_id === corporateCardSurchargeCharge.charge_id)[0]
+    const params = {
+      gatewayAccountId: gatewayAccount.id,
+      chargeId: corporateCardSurchargeCharge.charge_id
+    }
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse(
+      {
+        summaryObject: corporateCardSurchargeCharge,
+        payment_provider: gatewayAccount.name,
+        gateway_account_id: params.gatewayAccountId,
+        refund_summary: chargeDetails.refund_summary,
+        settlement_summary: chargeDetails.settlement_summary,
+        billing_address: chargeDetails.billing_address
+      }
+    )
+
+    before((done) => {
+      const pactified = validGetTransactionDetailsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
+          .withUponReceiving('a valid transaction details request with corporate card surcharge')
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -155,7 +201,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
           .withUponReceiving('a valid failed refund transaction details request')
-          .withState(`User ${params.gatewayAccountId} exists in the database and has 4 transactions available`)
+          .withState(`User ${params.gatewayAccountId} exists in the database and has 5 transactions available`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -243,6 +289,44 @@ describe('connector client', function () {
     afterEach(() => provider.verify())
 
     it('should get charge events successfully for delayed_capture on', function (done) {
+      const getChargeEvents = validGetTransactionDetailsResponse.getPlain()
+      connectorClient.getChargeEvents(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getChargeEvents)
+          done()
+        })
+    })
+  })
+
+  describe('get charge events for corporate card surcharge', () => {
+    const firstCharge = ssDefaultUser.sections.transactions.data.filter(item => item.charge_id === '52345')[0]
+    const chargeDetails = ssDefaultUser.sections.transactions.details_data.filter(x => x.charge_id === firstCharge.charge_id)[0]
+    const params = {
+      gatewayAccountId: ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id, // '666'
+      chargeId: firstCharge.charge_id
+    }
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validChargeEventsResponse({
+      chargeId: params.chargeId,
+      events: chargeDetails.charge_events
+    })
+
+    before((done) => {
+      const pactified = validGetTransactionDetailsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}/events`)
+          .withUponReceiving('a valid charge events request')
+          .withState(`User ${params.gatewayAccountId} exists in the database, has an available charge with id ${firstCharge.charge_id} and has available charge events`)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get charge events successfully for corporate card surcharge', function (done) {
       const getChargeEvents = validGetTransactionDetailsResponse.getPlain()
       connectorClient.getChargeEvents(params,
         (connectorData, connectorResponse) => {

@@ -44,7 +44,7 @@ module.exports = {
     }
   },
   validTransactionDetailsResponse: (opts = {}) => {
-    let data = {
+    const data = {
       amount: opts.summaryObject.amount || 20000,
       state: opts.summaryObject.state || {
         finished: true,
@@ -102,6 +102,12 @@ module.exports = {
         card_brand: opts.summaryObject.card_brand || 'Visa'
       },
       delayed_capture: opts.summaryObject.delayed_capture || false
+    }
+    if (opts.summaryObject.corporate_card_surcharge) {
+      data.corporate_card_surcharge = opts.summaryObject.corporate_card_surcharge
+    }
+    if (opts.summaryObject.total_amount) {
+      data.total_amount = opts.summaryObject.total_amount
     }
 
     return {
