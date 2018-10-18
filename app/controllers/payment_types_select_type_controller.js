@@ -40,7 +40,7 @@ module.exports.selectType = function (req, res) {
       }
     }
 
-    response(req, res, 'payment_types_select_type', model)
+    response(req, res, 'card-payment-types/select_type', model)
   }
 
   init()

@@ -1,4 +1,4 @@
-{% extends "payment_types.njk" %}
+{% extends "./index.njk" %}
 {% from "components/inset-text/macro.njk" import govukInsetText %}
 {% from "components/button/macro.njk" import govukButton %}
 
@@ -39,7 +39,7 @@ Card types - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.U
           {% if brand.available %}
             <tr class="govuk-table__row" id="{{ brand.id }}">
           {% else %}
-            <tr class="govuk-table__row govuk-text-grey" id="{{ brand.id }}">
+            <tr class="govuk-table__row govuk-text-grey payment-types-not-available" id="{{ brand.id }}">
           {% endif %}
               <td class="govuk-table__cell table-data-label">
                 {% if brand.available %}

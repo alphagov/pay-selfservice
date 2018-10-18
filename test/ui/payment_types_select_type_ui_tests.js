@@ -20,7 +20,7 @@ describe('The payment select type view', function () {
       }
     }
 
-    var body = renderTemplate('payment_types_select_type', templateData)
+    var body = renderTemplate('card-payment-types/select_type', templateData)
 
     body.should.containSelector('.page-title').withExactText('Card types')
 
@@ -50,7 +50,7 @@ describe('The payment select type view', function () {
       }
     }
 
-    var body = renderTemplate('payment_types_select_type', templateData)
+    var body = renderTemplate('card-payment-types/select_type', templateData)
 
     body.should.not.containSelector('form#payment-types-card-type-selection-form')
   })

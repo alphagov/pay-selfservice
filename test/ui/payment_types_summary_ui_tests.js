@@ -26,7 +26,7 @@ describe('The card Types summary view', function () {
   it('should display the manage button', function () {
     var model = _.extend({}, templateData)
 
-    var body = renderTemplate('payment_types_summary', model)
+    var body = renderTemplate('card-payment-types/summary', model)
 
     body.should.containSelector('a#payment-types-manage-button')
       .withAttribute('class', 'govuk-button')
@@ -40,7 +40,7 @@ describe('The card Types summary view', function () {
       isAcceptedTypeDebit: false
     })
 
-    var body = renderTemplate('payment_types_summary', model)
+    var body = renderTemplate('card-payment-types/summary', model)
 
     body.should.containSelector('#payment-types-accept-all-types-message')
       .withText('Debit and credit cards are currently accepted')
@@ -52,7 +52,7 @@ describe('The card Types summary view', function () {
       isAcceptedTypeDebit: true
     })
 
-    var body = renderTemplate('payment_types_summary', model)
+    var body = renderTemplate('card-payment-types/summary', model)
 
     body.should.containSelector('#payment-types-accept-debit-types-message')
       .withText('Debit cards only accepted')
@@ -65,7 +65,7 @@ describe('The card Types summary view', function () {
       'unavailabilityReason': 'Not available'
     })
 
-    var body = renderTemplate('payment_types_summary', model)
+    var body = renderTemplate('card-payment-types/summary', model)
 
     body.should.containSelector('#payment-types-visa-brand.govuk-text-grey')
 
@@ -80,7 +80,7 @@ describe('The card Types summary view', function () {
       'selected': true
     })
 
-    var body = renderTemplate('payment_types_summary', model)
+    var body = renderTemplate('card-payment-types/summary', model)
 
     body.should.containSelector('td.table-data-label img')
       .withAttribute('src', '/public/images/visa-color.png')
@@ -96,7 +96,7 @@ describe('The card Types summary view', function () {
       'selected': false
     })
 
-    var body = renderTemplate('payment_types_summary', model)
+    var body = renderTemplate('card-payment-types/summary', model)
 
     body.should.containSelector('td.table-data-label img')
       .withAttribute('src', '/public/images/visa-color.png')

@@ -42,7 +42,7 @@ module.exports.showBrands = function (req, res) {
         )
       }
 
-      response(req, res, 'payment_types_select_brand', model)
+      response(req, res, 'card-payment-types/select_brand', model)
     }
 
     var accountId = auth.getCurrentGatewayAccountId(req)

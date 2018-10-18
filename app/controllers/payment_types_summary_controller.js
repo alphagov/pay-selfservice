@@ -38,7 +38,7 @@ module.exports.showSummary = function (req, res) {
         )
       }
 
-      response(req, res, 'payment_types_summary', model)
+      response(req, res, 'card-payment-types/summary', model)
     }
 
     var accountId = auth.getCurrentGatewayAccountId(req)

@@ -26,7 +26,7 @@ describe('The payment select brand view', function () {
   it('should display the main form elements', function () {
     var model = _.extend({}, templateData)
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.containSelector('form#payment-types-card-brand-selection-form')
       .withAttribute('method', 'post')
@@ -47,7 +47,7 @@ describe('The payment select brand view', function () {
       isAcceptedTypeDebit: false
     })
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.containSelector('#payment-types-accept-all-types-message')
       .withText('You have chosen to accept debit and credit cards')
@@ -59,7 +59,7 @@ describe('The payment select brand view', function () {
       isAcceptedTypeDebit: true
     })
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.containSelector('#payment-types-accept-debit-types-message')
       .withText('You have chosen to only accept debit cards')
@@ -72,7 +72,7 @@ describe('The payment select brand view', function () {
       'unavailabilityReason': 'Not available'
     })
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.containSelector('tr#payment-types-visa-brand.govuk-text-grey')
 
@@ -86,7 +86,7 @@ describe('The payment select brand view', function () {
       'available': true
     })
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.containSelector('td.table-data-label img')
       .withAttribute('src', '/public/images/visa-color.png')
@@ -102,7 +102,7 @@ describe('The payment select brand view', function () {
       'error': 'You must choose to accept at least one card brand to continue'
     })
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.containSelector('#payment-types-error-message')
       .withText('You must choose to accept at least one card brand to continue')
@@ -124,7 +124,7 @@ describe('The payment select brand view', function () {
     }
     var model = _.extend({}, templateData)
 
-    var body = renderTemplate('payment_types_select_brand', model)
+    var body = renderTemplate('card-payment-types/select_brand', model)
 
     body.should.not.containSelector('form#payment-types-card-brand-selection-form')
   })
