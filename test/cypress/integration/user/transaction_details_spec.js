@@ -153,7 +153,7 @@ describe('Transactions details page', () => {
       // Ensure page details match up
 
       // Amount
-      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').eq(1).should('have.text',
+      cy.get('#amount').should('have.text',
         `${convertAmounts(aCorporateCardSurchargeCharge.total_amount)} (including a corporate card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
     })
   })
