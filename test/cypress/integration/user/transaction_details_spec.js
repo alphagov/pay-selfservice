@@ -154,7 +154,7 @@ describe('Transactions details page', () => {
 
       // Amount
       cy.get('#amount').should('have.text',
-        `${convertAmounts(aCorporateCardSurchargeCharge.total_amount)} (including a corporate card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
+        `${convertAmounts(aCorporateCardSurchargeCharge.total_amount)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
     })
   })
 
