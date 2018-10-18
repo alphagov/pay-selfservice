@@ -1,10 +1,15 @@
-var path = require('path')
-var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
-var paths = require(path.join(__dirname, '/../../app/paths.js'))
+'use strict'
+
+// NPM dependencies
+const path = require('path')
+
+// Local dependencies
+const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const paths = require(path.join(__dirname, '/../../app/paths.js'))
 
 describe('The credentials view in normal mode', function () {
   it('should display credentials view for a worldpay account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'Worldpay',
         'credentials': {
@@ -18,7 +23,7 @@ describe('The credentials view in normal mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/worldpay', templateData)
+    const body = renderTemplate('credentials/worldpay', templateData)
 
     body.should.containSelector('#view-title').withExactText('Your Worldpay Credentials')
 
@@ -40,7 +45,7 @@ describe('The credentials view in normal mode', function () {
   })
 
   it('should not display notification credentials for worldpay', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'Worldpay',
         'credentials': {
@@ -53,13 +58,13 @@ describe('The credentials view in normal mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/worldpay', templateData)
+    const body = renderTemplate('credentials/worldpay', templateData)
 
     body.should.not.containSelector('#view-notification-title')
   })
 
   it('should display credentials view for a smartpay account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'SmartPay',
         'credentials': {
@@ -72,7 +77,7 @@ describe('The credentials view in normal mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/smartpay', templateData)
+    const body = renderTemplate('credentials/smartpay', templateData)
 
     body.should.containSelector('#view-title').withExactText('Your SmartPay Credentials')
 
@@ -94,7 +99,7 @@ describe('The credentials view in normal mode', function () {
   })
 
   it('should display notification credentials view for a smartpay account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'SmartPay',
         'credentials': {
@@ -111,7 +116,7 @@ describe('The credentials view in normal mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/smartpay', templateData)
+    const body = renderTemplate('credentials/smartpay', templateData)
 
     body.should.containSelector('#view-notification-title').withExactText('Your SmartPay Notification Credentials')
 
@@ -133,7 +138,7 @@ describe('The credentials view in normal mode', function () {
   })
 
   it('should display credentials view for an ePDQ account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'ePDQ',
         'credentials': {
@@ -147,7 +152,7 @@ describe('The credentials view in normal mode', function () {
       }
     }
 
-    let body = renderTemplate('provider_credentials/epdq', templateData)
+    let body = renderTemplate('credentials/epdq', templateData)
 
     body.should.containSelector('#view-title').withExactText('Your ePDQ Credentials')
 
@@ -175,7 +180,7 @@ describe('The credentials view in normal mode', function () {
   })
 
   it('should not display notification credentials for ePDQ', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'ePDQ',
         'credentials': {
@@ -188,20 +193,20 @@ describe('The credentials view in normal mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/epdq', templateData)
+    const body = renderTemplate('credentials/epdq', templateData)
 
     body.should.not.containSelector('#view-notification-title')
   })
 
   it('should display credentials view for a sandbox account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'Sandbox',
         'credentials': {}
       }
     }
 
-    var body = renderTemplate('provider_credentials/sandbox', templateData)
+    const body = renderTemplate('credentials/sandbox', templateData)
 
     body.should.containSelector('#message p:first-of-type').withExactText('This is a test account. Account credentials only exist in live services, and relate to your payment service providers.')
 
@@ -222,7 +227,7 @@ describe('The credentials view in normal mode', function () {
 
 describe('The credentials view in edit mode', function () {
   it('should display credentials view for a worldpay account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'Worldpay',
         'credentials': {
@@ -236,7 +241,7 @@ describe('The credentials view in edit mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/worldpay', templateData)
+    const body = renderTemplate('credentials/worldpay', templateData)
 
     body.should.containSelector('#view-title').withExactText('Your Worldpay Credentials')
 
@@ -261,7 +266,7 @@ describe('The credentials view in edit mode', function () {
   })
 
   it('should display credentials view for a smartpay account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'SmartPay',
         'credentials': {
@@ -275,7 +280,7 @@ describe('The credentials view in edit mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/smartpay', templateData)
+    const body = renderTemplate('credentials/smartpay', templateData)
 
     body.should.containSelector('#view-title').withExactText('Your SmartPay Credentials')
 
@@ -300,7 +305,7 @@ describe('The credentials view in edit mode', function () {
   })
 
   it('should display credentials view for a ePDQ account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'ePDQ',
         'credentials': {
@@ -314,7 +319,7 @@ describe('The credentials view in edit mode', function () {
       }
     }
 
-    let body = renderTemplate('provider_credentials/epdq', templateData)
+    let body = renderTemplate('credentials/epdq', templateData)
 
     body.should.containSelector('#view-title').withExactText('Your ePDQ Credentials')
 
@@ -345,7 +350,7 @@ describe('The credentials view in edit mode', function () {
   })
 
   it('should display credentials view for a sandbox account', function () {
-    var templateData = {
+    const templateData = {
       currentGatewayAccount: {
         'payment_provider': 'Sandbox',
         'credentials': {}
@@ -356,7 +361,7 @@ describe('The credentials view in edit mode', function () {
       }
     }
 
-    var body = renderTemplate('provider_credentials/sandbox', templateData)
+    const body = renderTemplate('credentials/sandbox', templateData)
 
     body.should.containSelector('#message p:first-of-type').withExactText('This is a test account. Account credentials only exist in live services, and relate to your payment service providers.')
 
