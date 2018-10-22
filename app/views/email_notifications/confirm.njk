@@ -1,6 +1,7 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
 Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
@@ -9,22 +10,27 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-  <h1 class="page-title">Confirm new email template</h1>
-  <p>This email will be sent to users when they successfully complete a payment within your service.</p>
+<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">Confirm new email template</h1>
+  <p class="govuk-body">This email will be sent to users when they successfully complete a payment within your service.</p>
 
-  <h2 class="heading-medium">New email template</h2>
+  <h2 class="govuk-heading-m">New email template</h2>
 
-  <div id="email-templates" class="form-group">
+  <div id="email-templates">
     {% include "./email_confirmation_body.njk" %}
   </div>
 
   <form method="post" action="{{routes.emailNotifications.update}}">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-
     <input type="hidden" value="{{customEmailText}}" name="custom-email-text" class="qa-custom-p" />
-    <input name="email-confirm" type="submit" class="button push-top qa-confirm-submit" value="Confirm">
-    <a class="push-top-sml" href="{{routes.emailNotifications.index}}">cancel</a>
+
+    {{
+      govukButton({
+        text: "Confirm",
+        classes: "qa-confirm-submit"
+      })
+    }}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>
   </form>
 </div>
 {% endblock %}
