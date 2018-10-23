@@ -1,0 +1,26 @@
+.pay-email {
+  &-template {
+    border: 1px solid $govuk-border-colour;
+    padding: govuk-spacing(6) 0;
+    margin-bottom: govuk-spacing(6);
+
+    &-body {
+      padding: govuk-spacing(2) 0px govuk-spacing(2) govuk-spacing(3);
+    }
+
+    &-meta-item {
+      padding: govuk-spacing(2) 0px govuk-spacing(2) govuk-spacing(3);
+      border-bottom: 1px solid $govuk-border-colour;
+
+      &__key {
+        float: left;
+        width: 20%;
+      }
+
+      &__value {
+        float: left;
+        width: 80%;
+      }
+    }
+  }
+}

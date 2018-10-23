@@ -20,12 +20,12 @@ describe('Settings', () => {
       // Default notifications page and confirmation email tab contents
       cy.visit(emailNotificationsUrl)
       cy.title().should('eq', 'Email notifications - System Generated test - GOV.UK Pay')
-      cy.get('#email-templates').get('.heading-medium').should('contain', 'Confirmation email template')
+      cy.get('#confirmation-email-template').should('contain', 'Confirmation email template')
 
       // Click the 'Refund email' tab
-      cy.get('.tabs').contains('Refund email').click()
+      cy.get('#refund-tab').click()
       cy.url().should('include', '/email-notifications-refund')
-      cy.get('#email-templates').get('.heading-medium').should('contain', 'Refund email template')
+      cy.get('#refund-email-template').should('contain', 'Refund email template')
     })
   })
 
