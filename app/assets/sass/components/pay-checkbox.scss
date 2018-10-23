@@ -1,0 +1,94 @@
+$pay-checkbox-size: govuk-spacing(7);
+$pay-checkbox-label-padding-left-right: govuk-spacing(3);
+
+.pay-checkbox {
+  &__wrapper {
+    position: relative;
+  }
+
+  &__input {
+    position: absolute;
+
+    z-index: 1;
+    top: 17px;
+    right: govuk-spacing(3);
+
+    width: $pay-checkbox-size;
+    height: $pay-checkbox-size;
+
+    cursor: pointer;
+
+    // IE8 doesn’t support pseudoelements, so we don’t want to hide native elements there.
+    @include govuk-not-ie8 {
+      margin: 0;
+      opacity: 0;
+    }
+
+    // add focus outline to input element for IE8
+    @include govuk-if-ie8 {
+      &:focus {
+        outline: $govuk-focus-width solid $govuk-focus-colour;
+      }
+    }
+  }
+
+  &__label {
+    display: inline-block;
+    margin-bottom: 0;
+    padding: 8px $pay-checkbox-label-padding-left-right govuk-spacing(1);
+    cursor: pointer;
+    // remove 300ms pause on mobile
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+  }
+
+  &__input + &__label::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    top: 17px;
+    right: govuk-spacing(3);
+    width: $pay-checkbox-size;
+    height: $pay-checkbox-size;
+    border: $govuk-border-width-form-element solid currentColor;
+    background: transparent;
+
+    // padding-bottom: 1px;
+  }
+
+  &__input + &__label::after {
+    content: "";
+
+    position: absolute;
+    top: 28px;
+    right: 24px;
+    width: 18px;
+    height: 7px;
+
+    transform: rotate(-45deg);
+    border: solid;
+    border-width: 0 0 $govuk-border-width $govuk-border-width;
+    // Fix bug in IE11 caused by transform rotate (-45deg).
+    // See: alphagov/govuk_elements/issues/518
+    border-top-color: transparent;
+
+    opacity: 0;
+
+    background: transparent;
+  }
+
+  // Focused state
+  &__input:focus + &__label::before {
+    // Since box-shadows are removed when users customise their colours
+    // We set a transparent outline that is shown instead.
+    // https://accessibility.blog.gov.uk/2017/03/27/how-users-change-colours-on-websites/
+    outline: $govuk-focus-width solid transparent;
+    outline-offset: $govuk-focus-width;
+    box-shadow: 0 0 0 $govuk-focus-width $govuk-focus-colour;
+  }
+
+  // Selected state
+  &__input:checked + &__label::after {
+    opacity: 1;
+  }
+}

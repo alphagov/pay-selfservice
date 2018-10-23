@@ -1,0 +1,52 @@
+{% extends "./index.njk" %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+Manage card Types - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block page_content %}
+  {% if permissions.payment_types_update %}
+    <form class="govuk-!-margin-top-6" id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+
+      {% set allChecked = allCardOption.selected === 'checked' %}
+      {% set debitChecked = debitCardOption.selected === 'checked' %}
+
+      {{ govukRadios({
+        name: "payment-types-card-type",
+        fieldset: {
+          legend: {
+            text: "What card types do you want to accept?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: allCardOption.type,
+            text: "Debit and credit cards",
+            checked: allChecked,
+            id: "payment-types-all-type"
+          },
+          {
+            value: debitCardOption.type,
+            text: "Debit cards only",
+            id: "payment-types-debit-type",
+            checked: debitChecked
+          }
+        ]
+      }) }}
+
+      {{
+        govukButton({
+          text: "Continue",
+          attributes: {
+            id: "payment-types-continue-button"
+          }
+        })
+      }}
+  </form>
+  {% endif %}
+{% endblock %}

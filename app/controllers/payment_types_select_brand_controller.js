@@ -1,10 +1,14 @@
-var response = require('../utils/response.js').response
-var auth = require('../services/auth_service.js')
-var router = require('../routes.js')
-var _ = require('lodash')
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+'use strict'
 
-var {
+// NPM dependencies
+const _ = require('lodash')
+
+// Local dependencies
+const response = require('../utils/response.js').response
+const auth = require('../services/auth_service.js')
+const router = require('../routes.js')
+const {CORRELATION_HEADER} = require('../utils/correlation_header.js')
+const {
   TYPES,
   connectorClient,
   renderConnectorError,
@@ -12,13 +16,13 @@ var {
   reconcileCardsByBrand,
   filter3dsRequiredCardTypesIfNotSupported} = require('./payment_types_controller.js')
 
-module.exports.showBrands = function (req, res) {
-  var acceptedType = req.query.acceptedType
-  var error = req.query.error
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+module.exports.showBrands = (req, res) => {
+  const acceptedType = req.query.acceptedType
+  const error = req.query.error
+  const correlationId = req.headers[CORRELATION_HEADER] || ''
 
-  var init = function () {
-    var params = {
+  const init = () => {
+    const params = {
       correlationId: correlationId
     }
 
@@ -27,9 +31,9 @@ module.exports.showBrands = function (req, res) {
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'))
   }
 
-  var onSuccessGetAllCards = function (allCards) {
-    var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
-      var model = {
+  const onSuccessGetAllCards = allCards => {
+    const onSuccessGetAccountAcceptedCards = acceptedCards => {
+      const model = {
         acceptedType: acceptedType,
         isAcceptedTypeAll: acceptedType === TYPES.ALL,
         isAcceptedTypeDebit: acceptedType === TYPES.DEBIT,
@@ -42,12 +46,12 @@ module.exports.showBrands = function (req, res) {
         )
       }
 
-      response(req, res, 'payment_types_select_brand', model)
+      response(req, res, 'card-payment-types/select_brand', model)
     }
 
-    var accountId = auth.getCurrentGatewayAccountId(req)
+    const accountId = auth.getCurrentGatewayAccountId(req)
 
-    var params = {
+    const params = {
       gatewayAccountId: accountId,
       correlationId: correlationId
     }
@@ -60,12 +64,12 @@ module.exports.showBrands = function (req, res) {
   init()
 }
 
-module.exports.updateBrands = function (req, res) {
-  var acceptedType = req.body['acceptedType']
-  var acceptedBrands = req.body['acceptedBrands']
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+module.exports.updateBrands = (req, res) => {
+  const acceptedType = req.body['acceptedType']
+  const acceptedBrands = req.body['acceptedBrands']
+  const correlationId = req.headers[CORRELATION_HEADER] || ''
 
-  var init = function () {
+  const init = () => {
     if (typeof (acceptedBrands) === 'undefined') {
       redirectTo(res, router.paths.paymentTypes.selectBrand, {
         'acceptedType': acceptedType,
@@ -74,7 +78,7 @@ module.exports.updateBrands = function (req, res) {
       return
     }
 
-    var params = {
+    const params = {
       correlationId: correlationId
     }
 
@@ -83,30 +87,30 @@ module.exports.updateBrands = function (req, res) {
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'))
   }
 
-  var onSuccessGetAllCards = function (allCards) {
+  const onSuccessGetAllCards = allCards => {
     /**
      * Filter card types by accepted brand and type.
      */
-    var filterByAcceptedBrandAndType = function (card) {
+    const filterByAcceptedBrandAndType = card => {
       if ((acceptedType === TYPES.DEBIT) && (card['type'] !== TYPES.DEBIT)) {
         return false
       }
       return _.includes(acceptedBrands, card['brand'])
     }
 
-    var acceptedCardTypeIds = _
+    const acceptedCardTypeIds = _
       .chain(allCards['card_types'])
       .filter(filterByAcceptedBrandAndType)
       .map('id')
       .value()
 
-    var payload = {
+    const payload = {
       card_types: acceptedCardTypeIds
     }
 
-    var accountId = auth.getCurrentGatewayAccountId(req)
+    const accountId = auth.getCurrentGatewayAccountId(req)
 
-    var params = {
+    const params = {
       gatewayAccountId: accountId,
       payload: payload,
       correlationId: correlationId
@@ -116,7 +120,7 @@ module.exports.updateBrands = function (req, res) {
       .on('connectorError', renderConnectorError(req, res, 'Unable to save accepted card types.'))
   }
 
-  var onSuccessPostAccountAcceptedCards = function () {
+  const onSuccessPostAccountAcceptedCards = () => {
     redirectTo(res, router.paths.paymentTypes.summary, {
       'acceptedType': acceptedType
     })

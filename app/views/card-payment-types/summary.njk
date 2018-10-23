@@ -1,0 +1,86 @@
+{% extends "./index.njk" %}
+{% from "components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+Card types - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block page_content %}
+  {% if permissions.payment_types_read %}
+    <div id="payment-types-card-summary">
+      <div class="panel panel-border-wide">
+        {% if isAcceptedTypeAll %}
+        {{ govukInsetText({
+          text: "Debit and credit cards are currently accepted",
+          attributes: {
+            id: "payment-types-accept-all-types-message"
+          }
+        }) }}
+        {% endif %}
+        {% if isAcceptedTypeDebit %}
+        {{ govukInsetText({
+          text: "Debit cards only accepted",
+          attributes: {
+            id: "payment-types-accept-debit-types-message"
+          }
+        }) }}
+        {% endif %}
+      </div>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Card brand</th>
+            <th class="govuk-table__header govuk-text-align-right" scope="col">Accepted</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for brand in brands %}
+          {% if brand.available %}
+            <tr class="govuk-table__row" id="{{ brand.id }}">
+          {% else %}
+            <tr class="govuk-table__row govuk-text-grey payment-types-not-available" id="{{ brand.id }}">
+          {% endif %}
+              <td class="govuk-table__cell table-data-label">
+                {% if brand.available %}
+                  <img class="govuk-float--left  govuk-!-margin-2" src="/public/images/{{ brand.value }}-color.png" alt="" height="34" width="50" />
+                {% else %}
+                  <img class="govuk-float--left  govuk-!-margin-3" src="/public/images/{{ brand.value }}-bw.png" alt="" height="34" width="50" />
+                {% endif %}
+                <span class="govuk-float--left govuk-!-margin-left-2 govuk-!-margin-top-3 {{ brand.value }}">
+                  {{ brand.label | upper if brand.label === 'Jcb' else brand.label }}
+                </span>
+              </td>
+              <td class="govuk-table__cell govuk-text-align-right table-data-accept">
+                {% if brand.available %}
+                  {% if brand.selected %}
+                    <span class="payment-types-selected">Yes</span>
+                  {% else %}
+                    <span class="payment-types-not-selected">No</span>
+                  {% endif %}
+                {% else %}
+                  {% if brand.unavailabilityReason === '3DS' %}
+                    <span>You must <a class="govuk-link" href="{{routes.toggle3ds.index}}">enable 3D Secure</a> to accept Maestro</span>
+                  {% else %}
+                    <span>{{ brand.unavailabilityReason }}</span>
+                  {% endif %}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if permissions.payment_types_update %}
+      {{
+        govukButton({
+          text: "Manage",
+          href: routes.paymentTypes.selectType,
+          attributes: {
+            id: "payment-types-manage-button"
+          }
+        })
+      }}
+    {% endif %}
+  {% endif %}
+{% endblock %}

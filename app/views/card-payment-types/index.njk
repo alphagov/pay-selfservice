@@ -1,11 +1,7 @@
-{% extends "layout.njk" %}
+{% extends "layout-new.njk" %}
 
-{% block page_title %}
+{% block pageTitle %}
 Card types - GOV.UK Pay
-{% endblock %}
-
-{% block pageSpecificJS %}
-  <script src="/public/js/components/checkbox-row-selection.js"></script>
 {% endblock %}
 
 {% block side_navigation %}
@@ -13,15 +9,15 @@ Card types - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
+<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
   {% if not permissions.payment_types_update %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <h1 class="page-title">Card types</h1>
+  <h1 class="govuk-heading-l page-title">Card types</h1>
 
   {% if permissions.payment_types_update %}
-  <h2 class="heading-medium remove-top-margin">Manage accepted cards</h2>
+  <h2 class="govuk-heading-m">Manage accepted cards</h2>
   {% endif %}
 
   <div id="payment-types">

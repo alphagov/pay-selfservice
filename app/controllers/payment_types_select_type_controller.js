@@ -1,22 +1,24 @@
-var response = require('../utils/response.js').response
-var auth = require('../services/auth_service.js')
-var router = require('../routes.js')
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+'use strict'
 
-var {
+// Local dependencies
+const response = require('../utils/response.js').response
+const auth = require('../services/auth_service.js')
+const router = require('../routes.js')
+const { CORRELATION_HEADER } = require('../utils/correlation_header.js')
+const {
   TYPES,
   connectorClient,
   renderConnectorError,
   redirectTo,
   inferAcceptedCardType} = require('./payment_types_controller.js')
 
-module.exports.selectType = function (req, res) {
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+module.exports.selectType = (req, res) => {
+  const correlationId = req.headers[CORRELATION_HEADER] || ''
 
-  var init = function () {
-    var accountId = auth.getCurrentGatewayAccountId(req)
+  const init = () => {
+    const accountId = auth.getCurrentGatewayAccountId(req)
 
-    var params = {
+    const params = {
       gatewayAccountId: accountId,
       correlationId: correlationId
     }
@@ -26,10 +28,10 @@ module.exports.selectType = function (req, res) {
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve accepted card types for the account.'))
   }
 
-  var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
-    var acceptedType = inferAcceptedCardType(acceptedCards['card_types'])
+  const onSuccessGetAccountAcceptedCards = acceptedCards => {
+    const acceptedType = inferAcceptedCardType(acceptedCards['card_types'])
 
-    var model = {
+    const model = {
       allCardOption: {
         type: TYPES.ALL,
         selected: acceptedType === TYPES.ALL ? 'checked' : ''
@@ -40,14 +42,14 @@ module.exports.selectType = function (req, res) {
       }
     }
 
-    response(req, res, 'payment_types_select_type', model)
+    response(req, res, 'card-payment-types/select_type', model)
   }
 
   init()
 }
 
-module.exports.updateType = function (req, res) {
-  var init = function () {
+module.exports.updateType = (req, res) => {
+  const init = () => {
     redirectTo(res, router.paths.paymentTypes.selectBrand, {
       'acceptedType': req.body['payment-types-card-type']
     })

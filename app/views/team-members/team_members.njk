@@ -41,7 +41,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% if permissions.users_service_read %}
-                  <a class="govuk-link govuk-link--no-visited-state govuk-display-block" id="admin-{{ loop.index }}-trnk" href="{{ admin.link }}">
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block " id="admin-{{ loop.index }}-trnk" href="{{ admin.link }}">
                 {% else %}
                   <span>
                 {% endif %}
@@ -65,7 +65,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% if permissions.users_service_read %}
-                  <a class="govuk-link govuk-link--no-visited-state govuk-display-block" id="view-refund-member-{{ loop.index }}-link" href="{{ team_member.link }}">
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block " id="view-refund-member-{{ loop.index }}-link" href="{{ team_member.link }}">
                 {% else %}
                   <span>
                 {% endif %}
@@ -89,7 +89,7 @@ Team members - GOV.UK Pay
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
                 {% if permissions.users_service_read %}
-                  <a class="govuk-link govuk-link--no-visited-state govuk-display-block" id="view-only-member-{{ loop.index }}-link" href="{{ team_member.link }}">
+                  <a class="govuk-link govuk-link--no-visited-state govuk-!-display-block " id="view-only-member-{{ loop.index }}-link" href="{{ team_member.link }}">
                 {% else %}
                   <span>
                 {% endif %}
