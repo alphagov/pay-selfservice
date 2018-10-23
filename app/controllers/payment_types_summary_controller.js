@@ -1,8 +1,10 @@
-var response = require('../utils/response.js').response
-var auth = require('../services/auth_service.js')
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+'use strict'
 
-var {
+// Local dependencies
+const response = require('../utils/response.js').response
+const auth = require('../services/auth_service.js')
+const {CORRELATION_HEADER} = require('../utils/correlation_header.js')
+const {
   TYPES,
   connectorClient,
   renderConnectorError,
@@ -10,11 +12,11 @@ var {
   inferAcceptedCardType,
   filter3dsRequiredCardTypesIfNotSupported} = require('./payment_types_controller.js')
 
-module.exports.showSummary = function (req, res) {
-  var correlationId = req.headers[CORRELATION_HEADER] || ''
+module.exports.showSummary = (req, res) => {
+  const correlationId = req.headers[CORRELATION_HEADER] || ''
 
-  var init = function () {
-    var params = {
+  const init = () => {
+    const params = {
       correlationId: correlationId
     }
 
@@ -23,11 +25,11 @@ module.exports.showSummary = function (req, res) {
       .on('connectorError', renderConnectorError(req, res, 'Unable to retrieve card types.'))
   }
 
-  var onSuccessGetAllCards = function (allCards) {
-    var onSuccessGetAccountAcceptedCards = function (acceptedCards) {
-      var acceptedType = inferAcceptedCardType(acceptedCards['card_types'])
+  const onSuccessGetAllCards = allCards => {
+    const onSuccessGetAccountAcceptedCards = acceptedCards => {
+      const acceptedType = inferAcceptedCardType(acceptedCards['card_types'])
 
-      var model = {
+      const model = {
         isAcceptedTypeAll: acceptedType === TYPES.ALL,
         isAcceptedTypeDebit: acceptedType === TYPES.DEBIT,
         brands: reconcileCardsByBrand(
@@ -41,9 +43,9 @@ module.exports.showSummary = function (req, res) {
       response(req, res, 'card-payment-types/summary', model)
     }
 
-    var accountId = auth.getCurrentGatewayAccountId(req)
+    const accountId = auth.getCurrentGatewayAccountId(req)
 
-    var params = {
+    const params = {
       gatewayAccountId: accountId,
       correlationId: correlationId
     }

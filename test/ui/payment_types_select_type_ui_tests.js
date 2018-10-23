@@ -1,11 +1,15 @@
-var path = require('path')
+'use strict'
 
-var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
-var {TYPES} = require(path.join(__dirname, '/../../app/controllers/payment_types_controller.js'))
+// NPM dependencies
+const path = require('path')
 
-describe('The payment select type view', function () {
-  it('should display the payment select type view', function () {
-    var templateData = {
+// Local dependencies
+const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const {TYPES} = require(path.join(__dirname, '/../../app/controllers/payment_types_controller.js'))
+
+describe('The payment select type view', () => {
+  it('should display the payment select type view', () => {
+    const templateData = {
       allCardOption: {
         type: TYPES.ALL,
         selected: 'checked'
@@ -20,7 +24,7 @@ describe('The payment select type view', function () {
       }
     }
 
-    var body = renderTemplate('card-payment-types/select_type', templateData)
+    const body = renderTemplate('card-payment-types/select_type', templateData)
 
     body.should.containSelector('.page-title').withExactText('Card types')
 
@@ -38,8 +42,8 @@ describe('The payment select type view', function () {
       .withAttribute('class', 'govuk-button')
   })
 
-  it('should not display select type form without correct permission', function () {
-    var templateData = {
+  it('should not display select type form without correct permission',() => {
+    const templateData = {
       allCardOption: {
         type: TYPES.ALL,
         selected: 'checked'
@@ -50,7 +54,7 @@ describe('The payment select type view', function () {
       }
     }
 
-    var body = renderTemplate('card-payment-types/select_type', templateData)
+    const body = renderTemplate('card-payment-types/select_type', templateData)
 
     body.should.not.containSelector('form#payment-types-card-type-selection-form')
   })
