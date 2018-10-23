@@ -36,7 +36,7 @@ function showSuccessView (viewMode, req, res) {
     responsePayload.lastNotificationsData = invalidCreds
     delete req.session.pageData.editNotificationCredentials
   }
-  response(req, res, 'provider_credentials/' + req.account.payment_provider, responsePayload)
+  response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
 }
 
 function loadIndex (req, res, viewMode) {
