@@ -1,7 +1,7 @@
 <form id="refundForm" action="/transactions/{{charge_id}}/refund" method="post" class="refund__form {% if flash.genericError %}active{% endif %}">
   <input id="full-amount" type="hidden" name="full-amount" value="{{ net_amount }}" >
   <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
-  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
   <div class="form-group">
     <fieldset>
       <legend>
@@ -9,25 +9,25 @@
       </legend>
 
       {% if refunded %}
-      <div class="multiple-choice">
-        <input id="full" type="radio" name="refund-type" value="full" checked="checked">
-        <label class="block-label" for="full">Remaining amount
-          <span class="form-hint">refund the remaining £{{ net_amount }}, ({{refunded_amount}} has already been refunded) </span>
-        </label>
-      </div>
+        <div class="multiple-choice">
+          <input id="full" type="radio" name="refund-type" value="full" checked="checked">
+          <label class="block-label" for="full">Remaining amount
+            <span class="form-hint">Refund the remaining {{ net_amount_display }} ({{ refunded_amount }} has already been refunded)</span>
+          </label>
+        </div>
       {% else %}
-      <div class="multiple-choice">
-        <input id="full" type="radio" name="refund-type" value="full" checked="checked">
-        <label class="block-label" for="full">Full refund
-          <span class="form-hint">refund the full amount of {{ amount }}</span>
-        </label>
-      </div>
+        <div class="multiple-choice">
+          <input id="full" type="radio" name="refund-type" value="full" checked="checked">
+          <label class="block-label" for="full">Full refund
+            <span class="form-hint">Refund the full amount of {{ net_amount_display }}{% if corporate_card_surcharge %} (including a card fee of {{corporate_card_surcharge}}){% endif %}</span>
+          </label>
+        </div>
       {% endif %}
 
       <div class="multiple-choice">
         <input id="partial" type="radio" name="refund-type" value="partial">
         <label class="block-label" for="partial">Partial refund
-          <span class="form-hint">refund a partial amount</span>
+          <span class="form-hint">Refund a partial amount</span>
         </label>
       </div>
       <div class="panel panel-border-wide refund__amount">

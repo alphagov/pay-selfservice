@@ -199,5 +199,26 @@ describe('Transactions details page', () => {
       // Click the refund submit button
       cy.get('.refund__submit-button').click()
     })
+
+    it('should display full refund amount with corporate card surcharge when there is a corporate card surcharge', () => {
+      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge_id}`)
+      const chargeDetails = selfServiceDefaultUser.sections.transactions.details_data.filter(item => item.charge_id === aCorporateCardSurchargeCharge.charge_id)[0]
+
+      // Click the refund button
+      cy.get('.refund__toggle').click()
+
+      // Assert refund message
+      cy.get('label[for=full] > span').should('have.text', `Refund the full amount of ${convertAmounts(chargeDetails.refund_summary.amount_available)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
+    })
+
+    it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
+      cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
+
+      // Click the refund button
+      cy.get('.refund__toggle').click()
+
+      // Assert refund message
+      cy.get('label[for=full] > span').should('have.text', `Refund the full amount of ${convertAmounts(aSmartpayChargeDetails.refund_summary.amount_available)}`)
+    })
   })
 })
