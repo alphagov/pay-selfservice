@@ -48,6 +48,6 @@ describe('Feedback page GET', () => {
   })
 
   it(`should have a button with “Send feedback”`, () => {
-    expect($('.button').text()).to.contain('Send feedback')
+    expect($('.govuk-button').text()).to.contain('Send feedback')
   })
 })
