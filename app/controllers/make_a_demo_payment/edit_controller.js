@@ -5,7 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const {response} = require('../../utils/response.js')
-const {editDescription, index} = require('../../paths').prototyping.demoPayment
+const {editDescription} = require('../../paths').prototyping.demoPayment
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.makeADemoPayment', {})
@@ -13,7 +13,6 @@ module.exports = (req, res) => {
 
   response(req, res, template, {
     paymentDescription: pageData.paymentDescription,
-    paymentAmount: pageData.paymentAmount,
-    nextPage: index
+    paymentAmount: pageData.paymentAmount
   })
 }

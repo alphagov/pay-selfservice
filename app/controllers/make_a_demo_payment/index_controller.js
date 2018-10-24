@@ -37,9 +37,6 @@ module.exports = (req, res) => {
 
   response(req, res, 'dashboard/demo-payment/index', {
     paymentAmount,
-    paymentDescription,
-    nextPage: paths.prototyping.demoPayment.mockCardDetails,
-    editDescription: paths.prototyping.demoPayment.editDescription,
-    editAmount: paths.prototyping.demoPayment.editAmount
+    paymentDescription
   })
 }

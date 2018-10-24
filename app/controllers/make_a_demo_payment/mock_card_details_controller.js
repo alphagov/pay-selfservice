@@ -7,11 +7,6 @@ const lodash = require('lodash')
 const {response} = require('../../utils/response.js')
 const paths = require('../../paths')
 
-const PAGE_DATA = {
-  nextPage: paths.prototyping.demoPayment.goToPaymentScreens,
-  lastPage: paths.prototyping.demoPayment.index
-}
-
 module.exports = (req, res) => {
   const {paymentAmount, paymentDescription} = lodash.get(req, 'session.pageData.makeADemoPayment', {})
 
@@ -19,5 +14,5 @@ module.exports = (req, res) => {
     return res.redirect(paths.prototyping.demoPayment.index)
   }
 
-  response(req, res, 'dashboard/demo-payment/mock-card-details', PAGE_DATA)
+  response(req, res, 'dashboard/demo-payment/mock-card-details', {})
 }
