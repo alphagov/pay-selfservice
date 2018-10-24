@@ -11,9 +11,6 @@ Manage card Types - {{currentService.name}} {{currentGatewayAccount.full_type}} 
     <form class="govuk-!-margin-top-6" id="payment-types-card-type-selection-form" method="post" action="{{routes.paymentTypes.index}}">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
-      {% set allChecked = allCardOption.selected === 'checked' %}
-      {% set debitChecked = debitCardOption.selected === 'checked' %}
-
       {{ govukRadios({
         name: "payment-types-card-type",
         fieldset: {
@@ -27,14 +24,14 @@ Manage card Types - {{currentService.name}} {{currentGatewayAccount.full_type}} 
           {
             value: allCardOption.type,
             text: "Debit and credit cards",
-            checked: allChecked,
+            checked: allCardOption.selected === 'checked',
             id: "payment-types-all-type"
           },
           {
             value: debitCardOption.type,
             text: "Debit cards only",
             id: "payment-types-debit-type",
-            checked: debitChecked
+            checked: debitCardOption.selected === 'checked'
           }
         ]
       }) }}
