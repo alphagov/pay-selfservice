@@ -1,13 +1,23 @@
 'use strict'
 
-// if 10.50 is input result will equal
-// ["10.50", "10", "50"]
-
+// Local contants
 const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
 
-module.exports = (currencyString) => {
-  if (currencyString) {
-    const cleanedCurrencyString = currencyString.replace(/[^0-9.-]+/g, '')
+const penceToPounds = amount => {
+  return (amount / 100).toFixed(2)
+}
+
+const poundsToPence = amount => {
+  return (amount * 100).toFixed(0)
+}
+
+const penceToPoundsWithCurrency = amount => {
+  return new Intl.NumberFormat('en-gb', { style: 'currency', currency: 'GBP' }).format(penceToPounds(amount))
+}
+
+const sanitisePoundsAndPenceInput = amount => {
+  if (amount) {
+    const cleanedCurrencyString = amount.replace(/[^0-9.-]+/g, '')
     const result = AMOUNT_FORMAT.exec(cleanedCurrencyString)
 
     if (result) {
@@ -19,9 +29,16 @@ module.exports = (currencyString) => {
       } else if (pence.length === 1) {
         pence = pence + '0'
       }
-      return pounds + '.' + pence
+      return parseInt(pounds + pence)
     } else {
       return null
     }
   }
+}
+
+module.exports = {
+  penceToPounds,
+  poundsToPence,
+  penceToPoundsWithCurrency,
+  sanitisePoundsAndPenceInput
 }

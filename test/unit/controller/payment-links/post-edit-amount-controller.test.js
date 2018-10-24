@@ -93,7 +93,7 @@ describe('POST payment link edit amount controller', () => {
     })
 
     it('should set price in session', () => {
-      expect(session.editPaymentLinkData.price).to.equal(0)
+      expect(session.editPaymentLinkData.price).to.equal('')
     })
 
     it('should redirect to the edit page', () => {

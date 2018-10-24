@@ -33,7 +33,7 @@ module.exports = (req, res) => {
       gatewayAccountId,
       name: paymentDescription,
       serviceName: req.service.name,
-      price: Math.trunc(paymentAmount * 100),
+      price: paymentAmount,
       type: productTypes.DEMO
     }))
     .then(product => {

@@ -12,6 +12,7 @@ const nock = require('nock')
 const {getApp} = require('../../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
+const {penceToPounds} = require('../../../../app/utils/currency_formatter')
 
 const GATEWAY_ACCOUNT_ID = '929'
 const {CONNECTOR_URL} = process.env
@@ -58,7 +59,7 @@ describe('make a demo payment - index controller', () => {
     let result, $, session, paymentAmount, paymentDescription
     before(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
-      paymentAmount = '100.00'
+      paymentAmount = '10000'
       paymentDescription = 'Pay your window tax'
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', paymentAmount)
@@ -81,7 +82,8 @@ describe('make a demo payment - index controller', () => {
     })
 
     it(`should show the payment amount stored in the session`, () => {
-      expect($(`#payment-amount`).text()).to.equal(`£${paymentAmount}`)
+      const paymentAmountInPounds = penceToPounds(paymentAmount)
+      expect($(`#payment-amount`).text()).to.equal(`£${paymentAmountInPounds}`)
     })
 
     it(`should show the payment description stored in the session`, () => {
