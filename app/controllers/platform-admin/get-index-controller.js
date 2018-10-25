@@ -4,6 +4,7 @@
 const {response} = require('../../utils/response')
 
 module.exports = (type) => (req, res) => {
+  JSON.stringify('XXXXXXXXXXXXXXXXXXXXXX ' + JSON.stringify(req.user.adminServiceRoles.services))
   const data = {
     services: req.user.adminServiceRoles.services.map(adminServiceRole => {
       return {

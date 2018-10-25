@@ -15,12 +15,15 @@ describe('Dashboard', () => {
       // Click the first organisation listed 'Organisation details' link
       cy.get('.edit-merchant-details').click()
 
+      // Put the merchant details page in edit mode
+      cy.contains('Change').click()
+
       // Attempt to add an invalid postcode with all other details being legitimate
-      cy.get('#merchant-name').type('Tom & Jerry')
-      cy.get('#address-line1').type('Clive House')
-      cy.get('#address-line2').type('10 Downing Street')
-      cy.get('#address-city').type('London')
-      cy.get('#address-postcode').type('wrongpostcode')
+      cy.get('#merchant-name').clear().type('Tom & Jerry')
+      cy.get('#address-line1').clear().type('Clive House')
+      cy.get('#address-line2').clear().type('10 Downing Street')
+      cy.get('#address-city').clear().type('London')
+      cy.get('#address-postcode').clear().type('wrongpostcode')
       cy.get('#address-country').select('GB')
 
       // Try and save
