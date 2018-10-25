@@ -17,7 +17,7 @@ const {validCreateProductRequest, validCreateProductResponse} = require('../../.
 const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const PAYMENT_DESCRIPTION = 'Pay your window tax'
-const PAYMENT_AMOUNT = '20.00'
+const PAYMENT_AMOUNT = '2000'
 const VALID_PAYLOAD = {
   'csrfToken': csrf().create('123')
 }
@@ -38,7 +38,7 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   name: PAYMENT_DESCRIPTION,
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
   serviceName: VALID_USER.serviceRoles[0].service.name,
-  price: PAYMENT_AMOUNT * 100,
+  price: PAYMENT_AMOUNT,
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   type: 'DEMO'
 }).getPlain()

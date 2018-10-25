@@ -58,7 +58,7 @@ Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_ty
         </dt>
         <dd class="cya-answer" id="edit-payment-link-amount">
           {% if product.price %}
-            {{ product.price | currency }}
+            {{ product.price | penceToPoundsWithCurrency }}
           {% else %}
             <span class="grey">User can choose</span>
           {% endif %}

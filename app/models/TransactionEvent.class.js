@@ -1,7 +1,7 @@
 'use strict'
 // NPM Dependencies
 const lodash = require('lodash')
-const currencyFormatter = require('currency-formatter')
+const {penceToPoundsWithCurrency} = require('../utils/currency_formatter')
 
 // Local Dependencies
 const states = require('../utils/states')
@@ -23,7 +23,7 @@ class TransactionEvent {
 
     this.state_friendly = states.getEventDisplayNameForConnectorState(this.state, this.type)
     this.updated_friendly = dates.utcToDisplay(this.updated)
-    this.amount_friendly = currencyFormatter.format((this.amount / 100).toFixed(2), {code: 'GBP'})
+    this.amount_friendly = penceToPoundsWithCurrency(this.amount)
     if (this.amount && this.type.toLowerCase() === 'refund') {
       this.amount_friendly = `–${this.amount_friendly}`
     }

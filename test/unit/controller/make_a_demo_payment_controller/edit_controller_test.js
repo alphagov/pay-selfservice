@@ -11,6 +11,7 @@ const nock = require('nock')
 const {getApp} = require('../../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
+const {penceToPounds} = require('../../../../app/utils/currency_formatter')
 
 const GATEWAY_ACCOUNT_ID = '929'
 const {CONNECTOR_URL} = process.env
@@ -27,7 +28,7 @@ describe('make a demo payment - edit controller', () => {
     let result, $, session, paymentAmount
     before(done => {
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
-      paymentAmount = '100.00'
+      paymentAmount = '10000'
       session = getMockSession(VALID_USER)
       lodash.set(session, 'pageData.makeADemoPayment.paymentAmount', paymentAmount)
       supertest(createAppWithSession(getApp(), session))
@@ -56,7 +57,8 @@ describe('make a demo payment - edit controller', () => {
     })
 
     it(`should set the 'payment-amount' value to be that found in the session`, () => {
-      expect($(`input[name='payment-amount']`).val()).to.equal(paymentAmount)
+      const paymentAmountInPounds = penceToPounds(paymentAmount)
+      expect($(`input[name='payment-amount']`).val()).to.equal(paymentAmountInPounds)
     })
   })
   describe(`when the path navigated to is the 'edit description' path`, () => {

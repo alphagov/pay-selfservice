@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 const formattedPathFor = require('../../utils/replace_params_in_path')
-const currencyFormatter = require('../../utils/currency_formatter')
+const {sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
   const paymentAmountType = req.body['amount-type-group']
@@ -19,19 +19,19 @@ module.exports = (req, res) => {
     return res.redirect(formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId))
   }
 
-  let formattedPaymentLinkAmount = currencyFormatter(paymentLinkAmount)
+  let sanitisedAmount = sanitisePoundsAndPenceInput(paymentLinkAmount)
 
-  if (paymentLinkAmount !== '' && formattedPaymentLinkAmount === null) {
+  if (paymentLinkAmount !== '' && sanitisedAmount === null) {
     req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)
     req.flash('errorType', `paymentAmountFormat`)
     return res.redirect(formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId))
   }
 
   if (paymentAmountType === 'variable') {
-    formattedPaymentLinkAmount = ''
+    sanitisedAmount = ''
   }
 
-  editData.price = formattedPaymentLinkAmount * 100
+  editData.price = sanitisedAmount
   lodash.set(req, 'session.editPaymentLinkData', editData)
 
   return res.redirect(formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId))

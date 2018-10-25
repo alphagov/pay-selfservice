@@ -31,7 +31,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
     </thead>
     <tbody>
     <tr>
-      <td id="payment-amount">&pound;{{paymentAmount}}</td>
+      <td id="payment-amount">{{paymentAmount | penceToPoundsWithCurrency }}</td>
       <td class="prototyping__edit-cell"><a class="prototyping__edit-button" href="{{editAmount}}">Edit</a></td>
     </tr>
     </tbody>

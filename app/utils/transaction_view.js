@@ -5,7 +5,7 @@ const changeCase = require('change-case')
 const dates = require('../utils/dates.js')
 const router = require('../routes.js')
 const qs = require('qs')
-const currencyFormatter = require('currency-formatter')
+const {penceToPoundsWithCurrency} = require('../utils/currency_formatter')
 const Paginator = require('./paginator')
 const states = require('./states')
 const check = require('check-types')
@@ -129,8 +129,9 @@ function formatFirstSixDigitsCardNumber (number) {
   }
   return number
 }
+
 function asGBP (amountInPence) {
-  return currencyFormatter.format((amountInPence / 100).toFixed(2), {code: 'GBP'})
+  return penceToPoundsWithCurrency(amountInPence)
 }
 
 function getPaginationLinks (connectorData) {

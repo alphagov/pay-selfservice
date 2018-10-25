@@ -5,7 +5,7 @@ const lodash = require('lodash')
 
 // Local dependencies
 const paths = require('../../paths')
-const currencyFormatter = require('../../utils/currency_formatter')
+const {sanitisePoundsAndPenceInput, penceToPounds} = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
   const pageData = lodash.get(req, 'session.pageData.createPaymentLink', {})
@@ -19,7 +19,7 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.amount)
   }
 
-  let formattedPaymentLinkAmount = currencyFormatter(paymentLinkAmount)
+  let formattedPaymentLinkAmount = sanitisePoundsAndPenceInput(paymentLinkAmount)
 
   if (paymentLinkAmount !== '' && formattedPaymentLinkAmount === null) {
     req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-amount">Enter the amount</a></li></ul>`)
@@ -31,7 +31,7 @@ module.exports = (req, res) => {
     formattedPaymentLinkAmount = ''
   }
 
-  updatedPageData.paymentLinkAmount = formattedPaymentLinkAmount
+  updatedPageData.paymentLinkAmount = formattedPaymentLinkAmount ? penceToPounds(formattedPaymentLinkAmount) : ''
   updatedPageData.paymentAmountType = paymentAmountType
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 
