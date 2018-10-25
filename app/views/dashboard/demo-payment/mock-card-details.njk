@@ -1,23 +1,37 @@
-{% extends "../../layout.njk" %}
-{% block page_title %}
-Mock card numbers for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% extends "../../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  Mock card numbers for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-  <a href="{{lastPage}}" class="link-back">Back to dashboard</a>
-  <h1 class="heading-large prototyping__heading">Mock card numbers</h1>
-  <p>Use this card number to test a successful payment. Don’t use real card numbers.</p>
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({ text: "Back to make a demo payment", href: routes.prototyping.demoPayment.index }) }}
+  <h1 class="govuk-heading-l">Mock card numbers</h1>
+  <p class="govuk-body">Use this card number to test a successful payment. Don’t use real card numbers.</p>
 
-  <div class="panel panel-border-wide">
-    <h2 class="heading-medium"><span class="mock-card-block">4000</span><span class="mock-card-block">0566</span><span class="mock-card-block">5566</span><span class="mock-card-block">5556</span></h2>
-  </div>
+  {{
+    govukInsetText({
+      html: '<p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span class="govuk-!-padding-left-3 govuk-!-padding-right-3">0566</span><span class="govuk-!-padding-right-3">5566</span>5556</p>'
+    })
+  }}
 
-  <p>You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but it must be in the future.</p>
-  <p>You can also use other card types and see errors. <a href="https://docs.payments.service.gov.uk/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
-  <form method="post" action="{{nextPage}}" >
+  <p class="govuk-body">You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but it must be in the future.</p>
+  <p class="govuk-body">You can also use other card types and see errors. <a class="govuk-link" href="https://docs.payments.service.gov.uk/#mock-card-numbers-for-testing-purposes">See more card types in our documentation</a>.</p>
+
+  <form method="post" action="{{routes.prototyping.demoPayment.goToPaymentScreens}}" >
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input id="prototyping__make-demo-payment" class="button" type="submit" value="Make a demo payment">
+    {{
+      govukButton({
+        text: "Make a demo payment",
+        attributes: {
+          id: "prototyping__make-demo-payment"
+        }
+      })
+    }}
   </form>
 </div>
 {% endblock %}

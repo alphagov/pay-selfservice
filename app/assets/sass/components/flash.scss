@@ -8,5 +8,9 @@
 
   .notification {
     @include govuk-font($size: 19);
+
+    h2 {
+      margin-top: 0;
+    }
   }
 }

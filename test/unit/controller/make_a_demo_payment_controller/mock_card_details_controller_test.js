@@ -52,7 +52,7 @@ describe('make a demo payment - mock card details controller', () => {
     })
 
     it(`should include a back link linking to the demoservice index page`, () => {
-      expect($('.link-back').attr('href')).to.equal(paths.prototyping.demoPayment.index)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoPayment.index)
     })
 
     it(`should include form which has the go to demo payment page as its action`, () => {

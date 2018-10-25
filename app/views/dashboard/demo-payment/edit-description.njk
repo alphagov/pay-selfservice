@@ -1,22 +1,46 @@
-{% extends "../../layout.njk" %}
-{% block page_title %}
-Edit payment description for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% extends "../../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/textarea/macro.njk" import govukTextarea %}
+
+{% block pageTitle %}
+  Edit payment description for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-  <a href="{{nextPage}}" class="link-back">Back to make a demo payment</a>
-  <h1 class="heading-large prototyping__heading">Edit payment description</h1>
-  <form method="post" action="{{nextPage}}" data-validate="true">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group">
-      <label class="form-label" for="payment-description">
-        Payment description
-        <span class="form-hint">Tell users what they are paying for</span>
-      </label>
-      <textarea class="form-control form-control-3-4" name="payment-description" id="payment-description" rows="2" autofocus data-validate data-trim>{{paymentDescription}}</textarea>
-    </div>
-    <input class="button" type="submit" value="Save changes">
-  </form>
-</div>
+  <div class="govuk-grid-column-full">
+    {{ govukBackLink({ text: "Back to make a demo payment", href: routes.prototyping.demoPayment.index }) }}
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Edit payment description</h1>
+    <form method="post" action="{{routes.prototyping.demoPayment.index}}" data-validate="true">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      {{
+        govukTextarea({
+          name: "payment-description",
+          id: "payment-description",
+          label: {
+            text: "Payment description"
+          },
+          hint: {
+            text: "Tell users what they are paying for"
+          },
+          value: paymentDescription,
+          classes: "govuk-!-width-two-thirds",
+          attributes: {
+            rows: 2,
+            autofocus: true,
+            "data-validate": true,
+            "data-trim": true
+          }
+        })
+      }}
+
+      {{
+        govukButton({
+          text: "Save changes"
+        })
+      }}
+    </form>
+  </div>
 {% endblock %}

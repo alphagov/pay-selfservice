@@ -53,7 +53,7 @@ describe('make a demo payment - edit controller', () => {
     })
 
     it('should have a back button that takes the user back to the demo payment index page', () => {
-      expect($('.link-back').attr('href')).to.equal(paths.prototyping.demoPayment.index)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoPayment.index)
     })
 
     it(`should set the 'payment-amount' value to be that found in the session`, () => {
@@ -90,7 +90,7 @@ describe('make a demo payment - edit controller', () => {
     })
 
     it('should have a back button that takes the user back to the demo payment index page', () => {
-      expect($('.link-back').attr('href')).to.equal(paths.prototyping.demoPayment.index)
+      expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoPayment.index)
     })
 
     it(`should set the 'payment-description' value to be that found in the session`, () => {

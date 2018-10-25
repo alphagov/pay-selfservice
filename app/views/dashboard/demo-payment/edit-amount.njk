@@ -1,25 +1,48 @@
-{% extends "../../layout.njk" %}
-{% block page_title %}
-Edit payment amount for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% extends "../../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/input/macro.njk" import govukInput %}
+
+{% block pageTitle %}
+  Edit payment amount for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-  <a href="{{nextPage}}" class="link-back">Back to make a demo payment</a>
-  <h1 class="heading-large prototyping__heading">Edit payment amount</h1>
-  <form method="post" action="{{nextPage}}" data-validate="true">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="currency-input form-group">
-      <label class="form-label" for="payment-amount">
-        Payment amount
-        <span class="visually-hidden">in &pound;</span>
-      </label>
-      <div class="currency-input__inner">
-        <span class="currency-input__inner__unit">&pound;</span>
-        <input class="form-control" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric type="text" id="payment-amount" value="{{paymentAmount | penceToPounds }}" data-validate="required currency belowMaxAmount" data-trim>
+  <div class="govuk-grid-column-full">
+    {{ govukBackLink({ text: "Back to make a demo payment", href: routes.prototyping.demoPayment.index }) }}
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Edit payment amount</h1>
+    <form method="post" action="{{routes.prototyping.demoPayment.index}}" data-validate="true">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+      <div class="currency-input govuk-form-group">
+        <label class="govuk-label" for="payment-amount">
+          Payment amount
+          <span class="govuk-visually-hidden">in &pound;</span>
+        </label>
+        <div class="currency-input__inner">
+          <span class="currency-input__inner__unit">&pound;</span>
+          <input
+            class="govuk-input govuk-input--width-10"
+            aria-label="Enter amount in pounds"
+            name="payment-amount"
+            autofocus
+            data-non-numeric
+            type="text"
+            id="payment-amount"
+            value="{{ paymentAmount | penceToPounds }}"
+            data-validate="required currency belowMaxAmount"
+            data-trim
+          />
+        </div>
       </div>
-    </div>
-    <input class="button" type="submit" value="Save changes">
-  </form>
-</div>
+
+      {{
+        govukButton({
+          text: "Save changes"
+        })
+      }}
+    </form>
+  </div>
 {% endblock %}
