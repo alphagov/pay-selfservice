@@ -107,15 +107,15 @@ describe('test with your users - submit controller', () => {
       })
 
       it('should show the prototype link returned from the products api', () => {
-        const prototypeLink = $('.prototype-link')
+        const prototypeLink = $('#prototyping__links-link-create-payment')
         const url = VALID_CREATE_PRODUCT_RESPONSE._links.find(link => link.rel === 'pay').href
         expect(prototypeLink.attr('href')).to.equal(url)
         expect(prototypeLink.text()).to.equal(url)
       })
 
       it('should have a back link and a button that link back to the links page', () => {
-        expect($('.link-back').attr('href')).to.equal(paths.prototyping.demoService.links)
-        expect($('.links-page').attr('href')).to.equal(paths.prototyping.demoService.links)
+        expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoService.links)
+        expect($('.govuk-button').attr('href')).to.equal(paths.prototyping.demoService.links)
       })
     })
     describe('but it is unable to create an API token', () => {
