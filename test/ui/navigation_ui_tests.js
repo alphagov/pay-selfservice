@@ -75,7 +75,8 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
   })
 
-  it('should render Accounts credentials navigation link when user have gateway credentials read permission', function () {
+  it('should render Accounts credentials navigation link when user have gateway credentials read permission' +
+    ' and payment provider is NOT `stripe` ', function () {
     const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: true,
@@ -87,12 +88,33 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay')
     }
 
     const body = renderTemplate('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Account credentials')
+  })
+
+  it('should not render Accounts credentials navigation link when user have gateway credentials read permission' +
+    ' and payment provider is `stripe`', function () {
+    const testPermissions = {
+      tokens_update: false,
+      gateway_credentials_update: true,
+      service_name_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: true,
+      email_notification_template_read: false
+    }
+    const templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'stripe')
+    }
+
+    const body = renderTemplate('api-keys/index', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('3D Secure')
   })
 
   it('should render Card types navigation link when user have card Types read permission', function () {
