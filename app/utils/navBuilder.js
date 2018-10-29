@@ -58,7 +58,7 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
   return navigationItems
 }
 
-const adminNavigationItems = (originalUrl, permissions, type) => {
+const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) => {
   return [
     {
       id: 'navigation-menu-api-keys',
@@ -72,7 +72,7 @@ const adminNavigationItems = (originalUrl, permissions, type) => {
       name: 'Account credentials',
       url: paths.credentials.index,
       current: pathLookup(originalUrl, paths.credentials.index),
-      permissions: permissions.gateway_credentials_update && type === 'card'
+      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe')
     },
     {
       id: 'navigation-menu-3d-secure',

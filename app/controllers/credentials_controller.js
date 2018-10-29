@@ -41,7 +41,12 @@ function showSuccessView (viewMode, req, res) {
 
 function loadIndex (req, res, viewMode) {
   if (req.account) {
-    showSuccessView(viewMode, req, res)
+    if (req.account.payment_provider === 'stripe') {
+      res.status(404)
+      res.render('404')
+    } else {
+      showSuccessView(viewMode, req, res)
+    }
   } else {
     errorView(req, res)
   }

@@ -369,4 +369,25 @@ describe('The credentials view in edit mode', function () {
     body.should.not.containSelector('a#edit-credentials-link')
     body.should.not.containSelector('input#submitCredentials')
   })
+
+  it('should display error page for `stripe`', function () {
+    const templateData = {
+      currentGatewayAccount: {
+        'payment_provider': 'stripe',
+        'credentials': {}
+      },
+      'editMode': 'true',
+      permissions: {
+        gateway_credentials_update: true
+      }
+    }
+
+    const body = renderTemplate('404', templateData)
+
+    body.should.containSelector('h1:first-of-type').withExactText('Page not found')
+
+    body.should.not.containSelector('form#credentials-form')
+    body.should.not.containSelector('a#edit-credentials-link')
+    body.should.not.containSelector('input#submitCredentials')
+  })
 })
