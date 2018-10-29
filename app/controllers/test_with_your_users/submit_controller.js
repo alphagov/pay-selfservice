@@ -12,13 +12,9 @@ const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const authService = require('../../services/auth_service.js')
 const {isCurrency, isHttps, isAboveMaxAmount} = require('../../browsered/field-validation-checks')
-const {poundsToPence, penceToPounds, sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
+const {penceToPounds, sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
-  const params = {
-    linksPage: paths.prototyping.demoService.links
-  }
-
   const gatewayAccountId = authService.getCurrentGatewayAccountId(req)
   const confirmationPage = req.body['confirmation-page']
   const paymentDescription = req.body['payment-description']
@@ -57,9 +53,9 @@ module.exports = (req, res) => {
       type: productTypes.PROTOTYPE
     }))
     .then(product => {
-      params.prototypeLink = lodash.get(product, 'links.pay.href')
+      const prototypeLink = lodash.get(product, 'links.pay.href')
       lodash.set(req, 'session.pageData.createPrototypeLink', {})
-      return response(req, res, 'dashboard/demo-service/confirm', params)
+      return response(req, res, 'dashboard/demo-service/confirm', {prototypeLink})
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Create product failed - ${err.message}`)

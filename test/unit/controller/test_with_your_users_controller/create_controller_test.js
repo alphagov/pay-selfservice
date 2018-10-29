@@ -11,6 +11,7 @@ const lodash = require('lodash')
 const {getApp} = require('../../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
+const {penceToPounds} = require('../../../../app/utils/currency_formatter')
 const {CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
@@ -27,7 +28,7 @@ describe('test with your users - create controller', () => {
     session = getMockSession(user)
     lodash.set(session, 'pageData.createPrototypeLink', {
       paymentDescription: 'An example prototype payment',
-      paymentAmount: '10.50',
+      paymentAmount: '1050',
       confirmationPage: 'example.gov.uk/payment-complete'
     })
     supertest(createAppWithSession(getApp(), session))
@@ -47,7 +48,7 @@ describe('test with your users - create controller', () => {
   })
 
   it(`should include a back link linking to the demoservice links page`, () => {
-    expect($('.link-back').attr('href')).to.equal(paths.prototyping.demoService.links)
+    expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoService.links)
   })
 
   it(`should have the confirm page as the form action`, () => {
@@ -59,7 +60,7 @@ describe('test with your users - create controller', () => {
   )
 
   it(`should pre-set the value of the 'payment-amount' input to pre-existing data if present in the session`, () =>
-    expect($(`input[name='payment-amount']`).val()).to.equal(session.pageData.createPrototypeLink.paymentAmount)
+    expect($(`input[name='payment-amount']`).val()).to.equal(penceToPounds(session.pageData.createPrototypeLink.paymentAmount))
   )
 
   it(`should pre-set the value of the 'confirmation-page' input to pre-existing data if present in the session`, () =>
