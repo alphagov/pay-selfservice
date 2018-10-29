@@ -65,7 +65,7 @@ function postToggle3DsIndexConfirm (accountName, done) {
 
 function assertStatusAndTitle () {
   expect(response.statusCode).to.equal(200)
-  expect($('.page-title').text()).to.contain('3D Secure')
+  expect($('.govuk-heading-l').text()).to.contain('3D Secure')
 }
 
 describe('The 3D Secure ', () => {

@@ -1,6 +1,9 @@
-{% extends "layout.njk" %}
+{% extends "layout-new.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/warning-text/macro.njk" import govukWarningText %}
 
-{% block page_title %}
+{% block pageTitle %}
   3D Secure - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
 {% endblock %}
 
@@ -9,7 +12,7 @@
 {% endblock %}
 
 {% block mainContent %}
-  <div class="column-two-thirds">
+  <div class="govuk-grid-column-two-thirds">
     {% if not permissions.toggle_3ds_update %}
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}
@@ -29,83 +32,107 @@
         {% endif %}
       {% endif %}
 
-      <h1 class="page-title">3D Secure</h1>
+      <h1 class="govuk-heading-l govuk-!-margin-top-6">3D Secure</h1>
 
-      <p id="threeds-supported">3D Secure (3DS) adds an extra layer of authentication to user payments. This can help
-        reduce fraud, but also makes it <strong class="bold-small">harder for your service users to complete
+      <p class="govuk-body" id="threeds-supported">3D Secure (3DS) adds an extra layer of authentication to user payments. This can help
+        reduce fraud, but also makes it <strong>harder for your service users to complete
           payments.</strong></p>
-      <p><strong class="bold-small">Verified by Visa</strong> and <strong class="bold-small">Mastercard
+      <p class="govuk-body"><strong>Verified by Visa</strong> and <strong>Mastercard
           SecureCode</strong> are common examples of 3D Secure.</p>
 
       {% if not requires3ds %}
         {% if permissions.toggle_3ds_read %}
-          <h2 id="3ds-status" class="heading-medium remove-top-margin">3D Secure is off</h2>
+          <h2 id="3ds-status" class="govuk-heading-m">3D Secure is off</h2>
         {% endif %}
 
         {% if permissions.toggle_3ds_update %}
           {% if showHelper3ds %}
             <div id="3ds-helper-text-worldpay">
-              <div class="panel panel-border-wide">
-                <h2 class="heading-small">Activating 3D Secure</h2>
-                <p>Check with your Worldpay account manager that your merchant code has been configured to support 3D
-                  Secure. Read more about this in our <a
-                    href="https://docs.payments.service.gov.uk/#worldpay-setup-for-3d-secure">technical
-                    documentation</a>.
-                </p>
-              </div>
-              <p>Once that’s done, you can turn on 3D Secure for all payments to your service.</p>
+              {% set helperHTML %}
+              <h2 class="govuk-heading-s">Activating 3D Secure</h2>
+              <p class="govuk-body">Check with your Worldpay account manager that your merchant code has been configured to support 3D
+                Secure. Read more about this in our <a
+                  href="https://docs.payments.service.gov.uk/#worldpay-setup-for-3d-secure">technical
+                  documentation</a>.
+              </p>
+              {% endset %}
+              {{
+                govukInsetText({
+                  html: helperHTML
+                })
+              }}
+              <p class="govuk-body">Once that’s done, you can turn on 3D Secure for all payments to your service.</p>
             </div>
           {% endif %}
 
           <form class="permission-main" method="post" action="{{ routes.toggle3ds.onConfirm }}">
             <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-            <div class="form-group">
-              <input id="threeds-on-button" class="button" type="submit" value="Turn on 3D Secure">
-            </div>
+            {{
+              govukButton({
+                text: "Turn on 3D Secure",
+                attributes: {
+                  id: "threeds-on-button"
+                }
+              })
+            }}
           </form>
         {% endif %}
       {% endif %}
 
       {% if requires3ds %}
         {% if permissions.toggle_3ds_read %}
-          <h2 id="3ds-status" class="heading-medium remove-top-margin">3D Secure is activated</h2>
+          <h2 id="3ds-status" class="govuk-heading-m">3D Secure is activated</h2>
 
-          <div class="panel panel-border-wide">
-            <h2 class="heading-small">Having problems with 3D Secure?</h2>
-            <p>If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Payment Gateway
-              account manager that your merchant code has been configured to support 3D Secure.</p>
-          </div>
+          {% set problemsHTML %}
+          <h2 class="govuk-heading-s">Having problems with 3D Secure?</h2>
+          <p class="govuk-body">If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Payment Gateway
+            account manager that your merchant code has been configured to support 3D Secure.</p>
+          {% endset %}
+          {{
+            govukInsetText({
+              html: problemsHTML
+            })
+          }}
         {% endif %}
 
         {% if hasAnyCardTypeRequiring3dsSelected %}
-          <div id="info-message" class="notice">
-            <i class="icon icon-important">
-              <span class="visually-hidden">Warning</span>
-            </i>
-
-            <strong class="bold-small">
-              You must disable Maestro to turn off 3D Secure
-            </strong>
-          </div>
+          {{
+            govukWarningText({
+              text: "You must disable Maestro to turn off 3D Secure",
+              iconFallbackText: "Warning"
+            })
+          }}
         {% endif %}
 
         {% if permissions.toggle_3ds_update %}
           <form class="permission-main" method="post" action="{{ routes.toggle3ds.off }}">
             <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-            <div class="form-group">
-              {% if hasAnyCardTypeRequiring3dsSelected %}
-                <input id="threeds-off-button-disabled" disabled class="button disabled" type="submit"
-                       value="Turn off 3D Secure">
-              {% else %}
-                <input id="threeds-off-button" class="button" type="submit" value="Turn off 3D Secure">
-              {% endif %}
-            </div>
+            {% if hasAnyCardTypeRequiring3dsSelected %}
+              {{
+                govukButton({
+                  text: "Turn off 3D Secure",
+                  disabled: true,
+                  attributes: {
+                    id: "threeds-off-button-disabled"
+                  }
+                })
+              }}
+            {% else %}
+              {{
+                govukButton({
+                  text: "Turn off 3D Secure",
+                  attributes: {
+                    id: "threeds-off-button"
+                  }
+                })
+              }}
+            {% endif %}
           </form>
         {% endif %}
       {% endif %}
     {% else %}
-      <h1 class="page-title">3D Secure</h1>
-      <p id="threeds-not-supported">3D Secure is not currently supported for this payment service provider (PSP).</p>
+      <h1 class="govuk-heading-l govuk-!-margin-top-6">3D Secure</h1>
+      <p class="govuk-body" id="threeds-not-supported">3D Secure is not currently supported for this payment service provider (PSP).</p>
     {% endif %}
   </div>
 {% endblock %}
