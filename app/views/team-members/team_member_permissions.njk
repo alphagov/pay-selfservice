@@ -1,77 +1,113 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
 Edit team member permissions - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-full">
-  <a href="{{teamMemberProfileLink}}" class="link-back">Back to team member profile</a>
+<div class="govuk-grid-column-full">
+  {{
+    govukBackLink({
+      text: "Back to team member profile",
+      href: teamMemberProfileLink,
+      classes: "link-back"
+    })
+  }}
 </div>
-<div class="column-full">
-  <h1 class="heading-large underline">
-    <span class="heading-secondary">Team members</span>
-    Edit permissions</h1>
+<div class="govuk-grid-column-full">
+  <span class="govuk-caption-l">Team members</span>
+  <h1 class="govuk-heading-l">
+    Edit permissions
+  </h1>
 </div>
 
-<div class="column-two-thirds">
+<div class="govuk-grid-column-two-thirds">
   <dl class="read-only-fields">
-    <dt class="heading-small">Email address</dt>
-    <dd id="email">{{email}}</dd>
+    <dt class="govuk-heading-s govuk-!-margin-bottom-0">Email address</dt>
+    <dd class="govuk-body govuk-!-margin-left-0" id="email">{{email}}</dd>
   </dl>
   <form id="role-update-form" method="post" action="{{editPermissionsLink}}">
-    <div class="form-group">
-      <fieldset>
-        <legend class="heading-small">Permission level</legend>
-        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-        <div class="multiple-choice">
-          <input id="role-admin-input" type="radio" name="role-input" value="{{admin.id}}" {{admin.checked}}>
-          <label for="role-admin-input">
-            <span class="heading-small">Administrator</span>
-            <ul class="question-advice form-hint">
-              <li>View transactions</li>
-              <li>Refund payments</li>
-              <li>Manage settings</li>
-            </ul>
-          </label>
-        </div>
-        <div class="multiple-choice">
-          <input id="role-view-and-refund-input" type="radio" name="role-input" value="{{viewAndRefund.id}}" {{viewAndRefund.checked}}>
-          <label for="role-view-and-refund-input">
-            <span class="heading-small">View and refund</span>
-            <ul class="question-advice form-hint">
-              <li>View transactions</li>
-              <li>Refund payments</li>
-              <li>Cannot manage settings</li>
-            </ul>
-          </label>
-        </div>
-        <div class="multiple-choice">
-          <input id="role-view-input" type="radio" name="role-input" value="{{view.id}}" {{view.checked}}>
-          <label for="role-view-input"><span class="heading-small">View only</span>
-            <ul class="question-advice form-hint">
-              <li>View transactions</li>
-              <li>Cannot refund payments</li>
-              <li>Cannot manage settings</li>
-            </ul>
-          </label>
-        </div>
-      </fieldset>
-      <div class="notice">
-        <i class="icon icon-important">
-          <span class="visually-hidden">Warning</span>
-        </i>
-        <strong class="bold-small">
-          This change affects both live and test environments
-        </strong>
-      </div>
-    </div>
-    <div class="form-group call-to-action-group">
-      <input type="submit" class="button" value="Save changes">
-      <a id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{
+      govukRadios({
+        idPrefix: 'role-input',
+        name: 'role-input',
+        fieldset: {
+          legend: {
+            text: 'Permission level',
+            classes: 'govuk-fieldset__legend--s'
+          }
+        },
+        items: [
+          {
+              value: admin.id,
+              id: "role-admin-input",
+              text: 'Administrator',
+              classes: 'govuk-label--s',
+              checked: admin.checked,
+              hint: {
+                html: '<ul class="govuk-list govuk-text-grey">
+                        <li>View transactions</li>
+                        <li>Refund payments</li>
+                        <li>Manage settings</li>
+                      </ul>'
+              }
+          },
+          {
+              value: viewAndRefund.id,
+              id: "role-view-and-refund-input",
+              text: 'View and refund',
+              classes: 'govuk-label--s',
+              checked: viewAndRefund.checked,
+              hint: {
+                html: '<ul class="govuk-list govuk-text-grey">
+                        <li>View transactions</li>
+                        <li>Refund payments</li>
+                        <li>Cannot manage settings</li>
+                      </ul>'
+              }
+          },
+          {
+              value: view.id,
+              id: "role-view-input",
+              text: 'View only',
+              classes: 'govuk-label--s',
+              checked: view.checked,
+              hint: {
+                html: '<ul class="govuk-list govuk-text-grey">
+                        <li>View transactions</li>
+                        <li>Cannot refund payments</li>
+                        <li>Cannot manage settings</li>
+                      </ul>'
+              }
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukWarningText({
+        text: 'This change affects both live and test environments',
+        iconFallbackText: 'Warning'
+      })
+    }}
+
+    {{
+      govukButton({
+        html: 'Save changes',
+        classes: 'button'
+      })
+    }}
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" id="service-name-cancel-link" href="{{teamMemberIndexLink}}">
         Cancel
       </a>
-    </div>
+    </p>
   </form>
 </div>
 {% endblock %}

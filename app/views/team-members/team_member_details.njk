@@ -1,52 +1,68 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Team members details — GOV.UK Pay
+{% block pageTitle %}
+  Team members details — GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-full">
-  <a href="{{teamMemberIndexLink}}" class="link-back">See all team members</a>
+<div class="govuk-grid-column-full">
+  {{
+    govukBackLink({
+    text: "See all team members",
+    href: teamMemberIndexLink,
+    classes: "link-back"
+    })
+  }}
 </div>
-<div class="column-two-thirds admin-list">
-  <h1 id="details-for" class="page-title">
-    <span class="heading-secondary">Team members</span>
+<div class="govuk-grid-column-two-thirds admin-list">
+  <span class="govuk-caption-l">Team members</span>
+  <h1 id="details-for" class="govuk-heading-l">
     Details for {{username}}
   </h1>
-  <table>
-    <caption class="visually-hidden">Member details</caption>
-    <tbody>
-      <tr>
-        <th>Email:</th>
-        <td colspan="2" id="email">{{email}}</td>
+
+  <table class="govuk-table">
+    <caption class="govuk-table__caption govuk-visually-hidden">Member details</caption>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Email:</th>
+        <td class="govuk-table__cell" colspan="2" id="email">{{email}}</td>
       </tr>
-      <tr>
-        <th>Permission level:</th>
-        <td id="role">{{role}}</td>
-        <td id="edit-permissions-link">
-          <a id="edit-permissions" href="{{editPermissionsLink}}">Edit permissions</a>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Permission level:</th>
+        <td class="govuk-table__cell" id="role">{{role}}</td>
+        <td class="govuk-table__cell govuk-text-align-right" id="edit-permissions-link">
+          <a class="govuk-link govuk-link--no-visited-state" id="edit-permissions" href="{{editPermissionsLink}}">Edit permissions</a>
         </td>
       </tr>
     </tbody>
   </table>
+
   {% if permissions.users_service_delete %}
-  <div class="js-confirm">
-    <p>
-      <a id="remove-team-member" href="#confirm-remove-user-dialog">Remove user</a>
-    </p>
-  </div>
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state target-to-show--toggle" id="remove-team-member" href="#confirm-remove-user-dialog">Remove user</a>
+  </p>
   <div id="confirm-remove-user-dialog" class="target-to-show">
-    <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
-      <h1 class="heading-medium error-summary-heading" id="error-summary">
+    <div class="govuk-error-summary govuk-!-margin-top-6" role="group" aria-labelledby="error-summary" tabindex="-1">
+      <h2 class="govuk-error-summary__title" id="error-summary">
         Are you sure you want to remove {{username}}?
-      </h1>
-      <div class="button-group">
-        <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
-          <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-          <input id="remove-team-member-confirm" type="submit" value="Yes, remove" class="button delete"/>
-          <a id="remove-team-member-cancel" href="#main">Cancel</a>
-        </form>
-      </div>
+      </h2>
+      <form id="remove-team-member-form" method="post" action="{{removeTeamMemberLink}}">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+        {{
+          govukButton({
+            text: "Yes, remove",
+            classes: "govuk-button--red",
+            attributes: {
+              id: "remove-team-member-confirm"
+            }
+          })
+        }}
+
+        <a class="govuk-link govuk-link--no-visited-state target-to-show--cancel" id="remove-team-member-cancel" href="#main">Cancel</a>
+      </form>
     </div>
   </div>
   {% endif %}
