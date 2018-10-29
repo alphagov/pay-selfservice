@@ -39,7 +39,7 @@ describe('Settings', () => {
       cy.title().should('eq', 'Email notifications - System Generated test - GOV.UK Pay')
       cy.url().should('include', '/email-settings-collection')
 
-      cy.get('.heading-medium').first().should('contain', 'Do you want to ask users for an email address on the card payment page?')
+      cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to ask users for an email address on the card payment page?')
 
       // Test the save button
       cy.contains('Save changes').click()
@@ -62,7 +62,7 @@ describe('Settings', () => {
       cy.get('#email-notifications-toggle-confirmation').click()
       cy.title().should('eq', 'Email notifications - System Generated test - GOV.UK Pay')
 
-      cy.get('.heading-medium').first().should('contain', 'Do you want to send payment confirmation emails?')
+      cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to send payment confirmation emails?')
 
       cy.contains('Save changes').click()
       cy.url().should('include', '/email-notifications')
@@ -84,7 +84,7 @@ describe('Settings', () => {
       cy.get('#email-notifications-toggle-refund').click()
       cy.title().should('eq', 'Email notifications - System Generated test - GOV.UK Pay')
 
-      cy.get('.heading-medium').first().should('contain', 'Do you want to send refund emails?')
+      cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to send refund emails?')
 
       cy.contains('Save changes').click()
       cy.url().should('include', '/email-notifications')
