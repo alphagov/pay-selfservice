@@ -100,7 +100,7 @@ describe('Transactions', () => {
 
       cy.get('#card-brand').click()
       filteredPartialEmail.filtering.card_brand.forEach(brand => {
-        cy.get(`#card-brand .multi-select-item[value=${brand}]`).click()
+        cy.get(`#card-brand .govuk-checkboxes__input[value=${brand}]`).click()
       })
       cy.get('#email').type(filteredPartialEmail.filtering.email)
       cy.get('#filter').click()
@@ -118,7 +118,7 @@ describe('Transactions', () => {
 
       cy.get('#state').click()
       filteredMultipleStates.filtering.payment_states.forEach(state => {
-        cy.get(`#state .multi-select-item[value='${state}']`).click()
+        cy.get(`#state .govuk-checkboxes__input[value='${state}']`).click()
       })
       cy.get('#reference').type(filteredMultipleStates.filtering.reference)
       cy.get('#fromDate').type(filteredMultipleStates.filtering.from_date_raw)
