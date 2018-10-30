@@ -23,26 +23,25 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
 <div class="govuk-grid-column-full govuk-!-margin-top-6">
   <h1 class="govuk-heading-l">Transactions</h1>
   {% include "transactions/filter.njk" %}
-  <div>
-    <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-6" id="total-results">
-      {{totalFormatted}} transactions
-      {{ filtersDescription | safe }}
-    </h3>
 
-    {% include "transactions/display_size.njk" %}
+  {% include "transactions/display_size.njk" %}
 
-    {% if permissions.transactions_download_read %}
-      {% if (hasResults) %}
-        <p class="govuk-body">
-        {% if showCsvDownload %}
-          <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state"> Download all transaction details as a CSV file </a>
-        {% else %}
-          You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search
-        {% endif %}
-        </p>
+  <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
+    {{totalFormatted}} transactions
+    {{ filtersDescription | safe }}
+  </h3>
+
+  {% if permissions.transactions_download_read %}
+    {% if (hasResults) %}
+      <p class="govuk-body">
+      {% if showCsvDownload %}
+        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"> Download all transaction details as a CSV file </a>
+      {% else %}
+        You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search
       {% endif %}
+      </p>
     {% endif %}
-  </div>
+  {% endif %}
 
   {% include "transactions/paginator.njk" %}
 

@@ -47,6 +47,9 @@ function describeFilters (filters) {
 
   const brandStates = Array.isArray(filters.brand) ? filters.brand.map(brand => brand.replace('-', ' ')) : []
   if (brandStates.length === 0 && filters.brand) {
+    if (filters.brand === 'jcb') {
+      filters.brand = 'JCB'
+    }
     description += ` with <strong class="capitalize">‘${filters.brand.replace('-', ' ')}’</strong> card brand`
   } else if (brandStates.length > 1) {
     description += ` with <strong class="capitalize">‘${brandStates.join('</strong>, <strong class="capitalize">').replace(/,([^,]*)$/, ' or$1')}’</strong> card brands`

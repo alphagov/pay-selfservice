@@ -1,0 +1,22 @@
+tr[data-follow-link]{
+  cursor: pointer;
+
+  &:hover {
+    background-color: govuk-colour("grey-4")
+  }
+}
+
+.display-size {
+  @include govuk-font($size: 19);
+  float: right;
+  margin-left: govuk-spacing(3);
+}
+
+.displaySizeForm:before {
+  content: '|';
+  margin: 0 govuk-spacing(1);
+}
+
+.capitalize {
+  text-transform: capitalize;
+}

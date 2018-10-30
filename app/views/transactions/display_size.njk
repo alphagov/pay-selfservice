@@ -1,21 +1,22 @@
   {% if hasPageSizeLinks %}
-
-  <div id="displaySize">
+  <div id="displaySize" class="display-size govuk-!-margin-top-3">
     <span>Results per page:</span>
     {% for pageSizeLink in pageSizeLinks %}
-    <form class="displaySizeForm {{pageSizeLink.type}}" method="get" action="{{pageSizeLink.search_path}}">
-      <div style="display:none">
-          <input class="state" name="state" type="text" value="{{pageSizeLink.filters.state}}"/>
-          <input class="reference" name="reference" type="text" value="{{pageSizeLink.filters.reference}}" />
-          <input class="fromDate" name="fromDate" type="text" value="{{pageSizeLink.filters.fromDate}}" />
-          <input class="toDate" name="toDate" type="text" value="{{pageSizeLink.filters.toDate}}"/>
-          <input class="page" name="page" type="text" value="1"/>
-          <input class="pageSize" name="pageSize" type="text" value="{{pageSizeLink.value}}"/>
-          <input class="fromTime" name="fromTime" type="text" value="{{pageSizeLink.filters.fromTime}}">
-          <input class="toTime" name="toTime" type="text" value="{{pageSizeLink.filters.toTime}}">
-        </div>
-        <input class="displaySize {% if pageSizeLink.active %}active{% endif %}" type="submit" value="{{pageSizeLink.name}}"/>
-    </form>
+    {% if pageSizeLink.active %}
+      {{pageSizeLink.name}}
+    {% else %}
+      <form class="displaySizeForm govuk-!-display-inline-block" method="get" action="{{pageSizeLink.search_path}}">
+        <input type="hidden" name="state" value="{{pageSizeLink.filters.state}}"/>
+        <input type="hidden" name="reference" value="{{pageSizeLink.filters.reference}}" />
+        <input type="hidden" name="fromDate" value="{{pageSizeLink.filters.fromDate}}" />
+        <input type="hidden" name="toDate" value="{{pageSizeLink.filters.toDate}}"/>
+        <input type="hidden" name="page" value="1"/>
+        <input type="hidden" name="pageSize" value="{{pageSizeLink.value}}"/>
+        <input type="hidden" name="fromTime" value="{{pageSizeLink.filters.fromTime}}">
+        <input type="hidden" name="toTime" value="{{pageSizeLink.filters.toTime}}">
+        <input class="govuk-button--as-link displaySize govuk-!-font-size-19" type="submit" value="{{pageSizeLink.name}}"/>
+      </form>
+    {% endif %}
     {% endfor %}
   </div>
   {% endif %}

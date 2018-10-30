@@ -36,7 +36,7 @@ module.exports = {
       .map(card => {
         return {
           value: card.brand,
-          text: card.label,
+          text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
           selected: card.brand === filtersResult.brand
         }
       })
