@@ -19,7 +19,7 @@ const OPEN_BUTTON_SELECTOR = '.multi-select-title'
 const CLOSE_BUTTON_SELECTOR = '.multi-select-dropdown-close-area'
 const DROPDOWN_SELECTOR = '.multi-select-dropdown'
 const SCROLL_CONTAINER_SELECTOR = '.multi-select-dropdown-inner-container'
-const ITEM_SELECTOR = '.multi-select-item'
+const ITEM_SELECTOR = '.govuk-checkboxes__input'
 const ALL_SELECTOR = `${ITEM_SELECTOR}[value=""]`
 const CURRENT_SELECTIONS = '.multi-select-current-selections'
 

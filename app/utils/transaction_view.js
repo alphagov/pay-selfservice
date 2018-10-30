@@ -33,14 +33,15 @@ module.exports = {
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
 
     connectorData.cardBrands = lodash.uniqBy(allCards.card_types, 'brand')
-      .map((card) => {
-        let value = {}
-        value.text = card.label
-        if (card.brand === filtersResult.brand) {
-          value.selected = true
+      .map(card => {
+        return {
+          value: card.brand,
+          text: card.label,
+          selected: card.brand === filtersResult.brand
         }
-        return {'key': card.brand, 'value': value}
       })
+
+    connectorData.cardBrands.unshift({value: '', text: 'All brands', selected: false})
 
     connectorData.results.forEach(element => {
       element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)

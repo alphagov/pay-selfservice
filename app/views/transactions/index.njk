@@ -1,6 +1,6 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
 
-{% block page_title %}
+{% block pageTitle %}
 Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
@@ -20,29 +20,28 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-full">
-  <h1 class="heading-large page-title">Transactions</h1>
-
+<div class="govuk-grid-column-full govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">Transactions</h1>
   {% include "transactions/filter.njk" %}
-
-
   <div>
-  <h3 class="heading-small" id="total-results">
-    {{totalFormatted}} transactions
-    {{ filtersDescription | safe }}
-  </h3>
+    <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-6" id="total-results">
+      {{totalFormatted}} transactions
+      {{ filtersDescription | safe }}
+    </h3>
 
-  {% include "transactions/display_size.njk" %}
+    {% include "transactions/display_size.njk" %}
 
-  {% if permissions.transactions_download_read %}
-    {% if (hasResults) %}
-      {% if showCsvDownload %}
-        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="push-bottom-sml"> Download all transaction details as a CSV file </a>
-      {% else %}
-        <p class="push-bottom-sml">You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search</p>
+    {% if permissions.transactions_download_read %}
+      {% if (hasResults) %}
+        <p class="govuk-body">
+        {% if showCsvDownload %}
+          <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state"> Download all transaction details as a CSV file </a>
+        {% else %}
+          You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search
+        {% endif %}
+        </p>
       {% endif %}
     {% endif %}
-  {% endif %}
   </div>
 
   {% include "transactions/paginator.njk" %}

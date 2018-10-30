@@ -1,101 +1,207 @@
-<div class="grid-row transactions-filter">
-  <form class="form" method="get" action="{{search_path}}">
-    <fieldset>
-        <div class="column-quarter reference-number">
-          <label class="form-label form-label-small" for="reference">
-            <strong>Reference number</strong>
-            <span class="form-hint">Enter full or partial number</span>
-          </label>
-          <input class="form-control large" id="reference" name="reference" type="text" value="{{filters.reference}}" autofocus />
-        </div>
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/select/macro.njk" import govukSelect %}
+{% from "components/button/macro.njk" import govukButton %}
 
-        <div class="column-quarter email">
-          <label class="form-label form-label-small" for="email">
-            <strong>Email address</strong>
-            <span class="form-hint">Enter full or partial email</span>
-          </label>
-          <input class="form-control large" id="email" name="email" type="text" value="{{filters.email}}"/>
-        </div>
-
-        <div class="column-quarter">
-          <label class="form-label form-label-small" for="cardholderName">
-            <strong>Name on card</strong>
-            <span class="form-hint">Enter full or partial name</span>
-          </label>
-          <input class="form-control large" id="cardholderName" name="cardholderName" type="text" value="{{filters.cardholderName}}" autofocus />
-        </div>
-
-      <div class="column-quarter">
-        <label class="form-label form-label-small" for="lastDigitsCardNumber">
-          <strong>Last 4 card numbers</strong>
-          <span class="form-hint">Last 4 digits of associated card</span>
-        </label>
-        <input class="form-control large" id="cardholderName" name="lastDigitsCardNumber" type="text" value="{{filters.lastDigitsCardNumber}}" autofocus />
-      </div>
-
-        <div class="column-quarter">
-          <label class="form-label form-label-small" for="card-brand">
-            <strong>Card brand</strong>
-            <span class="form-hint">Select a brand</span>
-          </label>
-          <select class="form-control large" id="card-brand" name="brand" data-enhance-multiple>
-            <option value="">All brands</option>
-            {% for cardBrand in cardBrands %}
-              <option value="{{cardBrand.key}}" {% if cardBrand.value.selected %} selected {% endif %}>{{cardBrand.value.text}}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="column-quarter">
-          <label class="form-label form-label-small" for="state">
-            <strong>Payment status</strong>
-            <span class="form-hint">Select an option</span>
-          </label>
-          <select class="form-control large" id="state" name="state" data-enhance-multiple>
-            <option value="">Any</option>
-            {% for eventState in eventStates %}
-            <option value="{{eventState.key}}" {% if eventState.value.selected %} selected {% endif %}>{{eventState.value.text}}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-      <fieldset class="column-half">
-        <legend class="form-label-small">
-          Date range
+<div class="transactions-filter govuk-grid-row">
+  <form class="govuk-clearfix" method="get" action="{{search_path}}">
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {{
+        govukInput({
+          id: 'reference',
+          name: 'reference',
+          value: filters.reference,
+          label: {
+            text: 'Reference number',
+            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+          },
+          hint: {
+            text: 'Enter full or partial number',
+            classes: 'govuk-!-font-size-14'
+          }
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {{
+        govukInput({
+          id: 'email',
+          name: 'email',
+          value: filters.email,
+          label: {
+            text: 'Email address',
+            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+          },
+          hint: {
+            text: 'Enter full or partial email',
+            classes: 'govuk-!-font-size-14'
+          }
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {{
+        govukInput({
+          id: 'cardholderName',
+          name: 'cardholderName',
+          value: filters.cardholderName,
+          label: {
+            text: 'Name on card',
+            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+          },
+          hint: {
+            text: 'Enter full or partial name',
+            classes: 'govuk-!-font-size-14'
+          }
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {{
+        govukInput({
+          id: 'lastDigitsCardNumber',
+          name: 'lastDigitsCardNumber',
+          value: filters.lastDigitsCardNumber,
+          label: {
+            text: 'Last 4 card numbers',
+            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+          },
+          hint: {
+            text: 'Last 4 digits of associated card',
+            classes: 'govuk-!-font-size-14'
+          }
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+      {{
+        govukSelect({
+          id: "card-brand",
+          name: "brand",
+          label: {
+            text: "Card brand",
+            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+          },
+          hint: {
+            text: "Select a brand",
+            classes: 'govuk-!-font-size-14'
+          },
+          attributes: {
+            'data-enhance-multiple': true
+          },
+          items: cardBrands
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+      {{
+        govukSelect({
+          id: "state",
+          name: "state",
+          label: {
+            text: "Payment status",
+            classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+          },
+          hint: {
+            text: "Select a option",
+            classes: 'govuk-!-font-size-14'
+          },
+          attributes: {
+            'data-enhance-multiple': true
+          },
+          items: eventStates
+        })
+      }}
+    </div>
+    <fieldset class="govuk-fieldset govuk-grid-one-half">
+      <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-font-size-16 govuk-!-margin-bottom-0 govuk-!-margin-left-3">
+        Date range
+      </legend>
+      <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
+        <legend class="govuk-visually-hidden">
+          From this date and time
         </legend>
-        <fieldset class="datetime-filter datetime-filter-from">
-          <legend class="visuallyhidden">
-            From this date and time
-          </legend>
-          <div class="date selector">
-            <label class="form-label" for="fromDate">Start date</label>
-            <input class="form-control large date-picker start" id="fromDate" name="fromDate" type="text" value="{{filters.fromDate}}" autocomplete="off">
-          </div>
-          <div class="time selector">
-            <label class="form-label" for="fromTime">Start time</label>
-            <input class="form-control large time-picker start" id="fromTime" name="fromTime" type="text" value="{{filters.fromTime}}" autocomplete="off">
-          </div>
-        </fieldset>
-        <fieldset class="datetime-filter datetime-filter-to">
-          <legend class="datetime-separator">
-            to<span class="visuallyhidden"> this date and time</span>
-          </legend>
-          <div class="date selector">
-            <label class="form-label" for="toDate">End date</label>
-            <input class="form-control large date-picker end" id="toDate" name="toDate" type="text" value="{{filters.toDate}}" autocomplete="off">
-          </div>
-          <div class="time selector">
-            <label class="form-label" for="toTime">End time</label>
-            <input class="form-control large time-picker end" id="toTime" name="toTime" type="text" value="{{filters.toTime}}" autocomplete="off">
-          </div>
-        </fieldset>
+        {{
+          govukInput({
+            id: 'fromDate',
+            name: 'fromDate',
+            value: filters.fromDate,
+            classes: 'date-picker start',
+            label: {
+              text: 'Start date',
+              classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+            },
+            attributes: {
+              autocomplete: 'off'
+            }
+          })
+        }}
+        {{
+          govukInput({
+            id: 'fromTime',
+            name: 'fromTime',
+            value: filters.fromTime,
+            classes: 'time-picker start',
+            label: {
+              text: 'Start time',
+              classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+            },
+            attributes: {
+              autocomplete: 'off'
+            }
+          })
+        }}
       </fieldset>
-      <div class="form-group filter-submit column-full">
-        <input class="button" type="submit" id="filter" value="Filter">
-        {% if hasFilters %}
-        <a href="{{routes.transactions.index}}" class="clear-filter"> Clear Filter </a>
-        {% endif %}
-      </div>
+      <fieldset class="govuk-fieldset datetime-filter datetime-filter-to">
+        <legend class="datetime-separator">
+          to<span class="govuk-visually-hidden"> this date and time</span>
+        </legend>
+        {{
+          govukInput({
+            id: 'toDate',
+            name: 'toDate',
+            value: filters.toDate,
+            classes: 'date-picker end',
+            label: {
+              text: 'End date',
+              classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+            },
+            attributes: {
+              autocomplete: 'off'
+            }
+          })
+        }}
+        {{
+          govukInput({
+            id: 'toTime',
+            name: 'toTime',
+            value: filters.toTime,
+            classes: 'time-picker end',
+            label: {
+              text: 'End time',
+              classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+            },
+            attributes: {
+              autocomplete: 'off'
+            }
+          })
+        }}
+      </fieldset>
     </fieldset>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {{
+        govukButton({
+          text: 'Filter',
+          classes: 'govuk-!-width-full',
+          attributes: {
+            id: "filter"
+          }
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {% if hasFilters %}
+      <a href="{{routes.transactions.index}}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear Filter</a>
+      {% endif %}
+    </div>
   </form>
 </div>

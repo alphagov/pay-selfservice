@@ -35,17 +35,22 @@ module.exports = (req, res) => {
           model.search_path = router.paths.transactions.index
           model.filtersDescription = describeFilters(filters.result)
           model.eventStates = states.allDisplayStateSelectorObjects()
-          model.eventStates.forEach(state => {
-            state.value.selected = filters.result.selectedStates && filters.result.selectedStates.includes(state.name)
+          .map(state => {
+            return {
+              value: state.key,
+              text: state.name,
+              selected: filters.result.selectedStates && filters.result.selectedStates.includes(state.name)
+            }
           })
+          model.eventStates.unshift({value: '', text: 'Any', selected: false})
 
           model.stateFiltersFriendly = model.eventStates
-            .filter(state => state.value.selected)
-            .map(state => state.value.text)
+            .filter(state => state.selected)
+            .map(state => state.text)
             .join(', ')
           if (_.has(filters.result, 'brand')) {
             model.cardBrands.forEach(brand => {
-              brand.value.selected = filters.result.brand.includes(brand.key)
+              brand.selected = filters.result.brand.includes(brand.value)
             })
           }
           response(req, res, 'transactions/index', model)
