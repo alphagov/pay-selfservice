@@ -1,0 +1,67 @@
+.transactions-filter {
+  form {
+    margin: 0 govuk-spacing(3);
+    padding: govuk-spacing(3) 0;
+    background: govuk-colour("grey-3");
+  }
+
+  .govuk-hint {
+    color: $govuk-text-colour;
+  }
+}
+
+.datetime-filter {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 govuk-spacing(3);
+
+  @include govuk-media-query(tablet) {
+    width: 50%;
+  }
+
+  .govuk-form-group {
+    float: left;
+
+    width: 50%;
+    box-sizing: border-box;
+
+    &:first-of-type {
+      padding-right: govuk-spacing(1);
+    }
+
+    &:last-of-type {
+      padding-left: govuk-spacing(1);
+    }
+  }
+}
+
+.datetime-filter-to {
+  position: relative;
+}
+
+.datetime-separator {
+  @include govuk-font($size: 16)
+  margin-bottom: govuk-spacing(2);
+
+  @include govuk-media-query(tablet) {
+    @include govuk-font($size: 14)
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+  }
+}
+
+.inputs-less-margin .govuk-form-group {
+  margin-bottom: govuk-spacing(3);
+}
+
+.inputs-less-margin .govuk-button {
+  margin-bottom: govuk-spacing(1);
+}
+
+.clear-filter {
+  position: relative;
+  top: 10px;
+}

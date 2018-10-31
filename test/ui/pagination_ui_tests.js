@@ -52,18 +52,18 @@ describe('The pagination links', function () {
     var paginationLinks = templateData.paginationLinks
 
     for (var ctr = 0; ctr < paginationLinks.length; ctr++) {
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName)
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .state')
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName)
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="state"]')
         .withAttribute('value', 'Testing2')
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .reference')
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="reference"]')
         .withAttribute('value', 'ref1')
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .fromDate')
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="fromDate"]')
         .withAttribute('value', '2015-01-11 01:01:01')
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .toDate')
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + ' [name="toDate"]')
         .withAttribute('value', '2015-01-11 01:01:01')
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .page')
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="page"]')
         .withAttribute('value', String(paginationLinks[ctr].pageNumber))
-      body.should.containSelector('.paginationForm.' + paginationLinks[ctr].pageName + ' .pageSize')
+      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="pageSize"]')
         .withAttribute('value', '100')
     }
   })
