@@ -1,6 +1,10 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/warning-text/macro.njk" import govukWarningText %}
 
-{% block page_title %}
+{% block pageTitle %}
   Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
@@ -9,57 +13,72 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-  <a href="{{routes.emailNotifications.index}}" class="link-back">Back</a>
+<div class="govuk-grid-column-two-thirds">
+  {{ govukBackLink({ text: "Back", href: routes.emailNotifications.index }) }}
 </div>
-<div class="column-two-thirds">
+<div class="govuk-grid-column-two-thirds">
   {% if not permissions.email_notification_toggle_update %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
-
   {% if permissions.email_notification_template_read %}
-
-  <h2 class="heading-medium">Do you want to send payment confirmation emails?</h2>
-   <span class="form-hint">Users will receive an email confirming their payment from GOV.UK Pay</span>
-   <form id="confirmation-email-form" method="post" action="{{routes.emailNotifications.confirmation}}">
-          <div class="form-group">
-            <fieldset>
-              <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-              <div class="multiple-choice">
-                <input id="email-confirmation-yes-input" type="radio" name="email-confirmation-enabled" value="true" {{'checked' if confirmationEnabled === true else ''}}>
-                <label for="email-confirmation-yes-input">
-                  Yes
-                </label>
+    <form id="confirmation-email-form" method="post" action="{{routes.emailNotifications.confirmation}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="email-confirmation-enabled-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h1 class="govuk-fieldset__heading">
+              Do you want to send payment confirmation emails?
+            </h1>
+          </legend>
+          <span id="email-confirmation-enabled-hint" class="govuk-hint">
+            Users will receive an email confirming their payment from GOV.UK Pay
+          </span>
+          <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="email-confirmation-yes-input" name="email-confirmation-enabled" type="radio" value="true" {{'checked' if confirmationEnabled === true else ''}} data-aria-controls="conditional-email-confirmation-yes-input">
+              <label class="govuk-label govuk-radios__label" for="email-confirmation-yes-input">
+                Yes
+              </label>
+            </div>
+            {% if (emailCollectionMode === 'OFF') or (emailCollectionMode === 'OPTIONAL') %}
+              <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-email-confirmation-yes-input">
+                {% if emailCollectionMode === 'OFF' %}
+                  {{
+                    govukWarningText({
+                      text: 'Users will not receive confirmation emails because they do not have the option to enter an email address. Change your settings to let them enter an email address.',
+                      iconFallbackText: 'Warning'
+                    })
+                  }}
+                {% elif emailCollectionMode === 'OPTIONAL' %}
+                  {{
+                    govukWarningText({
+                      text: 'Users might not receive confirmation emails because entering an email address is optional. You can change your settings to make entering an email address mandatory.',
+                      iconFallbackText: 'Warning'
+                    })
+                  }}
+                {% endif %}
               </div>
-              {% if (emailCollectionMode === 1) or (emailCollectionMode === 2) %}
-              <div class="panel panel-border-narrow" id="contact-by-email" style="margin-bottom:30px;" aria-hidden="false">
-                  <div class="notice">
-                    <i class="icon icon-important icon-top">
-                      <span class="visually-hidden">Warning</span>
-                    </i>
-                    <strong class="bold-small">
-                        Users will not receive confirmation emails because they do not have the option to enter an email address. Change your settings to let them enter an email address.
-                    </strong>
-                  </div>
-              </div>
-              {% endif %}
-              <div class="multiple-choice">
-                <input id="email-confirmation-no-input" type="radio" name="email-confirmation-enabled" value="false" {{'checked' if confirmationEnabled === false else ''}}>
-                <label for="email-confirmation-no-input">
-                  No
-                </label>
-              </div>
-            </fieldset>
+            {% endif %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="email-confirmation-no-input" name="email-confirmation-enabled" type="radio" value="false" {{'checked' if confirmationEnabled === false else ''}}>
+              <label class="govuk-label govuk-radios__label" for="email-confirmation-no-input">
+                No
+              </label>
+            </div>
           </div>
-          <div class="form-group call-to-action-group">
-            <input type="submit" class="button" value="Save changes">
-            <a id="service-name-cancel-link" href="{{routes.emailNotifications.index}}">
-                Cancel
-            </a>
-          </div>
-        </form>
-
+        </fieldset>
+      </div>
+      {{
+        govukButton({
+          text: 'Save changes'
+        })
+      }}
+      <p class="govuk-body">
+        <a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">
+          Cancel
+        </a>
+      </p>
+    </form>
   {% endif %}
-
 </div>
 {% endblock %}

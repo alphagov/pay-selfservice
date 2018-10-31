@@ -1,7 +1,9 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Turn off email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  Turn off email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -9,23 +11,23 @@ Turn off email notifications - {{currentService.name}} {{currentGatewayAccount.f
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-  <h1 class="heading-medium">
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-m govuk-!-margin-top-6">
     Are you sure you want to turn off email notifications?
   </h1>
-  <div class="text">
-      <div class="notice">
-        <i class="icon icon-important">
-          <span class="visually-hidden">Warning</span>
-        </i>
-        <strong class="bold-small">
-            Your users won’t receive payment confirmation emails from GOV.UK Pay if you do this.
-        </strong>
-      </div>
-  </div>
+  {{
+    govukWarningText({
+      text: 'Your users won’t receive payment confirmation emails from GOV.UK Pay if you do this.',
+      iconFallbackText: 'Warning'
+    })
+  }}
+
   <form method="post" action="{{routes.emailNotifications.off}}">
-      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-      <input name="email-off" type="submit" class="button push-top qa-off" value="Turn off email notifications">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukButton({
+        text: 'Turn off email notifications',
+        classes: 'qa-off'
+    }) }}
   </form>
 </div>
 {% endblock %}
