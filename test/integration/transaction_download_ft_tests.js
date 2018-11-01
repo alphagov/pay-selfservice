@@ -154,11 +154,19 @@ describe('Transaction download endpoints', function () {
           results: results
         })
       let user = userFixture.validUser({
-        username: 'thisisausername'
+        external_id: '1stUserId',
+        username: 'first_user_name'
+      }).getPlain()
+
+      let user2 = userFixture.validUser({
+        external_id: '2ndUserId',
+        username: 'second_user_name'
       }).getPlain()
 
       connectorMockResponds(200, mockJson, {refund_states: 'success'})
-      adminusersMock.get('/v1/api/users?ids=thisisauser').reply(200, [user])
+      adminusersMock.get('/v1/api/users')
+        .query({ids: '1stUserId,2ndUserId'})
+        .reply(200, [user2, user])
       request(app)
         .get(paths.transactions.download + '?refund_states=success')
         .set('Accept', 'application/json')
@@ -170,8 +178,9 @@ describe('Transaction download endpoints', function () {
           let csvContent = res.text
           let arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"')
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","thisisausername","12 May 2016","17:37:29"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","first_user_name","12 May 2016","17:37:29"')
           expect(arrayOfLines[2]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge2","","12 May 2016","17:37:29"')
+          expect(arrayOfLines[3]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge3","second_user_name","12 May 2016","17:37:29"')
           done()
         })
     })

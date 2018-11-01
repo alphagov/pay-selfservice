@@ -110,7 +110,7 @@ module.exports = {
     }
   },
   validUser: (opts = {}) => {
-    let newExternalId = '121391373c1844dd99cb3416b70785c8'
+    let newExternalId = opts.external_id || '121391373c1844dd99cb3416b70785c8'
     let newUsername = 'm87bmh'
     let defaultServiceId = opts.default_service_id || '193'
     let gatewayAccountIds = opts.gateway_account_ids || ['540']
