@@ -22,6 +22,7 @@
 
   &--red {
     background-color: $govuk-error-colour;
+    box-shadow: 0 2px 0 darken($govuk-error-colour, 25%);
 
     &:hover {
       background-color: darken($govuk-error-colour, 10%);

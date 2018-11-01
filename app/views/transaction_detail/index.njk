@@ -1,7 +1,8 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
 
-{% block page_title %}
-Transaction details {{reference}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  Transaction details {{reference}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block pageSpecificJS %}
@@ -9,31 +10,40 @@ Transaction details {{reference}} - {{currentService.name}} {{currentGatewayAcco
 {% endblock %}
 
 {% block mainContent %}
-  <div class="column-full">
-    <a href="{{routes.transactions.index}}?{{indexFilters}}" id="arrowed" class="link-back">Transactions list</a>
+  <div class="govuk-grid-column-full">
+    {% set backLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+    {{
+      govukBackLink({
+        text: 'Transactions list',
+        href: backLink | safe,
+        attributes: {
+          id: 'arrowed'
+        }
+      })
+    }}
   </div>
-  <div class="column-two-thirds">
-    <h1 class="heading-large page-title">Transaction detail</h1>
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Transaction detail</h1>
     {% include "./_details.njk" %}
 
-    <h2 class="heading-medium">Payment method</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Payment method</h2>
     {% include "./_payment.njk" %}
 
     {% if permissions.transactions_events_read %}
-      <h2 class="heading-medium">Transaction events</h2>
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">Transaction events</h2>
       {% include "./_events.njk" %}
-     {% endif %}
+    {% endif %}
   </div>
 
-  <div class="column-one-third">
+  <div class="govuk-grid-column-one-third">
     {% if refundable %}
       {% if permissions.refunds_create %}
-      <div class="refund__toggle-container {% if not flash.genericError %}active{% endif %}">
-        <a href="#refundForm" class="button refund__toggle delete">Refund payment</a>
-        <p>You can also give partial&nbsp;refunds</p>
-      </div>
-      {% include "./_refund.njk" %}
-       {% endif %}
+        <div class="refund__toggle-container {% if not flash.genericError %}active{% endif %}">
+          <a href="#refundForm" class="govuk-button govuk-button--red refund__toggle delete">Refund payment</a>
+          <p class="govuk-body">You can also give partial&nbsp;refunds</p>
+        </div>
+        {% include "./_refund.njk" %}
+     {% endif %}
     {% endif %}
   </div>
 {% endblock %}
