@@ -28,13 +28,13 @@ module.exports = () => {
     if (!confirmation) {
       confirmation = document.createElement('div')
       confirmation.innerHTML = `
-      <div id="${confirmationId}" class="form-group panel panel-border-wide input-confirm">
-        <h3 class="heading-small">${input.dataset.confirmationTitle}</h3>
-        <p class="">
+      <div id="${confirmationId}" class="govuk-inset-text input-confirm">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">${input.dataset.confirmationTitle}</h3>
+        <p class="govuk-body">
           ${input.dataset.confirmationLabel}<span class="input-confirmation"></span>
         </p>
       </div>`
-      input.closest('.form-group').after(confirmation)
+      input.closest('.govuk-form-group').after(confirmation)
     }
 
     if (value === '') {
