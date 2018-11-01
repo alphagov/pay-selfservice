@@ -1,57 +1,51 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-       <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
-      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% set createLink = true %}
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
-  <h1 class="page-title">The website address is already taken</h1>
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">The website address is already taken</h1>
 
-  <form action="{{ nextPage }}" class="form" method="post" data-validate>
+  <form action="{{ routes.paymentLinks.webAddress }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group{% if flash.genericError %} error{% endif %}">
-      <label class="form-label-bold" for="payment-name-path">
+
+    <div class="govuk-form-group {% if flash.genericError %}govuk-form-group--error{% endif %}">
+      <label class="govuk-label govuk-label--s" for="payment-name-path">
         Please change the website address
-        <span class="form-hint">
-          This will not change the title
-        </span>
-        <span class="create-payment-link-url">
-          {{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/
-        </span>
-        {% if flash.genericError %}
-        <span class="error-message">
+      </label>
+      <span id="payment-name-path-hint" class="govuk-hint">
+        This will not change the title<br>
+      </span>
+      <span class="govuk-hint govuk-text-black">
+        {{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/
+      </span>
+      {% if flash.genericError %}
+        <span id="payment-name-path-error" class="govuk-error-message">
           The website address is already taken
         </span>
-        {% endif %}
-      </label>
-      <input
-        class="form-control"
-        id="payment-name-path"
-        name="payment-name-path"
-        type="text"
-        value="{{ productNamePath }}"
-        autofocus
-        data-validate
-        data-slugify
-      />
-      <p class="create-payment-link-read-more"><a href="https://www.gov.uk/guidance/content-design/url-standards-for-gov-uk">Get guidance on writing a web address (URL)</a></p>
+      {% endif %}
+      <input class="govuk-input govuk-!-width-one-half {% if flash.genericError %}govuk-input--error{% endif %}" id="payment-name-path" name="payment-name-path" type="text" value="{{productNamePath}}" aria-describedby="payment-name-path-hint" autofocus="true" data-validate="true" data-slugify="true">
+
+      <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-3"><a class="govuk-link" href="https://www.gov.uk/guidance/content-design/url-standards-for-gov-uk">Get guidance on writing a web address (URL)</a></p>
     </div>
-    <div class="form-group">
-      <button class="button" type="submit">Continue</button>
-    </div>
-    <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+
+    {{
+      govukButton({
+        text: 'Continue',
+        classes: 'button'
+      })
+    }}
+
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
 </section>
 {% endblock %}
