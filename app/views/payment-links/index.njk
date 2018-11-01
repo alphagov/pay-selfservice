@@ -1,55 +1,63 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/details/macro.njk" import govukDetails %}
 
-{% block page_title %}
-Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-       <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
-      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% set createLink = true %}
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
-  <h1 class="page-title">Create a payment link</h1>
-  <p>You can create a payment link so that users can make online payments to your service. Even if you don’t have a digital service, GOV.UK Pay can still take payments for you.</p>
-  <p>It’s quick and easy to create a payment link and you don’t need any technical knowledge.</p>
-  <p>The same payment link can be used by all users of your service.</p>
-  <a id="create-payment-link" class="button" href="{{nextPage}}">Create a payment link</a>
-  <details role="group" class="create-payment-link-details">
-    <summary role="button" aria-controls="details-content" aria-expanded="false"><span class="summary">See an example</span></summary>
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">Create a payment link</h1>
+  <p class="govuk-body">You can create a payment link so that users can make online payments to your service. Even if you don’t have a digital service, GOV.UK Pay can still take payments for you.</p>
+  <p class="govuk-body">It’s quick and easy to create a payment link and you don’t need any technical knowledge.</p>
+  <p class="govuk-body">The same payment link can be used by all users of your service.</p>
+  {{
+    govukButton({
+      text: "Create a payment link",
+      href: routes.paymentLinks.information,
+      attributes: {
+        id: "create-payment-link"
+      }
+    })
+  }}
 
-    <div class="panel panel-border-narrow" id="details-content" aria-hidden="true">
-      <ol class="list list-number">
-        <li class="create-payment-link-list">
-          <h4 class="heading-small">A user copies the payment link and enters it in a web browser.</h4>
-          <p>The url will be created from your service name. For example https://payment.service.gov.uk/pay/fishing-permit</p>
-        </li>
-        <li class="create-payment-link-list">
-          <h4 class="heading-small">They arrive at the start page, which tells them what they’re paying for. You choose the wording that goes here.</h4>
-          <p>You can choose to use a unique payment reference number or we can create one for you.</p>
-          <img class="create-payment-link-screenshot" src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
-        </li>
-        <li class="create-payment-link-list">
-          <h4 class="heading-small">They enter the amount they need to pay, or proceed with a set amount you’ve chosen.</h4>
-          <img class="create-payment-link-screenshot" src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
-        </li>
-        <li class="create-payment-link-list">
-          <h4 class="heading-small">They enter their payment information and make the payment.</h4>
-          <img class="create-payment-link-screenshot" src="/public/images/adhoc-3-start.svg" alt="Screenshot of payment information page">
-        </li>
-        <li class="create-payment-link-list">
-          <h4 class="heading-small">They receive a confirmation of successful payment. This is also emailed to them with a payment reference number.</h4>
-          <img class="create-payment-link-screenshot" src="/public/images/adhoc-4-confirm.svg" alt="Screenshot of confirmation page">
-        </li>
-      </ol>
-    </div>
-  </details>
+  {% set example %}
+    <ol>
+      <li>
+        <h4 class="govuk-!-margin-bottom-1">A user copies the payment link and enters it in a web browser.</h4>
+        <p>The url will be created from your service name. For example https://payment.service.gov.uk/pay/fishing-permit</p>
+      </li>
+      <li>
+        <h4 class="govuk-!-margin-bottom-1">They arrive at the start page, which tells them what they’re paying for. You choose the wording that goes here.</h4>
+        <p>You can choose to use a unique payment reference number or we can create one for you.</p>
+        <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
+      </li>
+      <li>
+        <h4>They enter the amount they need to pay, or proceed with a set amount you’ve chosen.</h4>
+        <img src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
+      </li>
+      <li>
+        <h4>They enter their payment information and make the payment.</h4>
+        <img src="/public/images/adhoc-3-start.svg" alt="Screenshot of payment information page">
+      </li>
+      <li>
+        <h4>They receive a confirmation of successful payment. This is also emailed to them with a payment reference number.</h4>
+        <img src="/public/images/adhoc-4-confirm.svg" alt="Screenshot of confirmation page">
+      </li>
+    </ol>
+  {% endset %}
+  {{
+    govukDetails({
+      summaryText: "See an example",
+      html: example
+    })
+  }}
+
 </section>
 {% endblock %}
