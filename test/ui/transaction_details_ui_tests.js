@@ -1,19 +1,19 @@
 'use strict'
 
+// NPM dependencies
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-
-let path = require('path')
-let cheerio = require('cheerio')
+const path = require('path')
+const cheerio = require('cheerio')
 chai.should()
 chai.use(chaiAsPromised)
 
-require('../test_helpers/html_assertions.js')
-let renderTemplate = require(path.join(__dirname, '/../test_helpers/test_renderer.js')).render
+// Local dependencies
+const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
 
-describe('The transaction details view', function () {
-  it('should render transaction details when payment does not have card details', function () {
-    let templateData = {
+describe('The transaction details view', () => {
+  it('should render transaction details when payment does not have card details', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'indexFilters': 'reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=',
@@ -71,10 +71,10 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
-    let $ = cheerio.load(body)
+    const body = renderTemplate('transaction_detail/index', templateData)
+    const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
-    $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
+    $('.govuk-back-link').attr('href').should.equal('/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
     $('#email').html().should.equal('alice.111@mail.fake')
@@ -98,8 +98,8 @@ describe('The transaction details view', function () {
     })
   })
 
-  it('should render transaction details when payment is not refundable', function () {
-    let templateData = {
+  it('should render transaction details when payment is not refundable', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'indexFilters': 'reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=',
@@ -177,10 +177,10 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
-    let $ = cheerio.load(body)
+    const body = renderTemplate('transaction_detail/index', templateData)
+    const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
-    $('#arrowed').attr('href').should.equal('?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
+    $('.govuk-back-link').attr('href').should.equal('/transactions?reference=&email=&state=&fromDate=&fromTime=&toDate=&toTime=')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
     $('#email').html().should.equal('alice.111@mail.fake')
@@ -204,8 +204,8 @@ describe('The transaction details view', function () {
     })
   })
 
-  it('should render transaction details when payment has been refunded', function () {
-    let templateData = {
+  it('should render transaction details when payment has been refunded', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'amount': '£10.00',
@@ -293,8 +293,8 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
-    let $ = cheerio.load(body)
+    const body = renderTemplate('transaction_detail/index', templateData)
+    const $ = cheerio.load(body)
     body.should.not.containSelector('.refund__toggle-container')
     $('#reference').html().should.equal('&lt;123412341234&gt; &amp;')
     $('#description').html().should.equal('First ever')
@@ -319,8 +319,8 @@ describe('The transaction details view', function () {
     })
   })
 
-  it('should not render transaction amount if no permission', function () {
-    let templateData = {
+  it('should not render transaction amount if no permission', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'amount': '£10.00',
@@ -395,7 +395,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction_detail/index', templateData)
     body.should.not.containSelector('#amount')
     templateData.events.forEach(function (transactionData, ix) {
       body.should.containSelector('table.transaction-events')
@@ -406,8 +406,8 @@ describe('The transaction details view', function () {
     })
   })
 
-  it('should not render transaction events if no permission', function () {
-    let templateData = {
+  it('should not render transaction events if no permission', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'amount': '£10.00',
@@ -455,13 +455,13 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('table.transaction-events')
   })
 
-  it('should not render transaction description if no permission', function () {
-    let templateData = {
+  it('should not render transaction description if no permission', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'amount': '£10.00',
@@ -501,13 +501,13 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('#description')
   })
 
-  it('should not render transaction card brand if no permission', function () {
-    let templateData = {
+  it('should not render transaction card brand if no permission', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'amount': '£10.00',
@@ -547,13 +547,13 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('#brand')
   })
 
-  it('should not render transaction email if no permission', function () {
-    let templateData = {
+  it('should not render transaction email if no permission', () => {
+    const templateData = {
       'reference': '<123412341234> &',
       'email': 'alice.111@mail.fake',
       'amount': '£10.00',
@@ -593,7 +593,7 @@ describe('The transaction details view', function () {
       }
     }
 
-    let body = renderTemplate('transaction_detail/index', templateData)
+    const body = renderTemplate('transaction_detail/index', templateData)
 
     body.should.not.containSelector('#email')
   })
