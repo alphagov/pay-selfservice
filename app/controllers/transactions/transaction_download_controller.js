@@ -30,8 +30,10 @@ module.exports = (req, res) => {
       } else {
         return userService.findMultipleByExternalIds(userIds, correlationId)
           .then(users => {
-            const usersMap = userIds.reduce((map, userId, index) => {
-              map[userId] = users[index].username
+            const usersMap = userIds.reduce((map, userId) => {
+              map[userId] = users.find(user => {
+                return user.externalId === userId
+              }).username
               return map
             }, {})
             const results = json.results
