@@ -51,7 +51,7 @@ describe('Transactions details page', () => {
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
         aSmartpayCharge.reference)
       // Status
-      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
         capitalise(aSmartpayCharge.state.status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
@@ -104,7 +104,7 @@ describe('Transactions details page', () => {
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
         chargeWithDelayedCapture.reference)
       // Status
-      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
         capitalise(chargeWithDelayedCapture.state.status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
