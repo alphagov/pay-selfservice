@@ -1,51 +1,84 @@
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
+
 <form id="refundForm" action="/transactions/{{charge_id}}/refund" method="post" class="refund__form {% if flash.genericError %}active{% endif %}">
   <input id="full-amount" type="hidden" name="full-amount" value="{{ net_amount }}" >
   <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
-  <div class="form-group">
-    <fieldset>
-      <legend>
-        <h2 class="heading-medium">Refund payment</h2>
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h2 class="govuk-fieldset__heading">Refund payment</h2>
       </legend>
 
+      <div class="govuk-radios govuk-radios--conditional" data-module="radios">
       {% if refunded %}
-        <div class="multiple-choice">
-          <input id="full" type="radio" name="refund-type" value="full" checked="checked">
-          <label class="block-label" for="full">Remaining amount
-            <span class="form-hint">Refund the remaining {{ net_amount_display }} ({{ refunded_amount }} has already been refunded)</span>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="full" name="refund-type" type="radio" value="full" checked>
+          <label class="govuk-label govuk-radios__label" for="where-do-you-live-1">
+            Remaining amount
           </label>
+          <span class="govuk-hint govuk-radios__hint">
+            Refund the remaining {{ net_amount_display }} ({{ refunded_amount }} has already been refunded)
+          </span>
         </div>
       {% else %}
-        <div class="multiple-choice">
-          <input id="full" type="radio" name="refund-type" value="full" checked="checked">
-          <label class="block-label" for="full">Full refund
-            <span class="form-hint">Refund the full amount of {{ net_amount_display }}{% if corporate_card_surcharge %} (including a card fee of {{corporate_card_surcharge}}){% endif %}</span>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="full" name="refund-type" type="radio" value="full" checked>
+          <label class="govuk-label govuk-radios__label" for="where-do-you-live-1">
+            Full refund
           </label>
+          <span class="govuk-hint govuk-radios__hint govuk-!-font-size-16">
+            Refund the full amount of {{ net_amount_display }}{% if corporate_card_surcharge %} (including a card fee of {{corporate_card_surcharge}}){% endif %}
+          </span>
         </div>
       {% endif %}
 
-      <div class="multiple-choice">
-        <input id="partial" type="radio" name="refund-type" value="partial">
-        <label class="block-label" for="partial">Partial refund
-          <span class="form-hint">Refund a partial amount</span>
-        </label>
-      </div>
-      <div class="panel panel-border-wide refund__amount">
-        <div class="currency-input">
-          <label class="form-label" for="refund-amount">
-            Refund amount
-            <span class="visually-hidden">in £</span>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="partial" name="refund-type" type="radio" value="partial" data-aria-controls="conditional-partial">
+          <label class="govuk-label govuk-radios__label" for="partial">
+            Partial refund
           </label>
-          <div class="currency-input__inner">
-            <span class="currency-input__inner__unit">£</span>
-            <input class="form-control" aria-label="Enter amount in pounds" name="refund-amount" data-non-numeric type="text" id="refund-amount" pattern="[0-9]\d*(\.\d+)?">
+          <span class="govuk-hint govuk-radios__hint govuk-!-font-size-16">
+            Refund a partial amount
+          </span>
+        </div>
+        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-partial">
+          <div class="currency-input govuk-form-group">
+            <label class="govuk-label" for="refund-amount">
+              Refund amount
+              <span class="govuk-visually-hidden">in &pound;</span>
+            </label>
+            <div class="currency-input__inner">
+              <span class="currency-input__inner__unit">&pound;</span>
+              <input
+                class="govuk-input govuk-input--width-10"
+                aria-label="Enter amount in pounds"
+                name="refund-amount"
+                autofocus
+                data-non-numeric
+                type="text"
+                id="refund-amount"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <input type="submit" value="Refund payment" class="button refund__submit-button delete" />
-      <a href="#" class="button-link refund__cancel-button">cancel</a>
-    </div>
-  </fieldset>
+
+      <div class="govuk-form-group govuk-!-margin-top-6">
+        {{
+          govukButton({
+            text: 'Refund payment',
+            classes: 'govuk-button--red refund__submit-button',
+            attributes: {
+              id: 'refund-button'
+            }
+          })
+        }}
+        <p class="govuk-body govuk-!-display-inline">
+          <a href="#" class="govuk-button--as-link govuk-!-margin-left-3 refund__cancel-button">cancel</a>
+        </p>
+      </div>
+    </fieldset>
+  </div>
 </form>

@@ -48,43 +48,43 @@ describe('Transactions details page', () => {
       // Ensure page details match up
 
       // Reference number
-      cy.get('.transaction-details tbody').find('tr').first().find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
         aSmartpayCharge.reference)
       // Status
-      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('have.text',
         capitalise(aSmartpayCharge.state.status))
       // Amount
-      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
         convertAmounts(aSmartpayCharge.amount))
       // Refunded amount
-      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
         convertAmounts(aSmartpayChargeDetails.refund_summary.amount_submitted))
       // Date created
-      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').eq(1).should('contain',
+      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
         formatDate(new Date(aSmartpayChargeDetails.charge_events[0].updated)))
       // Provider
-      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
         capitalise(gatewayAccount.name))
       // Provider ID
-      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
         aSmartpayCharge.gateway_transaction_id)
       // GOVUK Payment ID
-      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
         aSmartpayCharge.charge_id)
       // Payment method
-      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
         aSmartpayCharge.card_details.card_brand)
       // Name on card
-      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
         aSmartpayCharge.card_details.cardholder_name)
       // Card number
-      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
         `**** **** **** ${aSmartpayCharge.card_details.last_digits_card_number}`)
       // Card expiry date
-      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
         aSmartpayCharge.card_details.expiry_date)
       // Email
-      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
         aSmartpayCharge.email)
       cy.get('#delayed-capture').should('not.exist')
     })
@@ -101,46 +101,46 @@ describe('Transactions details page', () => {
       // Ensure page details match up
 
       // Reference number
-      cy.get('.transaction-details tbody').find('tr').first().find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
         chargeWithDelayedCapture.reference)
       // Status
-      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('have.text',
         capitalise(chargeWithDelayedCapture.state.status))
       // Amount
-      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
         convertAmounts(chargeWithDelayedCapture.amount))
       // Refunded amount
-      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
         convertAmounts(chargeDetails.refund_summary.amount_submitted))
       // Date created
-      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').eq(1).should('contain',
+      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
         formatDate(new Date(chargeDetails.charge_events[0].updated)))
       // Provider
-      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
         capitalise(gatewayAccount.name))
       // Provider ID
-      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
         chargeWithDelayedCapture.gateway_transaction_id)
       // GOVUK Payment ID
-      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
         chargeWithDelayedCapture.charge_id)
       // Delayed capture
-      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
         'On')
       // Payment method
-      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
         chargeWithDelayedCapture.card_details.card_brand)
       // Name on card
-      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
         chargeWithDelayedCapture.card_details.cardholder_name)
       // Card number
-      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
         `**** **** **** ${chargeWithDelayedCapture.card_details.last_digits_card_number}`)
       // Card expiry date
-      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
         chargeWithDelayedCapture.card_details.expiry_date)
       // Email
-      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').eq(1).should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').first().should('have.text',
         chargeWithDelayedCapture.email)
     })
 
@@ -172,7 +172,7 @@ describe('Transactions details page', () => {
       cy.get('#refund-amount').type(aSmartpayCharge.amount + 1)
 
       // Click the refund submit button
-      cy.get('.refund__submit-button').click()
+      cy.get('#refund-button').click()
 
       // Ensure the flash container is showing
       cy.get('.flash-container').should('be.visible')
@@ -197,7 +197,7 @@ describe('Transactions details page', () => {
       cy.get('#refund-amount').type(aFailedRefundCharge.amount / 100)
 
       // Click the refund submit button
-      cy.get('.refund__submit-button').click()
+      cy.get('#refund-button').click()
     })
 
     it('should display full refund amount with corporate card surcharge when there is a corporate card surcharge', () => {
@@ -208,7 +208,7 @@ describe('Transactions details page', () => {
       cy.get('.refund__toggle').click()
 
       // Assert refund message
-      cy.get('label[for=full] > span').should('have.text', `Refund the full amount of ${convertAmounts(chargeDetails.refund_summary.amount_available)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(chargeDetails.refund_summary.amount_available)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
     })
 
     it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
@@ -218,7 +218,7 @@ describe('Transactions details page', () => {
       cy.get('.refund__toggle').click()
 
       // Assert refund message
-      cy.get('label[for=full] > span').should('have.text', `Refund the full amount of ${convertAmounts(aSmartpayChargeDetails.refund_summary.amount_available)}`)
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(aSmartpayChargeDetails.refund_summary.amount_available)}`)
     })
   })
 })

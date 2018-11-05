@@ -1,0 +1,18 @@
+.refund {
+
+  &__toggle-container {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+
+  &__form {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+}

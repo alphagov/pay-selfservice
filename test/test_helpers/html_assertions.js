@@ -1,6 +1,11 @@
+'use strict'
+
+// NPM dependencies
 const cheerio = require('cheerio')
 const chai = require('chai')
 const nunjucks = require('nunjucks')
+
+// Local dependencies
 const router = require('../../app/routes.js')
 const nunjucksFilters = require('../../app/utils/nunjucks-filters')
 
@@ -19,14 +24,13 @@ for (let name in nunjucksFilters) {
   environment.addFilter(name, filter)
 }
 
-function render (templateName, templateData) {
-  const pathToTemplate = templateName + '.njk'
+const render = (templateName, templateData) => {
   templateData.routes = router.paths
-  return environment.render(pathToTemplate, templateData)
+  return environment.render(`${templateName}.njk`, templateData)
 }
 
 module.exports = {
-  render: render
+  render
 }
 
 chai.use(function (_chai, utils) {
@@ -39,8 +43,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('containSelector', function (selector) {
     utils.flag(this, 'rawHtml', this._obj)
-    let $ = cheerio.load(this._obj)
-    let result = $(selector)
+    const $ = cheerio.load(this._obj)
+    const result = $(selector)
     this.assert(result.length > 0,
       "Expected #{this} to contain '" + selector + "'",
       "Did not expect #{this} to contain '" + selector + "'"
@@ -51,8 +55,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('containNoSelector', function (selector) {
     utils.flag(this, 'rawHtml', this._obj)
-    let $ = cheerio.load(this._obj)
-    let result = $(selector)
+    const $ = cheerio.load(this._obj)
+    const result = $(selector)
     this.assert(result.length === 0,
       "Expected #{this} to not contain '" + selector + "'",
       "Expect #{this} to contain '" + selector + "'"
@@ -61,8 +65,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('containNoSelectorWithText', function (selector, text) {
     utils.flag(this, 'rawHtml', this._obj)
-    let $ = cheerio.load(this._obj)
-    let result = $(selector)
+    const $ = cheerio.load(this._obj)
+    const result = $(selector)
     this.assert(result.text().indexOf(text) === -1,
       "Expected #{result} to not contain '" + text + "'",
       "Expect #{result} to contain '" + text + "'"
@@ -70,7 +74,7 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withText', function (msg) {
-    let actual = this._obj.text().trim()
+    const actual = this._obj.text().trim()
     this.assert(actual.indexOf(msg) > -1,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
@@ -80,7 +84,7 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withExactText', function (msg) {
-    let actual = this._obj.text().trim()
+    const actual = this._obj.text().trim()
     this.assert(actual === msg,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
@@ -90,7 +94,7 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withOnlyText', function (msg) {
-    let actual = this._obj.contents().filter(function () { return this.nodeType === 3 }).text()
+    const actual = this._obj.contents().filter(function () { return this.nodeType === 3 }).text()
     this.assert(actual.trim() === msg,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
@@ -135,13 +139,13 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withALinkTo', function (url) {
-    let link = this._obj.find('a')
+    const link = this._obj.find('a')
     this.assert(link.length > 0, 'Expected #{act} to contain a link')
     this.assert(link.attr('href') === url, 'Expected ' + link.attr('href') + ' to match ' + url)
   })
 
   chai.Assertion.addMethod('withNoLink', function () {
-    let link = this._obj.find('a')
+    const link = this._obj.find('a')
     this.assert(link.length === 0, 'Expected #{act} to not contain a link')
   })
 
@@ -156,35 +160,35 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withLabel', function (labelText) {
-    let inputId = utils.flag(this, 'inputId')
-    let subAssertion = new chai.Assertion(utils.flag(this, 'rawHtml'))
+    const inputId = utils.flag(this, 'inputId')
+    const subAssertion = new chai.Assertion(utils.flag(this, 'rawHtml'))
     subAssertion.containSelector('label[for=' + inputId + ']').withText(labelText)
   })
 
   chai.Assertion.addMethod('havingRowAt', function (rowIndex) {
-    let actualRow = this._obj.find('tbody > tr:nth-child(' + rowIndex + ')')
+    const actualRow = this._obj.find('tbody > tr:nth-child(' + rowIndex + ')')
     this.assert(actualRow.length > 0, "Expected a row at index '" + rowIndex + "'")
     this._obj = actualRow
   })
 
   chai.Assertion.addMethod('havingItemAt', function (itemIndex) {
-    let actualItem = this._obj.find('ul li:nth-child(' + itemIndex + ')')
+    const actualItem = this._obj.find('ul li:nth-child(' + itemIndex + ')')
     this.assert(actualItem.length > 0, "Expected a item at index '" + itemIndex + "'")
     this._obj = actualItem
   })
 
   chai.Assertion.addMethod('havingNumberOfRows', function (expectedNumberOfRows) {
-    let rows = this._obj.find('tbody tr')
+    const rows = this._obj.find('tbody tr')
     this.assert(rows.length === expectedNumberOfRows, "Expected number of rows to be '" + expectedNumberOfRows + "' but found '" + rows.length + "'")
   })
 
   chai.Assertion.addMethod('havingNumberOfItems', function (expectedNumberOfItems) {
-    let items = this._obj.find('li')
+    const items = this._obj.find('li')
     this.assert(items.length === expectedNumberOfItems, "Expected number of items to be '" + expectedNumberOfItems + "' but found '" + items.length + "'")
   })
 
   chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {
-    let actualValue = this._obj.find('tr > :nth-child(' + colIndex + ')').text().trim()
+    const actualValue = this._obj.find('tr > :nth-child(' + colIndex + ')').text().trim()
     this.assert(actualValue === expectedValue.toString(),
       "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
       expectedValue, actualValue
