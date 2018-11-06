@@ -1,66 +1,105 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% extends "../layout-new.njk" %}
+
+{% block pageTitle %}
+  Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-       <li class="active"><a href="{{ returnToStart }}">Create a payment link</a></li>
-      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% set createLink = true %}
+  {% include "./_nav.njk" %} 
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
-  <h1 class="page-title">Is the payment for a fixed amount?</h1>
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
   <form action="{{ nextPage }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <div class="form-group{% if flash.genericError %} error{% endif %}">
-      {% if flash.errorType === 'paymentAmountType' %}
-      <span class="error-message">
-        Please choose an option
-      </span>
-      {% endif %}
-      <fieldset data-module="show-hide-content" id="fixed-or-variable">
-        <div class="multiple-choice" data-target="fixed-amount">
-          <input id="amount-type-fixed" type="radio" name="amount-type-group" value="fixed" {% if paymentAmountType === 'fixed' %}checked{% endif %}>
-          <label for="amount-type-fixed">Yes</label>
-        </div>
-        <div class="panel panel-border-wide {% if paymentAmountType === 'fixed' %}{% elif flash.genericError %}{% else %}js-hidden{% endif %}" id="fixed-amount">
-          <label class="form-label" for="contact-email">
-            Enter the amount
-            <span class="visually-hidden">in £</span>
-            {% if flash.errorType === 'paymentAmountFormat' %}
-            <span class="error-message">
-              Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
-            </span>
-            {% endif %}
-          </label>
-         <div class="currency-input__inner">
-           <span class="currency-input__inner__unit">£</span>
-           <input class="form-control form-control-1-4" aria-label="Enter amount in pounds" name="payment-amount" data-non-numeric="" type="text" id="payment-amount" value="{{ paymentLinkAmount }}" {% if paymentAmountType === 'fixed' %}autofocus{% endif %}>
-         </div>
-        </div>
 
-        <div class="multiple-choice">
-          <input id="amount-type-variable" type="radio" name="amount-type-group" value="variable" {% if paymentAmountType === 'variable' %}checked{% endif %}>
-          <label for="amount-type-variable">No, the user can choose the amount</label>
+    {% set noSelectionError = false %}
+    {% if flash.errorType[0] === "paymentAmountType" %}
+    {% set noSelectionError = {
+        text: "Please choose an option"
+    } %}
+    {% endif %}
+
+    {% set variableHTML %}
+      <div class="currency-input govuk-form-group{% if flash.errorType[0] === 'paymentAmountFormat' %} govuk-form-group--error{% endif %}">
+        <label class="govuk-label" for="payment-amount">
+          Enter the amount
+          <span class="govuk-visually-hidden">in &pound;</span>
+          {% if flash.errorType[0] === "paymentAmountFormat" %}
+          <span class="govuk-error-message">
+            Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
+          </span>
+          {% endif %}
+        </label>
+        <div class="currency-input__inner">
+          <span class="currency-input__inner__unit">&pound;</span>
+          <input
+            class="govuk-input govuk-input--width-10{% if flash.errorType[0] === 'paymentAmountFormat' %} govuk-input--error{% endif %}"
+            aria-label="Enter amount in pounds"
+            name="payment-amount"
+            autofocus
+            data-non-numeric
+            type="text"
+            id="payment-amount"
+            value="{{ paymentLinkAmount | penceToPounds }}"
+            data-trim
+          />
         </div>
-      </fieldset>
-    </div>
-    <div class="form-group">
-      <button class="button" type="submit">Continue</button>
-    </div>
-    <p><a class="cancel" href="{{ returnToStart }}">Cancel</a></p>
+      </div>
+    {% endset %}
+
+    {{
+      govukRadios({
+        idPrefix: "amount-type-group",
+        name: "amount-type-group",
+        fieldset: {
+            legend: {
+                text: "Is the payment for a fixed amount?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+            }
+        },
+        errorMessage: noSelectionError,
+        items: [
+          {
+              value: "fixed",
+              text: "Yes",
+              checked: paymentAmountType === "fixed" or flash.errorType[0] === "paymentAmountFormat",
+              attributes: {
+                id: "amount-type-fixed"
+              },
+              conditional: {
+                html: variableHTML
+              }
+          },
+          {
+              value: "variable",
+              text: "No, the user can choose the amount",
+              checked: paymentAmountType === "variable",
+              attributes: {
+                id: "amount-type-variable"
+              }
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue"
+      })
+    }}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
-  <div>
-    <h3 class="heading-small">Example of what the user will see</h3>
-    <img class="create-payment-link-screenshot" src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
+  <div class="govuk-!-margin-top-9">
+    <h3 class="govuk-heading-s">Example of what the user will see</h3>
+    <img src="/public/images/adhoc-2-amount.svg" alt="Screenshot of both possible payment link amount pages">
   </div>
 </section>
 {% endblock %}
