@@ -1,80 +1,128 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-       <li class="active"><a href="{{ routes.paymentLinks.start }}">Create a payment link</a></li>
-      <li><a href="{{ routes.paymentLinks.manage }}">Manage payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% set createLink = true %}
+  {% include "./_nav.njk" %} 
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
   <form action="{{ routes.paymentLinks.reference }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
     {% endif %}
-    <div class="form-group{% if flash.errorType[0] === 'paymentReferenceType' %} choose-an-option-error{% endif %}">
-      <fieldset data-module="show-hide-content" id="standard-or-custom-ref">
-        <legend>
-          <h1 class="page-title"> Would you like us to create a payment reference number for your users?</h1>
-          {% if flash.errorType[0] === 'paymentReferenceType' %}
-          <span class="error-message">
-            Please choose an option
-          </span>
-          {% endif %}
-        </legend>
-        <div class="multiple-choice">
-          <input id="reference-type-standard" type="radio" name="reference-type-group" value="standard" {% if paymentReferenceType === 'standard' %}checked{% endif %}>
-          <label for="reference-type-standard">Yes, create a unique payment reference number for my users</label>
-        </div>
-        <div class="multiple-choice" data-target="custom-reference">
-          <input id="reference-type-custom" type="radio" name="reference-type-group" value="custom" {% if paymentReferenceType === 'custom' %}checked{% elif flash.errorType[0] === 'label' %}checked{% endif %}>
-          <label for="reference-type-custom">No, I would like to use my own</label>
-        </div>
-        <div class="panel panel-border-wide {% if paymentReferenceType === 'custom' %}{% elif flash.errorType[0] === 'label' %}{% else %}js-hidden{% endif %}" id="custom-reference">
-        <div class="form-group {% if flash.errorType[0] === 'label' %}error{% endif %}">
-          <label class="form-label-bold" for="reference-label">
-            Name of your payment reference number
-            <span class="form-hint">
-              Choose the name of what you would like to collect from your users. For example, ‘Reference number’ or ‘Invoice number’.
-            </span>
-            {% if flash.errorType[0] === 'label' %}
-            <span class="error-message">
-              Reference number cannot be blank
-            </span>
-            {% endif %}
-          </label>
-          <input class="form-control" id="reference-label" name="reference-label" type="text" value="{{paymentReferenceLabel}}" data-validate="isNaxsiSafe">
-        </div>
-        <div class="form-group">
-          <label class="form-label-bold" for="reference-hint-text">
-            Hint text (optional)
-            <span class="form-hint">
-            Give your users more information. For example, you could tell them where to find the invoice number.
-            </span>
-          </label>
-          <input class="form-control" name="reference-hint-text" id="reference-hint-text" maxlength="255" data-validate="isFieldGreaterThanMaxLengthChars isNaxsiSafe" data-validate-max-length="255" value="{{paymentReferenceHint}}">
-          <p class="grey">255 characters</p>
-        </div>
-      </fieldset>
-    </div>
-    <div class="form-group">
-      <button class="button" type="submit">Continue</button>
-    </div>
-    <p><a class="cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
+
+    {% set noSelectionError = false %}
+    {% if flash.errorType[0] === "paymentReferenceType" %}
+    {% set noSelectionError = {
+        text: "Please choose an option"
+    } %}
+    {% endif %}
+
+    {% set blankReferenceLabelError = false %}
+    {% if flash.errorType[0] === "label" %}
+    {% set blankReferenceLabelError = {
+        text: "Reference number cannot be blank"
+    } %}
+    {% endif %}
+
+    {% set customReferenceHTML %}
+      {{
+        govukInput({
+          id: "reference-label",
+          name: "reference-label",
+          value: paymentReferenceLabel,
+          errorMessage: blankReferenceLabelError,
+          classes: "govuk-input--width-20",
+          label: {
+              text: "Name of your payment reference number",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            text: "Choose the name of what you would like to collect from your users. For example, ‘Reference number’ or ‘Invoice number’."
+          },
+          attributes: {
+            "data-validate": "isNaxsiSafe"
+          }
+        })
+      }}
+
+      {{
+        govukInput({
+          id: "reference-hint-text",
+          name: "reference-hint-text",
+          value: paymentReferenceHint,
+          classes: "govuk-input--width-20",
+          label: {
+              text: "Hint text (optional)",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            text: "Give your users more information. For example, you could tell them where to find the invoice number."
+          },
+          attributes: {
+            "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
+            "maxlength": "255",
+            "data-validate-max-length": "255"
+          }
+        })
+      }}
+      <p class="govuk-body govuk-!-font-size-16 govuk-text-grey">255 characters</p>
+    {% endset %}
+    {{
+      govukRadios({
+        idPrefix: "reference-type-group",
+        name: "reference-type-group",
+        fieldset: {
+            legend: {
+                text: "Would you like us to create a payment reference number for your users?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+            }
+        },
+        errorMessage: noSelectionError,
+        items: [
+          {
+              value: "standard",
+              text: "Yes, create a unique payment reference number for my users",
+              checked: paymentReferenceType === 'standard',
+              attributes: {
+                id: "reference-type-standard"
+              }
+          },
+          {
+              value: "custom",
+              text: "No, I would like to use my own",
+              checked: paymentReferenceType === 'custom' or blankReferenceLabelError,
+              attributes: {
+                id: "reference-type-custom"
+              },
+              conditional: {
+                html: customReferenceHTML
+              }
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue"
+      })
+    }}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
-  <div>
-    <h3 class="heading-small">Example of what the user will see</h3>
-    <img class="create-payment-link-screenshot" src="/public/images/adhoc-1-start.svg" alt="Screenshot of a payment link page showing a input for the user to enter a reference">
+  <div class="govuk-!-margin-top-9">
+    <h3 class="govuk-heading-s">Example of what the user will see</h3>
+    <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of a payment link page showing a input for the user to enter a reference">
   </div>
 </section>
 {% endblock %}
