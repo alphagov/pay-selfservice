@@ -5,11 +5,15 @@
     margin-bottom: govuk-spacing(6);
 
     &-body {
-      padding: govuk-spacing(2) 0px govuk-spacing(2) govuk-spacing(3);
+      padding: govuk-spacing(2) govuk-spacing(3);
+
+      p {
+        overflow-wrap: break-word;
+      }
     }
 
     &-meta-item {
-      padding: govuk-spacing(2) 0px govuk-spacing(2) govuk-spacing(3);
+      padding: govuk-spacing(2) govuk-spacing(3);
       border-bottom: 1px solid $govuk-border-colour;
 
       &__key {
