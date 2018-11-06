@@ -1,26 +1,21 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
 Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-       <li class="active"><a href="{{ routes.paymentLinks.start }}">Create a payment link</a></li>
-      <li><a href="{{ routes.paymentLinks.manage }}">Manage payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% set createLink = true %}
+  {% include "./_nav.njk" %} 
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
   <form action="{{ routes.paymentLinks.review }}" class="form" method="post" data-virtual-pageview="/create-payment-link/success" data-parameters="dimension1:service-name">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input name="service-name" type="hidden" value="{{currentService.name}}"/>
-    <h1 class="page-title">Review your payment link details</h1>
+    <h1 class="govuk-heading-l">Review your payment link details</h1>
     <dl class="govuk-check-your-answers cya-questions-short">
       <div class="review-title">
         <dt class="cya-question">
@@ -30,8 +25,8 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           {{ pageData.paymentLinkTitle }}
         </dd>
         <dd class="cya-change">
-          <a href="{{ routes.paymentLinks.information }}?field=payment-link-title">
-            Change <span class="visuallyhidden">Title</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.paymentLinks.information }}?field=payment-link-title">
+            Change <span class="govuk-visually-hidden">Title</span>
           </a>
         </dd>
       </div>
@@ -43,12 +38,12 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           {% if pageData.paymentLinkDescription %}
             {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
           {% else %}
-            <span class="grey">None given</span>
+            <span class="govuk-text-grey">None given</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ routes.paymentLinks.information }}?field=payment-link-description">
-            Change <span class="visuallyhidden">More details</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.paymentLinks.information }}?field=payment-link-description">
+            Change <span class="govuk-visually-hidden">More details</span>
           </a>
         </dd>
       </div>
@@ -65,12 +60,12 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
             {% endif %}
             </span>
           {% else %}
-            <span class="grey">Created by GOV.UK Pay</span>
+            <span class="govuk-text-grey">Created by GOV.UK Pay</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ routes.paymentLinks.reference }}?change=true">
-            Change <span class="visuallyhidden">payment reference</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.paymentLinks.reference }}?change=true">
+            Change <span class="govuk-visually-hidden">payment reference</span>
           </a>
         </dd>
       </div>
@@ -82,20 +77,26 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           {% if pageData.paymentLinkAmount %}
             £{{ pageData.paymentLinkAmount }}
           {% else %}
-            <span class="grey">User can choose</span>
+            <span class="govuk-text-grey">User can choose</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ routes.paymentLinks.amount }}">
-            Change <span class="visuallyhidden">payment amount</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.paymentLinks.amount }}">
+            Change <span class="govuk-visually-hidden">payment amount</span>
           </a>
         </dd>
       </div>
     </dl>
-    <div class="form-group">
-      <button id="create-payment-link-publish" class="button" type="submit">Create link</button>
-    </div>
-    <p><a id="create-payment-link-cancel" class="cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
+    {{
+      govukButton({
+        text: "Create link",
+        attributes: {
+          id: "create-payment-link-publish"
+        }
+      })
+    }}
+
+    <p class="govuk-body"><a id="create-payment-link-cancel" class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>
   </form>
 </section>
 {% endblock %}

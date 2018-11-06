@@ -1,0 +1,84 @@
+// Recommended - Use these styles for the check your answers pattern
+.govuk-check-your-answers {
+  @include govuk-font($size: 19);
+  margin: govuk-spacing(9) 0 govuk-spacing(6);
+
+  @include govuk-media-query(desktop) {
+    display: table;
+  }
+
+  > * {
+    position: relative;
+    border-bottom: 1px solid $govuk-border-colour;
+
+    @include govuk-media-query(desktop) {
+      display: table-row;
+      border-bottom-width: 0;
+    }
+
+    > * {
+      display: block;
+
+      @include govuk-media-query(desktop) {
+        display: table-cell;
+        border-bottom: 1px solid $govuk-border-colour;
+        padding: govuk-spacing(3) govuk-spacing(4) govuk-spacing(2) 0;
+        margin: 0;
+      }
+    }
+
+    @include govuk-media-query(desktop) {
+      &:first-child > * {
+        padding-top: 0;
+      }
+    }
+  }
+
+  .cya-question {
+    font-weight: bold;
+    margin: govuk-spacing(2) 4em govuk-spacing(1) 0;
+    // top: from Elements' td
+    // right: due to length of "change" link (adjust if you change the link to be much longer)
+    // bottom: by eye
+    // using margin instead of padding because of easier absolutely positioning of .change
+  }
+
+  > *:first-child .cya-question {
+    margin-top: 0;
+  }
+
+  @include govuk-media-query(desktop) {
+    // to make group of q&a line up horizontally (unless there is just one group)
+    &.cya-questions-short,
+    &.cya-questions-long {
+      width: 100%;
+    }
+
+    // recommended for mostly short questions
+    &.cya-questions-short .cya-question {
+      width: 30%;
+    }
+
+    // recommended for mostly long questions
+    &.cya-questions-long .cya-question {
+      width: 50%;
+    }
+  }
+
+  .cya-answer {
+    padding-bottom: govuk-spacing(2);
+  }
+
+  .cya-change {
+    text-align: right;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    @include govuk-media-query(desktop) {
+      position: static;
+      padding-right: 0;
+    }
+  }
+
+}
