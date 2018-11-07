@@ -1,7 +1,7 @@
-{% extends "./layout.njk" %}
+{% extends "./layout-new.njk" %}
 
-{% block page_title %}
-An error occurred - GOV.UK Pay
+{% block pageTitle %}
+  An error occurred - GOV.UK Pay
 {% endblock %}
 
 {% block pageSpecificJS %}
@@ -9,13 +9,13 @@ An error occurred - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="column-two-thirds">
-    <h1 class="heading-large page-title" id="error-title">{{error.title}}</h1>
+<div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l" id="error-title">{{error.title}}</h1>
 
-    <p id="error-message">{{error.message}}</p>
+    <p class="govuk-body" id="error-message">{{error.message}}</p>
 
     {% if enable_link %}
-    <a class="lede" href="{{link.link}}" id="back-link">{{link.text}}</a>
+      <p class="govuk-body"><a class="govuk-link" href="{{link.link}}" id="back-link">{{link.text}}</a></p>
     {% endif %}
 </div>
 {% endblock %}
