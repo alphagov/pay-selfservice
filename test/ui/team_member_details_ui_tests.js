@@ -20,7 +20,7 @@ describe('The team member details view', function () {
     body.should.containSelector('td#email').withExactText('oscar.smith@example.com')
     body.should.containSelector('td#role').withExactText('View only')
     body.should.containSelector('td#edit-permissions-link > a').withAttribute('href', 'some-link')
-    body.should.containSelector('input#remove-team-member-confirm')
+    body.should.containSelector('#remove-team-member-confirm')
     body.should.containSelector('form#remove-team-member-form').withAttribute('action', 'remove-link')
   })
 
