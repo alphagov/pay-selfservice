@@ -10,6 +10,7 @@ const csrf = require('csrf')
 const {getApp} = require('../../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
+const {sanitisePoundsAndPenceInput} = require('../../../../app/utils/currency_formatter')
 
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
@@ -41,7 +42,7 @@ describe('Create payment link amount post controller', () => {
 
     it('should have paymentLinkAmount stored in the session', () => {
       const sessionPageData = lodash.get(session, 'pageData.createPaymentLink', {})
-      expect(sessionPageData).to.have.property('paymentLinkAmount').to.equal(VALID_PAYLOAD['payment-amount'])
+      expect(sessionPageData).to.have.property('paymentLinkAmount').to.equal(sanitisePoundsAndPenceInput(VALID_PAYLOAD['payment-amount']))
     })
 
     it('should have paymentAmountType stored in the session', () => {

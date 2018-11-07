@@ -45,7 +45,7 @@ module.exports = (req, res) => {
       }
 
       if (paymentLinkAmount) {
-        productPayload.price = paymentLinkAmount * 100
+        productPayload.price = paymentLinkAmount
       }
 
       productPayload.referenceEnabled = paymentReferenceType === 'custom'
