@@ -59,8 +59,6 @@ describe('Edit payment link information', () => {
   })
 
   it('should display the correct page links', () => {
-    expect(response.body).to.have.property('create', paths.paymentLinks.start)
-    expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
     expect(response.body).to.have.property('self', formattedPathFor(paths.paymentLinks.editInformation, PRODUCT_EXTERNAL_ID))
   })
 

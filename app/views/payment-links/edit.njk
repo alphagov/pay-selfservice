@@ -1,26 +1,20 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
-Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-      <li><a href="{{ create }}">Create a payment link</a></li>
-      <li><a href="{{ manage }}">Manage payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <input name="service-name" type="hidden" value="{{currentService.name}}"/>
-    <h1 class="page-title">Edit your payment link</h1>
+    <h1 class="govuk-heading-l">Edit your payment link</h1>
     <dl class="govuk-check-your-answers cya-questions-short">
       <div class="review-title">
         <dt class="cya-question">
@@ -30,8 +24,8 @@ Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_ty
           {{ product.name }}
         </dd>
         <dd class="cya-change">
-          <a href="{{ editInformation }}?field=payment-link-title">
-            Change <span class="visuallyhidden">Title</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ editInformation }}?field=payment-link-title">
+            Change <span class="govuk-visually-hidden">Title</span>
           </a>
         </dd>
       </div>
@@ -43,12 +37,12 @@ Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_ty
           {% if product.description %}
             {{ product.description | striptags(true) | escape | nl2br }}
           {% else %}
-            <span class="grey">None given</span>
+            <span class="govuk-text-grey">None given</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ editInformation }}?field=payment-link-description">
-            Change <span class="visuallyhidden">More details</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ editInformation }}?field=payment-link-description">
+            Change <span class="govuk-visually-hidden">More details</span>
           </a>
         </dd>
       </div>
@@ -60,22 +54,25 @@ Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_ty
           {% if product.price %}
             {{ product.price | penceToPoundsWithCurrency }}
           {% else %}
-            <span class="grey">User can choose</span>
+            <span class="govuk-text-grey">User can choose</span>
           {% endif %}
         </dd>
         <dd class="cya-change">
-          <a href="{{ editAmount }}">
-            Change <span class="visuallyhidden">payment amount</span>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ editAmount }}">
+            Change <span class="govuk-visually-hidden">payment amount</span>
           </a>
         </dd>
       </div>
     </dl>
-    <div class="form-group">
-      {% if changed %}
-      <button id="update-payment-link-publish" class="button" type="submit">Save changes</button>
-      {% endif %}
-    </div>
-    <p><a id="update-payment-link-cancel" class="cancel" href="{{ manage }}">Cancel</a></p>
+    {{
+      govukButton({
+        text: "Save changes",
+        attributes: {
+          id: "update-payment-link-publish"
+        }
+      })
+    }}
+    <p class="govuk-body"><a id="update-payment-link-cancel" class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage }}">Cancel</a></p>
   </form>
 </section>
 {% endblock %}

@@ -14,8 +14,6 @@ const formattedPathFor = require('../../utils/replace_params_in_path')
 
 module.exports = (req, res) => {
   const PAGE_PARAMS = {
-    create: paths.paymentLinks.start,
-    manage: paths.paymentLinks.manage,
     self: formattedPathFor(paths.paymentLinks.editInformation, req.params.productExternalId)
   }
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
