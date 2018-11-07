@@ -51,7 +51,7 @@ describe('Create payment link information controller', () => {
     })
 
     it(`should have blank value in the Title input`, () =>
-      expect($(`input[name='payment-link-title']`).val()).to.equal('')
+      expect($(`input[name='payment-link-title']`).val()).to.be.undefined
     )
 
     it(`should have blank value in the Details textarea`, () =>

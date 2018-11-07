@@ -70,3 +70,10 @@
     }
   }
 }
+
+@include govuk-media-query(tablet) {
+  .navigation--pad-bottom {
+    margin-bottom: govuk-spacing(9);
+    padding-bottom: govuk-spacing(9);
+  }
+}

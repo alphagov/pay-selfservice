@@ -18,7 +18,7 @@ module.exports = (req, res) => {
   let updatedPageData = lodash.cloneDeep(pageData)
 
   if (updatedPageData.productNamePath === '') {
-    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#payment-name-path">Please change the website address</a></li></ul>`)
+    req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-name-path">Please change the website address</a></li></ul>`)
     return res.redirect(paths.paymentLinks.webAddress)
   }
 
@@ -28,7 +28,7 @@ module.exports = (req, res) => {
   productsClient.product.getByProductPath(updatedPageData.serviceNamePath, updatedPageData.productNamePath)
     .then(product => {
     // if product exists we need to alert the user they must use a different URL
-      req.flash('genericError', `<ul class="error-summary-list"><li><a href="#payment-name-path">The website address is already taken</a></li></ul>`)
+      req.flash('genericError', `<h2>There was a problem with the details you gave for:</h2><ul class="govuk-list govuk-error-summary__list"><li><a href="#payment-name-path">Website address</a></li></ul>`)
       return res.redirect(paths.paymentLinks.webAddress)
     })
     .catch((err) => { // eslint-disable-line handle-callback-err
