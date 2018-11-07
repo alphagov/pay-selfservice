@@ -9,7 +9,7 @@
 
 {% block side_navigation %}
   {% set createLink = true %}
-  {% include "./_nav.njk" %} 
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
@@ -94,17 +94,13 @@
               value: "standard",
               text: "Yes, create a unique payment reference number for my users",
               checked: paymentReferenceType === 'standard',
-              attributes: {
-                id: "reference-type-standard"
-              }
+              id: "reference-type-standard"
           },
           {
               value: "custom",
               text: "No, I would like to use my own",
               checked: paymentReferenceType === 'custom' or blankReferenceLabelError,
-              attributes: {
-                id: "reference-type-custom"
-              },
+              id: "reference-type-custom",
               conditional: {
                 html: customReferenceHTML
               }
@@ -115,7 +111,8 @@
 
     {{
       govukButton({
-        text: "Continue"
+        text: "Continue",
+        classes: "button"
       })
     }}
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>

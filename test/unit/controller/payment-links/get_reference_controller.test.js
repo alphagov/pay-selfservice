@@ -55,11 +55,11 @@ describe('Create payment link reference controller', () => {
     )
 
     it(`should have blank value in the reference input`, () =>
-      expect($(`input[name='reference-label']`).val()).to.equal('')
+      expect($(`input[name='reference-label']`).val()).to.be.undefined
     )
 
     it(`should have blank value in the reference hint text input`, () =>
-      expect($(`input[name='reference-hint-text']`).val()).to.equal('')
+      expect($(`input[name='reference-hint-text']`).val()).to.be.undefined
     )
   })
 
@@ -136,11 +136,11 @@ describe('Create payment link reference controller', () => {
       )
 
       it(`should set the value of the reference to blank`, () =>
-        expect($(`input[name='reference-label']`).val()).to.equal('')
+        expect($(`input[name='reference-label']`).val()).to.be.undefined
       )
 
       it(`should set the value of the reference hint to blank`, () =>
-        expect($(`input[name='reference-hint-text']`).val()).to.equal('')
+        expect($(`input[name='reference-hint-text']`).val()).to.be.undefined
       )
     })
   })

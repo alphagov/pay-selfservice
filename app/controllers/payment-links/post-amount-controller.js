@@ -31,7 +31,7 @@ module.exports = (req, res) => {
     formattedPaymentLinkAmount = ''
   }
 
-  updatedPageData.paymentLinkAmount = formattedPaymentLinkAmount ? penceToPounds(formattedPaymentLinkAmount) : ''
+  updatedPageData.paymentLinkAmount = formattedPaymentLinkAmount
   updatedPageData.paymentAmountType = paymentAmountType
   lodash.set(req, 'session.pageData.createPaymentLink', updatedPageData)
 

@@ -13,6 +13,7 @@ const {getMockSession, createAppWithSession, getUser} = require('../../../test_h
 const paths = require('../../../../app/paths')
 const {CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
+const {penceToPounds} = require('../../../../app/utils/currency_formatter')
 
 describe('Create payment link amount controller', () => {
   describe('if landing here for the first time', () => {
@@ -75,7 +76,7 @@ describe('Create payment link amount controller', () => {
           paymentLinkTitle: 'Pay for an offline service',
           paymentLinkDescription: 'Hello world',
           paymentAmountType: 'fixed',
-          paymentLinkAmount: '5.00'
+          paymentLinkAmount: '500'
         })
         supertest(createAppWithSession(getApp(), session))
           .get(paths.paymentLinks.amount)
@@ -93,7 +94,7 @@ describe('Create payment link amount controller', () => {
       )
 
       it(`should set the value of the amount input to pre-existing data present in the session`, () =>
-        expect($(`input[name='payment-amount']`).val()).to.equal(session.pageData.createPaymentLink.paymentLinkAmount)
+        expect($(`input[name='payment-amount']`).val()).to.equal(penceToPounds(session.pageData.createPaymentLink.paymentLinkAmount))
       )
     })
 

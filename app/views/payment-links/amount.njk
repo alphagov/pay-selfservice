@@ -11,7 +11,7 @@
 
 {% block side_navigation %}
   {% set createLink = true %}
-  {% include "./_nav.njk" %} 
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
@@ -47,7 +47,7 @@
             data-non-numeric
             type="text"
             id="payment-amount"
-            value="{{ paymentLinkAmount | penceToPounds }}"
+            value="{{ paymentLinkAmount | penceToPounds if paymentLinkAmount else '' }}"
             data-trim
           />
         </div>
@@ -70,21 +70,17 @@
           {
               value: "fixed",
               text: "Yes",
+              id: "amount-type-fixed",
               checked: paymentAmountType === "fixed" or flash.errorType[0] === "paymentAmountFormat",
-              attributes: {
-                id: "amount-type-fixed"
-              },
               conditional: {
                 html: variableHTML
               }
           },
           {
               value: "variable",
+              id: "amount-type-variable",
               text: "No, the user can choose the amount",
-              checked: paymentAmountType === "variable",
-              attributes: {
-                id: "amount-type-variable"
-              }
+              checked: paymentAmountType === "variable"
           }
         ]
       })
@@ -92,7 +88,8 @@
 
     {{
       govukButton({
-        text: "Continue"
+        text: "Continue",
+        classes: "button"
       })
     }}
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.start }}">Cancel</a></p>

@@ -18,7 +18,7 @@ const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const PAYMENT_TITLE = 'Payment title'
 const PAYMENT_DESCRIPTION = 'Payment description'
-const PAYMENT_LINK_AMOUNT = 5.00
+const PAYMENT_LINK_AMOUNT = 500
 const VALID_PAYLOAD = {
   'csrfToken': csrf().create('123')
 }
@@ -42,7 +42,7 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
   serviceName: VALID_USER.serviceRoles[0].service.name,
-  price: PAYMENT_LINK_AMOUNT * 100,
+  price: PAYMENT_LINK_AMOUNT,
   type: 'ADHOC',
   reference_enabled: false
 }).getPlain()
@@ -82,6 +82,7 @@ describe('Create payment link review controller', () => {
         })
 
         it('should redirect to the manage page with a success message', () => {
+          console.log(session.flash)
           expect(session.flash).to.have.property('generic')
           expect(session.flash.generic.length).to.equal(1)
           expect(session.flash.generic[0]).to.equal('<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>')

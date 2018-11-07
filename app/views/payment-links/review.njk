@@ -7,7 +7,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
 {% block side_navigation %}
   {% set createLink = true %}
-  {% include "./_nav.njk" %} 
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
@@ -75,7 +75,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         </dt>
         <dd class="cya-answer" id="create-payment-link-amount">
           {% if pageData.paymentLinkAmount %}
-            £{{ pageData.paymentLinkAmount }}
+            £{{ pageData.paymentLinkAmount | penceToPounds }}
           {% else %}
             <span class="govuk-text-grey">User can choose</span>
           {% endif %}
