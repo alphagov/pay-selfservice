@@ -14,7 +14,6 @@
   float: left;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 govuk-spacing(3);
 
   @include govuk-media-query(tablet) {
     width: 50%;
@@ -36,8 +35,13 @@
   }
 }
 
+.datetime-filter-from {
+  padding-right: govuk-spacing(3);
+}
+
 .datetime-filter-to {
   position: relative;
+  padding-left: govuk-spacing(3);
 }
 
 .datetime-separator {
