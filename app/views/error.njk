@@ -1,12 +1,12 @@
-{% extends "./layout_logged_out.njk" %}
+{% extends "./layout_logged_out-new.njk" %}
 
-{% block page_title %}
-An error occurred - GOV.UK Pay
+{% block pageTitle %}
+  An error occurred - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="column-two-thirds">
-    <h1 class="page-title">An error occurred:</h1>
-    <div id="errorMsg">{{message}}</div>
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l page-title">An error occurred:</h1>
+    <div class="govuk-body" id="errorMsg">{{message}}</div>
   </div>
 {% endblock %}
