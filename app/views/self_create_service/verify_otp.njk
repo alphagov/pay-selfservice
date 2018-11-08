@@ -1,23 +1,39 @@
-{% extends "../layout_logged_out.njk" %}
+{% extends "../layout_logged_out-new.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
   Enter security code - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div id="display_otp_verify" class="column-two-thirds">
+<div id="display_otp_verify" class="govuk-grid-column-two-thirds">
+  <h1 class="form-title govuk-heading-l">Check your phone</h1>
+  <p class="govuk-body">We’ve sent you a text message with a security code</p>
   <form action="{{routes.selfCreateService.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-    <h1 class="form-title heading-large">Check your phone</h1>
-    <p>We've sent you a text message with a security code</p>
-    <div class="form-group">
-      <label class="form-label" for="verify-code">Text message code</label>
-      <input class="form-control form-control-1-4" data-module="" id="verify-code" name="verify-code" type="text" value="" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <input class="button" type="submit" value="Continue">
-    </div>
+    {{
+      govukInput({
+        id: "verify-code",
+        name: "verify-code",
+        classes: "govuk-input--width-10",
+        label: {
+            text: "Security code",
+            classes: "govuk-label--s"
+        },
+        attributes: {
+          autocomplete: "off",
+          autofocus: true
+        }
+      })
+    }}
+    {{
+      govukButton({
+        text: "Continue",
+        classes: 'button'
+      })
+    }}
   </form>
-  <p><a href="{{routes.selfCreateService.otpResend}}" class="resend-otp-link">Not received a text message?</a></p>
+  <p class="govuk-body"><a href="{{routes.selfCreateService.otpResend}}" class="resend-otp-link govuk-link govuk-link govuk-link--no-visited-state">Not received a text message?</a></p>
 </div>
 {% endblock %}

@@ -1,25 +1,39 @@
-{% extends "../layout_logged_out.njk" %}
+{% extends "../layout_logged_out-new.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
 
-{% block page_title %}
+{% block pageTitle %}
   Enter security code - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-  <div class="column-two-thirds">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="form-title govuk-heading-l">Check your phone</h1>
+    <p class="govuk-body">We’ve sent you a text message with a security code</p>
     <form action="{{routes.registerUser.otpVerify}}" class="form" method="post" class="submit-two-fa" id="verify-phone-form">
       <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
-      <h1 class="form-title heading-large">
-        Check your phone
-      </h1>
-      <p>We've sent you a text message with a security code</p>
-      <div class="form-group">
-        <label class="form-label" for="verify-code">Text message code</label>
-        <input class="form-control form-control-1-4" data-module="" id="verify-code" name="verify-code" rows="6" type="text" value="" autofocus autocomplete="off">
-      </div>
-      <div class="form-group">
-        <input class="button" type="submit" value="Continue">
-      </div>
+      {{
+        govukInput({
+          id: "verify-code",
+          name: "verify-code",
+          classes: "govuk-input--width-10",
+          label: {
+              text: "Security code",
+              classes: "govuk-label--s"
+          },
+          attributes: {
+            autofocus: true,
+            autocomplete: "off"
+          }
+        })
+      }}
+      {{
+        govukButton({
+          text: "Continue",
+          classes: "button"
+        })
+      }}
     </form>
-    <p><a href="{{routes.registerUser.reVerifyPhone}}">Not received a text message?</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link govuk-link--no-visited-state" href="{{routes.registerUser.reVerifyPhone}}">Not received a text message?</a></p>
   </div>
 {% endblock %}
