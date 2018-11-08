@@ -1,9 +1,7 @@
-{% extends "../layout-new.njk" %}
+{% extends "../layout.njk" %}
 {% from "components/input/macro.njk" import govukInput %}
 {% from "components/radios/macro.njk" import govukRadios %}
 {% from "components/button/macro.njk" import govukButton %}
-
-{% extends "../layout-new.njk" %}
 
 {% block pageTitle %}
   Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
