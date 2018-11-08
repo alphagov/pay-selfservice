@@ -42,11 +42,11 @@ describe('Self-create service view', function () {
 
     body.should.containSelector('h1').withExactText('Check your phone')
 
-    body.should.containSelector('form#verify-phone-form > p:nth-child(3)').withExactText(`We've sent you a text message with a security code`)
+    body.should.containSelector('.govuk-body:first-of-type').withExactText(`We’ve sent you a text message with a security code`)
     body.should.containSelector('form#verify-phone-form').withAttribute('action', paths.selfCreateService.otpVerify)
     body.should.containInputField('verify-code', 'text')
 
-    body.should.containSelector('div#display_otp_verify > p:nth-child(2) > a').withExactText('Not received a text message?')
+    body.should.containSelector('.govuk-body:last-of-type > a').withExactText('Not received a text message?')
 
     done()
   })
