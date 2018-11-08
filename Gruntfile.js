@@ -11,8 +11,6 @@ module.exports = function (grunt) {
           sourcemap: true,
           includePaths: [
             'node_modules',
-            'govuk_modules/govuk_frontend_toolkit/stylesheets',
-            'node_modules/govuk-elements-sass/public/sass/',
             'govuk_modules/accessible-autocomplete/'
           ],
           outputStyle: 'compressed'
@@ -33,25 +31,6 @@ module.exports = function (grunt) {
     copy: {
       govuk: {
         files: [
-          {
-            expand: true,
-            cwd: 'node_modules/govuk_frontend_toolkit',
-            src: '**',
-            dest: 'govuk_modules/govuk_frontend_toolkit/'
-          },
-          {
-            expand: true,
-            cwd: 'node_modules/govuk-elements-sass',
-            src: '**',
-            dest: 'govuk_modules/govuk-elements-sass/'
-          },
-          {
-            expand: true,
-            cwd: 'node_modules/govuk_template_jinja/',
-            src: '**',
-            dest: 'govuk_modules/govuk_template/',
-            rename: (dest, src) => dest + src.replace('html', 'njk')
-          },
           {
             expand: true,
             cwd: 'node_modules/accessible-autocomplete/dist',
@@ -78,26 +57,6 @@ module.exports = function (grunt) {
             cwd: 'app/assets/',
             src: ['**/*', '!sass/**'],
             dest: 'public/'
-          },
-          {
-            expand: true,
-            cwd: 'govuk_modules/govuk_frontend_toolkit/images/',
-            src: ['**/*', '!sass/**'],
-            dest: 'public/images/icons'
-          }
-        ]
-      }
-    },
-
-    // workaround for libsass
-    replace: {
-      fixSass: {
-        src: ['govuk_modules/govuk_frontend_toolkit/**/*.scss'],
-        overwrite: true,
-        replacements: [
-          {
-            from: /filter:chroma(.*);/g,
-            to: 'filter:unquote("chroma$1");'
           }
         ]
       }
@@ -186,7 +145,6 @@ module.exports = function (grunt) {
     'grunt-sass',
     'grunt-nodemon',
     'grunt-browserify',
-    'grunt-text-replace',
     'grunt-concurrent'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task)
@@ -195,7 +153,6 @@ module.exports = function (grunt) {
   grunt.registerTask('generate-assets', [
     'clean',
     'copy',
-    'replace',
     'browserify',
     'uglify',
     'sass'
