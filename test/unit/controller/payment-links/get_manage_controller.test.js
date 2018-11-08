@@ -77,11 +77,6 @@ describe('Manage payment links', () => {
       nock.cleanAll()
     })
 
-    it('should display the correct page links', () => {
-      expect(response.body).to.have.property('returnToStart', paths.paymentLinks.start)
-      expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
-    })
-
     it('should not display any link', () => {
       expect(response.body).to.have.property('productsLength', 0)
     })
@@ -107,11 +102,6 @@ describe('Manage payment links', () => {
 
     after(() => {
       nock.cleanAll()
-    })
-
-    it('should display the correct page links', () => {
-      expect(response.body).to.have.property('returnToStart', paths.paymentLinks.start)
-      expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
     })
 
     it('should display all the links', () => {
@@ -154,11 +144,6 @@ describe('Manage payment links', () => {
 
     after(() => {
       nock.cleanAll()
-    })
-
-    it('should display the correct page links', () => {
-      expect(response.body).to.have.property('returnToStart', paths.paymentLinks.start)
-      expect(response.body).to.have.property('manage', paths.paymentLinks.manage)
     })
 
     it('should display all the links', () => {

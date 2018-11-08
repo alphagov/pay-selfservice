@@ -11,10 +11,7 @@ const productsClient = require('../../services/clients/products_client.js')
 const authService = require('../../services/auth_service.js')
 const errorView = require('../../utils/response.js').renderErrorView
 
-const PAGE_PARAMS = {
-  returnToStart: paths.paymentLinks.start,
-  manage: paths.paymentLinks.manage
-}
+const PAGE_PARAMS = {}
 
 module.exports = (req, res) => {
   lodash.unset(req, 'session.editPaymentLinkData')

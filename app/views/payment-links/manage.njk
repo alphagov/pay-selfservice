@@ -1,31 +1,22 @@
-{% extends "../layout.njk" %}
+{% extends "../layout-new.njk" %}
 
-{% block page_title %}
-{% if permissions.tokens_create %}Manage{% else %}View{% endif %} a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% block pageTitle %}
+  {% if permissions.tokens_create %}Manage{% else %}View{% endif %} a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
-<aside class="column-one-third pad-bottom">
-  <nav role="navigation" class="navigation settings-navigation">
-    <ul class="list">
-      {% if permissions.tokens_create %}
-      <li><a href="{{ returnToStart }}">Create a payment link</a></li>
-      {% endif %}
-      <li class="active"><a href="{{ manage }}">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment&nbsp;links</a></li>
-    </ul>
-  </nav>
-</aside>
+  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
-<section class="column-two-thirds">
+<section class="govuk-grid-column-two-thirds">
 {% if not permissions.tokens_create %}
-  <aside class="info-box">
-    <p>You don’t have permission to create or edit payment links. Contact your service admin if you would like to manage payment links.</p>
+  <aside class="pay-info-warning-box">
+    <p class="govuk-body">You don’t have permission to create or edit payment links. Contact your service admin if you would like to manage payment links.</p>
   </aside>
 {% endif %}
-  <h1 class="page-title">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment links</h1>
-  <p class="payment-links-list--header">
+  <h1 class="govuk-heading-l govuk-!-margin-top-6">{% if permissions.tokens_create %}Manage{% else %}View{% endif %} payment links</h1>
+  <p class="govuk-body payment-links-list--header">
     {% if productsLength === 1 %}
       There is 1 payment link
     {% elif productsLength > 1 %}
@@ -33,32 +24,33 @@
     {% elif not permissions.tokens_create %}
       There are no payment links.
     {% else %}
-      There are no payment links, you can <a href="{{ returnToStart }}">create one now</a>.
+      There are no payment links, you can <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.paymentLinks.start }}">create one now</a>.
     {% endif %}
   </p>
   {% if products.length %}
-  <ul class="payment-links-list">
+  <ul class="govuk-list pay-!-border-top govuk-!-padding-top-3 govuk-!-padding-bottom-3 payment-links-list">
     {% for product in products %}
-    <li class="payment-links-list--item">
-      <h2 class="heading-small payment-links-list--item__title">{{ product.name }}</h2>
+    <li class="pay-!-border-bottom govuk-!-padding-bottom-3 govuk-!-padding-bottom-3">
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-1 payment-links-list--item__title">{{ product.name }}</h2>
       {% if product.links.friendly %}
-        <a class="payment-links-list--item__link" href="{{ product.links.friendly.href }}">{{ product.links.friendly.href }}</a>
+        <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.friendly.href }}">{{ product.links.friendly.href }}</a>
       {% else %}
-        <a class="payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
+        <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
       {% endif %}
       {% if permissions.tokens_create %}
-       <div class="payment-links-list--item__actions">
-        <a class="payment-links-list--item__actions--link payment-links-list--item__actions" href="manage/edit/{{ product.externalId }}">Edit<span class="visuallyhidden"> payment link called {{product.name}}</span></a>
-        <a class="payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete <span class="visuallyhidden">  payment link called {{product.name}}</span></a>
-        <div class="target-to-show" id="delete-{{ product.externalId }}">
-          <div class="error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
-              <h1 class="heading-medium error-summary-heading" id="error-summary">
+       <div class="govuk-!-margin-top-3">
+        <a class="govuk-!-font-size-16 govuk-!-margin-right-3 govuk-link govuk-link--no-visited-state" href="manage/edit/{{ product.externalId }}">Edit<span class="govuk-visually-hidden"> payment link called {{product.name}}</span></a>
+        <a class="govuk-!-font-size-16 govuk-link govuk-link--no-visited-state payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete <span class="govuk-visually-hidden"> payment link called {{product.name}}</span></a>
+        <div class="target-to-show govuk-!-margin-top-6" id="delete-{{ product.externalId }}">
+          <div class="govuk-error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
+              <h1 class="govuk-error-summary__title" id="error-summary">
                   Are you sure you want to delete this link?
               </h1>
               <div class="button-group">
-                <a class="button delete payment-links-list--item__actions--delete" href="manage/delete/{{ product.externalId }}">Yes, delete this link</a>
+                <a class="govuk-button govuk-button--red payment-links-list--item__actions--delete js" href="manage/delete/{{ product.externalId }}">Yes, delete this link</a>
               </div>
-              <a class="target-to-show--cancel" href="#main">Cancel</a>
+              <a class="govuk-link govuk-link--no-visited-state
+    govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
             </div>
         </div>
       {% endif %}
