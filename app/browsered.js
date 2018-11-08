@@ -15,9 +15,6 @@ const niceURL = require('./browsered/nice-url')
 const copyText = require('./browsered/copy-text')
 const accessibleAutocomplete = require('./browsered/autocomplete')
 
-// GOV.UK Frontend Toolkit dependencies
-require('../govuk_modules/govuk_frontend_toolkit/javascripts/govuk/show-hide-content')
-
 // GOV.UK Frontend js bundle
 const GOVUKFrontend = require('govuk-frontend')
 
@@ -32,8 +29,3 @@ niceURL()
 copyText()
 accessibleAutocomplete()
 GOVUKFrontend.initAll()
-
-$(document).ready($ => {
-  const showHideContent = new window.GOVUK.ShowHideContent()
-  showHideContent.init()
-})
