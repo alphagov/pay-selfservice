@@ -53,7 +53,7 @@ function initialiseGlobalMiddleware (app) {
     app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware(
       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'))
   }
-  app.use(favicon(path.join(__dirname, 'govuk_modules/govuk_template/assets', 'images', 'favicon.ico')))
+  app.use(favicon(path.join(__dirname, 'node_modules/govuk-frontend/assets/', 'images', 'favicon.ico')))
   app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
@@ -96,8 +96,7 @@ function initialiseTemplateEngine (app) {
 
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
-  nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/stylesheets/application.min.css'))
-  nunjucksEnvironment.addGlobal('new_css_path', staticify.getVersionedPath('/stylesheets/application-new.min.css'))
+  nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/stylesheets/application-new.min.css'))
   nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
 
   // Load custom Nunjucks filters

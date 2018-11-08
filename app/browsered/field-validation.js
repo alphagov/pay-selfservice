@@ -12,15 +12,12 @@ const checks = require('./field-validation-checks')
 // Global constants
 const validationErrorsTemplate = require('../views/includes/validation-errors.njk')
 
-const isGOVUKFrontend = document.body.classList.contains('govuk-template__body')
-// Because we’re running old new design system simultaneously we need to change our CSS selectors based on which the current page is using
-
-const ERROR_MESSAGE_CLASS = isGOVUKFrontend ? '.govuk-error-message' : '.error-message'
-const ERROR_SUMMARY_CLASS = isGOVUKFrontend ? '.govuk-error-summary' : '.error-summary'
-const FORM_GROUP = isGOVUKFrontend ? '.govuk-form-group' : '.form-group'
-const FORM_GROUP_WITH_ERROR = isGOVUKFrontend ? '.govuk-form-group--error' : '.form-group.error'
-const FORM_GROUP_ERROR_CLASSNAME = isGOVUKFrontend ? 'govuk-form-group--error' : 'error'
-const ERROR_LABEL_CLASSNAME = isGOVUKFrontend ? 'govuk-error-message' : 'error-message'
+const ERROR_MESSAGE_CLASS = '.govuk-error-message'
+const ERROR_SUMMARY_CLASS = '.govuk-error-summary'
+const FORM_GROUP = '.govuk-form-group'
+const FORM_GROUP_WITH_ERROR = '.govuk-form-group--error'
+const FORM_GROUP_ERROR_CLASSNAME = 'govuk-form-group--error'
+const ERROR_LABEL_CLASSNAME = 'govuk-error-message'
 
 exports.enableFieldValidation = function () {
   const allForms = Array.prototype.slice.call(document.getElementsByTagName('form'))
@@ -124,8 +121,7 @@ function populateErrorSummary (form) {
       const label = field.innerHTML.split('<')[0].trim()
       const id = field.getAttribute('for')
       return {label, id}
-    }),
-    newLayout: isGOVUKFrontend
+    })
   }
 
   form.parentNode.insertAdjacentHTML(
