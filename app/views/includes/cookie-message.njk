@@ -1,9 +1,5 @@
-{% if newLayout %}
-  <div id="global-cookie-message" class="cookie-banner {% if seen_cookie_message %}cookie-banner--hide{% endif %}">
-    <div class="govuk-width-container">
-      <p class="govuk-body-s">GOV.UK Pay uses cookies to make the site simpler. <a class="govuk-link"href="https://www.payments.service.gov.uk/cookies/">Find out more about cookies</a></p>
-    </div>
+<div id="global-cookie-message" class="cookie-banner {% if seen_cookie_message %}cookie-banner--hide{% endif %}">
+  <div class="govuk-width-container">
+    <p class="govuk-body-s">GOV.UK Pay uses cookies to make the site simpler. <a class="govuk-link"href="https://www.payments.service.gov.uk/cookies/">Find out more about cookies</a></p>
   </div>
-{% else %}
-  <p>GOV.UK Pay uses cookies to make the site simpler. <a href="https://www.payments.service.gov.uk/cookies/">Find out more about cookies</a></p>
-{% endif %}
+</div>

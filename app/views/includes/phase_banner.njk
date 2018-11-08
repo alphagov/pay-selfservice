@@ -1,57 +1,27 @@
-{% if newLayout %}
-  {% if currentService.name %}
-  <div class="govuk-phase-banner govuk-clearfix">
-    <div class="service-info">
-      <h4 class="service-info--name govuk-heading-s">
-        {{currentService.name}}
-        {% if currentGatewayAccount %}
-          <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{{currentGatewayAccount.full_type | capitalize}} {% if currentGatewayAccount.full_type === 'live' %}account{% endif %}</strong>
-        {% endif %}
-      </h4>
-    </div>
-    {% if not hideServiceNav %}
-    <nav role="navigation" class="service-navigation">
-      <ul class="service-navigation--list">
-        {% for item in serviceNavigationItems %}
-          {% if item.permissions %}
-            {% if item.current %}
-              <li class="service-navigation--list-item service-navigation--list-item-active"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-            {% else %}
-              <li class="service-navigation--list-item"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </nav>
-    {% endif %}
-  </div>
-  {% endif %}
-{% else %}
-  {% if currentService.name %}
-  <div class="phase-banner">
-    <div class="service-info">
-      <h4 class="service-info--name heading-small">{{currentService.name}}</h4>
+{% if currentService.name %}
+<div class="govuk-phase-banner govuk-clearfix">
+  <div class="service-info">
+    <h4 class="service-info--name govuk-heading-s">
+      {{currentService.name}}
       {% if currentGatewayAccount %}
-      <p>
-        <strong class="phase-tag">{{currentGatewayAccount.full_type}} {% if currentGatewayAccount.full_type === 'live' %}account{% endif %}</strong>
-      </p>
+        <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{{currentGatewayAccount.full_type | capitalize}} {% if currentGatewayAccount.full_type === 'live' %}account{% endif %}</strong>
       {% endif %}
-    </div>
-    {% if not hideServiceNav %}
-    <nav role="navigation" class="service-navigation">
-      <ul class="service-navigation--list">
-        {% for item in serviceNavigationItems %}
-          {% if item.permissions %}
-            {% if item.current %}
-              <li class="service-navigation--list-item service-navigation--list-item-active"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-            {% else %}
-              <li class="service-navigation--list-item"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </nav>
-    {% endif %}
+    </h4>
   </div>
+  {% if not hideServiceNav %}
+  <nav role="navigation" class="service-navigation">
+    <ul class="service-navigation--list">
+      {% for item in serviceNavigationItems %}
+        {% if item.permissions %}
+          {% if item.current %}
+            <li class="service-navigation--list-item service-navigation--list-item-active"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+          {% else %}
+            <li class="service-navigation--list-item"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
   {% endif %}
+</div>
 {% endif %}
