@@ -405,6 +405,43 @@ module.exports = {
         return _.clone(data)
       }
     }
+  },
+
+  validCollectBillingAddressToggleRequest: (opts) => {
+    opts = opts || {}
+
+    const data = {
+      op: 'replace',
+      path: 'collect_billing_address',
+      value: opts.enabled || false
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  validCollectBillingAddressToggleResponse: (opts) => {
+    opts = opts || {}
+
+    const data = {
+      external_id: opts.external_id || 'externalId',
+      collect_billing_address: opts.collect_billing_address || false
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
   }
 
 }

@@ -169,6 +169,14 @@
             {
               "name": "merchant-details:update",
               "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
             }
           ]
         },
@@ -183,7 +191,9 @@
               "gateway_account_ids": [
                 "666"
               ],
-              "_links": []
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true
             },
             "role": {
               "name": "admin",
@@ -320,6 +330,14 @@
                 {
                   "name": "merchant-details:update",
                   "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
                 }
               ]
             }
@@ -331,7 +349,9 @@
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
-            ]
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true
           }
         ],
         "permissions": [

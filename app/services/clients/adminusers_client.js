@@ -591,6 +591,33 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Update collect billing address setting
+   *
+   * @param serviceExternalId
+   * @param collectBillingAddress
+   * @returns {*|Constructor|promise}
+   */
+  const updateCollectBillingAddress = (serviceExternalId, collectBillingAddress) => {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        body:
+          {
+            op: 'replace',
+            path: 'collect_billing_address',
+            value: collectBillingAddress
+          },
+        correlationId: correlationId,
+        description: 'update collect billing address',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
+  /**
      * Update merchant details
      *
      * @param serviceExternalId
@@ -720,6 +747,7 @@ module.exports = function (clientOptions = {}) {
     createService,
     updateServiceName,
     updateMerchantDetails,
+    updateCollectBillingAddress,
     addGatewayAccountsToService
   }
 }
