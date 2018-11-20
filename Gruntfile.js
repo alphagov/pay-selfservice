@@ -84,26 +84,29 @@ module.exports = function (grunt) {
     browserify: {
       'public/js/application.js': ['app/browsered.js'],
       options: {
-        browserifyOptions: { standalone: 'module' },
+        browserifyOptions: {
+          standalone: 'module'
+        },
         transform: [
-          [
-            'babelify',
-            {
-              presets: [
-                ['env', {
-                  'targets': {
-                    'browsers': ['last 2 versions', 'safari >= 7', 'ie >= 10']
-                  }
-                }]
-              ]
-            }
-          ],
           [
             'nunjucksify',
             {
               extension: '.njk'
-            }]
+            }
+          ]
         ]
+      }
+    },
+
+    babel: {
+      options: {
+        presets: ['@babel/preset-env'],
+        compact: false
+      },
+      dist: {
+        files: {
+          'public/js/application.js': 'public/js/application.js'
+        }
       }
     },
 
@@ -138,14 +141,15 @@ module.exports = function (grunt) {
   });
 
   [
-    'grunt-contrib-copy',
-    'grunt-contrib-watch',
-    'grunt-contrib-clean',
-    'grunt-contrib-uglify',
-    'grunt-sass',
-    'grunt-nodemon',
+    'grunt-babel',
     'grunt-browserify',
-    'grunt-concurrent'
+    'grunt-concurrent',
+    'grunt-contrib-clean',
+    'grunt-contrib-copy',
+    'grunt-contrib-uglify',
+    'grunt-contrib-watch',
+    'grunt-nodemon',
+    'grunt-sass'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task)
   })
@@ -154,6 +158,7 @@ module.exports = function (grunt) {
     'clean',
     'copy',
     'browserify',
+    'babel',
     'uglify',
     'sass'
   ])

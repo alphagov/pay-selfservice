@@ -1,7 +1,6 @@
 'use strict'
 
 // NPM dependencies
-require('babel-polyfill')
 const $ = window.$ = window.jQuery = require('jquery') // Put this on window for cross compatability
 
 // Local dependencies
