@@ -44,6 +44,15 @@
     "prepublish": "npm run snyk-protect",
     "publish-pacts": "./bin/publish-pacts.js"
   },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "assets/*",
+      "browsered/*",
+      "Gruntfile.js",
+      "app/browsered.js"
+    ]
+  },
   "dependencies": {
     "accessible-autocomplete": "^1.6.1",
     "appmetrics": "3.x",
