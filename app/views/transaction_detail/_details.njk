@@ -1,3 +1,5 @@
+{% from "components/details/macro.njk" import govukDetails %}
+
 <table class="transaction-details govuk-table">
   <tbody class="govuk-table__body">
   <tr class="govuk-table__row">
@@ -14,7 +16,65 @@
 
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16 vetical-align-top" scope="row">Payment status:</th>
-    <td class="govuk-table__cell govuk-!-font-size-16" id="state">{{state_friendly}}{% if state.message %} ({{state.code}} - {{state.message}}){% endif %}</td>
+    <td class="govuk-table__cell govuk-!-font-size-16" id="state">{{state_friendly}}
+      {% if state_friendly === "Declined" %}
+        {% set stateInfo %}
+          <p class="govuk-!-font-size-16">The payment was declined. This may happen if:</p>
+          <ul class="govuk-!-font-size-16">
+            <li>the payment card failed a fraud check - for example, the cardholder address or the security code did not match the card number, or the card has been blocked</li>
+            <li>there was a 3D Secure authentication failure - for example, the user entered the incorrect password</li>
+            <li>there was not enough money in the account</li>
+          </ul>
+        {% endset %}
+        {{
+          govukDetails({
+            summaryText: "What does this mean?",
+            classes: "small-arrow govuk-!-font-size-16",
+            html: stateInfo
+          })
+        }}
+      {% elif state_friendly === "Timed out" %}
+        {% set stateInfo %}
+          <p class="govuk-!-font-size-16">The user’s payment session timed out. This means the user took longer than 90 minutes to complete their payment details.</p>
+          <p class="govuk-!-font-size-16">If the payment was already authorised, GOV.UK Pay will send a cancellation to the payment provider.</p>
+        {% endset %}
+        {{
+          govukDetails({
+            summaryText: "What does this mean?",
+            classes: "small-arrow govuk-!-font-size-16",
+            html: stateInfo
+          })
+        }}
+      {% elif state_friendly === "Cancelled" %}
+        {% set stateInfo %}
+          {% if state.code === "P0040"%}
+            <p class="govuk-!-font-size-16">The user’s payment session timed out. This means the user took longer than 90 minutes to complete their payment details.</p>
+            <p class="govuk-!-font-size-16">If the payment was already authorised, GOV.UK Pay will send a cancellation to the payment provider.</p>
+          {% else %}
+            <p class="govuk-!-font-size-16">The payment was cancelled by the user. This means the user clicked on the ‘Cancel payment’ button.</p>
+            <p class="govuk-!-font-size-16">If the payment was already authorised, GOV.UK Pay will send a cancellation to the payment provider.</p>
+          {% endif %}
+        {% endset %}
+        {{
+          govukDetails({
+            summaryText: "What does this mean?",
+            classes: "small-arrow govuk-!-font-size-16",
+            html: stateInfo
+          })
+        }}
+      {% elif state_friendly === "Error" %}
+        {% set stateInfo %}
+          <p class="govuk-!-font-size-16">The was an error with the payment. This could be due to a configuration problem between the service and the payment provider. Contact the GOV.UK Pay team with the payment ID, quoting error code P0050.</p>
+        {% endset %}
+        {{
+          govukDetails({
+            summaryText: "What does this mean?",
+            classes: "small-arrow govuk-!-font-size-16",
+            html: stateInfo
+          })
+        }}
+      {% endif %}
+    </td>
   </tr>
 
   {% if permissions.transactions_amount_read %}
