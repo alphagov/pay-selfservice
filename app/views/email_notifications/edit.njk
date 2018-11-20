@@ -48,18 +48,23 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
       <li>use redirects or tracking links</li>
   </ul>
 
-  <form method="post" action="{{routes.emailNotifications.confirm}}">
+  <form method="post" action="{{routes.emailNotifications.confirm}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{
       govukTextarea({
         name: "custom-email-text",
+        id: "custom-email-text",
         label: {
           text: "Enter a custom paragraph",
           classes: "govuk-label--s"
         },
         classes: "qa-custom-p",
-        value: customEmailText
+        value: customEmailText,
+        attributes: {
+          "data-validate": "isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "5000"
+        }
       })
     }}
     {{
