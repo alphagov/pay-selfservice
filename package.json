@@ -50,7 +50,8 @@
       "assets/*",
       "browsered/*",
       "Gruntfile.js",
-      "app/browsered.js"
+      "app/browsered.js",
+      "public/js/*"
     ]
   },
   "dependencies": {

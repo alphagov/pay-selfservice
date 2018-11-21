@@ -72,6 +72,14 @@ module.exports = function (grunt) {
           livereload: true
         }
       },
+      js: {
+        files: ['app/assets/js/**/*.js', 'app/browsered.js', 'app/browsered/*.js'],
+        tasks: ['browserify', 'babel'],
+        options: {
+          spawn: false,
+          livereload: true
+        }
+      },
       assets: {
         files: ['app/assets/**/*', '!app/assets/sass/**'],
         tasks: ['copy:assets'],
