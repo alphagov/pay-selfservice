@@ -18,6 +18,7 @@ module.exports.init = () => {
       const allToggleTargets = Array.prototype.slice.call(document.getElementsByClassName('target-to-show'))
       const toggleTarget = document.getElementById(toggle.getAttribute('href').split('#')[1])
       const cancel = Array.prototype.slice.call(toggleTarget.getElementsByClassName('target-to-show--cancel'))[0]
+      const toggleContainer = Array.prototype.slice.call(document.getElementsByClassName('target-to-show--toggle-container'))[0]
 
       toggle.addEventListener('click', e => {
         e.preventDefault()
@@ -25,12 +26,14 @@ module.exports.init = () => {
           target.style.display = 'none'
         })
         toggleTarget.style.display = 'block'
+        if (toggleContainer) toggleContainer.style.display = 'none'
       }, false)
 
       if (cancel) {
         cancel.addEventListener('click', e => {
           e.preventDefault()
           toggleTarget.style.display = 'none'
+          if (toggleContainer) toggleContainer.style.display = 'block'
         }, false)
       }
     })

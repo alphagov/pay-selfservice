@@ -163,7 +163,7 @@ describe('Transactions details page', () => {
       cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
 
       // Click the refund button
-      cy.get('.refund__toggle').click()
+      cy.get('.target-to-show--toggle').click()
 
       // Select partial refund
       cy.get('#partial').click()
@@ -184,11 +184,11 @@ describe('Transactions details page', () => {
       cy.visit(`${transactionsUrl}/${aFailedRefundCharge.charge_id}`)
 
       // Ensure the refund button is available
-      cy.get('.refund__toggle').should('be.visible')
-      cy.get('.refund__toggle').should('be.enabled')
+      cy.get('.target-to-show--toggle').should('be.visible')
+      cy.get('.target-to-show--toggle').should('be.enabled')
 
       // Click the refund button
-      cy.get('.refund__toggle').click()
+      cy.get('.target-to-show--toggle').click()
 
       // Select partial refund
       cy.get('#partial').click()
@@ -205,7 +205,7 @@ describe('Transactions details page', () => {
       const chargeDetails = selfServiceDefaultUser.sections.transactions.details_data.filter(item => item.charge_id === aCorporateCardSurchargeCharge.charge_id)[0]
 
       // Click the refund button
-      cy.get('.refund__toggle').click()
+      cy.get('.target-to-show--toggle').click()
 
       // Assert refund message
       cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(chargeDetails.refund_summary.amount_available)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
@@ -215,7 +215,7 @@ describe('Transactions details page', () => {
       cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
 
       // Click the refund button
-      cy.get('.refund__toggle').click()
+      cy.get('.target-to-show--toggle').click()
 
       // Assert refund message
       cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(aSmartpayChargeDetails.refund_summary.amount_available)}`)
