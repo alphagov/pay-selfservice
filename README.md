@@ -7,7 +7,9 @@ Assuming your up and running with the [Pay CLI](https://github.com/alphagov/pay-
 
 We use [nodemon](https://github.com/remy/nodemon) which watches for changes to files and restarts the node process.
 
-If you’re making changes to client-side JS or Sass files (anything within `/browsered/` or `/assets/`) then if you run `npm run watch-live-reload` it will watch for changes and recompile. Nodemon, doesn’t do anything here as that’s no necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh you page once the assets have been compiled to the `/public` folder.
+You can watch Nodemon do it’s thing if you run `docker logs -f selfservice`.
+
+If you’re making changes to client-side JS or Sass files (anything within [`/browsered/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/browsered) or [`/assets/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/assets)) then if you run `npm run watch-live-reload` it will watch for changes and recompile. Nodemon, doesn’t do anything here as that’s not necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh you page once the assets have been compiled to the `/public` folder.
 
 ## Key environment variables
 
