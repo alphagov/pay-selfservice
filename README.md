@@ -1,7 +1,13 @@
 # pay-selfservice
-GOV.UK Pay Self Service portal (Node.js)
+GOV.UK Pay Self Service admin tool (Node.js)
 
-We use [Architecture Decision Records](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) to keep track of the history of software design decisions on this application. Please see [docs/arch](docs/arch/).
+## Running locally with `pay local`
+
+Assuming your up and running with the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli) then you once you have selfservice running locally you shouldn’t need to restart the app to see changes you make.
+
+We use [nodemon](https://github.com/remy/nodemon) which watches for changes to files and restarts the node process.
+
+If you’re making changes to client-side JS or Sass files (anything within `/browsered/` or `/assets/`) then if you run `npm run watch-live-reload` it will watch for changes and recompile. Nodemon, doesn’t do anything here as that’s no necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh you page once the assets have been compiled to the `/public` folder.
 
 ## Key environment variables
 
@@ -100,6 +106,8 @@ Generate, edit and revoke tokens for a given account id.
 ```
     /tokens
 ```
+
+We use [Architecture Decision Records](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) to keep track of the history of software design decisions on this application. Please see [docs/arch](docs/arch/).
 
 ## Licence
 
