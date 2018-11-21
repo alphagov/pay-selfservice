@@ -1,9 +1,6 @@
 'use strict'
 
-// npm dependencies
-const parseInt = require('lodash/parseInt')
-
-// local dependencies
+// Local dependencies
 const emailValidator = require('../utils/email_tools.js')
 
 // Constants
