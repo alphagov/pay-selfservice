@@ -1,8 +1,5 @@
 'use strict'
 
-// NPM dependencies
-const $ = window.$ = window.jQuery = require('jquery') // Put this on window for cross compatability
-
 // Local dependencies
 const multiSelects = require('./browsered/multi-select')
 const fieldValidation = require('./browsered/field-validation')
@@ -13,6 +10,7 @@ const inputConfirm = require('./browsered/input-confirm')
 const niceURL = require('./browsered/nice-url')
 const copyText = require('./browsered/copy-text')
 const accessibleAutocomplete = require('./browsered/autocomplete')
+const checkboxRowSelection = require('./browsered/checkbox-row-selection')
 
 // GOV.UK Frontend js bundle
 const GOVUKFrontend = require('govuk-frontend')
@@ -27,4 +25,5 @@ inputConfirm()
 niceURL()
 copyText()
 accessibleAutocomplete()
+checkboxRowSelection()
 GOVUKFrontend.initAll()

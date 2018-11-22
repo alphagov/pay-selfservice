@@ -2,10 +2,6 @@
 {% from "components/inset-text/macro.njk" import govukInsetText %}
 {% from "components/button/macro.njk" import govukButton %}
 
-{% block pageSpecificJS %}
-  <script src="/public/js/components/checkbox-row-selection.js"></script>
-{% endblock %}
-
 {% block page_content %}
   {% if permissions.payment_types_update %}
   <form id="payment-types-card-brand-selection-form" method="post" action="{{routes.paymentTypes.selectBrand}}">

@@ -127,7 +127,6 @@
     "grunt-nodemon": "0.4.x",
     "grunt-sass": "2.1.x",
     "html5shiv": "3.7.x",
-    "jquery": "^3.3.1",
     "mocha": "^5.1.1",
     "nock": "^9.3.3",
     "node-sass": "^4.9.0",

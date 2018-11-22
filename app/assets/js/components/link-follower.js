@@ -1,17 +1,19 @@
-(function(){
-  linkFollower = function(){
-    var init = function(){
-      $(document.body).on('click','[data-follow-link]',followLink);
+(function() {
+  linkFollower = function() {
+    var init = function() {
+      Array.prototype.slice.call(document.querySelectorAll('[data-follow-link]')).forEach(
+        function(link) {
+          link.addEventListener('click', followLink, false)
+        }
+      )
     },
 
-    followLink = function(){
-      var link = $(this).attr('data-link');
-      if (link) location.assign(link)
+    followLink = function(event) {
+      var link = event.target.parentNode.getAttribute('data-link');
+      if (link) window.location.href = link
     };
 
     init();
   }
   linkFollower();
-
 })();
-

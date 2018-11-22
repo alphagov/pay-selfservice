@@ -1,19 +1,18 @@
 'use strict'
 // TODO: we should probably do some browser testing in this project to prove this all works as intended
 
-// NPM Dependencies
-const $ = require('jquery')
-
 // Local Dependencies
 const multiSelect = require('../views/includes/multi-select.njk')
+
+// Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
+require('./polyfills')
 
 // Variables
 const MAXIMUM_VISIBLE_ITEMS = 8.5 // Maximum amount of items to show in dropdown
 const MINIMUM_VISIBLE_ITEMS = 3.5 // Minimum amount of items to show in dropdown (assuming total is larger than this value)
 
 // Selectors
-const DOCUMENT_SELECTOR = window.document
-const ENHANCEMENT_SELECTOR = 'select[data-enhance-multiple]'
+const ENHANCEMENT_SELECTOR = [...document.querySelectorAll('select[data-enhance-multiple]')]
 const TOP_LEVEL_SELECTOR = '.multi-select'
 const OPEN_BUTTON_SELECTOR = '.multi-select-title'
 const CLOSE_BUTTON_SELECTOR = '.multi-select-dropdown-close-area'
@@ -23,96 +22,107 @@ const ITEM_SELECTOR = '.govuk-checkboxes__input'
 const ALL_SELECTOR = `${ITEM_SELECTOR}[value=""]`
 const CURRENT_SELECTIONS = '.multi-select-current-selections'
 
-exports.enableMultiSelects = () => $(DOCUMENT_SELECTOR).ready(progressivelyEnhanceSelects)
+// http://youmightnotneedjquery.com/#ready
+function ready(fn) {
+  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
+exports.enableMultiSelects = () => {
+  ready(progressivelyEnhanceSelects)
+}
 
 function progressivelyEnhanceSelects () {
-  [...$(ENHANCEMENT_SELECTOR)].forEach(select => {
-    select = $(select)
+  ENHANCEMENT_SELECTOR.forEach(select => {
     const configuration = {
-      id: select[0].id || randomElementId(),
-      name: select[0].name,
-      items: [...select.find('option')].map(option => {
-        option = $(option)
-        const text = option.text()
-        const value = option.val()
+      id: select.id || randomElementId(),
+      name: select.getAttribute('name'),
+      items: [...select.querySelectorAll('option')].map(option => {
+        const text = option.innerText
+        const value = option.value
         const id = option.id || randomElementId()
-        const checked = option.attr('selected') === 'selected' || option.prop('selected')
+        const checked = option.hasAttribute('selected')
         return {value, id, checked, text}
       })
     }
-    select.replaceWith(multiSelect(configuration))
-    const newMultiSelect = $(`${TOP_LEVEL_SELECTOR}#${configuration.id}`)
-    const openButton = newMultiSelect.find(OPEN_BUTTON_SELECTOR)
-    const closeButton = newMultiSelect.find(CLOSE_BUTTON_SELECTOR)
-    const items = newMultiSelect.find(ITEM_SELECTOR)
-    const dropdown = newMultiSelect.find(DROPDOWN_SELECTOR)
-    const scrollContainer = newMultiSelect.find(SCROLL_CONTAINER_SELECTOR)
-    openButton.click(onOpenButtonClick)
-    closeButton.click(onCloseAreaClick)
-    items.change(onItemChange)
-    items.blur(onItemBlur)
-    const itemHeight = ([...items].map(item => $(item).parent().height()).reduce((sum, value) => sum + value) / items.length)
-    const maxVisibleItems = Math.min(Math.floor((($(window).height() - openButton.offset().top) / itemHeight) - 0.5) + 0.5, MAXIMUM_VISIBLE_ITEMS)
+    select.outerHTML = multiSelect(configuration)
+    const newMultiSelect = document.getElementById(`${configuration.id}`)
+    const openButton = [...newMultiSelect.querySelectorAll(OPEN_BUTTON_SELECTOR)][0]
+    const closeButton = [...newMultiSelect.querySelectorAll(CLOSE_BUTTON_SELECTOR)][0]
+    const items = [...newMultiSelect.querySelectorAll(ITEM_SELECTOR)]
+    const dropdown = [...newMultiSelect.querySelectorAll(DROPDOWN_SELECTOR)][0]
+    const scrollContainer = [...newMultiSelect.querySelectorAll(SCROLL_CONTAINER_SELECTOR)][0]
+    openButton.addEventListener('click', onOpenButtonClick, false)
+    closeButton.addEventListener('click', onCloseAreaClick, false)
+    items.forEach(item => {
+      item.addEventListener('change', onItemChange, false)
+      item.addEventListener('blur', onItemBlur, false)
+    })
+    const itemHeight = ([...items].map(item => item.parentNode.offsetHeight).reduce((sum, value) => sum + value) / items.length)
+    const maxVisibleItems = Math.min(Math.floor(((window.innerHeight - openButton.getBoundingClientRect().top) / itemHeight) - 0.5) + 0.5, MAXIMUM_VISIBLE_ITEMS)
     const visibleItems = Math.max(maxVisibleItems, MINIMUM_VISIBLE_ITEMS)
-    if (($(window).height() - openButton.offset().top) - itemHeight * items.length < 0) {
-      scrollContainer.css('max-height', visibleItems * itemHeight)
+    if ((window.innerHeight - openButton.getBoundingClientRect().top) - itemHeight * items.length < 0) {
+      scrollContainer.style.maxHeight = `${visibleItems * itemHeight}px`
     }
-    updateDisplayedValue.call(dropdown)
+    updateDisplayedValue(dropdown.parentNode)
   })
 }
 
-function onItemBlur () {
+const onItemBlur = event => {
+  const dropdown = event.target.closest(DROPDOWN_SELECTOR)
   setTimeout(() => {
-    const dropdown = $(this).closest(DROPDOWN_SELECTOR)
-    if ([...dropdown.find(`${ITEM_SELECTOR}:focus`)].length <= 0) {
-      dropdown.css('visibility', 'hidden')
+    if ([...dropdown.querySelectorAll(`${ITEM_SELECTOR}:focus`)].length <= 0) {
+      dropdown.style.visibility = 'hidden'
     }
   }, 100)
 }
 
-function onOpenButtonClick () {
-  $(this).closest(TOP_LEVEL_SELECTOR).find(OPEN_BUTTON_SELECTOR).blur()
-  $(this).closest(TOP_LEVEL_SELECTOR).find(DROPDOWN_SELECTOR).css('visibility', 'visible')
-  $(this).closest(TOP_LEVEL_SELECTOR).find(DROPDOWN_SELECTOR).find(ITEM_SELECTOR)[0].focus()
+const onOpenButtonClick = event => {
+  const { target } = event;
+  target.blur();
+  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'visible';
+  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(ITEM_SELECTOR)][0].focus();
 }
 
-function onCloseAreaClick () {
-  const OPEN_BUTTON = $(this).closest(TOP_LEVEL_SELECTOR).find(OPEN_BUTTON_SELECTOR)
-  const DROPDOWN = $(this).closest(TOP_LEVEL_SELECTOR).find(DROPDOWN_SELECTOR)
-  DROPDOWN.css('visibility', 'hidden')
-  OPEN_BUTTON.focus()
+const onCloseAreaClick = event => {
+  const { target } = event;
+  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(OPEN_BUTTON_SELECTOR)][0].focus();
+  [...target.closest(TOP_LEVEL_SELECTOR).querySelectorAll(DROPDOWN_SELECTOR)][0].style.visibility = 'hidden';
 }
 
-function onItemChange () {
-  const checked = this.checked
-  const items = [...$(this).closest(TOP_LEVEL_SELECTOR)
-    .find(ITEM_SELECTOR)]
-    .filter(item => item.value)
+const onItemChange = event => {
+  const { target } = event
+  const allItems = [...target.closest(TOP_LEVEL_SELECTOR)
+    .querySelectorAll(ITEM_SELECTOR)]
+  const items = allItems.filter(item => item.value)
+  const allCheckbox = allItems.filter(item => !item.value)[0]
 
-  $(this).focus()
+  target.focus()
 
-  if (this.value) {
-    $(this)
-      .closest(TOP_LEVEL_SELECTOR)
-      .find(ALL_SELECTOR)
-      .prop('checked', !items.map(item => item.checked).includes(true))
-  } else {
-    items.forEach(item => $(item).prop('checked', !checked))
-  }
+  if (target.value) {
+    allCheckbox.checked = false
+  } else (
+    items.forEach(item => {
+      item.checked = !target.checked
+    })
+  )
 
-  updateDisplayedValue.call(this)
+  updateDisplayedValue(target.closest(TOP_LEVEL_SELECTOR))
 }
 
-function updateDisplayedValue () {
-  const TOP_LEVEL = $(this).closest(TOP_LEVEL_SELECTOR)
-  const buttonText = [...TOP_LEVEL.find(DROPDOWN_SELECTOR).find(ITEM_SELECTOR)]
-    .filter(item => item.checked)
-    .map(item => $(item).parent().text().trim())
-    .join(', ')
+const updateDisplayedValue = elem => {
+  const allItems = [...elem.querySelectorAll(ITEM_SELECTOR)]
+  const selectedItemNames = allItems.filter(item => item.checked).map(item => {
+      return item.labels[0].innerHTML.trim()
+    })
+  const buttonText = selectedItemNames.length ? selectedItemNames.join(', ') : allItems[0].labels[0].innerHTML.trim();
 
-  TOP_LEVEL.find(`${CURRENT_SELECTIONS}`).text(buttonText)
+  [...elem.querySelectorAll(CURRENT_SELECTIONS)][0].innerText = buttonText;
 }
 
-function randomElementId () {
+const randomElementId = () => {
   return `el-${Math.floor((Math.random() * 100000) + 1)}`
 }
