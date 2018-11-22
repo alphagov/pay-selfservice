@@ -10,6 +10,7 @@
           id: 'reference',
           name: 'reference',
           value: filters.reference,
+          classes: 'govuk-!-font-size-16',
           label: {
             text: 'Reference number',
             classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -27,6 +28,7 @@
           id: 'email',
           name: 'email',
           value: filters.email,
+          classes: 'govuk-!-font-size-16',
           label: {
             text: 'Email address',
             classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -44,6 +46,7 @@
           id: 'cardholderName',
           name: 'cardholderName',
           value: filters.cardholderName,
+          classes: 'govuk-!-font-size-16',
           label: {
             text: 'Name on card',
             classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -61,6 +64,7 @@
           id: 'lastDigitsCardNumber',
           name: 'lastDigitsCardNumber',
           value: filters.lastDigitsCardNumber,
+          classes: 'govuk-!-font-size-16',
           label: {
             text: 'Last 4 card numbers',
             classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -77,6 +81,7 @@
         govukSelect({
           id: "card-brand",
           name: "brand",
+          classes: 'govuk-!-font-size-16',
           label: {
             text: "Card brand",
             classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -97,6 +102,7 @@
         govukSelect({
           id: "state",
           name: "state",
+          classes: 'govuk-!-font-size-16',
           label: {
             text: "Payment status",
             classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -126,7 +132,7 @@
               id: 'fromDate',
               name: 'fromDate',
               value: filters.fromDate,
-              classes: 'date-picker start',
+              classes: 'date-picker start govuk-!-font-size-16',
               label: {
                 text: 'Start date',
                 classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
@@ -141,7 +147,7 @@
               id: 'fromTime',
               name: 'fromTime',
               value: filters.fromTime,
-              classes: 'time-picker start',
+              classes: 'time-picker start govuk-!-font-size-16',
               label: {
                 text: 'Start time',
                 classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
@@ -161,7 +167,7 @@
               id: 'toDate',
               name: 'toDate',
               value: filters.toDate,
-              classes: 'date-picker end',
+              classes: 'date-picker end govuk-!-font-size-16',
               label: {
                 text: 'End date',
                 classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
@@ -176,7 +182,7 @@
               id: 'toTime',
               name: 'toTime',
               value: filters.toTime,
-              classes: 'time-picker end',
+              classes: 'time-picker end govuk-!-font-size-16',
               label: {
                 text: 'End time',
                 classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'

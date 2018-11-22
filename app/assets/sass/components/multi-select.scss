@@ -6,10 +6,10 @@
 }
 
 .multi-select-title {
-  @include govuk-font($size: 19);
+  @include govuk-font($size: 16);
 
   border: 2px solid $govuk-text-colour;
-  padding: 6px 5px 5px;
+  padding: 8px 5px;
   border-radius: 0;
   min-height: 34px;
   background-color: govuk-colour("white");
@@ -20,7 +20,6 @@
   -webkit-appearance: none;
   appearance: none;
   max-width: 100%;
-  font-size: 16px;
 
   display: block;
   cursor: pointer;
