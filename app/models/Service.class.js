@@ -21,6 +21,7 @@ class Service {
     this.serviceName = serviceData.service_name
     this.gatewayAccountIds = serviceData.gateway_account_ids
     this.merchantDetails = serviceData.merchant_details
+    this.collectBillingAddress = serviceData.collect_billing_address
   }
 
   /**
@@ -33,7 +34,8 @@ class Service {
       name: this.name,
       serviceName: this.serviceName,
       gateway_account_ids: this.gatewayAccountIds,
-      merchant_details: this.merchantDetails
+      merchant_details: this.merchantDetails,
+      collect_billing_address: this.collectBillingAddress
     }
   }
 }
