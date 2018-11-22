@@ -124,34 +124,12 @@ module.exports = function (grunt) {
           'public/js/application.min.js': ['public/js/application.js']
         }
       }
-    },
-
-    // nodemon watches for changes and restarts app
-    nodemon: {
-      dev: {
-        script: 'server.js',
-        options: {
-          ext: 'js',
-          ignore: ['node_modules/**', 'app/assets/**', 'public/**'],
-          args: ['-i=true']
-        }
-      }
-    },
-
-    concurrent: {
-      target: {
-        tasks: ['watch', 'nodemon'],
-        options: {
-          logConcurrentOutput: true
-        }
-      }
     }
   });
 
   [
     'grunt-babel',
     'grunt-browserify',
-    'grunt-concurrent',
     'grunt-contrib-clean',
     'grunt-contrib-copy',
     'grunt-contrib-uglify',
