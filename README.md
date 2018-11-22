@@ -3,6 +3,8 @@ GOV.UK Pay Self Service admin tool (Node.js)
 
 ## Running locally with `pay local`
 
+*This requires the Pay CLI, which is not publicly-available at present*
+
 Assuming your up and running with the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli) then you once you have selfservice running locally you shouldn’t need to restart the app to see changes you make.
 
 We use [nodemon](https://github.com/remy/nodemon) which watches for changes to files and restarts the node process.
