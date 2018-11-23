@@ -114,6 +114,7 @@ module.exports = {
     let newUsername = 'm87bmh'
     let defaultServiceId = opts.default_service_id || '193'
     let gatewayAccountIds = opts.gateway_account_ids || ['540']
+    let collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
 
     let data = {
       external_id: opts.external_id || newExternalId,
@@ -123,7 +124,8 @@ module.exports = {
         service: {
           name: 'System Generated',
           external_id: defaultServiceId,
-          gateway_account_ids: gatewayAccountIds
+          gateway_account_ids: gatewayAccountIds,
+          collect_billing_address: collectBillingAddress
         },
         role: opts.role || {
           name: 'admin',
@@ -139,7 +141,6 @@ module.exports = {
       second_factor: opts.second_factor || 'SMS',
       provisional_otp_key: opts.provisional_otp_key || '60400'
     }
-
     return {
       getPactified: () => {
         return pactUsers.pactify(data)

@@ -63,12 +63,14 @@ const makeADemoPayment = require('./controllers/make_a_demo_payment')
 const paymentLinksCtrl = require('./controllers/payment-links')
 const twoFactorAuthCtrl = require('./controllers/two-factor-auth-controller')
 const feedbackCtrl = require('./controllers/feedback')
+const toggleBillingAddress = require('./controllers/billing-address/toggle-billing-address-controller')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
-  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks, partnerApp
+  notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
+  partnerApp, toggleBillingAddress: billingAddress
 } = paths
 
 // Exports
@@ -180,6 +182,7 @@ module.exports.bind = function (app) {
     ...lodash.values(paymentLinks),
     ...lodash.values(user.twoFactorAuth),
     ...lodash.values(partnerApp),
+    ...lodash.values(billingAddress),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -263,6 +266,12 @@ module.exports.bind = function (app) {
   app.post(t3ds.onConfirm, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.onConfirm)
   app.post(t3ds.on, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.on)
   app.post(t3ds.off, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3ds.off)
+
+  // BILLING ADDRESS TOGGLE
+  app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), paymentMethodIsCard, toggleBillingAddress.index)
+  app.post(billingAddress.confirmOff, xraySegmentCls, permission('toggle-billing-address:update'), paymentMethodIsCard, toggleBillingAddress.confirmOff)
+  app.post(billingAddress.on, xraySegmentCls, permission('toggle-billing-address:update'), paymentMethodIsCard, toggleBillingAddress.toggleOn)
+  app.post(billingAddress.off, xraySegmentCls, permission('toggle-billing-address:update'), paymentMethodIsCard, toggleBillingAddress.toggleOff)
 
   // Prototyping
   app.get(prototyping.demoService.index, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsers.index)

@@ -137,7 +137,7 @@ describe('navigation menu', function () {
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Card types')
   })
 
-  it('should render 3D Secure navigation link when user have email notification template read permission', function () {
+  it('should render 3D Secure navigation link when user has toggle 3D Secure read permission', function () {
     const testPermissions = {
       tokens_update: false,
       gateway_credentials_update: false,
@@ -176,6 +176,28 @@ describe('navigation menu', function () {
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Email notifications')
   })
+
+  it('should render Billing address navigation link when user has toggle billing address read permission', function () {
+    const testPermissions = {
+      tokens_update: false,
+      gateway_credentials_update: false,
+      service_name_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: false,
+      toggle_billing_address_read: true
+    }
+    const templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
+    }
+
+    const body = renderTemplate('api-keys/index', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Billing address')
+  })
+
   it('should not render Accounts credentials navigation link when user is using direct debit gateway account', function () {
     const testPermissions = {
       tokens_update: true,
@@ -250,6 +272,29 @@ describe('navigation menu', function () {
       payment_types_read: false,
       toggle_3ds_read: false,
       email_notification_template_read: true
+    }
+    const templateData = {
+      permissions: testPermissions,
+      showSettingsNav: true,
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'direct debit')
+    }
+
+    const body = renderTemplate('api-keys/index', templateData)
+
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
+  })
+
+  it('should not render Billing address navigation link when user is using direct debit gateway account', function () {
+    const testPermissions = {
+      tokens_update: true,
+      gateway_credentials_update: false,
+      service_name_read: false,
+      merchant_details_read: false,
+      payment_types_read: false,
+      toggle_3ds_read: false,
+      email_notification_template_read: false,
+      toggle_billing_address_read: true
     }
     const templateData = {
       permissions: testPermissions,

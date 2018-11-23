@@ -1,0 +1,36 @@
+{% extends "layout.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/warning-text/macro.njk" import govukWarningText %}
+
+{% block pageTitle %}
+  Confirm turn off billing address - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {% if permissions.toggle_billing_address_update %}
+      <h1 class="govuk-heading-l govuk-!-margin-top-6">Are you sure you want to turn off the billing address?</h1>
+
+      {{ govukWarningText({
+        text: "Payment providers use the billing address to carry out fraud checks. Some payments may be declined if you stop collecting billing addresses.",
+        iconFallbackText: 'Warning'
+      }) }}
+
+      <form class="permission-main" method="post" action="{{ routes.toggleBillingAddress.off }}">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+        {{
+          govukButton({
+            text: "Turn off billing address",
+            attributes: {
+              id: "billing-address-confirm-off-button"
+            }
+          })
+        }}
+      </form>
+    {% endif %}
+  </div>
+{% endblock %}

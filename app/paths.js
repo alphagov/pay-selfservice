@@ -107,6 +107,12 @@ module.exports = {
     on: '/3ds/on',
     off: '/3ds/off'
   },
+  toggleBillingAddress: {
+    index: '/billing-address',
+    confirmOff: '/billing-address/confirm-off',
+    on: '/billing-address/on',
+    off: '/billing-address/off'
+  },
   healthcheck: {
     path: '/healthcheck'
   },

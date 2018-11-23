@@ -15,6 +15,8 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
     settingsPath = paths.paymentTypes.summary
   } else if (permissions.email_notification_template_read) {
     settingsPath = paths.emailNotifications.index
+  } else if (permissions.toggle_billing_address_read && type === 'card') {
+    settingsPath = paths.toggleBillingAddress.index
   }
 
   const navigationItems = []
@@ -101,6 +103,13 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       url: paths.partnerApp.linkAccount,
       current: pathLookup(originalUrl, paths.partnerApp.linkAccount),
       permissions: permissions.tokens_update && type === 'direct debit'
+    },
+    {
+      id: 'navigation-menu-billing-address',
+      name: 'Billing address',
+      url: paths.toggleBillingAddress.index,
+      current: pathLookup(originalUrl, paths.toggleBillingAddress.index),
+      permissions: permissions.toggle_billing_address_read && type === 'card'
     }
   ]
 }

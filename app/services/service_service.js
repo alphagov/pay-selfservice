@@ -18,7 +18,8 @@ module.exports = {
   getGatewayAccounts,
   updateServiceName,
   updateMerchantDetails,
-  createService
+  createService,
+  toggleCollectBillingAddress
 }
 
 /**
@@ -126,4 +127,16 @@ function createService (serviceName, serviceNameCy, correlationId) {
     .then(gatewayAccount =>
       getAdminUsersClient({ correlationId }).createService(serviceName, serviceNameCy, [gatewayAccount.gateway_account_id])
     )
+}
+
+/**
+ * Update the collect billing address setting
+ *
+ * @param serviceExternalId
+ * @param collectBillingAddress
+ * @param correlationId
+ * @returns {*|Promise|Promise}
+ */
+function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
+  return getAdminUsersClient({correlationId}).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
 }
