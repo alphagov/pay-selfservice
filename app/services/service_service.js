@@ -138,14 +138,5 @@ function createService (serviceName, serviceNameCy, correlationId) {
  * @returns {*|Promise|Promise}
  */
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
-  return new Promise(function (resolve, reject) {
-    if (!serviceExternalId) return reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-    getAdminUsersClient({correlationId}).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
-      .then(() => {
-        return resolve()
-      })
-      .catch(function (err) {
-        return reject(err)
-      })
-  })
+  return getAdminUsersClient({correlationId}).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
 }
