@@ -2,10 +2,7 @@
   box-sizing: border-box;
   width: 100%;
 
-  padding-top: govuk-spacing(3);
-  padding-right: govuk-spacing(3);
-  padding-bottom: govuk-spacing(3);
-  padding-left: govuk-spacing(3);
+  padding: govuk-spacing(3);
   background-color: lighten(desaturate(govuk-colour("light-blue"), 8.46), 42.55);
 
   &--hide {
