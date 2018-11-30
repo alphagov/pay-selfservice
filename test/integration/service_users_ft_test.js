@@ -116,6 +116,46 @@ describe('service users resource', function () {
       })
       .end(done)
   })
+  it.only('should error when accessing service use ris not a member of', function (done) {
+    const externalServiceId = '734rgw76jhka'
+    const noAccessServiceId = 'no_access'
+
+    const serviceRoles = [{
+      service: {
+        name: 'System Generated',
+        external_id: externalServiceId
+      },
+      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
+    }]
+
+    const user = session.getUser({
+      external_id: EXTERNAL_ID_LOGGED_IN,
+      username: USERNAME_LOGGED_IN,
+      email: USERNAME_LOGGED_IN + '@example.com',
+      service_roles: serviceRoles
+    })
+
+    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{
+      service_roles: []
+    }, {
+      external_id: EXTERNAL_ID_OTHER_USER,
+      service_roles: []
+    }])
+    const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+
+    adminusersMock.get(`${SERVICE_RESOURCE}/${noAccessServiceId}/users`)
+      .reply(200, serviceUsersRes.getPlain())
+    adminusersMock.get(`${INVITE_RESOURCE}?serviceId=${noAccessServiceId}`)
+      .reply(200, getInvitesRes.getPlain())
+
+    app = session.getAppWithLoggedInUser(getApp(), user)
+
+    supertest(app)
+      .get(formattedPathFor(paths.teamMembers.index, noAccessServiceId))
+      .set('Accept', 'application/json')
+      .expect(403)
+      .end(done)
+  })
 
   it('view team member details', function (done) {
     const externalServiceId = '734rgw76jhka'
