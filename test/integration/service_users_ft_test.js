@@ -116,7 +116,7 @@ describe('service users resource', function () {
       })
       .end(done)
   })
-  it.only('should error when accessing service use ris not a member of', function (done) {
+  it('should error when accessing a service that the user is not a member of', function (done) {
     const externalServiceId = '734rgw76jhka'
     const noAccessServiceId = 'no_access'
 
@@ -323,7 +323,7 @@ describe('service users resource', function () {
     supertest(app)
       .get(formattedPathFor(paths.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
-      .expect(500)
+      .expect(403)
       .expect((res) => {
         expect(res.body.message).to.equal('You do not have the rights to access this service.')
       })

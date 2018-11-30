@@ -123,8 +123,8 @@ describe('invite user controller', function () {
         correlationId: 'blah',
         user: {externalId: 'some-ext-id', serviceIds: ['1']},
         body: {'invitee-email': invalidEmail, 'role-input': '200'},
-        params: {
-          externalServiceId: externalServiceId
+        service: {
+          externalId: externalServiceId
         }
       })
 

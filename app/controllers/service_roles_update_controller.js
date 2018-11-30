@@ -33,7 +33,7 @@ module.exports = {
   index: (req, res) => {
     let correlationId = req.correlationId
     let externalUserId = req.params.externalUserId
-    let serviceExternalId = req.params.externalServiceId
+    let serviceExternalId = req.service.externalId
 
     let viewData = user => {
       const editPermissionsLink = formattedPathFor(paths.teamMembers.permissions, serviceExternalId, user.externalId)
@@ -88,7 +88,7 @@ module.exports = {
    */
   update: (req, res) => {
     let externalUserId = req.params.externalUserId
-    let serviceExternalId = req.params.externalServiceId
+    let serviceExternalId = req.service.externalId
     let targetRoleExtId = parseInt(req.body['role-input'])
     let targetRole = getRole(targetRoleExtId)
     let correlationId = req.correlationId

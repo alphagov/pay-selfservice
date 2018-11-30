@@ -30,6 +30,9 @@ module.exports = function (req, res, next) {
   if (!req.service) {
     return notAuthorised(req, res)
   }
+
+  delete req.params.externalServiceId
+
   req.service.hasDirectDebitGatewayAccount = gatewayAccountType(req) === 'has_direct_debit_gateway_account'
   req.service.hasCardGatewayAccount = gatewayAccountType(req) === 'has_card_gateway_account'
   req.service.hasCardAndDirectDebitGatewayAccount = gatewayAccountType(req) === 'has_card_and_dd_gateway_account'

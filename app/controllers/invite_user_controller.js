@@ -38,7 +38,7 @@ module.exports = {
 
   index: (req, res) => {
     let roles = rolesModule.roles
-    const externalServiceId = req.params.externalServiceId
+    const externalServiceId = req.service.externalId
     const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
     const teamMemberInviteSubmitLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
     const invitee = lodash.get(req, 'session.pageData.invitee', '')
@@ -62,7 +62,7 @@ module.exports = {
   invite: (req, res) => {
     const correlationId = req.correlationId
     const senderId = req.user.externalId
-    const externalServiceId = req.params.externalServiceId
+    const externalServiceId = req.service.externalId
     const invitee = req.body['invitee-email'].trim()
     const roleId = parseInt(req.body['role-input'])
 

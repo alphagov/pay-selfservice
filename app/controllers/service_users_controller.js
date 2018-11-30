@@ -57,7 +57,7 @@ module.exports = {
    * @param res
    */
   index: (req, res) => {
-    const externalServiceId = req.params.externalServiceId
+    const externalServiceId = req.service.externalId
 
     const onSuccess = function ([members, invitedMembers]) {
       const teamMembers = mapByRoles(members, externalServiceId, req.user)
@@ -99,7 +99,7 @@ module.exports = {
    * @param res
    */
   show: (req, res) => {
-    const externalServiceId = req.params.externalServiceId
+    const externalServiceId = req.service.externalId
     const externalUserId = req.params.externalUserId
     if (externalUserId === req.user.externalId) {
       res.redirect(paths.user.profile)
@@ -138,7 +138,7 @@ module.exports = {
    */
   delete: (req, res) => {
     const userToRemoveExternalId = req.params.externalUserId
-    const externalServiceId = req.params.externalServiceId
+    const externalServiceId = req.service.externalId
     const removerExternalId = req.user.externalId
     const correlationId = req.correlationId
 
