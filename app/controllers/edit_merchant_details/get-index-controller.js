@@ -9,7 +9,7 @@ const formatPath = require('../../utils/replace_params_in_path')
 const {response} = require('../../utils/response')
 
 module.exports = (req, res) => {
-  const externalServiceId = req.params.externalServiceId
+  const externalServiceId = req.service.externalId
   const merchantDetails = lodash.get(req, 'service.merchantDetails', undefined)
   if (!merchantDetails) {
     return res.redirect(formatPath(paths.merchantDetails.edit, externalServiceId))

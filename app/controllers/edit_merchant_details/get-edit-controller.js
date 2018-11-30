@@ -3,7 +3,7 @@ const responses = require('../../utils/response')
 const countries = require('../../services/countries.js')
 
 module.exports = (req, res) => {
-  const externalServiceId = req.params.externalServiceId
+  const externalServiceId = req.service.externalId
   let pageData = lodash.get(req, 'session.pageData.editMerchantDetails')
   if (pageData) {
     delete req.session.pageData.editMerchantDetails
