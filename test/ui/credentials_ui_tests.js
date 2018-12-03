@@ -34,7 +34,7 @@ describe('The credentials view in normal mode', function () {
 
     body.should.containSelector('#credentials')
 
-    body.should.containSelector('#merchant-id-key').withExactText('Merchant ID')
+    body.should.containSelector('#merchant-id-key').withExactText('Merchant code')
     body.should.containSelector('#merchant-id-value').withExactText('a-merchant-id')
 
     body.should.containSelector('#username-key').withExactText('Username')
@@ -253,7 +253,7 @@ describe('The credentials view in edit mode', function () {
 
     body.should.containInputField('merchantId', 'text')
       .withAttribute('value', 'a-merchant-id')
-      .withLabel('Merchant ID')
+      .withLabel('Merchant code')
 
     body.should.containInputField('username', 'text')
       .withAttribute('value', 'a-username')
