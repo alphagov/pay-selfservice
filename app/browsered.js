@@ -15,6 +15,8 @@ const checkboxRowSelection = require('./browsered/checkbox-row-selection')
 // GOV.UK Frontend js bundle
 const GOVUKFrontend = require('govuk-frontend')
 
+GOVUKFrontend.initAll() // Needs to be first
+
 multiSelects.enableMultiSelects()
 fieldValidation.enableFieldValidation()
 dashboardActivity.init()
@@ -26,4 +28,3 @@ niceURL()
 copyText()
 accessibleAutocomplete()
 checkboxRowSelection()
-GOVUKFrontend.initAll()
