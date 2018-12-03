@@ -77,7 +77,7 @@
     "lodash": "4.17.10",
     "minimist": "1.2.x",
     "moment-timezone": "^0.5.17",
-    "morgan": "1.9.x",
+    "morgan": "^1.9.1",
     "node-zendesk": "^1.2.1",
     "notp": "^2.0.3",
     "nunjucks": "^3.1.3",
