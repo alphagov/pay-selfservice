@@ -5,10 +5,6 @@
   Transaction details {{reference}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
-{% block pageSpecificJS %}
-<script src="/public/js/components/refund.js"></script>
-{% endblock %}
-
 {% block mainContent %}
   <div class="govuk-grid-column-full">
     {% set backLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
