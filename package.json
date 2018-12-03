@@ -90,7 +90,7 @@
     "requestretry": "^1.13.0",
     "rfc822-validate": "^1.0.0",
     "serve-favicon": "2.5.0",
-    "slugify": "^1.3.0",
+    "slugify": "^1.3.3",
     "staticify": "2.0.0",
     "throng": "4.0.x",
     "tunnel": "0.0.5",
