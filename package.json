@@ -100,6 +100,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
+    "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.6",
     "@pact-foundation/pact-node": "6.16.4",
     "chai": "^4.1.2",
