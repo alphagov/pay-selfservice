@@ -109,7 +109,7 @@
     "cheerio": "^1.0.0-rc.2",
     "chokidar-cli": "latest",
     "cypress": "^2.1.0",
-    "dotenv": "^5.0.1",
+    "dotenv": "^6.1.0",
     "envfile": "^2.3.0",
     "errorhandler": "^1.5.0",
     "express-writer": "0.0.4",
