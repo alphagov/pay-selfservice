@@ -100,7 +100,7 @@ describe('Create payment link reference controller', () => {
       )
 
       it(`should set the value of the reference hint to pre-existing data present in the session`, () =>
-        expect($(`input[name='reference-hint-text']`).val()).to.equal(session.pageData.createPaymentLink.paymentReferenceHint)
+        expect($(`textarea[name='reference-hint-text']`).val()).to.equal(session.pageData.createPaymentLink.paymentReferenceHint)
       )
     })
 

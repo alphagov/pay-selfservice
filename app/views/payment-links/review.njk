@@ -53,12 +53,12 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         </dt>
         <dd class="cya-answer" id="create-payment-link-reference">
           {% if pageData.paymentReferenceType === 'custom' %}
-            <span>
             {{ pageData.paymentReferenceLabel }}
             {% if pageData.paymentReferenceHint %}
-              <br/>{{ pageData.paymentReferenceHint }}
+              <span class="govuk-!-display-block govuk-text-grey">
+                {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
+              </span>
             {% endif %}
-            </span>
           {% else %}
             <span class="govuk-text-grey">Created by GOV.UK Pay</span>
           {% endif %}

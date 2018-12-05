@@ -1,5 +1,6 @@
 {% extends "../layout.njk" %}
 {% from "components/input/macro.njk" import govukInput %}
+{% from "components/character-count/macro.njk" import govukCharacterCount %}
 {% from "components/radios/macro.njk" import govukRadios %}
 {% from "components/button/macro.njk" import govukButton %}
 
@@ -43,11 +44,11 @@
           errorMessage: blankReferenceLabelError,
           classes: "govuk-input--width-20",
           label: {
-              text: "Name of your payment reference number",
+              text: "Name of payment reference",
               classes: "govuk-label--s"
           },
           hint: {
-            text: "Choose the name of what you would like to collect from your users. For example, ‘Reference number’ or ‘Invoice number’."
+            text: "For example, 'invoice number'"
           },
           attributes: {
             "data-validate": "isNaxsiSafe"
@@ -56,17 +57,18 @@
       }}
 
       {{
-        govukInput({
+        govukCharacterCount({
           id: "reference-hint-text",
           name: "reference-hint-text",
           value: paymentReferenceHint,
           classes: "govuk-input--width-20",
+          maxlength: 255,
           label: {
               text: "Hint text (optional)",
               classes: "govuk-label--s"
           },
           hint: {
-            text: "Give your users more information. For example, you could tell them where to find the invoice number."
+            text: "Tell users what the payment reference looks like and where they can find it."
           },
           attributes: {
             "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
@@ -75,7 +77,9 @@
           }
         })
       }}
-      <p class="govuk-body govuk-!-font-size-16 govuk-text-grey">255 characters</p>
+    {% endset %}
+    {% set standardReferenceHTML %}
+    <p class="govuk-body">GOV.UK Pay will create a unique payment reference for each transaction.</p>
     {% endset %}
     {{
       govukRadios({
@@ -83,7 +87,7 @@
         name: "reference-type-group",
         fieldset: {
             legend: {
-                text: "Would you like us to create a payment reference number for your users?",
+                text: "Do your users already have a payment reference?",
                 isPageHeading: true,
                 classes: "govuk-fieldset__legend--l"
             }
@@ -91,18 +95,21 @@
         errorMessage: noSelectionError,
         items: [
           {
-              value: "standard",
-              text: "Yes, create a unique payment reference number for my users",
-              checked: paymentReferenceType === 'standard',
-              id: "reference-type-standard"
-          },
-          {
               value: "custom",
-              text: "No, I would like to use my own",
-              checked: paymentReferenceType === 'custom' or blankReferenceLabelError,
+              text: "Yes",
+              checked: paymentReferenceType === 'custom',
               id: "reference-type-custom",
               conditional: {
                 html: customReferenceHTML
+              }
+          },
+          {
+              value: "standard",
+              text: "No",
+              checked: paymentReferenceType === 'standard' or blankReferenceLabelError,
+              id: "reference-type-standard",
+              conditional: {
+                html: standardReferenceHTML
               }
           }
         ]
