@@ -120,7 +120,7 @@
     "grunt-babel": "^8.0.0",
     "grunt-browserify": "^5.3.0",
     "grunt-cli": "1.2.x",
-    "grunt-contrib-clean": "1.1.x",
+    "grunt-contrib-clean": "2.0.x",
     "grunt-contrib-copy": "1.0.x",
     "grunt-contrib-uglify": "^3.3.0",
     "grunt-contrib-watch": "1.1.x",
