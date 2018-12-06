@@ -1,10 +1,15 @@
+'use strict'
+
+// NPM modules
 const sinon = require('sinon')
 const {expect} = require('chai')
+
+// Local modules
 const resolveService = require('../../../app/middleware/resolve_service')
 const userFixtures = require('../../fixtures/user_fixtures')
 
-describe('resolve service', function () {
-  it('resolve service from path param', function () {
+describe('resolve service', () => {
+  it('resolve service from path param', () => {
     const res = {render: sinon.spy()}
     const nextSpy = sinon.spy()
 
@@ -17,7 +22,7 @@ describe('resolve service', function () {
     expect(nextSpy.called).to.equal(true)
   })
 
-  it('service.hasDirectDebitGatewayAccount is true and service.hasCardGatewayAccount is false when we have Direct Debit gateway accounts only', function () {
+  it('service.hasDirectDebitGatewayAccount is true and service.hasCardGatewayAccount is false when we have Direct Debit gateway accounts only', () => {
     const res = {render: sinon.spy()}
     const nextSpy = sinon.spy()
 
@@ -34,7 +39,7 @@ describe('resolve service', function () {
     expect(nextSpy.called).to.equal(true)
   })
 
-  it('service.hasCardGatewayAccount is true and service.hasDirectDebitGatewayAccount is false when we have Card gateway accounts only', function () {
+  it('service.hasCardGatewayAccount is true and service.hasDirectDebitGatewayAccount is false when we have Card gateway accounts only', () => {
     const res = {render: sinon.spy()}
     const nextSpy = sinon.spy()
 
@@ -51,7 +56,7 @@ describe('resolve service', function () {
     expect(nextSpy.called).to.equal(true)
   })
 
-  it('service.hasCardAndDirectDebitGatewayAccount is true when we have Direct Debit and Card gateway accounts', function () {
+  it('service.hasCardAndDirectDebitGatewayAccount is true when we have Direct Debit and Card gateway accounts', () => {
     const res = {render: sinon.spy()}
     const nextSpy = sinon.spy()
 
