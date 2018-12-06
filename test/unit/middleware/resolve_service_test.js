@@ -1,15 +1,51 @@
+'use strict'
+
+// NPM modules
 const sinon = require('sinon')
 const {expect} = require('chai')
+
+// Local modules
 const resolveService = require('../../../app/middleware/resolve_service')
 const userFixtures = require('../../fixtures/user_fixtures')
 
-describe('resolve service', function () {
-  it('resolve service from path param', function () {
-    const res = {render: sinon.spy()}
-    const nextSpy = sinon.spy()
+describe('resolve service middleware', () => {
+  let res, nextSpy, user
 
-    const user = userFixtures.validUser().getAsObject()
+  beforeEach(() => {
+    res = { setHeader: sinon.spy(), status: sinon.spy(), render: sinon.spy() }
+    nextSpy = sinon.spy()
+    user = userFixtures.validUser().getAsObject()
+  })
+
+  it('from externalServiceId in path param then remove it', () => {
     const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
+
+    resolveService(req, res, nextSpy)
+
+    expect(req.service).to.deep.equal(user.serviceRoles[0].service)
+    expect(req.params.externalServiceId).to.equal(undefined) // Removing becuase we going forward we only want to resolve the service via req.service as this way we know the person authorised
+    expect(nextSpy.called).to.equal(true)
+  })
+
+  it('from externalServiceId in path param but show unauthorised view if it does not belong to this user', () => {
+    const req = {user: user, params: {externalServiceId: 'someoneElsesID'}}
+
+    resolveService(req, res, nextSpy)
+
+    expect(req.service).to.equal(undefined)
+    expect(res.status.calledWith(403))
+    expect(res.render.calledWith('error'))
+    expect(nextSpy.called).to.equal(false)
+  })
+
+  it('from gatewayAccountId in cookie', () => {
+    const req = {
+      user: user,
+      params: {},
+      gateway_account: {
+        currentGatewayAccountId: user.serviceRoles[0].service.gatewayAccountIds[0]
+      }
+    }
 
     resolveService(req, res, nextSpy)
 
@@ -17,10 +53,43 @@ describe('resolve service', function () {
     expect(nextSpy.called).to.equal(true)
   })
 
-  it('service.hasDirectDebitGatewayAccount is true and service.hasCardGatewayAccount is false when we have Direct Debit gateway accounts only', function () {
-    const res = {render: sinon.spy()}
-    const nextSpy = sinon.spy()
+  it('from gatewayAccountId in cookie but if it does not match any of the users services kick back to first service they are a member of', () => {
+    const req = {
+      user: user,
+      params: {},
+      gateway_account: {
+        currentGatewayAccountId: 'someoneElsesID'
+      }
+    }
 
+    resolveService(req, res, nextSpy)
+
+    expect(req.service).to.deep.equal(user.serviceRoles[0].service)
+    expect(nextSpy.called).to.equal(true)
+  })
+
+  it('when user is not authorised to view any services show unauthorised page', () => {
+    const req = {user: user, params: {}}
+    user.serviceRoles = {} // remove all services from test user
+
+    resolveService(req, res, nextSpy)
+
+    expect(req.service).to.equal(undefined)
+    expect(res.status.calledWith(403))
+    expect(res.render.calledWith('error'))
+    expect(nextSpy.called).to.equal(false)
+  })
+})
+
+describe('resolve types of gateway within a service', () => {
+  let res, nextSpy
+
+  beforeEach(() => {
+    res = {render: sinon.spy()}
+    nextSpy = sinon.spy()
+  })
+
+  it('service.hasDirectDebitGatewayAccount is true and service.hasCardGatewayAccount is false when we have Direct Debit gateway accounts only', () => {
     const user = userFixtures.validUser({
       gateway_account_ids: ['DIRECT_DEBIT:randomidhere']
     }).getAsObject()
@@ -34,10 +103,7 @@ describe('resolve service', function () {
     expect(nextSpy.called).to.equal(true)
   })
 
-  it('service.hasCardGatewayAccount is true and service.hasDirectDebitGatewayAccount is false when we have Card gateway accounts only', function () {
-    const res = {render: sinon.spy()}
-    const nextSpy = sinon.spy()
-
+  it('service.hasCardGatewayAccount is true and service.hasDirectDebitGatewayAccount is false when we have Card gateway accounts only', () => {
     const user = userFixtures.validUser({
       gateway_account_ids: ['7127217']
     }).getAsObject()
@@ -51,10 +117,7 @@ describe('resolve service', function () {
     expect(nextSpy.called).to.equal(true)
   })
 
-  it('service.hasCardAndDirectDebitGatewayAccount is true when we have Direct Debit and Card gateway accounts', function () {
-    const res = {render: sinon.spy()}
-    const nextSpy = sinon.spy()
-
+  it('service.hasCardAndDirectDebitGatewayAccount is true when we have Direct Debit and Card gateway accounts', () => {
     const user = userFixtures.validUser({
       gateway_account_ids: ['7127217', 'DIRECT_DEBIT:randomidhere']
     }).getAsObject()

@@ -1,15 +1,23 @@
-const path = require('path')
+'use strict'
+
+// NPM modules
 const nock = require('nock')
-const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const supertest = require('supertest')
-const serviceFixtures = require(path.join(__dirname, '/../fixtures/service_fixtures'))
-const userFixtures = require(path.join(__dirname, '/../fixtures/user_fixtures'))
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const csrf = require('csrf')
 const chai = require('chai')
-const expect = chai.expect
 const chaiAsPromised = require('chai-as-promised')
+
+const {expect} = chai
+
+// Local modules
+const session = require('../test_helpers/mock_session.js')
+const {getApp} = require('../../server.js')
+const serviceFixtures = require('../fixtures/service_fixtures')
+const userFixtures = require('../fixtures/user_fixtures')
+const paths = require('../../app/paths.js')
+const formattedPathFor = require('../../app/utils/replace_params_in_path')
+
+// Local constants
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const SERVICE_RESOURCE = '/v1/api/services'
 const INVITE_RESOURCE = '/v1/api/invites'
@@ -18,21 +26,19 @@ const USER_RESOURCE = '/v1/api/users'
 let app
 chai.use(chaiAsPromised)
 
-const formattedPathFor = require('../../app/utils/replace_params_in_path')
-
-describe('service users resource', function () {
+describe('service users resource', () => {
   let EXTERNAL_ID_LOGGED_IN = '7d19aff33f8948deb97ed16b2912dcd3'
-  let USERNAME_LOGGED_IN = 'existing-user@example.com'
-  let EXTERNAL_ID_OTHER_USER = '393266e872594f1593558549caad95ec'
-  let USERNAME_OTHER_USER = 'other-user@example.com'
+  const USERNAME_LOGGED_IN = 'existing-user@example.com'
+  const EXTERNAL_ID_OTHER_USER = '393266e872594f1593558549caad95ec'
+  const USERNAME_OTHER_USER = 'other-user@example.com'
 
-  afterEach((done) => {
+  afterEach(done => {
     nock.cleanAll()
     app = null
     done()
   })
 
-  it('get list of service users should link to my profile for my user', function (done) {
+  it('get list of service users should link to my profile for my user', done => {
     const externalServiceId = '734rgw76jhka'
     const serviceRoles = [{
       service: {
@@ -61,7 +67,7 @@ describe('service users resource', function () {
       .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.number_active_members).to.equal(1)
         expect(res.body.number_admin_members).to.equal(1)
         expect(res.body['number_view-only_members']).to.equal(0)
@@ -76,7 +82,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('get list of service users should link to a users view details for other users', function (done) {
+  it('get list of service users should link to a users view details for other users', done => {
     const externalServiceId = '734rgw76jhka'
 
     const serviceRoles = [{
@@ -111,12 +117,13 @@ describe('service users resource', function () {
       .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.team_members.admin[1].link).to.equal(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
       })
       .end(done)
   })
-  it('should error when accessing a service that the user is not a member of', function (done) {
+
+  it('should error when accessing a service that the user is not a member of', done => {
     const externalServiceId = '734rgw76jhka'
     const noAccessServiceId = 'no_access'
 
@@ -157,7 +164,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('view team member details', function (done) {
+  it('view team member details', done => {
     const externalServiceId = '734rgw76jhka'
     const userInSession = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
@@ -195,7 +202,7 @@ describe('service users resource', function () {
       .get(formattedPathFor(paths.teamMembers.show, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .expect(200)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.username).to.equal(USERNAME_OTHER_USER)
         expect(res.body.email).to.equal('other-user@example.com')
         expect(res.body.role).to.equal('View only')
@@ -205,7 +212,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('should show my profile', function (done) {
+  it('should show my profile', done => {
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
@@ -229,15 +236,15 @@ describe('service users resource', function () {
       .get('/my-profile')
       .set('Accept', 'application/json')
       .expect(200)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.username).to.equal(user.username)
         expect(res.body.email).to.equal(user.email)
-        expect(res.body['telephone_number']).to.equal(user.telephone_number)
+        expect(res.body.telephone_number).to.equal(user.telephone_number)
       })
       .end(done)
   })
 
-  it('should not show my profile without second factor', function (done) {
+  it('should not show my profile without second factor', done => {
     const user = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
@@ -265,7 +272,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('should redirect to my profile when trying to access my user through team members path', function (done) {
+  it('should redirect to my profile when trying to access my user through team members path', done => {
     const userInSession = session.getUser({
       permissions: [{name: 'users-service:read'}]
     })
@@ -282,7 +289,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('error when accessing an user from other service profile (cheeky!)', function (done) {
+  it('error when accessing an user from other service profile (cheeky!)', done => {
     const externalServiceId1 = '48753g874tg'
     const externalServiceId2 = '7huh4y7tu6g'
     const user = session.getUser({
@@ -324,26 +331,26 @@ describe('service users resource', function () {
       .get(formattedPathFor(paths.teamMembers.show, externalServiceId2, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
       .expect(403)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.message).to.equal('You do not have the rights to access this service.')
       })
       .end(done)
   })
 
-  it('remove a team member successfully should redirect user to team member', function (done) {
-    let userInSession = session.getUser({
+  it('remove a team member successfully should redirect user to team member', done => {
+    const userInSession = session.getUser({
       permissions: [{name: 'users-service:delete'}]
     })
     const externalServiceId = userInSession.serviceRoles[0].service.externalId
     EXTERNAL_ID_LOGGED_IN = userInSession.externalId
 
-    let userToDelete = {
+    const userToDelete = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
-      role: {'name': 'view-only'}
+      role: {name: 'view-only'}
     }
 
-    let getUserResponse = userFixtures.validUserResponse(userToDelete)
+    const getUserResponse = userFixtures.validUserResponse(userToDelete)
 
     adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_OTHER_USER}`)
       .reply(200, getUserResponse.getPlain())
@@ -361,8 +368,8 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('when remove a team member fails when user does not exist should redirect user to error view with link to view team members', function (done) {
-    let userInSession = session.getUser({
+  it('when remove a team member fails when user does not exist should redirect user to error view with link to view team members', done => {
+    const userInSession = session.getUser({
       permissions: [{name: 'users-service:delete'}]
     })
 
@@ -379,7 +386,7 @@ describe('service users resource', function () {
       .set('Accept', 'application/json')
       .send({csrfToken: csrf().create('123')})
       .expect(200)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.error.title).to.equal('This person has already been removed')
         expect(res.body.error.message).to.equal('This person has already been removed by another administrator.')
         expect(res.body.link.link).to.equal(`/service/${externalServiceId}`)
@@ -389,7 +396,7 @@ describe('service users resource', function () {
       .end(done)
   })
 
-  it('get list of invited users', function (done) {
+  it('get list of invited users', done => {
     const externalServiceId = '734rgw76jhka'
     const serviceRoles = [{
       service: {
@@ -436,7 +443,7 @@ describe('service users resource', function () {
       .get(formattedPathFor(paths.teamMembers.index, externalServiceId))
       .set('Accept', 'application/json')
       .expect(200)
-      .expect((res) => {
+      .expect(res => {
         expect(res.body.number_invited_members).to.equal(2)
         expect(res.body.number_admin_invited_members).to.equal(1)
         expect(res.body['number_view-only_invited_members']).to.equal(1)
