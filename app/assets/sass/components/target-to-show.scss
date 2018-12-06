@@ -6,6 +6,10 @@
     display: block;
   }
 
+  .govuk-button {
+    margin-bottom: govuk-spacing(2);
+  }
+
   &--cancel {
     position: absolute;
     right: govuk-spacing(3);
