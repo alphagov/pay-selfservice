@@ -16,25 +16,16 @@ const getServiceFromUserByExternalId = (req, externalServiceId) => {
 }
 
 const gatewayAccountType = req => {
-  let hasDDAccount = false
-  let hasCardAccount = false
-
   if (req.service.gatewayAccountIds) {
-    req.service.gatewayAccountIds.forEach(account => {
-      if (isADirectDebitAccount(account)) {
-        hasDDAccount = true
-      } else {
-        hasCardAccount = true
-      }
-    })
-  }
+    const DDorNot = req.service.gatewayAccountIds.map(account => isADirectDebitAccount(account))
 
-  if (hasDDAccount && hasCardAccount) {
-    return 'has_card_and_dd_gateway_account'
-  } else if (hasDDAccount) {
-    return 'has_direct_debit_gateway_account'
-  } else if (hasCardAccount) {
-    return 'has_card_gateway_account'
+    if (DDorNot.every(account => account === true)) {
+      return 'hasDirectDebitGatewayAccount'
+    } else if (DDorNot.some(account => account === true)) {
+      return 'hasCardAndDirectDebitGatewayAccount'
+    } else {
+      return 'hasCardGatewayAccount'
+    }
   }
 }
 
@@ -62,9 +53,9 @@ module.exports = (req, res, next) => {
 
   delete req.params.externalServiceId
 
-  req.service.hasDirectDebitGatewayAccount = gatewayAccountType(req) === 'has_direct_debit_gateway_account'
-  req.service.hasCardGatewayAccount = gatewayAccountType(req) === 'has_card_gateway_account'
-  req.service.hasCardAndDirectDebitGatewayAccount = gatewayAccountType(req) === 'has_card_and_dd_gateway_account'
+  req.service.hasDirectDebitGatewayAccount = gatewayAccountType(req) === 'hasDirectDebitGatewayAccount'
+  req.service.hasCardGatewayAccount = gatewayAccountType(req) === 'hasCardGatewayAccount'
+  req.service.hasCardAndDirectDebitGatewayAccount = gatewayAccountType(req) === 'hasCardAndDirectDebitGatewayAccount'
 
   next()
 }
