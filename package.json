@@ -133,7 +133,7 @@
     "nunjucksify": "^2.2.0",
     "nyc": "^11.8.0",
     "pact": "4.3.2",
-    "portfinder": "^1.0.13",
+    "portfinder": "^1.0.20",
     "proxyquire": "~2.1.0",
     "sass-lint": "^1.12.1",
     "sinon": "^5.0.7",
