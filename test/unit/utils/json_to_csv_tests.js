@@ -18,11 +18,11 @@ describe('json2csv module', function () {
 
     let csvDataPromise = jsonToCSV(jsonData)
 
-    let csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"
-"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29"
-"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"
-"red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29"
-"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"`
+    let csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount"
+"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45"
+"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99"
+"red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","12.34"
+"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","1.23"`
 
     return csvDataPromise.then(csvData => {
       return expect(csvData).to.deep.equal(csvDataExpected)
@@ -38,12 +38,12 @@ describe('json2csv module', function () {
 
     let csvDataPromise = jsonToCSV(jsonData)
 
-    let csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created"
-"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29"
-"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"
-"red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29"
-"refund_test","desc-refund","alice.111@mail.fake","-45.67","Visa","TEST01","12/19","4242","Refund success",true,"","","transaction-1","refund1","alice.111@mail.fake","12 May 2016","17:37:29"
-"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29"`
+    let csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount"
+"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45"
+"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99"
+"red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","12.34"
+"refund_test","desc-refund","alice.111@mail.fake","-45.67","Visa","TEST01","12/19","4242","Refund success",true,"","","transaction-1","refund1","alice.111@mail.fake","12 May 2016","17:37:29","0.00","-45.67"
+"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","1.23"`
 
     return csvDataPromise.then(csvData => {
       return expect(csvData).to.deep.equal(csvDataExpected)

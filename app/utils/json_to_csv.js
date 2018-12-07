@@ -81,6 +81,20 @@ module.exports = function (data) {
           value: row => {
             return dates.utcToTime(row.created_date)
           }
+        },
+        {
+          label: 'Corporate Card Surcharge',
+          value: row => {
+            const amountInPence = row.corporate_card_surcharge ? row.corporate_card_surcharge : 0
+            return (parseInt(amountInPence) / 100).toFixed(2)
+          }
+        },
+        {
+          label: 'Total Amount',
+          value: row => {
+            const amountInPence = row.total_amount ? row.total_amount : row.amount
+            return (row.transaction_type === 'refund') ? (parseInt(amountInPence) * -1 / 100).toFixed(2) : (parseInt(amountInPence) / 100).toFixed(2)
+          }
         }
       ]
       return resolve(json2csv.parse(
