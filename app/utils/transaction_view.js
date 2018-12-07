@@ -46,6 +46,9 @@ module.exports = {
     connectorData.results.forEach(element => {
       element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
       element.amount = asGBP(element.amount)
+      if (element.total_amount && element.corporate_card_surcharge) {
+        element.total_amount = asGBP(element.total_amount)
+      }
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
       element.updated = dates.utcToDisplay(element.updated)
       element.created = dates.utcToDisplay(element.created_date)

@@ -7,7 +7,7 @@
       <th class="govuk-table__header" scope="col" id="email-header">Email</th>
       {% endif %}
       {% if permissions.transactions_amount_read %}
-      <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="amount-header">Amount</th>
+      <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
       {% endif %}
       {% if permissions.transactions_card_type_read %}
       <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
@@ -18,9 +18,9 @@
   </thead>
   <tbody class="govuk-table__body">
   {% for result in results %}
-    <tr data-follow-link data-link="{{result.link}}" class="transactions-list--row govuk-table__row">
+    <tr data-follow-link data-link="{{result.link}}" class="transactions-list--row govuk-table__row vertical-align-top">
       <th scope="row" class="charge-column reference govuk-table__header" data-gateway-transaction-id="{{result.gateway_transaction_id}}">
-        <a class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference" id="charge-id-{{result.charge_id}}" data-charge-id="{{result.charge_id}}" href="{{result.link}}">
+        <a class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block" id="charge-id-{{result.charge_id}}" data-charge-id="{{result.charge_id}}" href="{{result.link}}">
           {{result.reference}}
         </a>
       </th>
@@ -28,7 +28,14 @@
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email">{{result.email}}</td>
       {% endif %}
       {% if permissions.transactions_amount_read %}
-      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric amount">{{result.amount}}</td>
+             <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
+                   {%- if result.total_amount and result.corporate_card_surcharge -%}
+                     {{result.total_amount}}
+                     <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
+                   {%- else -%}
+                     {{result.amount}}
+                   {%- endif -%}
+             </td>
       {% endif %}
       {% if permissions.transactions_card_type_read %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>

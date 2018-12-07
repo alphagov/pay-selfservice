@@ -3,6 +3,10 @@ describe('Transactions', () => {
 
   const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
 
+  const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
+
+  const aCorporateCardSurchargeCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.corporate_card_surcharge !== undefined)[0]
+
   const convertAmounts = val => '£' + (val / 100).toFixed(2)
 
   beforeEach(() => {
@@ -130,6 +134,15 @@ describe('Transactions', () => {
       cy.get('#transactions-list tbody').find('tr').should('have.length', filteredMultipleStates.data.length)
       // Ensure the values are displayed correctly
       cy.get('#transactions-list tbody').find('tr').first().find('td').eq(1).should('have.text', convertAmounts(filteredMultipleStates.data[0].amount))
+    })
+
+    it('should display card fee with corporate card surcharge transaction', () => {
+      // Ensure the transactions list has the right number of items
+      const unfilteredTransactions = selfServiceDefaultUser.sections.transactions.data
+      cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
+
+      // Ensure the card fee is displayed correctly
+      cy.get('#transactions-list tbody').find('tr').eq(4).find('td').eq(1).should('contain', convertAmounts(aCorporateCardSurchargeCharge.total_amount)).and('contain', '(with card fee)')
     })
   })
 })

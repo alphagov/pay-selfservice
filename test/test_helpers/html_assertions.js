@@ -194,4 +194,12 @@ chai.use(function (_chai, utils) {
       expectedValue, actualValue
     )
   })
+
+  chai.Assertion.addMethod('withTableDataTextAt', function (colIndex, expectedValue) {
+    const actualValue = this._obj.find('tr > :nth-child(' + colIndex + ')').text().replace(/\n/g, ' ').replace(/\s\s+/g, ' ').trim()
+    this.assert(actualValue.indexOf(expectedValue.toString()) > -1,
+      "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
+      expectedValue, actualValue
+    )
+  })
 })
