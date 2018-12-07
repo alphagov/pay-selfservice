@@ -6,11 +6,11 @@ const lodash = require('lodash')
 
 // Local Dependencies
 const transactionService = require('../../services/transaction_service')
-const jsonToCsv = require('../../utils/json_to_csv.js')
-const auth = require('../../services/auth_service.js')
-const date = require('../../utils/dates.js')
-const {renderErrorView} = require('../../utils/response.js')
-const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
+const jsonToCsv = require('../../utils/json_to_csv')
+const auth = require('../../services/auth_service')
+const date = require('../../utils/dates')
+const { renderErrorView } = require('../../utils/response')
+const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const userService = require('../../services/user_service')
 
 module.exports = (req, res) => {
@@ -48,7 +48,7 @@ module.exports = (req, res) => {
       }
     })
     .then(csv => {
-      logger.debug('Sending csv attachment download -', {'filename': name})
+      logger.debug('Sending csv attachment download -', { 'filename': name })
       res.setHeader('Content-disposition', 'attachment; filename="' + name + '"')
       res.setHeader('Content-Type', 'text/csv')
       res.send(csv)

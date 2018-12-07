@@ -1,15 +1,15 @@
 'use strict'
 
-// npm dependencies
+// NPM Dependencies
 const logger = require('winston')
 const json2csv = require('json2csv')
 const lodash = require('lodash')
 
-// local dependencies
-const dates = require('../utils/dates.js')
-const states = require('../utils/states')
+// Local dependencies
+const dates = require('./dates')
+const states = require('./states')
 
-// constants
+// Constants
 const injectionTriggerRegexp = /(^[=@+-])/g
 
 const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
@@ -20,9 +20,9 @@ const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
 }
 
 const getSanitisableFields = fieldArray => {
-  let ret = []
+  const ret = []
   for (let i = 0; i < fieldArray.length; i++) {
-    let theField = fieldArray[i]
+    const theField = fieldArray[i]
     ret.push({
       label: theField.label,
       value: function (row) {
@@ -40,9 +40,9 @@ module.exports = function (data) {
     try {
       const parseFields = [
         ...getSanitisableFields([
-          {label: 'Reference', value: 'reference'},
-          {label: 'Description', value: 'description'},
-          {label: 'Email', value: 'email'}
+          { label: 'Reference', value: 'reference' },
+          { label: 'Description', value: 'description' },
+          { label: 'Email', value: 'email' }
         ]),
         {
           label: 'Amount',
@@ -51,10 +51,10 @@ module.exports = function (data) {
           }
         },
         ...getSanitisableFields([
-          {label: 'Card Brand', value: 'card_details.card_brand'},
-          {label: 'Cardholder Name', value: 'card_details.cardholder_name'},
-          {label: 'Card Expiry Date', value: 'card_details.expiry_date'},
-          {label: 'Card Number', value: 'card_details.last_digits_card_number'}
+          { label: 'Card Brand', value: 'card_details.card_brand' },
+          { label: 'Cardholder Name', value: 'card_details.cardholder_name' },
+          { label: 'Card Expiry Date', value: 'card_details.expiry_date' },
+          { label: 'Card Number', value: 'card_details.last_digits_card_number' }
         ]),
         {
           label: 'State',
@@ -63,12 +63,12 @@ module.exports = function (data) {
           }
         },
         ...getSanitisableFields([
-          {label: 'Finished', value: 'state.finished'},
-          {label: 'Error Code', value: 'state.code'},
-          {label: 'Error Message', value: 'state.message'},
-          {label: 'Provider ID', value: 'gateway_transaction_id'},
-          {label: 'GOV.UK Payment ID', value: 'charge_id'},
-          {label: 'Issued By', value: 'refund_summary.user_username'}
+          { label: 'Finished', value: 'state.finished' },
+          { label: 'Error Code', value: 'state.code' },
+          { label: 'Error Message', value: 'state.message' },
+          { label: 'Provider ID', value: 'gateway_transaction_id' },
+          { label: 'GOV.UK Payment ID', value: 'charge_id' },
+          { label: 'Issued By', value: 'refund_summary.user_username' }
         ]),
         {
           label: 'Date Created',
