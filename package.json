@@ -76,7 +76,7 @@
     "json2csv": "4.1.x",
     "lodash": "4.17.10",
     "minimist": "1.2.x",
-    "moment-timezone": "^0.5.17",
+    "moment-timezone": "^0.5.23",
     "morgan": "^1.9.1",
     "node-zendesk": "^1.2.1",
     "notp": "^2.0.3",
