@@ -8,6 +8,7 @@ const lodash = require('lodash')
 // Local dependencies
 const dates = require('./dates')
 const states = require('./states')
+const { penceToPounds } = require('./currency_formatter')
 
 // Constants
 const injectionTriggerRegexp = /(^[=@+-])/g
@@ -47,7 +48,7 @@ module.exports = function (data) {
         {
           label: 'Amount',
           value: row => {
-            return (row.transaction_type === 'refund') ? (parseInt(row.amount) * -1 / 100).toFixed(2) : (parseInt(row.amount) / 100).toFixed(2)
+            return (row.transaction_type === 'refund') ? penceToPounds(parseInt(row.amount) * -1) : penceToPounds(parseInt(row.amount))
           }
         },
         ...getSanitisableFields([
@@ -86,14 +87,14 @@ module.exports = function (data) {
           label: 'Corporate Card Surcharge',
           value: row => {
             const amountInPence = row.corporate_card_surcharge ? row.corporate_card_surcharge : 0
-            return (parseInt(amountInPence) / 100).toFixed(2)
+            return penceToPounds(parseInt(amountInPence))
           }
         },
         {
           label: 'Total Amount',
           value: row => {
             const amountInPence = row.total_amount ? row.total_amount : row.amount
-            return (row.transaction_type === 'refund') ? (parseInt(amountInPence) * -1 / 100).toFixed(2) : (parseInt(amountInPence) / 100).toFixed(2)
+            return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
           }
         }
       ]
