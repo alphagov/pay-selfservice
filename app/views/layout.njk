@@ -1,4 +1,5 @@
 {% extends "template.njk" %}
+{% from "components/file-upload/macro.njk" import govukFileUpload %}
 
 {% set loggedIn = true %}
 {% set accountType = currentGatewayAccount.type %}

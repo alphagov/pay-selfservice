@@ -5,6 +5,7 @@ const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const logger = require('winston')
 const {getNamespace, createNamespace} = require('continuation-local-storage')
+const multer = require('multer')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -207,7 +208,7 @@ module.exports.bind = function (app) {
   // MERCHANT DETAILS
   app.get(merchantDetails.index, xraySegmentCls, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
   app.get(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
-  app.post(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
+  app.post(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), multer().single('id-document-file'), merchantDetailsCtrl.postEdit)
 
   // API KEYS
   app.get(apiKeys.index, xraySegmentCls, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)

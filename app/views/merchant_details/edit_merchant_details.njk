@@ -57,7 +57,7 @@
     <p class="govuk-body" id="merchant-details-info">Payment card schemes require the details of the organisation taking payment to be shown on payment pages.</p>
   {% endif %}
 
-  <form id="merchant-details-form" method="post" action="/organisation-details/edit/{{externalServiceId}}">
+  <form id="merchant-details-form" method="post" action="/organisation-details/edit/{{externalServiceId}}" enctype="multipart/form-data">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
 
     {% set nameError = false %}
@@ -84,6 +84,16 @@
         type: "text",
         attributes: {
           "data-validate": "required"
+        }
+      })
+    }}
+
+    {{
+      govukFileUpload({
+        id: "id-document-file",
+        name: "id-document-file",
+        label: {
+          text: "Upload a file"
         }
       })
     }}
