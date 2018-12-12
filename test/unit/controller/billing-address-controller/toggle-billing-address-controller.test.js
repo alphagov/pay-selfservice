@@ -50,7 +50,7 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(200)
     })
     it('should display content when setting is on ', () => {
-      expect($('h1').text()).to.contain('You are collecting billing addresses')
+      expect($('h1').text()).to.contain('You are collecting the billing address')
     })
   })
   describe('should get index with billing address off', () => {
@@ -72,7 +72,7 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(200)
     })
     it('should display content when setting is off', () => {
-      expect($('h1').text()).to.contain('You are not collecting billing addresses')
+      expect($('h1').text()).to.contain('You are not collecting the billing address')
     })
   })
   describe('should get warning with billing address off', () => {
