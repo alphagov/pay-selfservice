@@ -134,7 +134,6 @@ module.exports = function (grunt) {
     'grunt-contrib-copy',
     'grunt-contrib-uglify',
     'grunt-contrib-watch',
-    'grunt-nodemon',
     'grunt-sass'
   ].forEach(function (task) {
     grunt.loadNpmTasks(task)
