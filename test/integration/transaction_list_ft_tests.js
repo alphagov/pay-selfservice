@@ -64,7 +64,7 @@ describe('The /transactions endpoint', function () {
           'amount': 5000,
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -80,7 +80,7 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': true
@@ -104,7 +104,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -122,7 +122,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': true
@@ -159,7 +159,7 @@ describe('The /transactions endpoint', function () {
           amount: 5000,
           reference: 'ref1',
           email: 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           state: {
             status: 'failed',
             finished: true,
@@ -201,7 +201,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'failed',
             'finished': true,
@@ -259,7 +259,7 @@ describe('The /transactions endpoint', function () {
           'amount': 5000,
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -275,7 +275,7 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'submitted',
             'finished': false
@@ -290,7 +290,7 @@ describe('The /transactions endpoint', function () {
           'amount': 4500,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'failed',
             'finished': false,
@@ -356,7 +356,7 @@ describe('The /transactions endpoint', function () {
           'gateway_transaction_id': 'tnx-id-1',
           'amount': 5000,
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -372,7 +372,7 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': false
@@ -393,7 +393,7 @@ describe('The /transactions endpoint', function () {
           'gateway_transaction_id': 'tnx-id-1',
           'amount': '£50.00',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -412,7 +412,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': false
