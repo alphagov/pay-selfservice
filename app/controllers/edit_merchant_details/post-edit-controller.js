@@ -17,7 +17,7 @@ const ADDRESS_COUNTRY = 'address-country'
 const MERCHANT_EMAIL = 'merchant-email'
 
 module.exports = (req, res) => {
-  console.log(JSON.stringify(req.file))
+  console.log(JSON.stringify(req.files))
   const correlationId = lodash.get(req, 'correlationId')
   const externalServiceId = req.service.externalId
   const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
