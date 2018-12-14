@@ -208,7 +208,7 @@ module.exports.bind = function (app) {
   app.get(merchantDetails.index, xraySegmentCls, hasServices, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
   app.get(merchantDetails.edit, xraySegmentCls, hasServices, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
   // multer middleware must be included in the begging (before csrf)
-  app.post(merchantDetails.edit, xraySegmentCls, hasServices, multer().single('id-document-file'), enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
+  app.post(merchantDetails.edit, xraySegmentCls, hasServices, multer({ storage: multer.memoryStorage() }).single('id-document-file'), enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
 
   // API KEYS
   app.get(apiKeys.index, xraySegmentCls, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)

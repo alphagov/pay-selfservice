@@ -1,6 +1,7 @@
 const lodash = require('lodash')
 const responses = require('../../utils/response')
 const countries = require('../../services/countries.js')
+const stripe = require('stripe')('API-KEY-HERE')
 
 module.exports = (req, res) => {
   const externalServiceId = req.service.externalId
@@ -17,5 +18,18 @@ module.exports = (req, res) => {
     }
   }
   pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData.merchant_details, 'address_country'))
-  return responses.response(req, res, 'merchant_details/edit_merchant_details', pageData)
+  // list all stripe files
+  // https://stripe.com/docs/api/files/list
+  stripe.files.list({
+    purpose: 'identity_document'
+  }, (err, files) => {
+    if (err) {
+      console.log('err')
+      console.log(err)
+    } else {
+      pageData.files = files
+      console.log(JSON.stringify(pageData.files))
+      return responses.response(req, res, 'merchant_details/edit_merchant_details', pageData)
+    }
+  })
 }

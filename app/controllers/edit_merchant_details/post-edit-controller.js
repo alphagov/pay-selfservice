@@ -1,5 +1,6 @@
 const lodash = require('lodash')
 const ukPostcode = require('uk-postcode')
+const stripe = require('stripe')('API-KEY-HERE')
 
 const responses = require('../../utils/response')
 const paths = require('../../paths')
@@ -17,7 +18,40 @@ const ADDRESS_COUNTRY = 'address-country'
 const MERCHANT_EMAIL = 'merchant-email'
 
 module.exports = (req, res) => {
-  console.log(JSON.stringify(req.file))
+  if (lodash.has(req, 'file.buffer')) {
+    console.log('Uploading to Stripe ...')
+    // https://stripe.com/docs/api/files/create
+    stripe.files.create({
+      file: {
+        data: req.file.buffer,
+        name: 'file.jpg',
+        type: 'image/jpeg'
+      },
+      purpose: 'identity_document'
+    }, (err, file) => {
+      if (err) {
+        console.log('err')
+        console.log(JSON.stringify(err))
+      } else {
+        console.log('file')
+        console.log(file)
+        console.log('Creating file link ...')
+        // stripe.fileLinks.create returns an error:
+        // Error: Link creation is not allowed for this file.
+        // stripe.fileLinks.create({
+        //   file: file.id,
+        // }, (err, fileLink) => {
+        //   if (err) {
+        //     console.log('err')
+        //     console.log(JSON.stringify(err))
+        //   } else {
+        //     console.log('fileLink')
+        //     console.log(fileLink)
+        //   }
+        // })
+      }
+    })
+  }
   const correlationId = lodash.get(req, 'correlationId')
   const externalServiceId = req.service.externalId
   const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')

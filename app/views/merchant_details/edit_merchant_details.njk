@@ -242,5 +242,22 @@
       }
     }) }}
   </form>
+  <h2>Uploaded files</h2>
+  <table>
+    <tr>
+      <th>id</th>
+      <th>filename</th>
+      <th>type</th>
+      <th>url</th>
+    </tr>
+    {% for file in files.data %}
+      <tr>
+        <td>{{ file.id }}</td>
+        <td>{{ file.filename }}</td>
+        <td>{{ file.type }}</td>
+        <td>{{ file.url }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 </div>
 {% endblock %}
