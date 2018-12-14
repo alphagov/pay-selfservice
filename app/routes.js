@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const logger = require('winston')
 const {getNamespace, createNamespace} = require('continuation-local-storage')
-const expressFileupload = require('express-fileupload')
+const multer = require('multer')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -177,7 +177,6 @@ module.exports.bind = function (app) {
     ...lodash.values(serviceSwitcher),
     ...lodash.values(teamMembers),
     ...lodash.values(t3ds),
-    ...lodash.values(merchantDetails),
     ...lodash.values(prototyping.demoPayment),
     ...lodash.values(prototyping.demoService),
     ...lodash.values(paymentLinks),
@@ -187,11 +186,8 @@ module.exports.bind = function (app) {
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
-  // Enforce authentication on all get requests and enable file uploads
-  // NOTE: expressFileupload must be added before csrf because csrf overrides the request
-  app.use(authenticatedPaths, expressFileupload(), xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage)
-  // Require services everywhere but the switcher page
-  app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), xraySegmentCls, hasServices)
+  app.use(authenticatedPaths, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage) // Enforce authentication on all get requests
+  app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), xraySegmentCls, hasServices) // Require services everywhere but the switcher page
 
   //  TRANSACTIONS
   app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListCtrl)
@@ -209,9 +205,10 @@ module.exports.bind = function (app) {
   app.post(nc.update, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, credentialsCtrl.updateNotificationCredentials)
 
   // MERCHANT DETAILS
-  app.get(merchantDetails.index, xraySegmentCls, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
-  app.get(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
-  app.post(merchantDetails.edit, xraySegmentCls, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
+  app.get(merchantDetails.index, xraySegmentCls, hasServices, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:read'), merchantDetailsCtrl.getIndex)
+  app.get(merchantDetails.edit, xraySegmentCls, hasServices, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:update'), merchantDetailsCtrl.getEdit)
+  // multer middleware must be included in the begging (before csrf)
+  app.post(merchantDetails.edit, xraySegmentCls, hasServices, multer().single('id-document-file'), enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage, permission('merchant-details:update'), merchantDetailsCtrl.postEdit)
 
   // API KEYS
   app.get(apiKeys.index, xraySegmentCls, permission('tokens-active:read'), getAccount, apiKeysCtrl.getIndex)
