@@ -1,33 +1,37 @@
 'use strict'
 
+// NPM modules
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-require('../test_helpers/serialize_mock.js')
-const userCreator = require('../test_helpers/user_creator.js')
 const request = require('supertest')
 const nock = require('nock')
-const getApp = require('../../server.js').getApp
-const paths = require('../../app/paths.js')
-const session = require('../test_helpers/mock_session.js')
+
+// Local modules
+require('../test_helpers/serialize_mock')
+const userCreator = require('../test_helpers/user_creator')
+const getApp = require('../../server').getApp
+const paths = require('../../app/paths')
+const session = require('../test_helpers/mock_session')
 const getQueryStringForParams = require('../../app/utils/get_query_string_for_params')
 
+// Setup
 const CONNECTOR_DATE = '2016-02-10T12:44:01.000Z'
 const DISPLAY_DATE = '10 Feb 2016 — 12:44:01'
 const gatewayAccountId = '651342'
-const {expect} = chai
+const { expect } = chai
 const connectorSearchParameters = {}
 const CONNECTOR_CHARGES_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
 const ALL_CARD_TYPES = {
   'card_types': [
-    {'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT'},
-    {'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT'},
-    {'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT'},
-    {'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT'}]
+    { 'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT' },
+    { 'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT' },
+    { 'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT' },
+    { 'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT' }]
 }
 const requestId = 'unique-request-id'
 const aCorrelationHeader = {
-  reqheaders: {'x-request-id': requestId}
+  reqheaders: { 'x-request-id': requestId }
 }
 const connectorMock = nock(process.env.CONNECTOR_URL, aCorrelationHeader)
 
@@ -42,10 +46,10 @@ describe('The /transactions endpoint', function () {
   })
 
   beforeEach(function (done) {
-    let permissions = 'transactions:read'
-    let user = session.getUser({
+    const permissions = 'transactions:read'
+    const user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}]
+      permissions: [{ name: permissions }]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -56,7 +60,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       'results': [
         {
           'charge_id': '100',
@@ -64,7 +68,7 @@ describe('The /transactions endpoint', function () {
           'amount': 5000,
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -80,7 +84,7 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': true
@@ -96,7 +100,7 @@ describe('The /transactions endpoint', function () {
 
     connectorMockResponds(200, connectorData, connectorSearchParameters)
 
-    let expectedData = {
+    const expectedData = {
       'results': [
         {
           'charge_id': '100',
@@ -104,7 +108,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -114,7 +118,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         },
         {
           'charge_id': '101',
@@ -122,7 +126,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': true
@@ -132,7 +136,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
         }
       ]
     }
@@ -151,7 +155,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       results: [
         {
           charge_id: '100',
@@ -159,7 +163,7 @@ describe('The /transactions endpoint', function () {
           amount: 5000,
           reference: 'ref1',
           email: 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           state: {
             status: 'failed',
             finished: true,
@@ -193,7 +197,7 @@ describe('The /transactions endpoint', function () {
 
     connectorMockResponds(200, connectorData, connectorSearchParameters)
 
-    let expectedData = {
+    const expectedData = {
       'results': [
         {
           'charge_id': '100',
@@ -201,7 +205,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£50.00',
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'failed',
             'finished': true,
@@ -213,7 +217,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         },
         {
           'charge_id': '101',
@@ -231,7 +235,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
         }
       ]
     }
@@ -251,7 +255,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       'results': [
         {
           'charge_id': '100',
@@ -259,7 +263,7 @@ describe('The /transactions endpoint', function () {
           'amount': 5000,
           'reference': 'ref1',
           'email': 'alice.222@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -275,7 +279,7 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'submitted',
             'finished': false
@@ -290,7 +294,7 @@ describe('The /transactions endpoint', function () {
           'amount': 4500,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'failed',
             'finished': false,
@@ -325,7 +329,7 @@ describe('The /transactions endpoint', function () {
     })
     request(app)
       .get(paths.transactions.index)
-      .query({state: ['In progress', 'Timed out', 'Refund submitted']})
+      .query({ state: ['In progress', 'Timed out', 'Refund submitted'] })
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
@@ -356,7 +360,7 @@ describe('The /transactions endpoint', function () {
           'gateway_transaction_id': 'tnx-id-1',
           'amount': 5000,
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -372,7 +376,7 @@ describe('The /transactions endpoint', function () {
           'amount': 2000,
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': false
@@ -393,7 +397,7 @@ describe('The /transactions endpoint', function () {
           'gateway_transaction_id': 'tnx-id-1',
           'amount': '£50.00',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'created',
             'finished': false
@@ -403,7 +407,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
 
         },
         {
@@ -412,7 +416,7 @@ describe('The /transactions endpoint', function () {
           'amount': '£20.00',
           'reference': 'ref2',
           'email': 'alice.111@mail.fake',
-          transaction_type: 'payment',
+          transaction_type: 'charge',
           'state': {
             'status': 'success',
             'finished': false
@@ -422,7 +426,7 @@ describe('The /transactions endpoint', function () {
           'gateway_account_id': gatewayAccountId,
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
         }
       ]
     }
@@ -439,7 +443,7 @@ describe('The /transactions endpoint', function () {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       'results': []
     }
     connectorMockResponds(200, connectorData, connectorSearchParameters)
@@ -453,19 +457,19 @@ describe('The /transactions endpoint', function () {
   })
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {
-    let errorMessage = 'Unable to retrieve list of transactions.'
-    connectorMockResponds(400, {'message': errorMessage}, connectorSearchParameters)
+    const errorMessage = 'Unable to retrieve list of transactions.'
+    connectorMockResponds(400, { 'message': errorMessage }, connectorSearchParameters)
 
     getTransactionList()
-      .expect(500, {'message': errorMessage})
+      .expect(500, { 'message': errorMessage })
       .end(done)
   })
 
   it('should show a generic error message on a connector service error while retrieving the list of transactions', function (done) {
-    connectorMockResponds(500, {'message': 'some error from connector'}, connectorSearchParameters)
+    connectorMockResponds(500, { 'message': 'some error from connector' }, connectorSearchParameters)
 
     getTransactionList()
-      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+      .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
       .end(done)
   })
 
@@ -473,7 +477,7 @@ describe('The /transactions endpoint', function () {
     // No connectorMock defined on purpose to mock a network failure
 
     getTransactionList()
-      .expect(500, {'message': 'Unable to retrieve list of transactions.'})
+      .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
       .end(done)
   })
 })
@@ -485,10 +489,10 @@ describe('The /transactions endpoint filtering by states)', () => {
   })
 
   beforeEach(function (done) {
-    let permissions = 'transactions:read'
-    let user = session.getUser({
+    const permissions = 'transactions:read'
+    const user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}]
+      permissions: [{ name: permissions }]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -499,7 +503,7 @@ describe('The /transactions endpoint filtering by states)', () => {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       'results': []
     }
 
@@ -529,15 +533,15 @@ describe('The /transactions endpoint filtering by states)', () => {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {payment_states: 'created,started,submitted'})
+    connectorMockResponds(200, connectorData, { payment_states: 'created,started,submitted' })
 
     request(app)
       .get(paths.transactions.index)
-      .query({state: 'In progress'})
+      .query({ state: 'In progress' })
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
@@ -564,15 +568,15 @@ describe('The /transactions endpoint filtering by states)', () => {
     connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
       .reply(200, ALL_CARD_TYPES)
 
-    let connectorData = {
+    const connectorData = {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, {refund_states: 'submitted'})
+    connectorMockResponds(200, connectorData, { refund_states: 'submitted' })
 
     request(app)
       .get(paths.transactions.index)
-      .query({state: 'Refund submitted'})
+      .query({ state: 'Refund submitted' })
       .set('Accept', 'application/json')
       .set('x-request-id', requestId)
       .expect(200)
@@ -597,7 +601,7 @@ describe('The /transactions endpoint filtering by states)', () => {
 })
 
 function connectorMockResponds (code, data, searchParameters) {
-  let queryString = getQueryStringForParams(searchParameters)
+  const queryString = getQueryStringForParams(searchParameters)
 
   return connectorMock.get(CONNECTOR_CHARGES_API_PATH + '?' + queryString)
     .reply(code, data)
