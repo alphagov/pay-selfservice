@@ -1,15 +1,16 @@
 'use strict'
 
-// npm dependencies
+// NPM Dependencies
 const logger = require('winston')
 const json2csv = require('json2csv')
 const lodash = require('lodash')
 
-// local dependencies
-const dates = require('../utils/dates.js')
-const states = require('../utils/states')
+// Local dependencies
+const dates = require('./dates')
+const states = require('./states')
+const { penceToPounds } = require('./currency_formatter')
 
-// constants
+// Constants
 const injectionTriggerRegexp = /(^[=@+-])/g
 
 const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
@@ -20,9 +21,9 @@ const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
 }
 
 const getSanitisableFields = fieldArray => {
-  let ret = []
+  const ret = []
   for (let i = 0; i < fieldArray.length; i++) {
-    let theField = fieldArray[i]
+    const theField = fieldArray[i]
     ret.push({
       label: theField.label,
       value: function (row) {
@@ -40,21 +41,21 @@ module.exports = function (data) {
     try {
       const parseFields = [
         ...getSanitisableFields([
-          {label: 'Reference', value: 'reference'},
-          {label: 'Description', value: 'description'},
-          {label: 'Email', value: 'email'}
+          { label: 'Reference', value: 'reference' },
+          { label: 'Description', value: 'description' },
+          { label: 'Email', value: 'email' }
         ]),
         {
           label: 'Amount',
           value: row => {
-            return (row.transaction_type === 'refund') ? (parseInt(row.amount) * -1 / 100).toFixed(2) : (parseInt(row.amount) / 100).toFixed(2)
+            return (row.transaction_type === 'refund') ? penceToPounds(parseInt(row.amount) * -1) : penceToPounds(parseInt(row.amount))
           }
         },
         ...getSanitisableFields([
-          {label: 'Card Brand', value: 'card_details.card_brand'},
-          {label: 'Cardholder Name', value: 'card_details.cardholder_name'},
-          {label: 'Card Expiry Date', value: 'card_details.expiry_date'},
-          {label: 'Card Number', value: 'card_details.last_digits_card_number'}
+          { label: 'Card Brand', value: 'card_details.card_brand' },
+          { label: 'Cardholder Name', value: 'card_details.cardholder_name' },
+          { label: 'Card Expiry Date', value: 'card_details.expiry_date' },
+          { label: 'Card Number', value: 'card_details.last_digits_card_number' }
         ]),
         {
           label: 'State',
@@ -63,12 +64,12 @@ module.exports = function (data) {
           }
         },
         ...getSanitisableFields([
-          {label: 'Finished', value: 'state.finished'},
-          {label: 'Error Code', value: 'state.code'},
-          {label: 'Error Message', value: 'state.message'},
-          {label: 'Provider ID', value: 'gateway_transaction_id'},
-          {label: 'GOV.UK Payment ID', value: 'charge_id'},
-          {label: 'Issued By', value: 'refund_summary.user_external_id'}
+          { label: 'Finished', value: 'state.finished' },
+          { label: 'Error Code', value: 'state.code' },
+          { label: 'Error Message', value: 'state.message' },
+          { label: 'Provider ID', value: 'gateway_transaction_id' },
+          { label: 'GOV.UK Payment ID', value: 'charge_id' },
+          { label: 'Issued By', value: 'refund_summary.user_username' }
         ]),
         {
           label: 'Date Created',
@@ -80,6 +81,20 @@ module.exports = function (data) {
           label: 'Time Created',
           value: row => {
             return dates.utcToTime(row.created_date)
+          }
+        },
+        {
+          label: 'Corporate Card Surcharge',
+          value: row => {
+            const amountInPence = row.corporate_card_surcharge ? row.corporate_card_surcharge : 0
+            return penceToPounds(parseInt(amountInPence))
+          }
+        },
+        {
+          label: 'Total Amount',
+          value: row => {
+            const amountInPence = row.total_amount ? row.total_amount : row.amount
+            return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
           }
         }
       ]

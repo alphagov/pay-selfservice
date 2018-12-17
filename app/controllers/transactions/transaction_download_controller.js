@@ -6,11 +6,11 @@ const lodash = require('lodash')
 
 // Local Dependencies
 const transactionService = require('../../services/transaction_service')
-const jsonToCsv = require('../../utils/json_to_csv.js')
-const auth = require('../../services/auth_service.js')
-const date = require('../../utils/dates.js')
-const {renderErrorView} = require('../../utils/response.js')
-const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
+const jsonToCsv = require('../../utils/json_to_csv')
+const auth = require('../../services/auth_service')
+const date = require('../../utils/dates')
+const { renderErrorView } = require('../../utils/response')
+const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const userService = require('../../services/user_service')
 
 module.exports = (req, res) => {
@@ -20,17 +20,17 @@ module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
   transactionService.searchAll(accountId, filters, correlationId)
     .then(json => {
-      let userIds = json.results
+      let refundTransactionUserIds = json.results
         .filter(res => res.transaction_type === 'refund')
         .map(res => res.refund_summary.user_external_id)
-        .filter(userId => userId)
-      userIds = lodash.uniq(userIds)
-      if (userIds.length === 0) {
+        .filter(userId => userId) // we call filter because we want to filter out all "falsy" values
+      refundTransactionUserIds = lodash.uniq(refundTransactionUserIds)
+      if (refundTransactionUserIds.length === 0) { // if there are no refunds found
         return jsonToCsv(json.results)
       } else {
-        return userService.findMultipleByExternalIds(userIds, correlationId)
+        return userService.findMultipleByExternalIds(refundTransactionUserIds, correlationId)
           .then(users => {
-            const usersMap = userIds.reduce((map, userId) => {
+            const userUsernameMap = refundTransactionUserIds.reduce((map, userId) => {
               map[userId] = users.find(user => {
                 return user.externalId === userId
               }).username
@@ -39,7 +39,7 @@ module.exports = (req, res) => {
             const results = json.results
               .map(res => {
                 if (res.transaction_type === 'refund') {
-                  res.refund_summary.user_external_id = usersMap[res.refund_summary.user_external_id]
+                  res.refund_summary.user_username = userUsernameMap[res.refund_summary.user_external_id]
                 }
                 return res
               })
@@ -48,7 +48,7 @@ module.exports = (req, res) => {
       }
     })
     .then(csv => {
-      logger.debug('Sending csv attachment download -', {'filename': name})
+      logger.debug('Sending csv attachment download -', { 'filename': name })
       res.setHeader('Content-disposition', 'attachment; filename="' + name + '"')
       res.setHeader('Content-Type', 'text/csv')
       res.send(csv)
