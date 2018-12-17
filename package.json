@@ -70,6 +70,7 @@
     "correlation-id": "^2.1.2",
     "csrf": "3.0.x",
     "express": "4.16.x",
+    "file-type": "^10.6.0",
     "govuk-frontend": "^2.4.1",
     "hogan.js": "3.0.x",
     "http-proxy": "1.17.x",
