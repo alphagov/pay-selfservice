@@ -73,7 +73,7 @@
     "govuk-frontend": "^2.4.1",
     "hogan.js": "3.0.x",
     "http-proxy": "1.17.x",
-    "json2csv": "4.1.x",
+    "json2csv": "4.3.x",
     "lodash": "4.17.10",
     "minimist": "1.2.x",
     "moment-timezone": "^0.5.23",
