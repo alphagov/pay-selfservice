@@ -4,12 +4,12 @@
 const lodash = require('lodash')
 const joinURL = require('url-join')
 const correlator = require('correlation-id')
-const getNamespace = require('continuation-local-storage').getNamespace
+const { getNamespace } = require('continuation-local-storage')
 const AWSXRay = require('aws-xray-sdk')
 
 // Local dependencies
 const requestLogger = require('../../../utils/request_logger')
-const CORRELATION_HEADER = require('../../../utils/correlation_header').CORRELATION_HEADER
+const { CORRELATION_HEADER } = require('../../../utils/correlation_header')
 
 // Constants
 const SUCCESS_CODES = [200, 201, 202, 204, 206]
@@ -25,7 +25,7 @@ module.exports = function (method, verb) {
     opts = args.find(arg => typeof arg === 'object') || {}
     cb = args.find(arg => typeof arg === 'function')
     if (verb) opts.method = verb.toUpperCase()
-    if (uri && !opts.uri && !opts.url) opts.uri = uri
+    if (uri && !opts.uri && !opts.url) opts.url = uri
     const context = {
       correlationId: correlator.getId(),
       startTime: new Date(),

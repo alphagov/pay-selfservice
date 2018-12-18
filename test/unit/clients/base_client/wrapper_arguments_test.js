@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM Dependencies
-const {expect} = require('chai')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
 // Local Dependencies
@@ -15,7 +15,7 @@ describe('wrapper: arguments handling', () => {
       }
       const methodSpy = sinon.spy(method)
       before(done => {
-        wrapper(methodSpy, 'get')('http://www.example.com')
+        wrapper(methodSpy, 'get')({ url: 'http://www.example.com' })
           .then(() => done())
           .catch(() => done())
       })
@@ -32,7 +32,7 @@ describe('wrapper: arguments handling', () => {
       }
       const methodSpy = sinon.spy(method)
       before(done => {
-        wrapper(methodSpy)('http://www.example.com')
+        wrapper(methodSpy)({ url: 'http://www.example.com' })
           .then(() => done())
           .catch(() => done())
       })
@@ -60,15 +60,16 @@ describe('wrapper: arguments handling', () => {
             .then(() => done())
             .catch(done)
         })
-        it(`should set 'opts.uri' to be the url argument`, () => {
+        it(`should set 'opts.url' to be the url argument`, () => {
           expect(methodSpy.called).to.equal(true)
           expect(methodSpy.callCount).to.equal(1)
-          expect(methodSpy.lastCall.args[0]).to.have.property('uri').to.equal(uri)
+          expect(methodSpy.lastCall.args[0]).to.have.property('url').to.equal(uri)
         })
         it(`should call the provided callback`, () => {
           expect(cb.called).to.equal(true)
         })
       })
+
       describe('when it is passed a uri and no options object', () => {
         let uri
         let cb
@@ -83,14 +84,15 @@ describe('wrapper: arguments handling', () => {
             .then(() => done())
             .catch(done)
         })
-        it(`should create an options object, and set it's uri property to be the passed uri`, () => {
+        it(`should create an options object, and set it's url property to be the passed uri`, () => {
           expect(methodSpy.called).to.equal(true)
-          expect(methodSpy.lastCall.args[0]).to.have.property('uri').to.equal(uri)
+          expect(methodSpy.lastCall.args[0]).to.have.property('url').to.equal(uri)
         })
         it(`should call the provided callback`, () => {
           expect(cb.called).to.equal(true)
         })
       })
+
       describe('when it is only passed an options object', () => {
         let opts
         let cb
@@ -99,7 +101,7 @@ describe('wrapper: arguments handling', () => {
         }
         const methodSpy = sinon.spy(method)
         before(done => {
-          opts = {uri: 'http://example.com/'}
+          opts = {url: 'http://example.com/'}
           cb = sinon.spy()
           wrapper(methodSpy, 'get')(opts, cb)
             .then(() => done())
