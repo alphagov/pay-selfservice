@@ -37,10 +37,25 @@ To run mocha tests
 npm run compile && npm test
 ```
 
-To run cypress tests, in separate tabs:
-- `npm run server:cypress`
+To run cypress tests
+
+In order to run cypress tests, the pacts server must be running. This uses credentials and setup details found in the `./pacts/` application root directory, running `npm run test` once will run `mocha` tests and generate the `./pacts/` folder. Without this a number of cypress tests will fail. 
+```
+# ensure `./pacts/` folder exists and is populated (this only needs to be run once)
+npm run test
+```
+
+Run in three separate terminals:
+- `npm run cypress:server`
 - `npm run pact-stub`
-- `npm run test:cypress` or `$(npm bin)/cypress open`
+
+Running headless:
+- `npm run cypress:test` or `$(npm bin)/cypress open`
+
+Running headed: 
+- `npm run cypress:test-headed`
+
+_(Note that `ctrl+c` will not close the docker instance started in `npm run pact-stub`. For now this can be stopped with the `docker stop ${INSTANCE_NAME}` command.)_
 
 To run
 ```
