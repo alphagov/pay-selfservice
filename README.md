@@ -3,46 +3,61 @@ GOV.UK Pay Self Service admin tool (Node.js)
 
 ## Running locally with `pay local`
 
-*This requires the Pay CLI, which is not publicly-available at present*
+*This requires the Pay CLI, which is not publicly available at present*
 
-Assuming your up and running with the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli) then you once you have selfservice running locally you shouldn’t need to restart the app to see changes you make.
+Assuming you're up and running with the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli) and have selfservice running locally you shouldn’t need to restart the app to see changes you make.
 
 We use [nodemon](https://github.com/remy/nodemon) which watches for changes to files and restarts the node process.
 
 You can watch Nodemon do it’s thing if you run `docker logs -f selfservice`.
 
-If you’re making changes to client-side JS or Sass files (anything within [`/browsered/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/browsered) or [`/assets/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/assets)) then if you run `npm run watch-live-reload` it will watch for changes and recompile. Nodemon, doesn’t do anything here as that’s not necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh you page once the assets have been compiled to the `/public` folder.
+If you’re making changes to client-side JS or Sass files (anything within [`/browsered/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/browsered) or [`/assets/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/assets)) then running `npm run watch-live-reload` will watch for changes and recompile. Nodemon does not do anything here as that’s not necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh your page once the assets have been compiled to the `/public` folder.
 
 ## Key environment variables
 
-if you wish to override any variables, please do the following:
+If you wish to override any variables, please do the following:
 
 
-setup
+Setup
 ```
 cd $WORKSPACE/pay-selfservice/config
 cp dev-env.json.example dev-env.json
 ```
 
 
-to edit
+To edit
 ```
 cd ~/workspace/pay-selfservice/config
 vi dev-env.json
 
 ```
 
-to run mocha tests
+To run mocha tests
 ```
 npm run compile && npm test
 ```
 
-to run cypress tests, in separate tabs:
-- `npm run server:cypress`
-- `npm run pact-stub`
-- `npm run test:cypress` or `$(npm bin)/cypress open`
+To run cypress tests
 
-to run
+In order to run cypress tests, the pacts server must be running. This uses credentials and setup details found in the `./pacts/` application root directory, running `npm run test` once will run `mocha` tests and generate the `./pacts/` folder. Without this a number of cypress tests will fail. 
+```
+# ensure `./pacts/` folder exists and is populated (this only needs to be run once)
+npm run test
+```
+
+Run in three separate terminals:
+- `npm run cypress:server`
+- `npm run pact-stub`
+
+Running headless:
+- `npm run cypress:test` or `$(npm bin)/cypress open`
+
+Running headed: 
+- `npm run cypress:test-headed`
+
+_(Note that `ctrl+c` will not close the docker instance started in `npm run pact-stub`. For now this can be stopped with the `docker stop ${INSTANCE_NAME}` command.)_
+
+To run
 ```
 LOCAL_ENV=true msl run
 
@@ -62,8 +77,11 @@ LOCAL_ENV=true msl run
 | NODE_WORKER_COUNT           |   | 1 | The number of worker threads started by node cluster when run in production mode |
 
 
-#set this to 'true' only if you are running self service in a non HTTPS environment.
+# Secure Cookie
+Set this to 'true' only if you are running self service in a non HTTPS environment.
+```
 SECURE_COOKIE_OFF=true
+```
 
 
 ## Transaction list
@@ -82,7 +100,7 @@ Search transactions by reference, status and from and to date
     POST /transactions
 ```
 
-| Form param               | always present | Description                               |
+| Form param               | Always present | Description                               |
 | ------------------------ |:--------:| -----------------------------------------       |
 | `reference`              | X | The service reference for a given payment |
 | `email`                  | X | The user email address used for the given payment |
@@ -90,9 +108,9 @@ Search transactions by reference, status and from and to date
 | `fromDate   `            | X | A starting date to search for payments|
 | `toDate   `              | X | An ending date to search for payments|
 
-## Transaction Events list
+## Transaction Events List
 
-View the transaction events list for a given account id.
+View the transaction events list for a given charge id.
 
 ```
     GET /transactions/{chargeId}
