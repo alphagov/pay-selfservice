@@ -7,7 +7,7 @@ describe('The pagination links', function () {
   it('should display correct pagination links for all filters', () => {
     const filters = {
       'reference': 'ref1',
-      'email': 'abc@def.com',
+      'email': 'abc@example.com',
       'state': 'Cancelled',
       'selectedStates': [
         'Cancelled'
@@ -34,7 +34,7 @@ describe('The pagination links', function () {
       body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="reference"]')
         .withAttribute('value', 'ref1')
       body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="email"]')
-        .withAttribute('value', 'abc@def.com')
+        .withAttribute('value', 'abc@example.com')
       body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="fromDate"]')
         .withAttribute('value', '2015-01-11')
       body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="toDate"]')
