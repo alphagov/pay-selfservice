@@ -26,30 +26,35 @@ describe('filters', () => {
     describe('getFilter', () => {
       it('should transform In progress display states to connector states correctly', function () {
         const {result} = filters.getFilters({query: {state: 'In progress'}})
+        expect(result).to.have.property('selectedStates').to.deep.equal(['In progress'])
         expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted'])
         expect(result).to.not.have.property('refund_states')
       })
 
       it('should transform some payment display states to connector states correctly', function () {
         const {result} = filters.getFilters({query: {state: ['In progress', 'Timed out', 'Cancelled']}})
+        expect(result).to.have.property('selectedStates').to.deep.equal(['In progress', 'Timed out', 'Cancelled'])
         expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'timedout', 'cancelled'])
         expect(result).to.not.have.property('refund_states')
       })
 
       it('should transform all payment display states to connector states correctly', function () {
         const {result} = filters.getFilters({query: {state: ['In progress', 'Success', 'Error', 'Cancelled', 'Timed out', 'Declined']}})
+        expect(result).to.have.property('selectedStates').to.deep.equal(['In progress', 'Success', 'Error', 'Cancelled', 'Timed out', 'Declined'])
         expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'success', 'error', 'cancelled', 'timedout', 'declined'])
         expect(result).to.not.have.property('refund_states')
       })
 
       it('should transform all refund display states to connector states correctly', function () {
         const {result} = filters.getFilters({query: {state: ['Refund success', 'Refund error', 'Refund submitted']}})
+        expect(result).to.have.property('selectedStates').to.deep.equal(['Refund success', 'Refund error', 'Refund submitted'])
         expect(result).to.have.property('refund_states').to.deep.equal(['success', 'error', 'submitted'])
         expect(result).to.not.have.property('payment_states')
       })
 
       it('should transform both payment and refund display states to connector states correctly', function () {
         const {result} = filters.getFilters({query: {state: ['In progress', 'Success', 'Error', 'Cancelled', 'Timed out', 'Declined', 'Refund success', 'Refund error', 'Refund submitted']}})
+        expect(result).to.have.property('selectedStates').to.deep.equal(['In progress', 'Success', 'Error', 'Cancelled', 'Timed out', 'Declined', 'Refund success', 'Refund error', 'Refund submitted'])
         expect(result).to.have.property('refund_states').to.deep.equal(['success', 'error', 'submitted'])
         expect(result).to.have.property('payment_states').to.deep.equal(['created', 'started', 'submitted', 'success', 'error', 'cancelled', 'timedout', 'declined'])
       })

@@ -1,9 +1,89 @@
-var path = require('path')
-var renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+'use strict'
+
+// Local dependencies
+const {render} = require('../test_helpers/html_assertions.js')
 
 describe('The pagination links', function () {
-  it('should display correct pagination links', function () {
-    var templateData = {
+  it('should display correct pagination links for all filters', () => {
+    const filters = {
+      'reference': 'ref1',
+      'email': 'abc@example.com',
+      'state': 'Cancelled',
+      'selectedStates': [
+        'Cancelled'
+      ],
+      'payment_states': [
+        'cancelled'
+      ],
+      'fromDate': '2015-01-11',
+      'toDate': '2016-01-11',
+      'fromTime': '01:01:01',
+      'toTime': '02:02:02',
+      'pageSize': '100'
+    }
+
+    const templateData = transactionsTemplateData(filters)
+    const body = render('transactions/paginator', templateData)
+
+    body.should.containSelector('div.pagination')
+
+    templateData.paginationLinks.forEach((link) => {
+      body.should.containSelector('.paginationForm.page-' + link.pageName)
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="state"]')
+        .withAttribute('value', 'Cancelled')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="reference"]')
+        .withAttribute('value', 'ref1')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="email"]')
+        .withAttribute('value', 'abc@example.com')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="fromDate"]')
+        .withAttribute('value', '2015-01-11')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="toDate"]')
+        .withAttribute('value', '2016-01-11')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="page"]')
+        .withAttribute('value', String(link.pageNumber))
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="pageSize"]')
+        .withAttribute('value', '100')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="fromTime"]')
+        .withAttribute('value', '01:01:01')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + ' [name="toTime"]')
+        .withAttribute('value', '02:02:02')
+    })
+  })
+
+  it('should display correct pagination links for transactions filtered by multiple payment states', () => {
+    const filters = {
+      'state': ['Cancelled', 'In Progress'],
+      'selectedStates': [
+        'Cancelled',
+        'In Progress'
+      ],
+      'payment_states': [
+        'cancelled',
+        'created',
+        'started',
+        'submitted'
+      ],
+      'pageSize': '100'
+    }
+
+    const templateData = transactionsTemplateData(filters)
+    const body = render('transactions/paginator', templateData)
+
+    body.should.containSelector('div.pagination')
+
+    templateData.paginationLinks.forEach((link) => {
+      body.should.containSelector('.paginationForm.page-' + link.pageName)
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="state"][value="Cancelled"]')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="state"][value="In Progress"]')
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="page"]')
+        .withAttribute('value', String(link.pageNumber))
+      body.should.containSelector('.paginationForm.page-' + link.pageName + '  [name="pageSize"]')
+        .withAttribute('value', '100')
+    })
+  })
+
+  const transactionsTemplateData = (filters = {}) => {
+    return {
       'total': 100,
       'results': [
         {
@@ -31,7 +111,7 @@ describe('The pagination links', function () {
           'created': '2016-01-11 01:01:01'
         }
       ],
-      'filters': {'reference': 'ref1', 'state': ['Testing2'], 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01', 'pageSize': '100'},
+      'filters': filters,
       'paginationLinks': [
         {pageNumber: 1, pageName: 1},
         {pageNumber: 2, pageName: 2},
@@ -43,28 +123,7 @@ describe('The pagination links', function () {
       'selectedState': 'Testing2',
       'hasResults': true,
       'downloadTransactionLink':
-          '/transactions/download?reference=ref1&state=Testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
+        '/transactions/download?reference=ref1&state=Testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01'
     }
-
-    var body = renderTemplate('transactions/paginator', templateData)
-
-    body.should.containSelector('div.pagination')
-    var paginationLinks = templateData.paginationLinks
-
-    for (var ctr = 0; ctr < paginationLinks.length; ctr++) {
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName)
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="state"]')
-        .withAttribute('value', 'Testing2')
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="reference"]')
-        .withAttribute('value', 'ref1')
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="fromDate"]')
-        .withAttribute('value', '2015-01-11 01:01:01')
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + ' [name="toDate"]')
-        .withAttribute('value', '2015-01-11 01:01:01')
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="page"]')
-        .withAttribute('value', String(paginationLinks[ctr].pageNumber))
-      body.should.containSelector('.paginationForm.page-' + paginationLinks[ctr].pageName + '  [name="pageSize"]')
-        .withAttribute('value', '100')
-    }
-  })
+  }
 })
