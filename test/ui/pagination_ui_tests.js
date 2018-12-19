@@ -1,8 +1,7 @@
-// NPM dependencies
-const path = require('path')
+'use strict'
 
 // Local dependencies
-const renderTemplate = require(path.join(__dirname, '/../test_helpers/html_assertions.js')).render
+const {render} = require('../test_helpers/html_assertions.js')
 
 describe('The pagination links', function () {
   it('should display correct pagination links for all filters', () => {
@@ -24,7 +23,7 @@ describe('The pagination links', function () {
     }
 
     const templateData = transactionsTemplateData(filters)
-    const body = renderTemplate('transactions/paginator', templateData)
+    const body = render('transactions/paginator', templateData)
 
     body.should.containSelector('div.pagination')
 
@@ -68,7 +67,7 @@ describe('The pagination links', function () {
     }
 
     const templateData = transactionsTemplateData(filters)
-    const body = renderTemplate('transactions/paginator', templateData)
+    const body = render('transactions/paginator', templateData)
 
     body.should.containSelector('div.pagination')
 
