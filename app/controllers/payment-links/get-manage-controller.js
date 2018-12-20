@@ -5,11 +5,10 @@ const logger = require('winston')
 const lodash = require('lodash')
 
 // Local dependencies
-const {response} = require('../../utils/response.js')
-const paths = require('../../paths')
+const { response } = require('../../utils/response.js')
 const productsClient = require('../../services/clients/products_client.js')
 const authService = require('../../services/auth_service.js')
-const errorView = require('../../utils/response.js').renderErrorView
+const { renderErrorView } = require('../../utils/response.js')
 
 const PAGE_PARAMS = {}
 
@@ -25,6 +24,6 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Get ADHOC product by gateway account id failed - ${err.message}`)
-      errorView(req, res, 'Internal server error')
+      renderErrorView(req, res, 'Internal server error')
     })
 }
