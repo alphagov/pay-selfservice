@@ -3,14 +3,15 @@
 // NPM dependencies
 const _ = require('lodash')
 
-// Custom dependencies
-let User = require('../../app/models/User.class')
-let pactBase = require('./pact_base')
-let pactUsers = pactBase(
+// Local dependencies
+const User = require('../../app/models/User.class')
+const pactBase = require('./pact_base')
+const pactUsers = pactBase(
   {
     array: ['permissions', 'gateway_account_ids', 'service_ids', 'service_roles', 'services', '_links'],
     length: [{key: 'permissions', length: 1}]
   })
+const goLiveStage = require('../../app/models/go-live-stage')
 
 function validPassword () {
   return 'G0VUkPay2017Rocks'
@@ -155,25 +156,52 @@ module.exports = {
   },
 
   /**
-   * @param request Params override response
+   * @param opts Params override response
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
-  validUserResponse: (request = {}) => {
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let reqExternalId = request.external_id || existingExternalId
-    let reqEmail = request.email || `${request.username || 'existing-user'}@example.com`
-    let defaultServiceId = 'cp5wa'
-    const gatewayAccountIds = request.gateway_account_ids || [758, 772]
+  validUserResponse: (opts = {}) => {
+    const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const reqExternalId = opts.external_id || existingExternalId
+    const reqEmail = opts.email || `${opts.username || 'existing-user'}@example.com`
+    const defaultServiceId = 'cp5wa'
+    const defaultServiceName = 'System Generated'
+    const gatewayAccountIds = opts.gateway_account_ids || [758, 772]
+    const merchantDetails = opts.merchant_details || {}
+    const merchantName = merchantDetails.name || 'updated-merchant-details-name'
+    const merchantTelephoneNumber = merchantDetails.telephone_number || '03069990000'
+    const merchantEmail = merchantDetails.email || 'dd-merchant@example.com'
+    const merchantAddressLine1 = merchantDetails.address_line1 || 'updated-merchant-details-addressline1'
+    const merchantAddressLine2 = merchantDetails.address_line2 || 'updated-merchant-details-addressline2'
+    const merchantAddressCity = merchantDetails.address_city || 'updated-merchant-details-city'
+    const merchantAddressPostcode = merchantDetails.address_postcode || 'updated-merchant-details-postcode'
+    const merchantAddressCountry = merchantDetails.address_country || 'updated-merchant-details-country'
+    const collectBillingAddress = opts.collect_billing_address || false
+    const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.LIVE
 
     let data = {
       external_id: reqExternalId,
       username: reqEmail,
       email: reqEmail,
-      service_roles: request.service_roles || [{
+      service_roles: opts.service_roles || [{
         service: {
-          name: 'System Generated',
+          name: defaultServiceName,
           external_id: defaultServiceId,
-          gateway_account_ids: gatewayAccountIds
+          gateway_account_ids: gatewayAccountIds,
+          service_name: {
+            en: defaultServiceName
+          },
+          merchant_details: {
+            name: merchantName,
+            telephone_number: merchantTelephoneNumber,
+            email: merchantEmail,
+            address_line1: merchantAddressLine1,
+            address_line2: merchantAddressLine2,
+            address_city: merchantAddressCity,
+            address_postcode: merchantAddressPostcode,
+            address_country: merchantAddressCountry
+          },
+          collect_billing_address: collectBillingAddress,
+          current_go_live_stage: currentGoLiveStage
         },
         role: {
           name: 'admin',
@@ -181,15 +209,15 @@ module.exports = {
           permissions: [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
         }
       }],
-      otp_key: request.otp_key || '43c3c4t',
-      telephone_number: request.telephone_number || '0123441',
+      otp_key: opts.otp_key || '43c3c4t',
+      telephone_number: opts.telephone_number || '0123441',
       '_links': [{
         'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
         'rel': 'self',
         'method': 'GET'
       }],
-      second_factor: request.second_factor || 'SMS',
-      provisional_otp_key: request.provisional_otp_key || '55970'
+      second_factor: opts.second_factor || 'SMS',
+      provisional_otp_key: opts.provisional_otp_key || '55970'
     }
 
     return {
