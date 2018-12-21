@@ -74,7 +74,7 @@
     "hogan.js": "3.0.x",
     "http-proxy": "1.17.x",
     "json2csv": "4.3.x",
-    "lodash": "4.17.10",
+    "lodash": "4.17.11",
     "minimist": "1.2.x",
     "moment-timezone": "^0.5.23",
     "morgan": "^1.9.1",
