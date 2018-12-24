@@ -4,7 +4,7 @@
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
 const logger = require('winston')
-const {getNamespace, createNamespace} = require('continuation-local-storage')
+const { getNamespace, createNamespace } = require('continuation-local-storage')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
@@ -12,8 +12,8 @@ const generateRoute = require('./utils/generate_route')
 const paths = require('./paths.js')
 
 // Middleware
-const {lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser} = require('./services/auth_service')
-const {validateAndRefreshCsrf, ensureSessionHasCsrfSecret} = require('./middleware/csrf')
+const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth_service')
+const { validateAndRefreshCsrf, ensureSessionHasCsrfSecret } = require('./middleware/csrf')
 const getEmailNotification = require('./middleware/get_email_notification')
 const getAccount = require('./middleware/get_gateway_account')
 const hasServices = require('./middleware/has_services')
@@ -64,13 +64,14 @@ const paymentLinksController = require('./controllers/payment-links')
 const twoFactorAuthController = require('./controllers/two-factor-auth-controller')
 const feedbackController = require('./controllers/feedback')
 const toggleBillingAddressController = require('./controllers/billing-address/toggle-billing-address-controller')
+const requestToGoLiveIndexController = require('./controllers/request-to-go-live/index')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive
 } = paths
 
 // Exports
@@ -183,6 +184,7 @@ module.exports.bind = function (app) {
     ...lodash.values(user.twoFactorAuth),
     ...lodash.values(partnerApp),
     ...lodash.values(billingAddress),
+    ...lodash.values(requestToGoLive),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -322,6 +324,10 @@ module.exports.bind = function (app) {
 
   // Partner app link GoCardless account
   app.get(paths.partnerApp.linkAccount, xraySegmentCls, getAccount, goCardlessRedirect.index)
+
+  // Request To Go Live
+  app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), resolveService, getAccount, requestToGoLiveIndexController.get)
+  app.post(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:update'), resolveService, getAccount, requestToGoLiveIndexController.post)
 
   app.all('*', (req, res) => {
     res.status(404)

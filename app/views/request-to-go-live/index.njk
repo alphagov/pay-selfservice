@@ -1,0 +1,33 @@
+{% extends "../layout.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  Request to go live - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Request to go live</h1>
+    <p class="govuk-body-l intro">Complete these steps to start taking real payments.</p>
+
+    <div class="request-to-go-live-list">
+      <h3 class="govuk-heading-m">Add your organisation's details</h3>
+      <p class="govuk-body-m">This information will appear on your payment pages.</p>
+      <h3 class="govuk-heading-m">Choose how to process payments</h3>
+      <p class="govuk-body-m">Use GOV.UK Pay’s preferred payment service provider (PSP). If you have already procured
+        your own PSP, you can enter their details instead.</p>
+      <h3 class="govuk-heading-m">Sign an agreement with GOV.UK Pay</h3>
+      <p class="govuk-body-m">GOV.UK Pay will contact you within one working day to confirm whether or not your
+        organisation has already signed an agreement. If not, we’ll send you the relevant documents.</p>
+      <h3 class="govuk-heading-m">Add your payment details</h3>
+      <p class="govuk-body-m">Enter details of the bank account the money paid to your service will be transferred
+        to.</p>
+      <h3 class="govuk-heading-m">Nominate a responsible person</h3>
+      <p class="govuk-body-m">Upload details of the person responsible for managing payments to your service.</p>
+      <form id="request-to-go-live-index-form" method="post" action="/service/{{externalServiceId}}/request-to-go-live">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+        {{ govukButton({ text: "Start now" }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
