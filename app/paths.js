@@ -156,6 +156,9 @@ module.exports = {
   },
   generateRoute: require(path.join(__dirname, '/utils/generate_route.js')),
   requestToGoLive: {
-    index: '/service/:externalServiceId/request-to-go-live'
+    index: '/service/:externalServiceId/request-to-go-live',
+    organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',
+    chooseHowToProcessPayments: '/service/:externalServiceId/request-to-go-live/choose-how-to-process-payments',
+    agreement: '/service/:externalServiceId/request-to-go-live/agreement'
   }
 }
