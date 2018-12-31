@@ -1,22 +1,29 @@
-var Pact = require('pact')
-var path = require('path')
-var chai = require('chai')
-var chaiAsPromised = require('chai-as-promised')
-var getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
-var serviceFixtures = require('../../../../fixtures/service_fixtures')
-var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
+'use strict'
 
+// NPM dependencies
+const Pact = require('pact')
+const path = require('path')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+
+// Local dependencies
+const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+const serviceFixtures = require('../../../../fixtures/service_fixtures')
+const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
+
+// Global setup
 chai.use(chaiAsPromised)
 
+// Constants
 const expect = chai.expect
 const SERVICES_PATH = '/v1/api/services'
-var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const port = Math.floor(Math.random() * 48127) + 1024
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
-describe('adminusers client - service users', function () {
-  let serviceExternalId = '12345'
-  let nonExistingServiceId = '500'
-  let responseParams = {
+describe('adminusers client - service users', () => {
+  const serviceExternalId = '12345'
+  const nonExistingServiceId = '500'
+  const responseParams = {
     service_roles: [{
       service: {
         name: 'System Generated',
@@ -35,9 +42,9 @@ describe('adminusers client - service users', function () {
       }
     }]
   }
-  let getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([responseParams])
+  const getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([responseParams])
 
-  let provider = Pact({
+  const provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
@@ -48,13 +55,13 @@ describe('adminusers client - service users', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(done => provider.finalize().then(done()))
 
   describe('success', () => {
-    before((done) => {
+    before(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${serviceExternalId}/users`)
-          .withState('a service exists with the given id')
+          .withState('a service exists with external id 12345')
           .withUponReceiving('a valid get service users request')
           .withResponseBody(getServiceUsersResponse.getPactified())
           .withStatusCode(200)
@@ -64,10 +71,10 @@ describe('adminusers client - service users', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return service users successfully', function (done) {
+    it('should return service users successfully', done => {
       adminusersClient.getServiceUsers(serviceExternalId).should.be.fulfilled.then(
-        function (users) {
-          let expectedResponse = getServiceUsersResponse.getPlain()
+        users => {
+          const expectedResponse = getServiceUsersResponse.getPlain()
           expect(users[0].serviceRoles.length).to.be.equal(expectedResponse[0].service_roles.length)
           expect(users[0].hasService(serviceExternalId)).to.be.equal(true)
         }
@@ -76,7 +83,7 @@ describe('adminusers client - service users', function () {
   })
 
   describe('failure', () => {
-    before((done) => {
+    before(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICES_PATH}/${nonExistingServiceId}/users`)
           .withState('a service doesnt exists with the given id')
@@ -89,9 +96,9 @@ describe('adminusers client - service users', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return service not found', function (done) {
+    it('should return service not found', done => {
       adminusersClient.getServiceUsers(nonExistingServiceId).should.be.rejected.then(
-        function (err) {
+        err => {
           expect(err.errorCode).to.equal(404)
         }
       ).should.notify(done)

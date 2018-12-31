@@ -154,5 +154,8 @@ module.exports = {
     linkAccount: '/link-account',
     oauthComplete: '/oauth/complete'
   },
-  generateRoute: require(path.join(__dirname, '/utils/generate_route.js'))
+  generateRoute: require(path.join(__dirname, '/utils/generate_route.js')),
+  requestToGoLive: {
+    index: '/service/:externalServiceId/request-to-go-live'
+  }
 }
