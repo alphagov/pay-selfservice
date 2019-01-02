@@ -1,5 +1,5 @@
 (function() {
-  linkFollower = function() {
+  var linkFollower = function() {
     var init = function() {
       Array.prototype.slice.call(document.querySelectorAll('[data-follow-link]')).forEach(
         function(link) {

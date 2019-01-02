@@ -1,5 +1,5 @@
 (function () {
-  datetimePicker = function () {
+  var datetimePicker = function () {
     var init = function () {
         datePicker();
         timePicker();

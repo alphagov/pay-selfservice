@@ -49,7 +49,7 @@ function initialiseGlobalMiddleware (app) {
       logger.info(message)
     }
   }
-  if (!process.env.DISABLE_REQUEST_LOGGING === 'true') {
+  if (process.env.DISABLE_REQUEST_LOGGING !== 'true') {
     app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware(
       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'))
   }
@@ -156,7 +156,7 @@ function initialise () {
   app.disable('x-powered-by')
   app.use(flash())
 
-  initialiseTLS(app)
+  initialiseTLS()
   initialisePublic(app)
   initialiseCookies(app)
   initialiseAuth(app)
