@@ -2,7 +2,7 @@
 const path = require('path')
 
 // Please leave here even though it looks unused - this enables Node.js metrics to be pushed to Hosted Graphite
-if (!process.env.DISABLE_APPMETRICS) {
+if (process.env.DISABLE_APPMETRICS !== 'true') {
   require('./app/utils/metrics.js').metrics()
 }
 
