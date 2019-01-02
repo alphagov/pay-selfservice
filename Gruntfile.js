@@ -1,3 +1,5 @@
+const nodeSass = require('node-sass')
+
 module.exports = function (grunt) {
   grunt.initConfig({
     // Clean
@@ -7,6 +9,7 @@ module.exports = function (grunt) {
     sass: {
       dev: {
         options: {
+          implementation: nodeSass,
           style: 'expanded',
           sourcemap: true,
           includePaths: [
