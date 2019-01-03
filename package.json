@@ -126,7 +126,7 @@
     "grunt-sass": "^3.0.2",
     "html5shiv": "3.7.x",
     "mocha": "^5.1.1",
-    "nock": "^10.0.5",
+    "nock": "^10.0.6",
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.9",
     "nunjucksify": "^2.2.0",
