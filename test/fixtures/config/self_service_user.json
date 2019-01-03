@@ -4,6 +4,7 @@
     "users": [
       {
         "isPrimary": "true",
+        "cypressTestingCategory": "DEFAULT",
         "invalid_password": "some-password",
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
@@ -193,7 +194,8 @@
               ],
               "_links": [],
               "redirect_to_service_immediately_on_terminal_state": false,
-              "collect_billing_address": true
+              "collect_billing_address": true,
+              "current_go_live_stage": "NOT_STARTED"
             },
             "role": {
               "name": "admin",
@@ -351,7 +353,8 @@
               "666"
             ],
             "redirect_to_service_immediately_on_terminal_state": false,
-            "collect_billing_address": true
+            "collect_billing_address": true,
+            "current_go_live_stage": "NOT_STARTED"
           }
         ],
         "permissions": [
@@ -1084,6 +1087,5344 @@
               }
             ]
           }
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_NO_PERMISSIONS",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "7d19aff33f8948deb97ed16b2912dcd3",
+        "username": "some-user@gov.uk",
+        "usernameMatcher": "some-user@gov\\.uk",
+        "email": "some-user@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/7d19aff33f8948deb97ed16b2912dcd3"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            }
+          ]
+        },
+        "service_ids": [
+          "cp5wa"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "cp5wa",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "NOT_STARTED"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "cp5wa",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "NOT_STARTED"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglnotstarteduserextid",
+        "username": "some-user-rtglnotstarted@gov.uk",
+        "usernameMatcher": "some-user-rtglnotstarted@gov\\.uk",
+        "email": "some-user-rtglnotstarted@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglnotstarteduserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtglnotstarted"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtglnotstarted",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "NOT_STARTED"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtglnotstarted",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "NOT_STARTED"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglenteredorgnameuserextid",
+        "username": "some-user-rtglenteredorgname@gov.uk",
+        "usernameMatcher": "some-user-rtglenteredorgname@gov\\.uk",
+        "email": "some-user-rtglenteredorgname@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglenteredorgnameuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtglenteredorgname"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtglenteredorgname",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "ENTERED_ORGANISATION_NAME"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtglenteredorgname",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "ENTERED_ORGANISATION_NAME"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglchosenpspstripeuserextid",
+        "username": "some-user-rtglchosenpspstripe@gov.uk",
+        "usernameMatcher": "some-user-rtglchosenpspstripe@gov\\.uk",
+        "email": "some-user-rtglchosenpspstripe@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglchosenpspstripeuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtglchosenpspstripe"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtglchosenpspstripe",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "CHOSEN_PSP_STRIPE"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtglchosenpspstripe",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "CHOSEN_PSP_STRIPE"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglchosenpspworldpayuserextid",
+        "username": "some-user-rtglchosenpspworldpay@gov.uk",
+        "usernameMatcher": "some-user-rtglchosenpspworldpay@gov\\.uk",
+        "email": "some-user-rtglchosenpspworldpay@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglchosenpspworldpayuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtglchosenpspworldpay"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtglchosenpspworldpay",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "CHOSEN_PSP_WORLDPAY"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtglchosenpspworldpay",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "CHOSEN_PSP_WORLDPAY"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglchosenpspsmartpayuserextid",
+        "username": "some-user-rtglchosenpspsmartpay@gov.uk",
+        "usernameMatcher": "some-user-rtglchosenpspsmartpay@gov\\.uk",
+        "email": "some-user-rtglchosenpspsmartpay@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglchosenpspsmartpayuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtglchosenpspsmartpay"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtglchosenpspsmartpay",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "CHOSEN_PSP_SMARTPAY"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtglchosenpspsmartpay",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "CHOSEN_PSP_SMARTPAY"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglchosenpspepdquserextid",
+        "username": "some-user-rtglchosenpspepdq@gov.uk",
+        "usernameMatcher": "some-user-rtglchosenpspepdq@gov\\.uk",
+        "email": "some-user-rtglchosenpspepdq@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglchosenpspepdquserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtglchosenpspepdq"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtglchosenpspepdq",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "CHOSEN_PSP_EPDQ"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtglchosenpspepdq",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "CHOSEN_PSP_EPDQ"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtgltermsokstripeuserextid",
+        "username": "some-user-rtgltermsokstripe@gov.uk",
+        "usernameMatcher": "some-user-rtgltermsokstripe@gov\\.uk",
+        "email": "some-user-rtgltermsokstripe@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtgltermsokstripeuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtgltermsokstripe"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtgltermsokstripe",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "TERMS_AGREED_STRIPE"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtgltermsokstripe",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "TERMS_AGREED_STRIPE"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtgltermsokworldpayuserextid",
+        "username": "some-user-rtgltermsokworldpay@gov.uk",
+        "usernameMatcher": "some-user-rtgltermsokworldpay@gov\\.uk",
+        "email": "some-user-rtgltermsokworldpay@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtgltermsokworldpayuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtgltermsokworldpay"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtgltermsokworldpay",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "TERMS_AGREED_WORLDPAY"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtgltermsokworldpay",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "TERMS_AGREED_WORLDPAY"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtgltermsoksmartpayuserextid",
+        "username": "some-user-rtgltermsoksmartpay@gov.uk",
+        "usernameMatcher": "some-user-rtgltermsoksmartpay@gov\\.uk",
+        "email": "some-user-rtgltermsoksmartpay@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtgltermsoksmartpayuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtgltermsoksmartpay"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtgltermsoksmartpay",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "TERMS_AGREED_SMARTPAY"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtgltermsoksmartpay",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "TERMS_AGREED_SMARTPAY"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtgltermsokepdquserextid",
+        "username": "some-user-rtgltermsokepdq@gov.uk",
+        "usernameMatcher": "some-user-rtgltermsokepdq@gov\\.uk",
+        "email": "some-user-rtgltermsokepdq@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtgltermsokepdquserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtgltermsokepdq"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtgltermsokepdq",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "TERMS_AGREED_EPDQ"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtgltermsokepdq",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "TERMS_AGREED_EPDQ"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_DENIED",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtgldenieduserextid",
+        "username": "some-user-rtgldenied@gov.uk",
+        "usernameMatcher": "some-user-rtgldenied@gov\\.uk",
+        "email": "some-user-rtgldenied@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtgldenieduserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtgldenied"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtgldenied",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "DENIED"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtgldenied",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "DENIED"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
+        }
+      },
+      {
+        "isPrimary": "false",
+        "cypressTestingCategory": "REQUEST_TO_GO_LIVE_STAGE_LIVE",
+        "invalid_password": "some-password",
+        "invalid_passwordMatcher": "some-password",
+        "valid_password": "some-valid-password",
+        "valid_passwordMatcher": "some-valid-password",
+        "external_id": "rtglliveuserextid",
+        "username": "some-user-rtgllive@gov.uk",
+        "usernameMatcher": "some-user-rtgllive@gov\\.uk",
+        "email": "some-user-rtgllive@gov.uk",
+        "otp_key": "krb6fcianbdjkt01ecvi08jcln",
+        "telephone_number": "9127979",
+        "second_factor": "SMS",
+        "provisional_otp_key": "NOTSET",
+        "provisional_otp_key_created_at": null,
+        "disabled": false,
+        "login_counter": 0,
+        "session_version": 0,
+        "gateway_accounts": [
+          {
+            "id": "666",
+            "isPrimary": "true",
+            "name": "sandbox"
+          }
+        ],
+        "_links": [
+          {
+            "rel": "self",
+            "method": "GET",
+            "href": "http://myconnector.local/v1/api/users/rtglliveuserextid"
+          }
+        ],
+        "role": {
+          "name": "admin",
+          "description": "Administrator",
+          "permissions": [
+            {
+              "name": "users-service:read",
+              "description": "Viewusersinservice"
+            },
+            {
+              "name": "users-service:create",
+              "description": "Createuserinthisservice"
+            },
+            {
+              "name": "tokens-active:read",
+              "description": "Viewactivekeys"
+            },
+            {
+              "name": "tokens-revoked:read",
+              "description": "Viewrevokedkeys"
+            },
+            {
+              "name": "tokens:create",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:update",
+              "description": "Generatekey"
+            },
+            {
+              "name": "tokens:delete",
+              "description": "Revokekey"
+            },
+            {
+              "name": "transactions:read",
+              "description": "Viewtransactionslist"
+            },
+            {
+              "name": "transactions-by-date:read",
+              "description": "Searchtransactionsbydate"
+            },
+            {
+              "name": "transactions-by-fields:read",
+              "description": "Searchtransactionsbypaymentfields"
+            },
+            {
+              "name": "transactions-download:read",
+              "description": "Downloadtransactions"
+            },
+            {
+              "name": "transactions-details:read",
+              "description": "Viewtransactiondetails"
+            },
+            {
+              "name": "transactions-events:read",
+              "description": "Viewtransactionevents"
+            },
+            {
+              "name": "refunds:create",
+              "description": "Issuerefund"
+            },
+            {
+              "name": "transactions-amount:read",
+              "description": "Viewtransactionamounts"
+            },
+            {
+              "name": "transactions-description:read",
+              "description": "Viewtransactiondescription"
+            },
+            {
+              "name": "transactions-email:read",
+              "description": "Viewtransactionemail"
+            },
+            {
+              "name": "transactions-card-type:read",
+              "description": "Viewtransactioncardtype"
+            },
+            {
+              "name": "gateway-credentials:read",
+              "description": "Viewgatewayaccountcredentials"
+            },
+            {
+              "name": "gateway-credentials:update",
+              "description": "Editgatewayaccountcredentials"
+            },
+            {
+              "name": "service-name:read",
+              "description": "Viewservicename"
+            },
+            {
+              "name": "service-name:update",
+              "description": "Editservicename"
+            },
+            {
+              "name": "payment-types:read",
+              "description": "Viewpaymenttypes"
+            },
+            {
+              "name": "payment-types:update",
+              "description": "Editpaymenttypes"
+            },
+            {
+              "name": "email-notification-template:read",
+              "description": "Viewemailnotificationstemplate"
+            },
+            {
+              "name": "email-notification-paragraph:update",
+              "description": "Editemailnotificationsparagraph"
+            },
+            {
+              "name": "email-notification-toggle:update",
+              "description": "Turnemailnotificationson/off"
+            },
+            {
+              "name": "tokens:read",
+              "description": "View keys"
+            },
+            {
+              "name": "toggle-3ds:read",
+              "description": "View 3D Secure setting"
+            },
+            {
+              "name": "toggle-3ds:update",
+              "description": "Edit 3D Secure setting"
+            },
+            {
+              "name": "users-service:delete",
+              "description": "Remove user from a service"
+            },
+            {
+              "name": "merchant-details:read",
+              "description": "View Merchant Details setting"
+            },
+            {
+              "name": "merchant-details:update",
+              "description": "Edit Merchant Details setting"
+            },
+            {
+              "name": "toggle-billing-address:read",
+              "description": "View Billing Address setting"
+            },
+            {
+              "name": "toggle-billing-address:update",
+              "description": "Edit Billing Address setting"
+            },
+            {
+              "name": "go-live-stage:update",
+              "description": "Update Go Live stage"
+            },
+            {
+              "name": "go-live-stage:read",
+              "description": "View Go Live stage"
+            }
+          ]
+        },
+        "service_ids": [
+          "rtgllive"
+        ],
+        "service_roles": [
+          {
+            "service": {
+              "external_id": "rtgllive",
+              "name": "System Generated",
+              "gateway_account_ids": [
+                "666"
+              ],
+              "_links": [],
+              "redirect_to_service_immediately_on_terminal_state": false,
+              "collect_billing_address": true,
+              "current_go_live_stage": "LIVE"
+            },
+            "role": {
+              "name": "admin",
+              "description": "Administrator",
+              "permissions": [
+                {
+                  "name": "users-service:read",
+                  "description": "Viewusersinservice"
+                },
+                {
+                  "name": "users-service:create",
+                  "description": "Createuserinthisservice"
+                },
+                {
+                  "name": "tokens-active:read",
+                  "description": "Viewactivekeys"
+                },
+                {
+                  "name": "tokens-revoked:read",
+                  "description": "Viewrevokedkeys"
+                },
+                {
+                  "name": "tokens:create",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:update",
+                  "description": "Generatekey"
+                },
+                {
+                  "name": "tokens:delete",
+                  "description": "Revokekey"
+                },
+                {
+                  "name": "transactions:read",
+                  "description": "Viewtransactionslist"
+                },
+                {
+                  "name": "transactions-by-date:read",
+                  "description": "Searchtransactionsbydate"
+                },
+                {
+                  "name": "transactions-by-fields:read",
+                  "description": "Searchtransactionsbypaymentfields"
+                },
+                {
+                  "name": "transactions-download:read",
+                  "description": "Downloadtransactions"
+                },
+                {
+                  "name": "transactions-details:read",
+                  "description": "Viewtransactiondetails"
+                },
+                {
+                  "name": "transactions-events:read",
+                  "description": "Viewtransactionevents"
+                },
+                {
+                  "name": "refunds:create",
+                  "description": "Issuerefund"
+                },
+                {
+                  "name": "transactions-amount:read",
+                  "description": "Viewtransactionamounts"
+                },
+                {
+                  "name": "transactions-description:read",
+                  "description": "Viewtransactiondescription"
+                },
+                {
+                  "name": "transactions-email:read",
+                  "description": "Viewtransactionemail"
+                },
+                {
+                  "name": "transactions-card-type:read",
+                  "description": "Viewtransactioncardtype"
+                },
+                {
+                  "name": "gateway-credentials:read",
+                  "description": "Viewgatewayaccountcredentials"
+                },
+                {
+                  "name": "gateway-credentials:update",
+                  "description": "Editgatewayaccountcredentials"
+                },
+                {
+                  "name": "service-name:read",
+                  "description": "Viewservicename"
+                },
+                {
+                  "name": "service-name:update",
+                  "description": "Editservicename"
+                },
+                {
+                  "name": "payment-types:read",
+                  "description": "Viewpaymenttypes"
+                },
+                {
+                  "name": "payment-types:update",
+                  "description": "Editpaymenttypes"
+                },
+                {
+                  "name": "email-notification-template:read",
+                  "description": "Viewemailnotificationstemplate"
+                },
+                {
+                  "name": "email-notification-paragraph:update",
+                  "description": "Editemailnotificationsparagraph"
+                },
+                {
+                  "name": "email-notification-toggle:update",
+                  "description": "Turnemailnotificationson/off"
+                },
+                {
+                  "name": "tokens:read",
+                  "description": "View keys"
+                },
+                {
+                  "name": "toggle-3ds:read",
+                  "description": "View 3D Secure setting"
+                },
+                {
+                  "name": "toggle-3ds:update",
+                  "description": "Edit 3D Secure setting"
+                },
+                {
+                  "name": "users-service:delete",
+                  "description": "Remove user from a service"
+                },
+                {
+                  "name": "merchant-details:read",
+                  "description": "View Merchant Details setting"
+                },
+                {
+                  "name": "merchant-details:update",
+                  "description": "Edit Merchant Details setting"
+                },
+                {
+                  "name": "toggle-billing-address:read",
+                  "description": "View Billing Address setting"
+                },
+                {
+                  "name": "toggle-billing-address:update",
+                  "description": "Edit Billing Address setting"
+                },
+                {
+                  "name": "go-live-stage:update",
+                  "description": "Update Go Live stage"
+                },
+                {
+                  "name": "go-live-stage:read",
+                  "description": "View Go Live stage"
+                }
+              ]
+            }
+          }
+        ],
+        "services": [
+          {
+            "external_id": "rtgllive",
+            "name": "System Generated",
+            "gateway_account_ids": [
+              "666"
+            ],
+            "redirect_to_service_immediately_on_terminal_state": false,
+            "collect_billing_address": true,
+            "current_go_live_stage": "LIVE"
+          }
+        ],
+        "permissions": [
+          "users-service:read",
+          "users-service:create",
+          "tokens-active:read",
+          "tokens-revoked:read",
+          "tokens:create",
+          "tokens:update",
+          "tokens:delete",
+          "transactions:read",
+          "transactions-by-date:read",
+          "transactions-by-fields:read",
+          "transactions-download:read",
+          "transactions-details:read",
+          "transactions-events:read",
+          "refunds:create",
+          "transactions-amount:read",
+          "transactions-description:read",
+          "transactions-email:read",
+          "transactions-card-type:read",
+          "gateway-credentials:read",
+          "gateway-credentials:update",
+          "service-name:read",
+          "service-name:update",
+          "payment-types:read",
+          "payment-types:update",
+          "email-notification-template:read",
+          "email-notification-paragraph:update",
+          "email-notification-toggle:update",
+          "tokens:read",
+          "toggle-3ds:read",
+          "toggle-3ds:update",
+          "users-service:delete",
+          "merchant-details:read",
+          "merchant-details:update",
+          "go-live-stage:update",
+          "go-live-stage:read"
+        ],
+        "sections": {
+          "description": "Contains fixtures for data intended to be surfaced in various 'sections' of self-service"
         }
       }
     ]

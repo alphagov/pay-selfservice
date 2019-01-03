@@ -1,10 +1,11 @@
 'use strict'
 
 // Local dependencies
-const paths = require('../../../paths')
+const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 
 module.exports = (req, res) => {
-  // TODO: finish the UI implementation and logic
-  const externalServiceId = req.service.externalId
-  res.redirect(303, paths.requestToGoLive.index.replace(':externalServiceId', externalServiceId))
+  res.redirect(
+    303,
+    goLiveStageToNextPagePath[req.service.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+  )
 }

@@ -18,30 +18,210 @@ module.exports = (on, config) => {
 
   // The same fixed user config is used to generate pacts/contracts, so generating cookies from this config
   // ensures our pact-stub server is ready to return canned responses.
-  const ssUserConfig = require('../../fixtures/config/self_service_user.json')
+  const selfServiceUserConfig = require('../../fixtures/config/self_service_user.json')
 
-  const ssUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+  // Default user
+  const selfServiceUser = selfServiceUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+  const encryptedSessionCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceUser.external_id
+  )
+  const encryptedGatewayAccountCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionCookie = encryptedSessionCookie
+  config.env.encryptedGatewayAccountCookie = encryptedGatewayAccountCookie
 
-  const encryptedSessionCookie = cookieMonster.getCookie('session', config.env.TEST_SESSION_ENCRYPTION_KEY,
+  // REQUEST_TO_GO_LIVE_NO_PERMISSIONS user
+  const selfServiceRequestToGoLiveNoPermissionsUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_NO_PERMISSIONS')[0]
+  const encryptedSessionRequestToGoLiveNoPermissionsCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveNoPermissionsUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveNoPermissionsCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveNoPermissionsUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveNoPermissionsCookie = encryptedSessionRequestToGoLiveNoPermissionsCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveNoPermissionsCookie = encryptedGatewayAccountRequestToGoLiveNoPermissionsCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED user
+  const selfServiceRequestToGoLiveStageNotStartedUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED')[0]
+  const encryptedSessionRequestToGoLiveStageNotStartedCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageNotStartedUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageNotStartedCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageNotStartedUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageNotStartedCookie = encryptedSessionRequestToGoLiveStageNotStartedCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageNotStartedCookie = encryptedGatewayAccountRequestToGoLiveStageNotStartedCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME user
+  const selfServiceRequestToGoLiveStageEnteredOrganisationNameUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME')[0]
+  const encryptedSessionRequestToGoLiveStageEnteredOrganisationNameCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageEnteredOrganisationNameUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageEnteredOrganisationNameCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageEnteredOrganisationNameUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageEnteredOrganisationNameCookie = encryptedSessionRequestToGoLiveStageEnteredOrganisationNameCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageEnteredOrganisationNameCookie = encryptedGatewayAccountRequestToGoLiveStageEnteredOrganisationNameCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE user
+  const selfServiceRequestToGoLiveStageChosenPspStripeUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE')[0]
+  const encryptedSessionRequestToGoLiveStageChosenPspStripeCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspStripeUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageChosenPspStripeCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspStripeUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageChosenPspStripeCookie = encryptedSessionRequestToGoLiveStageChosenPspStripeCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageChosenPspStripeCookie = encryptedGatewayAccountRequestToGoLiveStageChosenPspStripeCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY user
+  const selfServiceRequestToGoLiveStageChosenPspWorldPayUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY')[0]
+  const encryptedSessionRequestToGoLiveStageChosenPspWorldPayCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspWorldPayUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageChosenPspWorldPayCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspWorldPayUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageChosenPspWorldPayCookie = encryptedSessionRequestToGoLiveStageChosenPspWorldPayCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageChosenPspWorldPayCookie = encryptedGatewayAccountRequestToGoLiveStageChosenPspWorldPayCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY user
+  const selfServiceRequestToGoLiveStageChosenPspSmartPayUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY')[0]
+  const encryptedSessionRequestToGoLiveStageChosenPspSmartPayCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspSmartPayUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageChosenPspSmartPayCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspSmartPayUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageChosenPspSmartPayCookie = encryptedSessionRequestToGoLiveStageChosenPspSmartPayCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageChosenPspSmartPayCookie = encryptedGatewayAccountRequestToGoLiveStageChosenPspSmartPayCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ user
+  const selfServiceRequestToGoLiveStageChosenPspEpdqUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ')[0]
+  const encryptedSessionRequestToGoLiveStageChosenPspEpdqCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspEpdqUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageChosenPspEpdqCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageChosenPspEpdqUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageChosenPspEpdqCookie = encryptedSessionRequestToGoLiveStageChosenPspEpdqCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageChosenPspEpdqCookie = encryptedGatewayAccountRequestToGoLiveStageChosenPspEpdqCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE user
+  const selfServiceRequestToGoLiveStageTermsAgreedStripeUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE')[0]
+  const encryptedSessionRequestToGoLiveStageTermsAgreedStripeCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedStripeUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageTermsAgreedStripeCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedStripeUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageTermsAgreedStripeCookie = encryptedSessionRequestToGoLiveStageTermsAgreedStripeCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageTermsAgreedStripeCookie = encryptedGatewayAccountRequestToGoLiveStageTermsAgreedStripeCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY user
+  const selfServiceRequestToGoLiveStageTermsAgreedWorldPayUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY')[0]
+  const encryptedSessionRequestToGoLiveStageTermsAgreedWorldPayCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedWorldPayUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageTermsAgreedWorldPayCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedWorldPayUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageTermsAgreedWorldPayCookie = encryptedSessionRequestToGoLiveStageTermsAgreedWorldPayCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageTermsAgreedWorldPayCookie = encryptedGatewayAccountRequestToGoLiveStageTermsAgreedWorldPayCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY user
+  const selfServiceRequestToGoLiveStageTermsAgreedSmartPayUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY')[0]
+  const encryptedSessionRequestToGoLiveStageTermsAgreedSmartPayCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedSmartPayUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageTermsAgreedSmartPayCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedSmartPayUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageTermsAgreedSmartPayCookie = encryptedSessionRequestToGoLiveStageTermsAgreedSmartPayCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageTermsAgreedSmartPayCookie = encryptedGatewayAccountRequestToGoLiveStageTermsAgreedSmartPayCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ user
+  const selfServiceRequestToGoLiveStageTermsAgreedEpdqUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ')[0]
+  const encryptedSessionRequestToGoLiveStageTermsAgreedEpdqCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedEpdqUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageTermsAgreedEpdqCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageTermsAgreedEpdqUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageTermsAgreedEpdqCookie = encryptedSessionRequestToGoLiveStageTermsAgreedEpdqCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageTermsAgreedEpdqCookie = encryptedGatewayAccountRequestToGoLiveStageTermsAgreedEpdqCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_DENIED user
+  const selfServiceRequestToGoLiveStageDeniedUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_DENIED')[0]
+  const encryptedSessionRequestToGoLiveStageDeniedCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageDeniedUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageDeniedCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageDeniedUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageDeniedCookie = encryptedSessionRequestToGoLiveStageDeniedCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageDeniedCookie = encryptedGatewayAccountRequestToGoLiveStageDeniedCookie
+
+  // REQUEST_TO_GO_LIVE_STAGE_LIVE user
+  const selfServiceRequestToGoLiveStageLiveUser = selfServiceUserConfig.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_LIVE')[0]
+  const encryptedSessionRequestToGoLiveStageLiveCookie = generateEncryptedSessionCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageLiveUser.external_id
+  )
+  const encryptedGatewayAccountRequestToGoLiveStageLiveCookie = generateEncryptedGatewayAccountCookie(
+    config.env.TEST_SESSION_ENCRYPTION_KEY,
+    selfServiceRequestToGoLiveStageLiveUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id
+  )
+  config.env.encryptedSessionRequestToGoLiveStageLiveCookie = encryptedSessionRequestToGoLiveStageLiveCookie
+  config.env.encryptedGatewayAccountRequestToGoLiveStageLiveCookie = encryptedGatewayAccountRequestToGoLiveStageLiveCookie
+
+  // send back the modified config object
+  return config
+}
+
+function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId) {
+  const encryptedSessionCookie = cookieMonster.getCookie('session', sessionEncyptionKey,
     {
-      passport: {user: ssUser.external_id},
+      passport: { user: userExternalId },
       secondFactor: 'totp',
       version: 0,
       icamefrom: 'cypress.io'
     })
+  return encryptedSessionCookie
+}
 
-  const encryptedGatewayAccountCookie = cookieMonster.getCookie('gateway_account', config.env.TEST_SESSION_ENCRYPTION_KEY,
+function generateEncryptedGatewayAccountCookie (sessionEncyptionKey, gatewayAccountId) {
+  const encryptedGatewayAccountCookie = cookieMonster.getCookie('gateway_account', sessionEncyptionKey,
     {
-      currentGatewayAccountId: ssUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id,
+      currentGatewayAccountId: gatewayAccountId,
       icamefrom: 'cypress.io'
     })
-
-  config.env.encryptedSessionCookie = encryptedSessionCookie
-  config.env.encryptedGatewayAccountCookie = encryptedGatewayAccountCookie
-
-  console.log(`test encrypted session cookie: ${encryptedSessionCookie}`)
-  console.log(`test encrypted gateway account cookie: ${encryptedGatewayAccountCookie}`)
-
-  // send back the modified config object
-  return config
+  return encryptedGatewayAccountCookie
 }
