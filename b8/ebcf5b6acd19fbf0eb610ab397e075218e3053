@@ -7,3 +7,5 @@ staging-2.tag=alpha_staging-2-702
 staging-2.alpha_staging-2-702.date=2019-01-04:17:31:17
 
 staging-2.alpha_staging-2-702.status=success
+
+production-2.tag=alpha_production-2-702
