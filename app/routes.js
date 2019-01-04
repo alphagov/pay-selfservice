@@ -270,10 +270,10 @@ module.exports.bind = function (app) {
   app.post(t3ds.off, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.off)
 
   // BILLING ADDRESS TOGGLE
-  app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), paymentMethodIsCard, toggleBillingAddressController.index)
-  app.post(billingAddress.confirmOff, xraySegmentCls, permission('toggle-billing-address:update'), paymentMethodIsCard, toggleBillingAddressController.confirmOff)
-  app.post(billingAddress.on, xraySegmentCls, permission('toggle-billing-address:update'), paymentMethodIsCard, toggleBillingAddressController.toggleOn)
-  app.post(billingAddress.off, xraySegmentCls, permission('toggle-billing-address:update'), paymentMethodIsCard, toggleBillingAddressController.toggleOff)
+  app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), getAccount, paymentMethodIsCard, toggleBillingAddressController.index)
+  app.post(billingAddress.confirmOff, xraySegmentCls, permission('toggle-billing-address:update'), getAccount, paymentMethodIsCard, toggleBillingAddressController.confirmOff)
+  app.post(billingAddress.on, xraySegmentCls, permission('toggle-billing-address:update'), getAccount, paymentMethodIsCard, toggleBillingAddressController.toggleOn)
+  app.post(billingAddress.off, xraySegmentCls, permission('toggle-billing-address:update'), getAccount, paymentMethodIsCard, toggleBillingAddressController.toggleOff)
 
   // Prototyping
   app.get(prototyping.demoService.index, xraySegmentCls, permission('transactions:read'), resolveService, getAccount, restrictToSandbox, testWithYourUsersController.index)

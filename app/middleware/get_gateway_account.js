@@ -44,7 +44,7 @@ module.exports = function (req, res, next) {
     return connectorClient.getAccount(params)
       .then(data => {
         subsegment.close()
-        let SUPPORTS_3DS = ['worldpay']
+        let SUPPORTS_3DS = ['worldpay', 'stripe']
         // env var values are treated as text so the comparison is done for text
         if (EPDQ_3DS_ENABLED === 'true') {
           SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['epdq'])
@@ -53,7 +53,8 @@ module.exports = function (req, res, next) {
           SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['smartpay'])
         }
         req.account = _.extend({}, data, {
-          supports3ds: SUPPORTS_3DS.includes(_.get(data, 'payment_provider'))
+          supports3ds: SUPPORTS_3DS.includes(_.get(data, 'payment_provider')),
+          disableToggle3ds: _.get(data, 'payment_provider') === 'stripe'
         })
         next()
       })
