@@ -1,5 +1,6 @@
 'use strict'
 
+// Node.js core dependencies
 const path = require('path')
 
 module.exports = {

@@ -24,8 +24,8 @@ const expect = chai.expect
 const selfServiceUserConfig = require('../../../../fixtures/config/self_service_user')
 const selfServiceDefaultUser = selfServiceUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
 
-describe('adminusers client - authenticate', function () {
-  let provider = Pact({
+describe('adminusers client - authenticate', () => {
+  const provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
