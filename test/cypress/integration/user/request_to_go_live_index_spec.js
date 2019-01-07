@@ -7,7 +7,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveNoPermissionsCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_NO_PERMISSIONS')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_NO_PERMISSIONS')
 
     it('should show an error when the user does not have enough permissions', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -23,7 +23,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageNotStartedCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -53,7 +53,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageEnteredOrganisationNameCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -83,7 +83,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspStripeCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -113,7 +113,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspWorldPayCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -143,7 +143,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspSmartPayCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -173,7 +173,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspEpdqCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -203,7 +203,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedStripeCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -227,7 +227,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedWorldPayCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -251,7 +251,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedSmartPayCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -275,7 +275,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedEpdqCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -299,7 +299,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageDeniedCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_DENIED')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_DENIED')
 
     it('should show "Request to go live" page with an error', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
@@ -318,7 +318,7 @@ describe('Request to go live: Index', () => {
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageLiveCookie'))
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.filter(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_LIVE')[0]
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_LIVE')
 
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
