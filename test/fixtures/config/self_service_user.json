@@ -1490,10 +1490,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglnotstarteduserextid",
-        "username": "some-user-rtglnotstarted@gov.uk",
-        "usernameMatcher": "some-user-rtglnotstarted@gov\\.uk",
-        "email": "some-user-rtglnotstarted@gov.uk",
+        "external_id": "rtglNotStartedUserExtId",
+        "username": "some-user-rtglNotStarted@gov.uk",
+        "usernameMatcher": "some-user-rtglNotStarted@gov\\.uk",
+        "email": "some-user-rtglNotStarted@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -1513,7 +1513,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglnotstarteduserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglNotStartedUserExtId"
           }
         ],
         "role": {
@@ -1671,12 +1671,12 @@
           ]
         },
         "service_ids": [
-          "rtglnotstarted"
+          "rtglNotStarted"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtglnotstarted",
+              "external_id": "rtglNotStarted",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -1844,7 +1844,7 @@
         ],
         "services": [
           {
-            "external_id": "rtglnotstarted",
+            "external_id": "rtglNotStarted",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -1902,10 +1902,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglenteredorgnameuserextid",
-        "username": "some-user-rtglenteredorgname@gov.uk",
-        "usernameMatcher": "some-user-rtglenteredorgname@gov\\.uk",
-        "email": "some-user-rtglenteredorgname@gov.uk",
+        "external_id": "rtglEnteredOrgNameUserExtId",
+        "username": "some-user-rtglEnteredOrgName@gov.uk",
+        "usernameMatcher": "some-user-rtglEnteredOrgName@gov\\.uk",
+        "email": "some-user-rtglEnteredOrgName@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -1925,7 +1925,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglenteredorgnameuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglEnteredOrgNameUserExtId"
           }
         ],
         "role": {
@@ -2083,12 +2083,12 @@
           ]
         },
         "service_ids": [
-          "rtglenteredorgname"
+          "rtglEnteredOrgName"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtglenteredorgname",
+              "external_id": "rtglEnteredOrgName",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -2256,7 +2256,7 @@
         ],
         "services": [
           {
-            "external_id": "rtglenteredorgname",
+            "external_id": "rtglEnteredOrgName",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -2314,10 +2314,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglchosenpspstripeuserextid",
-        "username": "some-user-rtglchosenpspstripe@gov.uk",
-        "usernameMatcher": "some-user-rtglchosenpspstripe@gov\\.uk",
-        "email": "some-user-rtglchosenpspstripe@gov.uk",
+        "external_id": "rtglChosenPspStripeUserExtId",
+        "username": "some-user-rtglChosenPspStripe@gov.uk",
+        "usernameMatcher": "some-user-rtglChosenPspStripe@gov\\.uk",
+        "email": "some-user-rtglChosenPspStripe@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -2337,7 +2337,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglchosenpspstripeuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglChosenPspStripeUserExtId"
           }
         ],
         "role": {
@@ -2495,12 +2495,12 @@
           ]
         },
         "service_ids": [
-          "rtglchosenpspstripe"
+          "rtglChosenPspStripe"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtglchosenpspstripe",
+              "external_id": "rtglChosenPspStripe",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -2668,7 +2668,7 @@
         ],
         "services": [
           {
-            "external_id": "rtglchosenpspstripe",
+            "external_id": "rtglChosenPspStripe",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -2726,10 +2726,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglchosenpspworldpayuserextid",
-        "username": "some-user-rtglchosenpspworldpay@gov.uk",
-        "usernameMatcher": "some-user-rtglchosenpspworldpay@gov\\.uk",
-        "email": "some-user-rtglchosenpspworldpay@gov.uk",
+        "external_id": "rtglChosenPspWorldPayUserExtId",
+        "username": "some-user-rtglChosenPspWorldPay@gov.uk",
+        "usernameMatcher": "some-user-rtglChosenPspWorldPay@gov\\.uk",
+        "email": "some-user-rtglChosenPspWorldPay@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -2749,7 +2749,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglchosenpspworldpayuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglChosenPspWorldPayUserExtId"
           }
         ],
         "role": {
@@ -2907,12 +2907,12 @@
           ]
         },
         "service_ids": [
-          "rtglchosenpspworldpay"
+          "rtglChosenPspWorldPay"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtglchosenpspworldpay",
+              "external_id": "rtglChosenPspWorldPay",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -3080,7 +3080,7 @@
         ],
         "services": [
           {
-            "external_id": "rtglchosenpspworldpay",
+            "external_id": "rtglChosenPspWorldPay",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -3138,10 +3138,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglchosenpspsmartpayuserextid",
-        "username": "some-user-rtglchosenpspsmartpay@gov.uk",
-        "usernameMatcher": "some-user-rtglchosenpspsmartpay@gov\\.uk",
-        "email": "some-user-rtglchosenpspsmartpay@gov.uk",
+        "external_id": "rtglChosenPspSmartPayUserExtId",
+        "username": "some-user-rtglChosenPspSmartPay@gov.uk",
+        "usernameMatcher": "some-user-rtglChosenPspSmartPay@gov\\.uk",
+        "email": "some-user-rtglChosenPspSmartPay@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -3161,7 +3161,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglchosenpspsmartpayuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglChosenPspSmartPayUserExtId"
           }
         ],
         "role": {
@@ -3319,12 +3319,12 @@
           ]
         },
         "service_ids": [
-          "rtglchosenpspsmartpay"
+          "rtglChosenPspSmartPay"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtglchosenpspsmartpay",
+              "external_id": "rtglChosenPspSmartPay",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -3492,7 +3492,7 @@
         ],
         "services": [
           {
-            "external_id": "rtglchosenpspsmartpay",
+            "external_id": "rtglChosenPspSmartPay",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -3550,10 +3550,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglchosenpspepdquserextid",
-        "username": "some-user-rtglchosenpspepdq@gov.uk",
-        "usernameMatcher": "some-user-rtglchosenpspepdq@gov\\.uk",
-        "email": "some-user-rtglchosenpspepdq@gov.uk",
+        "external_id": "rtglChosenPspEpdqUserExtId",
+        "username": "some-user-rtglChosenPspEpdq@gov.uk",
+        "usernameMatcher": "some-user-rtglChosenPspEpdq@gov\\.uk",
+        "email": "some-user-rtglChosenPspEpdq@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -3573,7 +3573,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglchosenpspepdquserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglChosenPspEpdqUserExtId"
           }
         ],
         "role": {
@@ -3731,12 +3731,12 @@
           ]
         },
         "service_ids": [
-          "rtglchosenpspepdq"
+          "rtglChosenPspEpdq"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtglchosenpspepdq",
+              "external_id": "rtglChosenPspEpdq",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -3904,7 +3904,7 @@
         ],
         "services": [
           {
-            "external_id": "rtglchosenpspepdq",
+            "external_id": "rtglChosenPspEpdq",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -3962,10 +3962,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtgltermsokstripeuserextid",
-        "username": "some-user-rtgltermsokstripe@gov.uk",
-        "usernameMatcher": "some-user-rtgltermsokstripe@gov\\.uk",
-        "email": "some-user-rtgltermsokstripe@gov.uk",
+        "external_id": "rtglTermsOkStripeUserExtId",
+        "username": "some-user-rtglTermsOkStripe@gov.uk",
+        "usernameMatcher": "some-user-rtglTermsOkStripe@gov\\.uk",
+        "email": "some-user-rtglTermsOkStripe@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -3985,7 +3985,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtgltermsokstripeuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglTermsOkStripeUserExtId"
           }
         ],
         "role": {
@@ -4143,12 +4143,12 @@
           ]
         },
         "service_ids": [
-          "rtgltermsokstripe"
+          "rtglTermsOkStripe"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtgltermsokstripe",
+              "external_id": "rtglTermsOkStripe",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -4316,7 +4316,7 @@
         ],
         "services": [
           {
-            "external_id": "rtgltermsokstripe",
+            "external_id": "rtglTermsOkStripe",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -4374,10 +4374,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtgltermsokworldpayuserextid",
-        "username": "some-user-rtgltermsokworldpay@gov.uk",
-        "usernameMatcher": "some-user-rtgltermsokworldpay@gov\\.uk",
-        "email": "some-user-rtgltermsokworldpay@gov.uk",
+        "external_id": "rtglTermsOkWorldPayUserExtId",
+        "username": "some-user-rtglTermsOkWorldPay@gov.uk",
+        "usernameMatcher": "some-user-rtglTermsOkWorldPay@gov\\.uk",
+        "email": "some-user-rtglTermsOkWorldPay@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -4397,7 +4397,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtgltermsokworldpayuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglTermsOkWorldPayUserExtId"
           }
         ],
         "role": {
@@ -4555,12 +4555,12 @@
           ]
         },
         "service_ids": [
-          "rtgltermsokworldpay"
+          "rtglTermsOkWorldPay"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtgltermsokworldpay",
+              "external_id": "rtglTermsOkWorldPay",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -4728,7 +4728,7 @@
         ],
         "services": [
           {
-            "external_id": "rtgltermsokworldpay",
+            "external_id": "rtglTermsOkWorldPay",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -4786,10 +4786,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtgltermsoksmartpayuserextid",
-        "username": "some-user-rtgltermsoksmartpay@gov.uk",
-        "usernameMatcher": "some-user-rtgltermsoksmartpay@gov\\.uk",
-        "email": "some-user-rtgltermsoksmartpay@gov.uk",
+        "external_id": "rtglTermsOkSmartPayUserExtId",
+        "username": "some-user-rtglTermsOkSmartPay@gov.uk",
+        "usernameMatcher": "some-user-rtglTermsOkSmartPay@gov\\.uk",
+        "email": "some-user-rtglTermsOkSmartPay@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -4809,7 +4809,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtgltermsoksmartpayuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglTermsOkSmartPayUserExtId"
           }
         ],
         "role": {
@@ -4967,12 +4967,12 @@
           ]
         },
         "service_ids": [
-          "rtgltermsoksmartpay"
+          "rtglTermsOkSmartPay"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtgltermsoksmartpay",
+              "external_id": "rtglTermsOkSmartPay",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -5140,7 +5140,7 @@
         ],
         "services": [
           {
-            "external_id": "rtgltermsoksmartpay",
+            "external_id": "rtglTermsOkSmartPay",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -5198,10 +5198,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtgltermsokepdquserextid",
-        "username": "some-user-rtgltermsokepdq@gov.uk",
-        "usernameMatcher": "some-user-rtgltermsokepdq@gov\\.uk",
-        "email": "some-user-rtgltermsokepdq@gov.uk",
+        "external_id": "rtglTermsOkEpdqUserExtId",
+        "username": "some-user-rtglTermsOkEpdq@gov.uk",
+        "usernameMatcher": "some-user-rtglTermsOkEpdq@gov\\.uk",
+        "email": "some-user-rtglTermsOkEpdq@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -5221,7 +5221,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtgltermsokepdquserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglTermsOkEpdqUserExtId"
           }
         ],
         "role": {
@@ -5379,12 +5379,12 @@
           ]
         },
         "service_ids": [
-          "rtgltermsokepdq"
+          "rtglTermsOkEpdq"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtgltermsokepdq",
+              "external_id": "rtglTermsOkEpdq",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -5552,7 +5552,7 @@
         ],
         "services": [
           {
-            "external_id": "rtgltermsokepdq",
+            "external_id": "rtglTermsOkEpdq",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -5610,10 +5610,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtgldenieduserextid",
-        "username": "some-user-rtgldenied@gov.uk",
-        "usernameMatcher": "some-user-rtgldenied@gov\\.uk",
-        "email": "some-user-rtgldenied@gov.uk",
+        "external_id": "rtglDeniedUserExtId",
+        "username": "some-user-rtglDenied@gov.uk",
+        "usernameMatcher": "some-user-rtglDenied@gov\\.uk",
+        "email": "some-user-rtglDenied@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -5633,7 +5633,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtgldenieduserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglDeniedUserExtId"
           }
         ],
         "role": {
@@ -5791,12 +5791,12 @@
           ]
         },
         "service_ids": [
-          "rtgldenied"
+          "rtglDenied"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtgldenied",
+              "external_id": "rtglDenied",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -5964,7 +5964,7 @@
         ],
         "services": [
           {
-            "external_id": "rtgldenied",
+            "external_id": "rtglDenied",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"
@@ -6022,10 +6022,10 @@
         "invalid_passwordMatcher": "some-password",
         "valid_password": "some-valid-password",
         "valid_passwordMatcher": "some-valid-password",
-        "external_id": "rtglliveuserextid",
-        "username": "some-user-rtgllive@gov.uk",
-        "usernameMatcher": "some-user-rtgllive@gov\\.uk",
-        "email": "some-user-rtgllive@gov.uk",
+        "external_id": "rtglLiveUserExtId",
+        "username": "some-user-rtglLive@gov.uk",
+        "usernameMatcher": "some-user-rtglLive@gov\\.uk",
+        "email": "some-user-rtglLive@gov.uk",
         "otp_key": "krb6fcianbdjkt01ecvi08jcln",
         "telephone_number": "9127979",
         "second_factor": "SMS",
@@ -6045,7 +6045,7 @@
           {
             "rel": "self",
             "method": "GET",
-            "href": "http://myconnector.local/v1/api/users/rtglliveuserextid"
+            "href": "http://myconnector.local/v1/api/users/rtglLiveUserExtId"
           }
         ],
         "role": {
@@ -6203,12 +6203,12 @@
           ]
         },
         "service_ids": [
-          "rtgllive"
+          "rtglLive"
         ],
         "service_roles": [
           {
             "service": {
-              "external_id": "rtgllive",
+              "external_id": "rtglLive",
               "name": "System Generated",
               "gateway_account_ids": [
                 "666"
@@ -6376,7 +6376,7 @@
         ],
         "services": [
           {
-            "external_id": "rtgllive",
+            "external_id": "rtglLive",
             "name": "System Generated",
             "gateway_account_ids": [
               "666"

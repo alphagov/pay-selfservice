@@ -42,7 +42,7 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglnotstarted/request-to-go-live/organisation-name')
+        expect(location.pathname).to.eq('/service/rtglNotStarted/request-to-go-live/organisation-name')
       })
     })
   })
@@ -72,7 +72,7 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglenteredorgname/request-to-go-live/choose-how-to-process-payments')
+        expect(location.pathname).to.eq('/service/rtglEnteredOrgName/request-to-go-live/choose-how-to-process-payments')
       })
     })
   })
@@ -102,7 +102,7 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglchosenpspstripe/request-to-go-live/agreement')
+        expect(location.pathname).to.eq('/service/rtglChosenPspStripe/request-to-go-live/agreement')
       })
     })
   })
@@ -132,7 +132,7 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglchosenpspworldpay/request-to-go-live/agreement')
+        expect(location.pathname).to.eq('/service/rtglChosenPspWorldPay/request-to-go-live/agreement')
       })
     })
   })
@@ -162,7 +162,7 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglchosenpspsmartpay/request-to-go-live/agreement')
+        expect(location.pathname).to.eq('/service/rtglChosenPspSmartPay/request-to-go-live/agreement')
       })
     })
   })
@@ -192,7 +192,7 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglchosenpspepdq/request-to-go-live/agreement')
+        expect(location.pathname).to.eq('/service/rtglChosenPspEpdq/request-to-go-live/agreement')
       })
     })
   })
