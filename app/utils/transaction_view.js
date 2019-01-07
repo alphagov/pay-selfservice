@@ -73,7 +73,9 @@ module.exports = {
         fromDate: filtersResult.fromDate,
         toDate: filtersResult.toDate,
         fromTime: filtersResult.fromTime,
-        toTime: filtersResult.toTime
+        toTime: filtersResult.toTime,
+        cardholderName: filtersResult.cardholderName,
+        lastDigitsCardNumber: filtersResult.lastDigitsCardNumber
       })
 
     return connectorData
