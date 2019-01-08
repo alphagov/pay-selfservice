@@ -1,16 +1,46 @@
 describe('Request to go live: index', () => {
-  const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
+  const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+  const gatewayAccountId = 666
+  const serviceExternalId = 'cp5wa'
+
+  beforeEach(() => {
+    cy.task('getCookies', {
+      user_external_id: userExternalId,
+      gateway_account_id: gatewayAccountId
+    }).then(cookies => {
+      cy.setCookie('session', cookies.encryptedSessionCookie)
+      cy.setCookie('gateway_account', cookies.encryptedGatewayAccountCookie)
+    })
+  })
 
   describe('NO PERMISSIONS', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveNoPermissionsCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveNoPermissionsCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'NOT_STARTED',
+                gateway_account_ids: [gatewayAccountId]
+              },
+              role: {
+                permissions: []
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_NO_PERMISSIONS')
-
     it('should show an error when the user does not have enough permissions', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
       cy.get('h1').should('contain', 'An error occurred:')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
@@ -19,14 +49,29 @@ describe('Request to go live: index', () => {
 
   describe('REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageNotStartedCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageNotStartedCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'NOT_STARTED',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -45,21 +90,36 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglNotStarted/request-to-go-live/organisation-name')
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/organisation-name`)
       })
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME', () => {
+  describe('Request to go live stage ENTERED_ORGANISATION_NAME', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageEnteredOrganisationNameCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageEnteredOrganisationNameCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'ENTERED_ORGANISATION_NAME',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -78,21 +138,36 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglEnteredOrgName/request-to-go-live/choose-how-to-process-payments')
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
       })
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE', () => {
+  describe('Request to go live stage CHOSEN_PSP_STRIPE', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageChosenPspStripeCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspStripeCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'CHOSEN_PSP_STRIPE',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_STRIPE')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -111,21 +186,36 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglChosenPspStripe/request-to-go-live/agreement')
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
       })
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY', () => {
+  describe('Request to go live stage CHOSEN_PSP_WORLDPAY', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageChosenPspWorldPayCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspWorldPayCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'CHOSEN_PSP_WORLDPAY',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_WORLDPAY')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -144,21 +234,36 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglChosenPspWorldPay/request-to-go-live/agreement')
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
       })
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY', () => {
+  describe('Request to go live stage CHOSEN_PSP_SMARTPAY', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageChosenPspSmartPayCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspSmartPayCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'CHOSEN_PSP_SMARTPAY',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_SMARTPAY')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -177,21 +282,35 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglChosenPspSmartPay/request-to-go-live/agreement')
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
       })
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ', () => {
+  describe('Request to go live stage CHOSEN_PSP_EPDQ', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageChosenPspEpdqCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageChosenPspEpdqCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'CHOSEN_PSP_EPDQ',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_CHOSEN_PSP_EPDQ')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -210,21 +329,35 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq('/service/rtglChosenPspEpdq/request-to-go-live/agreement')
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
       })
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE', () => {
+  describe('Request to go live stage TERMS_AGREED_STRIPE', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageTermsAgreedStripeCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedStripeCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'TERMS_AGREED_STRIPE',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_STRIPE')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -242,16 +375,30 @@ describe('Request to go live: index', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY', () => {
+  describe('Request to go live stage TERMS_AGREED_WORLDPAY', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageTermsAgreedWorldPayCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedWorldPayCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'TERMS_AGREED_WORLDPAY',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_WORLDPAY')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -269,16 +416,30 @@ describe('Request to go live: index', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY', () => {
+  describe('Request to go live stage TERMS_AGREED_SMARTPAY', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageTermsAgreedSmartPayCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedSmartPayCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'TERMS_AGREED_SMARTPAY',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_SMARTPAY')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -296,16 +457,30 @@ describe('Request to go live: index', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ', () => {
+  describe('Request to go live stage TERMS_AGREED_EPDQ', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageTermsAgreedEpdqCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageTermsAgreedEpdqCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'TERMS_AGREED_EPDQ',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_TERMS_AGREED_EPDQ')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('contain', 'Request to go live')
@@ -323,16 +498,30 @@ describe('Request to go live: index', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_DENIED', () => {
+  describe('Request to go live stage DENIED', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageDeniedCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageDeniedCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'DENIED',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
-
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_DENIED')
 
     it('should show "Request to go live" page with an error', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('not.exist')
@@ -345,16 +534,30 @@ describe('Request to go live: index', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_LIVE', () => {
+  describe('Request to go live stage LIVE', () => {
     beforeEach(() => {
-      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageLiveCookie'))
-      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageLiveCookie'))
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            service_roles: [{
+              service: {
+                external_id: serviceExternalId,
+                current_go_live_stage: 'LIVE',
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        }
+      ])
     })
 
-    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_LIVE')
-
     it('should show "Request to go live" page with correct progress indication', () => {
-      const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
+      const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
       cy.get('h1').should('not.exist')

@@ -20,10 +20,6 @@ const AUTHENTICATE_PATH = '/v1/api/users/authenticate'
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-// Note: the browser tests use values in the fixed config below, which match the defined interations
-const selfServiceUserConfig = require('../../../../fixtures/config/self_service_user')
-const selfServiceDefaultUser = selfServiceUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
-
 describe('adminusers client - authenticate', () => {
   const provider = Pact({
     consumer: 'selfservice-to-be',
@@ -38,56 +34,58 @@ describe('adminusers client - authenticate', () => {
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
-  selfServiceUserConfig.config.users.forEach(currentUser => {
-    describe(`success "${currentUser.cypressTestingCategory}" user`, () => {
-      const validPasswordResponse = userFixtures.validPasswordAuthenticateResponse(currentUser)
-      const validPasswordRequestPactified = userFixtures
-        .validPasswordAuthenticateRequest({
-          username: currentUser.username,
-          usernameMatcher: currentUser.usernameMatcher,
-          password: currentUser.valid_password,
-          passwordMatcher: currentUser.valid_passwordMatcher
-        })
+  const existingUsername = 'some-user@gov.uk'
+  const validPassword = 'some-valid-password'
 
-      before((done) => {
-        provider.addInteraction(
-          new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
-            .withUponReceiving('a correct password for a user')
-            .withState(`user with email address ${currentUser.username} exists in the database with the correct with a correct password set to: ${currentUser.valid_password}`)
-            .withMethod('POST')
-            .withRequestBody(validPasswordRequestPactified)
-            .withResponseBody(validPasswordResponse.getPactified())
-            .withStatusCode(200)
-            .build()
-        ).then(() => done())
+  describe('success', () => {
+    const validPasswordResponse = userFixtures.validPasswordAuthenticateResponse({ username: existingUsername })
+    const validPasswordRequestPactified = userFixtures
+      .validPasswordAuthenticateRequest({
+        username: existingUsername,
+        usernameMatcher: existingUsername,
+        password: validPassword,
+        passwordMatcher: validPassword
       })
 
-      afterEach(() => provider.verify())
+    before((done) => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
+          .withUponReceiving('a correct password for a user')
+          .withState(`user with email address ${existingUsername} exists in the database with the correct with a correct password set to: ${validPassword}`)
+          .withMethod('POST')
+          .withRequestBody(validPasswordRequestPactified)
+          .withResponseBody(validPasswordResponse.getPactified())
+          .withStatusCode(200)
+          .build()
+      ).then(() => done())
+    })
 
-      it('should return the right authentication success response', done => {
-        adminusersClient.authenticateUser(currentUser.username, currentUser.valid_password).then((response) => {
-          expect(response).to.deep.equal(new User(validPasswordResponse.getPlain()))
-          done()
-        })
+    afterEach(() => provider.verify())
+
+    it('should return the right authentication success response', done => {
+      adminusersClient.authenticateUser(existingUsername, validPassword).then((response) => {
+        expect(response).to.deep.equal(new User(validPasswordResponse.getPlain()))
+        done()
       })
     })
   })
 
   describe('failure', () => {
+    const invalidPassword = 'some-password'
     const invalidPasswordResponse = userFixtures.invalidPasswordAuthenticateResponse()
     const invalidPasswordRequestPactified = userFixtures
       .invalidPasswordAuthenticateRequest({
-        username: selfServiceDefaultUser.username,
-        usernameMatcher: selfServiceDefaultUser.usernameMatcher,
-        password: selfServiceDefaultUser.invalid_password,
-        passwordMatcher: selfServiceDefaultUser.invalid_passwordMatcher
+        username: existingUsername,
+        usernameMatcher: existingUsername,
+        password: invalidPassword,
+        passwordMatcher: invalidPassword
       })
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('an incorrect password for a user')
-          .withState(`user with email address ${selfServiceDefaultUser.username} exists in the database with the correct with a correct password set to: ${selfServiceDefaultUser.valid_password}`)
+          .withState(`user with email address ${existingUsername} exists in the database with the correct with a correct password set to: ${validPassword}`)
           .withMethod('POST')
           .withRequestBody(invalidPasswordRequestPactified)
           .withResponseBody(invalidPasswordResponse.getPactified())
@@ -99,7 +97,7 @@ describe('adminusers client - authenticate', () => {
     afterEach(() => provider.verify())
 
     it('should return the right authentication failure response', done => {
-      adminusersClient.authenticateUser(selfServiceDefaultUser.username, selfServiceDefaultUser.invalid_password).then(() => {
+      adminusersClient.authenticateUser(existingUsername, invalidPassword).then(() => {
         done('should not resolve here')
       }).catch(err => {
         expect(err.errorCode).to.equal(401)

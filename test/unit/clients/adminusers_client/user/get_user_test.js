@@ -16,7 +16,6 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const USER_PATH = '/v1/api/users'
-const selfServiceUserConfig = require('../../../../fixtures/config/self_service_user.json')
 
 chai.use(chaiAsPromised)
 
@@ -34,44 +33,37 @@ describe('adminusers client - get user', () => {
   before(() => provider.setup())
   after(done => provider.finalize().then(done()))
 
-  selfServiceUserConfig.config.users.forEach(currentUser => {
-    describe(`success "${currentUser.cypressTestingCategory}" user`, () => {
-      const existingExternalId = currentUser.external_id
+  describe('success', () => {
+    const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const getUserResponse = userFixtures.validPasswordAuthenticateResponse({ external_id: existingExternalId })
 
-      const params = {
-        external_id: existingExternalId
-      }
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
+          .withState(`a user exists with the given external id ${existingExternalId}`)
+          .withUponReceiving('a valid get user request')
+          .withResponseBody(getUserResponse.getPactified())
+          .build()
+      ).then(done())
+    })
 
-      const getUserResponse = userFixtures.validPasswordAuthenticateResponse(currentUser)
+    afterEach(() => provider.verify())
 
-      before(done => {
-        provider.addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
-            .withState(`a user exists with the given external id ${existingExternalId}`)
-            .withUponReceiving('a valid get user request')
-            .withResponseBody(getUserResponse.getPactified())
-            .build()
-        ).then(done())
-      })
+    it('should find a user successfully', done => {
+      const expectedUserData = getUserResponse.getPlain()
 
-      afterEach(() => provider.verify())
-
-      it('should find a user successfully', done => {
-        const expectedUserData = getUserResponse.getPlain()
-
-        adminusersClient.getUserByExternalId(params.external_id).should.be.fulfilled.then(user => {
-          expect(user.externalId).to.be.equal(expectedUserData.external_id)
-          expect(user.username).to.be.equal(expectedUserData.username)
-          expect(user.email).to.be.equal(expectedUserData.email)
-          expect(user.serviceRoles.length).to.be.equal(1)
-          expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(1)
-          expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
-          expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
-          expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)
-          expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
-          expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
-        }).should.notify(done)
-      })
+      adminusersClient.getUserByExternalId(expectedUserData.external_id).should.be.fulfilled.then(user => {
+        expect(user.externalId).to.be.equal(expectedUserData.external_id)
+        expect(user.username).to.be.equal(expectedUserData.username)
+        expect(user.email).to.be.equal(expectedUserData.email)
+        expect(user.serviceRoles.length).to.be.equal(1)
+        expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(1)
+        expect(user.telephoneNumber).to.be.equal(expectedUserData.telephone_number)
+        expect(user.otpKey).to.be.equal(expectedUserData.otp_key)
+        expect(user.provisionalOtpKey).to.be.equal(expectedUserData.provisional_otp_key)
+        expect(user.secondFactor).to.be.equal(expectedUserData.second_factor)
+        expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUserData.service_roles[0].role.permissions.length)
+      }).should.notify(done)
     })
   })
 

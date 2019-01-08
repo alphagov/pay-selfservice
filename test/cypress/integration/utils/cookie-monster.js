@@ -5,8 +5,6 @@ function getCookie (cookieName, secretKey, val) {
   try {
     const encryptionKey = deriveKey(secretKey, 'cookiesession-encryption')
     const signatureKey = deriveKey(secretKey, 'cookiesession-signature')
-    console.log('encryption key: ' + encryptionKey)
-    console.log('signature key: ' + signatureKey)
     const encryptedCookie = session.util.encode({
       cookieName: cookieName,
       encryptionKey: encryptionKey,

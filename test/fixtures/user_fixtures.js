@@ -2,11 +2,160 @@
 
 // NPM dependencies
 const lodash = require('lodash')
+const { expect } = require('chai')
 
 // Local dependencies
 const User = require('../../app/models/User.class')
 const pactBase = require('./pact_base')
 const goLiveStage = require('../../app/models/go-live-stage')
+
+// Constants
+const defaultPermissions = [
+  {
+    name: 'users-service:create',
+    description: 'Createuserinthisservice'
+  },
+  {
+    name: 'tokens-active:read',
+    description: 'Viewactivekeys'
+  },
+  {
+    name: 'tokens-revoked:read',
+    description: 'Viewrevokedkeys'
+  },
+  {
+    name: 'tokens:create',
+    description: 'Generatekey'
+  },
+  {
+    name: 'tokens:update',
+    description: 'Generatekey'
+  },
+  {
+    name: 'tokens:delete',
+    description: 'Revokekey'
+  },
+  {
+    name: 'transactions:read',
+    description: 'Viewtransactionslist'
+  },
+  {
+    name: 'transactions-by-date:read',
+    description: 'Searchtransactionsbydate'
+  },
+  {
+    name: 'transactions-by-fields:read',
+    description: 'Searchtransactionsbypaymentfields'
+  },
+  {
+    name: 'transactions-download:read',
+    description: 'Downloadtransactions'
+  },
+  {
+    name: 'transactions-details:read',
+    description: 'Viewtransactiondetails'
+  },
+  {
+    name: 'transactions-events:read',
+    description: 'Viewtransactionevents'
+  },
+  {
+    name: 'refunds:create',
+    description: 'Issuerefund'
+  },
+  {
+    name: 'transactions-amount:read',
+    description: 'Viewtransactionamounts'
+  },
+  {
+    name: 'transactions-description:read',
+    description: 'Viewtransactiondescription'
+  },
+  {
+    name: 'transactions-email:read',
+    description: 'Viewtransactionemail'
+  },
+  {
+    name: 'transactions-card-type:read',
+    description: 'Viewtransactioncardtype'
+  },
+  {
+    name: 'gateway-credentials:read',
+    description: 'Viewgatewayaccountcredentials'
+  },
+  {
+    name: 'gateway-credentials:update',
+    description: 'Editgatewayaccountcredentials'
+  },
+  {
+    name: 'service-name:read',
+    description: 'Viewservicename'
+  },
+  {
+    name: 'service-name:update',
+    description: 'Editservicename'
+  },
+  {
+    name: 'payment-types:read',
+    description: 'Viewpaymenttypes'
+  },
+  {
+    name: 'payment-types:update',
+    description: 'Editpaymenttypes'
+  },
+  {
+    name: 'email-notification-template:read',
+    description: 'Viewemailnotificationstemplate'
+  },
+  {
+    name: 'email-notification-paragraph:update',
+    description: 'Editemailnotificationsparagraph'
+  },
+  {
+    name: 'email-notification-toggle:update',
+    description: 'Turnemailnotificationson/off'
+  },
+  {
+    name: 'tokens:read',
+    description: 'View keys'
+  },
+  {
+    name: 'toggle-3ds:read',
+    description: 'View 3D Secure setting'
+  },
+  {
+    name: 'toggle-3ds:update',
+    description: 'Edit 3D Secure setting'
+  },
+  {
+    name: 'users-service:delete',
+    description: 'Remove user from a service'
+  },
+  {
+    name: 'merchant-details:read',
+    description: 'View Merchant Details setting'
+  },
+  {
+    name: 'merchant-details:update',
+    description: 'Edit Merchant Details setting'
+  },
+  {
+    name: 'toggle-billing-address:read',
+    description: 'View Billing Address setting'
+  },
+  {
+    name: 'toggle-billing-address:update',
+    description: 'Edit Billing Address setting'
+  },
+  {
+    name: 'go-live-stage:update',
+    description: 'Update Go Live stage'
+  },
+  {
+    name: 'go-live-stage:read',
+    description: 'View Go Live stage'
+  }
+]
 
 // Setup
 const pactUsers = pactBase(
@@ -28,6 +177,62 @@ function merchantDetailsFixture () {
     address_postcode: 'POSTCODE',
     address_country: 'GB'
   }
+}
+
+const validServiceRole = (opts = {}) => {
+  return {
+    service: validService(opts.service),
+    role: validRole(opts.role)
+  }
+}
+
+const validService = (opts = {}) => {
+  const service = {
+    id: opts.id || 857,
+    external_id: opts.external_id || 'cp5wa',
+    name: opts.name || 'System Generated',
+    gateway_account_ids: opts.gateway_account_ids || [
+      '666'
+    ],
+    _links: opts.links || [],
+    redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state || false,
+    collect_billing_address: opts.collect_billing_address || false,
+    current_go_live_stage: opts.current_go_live_stage || 'NOT_STARTED'
+  }
+
+  if (opts.merchant_details) {
+    service.merchant_details = validMerchantDetails(opts.merchant_details)
+  }
+
+  return service
+}
+
+const validRole = (opts = {}) => {
+  return {
+    name: opts.role_name || 'admin',
+    description: opts.role_description || 'Administrator',
+    permissions: opts.permissions || defaultPermissions
+  }
+}
+
+const validMerchantDetails = (opts = {}) => {
+  const merchantDetails = {
+    name: opts.name || 'name',
+    address_line1: opts.address_line1 || 'line1',
+    address_line2: opts.address_line2 || 'line2',
+    address_city: opts.address_city || 'City',
+    address_postcode: opts.address_postcode || 'POSTCODE',
+    address_country: opts.address_country || 'GB'
+  }
+
+  if (opts.telephone_number) {
+    merchantDetails.telephone_number = opts.telephone_number
+  }
+  if (opts.email) {
+    merchantDetails.email = opts.email
+  }
+
+  return merchantDetails
 }
 
 module.exports = {
@@ -385,47 +590,27 @@ module.exports = {
   },
 
   validPasswordAuthenticateResponse: (opts = {}) => {
-    const response =
-      {
-        external_id: opts.external_id || '09283568e105442da3928d1fa99fb0eb',
-        username: opts.username || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
-        email: opts.email || 'nbGscObDSKxf31CjF0uzGRwnOaNyztKw@example.com',
-        otp_key: opts.otp_key || 'nlcj80ivce10tkjdbnaicf6brk',
-        telephone_number: opts.telephone_number || '9797219',
-        service_roles: opts.service_roles || [
-          {
-            service: {
-              id: 857,
-              external_id: '0ab3525259894209bbc8d2a5b0538fc0',
-              name: 'System Generated',
-              gateway_account_ids: [
-                '923'
-              ],
-              _links: []
-            },
-            role: {
-              name: 'admin',
-              description: 'Administrator',
-              permissions: [
-                {
-                  name: 'users-service:read',
-                  description: 'Viewusersinservice'
-                }
-              ]
-            }
-          }
-        ],
-        second_factor: opts.second_factor || 'SMS',
-        provisional_otp_key: opts.provisional_otp_key || null,
-        disabled: opts.disabled || false,
-        login_counter: opts.login_counter || 0,
-        session_version: opts.session_version || 0,
-        _links: opts._links || [{
-          rel: 'self',
-          method: 'GET',
-          href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
-        }]
-      }
+    const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, validServiceRole) : [validServiceRole()]
+    const response = {
+      external_id: opts.external_id || '7d19aff33f8948deb97ed16b2912dcd3',
+      username: opts.username || 'some-user@gov.uk',
+      email: opts.email || 'some-user@gov.uk',
+      otp_key: opts.otp_key || 'krb6fcianbdjkt01ecvi08jcln',
+      telephone_number: opts.telephone_number || '9127979',
+      service_roles: serviceRoles,
+      second_factor: opts.second_factor || 'SMS',
+      provisional_otp_key: opts.provisional_otp_key || 'a-provisional-key',
+      provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
+      disabled: opts.disabled || false,
+      login_counter: opts.login_counter || 0,
+      session_version: opts.session_version || 0,
+      _links: opts._links || [{
+        rel: 'self',
+        method: 'GET',
+        href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
+      }]
+    }
+
     return pactUsers.withPactified(response)
   },
 
