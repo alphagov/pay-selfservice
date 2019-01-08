@@ -118,6 +118,7 @@ module.exports = {
     const defaultServiceId = opts.default_service_id || '193'
     const gatewayAccountIds = opts.gateway_account_ids || ['540']
     const collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
+    const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
 
     const data = {
       external_id: opts.external_id || newExternalId,
@@ -128,7 +129,8 @@ module.exports = {
           name: 'System Generated',
           external_id: defaultServiceId,
           gateway_account_ids: gatewayAccountIds,
-          collect_billing_address: collectBillingAddress
+          collect_billing_address: collectBillingAddress,
+          current_go_live_stage: currentGoLiveStage
         },
         role: opts.role || {
           name: 'admin',
@@ -178,7 +180,7 @@ module.exports = {
     const merchantAddressPostcode = merchantDetails.address_postcode || 'updated-merchant-details-postcode'
     const merchantAddressCountry = merchantDetails.address_country || 'updated-merchant-details-country'
     const collectBillingAddress = opts.collect_billing_address || false
-    const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.LIVE
+    const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
 
     const data = {
       external_id: reqExternalId,
