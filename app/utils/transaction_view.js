@@ -5,7 +5,7 @@ const changeCase = require('change-case')
 const dates = require('../utils/dates.js')
 const router = require('../routes.js')
 const qs = require('qs')
-const {penceToPoundsWithCurrency} = require('../utils/currency_formatter')
+const { penceToPoundsWithCurrency } = require('../utils/currency_formatter')
 const Paginator = require('./paginator')
 const states = require('./states')
 const check = require('check-types')
@@ -41,7 +41,7 @@ module.exports = {
         }
       })
 
-    connectorData.cardBrands.unshift({value: '', text: 'All brands', selected: false})
+    connectorData.cardBrands.unshift({ value: '', text: 'All brands', selected: false })
 
     connectorData.results.forEach(element => {
       element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
@@ -142,14 +142,14 @@ function asGBP (amountInPence) {
 
 function getPaginationLinks (connectorData) {
   if (connectorData.total) {
-    let paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+    const paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
     return paginator.getLast() > 1 ? paginator.getNamedCentredRange(PAGINATION_SPREAD, true, true) : null
   }
 }
 
 function getPageSizeLinks (connectorData) {
   if (getCurrentPageSize(connectorData)) {
-    let paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+    const paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
     return paginator.getDisplaySizeOptions()
   }
 }
@@ -159,7 +159,7 @@ function getCurrentPageNumber (connectorData) {
 }
 
 function getCurrentPageSize (connectorData) {
-  let selfLink = connectorData._links && connectorData._links.self
+  const selfLink = connectorData._links && connectorData._links.self
   let queryString
   let limit
 
@@ -173,6 +173,6 @@ function getCurrentPageSize (connectorData) {
 }
 
 function hasPageSizeLinks (connectorData) {
-  let paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+  const paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
   return paginator.showDisplaySizeLinks()
 }

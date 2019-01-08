@@ -483,7 +483,7 @@ describe('The /transactions endpoint', function () {
 })
 
 
-describe.only('The /transactions endpoint filtering', () => {
+describe('The /transactions endpoint filtering', () => {
   afterEach(function () {
     nock.cleanAll()
     app = null
