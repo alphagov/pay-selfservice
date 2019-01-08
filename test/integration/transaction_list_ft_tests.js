@@ -482,7 +482,8 @@ describe('The /transactions endpoint', function () {
   })
 })
 
-describe('The /transactions endpoint filtering by states)', () => {
+
+describe.only('The /transactions endpoint filtering', () => {
   afterEach(function () {
     nock.cleanAll()
     app = null
@@ -595,6 +596,36 @@ describe('The /transactions endpoint filtering by states)', () => {
           'Refund success'
         ])
         res.body.downloadTransactionLink.should.eql('/transactions/download?refund_states=submitted')
+      })
+      .end(done)
+  })
+
+  it('should correctly map cardholder_name and last_digits_card_number to the CSV download link', function (done) {
+    connectorMock.get(CONNECTOR_ALL_CARD_TYPES_API_PATH)
+      .reply(200, ALL_CARD_TYPES)
+
+    const expectedCSVFilters = {
+      cardholderName: 'example-name',
+      lastDigitsCardNumber: '9304'
+    }
+
+    const connectorData = {
+      'results': []
+    }
+
+    connectorMockResponds(200, connectorData, expectedCSVFilters)
+
+    request(app)
+      .get(paths.transactions.index)
+      .query(expectedCSVFilters)
+      .set('Accept', 'application/json')
+      .set('x-request-id', requestId)
+      .expect(200)
+      .expect(function (res) {
+        // This will only be formatted correctly if utils/transaction_view maps filters correctly the CSV download link returned to the client
+        res.body.downloadTransactionLink.should.eql(
+          `/transactions/download?cardholderName=${expectedCSVFilters.cardholderName}&lastDigitsCardNumber=${expectedCSVFilters.lastDigitsCardNumber}`
+        )
       })
       .end(done)
   })
