@@ -1,7 +1,6 @@
 'use strict'
 
-const slugify = require('../utils/nunjucks-filters/slugify')
-const removeIndefiniteArticles = require('../utils/nunjucks-filters/remove-indefinite-articles')
+const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
 require('./polyfills')

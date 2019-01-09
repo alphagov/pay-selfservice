@@ -27,12 +27,12 @@ const customCertificate = require(path.join(__dirname, '/app/utils/custom_certif
 const auth = require(path.join(__dirname, '/app/services/auth_service'))
 const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
 const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler'))
-const nunjucksFilters = require('./app/utils/nunjucks-filters')
+const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 
 // Global constants
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
-const {NODE_ENV} = process.env
+const { NODE_ENV } = process.env
 const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
 const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
 

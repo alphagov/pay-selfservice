@@ -1,6 +1,6 @@
 'use strict'
 
-const removeIndefiniteArticles = require('../utils/nunjucks-filters/remove-indefinite-articles')
+const { removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 module.exports = () => {
   const inputs = Array.prototype.slice.call(document.querySelectorAll('[data-slugify]'))
