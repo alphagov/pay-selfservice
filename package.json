@@ -55,6 +55,7 @@
     ]
   },
   "dependencies": {
+    "@govuk-pay/pay-js-commons": "^1.4.0",
     "accessible-autocomplete": "^1.6.2",
     "appmetrics": "3.x",
     "appmetrics-statsd": "2.0.x",
