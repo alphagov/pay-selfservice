@@ -1,6 +1,6 @@
 const lodash = require('lodash')
 const responses = require('../../utils/response')
-const countries = require('../../services/countries.js')
+const { countries } = require('@govuk-pay/pay-js-commons').utils
 
 module.exports = (req, res) => {
   const externalServiceId = req.service.externalId
