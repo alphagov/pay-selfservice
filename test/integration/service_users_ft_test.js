@@ -312,13 +312,11 @@ describe('service users resource', () => {
           name: 'System Generated',
           external_id: externalServiceId2
         },
-        role: {name: 'view-only', description: 'View only', permissions: [{name: 'users-service:read'}]}
-      }],
-      // TODO: fix to use serviceRoles
-
-      services: [{
-        name: 'System Generated',
-        external_id: externalServiceId2
+        role: {
+          name: 'view-only',
+          description: 'View only',
+          permissions: [{ name: 'users-service:read' }]
+        }
       }]
     })
 
