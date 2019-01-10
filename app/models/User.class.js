@@ -71,7 +71,6 @@ class User {
       external_id: this.externalId,
       username: this.username,
       email: this.email,
-      gateway_account_ids: this.gatewayAccountIds,
       telephone_number: this.telephoneNumber,
       provisional_otp_key: this.provisionalOtpKey,
       second_factor: this.secondFactor

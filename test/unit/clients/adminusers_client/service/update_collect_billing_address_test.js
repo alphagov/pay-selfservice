@@ -17,7 +17,7 @@ const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const expect = chai.expect
-const ssDefaultServiceId = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0].service_ids[0]
+const ssDefaultServiceId = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0].service_roles[0].service.external_id
 
 // Global setup
 chai.use(chaiAsPromised)

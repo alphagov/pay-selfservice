@@ -11,7 +11,7 @@ const goLiveStage = require('../../app/models/go-live-stage')
 // Setup
 const pactUsers = pactBase(
   {
-    array: ['permissions', 'gateway_account_ids', 'service_ids', 'service_roles', 'services', '_links'],
+    array: ['service_roles', '_links'],
     length: [{key: 'permissions', length: 1}]
   })
 
@@ -417,39 +417,14 @@ module.exports = {
         ],
         second_factor: opts.second_factor || 'SMS',
         provisional_otp_key: opts.provisional_otp_key || null,
-        services: opts.services || [{
-          id: 857,
-          external_id: '0ab3525259894209bbc8d2a5b0538fc0',
-          name: 'System Generated',
-          gateway_account_ids: [
-            '923'
-          ],
-          _links: []
-        }],
         disabled: opts.disabled || false,
         login_counter: opts.login_counter || 0,
         session_version: opts.session_version || 0,
-        service_ids: opts.service_ids || ['857'],
         _links: opts._links || [{
           rel: 'self',
           method: 'GET',
           href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
-        }],
-        role: opts.role || {
-          name: 'admin',
-          description:
-            'Administrator',
-          permissions:
-            [
-              {
-                name: 'users-service:read',
-                description: 'Viewusersinservice'
-              }
-            ]
-        },
-        permissions: opts.permissions || [
-          'users-service:read'
-        ]
+        }]
       }
     return pactUsers.withPactified(response)
   },
