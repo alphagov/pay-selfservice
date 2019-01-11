@@ -1,0 +1,37 @@
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+Policy Documents - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l page-title">
+    {% block policyTitle %} {% endblock %}
+  </h1>
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: [
+      { text: "The admin service is not configured to generate links" }
+      ]
+    })
+  }}
+</div>
+
+<!-- @TODO(sfount) move to full page width -->
+<div class="govuk-grid-column-two-thirds">
+  <p class="govuk-body">
+    {% block policyDescription %} {% endblock %}
+  </p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>
+      <a href="">{% block policyDownloadLinkDescription %}{% endblock %}</a>
+    </li>
+  </ul>
+  <p class="govuk-body">These terms are confidential and should not be shared outside of your organisation.</p>
+</div>
+{% endblock %}

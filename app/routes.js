@@ -65,13 +65,14 @@ const twoFactorAuthController = require('./controllers/two-factor-auth-controlle
 const feedbackController = require('./controllers/feedback')
 const toggleBillingAddressController = require('./controllers/billing-address/toggle-billing-address-controller')
 const requestToGoLiveIndexController = require('./controllers/request-to-go-live/index')
+const policyDocumentsController = require('./controllers/policy')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages
 } = paths
 
 // Exports
@@ -185,6 +186,7 @@ module.exports.bind = function (app) {
     ...lodash.values(partnerApp),
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
+    ...lodash.values(policyPages),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -328,6 +330,9 @@ module.exports.bind = function (app) {
   // Request To Go Live
   app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), resolveService, getAccount, requestToGoLiveIndexController.get)
   app.post(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:update'), resolveService, getAccount, requestToGoLiveIndexController.post)
+
+  // Private policy document downloads
+  app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)
 
   app.all('*', (req, res) => {
     res.status(404)
