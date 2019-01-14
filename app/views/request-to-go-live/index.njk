@@ -8,17 +8,10 @@
 
 {% block mainContent %}
   {% if currentService.currentGoLiveStage === goLiveStage.LIVE %}
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-full govuk-!-margin-top-6">
       <div class="next-steps-panel">
-        <h3 class="govuk-heading-m govuk-!-margin-bottom-0">Your service is live</h3>
-        <p class="govuk-body-l govuk-!-margin-bottom-4">You can now start taking payments.</p>
-        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Next steps:</h3>
-        <ul class="govuk-list govuk-list--bullet">
-          {% if currentService.hasCardGatewayAccount %}
-            <li><a class="govuk-link govuk-link--no-visited-state" href="/card-types/summary">manage the card types</a> your service accepts and turn on 3D Secure</li>
-          {% endif %}
-          <li><a class="govuk-link govuk-link--no-visited-state" href="/service/{{currentService.externalId}}">add team members</a> and edit their account permissions.</li>
-        </ul>
+        <h3 class="govuk-heading-l govuk-!-margin-bottom-2">Thank you. We’re creating your live service</h3>
+        <p class="govuk-body-l govuk-!-margin-bottom-4">We’ll contact you in one business day with a link to your live account and next steps.</p>
       </div>
     </div>
   {% endif %}
@@ -35,9 +28,10 @@
     </div>
   {% else %}
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Request to go live</h1>
-      <p class="govuk-body-l intro">Complete these steps to start taking real payments.</p>
-
+      {% if currentService.currentGoLiveStage !== goLiveStage.LIVE %}
+        <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Request to go live</h1>
+        <p class="govuk-body-l intro">Complete these steps to start taking real payments.</p>
+      {% endif %}
       <div class="request-to-go-live-list">
         <div id="request-to-go-live-step-1">
           <h3 class="govuk-heading-m">
@@ -57,7 +51,7 @@
               <span class="status">COMPLETED</span>
             {% endif %}
           </h3>
-          <p class="govuk-body-m">This information will appear on your payment pages.</p>
+          <p class="govuk-body-m">We’ll use this to perform a security check.</p>
         </div>
         <div id="request-to-go-live-step-2">
           <h3 class="govuk-heading-m">
@@ -80,7 +74,7 @@
         </div>
         <div id="request-to-go-live-step-3">
           <h3 class="govuk-heading-m">
-            Sign an agreement with GOV.UK Pay
+            Confirm that you accept our legal terms
             {% if currentService.currentGoLiveStage in [
               goLiveStage.TERMS_AGREED_STRIPE,
               goLiveStage.TERMS_AGREED_WORLDPAY,
@@ -91,7 +85,7 @@
               <span class="status">COMPLETED</span>
             {% endif %}
           </h3>
-          <p class="govuk-body-m">GOV.UK Pay will contact you within one working day to confirm whether or not your organisation has already signed an agreement. If not, we’ll send you the relevant documents.</p>
+          <p class="govuk-body-m">To start using GOV.UK Pay your organisation must accept GOV.UK Pay’s legal terms.</p>
         </div>
         <form id="request-to-go-live-index-form" method="post" action="/service/{{currentService.externalId}}/request-to-go-live">
           <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
