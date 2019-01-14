@@ -1,19 +1,18 @@
 'use strict'
 
+// supported document keys convention links the self service URL /policy/download/:key
+// and AWS S3 Bucket document ids (:key)
 const supportedPolicyDocuments = [
   {
     key: 'memorandum-of-understanding-for-crown-bodies',
-    awsKey: 'memorandum-of-understanding',
     template: 'policy/document-downloads/memorandum_of_understanding_for_crown_bodies'
   },
   {
     key: 'contract-for-non-crown-bodies',
-    awsKey: 'context-for-non-crown-bodies',
     template: 'policy/document-downloads/contract_for_non_crown_bodies'
   },
   {
     key: 'stripe-connected-account-agreement',
-    awsKey: 'stripe-connected-account-agreement',
     template: 'policy/document-downloads/stripe_connected_account_agreement'
   }
 ]
@@ -23,8 +22,13 @@ const supportedPolicyDocumentsKeyIndex = supportedPolicyDocuments.reduce((index,
   return index
 }, {})
 
-const lookup = function lookup (key) {
-  return supportedPolicyDocumentsKeyIndex[key]
+const lookup = async function lookup (key) {
+  const document = supportedPolicyDocumentsKeyIndex[key]
+
+  if (!document) {
+    throw new Error(`Policy document ${key} is not supported or configured correctly`)
+  }
+  return document
 }
 
 module.exports = { lookup }

@@ -1,31 +1,20 @@
 'use strict'
 
-const response = require('../../utils/response')
+const { response, renderErrorView } = require('../../utils/response')
 
 const supportedPolicyDocuments = require('./supportedPolicyDocuments')
-
-// split into
-// 1. supportedPolicyDocuments.js - index and list of supported
-// 2. signedResources.js -> generate() - get a URL
-// 3. index controller (this)
-
-// aws key referes to the linked res
+const policyBucket = require('./awsS3PolicyBucket')
 
 const downloadDocumentsPolicyPage = async function downloadDocumentsPolicyPage (req, res, next) {
-  // @TODO(sfount) move to documents.lookup when moving to file
+  const key = req.params.key
 
   try {
-    const key = req.params.key
-    const document = supportedPolicyDocuments.lookup(key)
+    const documentConfig = await supportedPolicyDocuments.lookup(key)
+    const link = await policyBucket.generatePrivateLink(documentConfig.key)
 
-    if (!document) {
-      throw new Error(`Policy document ${key} is not supported or configured correctly`)
-    }
-
-    return response.response(req, res, document.template, {})
+    return response(req, res, document.template, { link })
   } catch (error) {
-    // @FIXME(sfount) next errors print a stack trace - this shouldn't ship to master with the current self service setup
-    next(error)
+    renderErrorView(req, res, error.message)
   }
 }
 
