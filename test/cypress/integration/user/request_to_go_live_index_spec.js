@@ -323,6 +323,10 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('not.exist')
+      cy.get('.govuk-grid-column-full h3').should('contain', 'Thank you. We’re creating your live service')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -333,8 +337,6 @@ describe('Request to go live: Index', () => {
       cy.get('#request-to-go-live-step-3 > h3 > span').should('contain', 'COMPLETED')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
-
-      cy.get('.govuk-grid-column-full h3').should('contain', 'Your service is live')
     })
   })
 })
