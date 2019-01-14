@@ -65,17 +65,21 @@
             </div>
           {% endif %}
 
-          <form class="permission-main" method="post" action="{{ routes.toggle3ds.onConfirm }}">
-            <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-            {{
-              govukButton({
+          {% if disableToggle3ds %}
+            <p class="govuk-body" id="threeds-toggle-not-supported">3D Secure setting cannot be changed for this payment service provider (PSP).</p>
+          {% else %}
+
+            <form class="permission-main" method="post" action="{{ routes.toggle3ds.onConfirm }}">
+              <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+              {{ govukButton({
                 text: "Turn on 3D Secure",
                 attributes: {
                   id: "threeds-on-button"
                 }
-              })
-            }}
-          </form>
+              }) }}
+            </form>
+          {% endif %}
+
         {% endif %}
       {% endif %}
 
@@ -83,16 +87,18 @@
         {% if permissions.toggle_3ds_read %}
           <h2 id="3ds-status" class="govuk-heading-m">3D Secure is activated</h2>
 
-          {% set problemsHTML %}
-          <h2 class="govuk-heading-s">Having problems with 3D Secure?</h2>
-          <p class="govuk-body">If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Payment Gateway
-            account manager that your merchant code has been configured to support 3D Secure.</p>
-          {% endset %}
-          {{
-            govukInsetText({
-              html: problemsHTML
-            })
-          }}
+          {% if not disableToggle3ds %}
+            {% set problemsHTML %}
+            <h2 class="govuk-heading-s">Having problems with 3D Secure?</h2>
+            <p class="govuk-body">If 3D Secure isn’t working on your service’s payment pages you’ll need to check with your Payment Gateway
+              account manager that your merchant code has been configured to support 3D Secure.</p>
+            {% endset %}
+            {{
+              govukInsetText({
+                html: problemsHTML
+              })
+            }}
+          {% endif %}
         {% endif %}
 
         {% if hasAnyCardTypeRequiring3dsSelected %}
@@ -105,7 +111,11 @@
         {% endif %}
 
         {% if permissions.toggle_3ds_update %}
-          <form class="permission-main" method="post" action="{{ routes.toggle3ds.off }}">
+
+          {% if disableToggle3ds %}
+            <p class="govuk-body" id="threeds-toggle-not-supported">3D Secure setting cannot be changed for this payment service provider (PSP).</p>
+          {% else %}
+            <form class="permission-main" method="post" action="{{ routes.toggle3ds.off }}">
             <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
             {% if hasAnyCardTypeRequiring3dsSelected %}
               {{
@@ -127,6 +137,7 @@
                 })
               }}
             {% endif %}
+          {% endif %}
           </form>
         {% endif %}
       {% endif %}

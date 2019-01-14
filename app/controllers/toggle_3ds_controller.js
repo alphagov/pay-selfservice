@@ -22,6 +22,7 @@ const renderConnectorError = function (request, response, errorMessage) {
 module.exports.index = function (req, res) {
   const onSuccessGetAccountAcceptedCards = function (acceptedCards) {
     let model = {
+      disableToggle3ds: req.account.disableToggle3ds,
       supports3ds: req.account.supports3ds,
       requires3ds: req.account.requires3ds,
       hasAnyCardTypeRequiring3dsSelected: _.some(acceptedCards['card_types'], {'requires3ds': true}),

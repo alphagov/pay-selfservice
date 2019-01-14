@@ -57,6 +57,7 @@ describe('get account', function () {
       .expect(data => {
         expect(data.body.currentGatewayAccount).to.deep.equal({
           bob: 'bob',
+          disableToggle3ds: false,
           type: 'test',
           payment_provider: 'sandbox',
           supports3ds: false,

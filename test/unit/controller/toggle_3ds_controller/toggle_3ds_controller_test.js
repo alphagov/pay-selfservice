@@ -126,4 +126,26 @@ describe('The 3D Secure ', () => {
       })
     })
   })
+  describe('3DS toggle button', () => {
+    describe('for Stripe account', () => {
+      beforeEach((done) => {
+        getToggle3DsIndex('stripe', done)
+      })
+      it(`should not display turn on/off 3ds button`, () => {
+        assertStatusAndTitle()
+        expect($('#threeds-on-button')).to.have.lengthOf(0)
+        expect($('#threeds-off-button')).to.have.lengthOf(0)
+      })
+    })
+
+    describe('for non Stripe account', () => {
+      beforeEach((done) => {
+        getToggle3DsIndex('worldpay', done)
+      })
+      it('should display turn on 3ds button', () => {
+        assertStatusAndTitle()
+        expect($('#threeds-on-button')).to.have.lengthOf(1)
+      })
+    })
+  })
 })
