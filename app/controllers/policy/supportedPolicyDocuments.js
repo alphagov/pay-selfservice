@@ -5,14 +5,17 @@
 const supportedPolicyDocuments = [
   {
     key: 'memorandum-of-understanding-for-crown-bodies',
+    title: 'Memorandum of understanding for crown bodies',
     template: 'policy/document-downloads/memorandum_of_understanding_for_crown_bodies'
   },
   {
     key: 'contract-for-non-crown-bodies',
+    title: 'Contract for non crown bodies',
     template: 'policy/document-downloads/contract_for_non_crown_bodies'
   },
   {
     key: 'stripe-connected-account-agreement',
+    title: 'Stripe connected account agreement',
     template: 'policy/document-downloads/stripe_connected_account_agreement'
   }
 ]

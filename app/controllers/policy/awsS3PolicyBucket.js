@@ -15,15 +15,17 @@ const s3BucketConfig = {
   Bucket: bucketName,
 
   // signed URL expiration in seconds
-  Expires: 60 * 5
+  Expires: 60 * 60
 }
 
 if (!environmentVariablesSet) {
   logger.warn('AWS policy documents S3 Bucket environment not configured')
 }
 
-const generatePrivateLink = async function generatePrivateLink (Key) {
-  const config = Object.assign({}, s3BucketConfig, { Key })
+const generatePrivateLink = async function generatePrivateLink (documentConfig) {
+  const Key = documentConfig.key
+  const ResponseContentDisposition = `attachment; filename="${documentConfig.title}.pdf"`
+  const config = Object.assign({}, s3BucketConfig, { Key, ResponseContentDisposition })
 
   return getSignedUrl('getObject', config)
 }
