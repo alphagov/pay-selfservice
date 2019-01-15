@@ -328,8 +328,8 @@ module.exports.bind = function (app) {
   app.get(paths.partnerApp.linkAccount, xraySegmentCls, getAccount, goCardlessRedirect.index)
 
   // Request To Go Live
-  app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), resolveService, getAccount, requestToGoLiveIndexController.get)
-  app.post(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:update'), resolveService, getAccount, requestToGoLiveIndexController.post)
+  app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)
+  app.post(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveIndexController.post)
 
   // Private policy document downloads
   app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)
