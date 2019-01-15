@@ -7,7 +7,7 @@ const nunjucks = require('nunjucks')
 
 // Local dependencies
 const router = require('../../app/routes.js')
-const nunjucksFilters = require('../../app/utils/nunjucks-filters')
+const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 
 const environment = nunjucks.configure([
   './node_modules/govuk-frontend/',

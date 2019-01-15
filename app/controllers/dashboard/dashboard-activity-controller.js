@@ -11,10 +11,10 @@ const getNamespace = require('continuation-local-storage').getNamespace
 const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient
-const {isADirectDebitAccount} = require('../../services/clients/direct_debit_connector_client.js')
+const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const auth = require('../../services/auth_service.js')
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
-const datetime = require('../../utils/nunjucks-filters/datetime')
+const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 const getTimespanDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
 
 // Constants

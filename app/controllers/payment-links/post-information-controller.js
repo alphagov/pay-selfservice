@@ -2,8 +2,7 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const slugify = require('../../utils/nunjucks-filters/slugify')
-const removeIndefiniteArticles = require('../../utils/nunjucks-filters/remove-indefinite-articles')
+const { slugify, removeIndefiniteArticles } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 
 // Local dependencies
 const paths = require('../../paths')
