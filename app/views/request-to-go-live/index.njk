@@ -51,7 +51,7 @@
               <span class="status">COMPLETED</span>
             {% endif %}
           </h3>
-          <p class="govuk-body-m">We’ll use this to perform a security check.</p>
+          <p class="govuk-body">We’ll use this to perform a security check.</p>
         </div>
         <div id="request-to-go-live-step-2">
           <h3 class="govuk-heading-m">
@@ -70,7 +70,7 @@
               <span class="status">COMPLETED</span>
             {% endif %}
           </h3>
-          <p class="govuk-body-m">Use GOV.UK Pay’s preferred payment service provider (PSP). If you have already procured your own PSP, you can enter their details instead.</p>
+          <p class="govuk-body">Use GOV.UK Pay’s preferred payment service provider (PSP). If you have already procured your own PSP, you can enter their details instead.</p>
         </div>
         <div id="request-to-go-live-step-3">
           <h3 class="govuk-heading-m">
@@ -85,7 +85,7 @@
               <span class="status">COMPLETED</span>
             {% endif %}
           </h3>
-          <p class="govuk-body-m">To start using GOV.UK Pay your organisation must accept GOV.UK Pay’s legal terms.</p>
+          <p class="govuk-body">To start using GOV.UK Pay your organisation must accept GOV.UK Pay’s legal terms.</p>
         </div>
         <form id="request-to-go-live-index-form" method="post" action="/service/{{currentService.externalId}}/request-to-go-live">
           <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
