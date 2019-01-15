@@ -1,5 +1,6 @@
 'use strict'
 
+const logger = require('winston')
 const { response, renderErrorView } = require('../../utils/response')
 
 const supportedPolicyDocuments = require('./supportedPolicyDocuments')
@@ -12,8 +13,10 @@ const downloadDocumentsPolicyPage = async function downloadDocumentsPolicyPage (
     const documentConfig = await supportedPolicyDocuments.lookup(key)
     const link = await policyBucket.generatePrivateLink(documentConfig.key)
 
-    return response(req, res, document.template, { link })
+    return response(req, res, documentConfig.template, { link })
   } catch (error) {
+    console.log(error)
+    logger.error(error)
     renderErrorView(req, res, error.message)
   }
 }
