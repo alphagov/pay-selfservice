@@ -6,7 +6,7 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l page-title">
+  <h1 class="govuk-heading-l">
     {% block policyTitle %} {% endblock %}
   </h1>
 </div>
@@ -20,7 +20,7 @@
   </p>
   <ul class="govuk-list govuk-list--bullet">
     <li>
-      <a href="{{ link }}" download>{% block policyDownloadLinkDescription %}{% endblock %}</a>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ link }}" download>{% block policyDownloadLinkDescription %}{% endblock %}</a>
     </li>
   </ul>
   <p class="govuk-body">These terms are confidential and should not be shared outside of your organisation.</p>
