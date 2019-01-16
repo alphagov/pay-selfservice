@@ -65,6 +65,7 @@ const twoFactorAuthController = require('./controllers/two-factor-auth-controlle
 const feedbackController = require('./controllers/feedback')
 const toggleBillingAddressController = require('./controllers/billing-address/toggle-billing-address-controller')
 const requestToGoLiveIndexController = require('./controllers/request-to-go-live/index')
+const requestToGoLiveOrganisationNameController = require('./controllers/request-to-go-live/organisation-name')
 const policyDocumentsController = require('./controllers/policy')
 
 // Assignments
@@ -327,9 +328,12 @@ module.exports.bind = function (app) {
   // Partner app link GoCardless account
   app.get(paths.partnerApp.linkAccount, xraySegmentCls, getAccount, goCardlessRedirect.index)
 
-  // Request To Go Live
+  // Request to go live: index
   app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)
   app.post(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveIndexController.post)
+  // Request to go live: organisation name
+  app.get(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveOrganisationNameController.get)
+  app.post(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.post)
 
   // Private policy document downloads
   app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)
