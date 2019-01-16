@@ -161,5 +161,8 @@ module.exports = {
     organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',
     chooseHowToProcessPayments: '/service/:externalServiceId/request-to-go-live/choose-how-to-process-payments',
     agreement: '/service/:externalServiceId/request-to-go-live/agreement'
+  },
+  policyPages: {
+    download: '/policy/download/:key'
   }
 }
