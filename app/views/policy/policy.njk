@@ -15,9 +15,11 @@
   <p class="govuk-body">
     {% block policyDescription %} {% endblock %}
   </p>
+  <p class="govuk-body">
+    {% block policyDownloadAction %} {% endblock %}
+  </p>
   <ul class="govuk-list govuk-list--bullet">
     <li>
-      <!-- @FIXME(sfount) check the name of the downloaded PDF document - is it according the PDF headers? If not set the name through the download attribute -->
       <a href="{{ link }}" download>{% block policyDownloadLinkDescription %}{% endblock %}</a>
     </li>
   </ul>
