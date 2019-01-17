@@ -1,7 +1,7 @@
-describe('Request to go live: Index', () => {
+describe('Request to go live: index', () => {
   const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
 
-  describe('no permissions', () => {
+  describe('NO PERMISSIONS', () => {
     beforeEach(() => {
       cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveNoPermissionsCookie'))
       cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveNoPermissionsCookie'))
@@ -28,6 +28,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('not.exist')
 
@@ -58,6 +61,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -88,6 +94,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -118,6 +127,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -148,6 +160,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -178,6 +193,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -208,6 +226,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -232,6 +253,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -256,6 +280,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -280,6 +307,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
       cy.get('#request-to-go-live-step-1 > h3').should('exist')
       cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'COMPLETED')
 
@@ -304,6 +334,9 @@ describe('Request to go live: Index', () => {
     it('should show "Request to go live" page with an error', () => {
       const requestToGoLivePageUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
+
+      cy.get('h1').should('not.exist')
+
       cy.get('.govuk-error-summary h2').should('contain', 'There is a problem')
       cy.get('.govuk-error-summary .govuk-error-summary__list a')
         .should('contain', 'Please contact GOV.UK Pay support')
