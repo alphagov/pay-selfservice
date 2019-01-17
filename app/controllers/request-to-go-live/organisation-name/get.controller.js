@@ -12,5 +12,7 @@ module.exports = (req, res) => {
       requestToGoLive.index.replace(':externalServiceId', req.service.externalId)
     )
   }
-  return response.response(req, res, 'request-to-go-live/organisation-name')
+  return response.response(req, res, 'request-to-go-live/organisation-name', {
+    organisationName: req.service.merchantDetails ? req.service.merchantDetails.name : ''
+  })
 }

@@ -25,7 +25,7 @@ describe('Request to go live: organisation name', () => {
 
     const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED')
 
-    it('should show "Request to go live: organisation name" page correctly', () => {
+    it('should show "Request to go live: organisation name" page correctly with pre-filled organisation name', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
@@ -36,6 +36,7 @@ describe('Request to go live: organisation name', () => {
       cy.get('#request-to-go-live-organisation-name-form').should('exist')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').should('have.value', 'Government Digital Service')
 
       cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
       cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
