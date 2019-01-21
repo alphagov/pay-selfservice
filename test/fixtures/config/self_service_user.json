@@ -1132,6 +1132,13 @@
               "gateway_account_ids": [
                 "666"
               ],
+              "merchant_details": {
+                "name": "Government Digital Service",
+                "address_line1": "10 Whitechapel High Street",
+                "address_city": "London",
+                "address_postcode": "E1 8QS",
+                "address_country": "GB"
+              },
               "_links": [],
               "redirect_to_service_immediately_on_terminal_state": false,
               "collect_billing_address": true,

@@ -25,7 +25,7 @@ describe('Request to go live: organisation name', () => {
 
     const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED')
 
-    it('should show "Organisation Name" page correctly', () => {
+    it('should show "Request to go live: organisation name" page correctly with pre-filled organisation name', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
@@ -36,6 +36,7 @@ describe('Request to go live: organisation name', () => {
       cy.get('#request-to-go-live-organisation-name-form').should('exist')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').should('have.value', 'Government Digital Service')
 
       cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
       cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
@@ -43,6 +44,55 @@ describe('Request to go live: organisation name', () => {
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq('/service/rtglNotStarted/request-to-go-live/organisation-name')
+      })
+    })
+
+    it('should show an error when blank name is submitted on "Request to go live: organisation name" page', () => {
+      const requestToGoLivePageOrganisationNameUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`
+      cy.visit(requestToGoLivePageOrganisationNameUrl)
+
+      cy.get('h1').should('contain', 'What is the name of your organisation?')
+
+      cy.get('#request-to-go-live-current-step').should('exist')
+
+      cy.get('#request-to-go-live-organisation-name-form').should('exist')
+
+      cy.get('input#request-to-go-live-organisation-name-input').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').clear()
+
+      cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
+      cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
+      cy.get('#request-to-go-live-organisation-name-form > button').click()
+
+      cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is the name of your organisation?')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
+
+      cy.get('input#request-to-go-live-organisation-name-input').should('have.class', 'govuk-input--error')
+      cy.get('span#request-to-go-live-organisation-name-input-error').should('contain', 'Please enter a valid name')
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`)
+      })
+    })
+  })
+
+  describe('REQUEST_TO_GO_LIVE_STAGE_WRONG_STAGE', () => {
+    beforeEach(() => {
+      cy.setCookie('session', Cypress.env('encryptedSessionRequestToGoLiveStageEnteredOrganisationNameCookie'))
+      cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountRequestToGoLiveStageEnteredOrganisationNameCookie'))
+    })
+
+    const selfServiceUser = selfServiceUsers.config.users.find(element => element.cypressTestingCategory === 'REQUEST_TO_GO_LIVE_STAGE_ENTERED_ORGANISATION_NAME')
+
+    it('should redirect to "Request to go live: index" page when in wrong stage', () => {
+      const requestToGoLivePageOrganisationNameUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`
+      cy.visit(requestToGoLivePageOrganisationNameUrl)
+
+      cy.get('h1').should('contain', 'Request to go live')
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live`)
       })
     })
   })
