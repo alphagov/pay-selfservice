@@ -18,7 +18,9 @@ module.exports = function (options = {}) {
   let pactify = (object) => {
     let pactified = {}
     _.forIn(object, (value, key) => {
-      if (options.array && options.array.indexOf(key) !== -1) {
+      if (value === null) {
+        pactified[key] = null
+      } else if (options.array && options.array.indexOf(key) !== -1) {
         let length
         if (options.length && options.length.find(lengthKey => lengthKey.key === key)) {
           length = options.length.find(lengthKey => lengthKey.key === key).length
