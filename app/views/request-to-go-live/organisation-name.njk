@@ -25,7 +25,8 @@
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
 
-    <form id="request-to-go-live-organisation-name-form" method="post" action="/service/{{currentService.externalId}}/request-to-go-live/organisation-name">
+    <form id="request-to-go-live-organisation-name-form" method="post"
+          action="/service/{{ currentService.externalId }}/request-to-go-live/organisation-name" data-validate="true" >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set organisationNameError = false %}
@@ -49,7 +50,8 @@
         type: "text",
         errorMessage: organisationNameError,
         attributes: {
-          "data-validate": "required"
+          "data-validate": "required isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "255"
         }
       }) }}
 

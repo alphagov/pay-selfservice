@@ -6,12 +6,15 @@ const lodash = require('lodash')
 // Local dependencies
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { requestToGoLive } = require('../../../paths')
+const { validateOrganisationName } = require('../../../utils/organisation_name_validation')
 
 // Constants
 const REQUEST_ORGANISATION_NAME_FIELD = 'organisation-name'
 
 module.exports = (req, res) => {
-  const errors = validateRequest(req)
+  const organisationName = lodash.get(req, 'body.organisation-name')
+  const errors = validateOrganisationName(organisationName, REQUEST_ORGANISATION_NAME_FIELD, true)
+
   if (lodash.isEmpty(errors)) {
     // TODO: handle submission
     res.redirect(
@@ -29,21 +32,4 @@ module.exports = (req, res) => {
       requestToGoLive.organisationName.replace(':externalServiceId', req.service.externalId)
     )
   }
-}
-
-function validateRequest (req) {
-  const mandatoryFields = [REQUEST_ORGANISATION_NAME_FIELD]
-
-  return validateNotEmpty(req, mandatoryFields)
-}
-
-function validateNotEmpty (req, fieldNames) {
-  const errors = {}
-  fieldNames.forEach(fieldName => {
-    let field = req.body[fieldName]
-    if (!field || typeof field !== 'string') {
-      errors[fieldName] = true
-    }
-  })
-  return errors
 }
