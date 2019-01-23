@@ -69,7 +69,37 @@ describe('Request to go live: organisation name', () => {
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('have.class', 'govuk-input--error')
-      cy.get('span#request-to-go-live-organisation-name-input-error').should('contain', 'Please enter a valid name')
+      cy.get('#request-to-go-live-organisation-name-form > div > h1 > label > span').should('contain', 'This field cannot be blank')
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`)
+      })
+    })
+
+    it('should show an error when name submitted exceeds max character length on "Request to go live: organisation name" page', () => {
+      const requestToGoLivePageOrganisationNameUrl = `/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`
+      const maxLengthOrganisationNameAllowed = 255
+      const exceedMaxLengthOrganisationName = 'Lorem ipsum dolor sit ametf consectetuer adipiscing elitf Aenean commodo ligula eget dolorf Aenean massaf ' +
+        'Cum sociis natoque penatibus et magnis dis parturient montesf nascetur ridiculus musl Donec quam felisf ultricies necf pellentesque eue pretium quislk'
+
+      cy.visit(requestToGoLivePageOrganisationNameUrl)
+
+      cy.get('h1').should('contain', 'What is the name of your organisation?')
+
+      cy.get('input#request-to-go-live-organisation-name-input').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').type(exceedMaxLengthOrganisationName)
+      cy.get('input#request-to-go-live-organisation-name-input').invoke('val').then(val => val.length).should('be.gt', maxLengthOrganisationNameAllowed)
+
+      cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
+      cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
+      cy.get('#request-to-go-live-organisation-name-form > button').click()
+
+      cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is the name of your organisation?')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
+
+      cy.get('input#request-to-go-live-organisation-name-input').should('have.class', 'govuk-input--error')
+      cy.get('#request-to-go-live-organisation-name-form > div > h1 > label > span').should('contain', 'The text is too long')
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${selfServiceUser.service_roles[0].service.external_id}/request-to-go-live/organisation-name`)
