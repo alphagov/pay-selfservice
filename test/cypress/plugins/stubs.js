@@ -267,7 +267,7 @@ module.exports = {
     ]
   },
   getChargeSuccess: (opts = {}) => {
-    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponseNew(opts.chargeDetails).getPlain()
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse(opts.chargeDetails).getPlain()
     return [
       {
         predicates: [{
@@ -292,7 +292,7 @@ module.exports = {
     ]
   },
   getChargeEventsSuccess: (opts = {}) => {
-    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validChargeEventsResponseNew(opts).getPlain()
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validChargeEventsResponse(opts).getPlain()
     return [
       {
         predicates: [{
@@ -318,7 +318,7 @@ module.exports = {
   },
   postRefundAmountNotAvailable: (opts = {}) => {
     const invalidTransactionRefundRequest = transactionDetailsFixtures.invalidTransactionRefundRequest(opts).getPlain()
-    const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse({reason: 'amount_not_available'}).getPlain()
+    const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse({ reason: 'amount_not_available' }).getPlain()
     return [
       {
         predicates: [{
