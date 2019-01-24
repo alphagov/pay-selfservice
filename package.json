@@ -58,7 +58,7 @@
     "@govuk-pay/pay-js-commons": "^1.4.0",
     "accessible-autocomplete": "^1.6.2",
     "appmetrics": "4.x",
-    "appmetrics-statsd": "2.0.x",
+    "appmetrics-statsd": "3.0.x",
     "aws-sdk": "2.394.0",
     "aws-xray-sdk": "^2.2.0",
     "body-parser": "1.18.3",
