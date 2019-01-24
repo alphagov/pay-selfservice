@@ -8,7 +8,7 @@ function initialiseMonitoring () {
   appmetrics.configure({'mqtt': 'off'})
   var appmetricsStatsd = require('appmetrics-statsd')
 
-  return appmetricsStatsd.StatsD(null, metricsHost, metricsPort, metricsPrefix)
+  return appmetricsStatsd.StatsD(metricsHost, metricsPort, metricsPrefix)
 }
 
 module.exports = (function () {
