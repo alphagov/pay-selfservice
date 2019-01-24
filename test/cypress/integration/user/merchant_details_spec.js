@@ -1,14 +1,40 @@
 describe('Dashboard', () => {
+  const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+  const gatewayAccountId = 666
+
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.task('getCookies', {
+      user_external_id: userExternalId,
+      gateway_account_id: gatewayAccountId
+    }).then(cookies => {
+      cy.setCookie('session', cookies.encryptedSessionCookie)
+      cy.setCookie('gateway_account', cookies.encryptedGatewayAccountCookie)
+    })
+
+    cy.task('setupStubs', [
+      {
+        name: 'getUserSuccess',
+        opts: {
+          external_id: userExternalId,
+          service_roles: [{
+            service: {
+              gateway_account_ids: [gatewayAccountId]
+            }
+          }]
+        }
+      },
+      {
+        name: 'getGatewayAccountQueryParamsSuccess',
+        opts: { gateway_account_id: gatewayAccountId }
+      }
+    ])
   })
 
   describe('Homepage', () => {
     // Use a known configuration used to generate contracts/stubs.
     // This is also used to generate the session/gateway_account cookies
 
-    it('should have the page title \'Dashboard - System Generated test - GOV.UK Pay\'', () => {
+    it('should have the page title \'Choose service - GOV.UK Pay\'', () => {
       cy.visit('/my-services')
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
 

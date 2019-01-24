@@ -1,25 +1,46 @@
 describe('Dashboard', () => {
-  const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
+  const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+  const gatewayAccountId = '666'
+  const serviceName = 'Test Service'
 
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.task('getCookies', {
+      user_external_id: userExternalId,
+      gateway_account_id: gatewayAccountId
+    }).then(cookies => {
+      cy.setCookie('session', cookies.encryptedSessionCookie)
+      cy.setCookie('gateway_account', cookies.encryptedGatewayAccountCookie)
+    })
+
+    cy.task('setupStubs', [
+      {
+        name: 'getUserSuccess',
+        opts: {
+          gateway_account_ids: [gatewayAccountId.toString()],
+          service_roles: [{
+            service: {
+              name: serviceName
+            }
+          }]
+        }
+      },
+      {
+        name: 'getGatewayAccountSuccess',
+        opts: { gateway_account_id: gatewayAccountId }
+      }
+    ])
   })
 
   describe('Homepage', () => {
-    // Use a known configuration used to generate contracts/stubs.
-    // This is also used to generate the session/gateway_account cookies
-    const ssUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
-
     // Note : these from/to datetime strings exactly match those in the pact/contract, so are essential to match against stubs
     // Either change everything together, or map these do a single place like a .json document so the contracts/tests refer to one place
-    const from = encodeURIComponent(ssUser.sections.dashboard.transaction_summary.from_date)
-    const to = encodeURIComponent(ssUser.sections.dashboard.transaction_summary.to_date)
+    const from = encodeURIComponent('2018-05-14T00:00:00+01:00')
+    const to = encodeURIComponent('2018-05-15T00:00:00+01:00')
 
-    it('should have the page title \'Dashboard - System Generated test - GOV.UK Pay\'', () => {
+    it(`should have the page title 'Dashboard - ${serviceName} test - GOV.UK Pay'`, () => {
       const dashboardUrl = `/?period=custom&fromDateTime=${from}&toDateTime=${to}`
       cy.visit(dashboardUrl)
-      cy.title().should('eq', 'Dashboard - System Generated test - GOV.UK Pay')
+      cy.title().should('eq', `Dashboard - ${serviceName} test - GOV.UK Pay`)
     })
   })
 })
