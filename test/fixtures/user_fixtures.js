@@ -417,6 +417,7 @@ module.exports = {
         ],
         second_factor: opts.second_factor || 'SMS',
         provisional_otp_key: opts.provisional_otp_key || null,
+        provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
         disabled: opts.disabled || false,
         login_counter: opts.login_counter || 0,
         session_version: opts.session_version || 0,
