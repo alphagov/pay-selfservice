@@ -11,3 +11,5 @@ staging-2.alpha_staging-2-737.status=success
 production-2.tag=alpha_production-2-737
 
 production-2.alpha_production-2-737.date=2019-01-28:08:08:18
+
+production-2.alpha_production-2-737.status=success
