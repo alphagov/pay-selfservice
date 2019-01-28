@@ -1,0 +1,85 @@
+{% extends "../layout.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block pageTitle %}
+  Request to go live - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+
+    <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 2 of 3</span>
+
+    <form id="request-to-go-live-choose-how-to-process-payments-form" method="post"
+          action="/service/{{ currentService.externalId }}/request-to-go-live/choose-how-to-process-payments" data-validate="true" >
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set otherPSP %}
+        {{ govukRadios({
+          idPrefix: 'choose-how-to-process-payments-mode-other',
+          name: 'choose-how-to-process-payments-mode-other',
+          fieldset: {
+            legend: {
+              text: 'Which payment service provider have you procured?',
+              classes: 'govuk-text-grey'
+            }
+          },
+          items: [
+            {
+              value: 'worldpay',
+              text: 'Worldpay'
+            },
+            {
+              value: 'smartpay',
+              text: 'Smartpay'
+            },
+            {
+              value: 'epdq',
+              text: 'ePDQ'
+            }
+          ]
+        })
+        }}
+      {% endset %}
+
+      {{ govukRadios({
+        idPrefix: 'choose-how-to-process-payments-mode',
+        name: 'choose-how-to-process-payments-mode',
+        fieldset: {
+          legend: {
+            text: 'Choose how to process payments',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l'
+          }
+        },
+        items: [
+          {
+            value: 'stripe',
+            text: 'GOV.UK Pay',
+            label: {
+              classes: "govuk-label--s"
+            },
+            hint: {
+              text: 'Using GOV.UK Pay’s payment service provider (PSP) will save you the time and cost of procuring your own. GOV.UK Pay uses Stripe to process payments.'
+            }
+          },
+          {
+            value: 'other_psp',
+            text: 'I have already procured my own payment service provider',
+            label: {
+              classes: "govuk-label--s"
+            },
+            conditional: {
+              html: otherPSP
+            }
+          }
+        ]
+        }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+{% endblock %}
