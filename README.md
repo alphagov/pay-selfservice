@@ -5,6 +5,9 @@ GOV.UK Pay Self Service admin tool (Node.js)
 
 *This requires the Pay CLI, which is not publicly available at present*
 
+* `pay local launch admin`
+* Go to: http://localhost:9400
+
 Assuming you're up and running with the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli) and have selfservice running locally you shouldn’t need to restart the app to see changes you make.
 
 We use [nodemon](https://github.com/remy/nodemon) which watches for changes to files and restarts the node process.
