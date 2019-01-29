@@ -2,7 +2,6 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const { expect } = require('chai')
 
 // Local dependencies
 const User = require('../../app/models/User.class')
@@ -158,11 +157,10 @@ const defaultPermissions = [
 ]
 
 // Setup
-const pactUsers = pactBase(
-  {
-    array: ['service_roles', '_links'],
-    length: [{key: 'permissions', length: 1}]
-  })
+const pactUsers = pactBase({
+  array: ['service_roles', '_links'],
+  length: [{ key: 'permissions', length: 1 }]
+})
 
 function validPassword () {
   return 'G0VUkPay2017Rocks'
@@ -179,14 +177,14 @@ function merchantDetailsFixture () {
   }
 }
 
-const validServiceRole = (opts = {}) => {
+const buildServiceRole = (opts = {}) => {
   return {
-    service: validService(opts.service),
-    role: validRole(opts.role)
+    service: buildServiceWithDefaults(opts.service),
+    role: buildRoleWithDefaults(opts.role)
   }
 }
 
-const validService = (opts = {}) => {
+const buildServiceWithDefaults = (opts = {}) => {
   const service = {
     id: opts.id || 857,
     external_id: opts.external_id || 'cp5wa',
@@ -201,13 +199,13 @@ const validService = (opts = {}) => {
   }
 
   if (opts.merchant_details) {
-    service.merchant_details = validMerchantDetails(opts.merchant_details)
+    service.merchant_details = buildMerchantDetailsWithDefaults(opts.merchant_details)
   }
 
   return service
 }
 
-const validRole = (opts = {}) => {
+const buildRoleWithDefaults = (opts = {}) => {
   return {
     name: opts.role_name || 'admin',
     description: opts.role_description || 'Administrator',
@@ -215,7 +213,7 @@ const validRole = (opts = {}) => {
   }
 }
 
-const validMerchantDetails = (opts = {}) => {
+const buildMerchantDetailsWithDefaults = (opts = {}) => {
   const merchantDetails = {
     name: opts.name || 'name',
     address_line1: opts.address_line1 || 'line1',
@@ -592,7 +590,7 @@ module.exports = {
   },
 
   validPasswordAuthenticateResponse: (opts = {}) => {
-    const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, validServiceRole) : [validServiceRole()]
+    const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
     const response = {
       external_id: opts.external_id || '7d19aff33f8948deb97ed16b2912dcd3',
       username: opts.username || 'some-user@gov.uk',

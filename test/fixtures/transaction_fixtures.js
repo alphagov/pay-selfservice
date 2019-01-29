@@ -8,18 +8,18 @@ const lodash = require('lodash')
 const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 
-const validChargeEvent = (opts = {}) => {
+const buildChargeEventWithDefaults = (opts = {}) => {
   return {
     type: opts.type || 'PAYMENT',
     submitted_by: opts.submitted_by || null,
-    state: validChargeEventState(opts.state),
+    state: buildChargeEventStateWithDefaults(opts.state),
     amount: opts.amount,
     updated: opts.updated,
     refund_reference: opts.refund_reference
   }
 }
 
-const validChargeEventState = (opts = {}) => {
+const buildChargeEventStateWithDefaults = (opts = {}) => {
   let state
   if (opts.status === 'failed') {
     state = {
@@ -38,7 +38,7 @@ const validChargeEventState = (opts = {}) => {
   return state
 }
 
-const validTransactionObject = (opts = {}) => {
+const buildTransactionWithDefaults = (opts = {}) => {
   const data = {
     amount: opts.amount || 20000,
     state: {
@@ -109,7 +109,7 @@ module.exports = {
     }
   },
   validTransactionsResponse: (opts = {}) => {
-    const results = lodash.flatMap(opts.transactions, validTransactionObject)
+    const results = lodash.flatMap(opts.transactions, buildTransactionWithDefaults)
 
     const data = {
       total: opts.transactions.length,
@@ -129,7 +129,7 @@ module.exports = {
     }
   },
   validTransactionDetailsResponse: (opts = {}) => {
-    const data = validTransactionObject(opts)
+    const data = buildTransactionWithDefaults(opts)
 
     return {
       getPactified: () => {
@@ -142,22 +142,22 @@ module.exports = {
   },
   validChargeEventsResponse: (opts = {}) => {
     const defaultEvents = [
-      validChargeEvent({
+      buildChargeEventWithDefaults({
         amount: opts.amount,
         updated: '2018-05-01T13:27:00.063Z'
       }),
-      validChargeEvent({
+      buildChargeEventWithDefaults({
         amount: opts.amount,
         updated: '2018-05-01T13:27:00.974Z'
       }),
-      validChargeEvent({
+      buildChargeEventWithDefaults({
         state: { status: 'failed' },
         amount: opts.amount,
         updated: '2018-05-01T13:27:18.126Z'
       })
     ]
 
-    const events = opts.events ? lodash.flatMap(opts.events, validChargeEvent) : defaultEvents
+    const events = opts.events ? lodash.flatMap(opts.events, buildChargeEventWithDefaults) : defaultEvents
 
     const data = {
       charge_id: opts.charge_id || 'ht439nfg2l1e303k0dmifrn4fc',

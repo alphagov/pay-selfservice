@@ -3,7 +3,7 @@ describe('Transactions', () => {
   const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
   const gatewayAccountId = 666
 
-  const convertAmounts = val => '£' + (val / 100).toFixed(2)
+  const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
 
   const unfilteredTransactions = [
     {
@@ -249,11 +249,11 @@ describe('Transactions', () => {
         cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
 
         // Ensure the values are displayed correctly
-        cy.get('#transactions-list tbody').first().find('td').eq(1).should('have.text', convertAmounts(unfilteredTransactions[0].amount))
-        cy.get('#transactions-list tbody').find('tr').eq(1).find('td').eq(1).should('have.text', convertAmounts(unfilteredTransactions[1].amount))
+        cy.get('#transactions-list tbody').first().find('td').eq(1).should('have.text', convertPenceToPoundsFormatted(unfilteredTransactions[0].amount))
+        cy.get('#transactions-list tbody').find('tr').eq(1).find('td').eq(1).should('have.text', convertPenceToPoundsFormatted(unfilteredTransactions[1].amount))
 
         // Ensure the card fee is displayed correctly
-        cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('contain', convertAmounts(unfilteredTransactions[2].total_amount)).and('contain', '(with card fee)')
+        cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('contain', convertPenceToPoundsFormatted(unfilteredTransactions[2].total_amount)).and('contain', '(with card fee)')
       })
     })
   })
