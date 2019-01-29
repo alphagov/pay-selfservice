@@ -4,13 +4,7 @@ describe('Dashboard', () => {
   const serviceName = 'Test Service'
 
   beforeEach(() => {
-    cy.task('getCookies', {
-      user_external_id: userExternalId,
-      gateway_account_id: gatewayAccountId
-    }).then(cookies => {
-      cy.setCookie('session', cookies.encryptedSessionCookie)
-      cy.setCookie('gateway_account', cookies.encryptedGatewayAccountCookie)
-    })
+    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
 
     cy.task('setupStubs', [
       {
