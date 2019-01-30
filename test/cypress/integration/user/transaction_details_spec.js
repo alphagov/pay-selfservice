@@ -1,7 +1,7 @@
 const lodash = require('lodash')
 
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
-const convertAmounts = val => '£' + (val / 100).toFixed(2)
+const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
 const defaultAmount = 1000
 
 function formatDate (date) {
@@ -110,10 +110,10 @@ describe('Transactions details page', () => {
         capitalise(chargeDetails.charge.state_status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
-        convertAmounts(chargeDetails.charge.amount))
+        convertPenceToPoundsFormatted(chargeDetails.charge.amount))
       // Refunded amount
       cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
-        convertAmounts(chargeDetails.charge.refund_summary_submitted))
+        convertPenceToPoundsFormatted(chargeDetails.charge.refund_summary_submitted))
       // Date created
       cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
         formatDate(new Date(chargeDetails.events[0].updated)))
@@ -164,10 +164,10 @@ describe('Transactions details page', () => {
         capitalise(aDelayedCaptureCharge.charge.state_status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
-        convertAmounts(aDelayedCaptureCharge.charge.amount))
+        convertPenceToPoundsFormatted(aDelayedCaptureCharge.charge.amount))
       // Refunded amount
       cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
-        convertAmounts(aDelayedCaptureCharge.charge.refund_summary_submitted))
+        convertPenceToPoundsFormatted(aDelayedCaptureCharge.charge.refund_summary_submitted))
       // Date created
       cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
         formatDate(new Date(aDelayedCaptureCharge.events[0].updated)))
@@ -215,7 +215,7 @@ describe('Transactions details page', () => {
 
       // Amount
       cy.get('#amount').should('have.text',
-        `${convertAmounts(aCorporateCardSurchargeCharge.charge.total_amount)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.charge.corporate_card_surcharge)})`)
+        `${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.total_amount)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.corporate_card_surcharge)})`)
     })
   })
 
@@ -293,7 +293,7 @@ describe('Transactions details page', () => {
       cy.get('.target-to-show--toggle').click()
 
       // Assert refund message
-      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(aCorporateCardSurchargeCharge.charge.refund_summary_available)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.charge.corporate_card_surcharge)})`)
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.refund_summary_available)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.corporate_card_surcharge)})`)
     })
 
     it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
@@ -305,7 +305,7 @@ describe('Transactions details page', () => {
       cy.get('.target-to-show--toggle').click()
 
       // Assert refund message
-      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(chargeDetails.charge.refund_summary_available)}`)
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(chargeDetails.charge.refund_summary_available)}`)
     })
   })
 })
