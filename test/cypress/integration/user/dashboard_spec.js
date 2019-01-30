@@ -11,7 +11,7 @@ describe('Dashboard', () => {
         name: 'getUserSuccess',
         opts: {
           external_id: userExternalId,
-          gateway_account_ids: [gatewayAccountId.toString()],
+          gateway_account_ids: [gatewayAccountId],
           service_roles: [{
             service: {
               name: serviceName

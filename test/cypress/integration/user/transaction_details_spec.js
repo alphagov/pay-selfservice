@@ -37,7 +37,8 @@ function defaultChargeDetails () {
       last_digits_card_number: '0002',
       expiry_date: '08/23',
       email: 'example@example.com',
-      payment_provider: 'sandbox'
+      payment_provider: 'sandbox',
+      delayed_capture: false
     },
     events: [{
       amount: defaultAmount,
@@ -50,6 +51,7 @@ describe('Transactions details page', () => {
   const transactionsUrl = `/transactions`
   const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
   const gatewayAccountId = 666
+  const serviceName = 'Test Service'
 
   const getStubs = (chargeDetails) => {
     return [
@@ -59,6 +61,7 @@ describe('Transactions details page', () => {
           external_id: userExternalId,
           service_roles: [{
             service: {
+              name: serviceName,
               gateway_account_ids: [gatewayAccountId]
             }
           }]
@@ -98,7 +101,7 @@ describe('Transactions details page', () => {
       cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${chargeDetails.charge.reference} - System Generated test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${chargeDetails.charge.reference} - ${serviceName} test - GOV.UK Pay`)
 
       // Ensure page details match up
 
@@ -152,7 +155,7 @@ describe('Transactions details page', () => {
       cy.visit(`${transactionsUrl}/${aDelayedCaptureCharge.charge.charge_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aDelayedCaptureCharge.charge.reference} - System Generated test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${aDelayedCaptureCharge.charge.reference} - ${serviceName} test - GOV.UK Pay`)
 
       // Ensure page details match up
 
@@ -209,7 +212,7 @@ describe('Transactions details page', () => {
       cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge.charge_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeCharge.charge.reference} - System Generated test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeCharge.charge.reference} - ${serviceName} test - GOV.UK Pay`)
 
       // Ensure page details match up
 

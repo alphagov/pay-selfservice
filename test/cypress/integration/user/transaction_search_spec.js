@@ -2,6 +2,7 @@ describe('Transactions', () => {
   const transactionsUrl = `/transactions`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 666
+  const serviceName = 'Test Service'
 
   const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
 
@@ -59,6 +60,7 @@ describe('Transactions', () => {
           external_id: userExternalId,
           service_roles: [{
             service: {
+              name: serviceName,
               gateway_account_ids: [gatewayAccountId]
             }
           }]
@@ -71,6 +73,7 @@ describe('Transactions', () => {
       {
         name: 'getCardTypesSuccess'
       },
+      // unfiltered transactions stub
       {
         name: 'getTransactionsSuccess',
         opts: {
@@ -79,6 +82,7 @@ describe('Transactions', () => {
           transactions: unfilteredTransactions
         }
       },
+      // transactions filtered by from date stub
       {
         name: 'getTransactionsSuccess',
         opts: {
@@ -89,6 +93,7 @@ describe('Transactions', () => {
           transactions: filteredByFromDateTransactions
         }
       },
+      // transactions filtered by to date stub
       {
         name: 'getTransactionsSuccess',
         opts: {
@@ -99,6 +104,7 @@ describe('Transactions', () => {
           transactions: filteredByToDateTransactions
         }
       },
+      // transactions filtered by partial email and multiple card brands stub
       {
         name: 'getTransactionsSuccess',
         opts: {
@@ -110,6 +116,7 @@ describe('Transactions', () => {
           transactions: filteredByPartialEmailAndCardBrandTransactions
         }
       },
+      // transactions filtered by multiple fields stub
       {
         name: 'getTransactionsSuccess',
         opts: {
@@ -129,8 +136,8 @@ describe('Transactions', () => {
   })
 
   describe('Transactions List', () => {
-    it('should have the page title \'Transactions - System Generated test - GOV.UK Pay\'', () => {
-      cy.title().should('eq', 'Transactions - System Generated test - GOV.UK Pay')
+    it(`should have the page title 'Transactions - ${serviceName} test - GOV.UK Pay'`, () => {
+      cy.title().should('eq', `Transactions - ${serviceName} test - GOV.UK Pay`)
     })
 
     describe('Filtering', () => {
