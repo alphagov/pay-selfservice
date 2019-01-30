@@ -3,19 +3,23 @@ describe('Request to go live: index', () => {
   const gatewayAccountId = 666
   const serviceExternalId = 'cp5wa'
 
-  const setupStubsForGoLiveStage = (goLiveStage) => {
+  const buildServiceRoleForGoLiveStage = (goLiveStage) => {
+    return {
+      service: {
+        external_id: serviceExternalId,
+        current_go_live_stage: goLiveStage,
+        gateway_account_ids: [gatewayAccountId]
+      }
+    }
+  }
+
+  const setupStubs = (serviceRole) => {
     cy.task('setupStubs', [
       {
         name: 'getUserSuccess',
         opts: {
           external_id: userExternalId,
-          service_roles: [{
-            service: {
-              external_id: serviceExternalId,
-              current_go_live_stage: goLiveStage,
-              gateway_account_ids: [gatewayAccountId]
-            }
-          }]
+          service_roles: [serviceRole]
         }
       },
       {
@@ -29,30 +33,13 @@ describe('Request to go live: index', () => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
 
-  describe('NO PERMISSIONS', () => {
+  describe('User does not have the correct permissions', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                external_id: serviceExternalId,
-                current_go_live_stage: 'NOT_STARTED',
-                gateway_account_ids: [gatewayAccountId]
-              },
-              role: {
-                permissions: []
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        }
-      ])
+      const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED')
+      serviceRole.role = {
+        permissions: []
+      }
+      setupStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -63,9 +50,9 @@ describe('Request to go live: index', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED', () => {
+  describe('Request to go live stage NOT_STARTED', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('NOT_STARTED')
+      setupStubs(buildServiceRoleForGoLiveStage('NOT_STARTED'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -95,7 +82,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage ENTERED_ORGANISATION_NAME', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('ENTERED_ORGANISATION_NAME')
+      setupStubs(buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -125,7 +112,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage CHOSEN_PSP_STRIPE', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('CHOSEN_PSP_STRIPE')
+      setupStubs(buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -155,7 +142,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage CHOSEN_PSP_WORLDPAY', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('CHOSEN_PSP_WORLDPAY')
+      setupStubs(buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -185,7 +172,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage CHOSEN_PSP_SMARTPAY', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('CHOSEN_PSP_SMARTPAY')
+      setupStubs(buildServiceRoleForGoLiveStage('CHOSEN_PSP_SMARTPAY'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -215,7 +202,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage CHOSEN_PSP_EPDQ', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('CHOSEN_PSP_EPDQ')
+      setupStubs(buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -245,7 +232,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage TERMS_AGREED_STRIPE', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('TERMS_AGREED_STRIPE')
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -269,7 +256,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage TERMS_AGREED_WORLDPAY', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('TERMS_AGREED_WORLDPAY')
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_WORLDPAY'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -293,7 +280,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage TERMS_AGREED_SMARTPAY', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('TERMS_AGREED_SMARTPAY')
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_SMARTPAY'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -317,7 +304,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage TERMS_AGREED_EPDQ', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('TERMS_AGREED_EPDQ')
+      setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_EPDQ'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {
@@ -341,7 +328,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage DENIED', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('DENIED')
+      setupStubs(buildServiceRoleForGoLiveStage('DENIED'))
     })
 
     it('should show "Request to go live" page with an error', () => {
@@ -360,7 +347,7 @@ describe('Request to go live: index', () => {
 
   describe('Request to go live stage LIVE', () => {
     beforeEach(() => {
-      setupStubsForGoLiveStage('LIVE')
+      setupStubs(buildServiceRoleForGoLiveStage('LIVE'))
     })
 
     it('should show "Request to go live" page with correct progress indication', () => {

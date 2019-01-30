@@ -3,34 +3,43 @@ describe('Request to go live: organisation name', () => {
   const gatewayAccountId = 666
   const serviceExternalId = 'cp5wa'
 
+  const buildServiceRoleForGoLiveStage = (goLiveStage) => {
+    return {
+      service: {
+        external_id: serviceExternalId,
+        current_go_live_stage: goLiveStage,
+        gateway_account_ids: [gatewayAccountId]
+      }
+    }
+  }
+
+  const setupStubs = (serviceRole) => {
+    cy.task('setupStubs', [
+      {
+        name: 'getUserSuccess',
+        opts: {
+          external_id: userExternalId,
+          service_roles: [serviceRole]
+        }
+      },
+      {
+        name: 'getGatewayAccountSuccess',
+        opts: { gateway_account_id: gatewayAccountId }
+      }
+    ])
+  }
+
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
 
-  describe('NO PERMISSIONS', () => {
+  describe('User does not have the correct permissions', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                external_id: serviceExternalId,
-                current_go_live_stage: 'NOT_STARTED',
-                gateway_account_ids: [gatewayAccountId]
-              },
-              role: {
-                permissions: []
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        }
-      ])
+      const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED')
+      serviceRole.role = {
+        permissions: []
+      }
+      setupStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -41,32 +50,15 @@ describe('Request to go live: organisation name', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED', () => {
+  describe('Service has correct go live stage', () => {
     const organisationName = 'Government Digital Service'
 
     beforeEach(() => {
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                external_id: serviceExternalId,
-                current_go_live_stage: 'NOT_STARTED',
-                gateway_account_ids: [gatewayAccountId],
-                merchant_details: {
-                  name: organisationName
-                }
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        }
-      ])
+      const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED')
+      serviceRole.service.merchant_details = {
+        name: organisationName
+      }
+      setupStubs(serviceRole)
     })
 
     it('should show "Request to go live: organisation name" page correctly with pre-filled organisation name', () => {
@@ -151,27 +143,9 @@ describe('Request to go live: organisation name', () => {
     })
   })
 
-  describe('REQUEST_TO_GO_LIVE_STAGE_WRONG_STAGE', () => {
+  describe('Service has wrong go live stage', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                external_id: serviceExternalId,
-                current_go_live_stage: 'ENTERED_ORGANISATION_NAME',
-                gateway_account_ids: [gatewayAccountId]
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        }
-      ])
+      setupStubs(buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
