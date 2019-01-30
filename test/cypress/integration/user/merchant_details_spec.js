@@ -1,6 +1,6 @@
 describe('Dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 666
+  const gatewayAccountId = 42
 
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)

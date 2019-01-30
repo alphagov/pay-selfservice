@@ -1,7 +1,7 @@
 describe('Transactions', () => {
   const transactionsUrl = `/transactions`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 666
+  const gatewayAccountId = 42
   const serviceName = 'Test Service'
 
   const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`

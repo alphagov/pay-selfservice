@@ -49,8 +49,8 @@ function defaultChargeDetails () {
 
 describe('Transactions details page', () => {
   const transactionsUrl = `/transactions`
-  const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-  const gatewayAccountId = 666
+  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+  const gatewayAccountId = 42
   const serviceName = 'Test Service'
 
   const getStubs = (chargeDetails) => {

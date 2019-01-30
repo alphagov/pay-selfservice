@@ -2,8 +2,8 @@
 
 describe('Request to go live: choose how to process payments', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = 666
-  const serviceExternalId = 'cp5wa'
+  const gatewayAccountId = 42
+  const serviceExternalId = 'afe452323dd04d1898672bfaba25e3a6'
 
   const buildServiceRoleForGoLiveStage = (goLiveStage) => {
     return {
