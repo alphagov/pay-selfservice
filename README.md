@@ -42,17 +42,14 @@ npm run compile && npm test
 
 To run cypress tests
 
-Run in three separate terminals:
-- `npm run cypress:server`
-- `npm run mb` - this starts Mountebank, which is the virtualisation tool we use to stub out external requests
+Run in two separate terminals:
+1. `npm run cypress:server`
 
-Running headless:
-- `npm run cypress:test` or `$(npm bin)/cypress open`
+    _Note: this runs both the Cypress server and Mountebank which is the virtualisation server used for stubbing out external API calls._
 
-Running headed: 
-- `npm run cypress:test-headed`
-
-_(Note that `ctrl+c` will not close the docker instance started in `npm run mb`. For now this can be stopped with the `docker stop ${INSTANCE_NAME}` command.)_
+2. Either:
+- `npm run cypress:test` to run headless 
+- `npm run cypress:test-headed` to run headed
 
 To run
 ```
