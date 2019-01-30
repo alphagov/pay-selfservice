@@ -14,7 +14,7 @@ describe('Self-create service view', function () {
 
     body.should.containSelector('form#submit-service-creation').withAttribute('action', paths.selfCreateService.register)
     body.should.containInputField('email', 'email')
-    body.should.containInputField('telephone-number', 'text')
+    body.should.containInputField('telephone-number', 'tel')
     body.should.containInputField('password', 'password')
 
     done()
@@ -78,7 +78,7 @@ describe('Self-create service view', function () {
     body.should.containSelector('h1').withExactText('Check your mobile number')
 
     body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
-    body.should.containInputField('telephone-number', 'text').withAttribute('value', telephoneNumber)
+    body.should.containInputField('telephone-number', 'tel').withAttribute('value', telephoneNumber)
 
     done()
   })
