@@ -1,5 +1,6 @@
 describe('Login Page', () => {
   const gatewayAccountId = 666
+  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const validUsername = 'some-user@gov.uk'
   const validPassword = 'some-valid-password'
   const invalidPassword = 'some-invalid-password'
@@ -9,6 +10,7 @@ describe('Login Page', () => {
       {
         name: 'getUserSuccess',
         opts: {
+          external_id: userExternalId,
           service_roles: [{
             service: {
               gateway_account_ids: [gatewayAccountId]
@@ -23,6 +25,7 @@ describe('Login Page', () => {
       {
         name: 'postUserAuthenticateSuccess',
         opts: {
+          external_id: userExternalId,
           username: validUsername,
           password: validPassword
         }
@@ -35,7 +38,10 @@ describe('Login Page', () => {
         }
       },
       {
-        name: 'postSecondFactorSuccess'
+        name: 'postSecondFactorSuccess',
+        opts: {
+          external_id: userExternalId
+        }
       }
     ])
 
