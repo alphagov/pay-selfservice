@@ -172,7 +172,9 @@ function initialise (app) {
   passport.deserializeUser(deserializeUser)
 }
 
+let counter = 1
 function deserializeUser (req, externalId, done) {
+  console.log('ooooooo> ' + counter++ + ' ==> ' + (new Error().stack))
   const segment = new AWSXRay.Segment('deserialize')
   const namespace = getNamespace(clsXrayConfig.nameSpaceName)
   namespace.run(() => {
