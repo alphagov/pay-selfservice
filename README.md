@@ -41,6 +41,8 @@ Run in two separate terminals:
 - `npm run cypress:test` to run headless 
 - `npm run cypress:test-headed` to run headed
 
+See [About Cypress tests in selfservice](./test/cypress/cypress_testing.md) for more information about running and writing Cypress tests.
+
 ## Key environment variables
 
 | Variable                    | required | default value | Description                               |

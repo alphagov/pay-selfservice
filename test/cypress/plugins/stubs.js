@@ -9,9 +9,11 @@ const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures'
 const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures')
 const cardFixtures = require('../../fixtures/card_fixtures')
 
-// Stub definitions added here should always use the fixture builders to generate request and response bodys.
-// The fixture builders used should be validated by also being used in the pact tests for the API endpoint, and they
-// should be written in a strict enough way the JSON they produce will adhere to a validated structure.
+/**
+ * Stub definitions added here should always use fixture builders to generate request and response bodys.
+ * The fixture builders used should be validated by also being used in the pact tests for the API endpoint, and they
+ * should be written in a strict enough way the JSON they produce will adhere to a validated structure.
+ */
 module.exports = {
   getUserSuccess: (opts = {}) => {
     const aValidUserResponse = userFixtures.validPasswordAuthenticateResponse(opts).getPlain()

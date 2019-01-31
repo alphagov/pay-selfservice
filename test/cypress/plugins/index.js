@@ -33,6 +33,16 @@ module.exports = (on, config) => {
 
       return { encryptedSessionCookie, encryptedGatewayAccountCookie }
     },
+    /**
+     * Makes a post request to Mountebank to setup an Imposter with stubs built using the array of stub specifications
+     * provided.
+     *
+     * Note: this task can only be called once per test, so all stubs for a test must be set up in the same call.
+     *
+     * @param stubSpecs - an array of stub specification objects, each having a `name` and `opts`. The name refers to
+     * the name of a function defined in plugins/stubs.js, and the opts is an object passed to this function providing
+     * the configuration options for building the stub predicates and responses.
+     */
     setupStubs (stubSpecs) {
       const stubsArray = lodash.flatMap(stubSpecs, spec => stubs[spec.name](spec.opts))
       return request({
@@ -46,6 +56,9 @@ module.exports = (on, config) => {
         }
       })
     },
+    /**
+     * Makes a request to Mountebank to delete the existing Imposter along with all stubs that have been set up.
+     */
     clearStubs () {
       return request.delete(mountebankImpostersUrl)
     }
