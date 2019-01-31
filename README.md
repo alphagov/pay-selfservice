@@ -23,46 +23,25 @@ You can watch Nodemon do it’s thing if you run `docker logs -f selfservice`.
 
 If you’re making changes to client-side JS or Sass files (anything within [`/browsered/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/browsered) or [`/assets/`](https://github.com/alphagov/pay-selfservice/tree/BAU-update-README-to-explain-livereload/app/assets)) then running `npm run watch-live-reload` will watch for changes and recompile. Nodemon does not do anything here as that’s not necessary. If you install the [livereload browser plugin](http://livereload.com/extensions/) then it will refresh your page once the assets have been compiled to the `/public` folder.
 
-## Key environment variables
+## Running tests
 
-If you wish to override any variables, please do the following:
-
-
-Setup
-```
-cd $WORKSPACE/pay-selfservice/config
-cp dev-env.json.example dev-env.json
-```
-
-
-To edit
-```
-cd ~/workspace/pay-selfservice/config
-vi dev-env.json
-
-```
-
-To run mocha tests
+#### To run mocha tests
 ```
 npm run compile && npm test
 ```
 
-To run cypress tests
+#### To run cypress tests
 
 Run in two separate terminals:
 1. `npm run cypress:server`
 
-    _Note: this runs both the Cypress server and Mountebank which is the virtualisation server used for stubbing out external API calls._
+    _This runs both the Cypress server and Mountebank which is the virtualisation server used for stubbing out external API calls._
 
 2. Either:
 - `npm run cypress:test` to run headless 
 - `npm run cypress:test-headed` to run headed
 
-To run
-```
-LOCAL_ENV=true msl run
-
-```
+## Key environment variables
 
 | Variable                    | required | default value | Description                               |
 | --------------------------- |:--------:|:-------------:| ----------------------------------------- |
@@ -78,57 +57,13 @@ LOCAL_ENV=true msl run
 | NODE_WORKER_COUNT           |   | 1 | The number of worker threads started by node cluster when run in production mode |
 
 
-# Secure Cookie
+### Secure Cookie
 Set this to 'true' only if you are running self service in a non HTTPS environment.
 ```
 SECURE_COOKIE_OFF=true
 ```
 
-
-## Transaction list
-
-View the transaction list for a given account id.
-
-```
-    GET /transactions
-```
-
-## Transaction Search
-
-Search transactions by reference, status and from and to date
-
-```
-    POST /transactions
-```
-
-| Form param               | Always present | Description                               |
-| ------------------------ |:--------:| -----------------------------------------       |
-| `reference`              | X | The service reference for a given payment |
-| `email`                  | X | The user email address used for the given payment |
-| `status   `              | X | The payment status |
-| `fromDate   `            | X | A starting date to search for payments|
-| `toDate   `              | X | An ending date to search for payments|
-
-## Transaction Events List
-
-View the transaction events list for a given charge id.
-
-```
-    GET /transactions/{chargeId}
-```
-
-| Path param               | always present | Description                               |
-| ------------------------ |:--------:| -----------------------------------------       |
-| `chargeId`               | X | The charge Id for which the transaction events should be retrieved  |
-
-
-#### Developer tokens
-
-Generate, edit and revoke tokens for a given account id.
-
-```
-    /tokens
-```
+## Architecture Decision Records
 
 We use [Architecture Decision Records](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) to keep track of the history of software design decisions on this application. Please see [docs/arch](docs/arch/).
 
