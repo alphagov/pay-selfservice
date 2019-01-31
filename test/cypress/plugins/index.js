@@ -9,7 +9,7 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const request = require('request')
+const request = require('request-promise-native')
 
 // Local dependencies
 const cookieMonster = require('../integration/utils/cookie-monster')
