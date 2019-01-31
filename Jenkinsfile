@@ -15,7 +15,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@PP-4678-updated-cypress-structure")
+    lib("pay-jenkins-library@master")
   }
 
   environment {
