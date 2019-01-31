@@ -1,6 +1,6 @@
 describe('Dashboard', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const gatewayAccountId = '666'
+  const gatewayAccountId = 42
   const serviceName = 'Test Service'
 
   beforeEach(() => {
@@ -11,10 +11,10 @@ describe('Dashboard', () => {
         name: 'getUserSuccess',
         opts: {
           external_id: userExternalId,
-          gateway_account_ids: [gatewayAccountId],
           service_roles: [{
             service: {
-              name: serviceName
+              name: serviceName,
+              gateway_account_ids: [gatewayAccountId]
             }
           }]
         }
