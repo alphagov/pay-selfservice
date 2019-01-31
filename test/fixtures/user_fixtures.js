@@ -7,6 +7,7 @@ const lodash = require('lodash')
 const User = require('../../app/models/User.class')
 const pactBase = require('./pact_base')
 const goLiveStage = require('../../app/models/go-live-stage')
+const serviceFixtures = require('./service_fixtures')
 
 // Constants
 const defaultPermissions = [
@@ -179,30 +180,9 @@ function merchantDetailsFixture () {
 
 const buildServiceRole = (opts = {}) => {
   return {
-    service: buildServiceWithDefaults(opts.service),
+    service: serviceFixtures.buildServiceWithDefaults(opts.service).getPlain(),
     role: buildRoleWithDefaults(opts.role)
   }
-}
-
-const buildServiceWithDefaults = (opts = {}) => {
-  const service = {
-    id: opts.id || 857,
-    external_id: opts.external_id || 'cp5wa',
-    name: opts.name || 'System Generated',
-    gateway_account_ids: opts.gateway_account_ids || [
-      '666'
-    ],
-    _links: opts.links || [],
-    redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state || false,
-    collect_billing_address: opts.collect_billing_address || false,
-    current_go_live_stage: opts.current_go_live_stage || 'NOT_STARTED'
-  }
-
-  if (opts.merchant_details) {
-    service.merchant_details = buildMerchantDetailsWithDefaults(opts.merchant_details)
-  }
-
-  return service
 }
 
 const buildRoleWithDefaults = (opts = {}) => {
@@ -211,28 +191,6 @@ const buildRoleWithDefaults = (opts = {}) => {
     description: opts.role_description || 'Administrator',
     permissions: opts.permissions || defaultPermissions
   }
-}
-
-const buildMerchantDetailsWithDefaults = (opts = {}) => {
-  const merchantDetails = {
-    name: opts.name || 'name',
-    address_line1: opts.address_line1 || 'line1',
-    address_city: opts.address_city || 'City',
-    address_postcode: opts.address_postcode || 'POSTCODE',
-    address_country: opts.address_country || 'GB'
-  }
-
-  if (opts.address_line2) {
-    merchantDetails.address_line2 = opts.address_line2
-  }
-  if (opts.telephone_number) {
-    merchantDetails.telephone_number = opts.telephone_number
-  }
-  if (opts.email) {
-    merchantDetails.email = opts.email
-  }
-
-  return merchantDetails
 }
 
 module.exports = {
@@ -296,7 +254,7 @@ module.exports = {
         role: opts.role || {
           name: 'admin',
           description: 'Administrator',
-          permissions: opts.permissions || [{name: 'perm-1'}]
+          permissions: opts.permissions || [{ name: 'perm-1' }]
         }
       }],
       telephone_number: opts.telephone_number || '922037',
@@ -340,7 +298,7 @@ module.exports = {
         role: opts.role || {
           name: 'admin',
           description: 'Administrator',
-          permissions: opts.permissions || [{name: 'perm-1'}]
+          permissions: opts.permissions || [{ name: 'perm-1' }]
         }
       }],
       telephone_number: opts.telephone_number || '940583',
@@ -415,7 +373,7 @@ module.exports = {
         role: {
           name: 'admin',
           description: 'Administrator',
-          permissions: [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
+          permissions: [{ name: 'perm-1' }, { name: 'perm-2' }, { name: 'perm-3' }]
         }
       }],
       otp_key: opts.otp_key || '43c3c4t',
@@ -468,7 +426,7 @@ module.exports = {
           role: {
             name: 'admin',
             description: 'Administrator',
-            permissions: intendedUser.permissions || [{name: 'perm-1'}, {name: 'perm-2'}, {name: 'perm-3'}]
+            permissions: intendedUser.permissions || [{ name: 'perm-1' }, { name: 'perm-2' }, { name: 'perm-3' }]
           }
         }],
         otp_key: intendedUser.otp_key || '7200b91bc4ba4eac958d3d7c33f119b1',

@@ -168,7 +168,7 @@ describe('service service', function () {
         return {
           updateServiceName: () => {
             return new Promise(resolve => {
-              resolve({gateway_account_ids: [1]})
+              resolve({ gateway_account_ids: [1] })
             })
           }
         }
@@ -231,7 +231,7 @@ describe('service service', function () {
         return {
           updateServiceName: () => {
             return new Promise(resolve => {
-              resolve({gateway_account_ids: [10]})
+              resolve({ gateway_account_ids: [10] })
             })
           }
         }
@@ -274,6 +274,29 @@ describe('service service', function () {
 
       serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled.then((service) => {
         expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10]}')
+      }).should.notify(done)
+    })
+  })
+
+  describe('update current go live stage', function () {
+    it('should update current go live stage', (done) => {
+      const serviceExternalId = 'fjdjsf33onesdf'
+      const newStage = 'CHOSEN_PSP_STRIPE'
+      adminusersClientStub = () => {
+        return {
+          updateCurrentGoLiveStage: () => {
+            return new Promise(resolve => {
+              resolve({ current_go_live_stage: newStage })
+            })
+          }
+        }
+      }
+      serviceService = proxyquire('../../../app/services/service_service',
+        {
+          './clients/adminusers_client': adminusersClientStub
+        })
+      serviceService.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId).should.be.fulfilled.then((updatedStage) => {
+        expect(JSON.stringify(updatedStage)).to.deep.equal('{"current_go_live_stage":"CHOSEN_PSP_STRIPE"}')
       }).should.notify(done)
     })
   })

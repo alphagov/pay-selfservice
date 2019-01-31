@@ -10,10 +10,10 @@ exports.validateProcessPaymentOptions = (values) => {
   const psp = lodash.get(values, PSP)
   const pspOther = lodash.get(values, PSP_OTHER)
   let errors
-  if (psp === undefined) {
-    errors = 'You must select an option'
+  if (psp === undefined && pspOther === undefined) {
+    errors = 'You need to select an option'
   } else if (psp === 'other_psp' && pspOther === undefined) {
-    errors = 'You must select one of Worldpay, Smartpay or ePDQ'
+    errors = 'You need to select one of Worldpay, Smartpay or ePDQ'
   }
   return errors
 }

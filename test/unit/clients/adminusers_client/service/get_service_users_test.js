@@ -9,6 +9,7 @@ const chaiAsPromised = require('chai-as-promised')
 // Local dependencies
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
 const serviceFixtures = require('../../../../fixtures/service_fixtures')
+const userServiceFixtures = require('../../../../fixtures/user_service_fixture')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
 // Global setup
@@ -42,7 +43,7 @@ describe('adminusers client - service users', () => {
       }
     }]
   }
-  const getServiceUsersResponse = serviceFixtures.validServiceUsersResponse([responseParams])
+  const getServiceUsersResponse = userServiceFixtures.validServiceUsersResponse([responseParams])
 
   const provider = Pact({
     consumer: 'selfservice-to-be',
