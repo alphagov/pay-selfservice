@@ -1,5 +1,8 @@
+const lodash = require('lodash')
+
 const capitalise = string => string[0].toUpperCase() + string.slice(1)
-const convertAmounts = val => '£' + (val / 100).toFixed(2)
+const convertPenceToPoundsFormatted = pence => `£${(pence / 100).toFixed(2)}`
+const defaultAmount = 1000
 
 function formatDate (date) {
   const monthNames = [
@@ -17,150 +20,227 @@ function formatDate (date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' — '
 }
 
+function defaultChargeDetails () {
+  return {
+    charge: {
+      charge_id: '12345',
+      reference: 'ref123',
+      amount: defaultAmount,
+      state_finished: true,
+      state_status: 'success',
+      refund_summary_status: 'available',
+      refund_summary_available: 1000,
+      refund_summary_submitted: 0,
+      gateway_transaction_id: 'abcde',
+      card_brand: 'visa',
+      cardholder_name: 'Test User',
+      last_digits_card_number: '0002',
+      expiry_date: '08/23',
+      email: 'example@example.com',
+      payment_provider: 'sandbox',
+      delayed_capture: false
+    },
+    events: [{
+      amount: defaultAmount,
+      updated: '2018-05-01T13:27:18.126Z'
+    }]
+  }
+}
+
 describe('Transactions details page', () => {
   const transactionsUrl = `/transactions`
+  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+  const gatewayAccountId = 42
+  const serviceName = 'Test Service'
 
-  const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
-
-  const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
-
-  const gatewayAccount = selfServiceDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0]
-
-  const aSmartpayCharge = selfServiceDefaultUser.sections.transactions.data[0]
-  const aSmartpayChargeDetails = selfServiceDefaultUser.sections.transactions.details_data[0]
-
-  const aFailedRefundCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.state.status === 'error')[0]
-
-  const aCorporateCardSurchargeCharge = selfServiceDefaultUser.sections.transactions.data.filter(fil => fil.corporate_card_surcharge !== undefined)[0]
+  const getStubs = (chargeDetails) => {
+    return [
+      {
+        name: 'getUserSuccess',
+        opts: {
+          external_id: userExternalId,
+          service_roles: [{
+            service: {
+              name: serviceName,
+              gateway_account_ids: [gatewayAccountId]
+            }
+          }]
+        }
+      },
+      {
+        name: 'getGatewayAccountSuccess',
+        opts: { gateway_account_id: gatewayAccountId }
+      },
+      {
+        name: 'getChargeSuccess',
+        opts: {
+          gateway_account_id: gatewayAccountId,
+          chargeDetails: chargeDetails.charge
+        }
+      },
+      {
+        name: 'getChargeEventsSuccess',
+        opts: {
+          gateway_account_id: gatewayAccountId,
+          charge_id: chargeDetails.charge.charge_id,
+          events: chargeDetails.events
+        }
+      }
+    ]
+  }
 
   beforeEach(() => {
-    cy.setCookie('session', Cypress.env('encryptedSessionCookie'))
-    cy.setCookie('gateway_account', Cypress.env('encryptedGatewayAccountCookie'))
+    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
 
   describe('page content', () => {
     it('should display transaction details correctly when delayed capture is OFF', () => {
-      cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
+      const chargeDetails = defaultChargeDetails()
+      cy.task('setupStubs', getStubs(chargeDetails))
+
+      cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aSmartpayCharge.reference} - System Generated test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${chargeDetails.charge.reference} - ${serviceName} test - GOV.UK Pay`)
 
       // Ensure page details match up
 
       // Reference number
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
-        aSmartpayCharge.reference)
+        chargeDetails.charge.reference)
       // Status
       cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
-        capitalise(aSmartpayCharge.state.status))
+        capitalise(chargeDetails.charge.state_status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
-        convertAmounts(aSmartpayCharge.amount))
+        convertPenceToPoundsFormatted(chargeDetails.charge.amount))
       // Refunded amount
       cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
-        convertAmounts(aSmartpayChargeDetails.refund_summary.amount_submitted))
+        convertPenceToPoundsFormatted(chargeDetails.charge.refund_summary_submitted))
       // Date created
       cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
-        formatDate(new Date(aSmartpayChargeDetails.charge_events[0].updated)))
+        formatDate(new Date(chargeDetails.events[0].updated)))
       // Provider
       cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
-        capitalise(gatewayAccount.name))
+        capitalise(chargeDetails.charge.payment_provider))
       // Provider ID
       cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
-        aSmartpayCharge.gateway_transaction_id)
+        chargeDetails.charge.gateway_transaction_id)
       // GOVUK Payment ID
       cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
-        aSmartpayCharge.charge_id)
+        chargeDetails.charge.charge_id)
       // Payment method
       cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
-        aSmartpayCharge.card_details.card_brand)
+        chargeDetails.charge.card_brand)
       // Name on card
       cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
-        aSmartpayCharge.card_details.cardholder_name)
+        chargeDetails.charge.cardholder_name)
       // Card number
       cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
-        `**** **** **** ${aSmartpayCharge.card_details.last_digits_card_number}`)
+        `**** **** **** ${chargeDetails.charge.last_digits_card_number}`)
       // Card expiry date
       cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
-        aSmartpayCharge.card_details.expiry_date)
+        chargeDetails.charge.expiry_date)
       // Email
       cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
-        aSmartpayCharge.email)
+        chargeDetails.charge.email)
       cy.get('#delayed-capture').should('not.exist')
     })
 
     it('should display transaction details correctly when delayed capture is ON', () => {
-      const chargeWithDelayedCapture = selfServiceDefaultUser.sections.transactions.data[1]
-      const chargeDetails = selfServiceDefaultUser.sections.transactions.details_data.filter(item => item.charge_id === chargeWithDelayedCapture.charge_id)[0]
+      const aDelayedCaptureCharge = defaultChargeDetails()
+      aDelayedCaptureCharge.charge.delayed_capture = true
+      cy.task('setupStubs', getStubs(aDelayedCaptureCharge))
 
-      cy.visit(`${transactionsUrl}/${chargeWithDelayedCapture.charge_id}`)
+      cy.visit(`${transactionsUrl}/${aDelayedCaptureCharge.charge.charge_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${chargeWithDelayedCapture.reference} - System Generated test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${aDelayedCaptureCharge.charge.reference} - ${serviceName} test - GOV.UK Pay`)
 
       // Ensure page details match up
 
       // Reference number
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
-        chargeWithDelayedCapture.reference)
+        aDelayedCaptureCharge.charge.reference)
       // Status
       cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
-        capitalise(chargeWithDelayedCapture.state.status))
+        capitalise(aDelayedCaptureCharge.charge.state_status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
-        convertAmounts(chargeWithDelayedCapture.amount))
+        convertPenceToPoundsFormatted(aDelayedCaptureCharge.charge.amount))
       // Refunded amount
       cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
-        convertAmounts(chargeDetails.refund_summary.amount_submitted))
+        convertPenceToPoundsFormatted(aDelayedCaptureCharge.charge.refund_summary_submitted))
       // Date created
       cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
-        formatDate(new Date(chargeDetails.charge_events[0].updated)))
+        formatDate(new Date(aDelayedCaptureCharge.events[0].updated)))
       // Provider
       cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
-        capitalise(gatewayAccount.name))
+        capitalise(aDelayedCaptureCharge.charge.payment_provider))
       // Provider ID
       cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
-        chargeWithDelayedCapture.gateway_transaction_id)
+        aDelayedCaptureCharge.charge.gateway_transaction_id)
       // GOVUK Payment ID
       cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
-        chargeWithDelayedCapture.charge_id)
+        aDelayedCaptureCharge.charge.charge_id)
       // Delayed capture
       cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
         'On')
       // Payment method
       cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
-        chargeWithDelayedCapture.card_details.card_brand)
+        aDelayedCaptureCharge.charge.card_brand)
       // Name on card
       cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
-        chargeWithDelayedCapture.card_details.cardholder_name)
+        aDelayedCaptureCharge.charge.cardholder_name)
       // Card number
       cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
-        `**** **** **** ${chargeWithDelayedCapture.card_details.last_digits_card_number}`)
+        `**** **** **** ${aDelayedCaptureCharge.charge.last_digits_card_number}`)
       // Card expiry date
       cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
-        chargeWithDelayedCapture.card_details.expiry_date)
+        aDelayedCaptureCharge.charge.expiry_date)
       // Email
       cy.get('.transaction-details tbody').find('tr').eq(14).find('td').first().should('have.text',
-        chargeWithDelayedCapture.email)
+        aDelayedCaptureCharge.charge.email)
     })
 
     it('should display corporate card surcharge in the amount field correctly when there is a corporate card surcharge', () => {
-      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge_id}`)
+      const aCorporateCardSurchargeCharge = defaultChargeDetails()
+      aCorporateCardSurchargeCharge.charge.corporate_card_surcharge = 250
+      aCorporateCardSurchargeCharge.charge.total_amount = 1250
+      cy.task('setupStubs', getStubs(aCorporateCardSurchargeCharge))
+
+      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge.charge_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeCharge.reference} - System Generated test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeCharge.charge.reference} - ${serviceName} test - GOV.UK Pay`)
 
       // Ensure page details match up
 
       // Amount
       cy.get('#amount').should('have.text',
-        `${convertAmounts(aCorporateCardSurchargeCharge.total_amount)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
+        `${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.total_amount)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.corporate_card_surcharge)})`)
     })
   })
 
   describe('refunds', () => {
     it('should fail when an invalid refund amount is specified', () => {
-      cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
+      const chargeDetails = defaultChargeDetails()
+      const refundAmount = chargeDetails.charge.amount + 1
+      const stubs = lodash.concat(getStubs(chargeDetails), [
+        {
+          name: 'postRefundAmountNotAvailable',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            charge_id: chargeDetails.charge.charge_id,
+            amount: refundAmount,
+            refund_amount_available: chargeDetails.charge.amount,
+            user_external_id: userExternalId
+          }
+        }
+      ])
+      cy.task('setupStubs', stubs)
+
+      cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
@@ -169,7 +249,7 @@ describe('Transactions details page', () => {
       cy.get('#partial').click()
 
       // Select partial refund
-      cy.get('#refund-amount').type(aSmartpayCharge.amount + 1)
+      cy.get('#refund-amount').type('10.01')
 
       // Click the refund submit button
       cy.get('#refund-button').click()
@@ -181,7 +261,11 @@ describe('Transactions details page', () => {
     })
 
     it('should allow a refund to be re-attempted in the event of a failed refund', () => {
-      cy.visit(`${transactionsUrl}/${aFailedRefundCharge.charge_id}`)
+      const aFailedRefundCharge = defaultChargeDetails()
+      aFailedRefundCharge.charge.refund_summary_status = 'error'
+      cy.task('setupStubs', getStubs(aFailedRefundCharge))
+
+      cy.visit(`${transactionsUrl}/${aFailedRefundCharge.charge.charge_id}`)
 
       // Ensure the refund button is available
       cy.get('.target-to-show--toggle').should('be.visible')
@@ -194,31 +278,37 @@ describe('Transactions details page', () => {
       cy.get('#partial').click()
 
       // Select partial refund
-      cy.get('#refund-amount').type(aFailedRefundCharge.amount / 100)
+      cy.get('#refund-amount').type(aFailedRefundCharge.charge.amount / 100)
 
       // Click the refund submit button
       cy.get('#refund-button').click()
     })
 
     it('should display full refund amount with corporate card surcharge when there is a corporate card surcharge', () => {
-      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge_id}`)
-      const chargeDetails = selfServiceDefaultUser.sections.transactions.details_data.filter(item => item.charge_id === aCorporateCardSurchargeCharge.charge_id)[0]
+      const aCorporateCardSurchargeCharge = defaultChargeDetails()
+      aCorporateCardSurchargeCharge.charge.corporate_card_surcharge = 250
+      aCorporateCardSurchargeCharge.charge.total_amount = 1250
+      cy.task('setupStubs', getStubs(aCorporateCardSurchargeCharge))
+
+      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge.charge_id}`)
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
 
       // Assert refund message
-      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(chargeDetails.refund_summary.amount_available)} (including a card fee of ${convertAmounts(aCorporateCardSurchargeCharge.corporate_card_surcharge)})`)
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.refund_summary_available)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeCharge.charge.corporate_card_surcharge)})`)
     })
 
     it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
-      cy.visit(`${transactionsUrl}/${aSmartpayCharge.charge_id}`)
+      const chargeDetails = defaultChargeDetails()
+      cy.task('setupStubs', getStubs(chargeDetails))
+      cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
       // Click the refund button
       cy.get('.target-to-show--toggle').click()
 
       // Assert refund message
-      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertAmounts(aSmartpayChargeDetails.refund_summary.amount_available)}`)
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(chargeDetails.charge.refund_summary_available)}`)
     })
   })
 })

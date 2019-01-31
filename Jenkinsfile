@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+// @FIXME(sfount) temporary use of experimental jenkins-library branch - this
+//                should be reverted to `master` before PR is merged 
 pipeline {
   agent any
 
@@ -13,7 +15,7 @@ pipeline {
   }
 
   libraries {
-    lib("pay-jenkins-library@master")
+    lib("pay-jenkins-library@PP-4678-updated-cypress-structure")
   }
 
   environment {
@@ -38,6 +40,13 @@ pipeline {
     stage('Browser Tests') {
       steps {
         cypress('selfservice')
+      }
+      post { 
+        always { 
+          script {
+            cypress.cleanUp()
+          }
+        }
       }
     }
     stage('Contract Tests') {

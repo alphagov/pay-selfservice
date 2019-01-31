@@ -1,5 +1,50 @@
 describe('Login Page', () => {
+  const gatewayAccountId = 42
+  const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+  const validUsername = 'some-user@gov.uk'
+  const validPassword = 'some-valid-password'
+  const invalidPassword = 'some-invalid-password'
+
   beforeEach(() => {
+    cy.task('setupStubs', [
+      {
+        name: 'getUserSuccess',
+        opts: {
+          external_id: userExternalId,
+          service_roles: [{
+            service: {
+              gateway_account_ids: [gatewayAccountId]
+            }
+          }]
+        }
+      },
+      {
+        name: 'getGatewayAccountSuccess',
+        opts: { gateway_account_id: gatewayAccountId }
+      },
+      {
+        name: 'postUserAuthenticateSuccess',
+        opts: {
+          external_id: userExternalId,
+          username: validUsername,
+          password: validPassword
+        }
+      },
+      {
+        name: 'postUserAuthenticateInvalidPassword',
+        opts: {
+          username: validUsername,
+          password: invalidPassword
+        }
+      },
+      {
+        name: 'postSecondFactorSuccess',
+        opts: {
+          external_id: userExternalId
+        }
+      }
+    ])
+
     cy.visit('/')
   })
 
@@ -19,14 +64,11 @@ describe('Login Page', () => {
   })
 
   describe('Form validation', () => {
-    const selfServiceUsers = require('../../../fixtures/config/self_service_user.json')
-    const selfServiceDefaultUser = selfServiceUsers.config.users.filter(fil => fil.isPrimary === 'true')[0]
-
     describe('Valid submissions', () => {
       it('should progress to 2FA page if provided valid username and password', () => {
         cy.getCookie('session')
-        cy.get('#username').type(selfServiceDefaultUser.username)
-        cy.get('#password').type(selfServiceDefaultUser.valid_password)
+        cy.get('#username').type(validUsername)
+        cy.get('#password').type(validPassword)
         cy.contains('Continue').click()
         cy.title().should('eq', 'Enter security code - GOV.UK Pay')
         cy.url().should('include', '/otp-login')
@@ -59,8 +101,8 @@ describe('Login Page', () => {
       })
 
       it('should deny access to selfservice if the password is incorrect', () => {
-        cy.get('#username').type(selfServiceDefaultUser.username)
-        cy.get('#password').type(selfServiceDefaultUser.invalid_password)
+        cy.get('#username').type(validUsername)
+        cy.get('#password').type(invalidPassword)
         cy.contains('Continue').click()
         cy.title().should('eq', 'Sign in to GOV.UK Pay')
         cy.url().should('include', '/login')
