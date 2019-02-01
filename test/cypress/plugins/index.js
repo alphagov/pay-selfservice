@@ -12,7 +12,7 @@ const lodash = require('lodash')
 const request = require('request-promise-native')
 
 // Local dependencies
-const cookieMonster = require('../integration/utils/cookie-monster')
+const cookieMonster = require('./cookie-monster')
 const stubs = require('./stubs')
 
 // This function is called when a project is opened or re-opened (e.g. due to
