@@ -200,7 +200,7 @@ module.exports = function (clientOptions = {}) {
         baseUrl,
         url: `${userResource}/${externalId}/second-factor`,
         json: true,
-        body: {provisional},
+        body: { provisional },
         correlationId: correlationId,
         description: 'post a second factor auth token to the user',
         service: SERVICE_NAME,
@@ -221,7 +221,7 @@ module.exports = function (clientOptions = {}) {
         baseUrl,
         url: `${userResource}/${externalId}/second-factor/authenticate`,
         json: true,
-        body: {code: code},
+        body: { code },
         correlationId: correlationId,
         description: 'authenticate a second factor auth token entered by user',
         service: SERVICE_NAME,
@@ -544,10 +544,10 @@ module.exports = function (clientOptions = {}) {
 
     if (serviceName) {
       postBody.body.name = serviceName
-      postBody.body.service_name = lodash.merge(postBody.body.service_name, {en: serviceName})
+      postBody.body.service_name = lodash.merge(postBody.body.service_name, { en: serviceName })
     }
     if (serviceNameCy) {
-      postBody.body.service_name = lodash.merge(postBody.body.service_name, {cy: serviceNameCy})
+      postBody.body.service_name = lodash.merge(postBody.body.service_name, { cy: serviceNameCy })
     }
     if (gatewayAccountIds) {
       postBody.body.gateway_account_ids = gatewayAccountIds
@@ -712,6 +712,26 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  const updateCurrentGoLiveStage = (serviceExternalId, newStage) => {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'current_go_live_stage',
+          value: newStage
+        },
+        correlationId: correlationId,
+        description: 'update current go live stage',
+        transform: responseBodyToServiceTransformer,
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -748,6 +768,7 @@ module.exports = function (clientOptions = {}) {
     updateServiceName,
     updateMerchantDetails,
     updateCollectBillingAddress,
-    addGatewayAccountsToService
+    addGatewayAccountsToService,
+    updateCurrentGoLiveStage
   }
 }

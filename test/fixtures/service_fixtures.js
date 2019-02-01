@@ -5,32 +5,34 @@ const path = require('path')
 const _ = require('lodash')
 
 // Custom dependencies
-const userFixtures = require(path.join(__dirname, '/user_fixtures'))
 const pactBase = require(path.join(__dirname, '/pact_base'))
 
 // Global setup
-const pactServices = pactBase({array: ['service_ids']})
+const pactServices = pactBase({ array: ['service_ids'] })
+
+const buildMerchantDetailsWithDefaults = (opts = {}) => {
+  const merchantDetails = {
+    name: opts.name || 'name',
+    address_line1: opts.address_line1 || 'line1',
+    address_city: opts.address_city || 'City',
+    address_postcode: opts.address_postcode || 'POSTCODE',
+    address_country: opts.address_country || 'GB'
+  }
+
+  if (opts.address_line2) {
+    merchantDetails.address_line2 = opts.address_line2
+  }
+  if (opts.telephone_number) {
+    merchantDetails.telephone_number = opts.telephone_number
+  }
+  if (opts.email) {
+    merchantDetails.email = opts.email
+  }
+
+  return merchantDetails
+}
 
 module.exports = {
-
-  /**
-   * @param users Array params override get users response
-   * @return {{getPactified: (function()) Pact response, getPlain: (function()) request with overrides applied}}
-   */
-  validServiceUsersResponse: (users) => {
-    let data = []
-    for (let user of users) {
-      data.push(userFixtures.validUserResponse(user).getPlain())
-    }
-    return {
-      getPactified: () => {
-        return pactServices.pactifyNestedArray(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
 
   getServiceUsersNotFoundResponse: () => {
     let response = {
@@ -442,6 +444,52 @@ module.exports = {
         return _.clone(data)
       }
     }
-  }
+  },
 
+  validUpdateServiceRequest: (opts) => {
+    opts = opts || {}
+
+    const data = {
+      op: 'replace',
+      path: opts.path,
+      value: opts.value
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactifySimpleArray(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
+  buildServiceWithDefaults: (opts = {}) => {
+    const service = {
+      id: opts.id || 857,
+      external_id: opts.external_id || 'cp5wa',
+      name: opts.name || 'System Generated',
+      gateway_account_ids: opts.gateway_account_ids || [
+        '666'
+      ],
+      _links: opts.links || [],
+      redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state || false,
+      collect_billing_address: opts.collect_billing_address || false,
+      current_go_live_stage: opts.current_go_live_stage || 'NOT_STARTED'
+    }
+
+    if (opts.merchant_details) {
+      service.merchant_details = buildMerchantDetailsWithDefaults(opts.merchant_details)
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(service)
+      },
+      getPlain: () => {
+        return _.clone(service)
+      }
+    }
+  }
 }

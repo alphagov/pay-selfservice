@@ -5,9 +5,9 @@ const lodash = require('lodash')
 
 // Local dependencies
 const getAdminUsersClient = require('./clients/adminusers_client')
-const {ConnectorClient} = require('../services/clients/connector_client')
+const { ConnectorClient } = require('../services/clients/connector_client')
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client')
-const {isADirectDebitAccount} = directDebitConnectorClient
+const { isADirectDebitAccount } = directDebitConnectorClient
 const productsClient = require('../services/clients/products_client')
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const DirectDebitGatewayAccount = require('../models/DirectDebitGatewayAccount.class')
@@ -19,7 +19,8 @@ module.exports = {
   updateServiceName,
   updateMerchantDetails,
   createService,
-  toggleCollectBillingAddress
+  toggleCollectBillingAddress,
+  updateCurrentGoLiveStage
 }
 
 /**
@@ -72,7 +73,7 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
 function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
   return new Promise(function (resolve, reject) {
     if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-    getAdminUsersClient({correlationId}).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
+    getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
       .then(result => {
         const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
 
@@ -103,7 +104,7 @@ function updateMerchantDetails (serviceExternalId, merchantDetails, correlationI
   return new Promise(function (resolve, reject) {
     if (!serviceExternalId) return reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
     if (!merchantDetails) return reject(new Error(`argument: 'merchantDetails' cannot be undefined`))
-    getAdminUsersClient({correlationId}).updateMerchantDetails(serviceExternalId, merchantDetails)
+    getAdminUsersClient({ correlationId }).updateMerchantDetails(serviceExternalId, merchantDetails)
       .then(result => {
         return resolve(new Service(result))
       })
@@ -138,5 +139,17 @@ function createService (serviceName, serviceNameCy, correlationId) {
  * @returns {*|Promise|Promise}
  */
 function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, correlationId) {
-  return getAdminUsersClient({correlationId}).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
+  return getAdminUsersClient({ correlationId }).updateCollectBillingAddress(serviceExternalId, collectBillingAddress)
+}
+
+/**
+ * Update the current go live stage setting
+ *
+ * @param serviceExternalId
+ * @param newStage
+ * @param correlationId
+ * @returns {*|Promise|Promise}
+ */
+function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
+  return getAdminUsersClient({ correlationId }).updateCurrentGoLiveStage(serviceExternalId, newStage)
 }

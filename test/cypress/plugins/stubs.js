@@ -8,6 +8,7 @@ const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures')
 const cardFixtures = require('../../fixtures/card_fixtures')
+const serviceFixtures = require('../../fixtures/service_fixtures')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -403,6 +404,55 @@ module.exports = {
               'Content-Type': 'application/json'
             },
             body: validCardTypesResponse
+          }
+        }]
+      }
+    ]
+  },
+  patchGoLiveStageSuccess: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PATCH',
+            path: `/v1/api/services/${opts.external_id}`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: serviceFixtures.validUpdateServiceRequest(opts).getPlain()
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            body: serviceFixtures.buildServiceWithDefaults(opts).getPlain(),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        }]
+      }
+    ]
+  },
+  patchGoLiveStageFailure: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PATCH',
+            path: `/v1/api/services/${opts.external_id}`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: serviceFixtures.validUpdateServiceRequest(opts).getPlain()
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 404,
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         }]
       }

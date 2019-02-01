@@ -7,13 +7,14 @@ const csrf = require('csrf')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const {expect} = chai
+const { expect } = chai
 
 // Local modules
 const session = require('../test_helpers/mock_session.js')
-const {getApp} = require('../../server.js')
+const { getApp } = require('../../server.js')
 const serviceFixtures = require('../fixtures/service_fixtures')
 const userFixtures = require('../fixtures/user_fixtures')
+const userServiceFixtures = require('../fixtures/user_service_fixture')
 const paths = require('../../app/paths.js')
 const formattedPathFor = require('../../app/utils/replace_params_in_path')
 
@@ -54,7 +55,7 @@ describe('service users resource', () => {
       service_roles: serviceRoles
     })
 
-    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
+    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
     const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
@@ -99,7 +100,7 @@ describe('service users resource', () => {
       service_roles: serviceRoles
     })
 
-    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{
+    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
       service_roles: serviceRoles
     }, {
       external_id: EXTERNAL_ID_OTHER_USER,
@@ -142,7 +143,7 @@ describe('service users resource', () => {
       service_roles: serviceRoles
     })
 
-    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{
+    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{
       service_roles: []
     }, {
       external_id: EXTERNAL_ID_OTHER_USER,
@@ -428,7 +429,7 @@ describe('service users resource', () => {
       user_exist: false,
       attempt_counter: 0
     }]
-    const serviceUsersRes = serviceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
+    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
     const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse(invites)
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
