@@ -158,12 +158,12 @@ describe('Transaction download endpoints', function () {
         .reply(200, {
           results: results
         })
-      const user = userFixture.validUser({
+      const user = userFixture.validUserResponse({
         external_id: '1stUserId',
         username: 'first_user_name'
       }).getPlain()
 
-      const user2 = userFixture.validUser({
+      const user2 = userFixture.validUserResponse({
         external_id: '2ndUserId',
         username: 'second_user_name'
       }).getPlain()

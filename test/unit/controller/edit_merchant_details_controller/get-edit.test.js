@@ -1,71 +1,55 @@
 const chai = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
+
 const mockSession = require('../../../test_helpers/mock_session.js')
 const getApp = require('../../../../server.js').getApp
 const supertest = require('supertest')
 const userFixtures = require('../../../fixtures/user_fixtures')
 const paths = require('../../../../app/paths.js')
 const formattedPathFor = require('../../../../app/utils/replace_params_in_path')
+
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
-let response, user, session, $
+let response, session, $
+
+const EXTERNAL_ID_IN_SESSION = 'exsfjpwoi34op23i4'
+const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
+
+const buildUserResponse = (gatewayAccountIds, merchantDetails) => {
+  return userFixtures.validUserResponse({
+    external_id: EXTERNAL_ID_IN_SESSION,
+    service_roles: [{
+      service: {
+        external_id: EXTERNAL_SERVICE_ID,
+        gateway_account_ids: gatewayAccountIds,
+        merchant_details: merchantDetails
+      }
+    }]
+  })
+}
 
 describe('edit merchant details controller - get', () => {
   afterEach(() => {
     nock.cleanAll()
   })
-  const EXTERNAL_ID_IN_SESSION = 'exsfjpwoi34op23i4'
-  const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
-  let serviceRoles = [{
-    service: {
-      name: 'System Generated',
-      external_id: EXTERNAL_SERVICE_ID,
-      gateway_account_ids: ['20']
-    },
-    role: {
-      name: 'admin',
-      description: 'Administrator',
-      permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
-    }
-  }]
-  let userInSession = mockSession.getUser({
-    external_id: EXTERNAL_ID_IN_SESSION,
-    service_roles: serviceRoles
-  })
+
   describe('when the merchant already has details (CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
-      let serviceRoles = [{
-        service: {
-          name: 'System Generated',
-          external_id: EXTERNAL_SERVICE_ID,
-          gateway_account_ids: ['20'],
-          merchant_details: {
-            name: 'name',
-            telephone_number: '',
-            address_line1: 'line1',
-            address_line2: 'line2',
-            address_city: 'City',
-            address_postcode: 'POSTCODE',
-            address_country: 'AR',
-            email: ''
-          }
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
-        }
-      }]
-      let userInSession = mockSession.getUser({
-        external_id: EXTERNAL_ID_IN_SESSION,
-        service_roles: serviceRoles
+      const user = buildUserResponse(['20'], {
+        name: 'name',
+        telephone_number: '',
+        address_line1: 'line1',
+        address_line2: 'line2',
+        address_city: 'City',
+        address_postcode: 'POSTCODE',
+        address_country: 'AR',
+        email: ''
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -88,36 +72,20 @@ describe('edit merchant details controller - get', () => {
   })
   describe('when the merchant already has details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
     before(done => {
-      let serviceRoles = [{
-        service: {
-          name: 'System Generated',
-          external_id: EXTERNAL_SERVICE_ID,
-          gateway_account_ids: ['DIRECT_DEBIT:somerandomidhere'],
-          merchant_details: {
-            name: 'name',
-            telephone_number: '03069990000',
-            address_line1: 'line1',
-            address_line2: 'line2',
-            address_city: 'City',
-            address_postcode: 'POSTCODE',
-            address_country: 'AR',
-            email: 'dd-merchant@example.com'
-          }
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
-        }
-      }]
-      let userInSession = mockSession.getUser({
-        external_id: EXTERNAL_ID_IN_SESSION,
-        service_roles: serviceRoles
+      const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'], {
+        name: 'name',
+        telephone_number: '03069990000',
+        address_line1: 'line1',
+        address_line2: 'line2',
+        address_city: 'City',
+        address_postcode: 'POSTCODE',
+        address_country: 'AR',
+        email: 'dd-merchant@example.com'
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -142,36 +110,19 @@ describe('edit merchant details controller - get', () => {
   })
   describe('when the merchant has empty details (CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
-      let serviceRoles = [{
-        service: {
-          name: 'System Generated',
-          external_id: EXTERNAL_SERVICE_ID,
-          gateway_account_ids: ['20'],
-          merchant_details: {
-            name: '',
-            telephone_number: '',
-            address_line1: '',
-            address_line2: '',
-            address_city: '',
-            address_postcode: '',
-            address_country: '',
-            email: ''
-          }
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
-        }
-      }]
-      let userInSession = mockSession.getUser({
-        external_id: EXTERNAL_ID_IN_SESSION,
-        service_roles: serviceRoles
+      const user = buildUserResponse(['20'], {
+        name: '',
+        telephone_number: '',
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_postcode: '',
+        address_country: '',
+        email: ''
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -197,36 +148,20 @@ describe('edit merchant details controller - get', () => {
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
     before(done => {
-      let serviceRoles = [{
-        service: {
-          name: 'System Generated',
-          external_id: EXTERNAL_SERVICE_ID,
-          gateway_account_ids: ['DIRECT_DEBIT:somerandomidhere'],
-          merchant_details: {
-            name: '',
-            telephone_number: '',
-            address_line1: '',
-            address_line2: '',
-            address_city: '',
-            address_postcode: '',
-            address_country: '',
-            email: ''
-          }
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
-        }
-      }]
-      let userInSession = mockSession.getUser({
-        external_id: EXTERNAL_ID_IN_SESSION,
-        service_roles: serviceRoles
+      const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'], {
+        name: '',
+        telephone_number: '',
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_postcode: '',
+        address_country: '',
+        email: ''
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -254,36 +189,20 @@ describe('edit merchant details controller - get', () => {
   })
   describe('when the merchant has empty details (DIRECT DEBIT GATEWAY ACCOUNT and CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
-      let serviceRoles = [{
-        service: {
-          name: 'System Generated',
-          external_id: EXTERNAL_SERVICE_ID,
-          gateway_account_ids: ['DIRECT_DEBIT:somerandomidhere', '12345'],
-          merchant_details: {
-            name: '',
-            telephone_number: '',
-            address_line1: '',
-            address_line2: '',
-            address_city: '',
-            address_postcode: '',
-            address_country: '',
-            email: ''
-          }
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
-        }
-      }]
-      let userInSession = mockSession.getUser({
-        external_id: EXTERNAL_ID_IN_SESSION,
-        service_roles: serviceRoles
+      const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere', '12345'], {
+        name: '',
+        telephone_number: '',
+        address_line1: '',
+        address_line2: '',
+        address_city: '',
+        address_postcode: '',
+        address_country: '',
+        email: ''
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
+      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
         .get(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
         .end((err, res) => {
@@ -311,14 +230,15 @@ describe('edit merchant details controller - get', () => {
   })
   describe('when errors and merchant details are set in the session (CREDIT CARD GATEWAY ACCOUNT)', () => {
     before(done => {
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      const user = buildUserResponse(['20'])
+
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       session = {
         csrfSecret: '123',
         12345: {refunded_amount: 5},
         passport: {
-          user: userInSession
+          user: user.getAsObject()
         },
         secondFactor: 'totp',
         last_url: 'last_url',
@@ -377,14 +297,14 @@ describe('edit merchant details controller - get', () => {
   })
   describe('when errors and merchant details are set in the session (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
     before(done => {
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'])
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       session = {
         csrfSecret: '123',
         12345: {refunded_amount: 5},
         passport: {
-          user: userInSession
+          user: user.getAsObject()
         },
         secondFactor: 'totp',
         last_url: 'last_url',

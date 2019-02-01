@@ -35,7 +35,7 @@ describe('adminusers client - get user', () => {
 
   describe('find a valid user', () => {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const getUserResponse = userFixtures.validPasswordAuthenticateResponse({ external_id: existingExternalId })
+    const getUserResponse = userFixtures.validUserResponse({ external_id: existingExternalId })
 
     before(done => {
       provider.addInteraction(

@@ -23,8 +23,8 @@ describe('user has services middleware', function () {
   })
 
   it('should call next when user has services', function (done) {
-    const user = userFixtures.validUser({
-      services_roles: [{service: {external_id: '1'}}],
+    const user = userFixtures.validUserResponse({
+      services_roles: [{ service: { external_id: '1' } }],
       external_id: 'external-id'
     }).getAsObject()
 

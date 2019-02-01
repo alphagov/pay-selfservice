@@ -32,7 +32,7 @@ describe('adminusers client - assign service role to user', function () {
     let userExternalId = 'existing-user'
     let serviceExternalId = 'random-service-id'
     let request = userFixtures.validAssignServiceRoleRequest(serviceExternalId, role)
-    let userFixture = userFixtures.validUser({
+    let userFixture = userFixtures.validUserResponse({
       external_id: userExternalId,
       service_roles: [{
         service: {
@@ -48,8 +48,6 @@ describe('adminusers client - assign service role to user', function () {
       }]
     })
 
-    let userResponse = userFixture.getPlain()
-
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/${userExternalId}/services`)
@@ -58,7 +56,7 @@ describe('adminusers client - assign service role to user', function () {
           .withMethod('POST')
           .withRequestBody(request.getPactified())
           .withStatusCode(200)
-          .withResponseBody(userFixtures.validUserResponse(userResponse).getPactified())
+          .withResponseBody(userFixture.getPactified())
           .build()
       ).then(() => done())
     })

@@ -125,7 +125,6 @@ describe('connector client', function () {
         }
       ]
     })
-    console.log('RESPONSE: ' + JSON.stringify(validGetChargeEventsResponse));
 
     before((done) => {
       const pactified = validGetChargeEventsResponse.getPactified()

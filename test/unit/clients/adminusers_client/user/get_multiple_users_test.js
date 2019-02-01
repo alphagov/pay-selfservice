@@ -36,7 +36,11 @@ describe('adminusers client - get users', function () {
     let params = existingExternalIds.map(existingExternalId => {
       return {
         external_id: existingExternalId,
-        gateway_account_ids: ['666', '7']
+        service_roles: [{
+          service: {
+            gateway_account_ids: ['666', '7']
+          }
+        }]
       }
     })
 

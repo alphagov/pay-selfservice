@@ -147,7 +147,11 @@ describe('service switch controller: switching', function () {
       originalUrl: 'http://bob.com?accountId=6',
       user: userFixtures.validUserResponse({
         username: 'bob',
-        gateway_account_ids: ['6', '5']
+        service_roles: [{
+          service: {
+            gateway_account_ids: ['6', '5']
+          }
+        }]
       }).getAsObject(),
       session: session,
       gateway_account: gatewayAccount,

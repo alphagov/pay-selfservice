@@ -17,7 +17,7 @@ const serviceFixtures = require('../../fixtures/service_fixtures')
  */
 module.exports = {
   getUserSuccess: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validPasswordAuthenticateResponse(opts).getPlain()
+    const aValidUserResponse = userFixtures.validUserResponse(opts).getPlain()
     return [
       {
         predicates: [{
@@ -194,7 +194,7 @@ module.exports = {
   },
   postUserAuthenticateSuccess: (opts = {}) => {
     const aValidAuthenticateRequest = userFixtures.validAuthenticateRequest(opts).getPlain()
-    const aValidAuthenticateResponse = userFixtures.validPasswordAuthenticateResponse(opts).getPlain()
+    const aValidAuthenticateResponse = userFixtures.validUserResponse(opts).getPlain()
     return [
       {
         predicates: [{

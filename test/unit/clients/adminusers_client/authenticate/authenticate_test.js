@@ -38,7 +38,7 @@ describe('adminusers client - authenticate', () => {
   const validPassword = 'some-valid-password'
 
   describe('user is authenticated successfully', () => {
-    const validPasswordResponse = userFixtures.validPasswordAuthenticateResponse({ username: existingUsername })
+    const validPasswordResponse = userFixtures.validUserResponse({ username: existingUsername })
     const validPasswordRequestPactified = userFixtures
       .validPasswordAuthenticateRequest({
         username: existingUsername,

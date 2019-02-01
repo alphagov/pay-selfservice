@@ -73,8 +73,8 @@ describe('adminusers client', function () {
   describe('authenticate a second factor API - success', () => {
     let token = '121212'
     let request = userFixtures.validAuthenticateSecondFactorRequest(token)
-    let minimalUser = userFixtures.validMinimalUser()
-    let externalId = minimalUser.getPlain().external_id
+    let response = userFixtures.validUserResponse()
+    let externalId = response.getPlain().external_id
 
     before((done) => {
       provider.addInteraction(
@@ -82,7 +82,7 @@ describe('adminusers client', function () {
           .withState('a user exists')
           .withUponReceiving('a valid authenticate second factor token request')
           .withRequestBody(request.getPactified())
-          .withResponseBody(userFixtures.validUserResponse(minimalUser.getPlain()).getPactified())
+          .withResponseBody(response.getPactified())
           .withMethod('POST')
           .build()
       ).then(() => done())

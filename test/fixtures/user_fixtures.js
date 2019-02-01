@@ -163,21 +163,6 @@ const pactUsers = pactBase({
   length: [{ key: 'permissions', length: 1 }]
 })
 
-function validPassword () {
-  return 'G0VUkPay2017Rocks'
-}
-
-function merchantDetailsFixture () {
-  return {
-    name: 'name',
-    address_line1: 'line1',
-    address_line2: 'line2',
-    address_city: 'City',
-    address_postcode: 'POSTCODE',
-    address_country: 'GB'
-  }
-}
-
 const buildServiceRole = (opts = {}) => {
   return {
     service: serviceFixtures.buildServiceWithDefaults(opts.service).getPlain(),
@@ -187,94 +172,40 @@ const buildServiceRole = (opts = {}) => {
 
 const buildRoleWithDefaults = (opts = {}) => {
   return {
-    name: opts.role_name || 'admin',
+    name: opts.name || 'admin',
     description: opts.role_description || 'Administrator',
     permissions: opts.permissions || defaultPermissions
   }
 }
 
+function buildUserWithDefaults (opts) {
+  const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
+  const data = {
+    external_id: opts.external_id || '7d19aff33f8948deb97ed16b2912dcd3',
+    username: opts.username || 'some-user@gov.uk',
+    email: opts.email || 'some-user@gov.uk',
+    otp_key: opts.otp_key || 'krb6fcianbdjkt01ecvi08jcln',
+    telephone_number: opts.telephone_number || '9127979',
+    service_roles: serviceRoles,
+    second_factor: opts.second_factor || 'SMS',
+    provisional_otp_key: opts.provisional_otp_key || 'a-provisional-key',
+    provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
+    disabled: opts.disabled || false,
+    login_counter: opts.login_counter || 0,
+    session_version: opts.session_version || 0,
+    _links: opts._links || [{
+      rel: 'self',
+      method: 'GET',
+      href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
+    }]
+  }
+  return data
+}
+
 module.exports = {
-
-  validMinimalUser: () => {
-    const newExternalId = '8e1a29e4f66e409693d6e530bff7a642'
-    const newUsername = '5nxja'
-    const defaultServiceId = '535'
-    const accountIds = ['507']
-
-    const data = {
-      external_id: newExternalId,
-      username: newUsername,
-      email: `${newUsername}@example.com`,
-      service_roles: [{
-        service: {
-          name: 'System Generated',
-          external_id: defaultServiceId,
-          gateway_account_ids: accountIds
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: ['perm-1']
-        }
-      }],
-      telephone_number: '07700 95665',
-      secondFactor: 'SMS'
-    }
-
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(data)
-      },
-      getAsObject: () => {
-        return new User(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-  validUserWithMerchantDetails: (opts = {}) => {
-    const newExternalId = '79d686ec43bc4768b2600d2e1e41e54e'
-    const newUsername = '6fu6kr'
-    const defaultServiceId = opts.default_service_id || '946'
-    const gatewayAccountIds = opts.gateway_account_ids || ['218']
-    const merchantDetails = opts.merchant_details || merchantDetailsFixture()
-
-    const data = {
-      external_id: opts.external_id || newExternalId,
-      username: opts.username || newUsername,
-      email: opts.email || `${newUsername}@example.com`,
-      service_roles: opts.service_roles || [{
-        service: {
-          name: 'System Generated',
-          external_id: defaultServiceId,
-          gateway_account_ids: gatewayAccountIds,
-          merchant_details: merchantDetails
-        },
-        role: opts.role || {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: opts.permissions || [{ name: 'perm-1' }]
-        }
-      }],
-      telephone_number: opts.telephone_number || '922037',
-      otp_key: opts.otp_key || '56609',
-      disabled: opts.disabled || false,
-      login_counter: opts.login_counter || 0,
-      session_version: opts.session_version || 0
-    }
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(data)
-      },
-      getAsObject: () => {
-        return new User(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
+  /**
+   * @deprecated - use {@link validUserResponse}
+   */
   validUser: (opts = {}) => {
     const newExternalId = opts.external_id || '121391373c1844dd99cb3416b70785c8'
     const newUsername = 'm87bmh'
@@ -283,7 +214,7 @@ module.exports = {
     const collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
     const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
 
-    const data = {
+    const userOpts = {
       external_id: opts.external_id || newExternalId,
       username: opts.username || newUsername,
       email: opts.email || `${newUsername}@example.com`,
@@ -309,83 +240,9 @@ module.exports = {
       second_factor: opts.second_factor || 'SMS',
       provisional_otp_key: opts.provisional_otp_key || '60400'
     }
-    return {
-      getPactified: () => {
-        return pactUsers.pactify(data)
-      },
-      getAsObject: () => {
-        return new User(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
 
-  /**
-   * @param opts Params override response
-   * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
-   */
-  validUserResponse: (opts = {}) => {
-    const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const reqExternalId = opts.external_id || existingExternalId
-    const reqEmail = opts.email || `${opts.username || 'existing-user'}@example.com`
-    const defaultServiceId = 'cp5wa'
-    const defaultServiceName = 'System Generated'
-    const gatewayAccountIds = opts.gateway_account_ids || [758, 772]
-    const merchantDetails = opts.merchant_details || {}
-    const merchantName = merchantDetails.name || 'updated-merchant-details-name'
-    const merchantTelephoneNumber = merchantDetails.telephone_number || '03069990000'
-    const merchantEmail = merchantDetails.email || 'dd-merchant@example.com'
-    const merchantAddressLine1 = merchantDetails.address_line1 || 'updated-merchant-details-addressline1'
-    const merchantAddressLine2 = merchantDetails.address_line2 || 'updated-merchant-details-addressline2'
-    const merchantAddressCity = merchantDetails.address_city || 'updated-merchant-details-city'
-    const merchantAddressPostcode = merchantDetails.address_postcode || 'updated-merchant-details-postcode'
-    const merchantAddressCountry = merchantDetails.address_country || 'updated-merchant-details-country'
-    const collectBillingAddress = opts.collect_billing_address || false
-    const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
-
-    const data = {
-      external_id: reqExternalId,
-      username: reqEmail,
-      email: reqEmail,
-      service_roles: opts.service_roles || [{
-        service: {
-          name: defaultServiceName,
-          external_id: defaultServiceId,
-          gateway_account_ids: gatewayAccountIds,
-          service_name: {
-            en: defaultServiceName
-          },
-          merchant_details: {
-            name: merchantName,
-            telephone_number: merchantTelephoneNumber,
-            email: merchantEmail,
-            address_line1: merchantAddressLine1,
-            address_line2: merchantAddressLine2,
-            address_city: merchantAddressCity,
-            address_postcode: merchantAddressPostcode,
-            address_country: merchantAddressCountry
-          },
-          collect_billing_address: collectBillingAddress,
-          current_go_live_stage: currentGoLiveStage
-        },
-        role: {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: [{ name: 'perm-1' }, { name: 'perm-2' }, { name: 'perm-3' }]
-        }
-      }],
-      otp_key: opts.otp_key || '43c3c4t',
-      telephone_number: opts.telephone_number || '0123441',
-      '_links': [{
-        'href': `http://adminusers.service/v1/api/users/${reqExternalId}`,
-        'rel': 'self',
-        'method': 'GET'
-      }],
-      second_factor: opts.second_factor || 'SMS',
-      provisional_otp_key: opts.provisional_otp_key || '55970'
-    }
+    // pass this through the known valid structure builder to ensure structure is correct
+    const data = buildUserWithDefaults(userOpts)
 
     return {
       getPactified: () => {
@@ -405,40 +262,7 @@ module.exports = {
    * @return {{getPactified: (function()) Pact response, getAsObject: (function()) User, getPlain: (function()) request with overrides applied}}
    */
   validMultipleUserResponse: (opts = []) => {
-    if (opts.length === 0) opts.push({})
-    const data = []
-
-    opts.forEach(intendedUser => {
-      const externalId = intendedUser.external_id || '8d8db4f2ad7d4c0c8373a09d9e95468b'
-      const username = intendedUser.username || 'b9g0vm'
-      const gatewayAccountIds = intendedUser.gateway_account_ids || ['213', '270']
-
-      data.push({
-        external_id: externalId,
-        username: username,
-        email: intendedUser.email || `${username}@example.com`,
-        service_roles: intendedUser.service_roles || [{
-          service: {
-            name: 'System Generated',
-            external_id: '0a9aa1216b93460a963f125b3f12e530',
-            gateway_account_ids: gatewayAccountIds
-          },
-          role: {
-            name: 'admin',
-            description: 'Administrator',
-            permissions: intendedUser.permissions || [{ name: 'perm-1' }, { name: 'perm-2' }, { name: 'perm-3' }]
-          }
-        }],
-        otp_key: intendedUser.otp_key || '7200b91bc4ba4eac958d3d7c33f119b1',
-        telephone_number: intendedUser.telephone_number || '07700 91044',
-        '_links': [{
-          'href': `http://adminusers.service/v1/api/users/${externalId}`,
-          'rel': 'self',
-          'method': 'GET'
-        }]
-      })
-    })
-
+    const data = opts.map(buildUserWithDefaults)
     return {
       getPactified: () => {
         return data.map(pactUsers.pactify)
@@ -498,7 +322,7 @@ module.exports = {
   validUpdatePasswordRequest: (token, newPassword) => {
     const request = {
       forgotten_password_code: token || '5ylaem',
-      new_password: newPassword || validPassword()
+      new_password: newPassword || 'G0VUkPay2017Rocks'
     }
 
     return pactUsers.withPactified(request)
@@ -547,29 +371,20 @@ module.exports = {
     }
   },
 
-  validPasswordAuthenticateResponse: (opts = {}) => {
-    const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
-    const response = {
-      external_id: opts.external_id || '7d19aff33f8948deb97ed16b2912dcd3',
-      username: opts.username || 'some-user@gov.uk',
-      email: opts.email || 'some-user@gov.uk',
-      otp_key: opts.otp_key || 'krb6fcianbdjkt01ecvi08jcln',
-      telephone_number: opts.telephone_number || '9127979',
-      service_roles: serviceRoles,
-      second_factor: opts.second_factor || 'SMS',
-      provisional_otp_key: opts.provisional_otp_key || 'a-provisional-key',
-      provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
-      disabled: opts.disabled || false,
-      login_counter: opts.login_counter || 0,
-      session_version: opts.session_version || 0,
-      _links: opts._links || [{
-        rel: 'self',
-        method: 'GET',
-        href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
-      }]
-    }
+  validUserResponse: (opts = {}) => {
+    const data = buildUserWithDefaults(opts)
 
-    return pactUsers.withPactified(response)
+    return {
+      getPactified: () => {
+        return pactUsers.pactify(data)
+      },
+      getAsObject: () => {
+        return new User(data)
+      },
+      getPlain: () => {
+        return data
+      }
+    }
   },
 
   invalidPasswordAuthenticateResponse: () => {

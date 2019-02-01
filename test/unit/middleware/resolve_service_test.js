@@ -8,13 +8,23 @@ const {expect} = require('chai')
 const resolveService = require('../../../app/middleware/resolve_service')
 const userFixtures = require('../../fixtures/user_fixtures')
 
+const buildUserWithGatewayAccountIds = (gatewayAccountIds) => {
+  return userFixtures.validUserResponse({
+    service_roles: [{
+      service: {
+        gateway_account_ids: gatewayAccountIds
+      }
+    }]
+  }).getAsObject()
+}
+
 describe('resolve service middleware', () => {
   let res, nextSpy, user
 
   beforeEach(() => {
     res = { setHeader: sinon.spy(), status: sinon.spy(), render: sinon.spy() }
     nextSpy = sinon.spy()
-    user = userFixtures.validUser().getAsObject()
+    user = userFixtures.validUserResponse().getAsObject()
   })
 
   it('from externalServiceId in path param then remove it', () => {
@@ -90,9 +100,7 @@ describe('resolve types of gateway within a service', () => {
   })
 
   it('service.hasDirectDebitGatewayAccount is true and service.hasCardGatewayAccount is false when we have Direct Debit gateway accounts only', () => {
-    const user = userFixtures.validUser({
-      gateway_account_ids: ['DIRECT_DEBIT:randomidhere']
-    }).getAsObject()
+    const user = buildUserWithGatewayAccountIds(['DIRECT_DEBIT:randomidhere'])
     const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
 
     resolveService(req, res, nextSpy)
@@ -104,9 +112,7 @@ describe('resolve types of gateway within a service', () => {
   })
 
   it('service.hasCardGatewayAccount is true and service.hasDirectDebitGatewayAccount is false when we have Card gateway accounts only', () => {
-    const user = userFixtures.validUser({
-      gateway_account_ids: ['7127217']
-    }).getAsObject()
+    const user = buildUserWithGatewayAccountIds(['7127217'])
     const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
 
     resolveService(req, res, nextSpy)
@@ -118,9 +124,7 @@ describe('resolve types of gateway within a service', () => {
   })
 
   it('service.hasCardAndDirectDebitGatewayAccount is true when we have Direct Debit and Card gateway accounts', () => {
-    const user = userFixtures.validUser({
-      gateway_account_ids: ['7127217', 'DIRECT_DEBIT:randomidhere']
-    }).getAsObject()
+    const user = buildUserWithGatewayAccountIds(['7127217', 'DIRECT_DEBIT:randomidhere'])
     const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
 
     resolveService(req, res, nextSpy)
