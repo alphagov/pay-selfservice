@@ -320,7 +320,7 @@ module.exports = {
     ]
   },
   postRefundAmountNotAvailable: (opts = {}) => {
-    const invalidTransactionRefundRequest = transactionDetailsFixtures.invalidTransactionRefundRequest(opts).getPlain()
+    const invalidTransactionRefundRequest = transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain()
     const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse({ reason: 'amount_not_available' }).getPlain()
     return [
       {

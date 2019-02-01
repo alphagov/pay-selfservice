@@ -20,9 +20,7 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-// Note: the browser tests use values in the fixed config below, which match the defined interations
-const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
-const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+const existingGatewayAccountId = 666
 
 describe('connector client - get gateway account', function () {
   let provider = Pact({
@@ -39,16 +37,15 @@ describe('connector client - get gateway account', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('get single gateway account - success', () => {
-    const params = {
-      gateway_account_id: parseInt(ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id) // 666
-    }
-    const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(params)
+    const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
+      gateway_account_id: existingGatewayAccountId
+    })
 
     before((done) => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${params.gateway_account_id}`)
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
           .withUponReceiving('a valid get gateway account request')
-          .withState(`User ${params.gateway_account_id} exists in the database`)
+          .withState(`User ${existingGatewayAccountId} exists in the database`)
           .withMethod('GET')
           .withResponseBody(validGetGatewayAccountResponse.getPactified())
           .withStatusCode(200)
@@ -62,7 +59,11 @@ describe('connector client - get gateway account', function () {
 
     it('should get gateway account successfully', function (done) {
       const getGatewayAccount = validGetGatewayAccountResponse.getPlain()
-      connectorClient.getAccount({gatewayAccountId: params.gateway_account_id, correlationId: null})
+      const params = {
+        gatewayAccountId: existingGatewayAccountId,
+        correlationId: null
+      }
+      connectorClient.getAccount(params)
         .should.be.fulfilled.then((response) => {
           expect(response).to.deep.equal(getGatewayAccount)
         }).should.notify(done)

@@ -13,9 +13,9 @@ const buildChargeEventWithDefaults = (opts = {}) => {
     type: opts.type || 'PAYMENT',
     submitted_by: opts.submitted_by || null,
     state: buildChargeEventStateWithDefaults(opts.state),
-    amount: opts.amount,
-    updated: opts.updated,
-    refund_reference: opts.refund_reference
+    amount: opts.amount || 100,
+    updated: opts.updated || '018-05-01T13:27:00.063Z',
+    refund_reference: opts.refund_reference || null
   }
 }
 
@@ -176,22 +176,6 @@ module.exports = {
   validTransactionRefundRequest: (opts = {}) => {
     const data = {
       amount: opts.amount || 101,
-      refund_amount_available: opts.refund_amount_available || 100,
-      user_external_id: opts.user_external_id || '3b7b5f33-24ea-4405-88d2-0a1b13efb20c'
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-  invalidTransactionRefundRequest: (opts = {}) => {
-    const data = {
-      amount: opts.amount || 100,
       refund_amount_available: opts.refund_amount_available || 100,
       user_external_id: opts.user_external_id || '3b7b5f33-24ea-4405-88d2-0a1b13efb20c'
     }

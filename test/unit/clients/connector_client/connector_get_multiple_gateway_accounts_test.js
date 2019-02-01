@@ -20,10 +20,6 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-// Note: the browser tests use values in the fixed config below, which match the defined interations
-const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
-const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
-
 describe('connector client - get multiple gateway accounts', function () {
   let provider = Pact({
     consumer: 'selfservice-to-be',
@@ -39,34 +35,20 @@ describe('connector client - get multiple gateway accounts', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('get multiple gateway accounts - success', () => {
-    const sortDescending = (GatewayAccoutA, GatewayAccoutB) => GatewayAccoutB.id - GatewayAccoutA.id
-
-    const params = {
-      gateway_account_ids: ssDefaultUser.gateway_accounts.sort(sortDescending).map(gateWayAccount => gateWayAccount.id), // gateway account ids in descending order
-      accounts: ssDefaultUser.gateway_accounts.sort(sortDescending).map(gateWayAccount => {
-        return {
-          type: gateWayAccount.name === 'nonsandbox' ? 'live' : 'test',
-          gateway_account_id: gateWayAccount.id,
-          payment_provider: gateWayAccount.name === 'nonsandbox' ? 'worldpay' : 'sandbox',
-          service_name: gateWayAccount.name,
-          _links: {
-            self: {
-              href: `https://connector.pymnt.localdomain/v1/api/accounts/${gateWayAccount.id}`
-            }
-          }
-        }
-      })
-    }
-
-    const validGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse(params)
+    const validGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse({
+      accounts: [
+        { gateway_account_id: 111 },
+        { gateway_account_id: 222 }
+      ]
+    })
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('a valid get gateway accounts request')
-          .withState(`Gateway accounts with id ${params.gateway_account_id} exist in the database`)
+          .withState(`Gateway accounts with ids 111, 222 exist in the database`)
           .withMethod('GET')
-          .withQuery('accountIds', params.gateway_account_ids.join(','))
+          .withQuery('accountIds', '111,222')
           .withResponseBody(validGetGatewayAccountsResponse.getPactified())
           .withStatusCode(200)
           .build()
@@ -79,7 +61,7 @@ describe('connector client - get multiple gateway accounts', function () {
 
     it('should get multiple gateway accounts successfully', function (done) {
       const getGatewayAccounts = validGetGatewayAccountsResponse.getPlain()
-      connectorClient.getAccounts({gatewayAccountIds: params.gateway_account_ids, correlationId: null})
+      connectorClient.getAccounts({ gatewayAccountIds: [111, 222], correlationId: null })
         .should.be.fulfilled.then((response) => {
           expect(response).to.deep.equal(getGatewayAccounts)
         }).should.notify(done)
