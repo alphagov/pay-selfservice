@@ -25,9 +25,6 @@ describe('Dashboard', () => {
   })
 
   describe('Homepage', () => {
-    // Use a known configuration used to generate contracts/stubs.
-    // This is also used to generate the session/gateway_account cookies
-
     it('should have the page title \'Choose service - GOV.UK Pay\'', () => {
       cy.visit('/my-services')
       cy.title().should('eq', 'Choose service - GOV.UK Pay')

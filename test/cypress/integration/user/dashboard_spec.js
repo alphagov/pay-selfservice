@@ -27,8 +27,6 @@ describe('Dashboard', () => {
   })
 
   describe('Homepage', () => {
-    // Note : these from/to datetime strings exactly match those in the pact/contract, so are essential to match against stubs
-    // Either change everything together, or map these do a single place like a .json document so the contracts/tests refer to one place
     const from = encodeURIComponent('2018-05-14T00:00:00+01:00')
     const to = encodeURIComponent('2018-05-15T00:00:00+01:00')
 
