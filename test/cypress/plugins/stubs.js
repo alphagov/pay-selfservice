@@ -118,7 +118,7 @@ module.exports = {
     ]
   },
   patchAccountEmailCollectionModeSuccess: (opts = {}) => {
-    const validGatewayAccountEmailCollectionModeRequest = gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest().getPlain()
+    const validGatewayAccountEmailCollectionModeRequest = gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest(opts.collectionMode).getPlain()
     return [
       {
         predicates: [{
@@ -143,7 +143,7 @@ module.exports = {
     ]
   },
   patchConfirmationEmailToggleSuccess: (opts = {}) => {
-    const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts).getPlain()
+    const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts.enabled).getPlain()
     return [
       {
         predicates: [{
@@ -168,7 +168,7 @@ module.exports = {
     ]
   },
   patchRefundEmailToggleSuccess: (opts = {}) => {
-    const validGatewayAccountEmailRefundToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts).getPlain()
+    const validGatewayAccountEmailRefundToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled).getPlain()
     return [
       {
         predicates: [{
