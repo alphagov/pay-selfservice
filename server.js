@@ -159,8 +159,8 @@ function initialise () {
   initialiseTLS()
   initialisePublic(app)
   initialiseCookies(app)
-  initialiseAuth(app)
   initialiseGlobalMiddleware(app)
+  initialiseAuth(app)
   initialiseTemplateEngine(app)
   initialiseErrorHandling(app)
   initialiseRoutes(app) // This contains the 404 overrider and so should be last
