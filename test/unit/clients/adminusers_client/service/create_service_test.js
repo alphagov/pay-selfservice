@@ -35,7 +35,14 @@ describe('adminusers client - create a new service', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('success', () => {
-    const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse()
+    const name = 'Service name'
+    const externalId = 'externalId'
+    const gatewayAccountIds = []
+    const validCreateServiceResponse = serviceFixtures.validServiceResponse({
+      name: name,
+      external_id: externalId,
+      gateway_account_ids: gatewayAccountIds
+    })
 
     before((done) => {
       provider.addInteraction(
@@ -55,16 +62,25 @@ describe('adminusers client - create a new service', function () {
 
     it('should create a new service', function (done) {
       adminusersClient.createService().should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal('externalId')
-        expect(service.name).to.equal('System Generated')
-        expect(service.gateway_account_ids).to.deep.equal([])
+        expect(service.external_id).to.equal(externalId)
+        expect(service.name).to.equal(name)
+        expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
       }).should.notify(done)
     })
   })
 
   describe('create a service sending gateway account ids - success', () => {
-    const validRequest = serviceFixtures.validCreateServiceRequest({gateway_account_ids: ['1', '5']})
-    const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
+    const name = 'Service name'
+    const externalId = 'externalId'
+    const gatewayAccountIds = ['1', '5']
+    const validRequest = serviceFixtures.validCreateServiceRequest({
+      gateway_account_ids: gatewayAccountIds
+    })
+    const validCreateServiceResponse = serviceFixtures.validServiceResponse({
+      name: name,
+      external_id: externalId,
+      gateway_account_ids: gatewayAccountIds
+    })
 
     before((done) => {
       provider.addInteraction(
@@ -84,16 +100,23 @@ describe('adminusers client - create a new service', function () {
 
     it('should create a new service', function (done) {
       adminusersClient.createService(null, null, validRequest.getPlain().gateway_account_ids).should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal('externalId')
-        expect(service.name).to.equal('System Generated')
+        expect(service.external_id).to.equal(externalId)
+        expect(service.name).to.equal(name)
         expect(service.gateway_account_ids).to.deep.equal(validCreateServiceResponse.getPlain().gateway_account_ids)
       }).should.notify(done)
     })
   })
 
   describe('create a service sending service name - success', () => {
-    const validRequest = serviceFixtures.validCreateServiceRequest({name: 'Service name'})
-    const validCreateServiceResponse = serviceFixtures.validCreateServiceResponse(validRequest.getPlain())
+    const name = 'Service name'
+    const externalId = 'externalId'
+    const gatewayAccountIds = []
+    const validRequest = serviceFixtures.validCreateServiceRequest({ name: name })
+    const validCreateServiceResponse = serviceFixtures.validServiceResponse({
+      name: name,
+      external_id: externalId,
+      gateway_account_ids: gatewayAccountIds
+    })
 
     before((done) => {
       provider.addInteraction(
@@ -113,9 +136,9 @@ describe('adminusers client - create a new service', function () {
 
     it('should create a new service', function (done) {
       adminusersClient.createService('Service name', null, null).should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal('externalId')
-        expect(service.name).to.equal('Service name')
-        expect(service.gateway_account_ids).to.deep.equal([])
+        expect(service.external_id).to.equal(externalId)
+        expect(service.name).to.equal(name)
+        expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
       }).should.notify(done)
     })
   })

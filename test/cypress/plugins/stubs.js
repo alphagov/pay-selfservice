@@ -425,7 +425,7 @@ module.exports = {
         responses: [{
           is: {
             statusCode: 200,
-            body: serviceFixtures.buildServiceWithDefaults(opts).getPlain(),
+            body: serviceFixtures.validServiceResponse(opts).getPlain(),
             headers: {
               'Content-Type': 'application/json'
             }

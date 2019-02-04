@@ -165,7 +165,7 @@ const pactUsers = pactBase({
 
 const buildServiceRole = (opts = {}) => {
   return {
-    service: serviceFixtures.buildServiceWithDefaults(opts.service).getPlain(),
+    service: serviceFixtures.validServiceResponse(opts.service).getPlain(),
     role: buildRoleWithDefaults(opts.role)
   }
 }

@@ -36,9 +36,15 @@ describe('adminusers client - update service name', function () {
 
   describe('success with en and cy', () => {
     const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy()
-    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponseWithEnAndCy({
-      external_id: existingServiceExternalId
+    const serviceName = {
+      en: 'en-name',
+      cy: 'cy-name'
+    }
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy(serviceName)
+    const validUpdateServiceNameResponse = serviceFixtures.validServiceResponse({
+      name: serviceName.en,
+      external_id: existingServiceExternalId,
+      service_name: serviceName
     })
 
     before((done) => {
@@ -58,23 +64,24 @@ describe('adminusers client - update service name', function () {
     afterEach(() => provider.verify())
 
     it('should update service name for en and cy', function (done) {
-      const serviceNameEn = validUpdateServiceNameRequest.getPlain()[0].value
-      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
-      adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn, serviceNameCy)
+      adminusersClient.updateServiceName(existingServiceExternalId, serviceName.en, serviceName.cy)
         .should.be.fulfilled.then(service => {
           expect(service.external_id).to.equal(existingServiceExternalId)
-          expect(service.name).to.equal(serviceNameEn)
-          expect(service.service_name.en).to.equal(serviceNameEn)
-          expect(service.service_name.cy).to.equal(serviceNameCy)
+          expect(service.name).to.equal(serviceName.en)
+          expect(service.service_name.en).to.equal(serviceName.en)
+          expect(service.service_name.cy).to.equal(serviceName.cy)
         }).should.notify(done)
     })
   })
 
   describe('success with en', () => {
     const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEn()
-    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponseWithEn({
-      external_id: existingServiceExternalId
+    const serviceNameEn = 'en-name'
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEn(serviceNameEn)
+    const validUpdateServiceNameResponse = serviceFixtures.validServiceResponse({
+      name: serviceNameEn,
+      external_id: existingServiceExternalId,
+      service_name: { en: serviceNameEn }
     })
 
     before((done) => {
@@ -94,7 +101,6 @@ describe('adminusers client - update service name', function () {
     afterEach(() => provider.verify())
 
     it('should update service name for en', function (done) {
-      const serviceNameEn = validUpdateServiceNameRequest.getPlain()[0].value
       adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn).should.be.fulfilled.then(service => {
         expect(service.external_id).to.equal(existingServiceExternalId)
         expect(service.name).to.equal(serviceNameEn)
@@ -105,9 +111,11 @@ describe('adminusers client - update service name', function () {
 
   describe('success with cy', () => {
     const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithCy()
-    const validUpdateServiceNameResponse = serviceFixtures.validUpdateServiceNameResponseWithCy({
-      external_id: existingServiceExternalId
+    const serviceNameCy = 'cy-name'
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithCy(serviceNameCy)
+    const validUpdateServiceNameResponse = serviceFixtures.validServiceResponse({
+      external_id: existingServiceExternalId,
+      service_name: { cy: serviceNameCy }
     })
 
     before((done) => {
@@ -127,8 +135,6 @@ describe('adminusers client - update service name', function () {
     afterEach(() => provider.verify())
 
     it('should update service name for cy', function (done) {
-      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
-
       adminusersClient.updateServiceName(existingServiceExternalId, null, serviceNameCy).should.be.fulfilled.then(service => {
         expect(service.external_id).to.equal(existingServiceExternalId)
         expect(service.service_name.cy).to.equal(serviceNameCy)
@@ -138,7 +144,11 @@ describe('adminusers client - update service name', function () {
 
   describe('not found', () => {
     const nonExistentServiceExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy()
+    const serviceName = {
+      en: 'en-name',
+      cy: 'cy-name'
+    }
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy(serviceName)
 
     before((done) => {
       provider.addInteraction(
@@ -156,9 +166,7 @@ describe('adminusers client - update service name', function () {
     afterEach(() => provider.verify())
 
     it('should return not found if service not exist', function (done) {
-      const serviceNameEn = validUpdateServiceNameRequest.getPlain()[0].value
-      const serviceNameCy = validUpdateServiceNameRequest.getPlain()[1].value
-      adminusersClient.updateServiceName(nonExistentServiceExternalId, serviceNameEn, serviceNameCy).should.be.rejected.then(response => {
+      adminusersClient.updateServiceName(nonExistentServiceExternalId, serviceName.en, serviceName.cy).should.be.rejected.then(response => {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
