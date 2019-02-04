@@ -5,27 +5,36 @@ const lodash = require('lodash')
 
 // Local dependencies
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
+const goLiveStage = require('../../../models/go-live-stage')
 const { requestToGoLive } = require('../../../paths')
 const { validateOrganisationName } = require('../../../utils/organisation_name_validation')
-
+const { updateCurrentGoLiveStage, updateMerchantName } = require('../../../services/service_service')
+const { renderErrorView } = require('../../../utils/response')
 // Constants
-const REQUEST_ORGANISATION_NAME_FIELD = 'organisation-name'
+const ORGANISATION_NAME_FIELD = 'organisation-name'
 
 module.exports = (req, res) => {
-  const organisationName = lodash.get(req, 'body.organisation-name')
-  const errors = validateOrganisationName(organisationName, REQUEST_ORGANISATION_NAME_FIELD, true)
-
+  const organisationName = lodash.get(req.body, ORGANISATION_NAME_FIELD)
+  const errors = validateOrganisationName(organisationName, ORGANISATION_NAME_FIELD, true)
   if (lodash.isEmpty(errors)) {
-    // TODO: handle submission
-    res.redirect(
-      303,
-      goLiveStageToNextPagePath[req.service.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
-    )
+    return updateMerchantName(req.service.externalId, organisationName, req.correlationId)
+      .then(service => {
+        return updateCurrentGoLiveStage(service.externalId, goLiveStage.ENTERED_ORGANISATION_NAME, req.correlationId)
+      })
+      .then(updatedService => {
+        res.redirect(
+          303,
+          goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+        )
+      })
+      .catch(err => {
+        renderErrorView(req, res, err.message)
+      })
   } else {
     lodash.set(req, 'session.pageData.requestToGoLive.organisationName', {
       success: false,
       errors: errors,
-      organisationName: req.body[REQUEST_ORGANISATION_NAME_FIELD]
+      organisationName: req.body[ORGANISATION_NAME_FIELD]
     })
     return res.redirect(
       303,

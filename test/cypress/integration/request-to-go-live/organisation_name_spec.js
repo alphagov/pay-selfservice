@@ -1,7 +1,10 @@
-describe('Request to go live: organisation name', () => {
+const lodash = require('lodash')
+
+describe('Request to go live: organisation name page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
   const serviceExternalId = 'afe452323dd04d1898672bfaba25e3a6'
+  const organisationName = 'Government Digital Service'
 
   const buildServiceRoleForGoLiveStage = (goLiveStage) => {
     return {
@@ -13,8 +16,8 @@ describe('Request to go live: organisation name', () => {
     }
   }
 
-  const setupStubs = (serviceRole) => {
-    cy.task('setupStubs', [
+  const simpleStub = (serviceRole) => {
+    return [
       {
         name: 'getUserSuccess',
         opts: {
@@ -26,7 +29,34 @@ describe('Request to go live: organisation name', () => {
         name: 'getGatewayAccountSuccess',
         opts: { gateway_account_id: gatewayAccountId }
       }
-    ])
+    ]
+  }
+
+  const stubsWithGoLiveStageAndOrganisationName = (currentGoLiveStage = 'NOT_STARTED', organisationName = undefined) => {
+    return [{
+      name: 'patchUpdateServiceSuccess',
+      opts: {
+        external_id: serviceExternalId,
+        gateway_account_ids: [gatewayAccountId],
+        current_go_live_stage: currentGoLiveStage,
+        path: 'current_go_live_stage',
+        value: currentGoLiveStage
+      }
+    },
+    {
+      name: 'patchUpdateServiceSuccess',
+      opts: {
+        external_id: serviceExternalId,
+        gateway_account_ids: [gatewayAccountId],
+        current_go_live_stage: currentGoLiveStage,
+        path: 'merchant_details/name',
+        value: organisationName
+      }
+    }]
+  }
+
+  const setupStubs = (serviceRole) => {
+    cy.task('setupStubs', simpleStub(serviceRole))
   }
 
   beforeEach(() => {
@@ -50,18 +80,57 @@ describe('Request to go live: organisation name', () => {
     })
   })
 
-  describe('Service has correct go live stage', () => {
-    const organisationName = 'Government Digital Service'
-
+  describe('Service has correct go live stage and organisation name is not pre-filled', () => {
     beforeEach(() => {
       const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED')
-      serviceRole.service.merchant_details = {
-        name: organisationName
-      }
-      setupStubs(serviceRole)
+      const stubPayload = lodash.concat(simpleStub(serviceRole), stubsWithGoLiveStageAndOrganisationName(
+        'ENTERED_ORGANISATION_NAME'))
+      cy.task('setupStubs', stubPayload)
     })
 
-    it('should show "Request to go live: organisation name" page correctly with pre-filled organisation name', () => {
+    it('should allow users to type valid organisation name and submit', () => {
+      const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
+      cy.visit(requestToGoLivePageOrganisationNameUrl)
+
+      cy.get('h1').should('contain', 'What is the name of your organisation?')
+
+      cy.get('#request-to-go-live-current-step').should('exist')
+
+      cy.get('#request-to-go-live-organisation-name-form').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').should('exist')
+
+      cy.get('input#request-to-go-live-organisation-name-input').type(organisationName)
+      cy.get('input#request-to-go-live-organisation-name-input').should('have.value', organisationName)
+
+      cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
+      cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
+      cy.get('#request-to-go-live-organisation-name-form > button').click()
+    })
+
+    it('should show empty input box if organisation name is not pre-filled', () => {
+      const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
+      cy.visit(requestToGoLivePageOrganisationNameUrl)
+
+      cy.get('h1').should('contain', 'What is the name of your organisation?')
+
+      cy.get('#request-to-go-live-current-step').should('exist')
+
+      cy.get('#request-to-go-live-organisation-name-form').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').should('exist')
+      cy.get('input#request-to-go-live-organisation-name-input').should('be.empty')
+    })
+  })
+
+  describe('Service has correct go live stage and organisation name is pre-filled', () => {
+    beforeEach(() => {
+      const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED')
+      serviceRole.service.merchant_details = { name: organisationName }
+      const stubPrefilledPayload = lodash.concat(simpleStub(serviceRole), stubsWithGoLiveStageAndOrganisationName(
+        'ENTERED_ORGANISATION_NAME', organisationName))
+      cy.task('setupStubs', stubPrefilledPayload)
+    })
+
+    it('should show page correctly with pre-filled organisation name', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
@@ -77,13 +146,17 @@ describe('Request to go live: organisation name', () => {
       cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
       cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
       cy.get('#request-to-go-live-organisation-name-form > button').click()
+    })
+  })
 
-      cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/organisation-name`)
-      })
+  describe('Service has correct go live stage and there are validation errors on the page', () => {
+    beforeEach(() => {
+      const stubPayload = lodash.concat(simpleStub(buildServiceRoleForGoLiveStage('NOT_STARTED')),
+        stubsWithGoLiveStageAndOrganisationName())
+      cy.task('setupStubs', stubPayload)
     })
 
-    it('should show an error when blank name is submitted on "Request to go live: organisation name" page', () => {
+    it('should show errors on the page when no organisation name is submitted', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
@@ -94,7 +167,6 @@ describe('Request to go live: organisation name', () => {
       cy.get('#request-to-go-live-organisation-name-form').should('exist')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('exist')
-      cy.get('input#request-to-go-live-organisation-name-input').clear()
 
       cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
       cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
@@ -112,7 +184,7 @@ describe('Request to go live: organisation name', () => {
       })
     })
 
-    it('should show an error when name submitted exceeds max character length on "Request to go live: organisation name" page', () => {
+    it('should show errors on the page when organisation name exceeds max character length is submitted', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       const maxLengthOrganisationNameAllowed = 255
       const exceedMaxLengthOrganisationName = 'Lorem ipsum dolor sit ametf consectetuer adipiscing elitf Aenean commodo ligula eget dolorf Aenean massaf ' +
@@ -143,11 +215,11 @@ describe('Request to go live: organisation name', () => {
     })
   })
 
-  describe('Service has wrong go live stage', () => {
+  describe('Service has invalid go live stage', () => {
     beforeEach(() => {
-      setupStubs(buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+      const serviceRole = buildServiceRoleForGoLiveStage('INVALID_GO_LIVE_STAGE')
+      setupStubs(serviceRole)
     })
-
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)

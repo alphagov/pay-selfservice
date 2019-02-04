@@ -450,7 +450,7 @@ module.exports = {
       }
     ]
   },
-  patchGoLiveStageSuccess: (opts = {}) => {
+  patchUpdateServiceSuccess: (opts = {}) => {
     return [
       {
         predicates: [{
