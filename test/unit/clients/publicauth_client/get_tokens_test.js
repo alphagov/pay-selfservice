@@ -15,7 +15,6 @@ const PactInteractionBuilder = require('../../../fixtures/pact_interaction_build
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
 const TOKENS_PATH = '/v1/frontend/auth'
-const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
 
 chai.use(chaiAsPromised)
 
@@ -30,8 +29,6 @@ describe('publicauth client - get tokens', function () {
     pactfileWriteMode: 'merge'
   })
 
-  const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
-
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
@@ -39,7 +36,7 @@ describe('publicauth client - get tokens', function () {
 
   describe('success', () => {
     const params = {
-      accountId: parseInt(ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id) // 666
+      accountId: 42
     }
 
     const getServiceAuthResponse = gatewayAccountFixtures.validGatewayAccountTokensResponse(params)
@@ -47,7 +44,7 @@ describe('publicauth client - get tokens', function () {
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${TOKENS_PATH}/${params.accountId}`)
-          .withState(`Service ${params.accountId} exists in the database`)
+          .withState(`Gateway account ${params.accountId} exists in the database`)
           .withUponReceiving('a valid service auth request')
           .withResponseBody(getServiceAuthResponse.getPactified())
           .build()
