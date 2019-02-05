@@ -2,9 +2,10 @@
 
 const lodash = require('lodash')
 const utils = require('../../utils/request_to_go_live_utils')
+const variables = utils.variables
 
 describe('Request to go live: agreement', () => {
-  const userExternalId = utils.variables.userExternalId
+  const userExternalId = variables.userExternalId
   const gatewayAccountId = utils.variables.gatewayAccountId
   const serviceExternalId = utils.variables.serviceExternalId
 

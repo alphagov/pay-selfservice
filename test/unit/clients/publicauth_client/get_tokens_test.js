@@ -51,7 +51,7 @@ describe('publicauth client - get tokens', function () {
       ).then(done())
     })
 
-    afterEach(() => provider.verify())
+    afterEach((done) => provider.verify().then(done()))
 
     it('should return service tokens information successfully', function (done) {
       const expectedTokensData = getServiceAuthResponse.getPlain()

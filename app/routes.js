@@ -68,6 +68,7 @@ const requestToGoLiveIndexController = require('./controllers/request-to-go-live
 const requestToGoLiveOrganisationNameController = require('./controllers/request-to-go-live/organisation-name')
 const policyDocumentsController = require('./controllers/policy')
 const requestToGoLiveChooseHowToProcessPaymentsController = require('./controllers/request-to-go-live/choose-how-to-process-payments')
+const requestToGoLiveAgreement = require('./controllers/request-to-go-live/agreement')
 
 // Assignments
 const {
@@ -338,6 +339,9 @@ module.exports.bind = function (app) {
   // Request to go live: choose how to process payments
   app.get(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
   app.post(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
+  // Request to go live: agreement
+  app.get(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveAgreement.get)
+  app.post(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreement.post)
 
   // Private policy document downloads
   app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)

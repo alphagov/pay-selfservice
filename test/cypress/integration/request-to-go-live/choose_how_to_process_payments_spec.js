@@ -2,21 +2,12 @@
 
 const lodash = require('lodash')
 const utils = require('../../utils/request_to_go_live_utils')
+const variables = utils.variables
 
 describe('Request to go live: choose how to process payments', () => {
-  const userExternalId = utils.variables.userExternalId
-  const gatewayAccountId = utils.variables.gatewayAccountId
-  const serviceExternalId = utils.variables.serviceExternalId
-
-  const buildServiceRoleForGoLiveStage = (goLiveStage) => {
-    return {
-      service: {
-        external_id: serviceExternalId,
-        current_go_live_stage: goLiveStage,
-        gateway_account_ids: [gatewayAccountId]
-      }
-    }
-  }
+  const userExternalId = variables.userExternalId
+  const gatewayAccountId = variables.gatewayAccountId
+  const serviceExternalId = variables.serviceExternalId
 
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -24,7 +15,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Service has wrong go live stage', () => {
     beforeEach(() => {
-      utils.setupStubs(buildServiceRoleForGoLiveStage('NOT_STARTED'))
+      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
@@ -39,16 +30,16 @@ describe('Request to go live: choose how to process payments', () => {
     })
   })
 
-  describe.only('Service has correct go live stage and user selects Stripe account', () => {
+  describe('Service has correct go live stage and user selects Stripe account', () => {
     const repeatGetUserSuccessStub = [{
       name: 'getUserSuccessRepeatFirstResponseNTimes',
       opts: [{
         external_id: userExternalId,
-        service_roles: [buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')],
-        repeat: 4
+        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')],
+        repeat: 2
       }, {
         external_id: userExternalId,
-        service_roles: [buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')],
+        service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')],
         repeat: 2
       }]
     }, {
@@ -91,11 +82,11 @@ describe('Request to go live: choose how to process payments', () => {
       name: 'getUserSuccessRepeatFirstResponseNTimes',
       opts: [{
         external_id: userExternalId,
-        service_roles: [buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')],
+        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')],
         repeat: 2
       }, {
         external_id: userExternalId,
-        service_roles: [buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ')],
+        service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ')],
         repeat: 2
       }]
     }, {
@@ -146,7 +137,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('User does not have the correct permissions', () => {
     beforeEach(() => {
-      const serviceRole = buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
+      const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
       serviceRole.role = {
         permissions: []
       }
@@ -163,7 +154,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('other tests', () => {
     beforeEach(() => {
-      utils.setupStubs(buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
     describe('should show an error when no option selected', () => {
       it('should show "You need to select an option" error msg', () => {
@@ -196,7 +187,7 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('adminusers error handlings', () => {
-    const stubPayload = lodash.concat(utils.simpleStub(buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')),
+    const stubPayload = lodash.concat(utils.simpleStub(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')),
       utils.stubGoLiveStageError('CHOSEN_PSP_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)

@@ -8,11 +8,11 @@ const goLiveStage = require('../../../models/go-live-stage')
 const { requestToGoLive } = require('../../../paths')
 const response = require('../../../utils/response')
 
+const { CHOSEN_PSP_STRIPE, CHOSEN_PSP_WORLDPAY, CHOSEN_PSP_SMARTPAY, CHOSEN_PSP_EPDQ } = goLiveStage
+const chosenOptions = [ CHOSEN_PSP_STRIPE, CHOSEN_PSP_WORLDPAY, CHOSEN_PSP_SMARTPAY, CHOSEN_PSP_EPDQ ]
+
 module.exports = (req, res) => {
-  if (req.service.currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE ||
-      req.service.currentGoLiveStage === goLiveStage.CHOSEN_PSP_WORLDPAY ||
-      req.service.currentGoLiveStage === goLiveStage.CHOSEN_PSP_SMARTPAY ||
-      req.service.currentGoLiveStage === goLiveStage.CHOSEN_PSP_EPDQ) {
+  if (chosenOptions.includes(req.service.currentGoLiveStage)) {
     // initialise pageData
     let pageData = lodash.get(req, 'session.pageData.requestToGoLive.agreement')
     if (pageData) {
