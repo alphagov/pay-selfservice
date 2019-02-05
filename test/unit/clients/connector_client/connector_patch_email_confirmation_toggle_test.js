@@ -20,9 +20,8 @@ const expect = chai.expect
 // Global setup
 chai.use(chaiAsPromised)
 
-// Note: the browser tests use values in the fixed config below, which match the defined interations
-const ssUserConfig = require('../../../fixtures/config/self_service_user.json')
-const ssDefaultUser = ssUserConfig.config.users.filter(fil => fil.isPrimary === 'true')[0]
+const existingGatewayAccountId = 42
+const defaultState = `Gateway account ${existingGatewayAccountId} exists in the database`
 
 describe('connector client - patch email confirmation toggle', function () {
   let provider = Pact({
@@ -39,18 +38,13 @@ describe('connector client - patch email confirmation toggle', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('patch email confirmation toggle - enabled', () => {
-    const params = {
-      gatewayAccountId: parseInt(ssDefaultUser.gateway_accounts.filter(fil => fil.isPrimary === 'true')[0].id), // 666
-      enabled: true
-    }
-
-    const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(params)
+    const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(true)
 
     before((done) => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${params.gatewayAccountId}/email-notification`)
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/email-notification`)
           .withUponReceiving('a valid patch email confirmation toggle (enabled) request')
-          .withState(`Gateway account ${params.gatewayAccountId} exists in the database`)
+          .withState(defaultState)
           .withMethod('PATCH')
           .withRequestBody(validGatewayAccountEmailConfirmationToggleRequest.getPactified())
           .withStatusCode(200)
@@ -63,8 +57,11 @@ describe('connector client - patch email confirmation toggle', function () {
     afterEach(() => provider.verify())
 
     it('should toggle successfully', function (done) {
-      const payload = {'op': 'replace', 'path': '/confirmation/enabled', 'value': true}
-      connectorClient.updateConfirmationEmailEnabled({gatewayAccountId: params.gatewayAccountId, payload: payload}, (connectorData, connectorResponse) => {
+      const params = {
+        gatewayAccountId: existingGatewayAccountId,
+        payload: validGatewayAccountEmailConfirmationToggleRequest.getPlain()
+      }
+      connectorClient.updateConfirmationEmailEnabled(params, (connectorData, connectorResponse) => {
         expect(connectorResponse.statusCode).to.equal(200)
         done()
       })

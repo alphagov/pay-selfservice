@@ -9,11 +9,11 @@ const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 
 module.exports = {
-  validGatewayAccountEmailRefundToggleRequest: (opts = {}) => {
+  validGatewayAccountEmailRefundToggleRequest: (enabled = true) => {
     const data = {
-      op: opts.op || 'replace',
-      path: opts.path || '/refund/enabled',
-      value: opts.enabled || true
+      op: 'replace',
+      path: '/refund/enabled',
+      value: enabled
     }
 
     return {
@@ -25,11 +25,11 @@ module.exports = {
       }
     }
   },
-  validGatewayAccountEmailConfirmationToggleRequest: (opts = {}) => {
+  validGatewayAccountEmailConfirmationToggleRequest: (enabled = true) => {
     const data = {
-      op: opts.op || 'replace',
-      path: opts.path || '/confirmation/enabled',
-      value: opts.enabled || true
+      op: 'replace',
+      path: '/confirmation/enabled',
+      value: enabled
     }
 
     return {
@@ -41,11 +41,11 @@ module.exports = {
       }
     }
   },
-  validGatewayAccountEmailCollectionModeRequest: (opts = {}) => {
+  validGatewayAccountEmailCollectionModeRequest: (collectionMode = 'MANDATORY') => {
     const data = {
-      op: opts.op || 'replace',
-      path: opts.path || 'email_collection_mode',
-      value: opts.collectionMode || 'MANDATORY'
+      op: 'replace',
+      path: 'email_collection_mode',
+      value: collectionMode
     }
 
     return {
