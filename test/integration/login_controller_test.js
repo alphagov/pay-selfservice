@@ -300,8 +300,14 @@ describe('direct login after user registration', function () {
 
     let userResponse = userFixtures.validUserResponse({
       external_id: userExternalId,
+      username: email,
       email: email,
-      gateway_account_ids: [gatewayAccountId]}).getPlain()
+      service_roles: [{
+        service: {
+          gateway_account_ids: [gatewayAccountId]
+        }
+      }]
+    }).getPlain()
 
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse)

@@ -30,7 +30,11 @@ describe('adminusers client - update user service role', function () {
   describe('update user service role API - success', () => {
     let role = 'view-and-refund'
     let request = userFixtures.validUpdateServiceRoleRequest(role)
-    let userFixture = userFixtures.validUser({role: {name: role, description: `${role}-description`}})
+    let userFixture = userFixtures.validUserResponse({
+      service_roles: [{
+        role: { name: role, description: `${role}-description` }
+      }]
+    })
     let user = userFixture.getPlain()
 
     before((done) => {
@@ -41,7 +45,7 @@ describe('adminusers client - update user service role', function () {
           .withMethod('PUT')
           .withRequestBody(request.getPactified())
           .withStatusCode(200)
-          .withResponseBody(userFixtures.validUserResponse(user).getPactified())
+          .withResponseBody(userFixture.getPactified())
           .build()
       ).then(() => done())
     })

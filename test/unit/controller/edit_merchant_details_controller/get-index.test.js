@@ -46,7 +46,7 @@ describe('Organisation details controller - get', () => {
         external_id: EXTERNAL_ID_IN_SESSION,
         service_roles: serviceRoles
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      user = userFixtures.validUserResponse(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
@@ -98,7 +98,7 @@ describe('Organisation details controller - get', () => {
         external_id: EXTERNAL_ID_IN_SESSION,
         service_roles: serviceRoles
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      user = userFixtures.validUserResponse(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
@@ -143,7 +143,7 @@ describe('Organisation details controller - get', () => {
         external_id: EXTERNAL_ID_IN_SESSION,
         service_roles: serviceRoles
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      user = userFixtures.validUserResponse(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
@@ -182,7 +182,7 @@ describe('Organisation details controller - get', () => {
         external_id: EXTERNAL_ID_IN_SESSION,
         service_roles: serviceRoles
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      user = userFixtures.validUserResponse(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
@@ -221,7 +221,7 @@ describe('Organisation details controller - get', () => {
         external_id: EXTERNAL_ID_IN_SESSION,
         service_roles: serviceRoles
       })
-      user = userFixtures.validUserWithMerchantDetails(userInSession)
+      user = userFixtures.validUserResponse(userInSession)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)

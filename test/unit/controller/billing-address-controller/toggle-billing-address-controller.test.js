@@ -27,14 +27,21 @@ describe('Toggle billing address collection controller', () => {
   })
   const EXTERNAL_ID_IN_SESSION = 'exsfjpwoi34op23i4'
   const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
-  let userFixtureOpts = {
-    default_service_id: EXTERNAL_SERVICE_ID,
-    collect_billing_address: true,
-    permissions: [{name: 'toggle-billing-address:read'}, {name: 'toggle-billing-address:update'}]
+
+  const buildUserWithCollectBillingAddress = (collectBillingAddress) => {
+    return userFixtures.validUserResponse({
+      service_roles: [{
+        service: {
+          external_id: EXTERNAL_SERVICE_ID,
+          collect_billing_address: collectBillingAddress
+        }
+      }]
+    })
   }
+
   describe('should get index with billing address on', () => {
     before(done => {
-      user = userFixtures.validUser(userFixtureOpts)
+      user = buildUserWithCollectBillingAddress(true)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
@@ -55,8 +62,7 @@ describe('Toggle billing address collection controller', () => {
   })
   describe('should get index with billing address off', () => {
     before(done => {
-      userFixtureOpts.collect_billing_address = false
-      user = userFixtures.validUser(userFixtureOpts)
+      user = buildUserWithCollectBillingAddress(false)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
@@ -77,8 +83,7 @@ describe('Toggle billing address collection controller', () => {
   })
   describe('should get warning with billing address off', () => {
     before(done => {
-      userFixtureOpts.collect_billing_address = true
-      user = userFixtures.validUser(userFixtureOpts)
+      user = buildUserWithCollectBillingAddress(true)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
@@ -103,8 +108,7 @@ describe('Toggle billing address collection controller', () => {
   })
   describe('should redirect to index on enable billing address', () => {
     before(done => {
-      userFixtureOpts.collect_billing_address = true
-      user = userFixtures.validUser(userFixtureOpts)
+      user = buildUserWithCollectBillingAddress(true)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
@@ -133,8 +137,7 @@ describe('Toggle billing address collection controller', () => {
   })
   describe('should redirect to index on disable billing address', () => {
     before(done => {
-      userFixtureOpts.collect_billing_address = false
-      user = userFixtures.validUser(userFixtureOpts)
+      user = buildUserWithCollectBillingAddress(false)
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)

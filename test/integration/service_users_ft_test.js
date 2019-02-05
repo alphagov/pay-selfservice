@@ -41,22 +41,27 @@ describe('service users resource', () => {
 
   it('get list of service users should link to my profile for my user', done => {
     const externalServiceId = '734rgw76jhka'
-    const serviceRoles = [{
-      service: {
-        name: 'System Generated',
-        external_id: externalServiceId
-      },
-      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
-    }]
-    const user = session.getUser({
+    let userOpts = {
       external_id: EXTERNAL_ID_LOGGED_IN,
       username: USERNAME_LOGGED_IN,
       email: USERNAME_LOGGED_IN,
-      service_roles: serviceRoles
-    })
-
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
+      service_roles: [{
+        service: {
+          name: 'System Generated',
+          external_id: externalServiceId
+        },
+        role: {
+          name: 'admin',
+          description: 'Administrator',
+          permissions: [{
+            name: 'users-service:create'
+          }]
+        }
+      }]
+    }
+    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([userOpts])
     const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse()
+    const user = userFixtures.validUserResponse(userOpts).getAsObject()
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)
       .reply(200, serviceUsersRes.getPlain())

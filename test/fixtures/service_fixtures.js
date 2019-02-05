@@ -11,12 +11,20 @@ const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactServices = pactBase({ array: ['service_ids'] })
 
 const buildMerchantDetailsWithDefaults = (opts = {}) => {
+  _.defaults(opts, {
+    name: 'name',
+    address_line1: 'line1',
+    address_city: 'City',
+    address_postcode: 'POSTCODE',
+    address_country: 'GB'
+  })
+
   const merchantDetails = {
-    name: opts.name || 'name',
-    address_line1: opts.address_line1 || 'line1',
-    address_city: opts.address_city || 'City',
-    address_postcode: opts.address_postcode || 'POSTCODE',
-    address_country: opts.address_country || 'GB'
+    name: opts.name,
+    address_line1: opts.address_line1,
+    address_city: opts.address_city,
+    address_postcode: opts.address_postcode,
+    address_country: opts.address_country
   }
 
   if (opts.address_line2) {

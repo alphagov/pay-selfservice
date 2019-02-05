@@ -30,7 +30,7 @@ describe('adminusers client - authenticate', function () {
 
   describe('authenticate user API - success', () => {
     let request = userFixtures.validAuthenticateRequest({username: 'existing-user'})
-    let validUserResponse = userFixtures.validUserResponse(request.getPlain())
+    let validUserResponse = userFixtures.validUserResponse()
 
     before((done) => {
       provider.addInteraction(

@@ -110,7 +110,7 @@ describe('charge model', function () {
 
     describe('when connector returns correctly', function () {
       it('should return the correct promise', function () {
-        let user = userFixtures.validUser().getPlain()
+        let user = userFixtures.validUserResponse().getPlain()
         // Create a class that inherits from EventEmitter and emit a 'connectorError' event which is handled by the service
         class StubConnectorChargeFunctions extends EventEmitter {
           getCharge (params, callback) {

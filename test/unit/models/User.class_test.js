@@ -61,7 +61,7 @@ describe('Class: User', () => {
   describe('Method: getPermissionsForService', () => {
     it('should return flattened permissions from a serviceRole of a user', () => {
       result = user.getPermissionsForService(service.externalId)
-      expect(result).to.include('perm-1')
+      expect(result).to.include(permission)
     })
   })
 })
