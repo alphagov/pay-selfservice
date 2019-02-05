@@ -22,7 +22,7 @@ chai.use(chaiAsPromised)
 
 describe('adminusers client - create a new service', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -139,35 +139,6 @@ describe('adminusers client - create a new service', function () {
         expect(service.external_id).to.equal(externalId)
         expect(service.name).to.equal(name)
         expect(service.gateway_account_ids).to.deep.equal(gatewayAccountIds)
-      }).should.notify(done)
-    })
-  })
-
-  describe('create a service - bad request', () => {
-    const invalidRequest = serviceFixtures.validCreateServiceRequest({gateway_account_ids: ['non-numeric-id']})
-    const errorResponse = serviceFixtures.badRequestResponseWhenNonNumericGatewayAccountIds(['non-numeric-id'])
-
-    before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(SERVICE_RESOURCE)
-          .withUponReceiving('an invalid create service request')
-          .withMethod('POST')
-          .withRequestBody(invalidRequest.getPactified())
-          .withStatusCode(400)
-          .withResponseBody(errorResponse.getPactified())
-          .build()
-      )
-        .then(() => done())
-        .catch(done)
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should return 400 on invalid gateway account ids', function (done) {
-      adminusersClient.createService(null, null, ['non-numeric-id']).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-        expect(response.message.errors.length).to.equal(1)
-        expect(response.message.errors).to.deep.equal(errorResponse.getPlain().errors)
       }).should.notify(done)
     })
   })
