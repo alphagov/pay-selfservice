@@ -38,9 +38,7 @@ const stubWithGoLiveStage = (currentGoLiveStage) => {
     opts: {
       external_id: variables.serviceExternalId,
       gateway_account_ids: [variables.gatewayAccountId],
-      current_go_live_stage: currentGoLiveStage,
-      path: 'current_go_live_stage',
-      value: currentGoLiveStage
+      current_go_live_stage: currentGoLiveStage
     }
   }
 }

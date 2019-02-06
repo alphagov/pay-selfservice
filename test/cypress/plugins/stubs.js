@@ -460,7 +460,7 @@ module.exports = {
             headers: {
               'Accept': 'application/json'
             },
-            body: serviceFixtures.validUpdateServiceRequest(opts).getPlain()
+            body: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.current_go_live_stage).getPlain()
           }
         }],
         responses: [{
