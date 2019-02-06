@@ -37,10 +37,19 @@ describe('adminusers client - update merchant details', function () {
   describe('when updating merchant details with a valid request', () => {
     const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const serviceName = 'serviceName'
-    const validUpdateMerchantDetailsRequest = serviceFixtures.validUpdateMerchantDetailsRequest()
-    const validUpdateMerchantDetailsResponse = serviceFixtures.validUpdateMerchantDetailsResponse({
+    const merchantDetails = {
+      name: 'new-name',
+      address_line1: 'new-line1',
+      address_line2: 'new-line2',
+      address_city: 'new-city',
+      address_postcode: 'new-postcode',
+      address_country: 'new-country'
+    }
+    const validUpdateMerchantDetailsRequest = serviceFixtures.validUpdateMerchantDetailsRequest(merchantDetails)
+    const validUpdateMerchantDetailsResponse = serviceFixtures.validServiceResponse({
       external_id: existingServiceExternalId,
-      name: serviceName
+      name: serviceName,
+      merchant_details: merchantDetails
     })
     let result
 

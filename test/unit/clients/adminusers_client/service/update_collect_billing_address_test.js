@@ -37,7 +37,7 @@ describe('adminusers client - patch collect billing address toggle', function ()
 
   describe('patch collect billing address toggle - disabled', () => {
     const validUpdateCollectBillingAddressRequest = serviceFixtures.validCollectBillingAddressToggleRequest({enabled: false})
-    const validUpdateCollectBillingAddressResponse = serviceFixtures.validCollectBillingAddressToggleResponse({
+    const validUpdateCollectBillingAddressResponse = serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
       collect_billing_address: false
     })

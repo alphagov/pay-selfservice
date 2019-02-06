@@ -40,6 +40,21 @@ const buildMerchantDetailsWithDefaults = (opts = {}) => {
   return merchantDetails
 }
 
+const buildServiceNameWithDefaults = (opts = {}) => {
+  _.defaults(opts, {
+    en: 'System Generated'
+  })
+
+  const serviceName = {
+    en: opts.en
+  }
+  if (opts.cy) {
+    serviceName.cy = opts.cy
+  }
+
+  return serviceName
+}
+
 module.exports = {
 
   getServiceUsersNotFoundResponse: () => {
@@ -93,42 +108,17 @@ module.exports = {
     }
   },
 
-  validCreateServiceResponse: (opts) => {
-    opts = opts || {}
-
-    const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'System Generated'
-    const gatewayAccountIds = opts.gateway_account_ids || []
-
-    const data = {
-      external_id: externalId,
-      name: serviceName,
-      gateway_account_ids: gatewayAccountIds
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
-
-  validUpdateServiceNameRequestWithEnAndCy: (opts) => {
-    opts = opts || {}
-
+  validUpdateServiceNameRequestWithEnAndCy: (opts = {}) => {
     const data = [
       {
         op: 'replace',
         path: 'service_name/en',
-        value: opts.name || 'new-en-name'
+        value: opts.en || 'new-en-name'
       },
       {
         op: 'replace',
         path: 'service_name/cy',
-        value: opts.nameCy || 'new-cy-name'
+        value: opts.cy || 'new-cy-name'
       }
     ]
 
@@ -142,40 +132,12 @@ module.exports = {
     }
   },
 
-  validUpdateServiceNameResponseWithEnAndCy: (opts) => {
-    opts = opts || {}
-
-    const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'new-en-name'
-    const serviceNameCy = opts.nameCy || 'new-cy-name'
-
-    const data = {
-      external_id: externalId,
-      name: serviceName,
-      service_name: {
-        en: serviceName,
-        cy: serviceNameCy
-      }
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  validUpdateServiceNameRequestWithEn: (opts) => {
-    opts = opts || {}
-
+  validUpdateServiceNameRequestWithEn: (name = 'new-en-name') => {
     const data = [
       {
         op: 'replace',
         path: 'service_name/en',
-        value: opts.name || 'new-en-name'
+        value: name
       },
       {
         op: 'replace',
@@ -194,33 +156,7 @@ module.exports = {
     }
   },
 
-  validUpdateServiceNameResponseWithEn: (opts) => {
-    opts = opts || {}
-
-    const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'new-en-name'
-
-    const data = {
-      external_id: externalId,
-      name: serviceName,
-      service_name: {
-        en: serviceName
-      }
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  validUpdateServiceNameRequestWithCy: (opts) => {
-    opts = opts || {}
-
+  validUpdateServiceNameRequestWithCy: (name = 'new-cy-name') => {
     const data = [
       {
         op: 'replace',
@@ -230,54 +166,7 @@ module.exports = {
       {
         op: 'replace',
         path: 'service_name/cy',
-        value: opts.name || 'new-cy-name'
-      }
-    ]
-
-    return {
-      getPactified: () => {
-        return pactServices.pactifySimpleArray(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  validUpdateServiceNameResponseWithCy: (opts) => {
-    opts = opts || {}
-
-    const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'new-en-name'
-    const serviceNameCy = opts.nameCy || 'new-cy-name'
-
-    const data = {
-      external_id: externalId,
-      name: serviceName,
-      service_name: {
-        en: serviceName,
-        cy: serviceNameCy
-      }
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  badRequestWithInvalidPathWhenUpdateServiceNameRequest: (opts) => {
-    opts = opts || {}
-
-    const data = [
-      {
-        op: 'replace',
-        path: 'invalid-path',
-        value: opts.name || 'updated-service-name'
+        value: name
       }
     ]
 
@@ -300,44 +189,6 @@ module.exports = {
       address_city: opts.address_city || 'updated-merchant-details-city',
       address_postcode: opts.address_postcode || 'updated-merchant-details-postcode',
       address_country: opts.address_country || 'updated-merchant-details-country'
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-  validUpdateMerchantDetailsResponse: (opts) => {
-    opts = opts || {}
-    const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'updated-service-name'
-    const merchantDetails = opts.merchant_details || {}
-    const merchantName = merchantDetails.name || 'updated-merchant-details-name'
-    const merchantTelephoneNumber = merchantDetails.telephone_number || '03069990000'
-    const merchantEmail = merchantDetails.email || 'dd-merchant@example.com'
-    const merchantAddressLine1 = merchantDetails.address_line1 || 'updated-merchant-details-addressline1'
-    const merchantAddressLine2 = merchantDetails.address_line2 || 'updated-merchant-details-addressline2'
-    const merchantAddressCity = merchantDetails.address_city || 'updated-merchant-details-city'
-    const merchantAddressPostcode = merchantDetails.address_postcode || 'updated-merchant-details-postcode'
-    const merchantAddressCountry = merchantDetails.address_country || 'updated-merchant-details-country'
-
-    const data = {
-      external_id: externalId,
-      name: serviceName,
-      merchant_details: {
-        name: merchantName,
-        telephone_number: merchantTelephoneNumber,
-        email: merchantEmail,
-        address_line1: merchantAddressLine1,
-        address_line2: merchantAddressLine2,
-        address_city: merchantAddressCity,
-        address_postcode: merchantAddressPostcode,
-        address_country: merchantAddressCountry
-      }
     }
 
     return {
@@ -436,24 +287,6 @@ module.exports = {
     }
   },
 
-  validCollectBillingAddressToggleResponse: (opts) => {
-    opts = opts || {}
-
-    const data = {
-      external_id: opts.external_id || 'externalId',
-      collect_billing_address: opts.collect_billing_address || false
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
   validUpdateServiceRequest: (opts) => {
     opts = opts || {}
 
@@ -473,18 +306,31 @@ module.exports = {
     }
   },
 
-  buildServiceWithDefaults: (opts = {}) => {
+  validServiceResponse: (opts = {}) => {
+    _.defaultsDeep(opts, {
+      id: 857,
+      external_id: 'cp5wa',
+      name: 'System Generated',
+      gateway_account_ids: ['666'],
+      links: [],
+      service_name: {
+        en: 'System Generated'
+      },
+      redirect_to_service_immediately_on_terminal_state: false,
+      collect_billing_address: false,
+      current_go_live_stage: 'NOT_STARTED'
+    })
+
     const service = {
-      id: opts.id || 857,
-      external_id: opts.external_id || 'cp5wa',
-      name: opts.name || 'System Generated',
-      gateway_account_ids: opts.gateway_account_ids || [
-        '666'
-      ],
-      _links: opts.links || [],
-      redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state || false,
-      collect_billing_address: opts.collect_billing_address || false,
-      current_go_live_stage: opts.current_go_live_stage || 'NOT_STARTED'
+      id: opts.id,
+      external_id: opts.external_id,
+      name: opts.name,
+      gateway_account_ids: opts.gateway_account_ids,
+      _links: opts.links,
+      service_name: buildServiceNameWithDefaults(opts.service_name),
+      redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state,
+      collect_billing_address: opts.collect_billing_address,
+      current_go_live_stage: opts.current_go_live_stage
     }
 
     if (opts.merchant_details) {
