@@ -34,7 +34,7 @@ const simpleStub = (serviceRole) => {
 
 const stubWithGoLiveStage = (currentGoLiveStage) => {
   return {
-    name: 'patchGoLiveStageSuccess',
+    name: 'patchUpdateServiceSuccess',
     opts: {
       external_id: variables.serviceExternalId,
       gateway_account_ids: [variables.gatewayAccountId],

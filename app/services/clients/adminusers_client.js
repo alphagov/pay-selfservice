@@ -639,6 +639,26 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  const updateMerchantName = (serviceExternalId, merchantName) => {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}`,
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'merchant_details/name',
+          value: merchantName
+        },
+        correlationId: correlationId,
+        description: 'update merchant name',
+        transform: responseBodyToServiceTransformer,
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
   /**
      * Add gateway accounts to service
      *
@@ -767,6 +787,7 @@ module.exports = function (clientOptions = {}) {
     createService,
     updateServiceName,
     updateMerchantDetails,
+    updateMerchantName,
     updateCollectBillingAddress,
     addGatewayAccountsToService,
     updateCurrentGoLiveStage

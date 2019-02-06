@@ -18,6 +18,7 @@ module.exports = {
   getGatewayAccounts,
   updateServiceName,
   updateMerchantDetails,
+  updateMerchantName,
   createService,
   toggleCollectBillingAddress,
   updateCurrentGoLiveStage
@@ -112,6 +113,19 @@ function updateMerchantDetails (serviceExternalId, merchantDetails, correlationI
         return reject(err)
       })
   })
+}
+
+/**
+ * Update the merchant name
+ *
+ * @param serviceExternalId
+ * @param merchantName
+ * @param correlationId
+ * @returns {Promise<Service>} the updated service
+ */
+
+function updateMerchantName (serviceExternalId, merchantName, correlationId) {
+  return getAdminUsersClient({ correlationId }).updateMerchantName(serviceExternalId, merchantName)
 }
 
 /**
