@@ -287,6 +287,23 @@ module.exports = {
     }
   },
 
+  validUpdateRequestToGoLiveRequest: (value = 'AGREED_TO_STRIPE') => {
+    const data = {
+      op: 'replace',
+      path: 'current_go_live_stage',
+      value: value
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
   validUpdateServiceRequest: (opts) => {
     opts = opts || {}
 
