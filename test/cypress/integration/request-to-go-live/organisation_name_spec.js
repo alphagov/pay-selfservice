@@ -104,7 +104,6 @@ describe('Request to go live: organisation name page', () => {
 
       cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
       cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
-      cy.get('#request-to-go-live-organisation-name-form > button').click()
     })
 
     it('should show empty input box if organisation name is not pre-filled', () => {
@@ -145,7 +144,6 @@ describe('Request to go live: organisation name page', () => {
 
       cy.get('#request-to-go-live-organisation-name-form > button').should('exist')
       cy.get('#request-to-go-live-organisation-name-form > button').should('contain', 'Continue')
-      cy.get('#request-to-go-live-organisation-name-form > button').click()
     })
   })
 
