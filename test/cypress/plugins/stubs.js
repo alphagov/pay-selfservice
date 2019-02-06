@@ -41,6 +41,47 @@ module.exports = {
       }
     ]
   },
+  getUserSuccessRepeatFirstResponseNTimes: (opts = {}) => {
+    const aValidUserResponse = userFixtures.validUserResponse(opts[0]).getPlain()
+    const aSecondValidUserResponse = userFixtures.validUserResponse(opts[1]).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: '/v1/api/users/' + aValidUserResponse.external_id,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidUserResponse
+          },
+          _behaviors: {
+            repeat: opts[0].repeat
+          }
+        }, {
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aSecondValidUserResponse
+          },
+          _behaviors: {
+            repeat: opts[1].repeat
+          }
+        }
+        ]
+      }
+    ]
+  },
   getGatewayAccountSuccess: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
     return [
