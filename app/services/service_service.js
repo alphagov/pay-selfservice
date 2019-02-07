@@ -22,7 +22,8 @@ module.exports = {
   createService,
   toggleCollectBillingAddress,
   updateCurrentGoLiveStage,
-  addStripeAgreementIpAddress
+  addStripeAgreementIpAddress,
+  addGovUkAgreementEmailAddress
 }
 
 /**
@@ -179,4 +180,16 @@ function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
  */
 function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationId) {
   return getAdminUsersClient({ correlationId }).addStripeAgreementIpAddress(serviceExternalId, ipAddress)
+}
+
+/**
+ * Update the current go live stage setting
+ *
+ * @param serviceExternalId
+ * @param ipAddress
+ * @param correlationId
+ * @returns {*|Promise|Promise}
+ */
+function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId, correlationId) {
+  return getAdminUsersClient({ correlationId }).addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
 }
