@@ -36,11 +36,13 @@ describe('adminusers client - patch request to update merchant name', function (
 
   describe('a valid update merchant name patch request', () => {
     const serviceExternalId = 'cp5wa'
-    const serviceName = 'serviceName'
-    const validUpdateMerchantNameRequest = serviceFixtures.validUpdateMerchantNameRequest('updated-merchant-details-name')
-    const validUpdateMerchantNameResponse = serviceFixtures.validUpdateMerchantNameResponse({
+    const merchantName = 'updated-merchant-details-name'
+    const validUpdateMerchantNameRequest = serviceFixtures.validUpdateMerchantNameRequest(merchantName)
+    const validUpdateMerchantNameResponse = serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
-      name: serviceName
+      merchant_details: {
+        name: merchantName
+      }
     })
 
     before(done => {
@@ -61,10 +63,9 @@ describe('adminusers client - patch request to update merchant name', function (
     afterEach(() => provider.verify())
 
     it('should update a merchant name successfully', (done) => {
-      adminUsersClient.updateMerchantName(serviceExternalId, 'updated-merchant-details-name')
+      adminUsersClient.updateMerchantName(serviceExternalId, merchantName)
         .should.be.fulfilled.then(service => {
           expect(service.externalId).to.equal(serviceExternalId)
-          expect(service.name).to.equal(serviceName)
           expect(service.merchantDetails.name).to.equal(validUpdateMerchantNameRequest.getPlain().value)
         }).should.notify(done)
     })

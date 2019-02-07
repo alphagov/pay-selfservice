@@ -268,31 +268,6 @@ module.exports = {
     }
   },
 
-  validUpdateMerchantNameResponse: opts => {
-    opts = opts || {}
-    const externalId = opts.external_id || 'externalId'
-    const serviceName = opts.name || 'updated-service-name'
-    const merchantDetails = opts.merchant_details || {}
-    const merchantName = merchantDetails.name || 'updated-merchant-details-name'
-
-    const data = {
-      external_id: externalId,
-      name: serviceName,
-      merchant_details: {
-        name: merchantName
-      }
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
   validUpdateServiceRequest: (opts) => {
     opts = opts || {}
 

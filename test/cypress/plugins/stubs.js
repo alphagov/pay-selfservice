@@ -475,6 +475,31 @@ module.exports = {
       }
     ]
   },
+  patchSingleMerchantDetailsSuccess: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PATCH',
+            path: `/v1/api/services/${opts.external_id}`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: serviceFixtures.validUpdateMerchantNameRequest(opts.value).getPlain()
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            body: serviceFixtures.validServiceResponse(opts).getPlain(),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        }]
+      }
+    ]
+  },
   patchGoLiveStageFailure: (opts = {}) => {
     return [
       {
