@@ -752,6 +752,21 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  const addStripeAgreementIpAddress = (serviceExternalId, ipAddress) => {
+    return baseClient.post(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}/stripe-agreement`,
+        json: true,
+        body: { ip_address: ipAddress },
+        correlationId: correlationId,
+        description: 'post the ip address of the user who agreed to stripe terms',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -790,6 +805,7 @@ module.exports = function (clientOptions = {}) {
     updateMerchantName,
     updateCollectBillingAddress,
     addGatewayAccountsToService,
-    updateCurrentGoLiveStage
+    updateCurrentGoLiveStage,
+    addStripeAgreementIpAddress
   }
 }

@@ -21,7 +21,8 @@ module.exports = {
   updateMerchantName,
   createService,
   toggleCollectBillingAddress,
-  updateCurrentGoLiveStage
+  updateCurrentGoLiveStage,
+  addStripeAgreementIpAddress
 }
 
 /**
@@ -166,4 +167,16 @@ function toggleCollectBillingAddress (serviceExternalId, collectBillingAddress, 
  */
 function updateCurrentGoLiveStage (serviceExternalId, newStage, correlationId) {
   return getAdminUsersClient({ correlationId }).updateCurrentGoLiveStage(serviceExternalId, newStage)
+}
+
+/**
+ * Update the current go live stage setting
+ *
+ * @param serviceExternalId
+ * @param ipAddress
+ * @param correlationId
+ * @returns {*|Promise|Promise}
+ */
+function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationId) {
+  return getAdminUsersClient({ correlationId }).addStripeAgreementIpAddress(serviceExternalId, ipAddress)
 }
