@@ -52,7 +52,7 @@ describe('create service otp validation', function () {
       const gatewayAccountId = '1'
 
       const mockConnectorCreateGatewayAccountResponse =
-                gatewayAccountFixtures.validCreateGatewayAccountResponse({
+                gatewayAccountFixtures.validGatewayAccountResponse({
                   gateway_account_id: gatewayAccountId
                 }).getPlain()
       const mockAdminUsersInviteCompleteRequest =

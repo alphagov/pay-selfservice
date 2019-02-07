@@ -8,6 +8,39 @@ const _ = require('lodash')
 const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 
+function validGatewayAccount (opts) {
+  const gatewayAccount = {
+    gateway_account_id: opts.gateway_account_id || 31,
+    service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',
+    type: opts.type || 'test',
+    analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58',
+    email_collection_mode: opts.email_collection_mode || 'MANDATORY',
+    email_notifications: opts.email_notifications || {
+      PAYMENT_CONFIRMED: {
+        version: 1,
+        enabled: true,
+        template_body: 'template here'
+      },
+      REFUND_ISSUED: {
+        version: 1,
+        enabled: true
+      }
+    }
+  }
+
+  if (opts.description) {
+    gatewayAccount.description = opts.description
+  }
+  if (opts.analytics_id) {
+    gatewayAccount.analytics_id = opts.analytics_id
+  }
+  if (opts.toggle_3ds) {
+    gatewayAccount.toggle_3ds = opts.toggle_3ds
+  }
+
+  return gatewayAccount
+}
+
 module.exports = {
   validGatewayAccountEmailRefundToggleRequest: (enabled = true) => {
     const data = {
@@ -79,107 +112,8 @@ module.exports = {
       }
     }
   },
-  validGatewayAccountEmailNotificationsResponse: (opts = {}) => {
-    let data = {
-      version: 1,
-      enabled: true,
-      emailCollectionMode: 1,
-      refundEmailEnabled: true,
-      accountEntity: {
-        version: 1,
-        credentials: {},
-        requires3ds: false,
-        live: false,
-        gateway_account_id: opts.gatewayAccountId || 222,
-        payment_provider: 'sandbox',
-        type: 'test',
-        service_name: 'local Pay test',
-        card_types: [{
-          id: '0b65832b-50bd-46b5-bdd2-e91574acbda6',
-          brand: 'master-card',
-          label: 'Mastercard',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: '462eef52-b3ea-4a9a-90eb-6912950de52b',
-          brand: 'unionpay',
-          label: 'Union Pay',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: '4d249b63-5b69-4813-877e-745f3df95be9',
-          brand: 'master-card',
-          label: 'Mastercard',
-          type: 'DEBIT',
-          requires3ds: false
-        }, {
-          id: '6473e1b2-0352-47c7-b097-5ae39e9adab6',
-          brand: 'american-express',
-          label: 'American Express',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: '900ae803-bacf-4709-b8a8-22f109d26d28',
-          brand: 'visa',
-          label: 'Visa',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: 'a6da4627-d0d0-4de0-91a4-d69963980cba',
-          brand: 'jcb',
-          label: 'Jcb',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: 'cbdb863a-fc5c-4053-b37a-64404a177146',
-          brand: 'diners-club',
-          label: 'Diners Club',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: 'ee7b9e4c-bfd4-45c1-b0b3-fbbb8f2f973b',
-          brand: 'discover',
-          label: 'Discover',
-          type: 'CREDIT',
-          requires3ds: false
-        }, {
-          id: 'f526f829-c387-4be1-88b2-5552e2cc149b',
-          brand: 'visa',
-          label: 'Visa',
-          type: 'DEBIT',
-          requires3ds: false
-        }]
-      }
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
-    }
-  },
   validGatewayAccountResponse: (opts = {}) => {
-    let data = {
-      gateway_account_id: opts.gateway_account_id || 31,
-      service_name: opts.service_name || '8b9370c1a83c4d71a538a1691236acc2',
-      type: opts.type || 'test',
-      analytics_id: opts.analytics_id || '8b02c7e542e74423aa9e6d0f0628fd58',
-      email_collection_mode: opts.email_collection_mode || 'MANDATORY',
-      email_notifications: opts.email_notifications || {
-        PAYMENT_CONFIRMED: {
-          version: 1,
-          enabled: true,
-          template_body: 'template here'
-        },
-        REFUND_ISSUED: {
-          version: 1,
-          enabled: true
-        }
-      }
-    }
+    let data = validGatewayAccount(opts)
 
     return {
       getPactified: () => {
@@ -191,57 +125,9 @@ module.exports = {
     }
   },
   validGatewayAccountsResponse: (opts = {}) => {
+    const accounts = _.flatMap(opts.accounts, validGatewayAccount)
     let data = {
-      accounts: opts.accounts ||
-        [{
-          type: 'test',
-          gateway_account_id: 100,
-          payment_provider: 'sandbox',
-          service_name: 'Gateway Account 1 (test)',
-          email_collection_mode: 'MANDATORY',
-          emailNotifications: {
-            PAYMENT_CONFIRMED: {
-              version: 1,
-              enabled: true,
-              template_body: null
-            }
-          },
-          _links: {self: {href: 'https://connector.pymnt.localdomain/v1/api/accounts/100'}}
-        }, {
-          type: 'test',
-          gateway_account_id: 101,
-          payment_provider: 'sandbox',
-          service_name: 'Gateway Account 2 (test)',
-          email_collection_mode: 'OPTIONAL',
-          email_notifications: {
-            PAYMENT_CONFIRMED: {
-              version: 1,
-              enabled: true,
-              template_body: null
-            },
-            REFUND_ISSUED: {
-              version: 1,
-              enabled: true,
-              template_body: null
-            }
-          },
-          _links: {self: {href: 'https://connector.pymnt.localdomain/v1/api/accounts/101'}}
-        }, {
-          type: 'test',
-          gateway_account_id: 102,
-          payment_provider: 'sandbox',
-          service_name: 'Gateway Account 3 (test)',
-          email_collection_mode: 'OFF',
-          email_notifications: {
-            PAYMENT_CONFIRMED: {
-              version: 1,
-              enabled: true,
-              template_body: null
-            }
-          },
-          _links: {self: {href: 'https://connector.pymnt.localdomain/v1/api/accounts/102'}}
-        }
-        ]
+      accounts: accounts
     }
 
     return {
@@ -277,28 +163,6 @@ module.exports = {
       payment_provider: opts.payment_provider || 'sandbox',
       service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
       analytics_id: opts.analytics_id || 'PAY-GA-123',
-      type: opts.type || 'test'
-    }
-
-    return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-  validCreateGatewayAccountResponse: (opts = {}) => {
-    const data = {
-      gateway_account_id: opts.gateway_account_id || '1',
-      description: opts.description || null,
-      analytics_id: opts.analytics_id || null,
-      links: [{
-        href: 'https://connector.internal.pymnt.localdomain:9300/v1/api/accounts/' + (opts.gateway_account_id || '1'),
-        rel: 'self',
-        method: 'GET'
-      }],
       type: opts.type || 'test'
     }
 
