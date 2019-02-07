@@ -767,6 +767,21 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  const addGovUkAgreementEmailAddress = (serviceExternalId, userExternalId) => {
+    return baseClient.post(
+      {
+        baseUrl,
+        url: `${serviceResource}/${serviceExternalId}/govuk-pay-agreement`,
+        json: true,
+        body: { user_external_id: userExternalId },
+        correlationId: correlationId,
+        description: 'post the external id of the user who agreed to GovUk Pay terms',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -806,6 +821,7 @@ module.exports = function (clientOptions = {}) {
     updateCollectBillingAddress,
     addGatewayAccountsToService,
     updateCurrentGoLiveStage,
-    addStripeAgreementIpAddress
+    addStripeAgreementIpAddress,
+    addGovUkAgreementEmailAddress
   }
 }

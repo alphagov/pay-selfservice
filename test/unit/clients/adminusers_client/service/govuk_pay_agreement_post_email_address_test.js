@@ -14,12 +14,13 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
-const serviceExternalId = 'rtglNotStarted'
 
+const userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+const serviceExternalId = 'cp5wa'
 // Global setup
 chai.use(chaiAsPromised)
 
-describe('adminusers client - post stripe agreement - ip address', () => {
+describe('adminusers client - post govuk pay agreement - email address', () => {
   let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
@@ -34,16 +35,15 @@ describe('adminusers client - post stripe agreement - ip address', () => {
   after(done => provider.finalize().then(done()))
 
   describe('post ip address', () => {
-    const ipAddress = '93.184.216.34'
-    const validPostStripeAgreementIpAddressRequest = { ip_address: ipAddress }
+    const validPostGovUkAgreementUserEmailRequest = { user_external_id: userExternalId }
 
     before(done => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}/stripe-agreement`)
-          .withUponReceiving('a valid post stripe agreement - ip address request')
-          .withState(`a service exists with external id ${serviceExternalId} and go live stage equals to NOT_STARTED`)
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}/govuk-pay-agreement`)
+          .withUponReceiving('a valid post govuk pay agreement - email address request')
+          .withState(`a user exists with external id ${userExternalId} with admin role for service with id ${serviceExternalId}`)
           .withMethod('POST')
-          .withRequestBody(validPostStripeAgreementIpAddressRequest)
+          .withRequestBody(validPostGovUkAgreementUserEmailRequest)
           .withStatusCode(201)
           .withResponseHeaders({})
           .build()
@@ -53,8 +53,8 @@ describe('adminusers client - post stripe agreement - ip address', () => {
 
     afterEach(() => provider.verify())
 
-    it('should post ip address successfully', done => {
-      adminusersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
+    it('should post email address successfully', done => {
+      adminusersClient.addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
         .should.be.fulfilled.should.notify(done)
     })
   })
