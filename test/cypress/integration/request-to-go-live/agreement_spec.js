@@ -2,12 +2,16 @@
 
 const lodash = require('lodash')
 const utils = require('../../utils/request_to_go_live_utils')
-const variables = utils.variables
+const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 
 describe('Request to go live: agreement', () => {
-  const userExternalId = variables.userExternalId
-  const gatewayAccountId = utils.variables.gatewayAccountId
-  const serviceExternalId = utils.variables.serviceExternalId
+  const stubGovUkPayAgreement = {
+    name: 'postGovUkPayAgreement',
+    opts: {
+      external_id: serviceExternalId,
+      user_external_id: userExternalId
+    }
+  }
 
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -82,8 +86,7 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_STRIPE'))
-
+      utils.stubWithGoLiveStage('TERMS_AGREED_STRIPE'), stubGovUkPayAgreement)
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })
@@ -137,7 +140,7 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_WORLDPAY'))
+      utils.stubWithGoLiveStage('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
 
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)

@@ -9,6 +9,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+const validPostGovUkPayAgreementRequest = require('../../../../fixtures/go_live_requests_fixture').validPostGovUkPayAgreementRequest
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -34,8 +35,9 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
   before(() => provider.setup())
   after(done => provider.finalize().then(done()))
 
-  describe('post ip address', () => {
-    const validPostGovUkAgreementUserEmailRequest = { user_external_id: userExternalId }
+  describe('post email address', () => {
+    const payload = { user_external_id: userExternalId }
+    const validGovUkAgreementUserEmailRequest = validPostGovUkPayAgreementRequest(payload).getPlain()
 
     before(done => {
       provider.addInteraction(
@@ -43,7 +45,7 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
           .withUponReceiving('a valid post govuk pay agreement - email address request')
           .withState(`a user exists with external id ${userExternalId} with admin role for service with id ${serviceExternalId}`)
           .withMethod('POST')
-          .withRequestBody(validPostGovUkAgreementUserEmailRequest)
+          .withRequestBody(validGovUkAgreementUserEmailRequest)
           .withStatusCode(201)
           .withResponseHeaders({})
           .build()
