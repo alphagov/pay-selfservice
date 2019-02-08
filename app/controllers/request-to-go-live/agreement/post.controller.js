@@ -7,6 +7,7 @@ const lodash = require('lodash')
 const { requestToGoLive } = require('../../../paths')
 const goLiveStage = require('../../../models/go-live-stage')
 const { updateCurrentGoLiveStage } = require('../../../services/service_service')
+const { addGovUkAgreementEmailAddress } = require('../../../services/service_service')
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { renderErrorView } = require('../../../utils/response.js')
 
@@ -21,7 +22,10 @@ const stages = {
 module.exports = (req, res) => {
   const agreement = lodash.get(req, 'body.agreement')
   if (agreement !== undefined) {
-    updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage], req.correlationId)
+    addGovUkAgreementEmailAddress(req.service.externalId, req.user.externalId, req.correlationId)
+      .then(() => {
+        return updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage], req.correlationId)
+      })
       .then(updatedService => {
         res.redirect(
           303,

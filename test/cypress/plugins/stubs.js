@@ -9,6 +9,7 @@ const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures'
 const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures')
 const cardFixtures = require('../../fixtures/card_fixtures')
 const serviceFixtures = require('../../fixtures/service_fixtures')
+const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -494,6 +495,28 @@ module.exports = {
             headers: {
               'Content-Type': 'application/json'
             }
+          }
+        }]
+      }
+    ]
+  },
+  postGovUkPayAgreement: (opts) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: `v1/api/services/${opts.external_id}/govuk-pay-agreement`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts)
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 201,
+            headers: {}
           }
         }]
       }
