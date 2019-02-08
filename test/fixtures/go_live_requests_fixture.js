@@ -26,5 +26,22 @@ module.exports = {
         return _.clone(data)
       }
     }
+  },
+
+  validPostStripeAgreementRequest: opts => {
+    opts = opts || {}
+
+    const data = {
+      ip_address: opts.ip_address || '93.184.216.34'
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
   }
 }
