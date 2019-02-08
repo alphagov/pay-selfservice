@@ -181,8 +181,8 @@ const buildRoleWithDefaults = (opts = {}) => {
 function buildUserWithDefaults (opts) {
   lodash.defaults(opts, {
     external_id: '7d19aff33f8948deb97ed16b2912dcd3',
-    username: 'some-user@gov.uk',
-    email: 'some-user@gov.uk',
+    username: 'some-user@example.com',
+    email: 'some-user@example.com',
     otp_key: 'krb6fcianbdjkt01ecvi08jcln',
     telephone_number: '9127979',
     second_factor: 'SMS',
