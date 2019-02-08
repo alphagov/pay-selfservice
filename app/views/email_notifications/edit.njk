@@ -48,6 +48,10 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
       <li>use redirects or tracking links</li>
   </ul>
 
+   <p class="govuk-body">
+        Your service reference for the payment is already in the email. However, if you also want to include it in your custom paragraph, you can put $reference and it will be automatically replaced.
+   </p>
+
   <form method="post" action="{{routes.emailNotifications.confirm}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
