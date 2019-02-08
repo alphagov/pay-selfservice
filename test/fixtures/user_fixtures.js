@@ -179,27 +179,41 @@ const buildRoleWithDefaults = (opts = {}) => {
 }
 
 function buildUserWithDefaults (opts) {
-  const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
-  const data = {
-    external_id: opts.external_id || '7d19aff33f8948deb97ed16b2912dcd3',
-    username: opts.username || 'some-user@gov.uk',
-    email: opts.email || 'some-user@gov.uk',
-    otp_key: opts.otp_key || 'krb6fcianbdjkt01ecvi08jcln',
-    telephone_number: opts.telephone_number || '9127979',
-    service_roles: serviceRoles,
-    second_factor: opts.second_factor || 'SMS',
-    provisional_otp_key: opts.provisional_otp_key || 'a-provisional-key',
-    provisional_otp_key_created_at: opts.provisional_otp_key_created_at || null,
-    disabled: opts.disabled || false,
-    login_counter: opts.login_counter || 0,
-    session_version: opts.session_version || 0,
-    _links: opts._links || [{
+  lodash.defaults(opts, {
+    external_id: '7d19aff33f8948deb97ed16b2912dcd3',
+    username: 'some-user@example.com',
+    email: 'some-user@example.com',
+    otp_key: 'krb6fcianbdjkt01ecvi08jcln',
+    telephone_number: '9127979',
+    second_factor: 'SMS',
+    provisional_otp_key: 'a-provisional-key',
+    provisional_otp_key_created_at: null,
+    disabled: false,
+    login_counter: 0,
+    session_version: 0,
+    _links: [{
       rel: 'self',
       method: 'GET',
       href: 'http://localhost:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
     }]
+  })
+
+  const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
+  return {
+    external_id: opts.external_id,
+    username: opts.username,
+    email: opts.email,
+    otp_key: opts.otp_key,
+    telephone_number: opts.telephone_number,
+    service_roles: serviceRoles,
+    second_factor: opts.second_factor,
+    provisional_otp_key: opts.provisional_otp_key,
+    provisional_otp_key_created_at: opts.provisional_otp_key_created_at,
+    disabled: opts.disabled,
+    login_counter: opts.login_counter,
+    session_version: opts.session_version,
+    _links: opts._links
   }
-  return data
 }
 
 module.exports = {

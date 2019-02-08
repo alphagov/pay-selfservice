@@ -13,7 +13,7 @@ chai.use(chaiAsPromised)
 
 describe('adminusers client - delete user', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

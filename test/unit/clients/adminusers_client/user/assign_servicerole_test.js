@@ -13,9 +13,12 @@ const USER_PATH = '/v1/api/users'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
+const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+const existingServiceExternalId = 'cp5wa'
+
 describe('adminusers client - assign service role to user', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -29,44 +32,41 @@ describe('adminusers client - assign service role to user', function () {
 
   describe('assign user service role API - success', () => {
     let role = 'view-and-refund'
-    let userExternalId = 'existing-user'
-    let serviceExternalId = 'random-service-id'
-    let request = userFixtures.validAssignServiceRoleRequest(serviceExternalId, role)
+    let request = userFixtures.validAssignServiceRoleRequest(existingServiceExternalId, role)
     let userFixture = userFixtures.validUserResponse({
-      external_id: userExternalId,
+      external_id: existingUserExternalId,
       service_roles: [{
         service: {
-          name: 'new service',
-          external_id: serviceExternalId,
-          gateway_account_ids: ['2']
+          external_id: existingServiceExternalId
         },
         role: {
           name: role,
           description: `${role}-description`,
-          permissions: [{name: 'perm-1'}]
+          permissions: [{ name: 'perm-1' }]
         }
-      }]
+      }],
+      provisional_otp_key: null
     })
 
     before((done) => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${userExternalId}/services`)
-          .withState('a user exist')
+        new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services`)
           .withUponReceiving('a valid assign service role request')
+          .withState(`a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`)
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request.getPlain())
           .withStatusCode(200)
           .withResponseBody(userFixture.getPactified())
           .build()
       ).then(() => done())
+        .catch(reason => console.log('PACT SETUP FAILED ' + reason))
     })
 
     afterEach(() => provider.verify())
 
     it('should assign service role to a user successfully', function (done) {
-      adminusersClient.assignServiceRole(userExternalId, serviceExternalId, role).should.be.fulfilled.then(function (updatedUser) {
-        const newServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === serviceExternalId)
-        expect(newServiceRole.service.name).to.be.equal('new service')
+      adminusersClient.assignServiceRole(existingUserExternalId, existingServiceExternalId, role).should.be.fulfilled.then(function (updatedUser) {
+        const newServiceRole = updatedUser.serviceRoles.find(serviceRole => serviceRole.service.externalId === existingServiceExternalId)
         expect(newServiceRole.role.name).to.be.equal(role)
       }).should.notify(done)
     })
@@ -74,18 +74,17 @@ describe('adminusers client - assign service role to user', function () {
 
   describe('update user service role API - user not found', () => {
     let role = 'view-and-refund'
-    let externalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
-    const serviceExternalId = 'valid-service-id'
-    let request = userFixtures.validAssignServiceRoleRequest(serviceExternalId, role)
+    let nonExistentUserExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    let request = userFixtures.validAssignServiceRoleRequest(existingServiceExternalId, role)
 
     before((done) => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${externalId}/services`)
-          .withState('a user with external id does not exist')
-          .withUponReceiving('a valid assign service role request')
+        new PactInteractionBuilder(`${USER_PATH}/${nonExistentUserExternalId}/services`)
+          .withUponReceiving('a service role request for non existent-user')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request.getPlain())
           .withStatusCode(404)
+          .withResponseHeaders({})
           .build()
       ).then(() => done())
     })
@@ -93,52 +92,24 @@ describe('adminusers client - assign service role to user', function () {
     afterEach(() => provider.verify())
 
     it('should error not found for non existent user when updating service role', function (done) {
-      adminusersClient.assignServiceRole(externalId, serviceExternalId, role).should.be.rejected.then(function (response) {
+      adminusersClient.assignServiceRole(nonExistentUserExternalId, existingServiceExternalId, role).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(404)
       }).should.notify(done)
     })
   })
 
-  describe('assign user service role API - invalid role_name', () => {
-    let role = 'invalid-role'
-    let existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let serviceExternalId = 'valid-service-external-id'
-    let request = userFixtures.validAssignServiceRoleRequest(serviceExternalId, role)
-
-    before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/services`)
-          .withState('a role with given name does not exist')
-          .withUponReceiving('a valid assign service role request')
-          .withMethod('POST')
-          .withRequestBody(request.getPactified())
-          .withStatusCode(400)
-          .build()
-      ).then(() => done())
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should error bad request if an unknown role_name provided', function (done) {
-      adminusersClient.assignServiceRole(existingExternalId, serviceExternalId, role).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-      }).should.notify(done)
-    })
-  })
-
-  describe('assign user service role API - invalid service id', () => {
+  describe('assign user service role API - 400 response', () => {
     let role = 'admin'
-    let existingExternalId = 'valid-user-id'
     let serviceExternalId = 'XXXXXXXXXXX-invalid-id'
     let request = userFixtures.validAssignServiceRoleRequest(serviceExternalId, role)
 
     before((done) => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/services`)
-          .withState('a service with given external id does not exist')
-          .withUponReceiving('a valid assign service role request')
+        new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services`)
+          .withUponReceiving('an assign service role request for non existent service')
+          .withState(`a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`)
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request.getPlain())
           .withStatusCode(400)
           .build()
       ).then(() => done())
@@ -147,7 +118,7 @@ describe('adminusers client - assign service role to user', function () {
     afterEach(() => provider.verify())
 
     it('should error bad request if service cannot be located', function (done) {
-      adminusersClient.assignServiceRole(existingExternalId, serviceExternalId, role).should.be.rejected.then(function (response) {
+      adminusersClient.assignServiceRole(existingUserExternalId, serviceExternalId, role).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(400)
       }).should.notify(done)
     })

@@ -46,7 +46,7 @@ describe('adminusers client - patch collect billing address toggle', function ()
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
           .withUponReceiving('a valid patch collect billing address toggle (disabled) request')
-          .withState(`a service exists with external id ${serviceExternalId} and billing address collection enabled`)
+          .withState(`a service exists with external id ${serviceExternalId}`)
           .withMethod('PATCH')
           .withRequestBody(validUpdateCollectBillingAddressRequest.getPactified())
           .withStatusCode(200)

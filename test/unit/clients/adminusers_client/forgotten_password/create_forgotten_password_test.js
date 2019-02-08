@@ -13,7 +13,7 @@ const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
 
 describe('adminusers client - create forgotten password', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -26,16 +26,18 @@ describe('adminusers client - create forgotten password', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('success', () => {
-    let request = userFixtures.validForgottenPasswordCreateRequest('existing-user')
+    const username = 'existing-user'
+    let request = userFixtures.validForgottenPasswordCreateRequest(username)
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
-          .withState('a user exist')
+          .withState(`a user exists with username ${username}`)
           .withUponReceiving('a valid forgotten password request')
           .withMethod('POST')
-          .withRequestBody(request.getPactified())
+          .withRequestBody(request.getPlain())
           .withStatusCode(200)
+          .withResponseHeaders({})
           .build()
       ).then(() => done())
     })

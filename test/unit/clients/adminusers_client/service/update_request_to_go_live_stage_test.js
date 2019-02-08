@@ -16,7 +16,7 @@ const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
-const serviceExternalId = 'rtglNotStarted'
+const serviceExternalId = 'cp5wa'
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -47,7 +47,7 @@ describe('adminusers client - patch request to go live stage', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
           .withUponReceiving('a valid patch current go live stage request')
-          .withState(`a service exists with external id ${serviceExternalId} and go live stage equals to NOT_STARTED`)
+          .withState(`a service exists with external id ${serviceExternalId}`)
           .withMethod('PATCH')
           .withRequestBody(validUpdateRequestToGoLiveRequest.getPlain())
           .withStatusCode(200)

@@ -16,7 +16,7 @@ const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}
 
 describe('adminusers client - authenticate', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),

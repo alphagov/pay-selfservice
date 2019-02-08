@@ -22,7 +22,7 @@ const expect = chai.expect
 
 describe('adminusers client - authenticate', () => {
   const provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -34,8 +34,8 @@ describe('adminusers client - authenticate', () => {
   before(() => provider.setup())
   after((done) => provider.finalize().then(done()))
 
-  const existingUsername = 'some-user@gov.uk'
-  const validPassword = 'some-valid-password'
+  const existingUsername = 'existing-user'
+  const validPassword = 'password'
 
   describe('user is authenticated successfully', () => {
     const validPasswordResponse = userFixtures.validUserResponse({ username: existingUsername })
@@ -51,7 +51,7 @@ describe('adminusers client - authenticate', () => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('a correct password for a user')
-          .withState(`user with email address ${existingUsername} exists in the database with the correct with a correct password set to: ${validPassword}`)
+          .withState(`a user exists with username ${existingUsername} and password ${validPassword}`)
           .withMethod('POST')
           .withRequestBody(validPasswordRequestPactified)
           .withResponseBody(validPasswordResponse.getPactified())
@@ -85,7 +85,7 @@ describe('adminusers client - authenticate', () => {
       provider.addInteraction(
         new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
           .withUponReceiving('an incorrect password for a user')
-          .withState(`user with email address ${existingUsername} exists in the database with the correct with a correct password set to: ${validPassword}`)
+          .withState(`a user exists with username ${existingUsername} and password ${validPassword}`)
           .withMethod('POST')
           .withRequestBody(invalidPasswordRequestPactified)
           .withResponseBody(invalidPasswordResponse.getPactified())

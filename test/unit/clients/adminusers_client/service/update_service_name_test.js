@@ -11,18 +11,20 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
 const serviceFixtures = require('../../../../fixtures/service_fixtures')
 
+// Global setup
+chai.use(chaiAsPromised)
+
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const expect = chai.expect
 
-// Global setup
-chai.use(chaiAsPromised)
+const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - update service name', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -35,12 +37,11 @@ describe('adminusers client - update service name', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('success with en and cy', () => {
-    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const serviceName = {
       en: 'en-name',
       cy: 'cy-name'
     }
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy(serviceName)
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequest(serviceName)
     const validUpdateServiceNameResponse = serviceFixtures.validServiceResponse({
       name: serviceName.en,
       external_id: existingServiceExternalId,
@@ -51,8 +52,9 @@ describe('adminusers client - update service name', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update service name request with en and cy')
+          .withState(`a service exists with external id ${existingServiceExternalId}`)
           .withMethod('PATCH')
-          .withRequestBody(validUpdateServiceNameRequest.getPactified())
+          .withRequestBody(validUpdateServiceNameRequest.getPlain())
           .withStatusCode(200)
           .withResponseBody(validUpdateServiceNameResponse.getPactified())
           .build()
@@ -74,22 +76,27 @@ describe('adminusers client - update service name', function () {
     })
   })
 
-  describe('success with en', () => {
-    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+  describe('success with en and empty string for cy', () => {
     const serviceNameEn = 'en-name'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEn(serviceNameEn)
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequest({
+      en: serviceNameEn,
+      cy: ''
+    })
     const validUpdateServiceNameResponse = serviceFixtures.validServiceResponse({
       name: serviceNameEn,
       external_id: existingServiceExternalId,
-      service_name: { en: serviceNameEn }
+      service_name: {
+        en: 'en-name'
+      }
     })
 
     before((done) => {
       provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
-          .withUponReceiving('a valid update service name request with en')
+          .withUponReceiving('a valid update service name request with empty string for cy name')
+          .withState(`a service exists with external id ${existingServiceExternalId}`)
           .withMethod('PATCH')
-          .withRequestBody(validUpdateServiceNameRequest.getPactified())
+          .withRequestBody(validUpdateServiceNameRequest.getPlain())
           .withStatusCode(200)
           .withResponseBody(validUpdateServiceNameResponse.getPactified())
           .build()
@@ -100,45 +107,13 @@ describe('adminusers client - update service name', function () {
 
     afterEach(() => provider.verify())
 
-    it('should update service name for en', function (done) {
-      adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn).should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal(existingServiceExternalId)
-        expect(service.name).to.equal(serviceNameEn)
-        expect(service.service_name.en).to.equal(serviceNameEn)
-      }).should.notify(done)
-    })
-  })
-
-  describe('success with cy', () => {
-    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const serviceNameCy = 'cy-name'
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithCy(serviceNameCy)
-    const validUpdateServiceNameResponse = serviceFixtures.validServiceResponse({
-      external_id: existingServiceExternalId,
-      service_name: { cy: serviceNameCy }
-    })
-
-    before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
-          .withUponReceiving('a valid update service name request with cy')
-          .withMethod('PATCH')
-          .withRequestBody(validUpdateServiceNameRequest.getPactified())
-          .withStatusCode(200)
-          .withResponseBody(validUpdateServiceNameResponse.getPactified())
-          .build()
-      )
-        .then(() => done())
-        .catch(done)
-    })
-
-    afterEach(() => provider.verify())
-
-    it('should update service name for cy', function (done) {
-      adminusersClient.updateServiceName(existingServiceExternalId, null, serviceNameCy).should.be.fulfilled.then(service => {
-        expect(service.external_id).to.equal(existingServiceExternalId)
-        expect(service.service_name.cy).to.equal(serviceNameCy)
-      }).should.notify(done)
+    it('should update service name with empty string for cy', function (done) {
+      adminusersClient.updateServiceName(existingServiceExternalId, serviceNameEn)
+        .should.be.fulfilled.then(service => {
+          expect(service.external_id).to.equal(existingServiceExternalId)
+          expect(service.name).to.equal(serviceNameEn)
+          expect(service.service_name.en).to.equal(serviceNameEn)
+        }).should.notify(done)
     })
   })
 
@@ -148,7 +123,7 @@ describe('adminusers client - update service name', function () {
       en: 'en-name',
       cy: 'cy-name'
     }
-    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequestWithEnAndCy(serviceName)
+    const validUpdateServiceNameRequest = serviceFixtures.validUpdateServiceNameRequest(serviceName)
 
     before((done) => {
       provider.addInteraction(
@@ -157,6 +132,7 @@ describe('adminusers client - update service name', function () {
           .withMethod('PATCH')
           .withRequestBody(validUpdateServiceNameRequest.getPactified())
           .withStatusCode(404)
+          .withResponseHeaders({})
           .build()
       )
         .then(() => done())

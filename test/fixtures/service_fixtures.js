@@ -48,7 +48,7 @@ const buildServiceNameWithDefaults = (opts = {}) => {
   const serviceName = {
     en: opts.en
   }
-  if (opts.cy) {
+  if (opts.cy !== undefined) {
     serviceName.cy = opts.cy
   }
 
@@ -56,13 +56,6 @@ const buildServiceNameWithDefaults = (opts = {}) => {
 }
 
 module.exports = {
-
-  getServiceUsersNotFoundResponse: () => {
-    let response = {
-      errors: ['service not found']
-    }
-    return pactServices.withPactified(response)
-  },
   /**
    * @param invites Array params override get invites for service response
    * @return {{getPactified: (function()) Pact response, getPlain: (function()) request with overrides applied}}
@@ -108,71 +101,28 @@ module.exports = {
     }
   },
 
-  validUpdateServiceNameRequestWithEnAndCy: (opts = {}) => {
+  validUpdateServiceNameRequest: (opts = {}) => {
+    _.defaults(opts, {
+      en: 'new-en-name',
+      cy: 'new-cy-name'
+    })
+
     const data = [
       {
         op: 'replace',
         path: 'service_name/en',
-        value: opts.en || 'new-en-name'
+        value: opts.en
       },
       {
         op: 'replace',
         path: 'service_name/cy',
-        value: opts.cy || 'new-cy-name'
+        value: opts.cy
       }
     ]
 
     return {
       getPactified: () => {
         return pactServices.pactifyNestedArray(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  validUpdateServiceNameRequestWithEn: (name = 'new-en-name') => {
-    const data = [
-      {
-        op: 'replace',
-        path: 'service_name/en',
-        value: name
-      },
-      {
-        op: 'replace',
-        path: 'service_name/cy',
-        value: ''
-      }
-    ]
-
-    return {
-      getPactified: () => {
-        return pactServices.pactifySimpleArray(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-
-  validUpdateServiceNameRequestWithCy: (name = 'new-cy-name') => {
-    const data = [
-      {
-        op: 'replace',
-        path: 'service_name/en',
-        value: 'new-en-name'
-      },
-      {
-        op: 'replace',
-        path: 'service_name/cy',
-        value: name
-      }
-    ]
-
-    return {
-      getPactified: () => {
-        return pactServices.pactifySimpleArray(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -248,14 +198,11 @@ module.exports = {
     return pactServices.withPactified(response)
   },
 
-  addGatewayAccountsRequest: (opts) => {
-    opts = opts || {}
-    opts.gatewayAccountIds = opts.gatewayAccountIds || ['666']
-
+  addGatewayAccountsRequest: (gatewayAccountIds = ['666']) => {
     const data = {
       op: 'add',
       path: 'gateway_account_ids',
-      value: [].concat(opts.gatewayAccountIds)
+      value: gatewayAccountIds
     }
 
     return {
@@ -324,12 +271,11 @@ module.exports = {
   },
 
   validServiceResponse: (opts = {}) => {
-    _.defaultsDeep(opts, {
+    _.defaults(opts, {
       id: 857,
       external_id: 'cp5wa',
       name: 'System Generated',
       gateway_account_ids: ['666'],
-      links: [],
       service_name: {
         en: 'System Generated'
       },
@@ -343,7 +289,6 @@ module.exports = {
       external_id: opts.external_id,
       name: opts.name,
       gateway_account_ids: opts.gateway_account_ids,
-      _links: opts.links,
       service_name: buildServiceNameWithDefaults(opts.service_name),
       redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state,
       collect_billing_address: opts.collect_billing_address,

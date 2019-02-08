@@ -1,7 +1,7 @@
 describe('Login Page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-  const validUsername = 'some-user@gov.uk'
+  const validUsername = 'some-user@example.com'
   const validPassword = 'some-valid-password'
   const invalidPassword = 'some-invalid-password'
 
