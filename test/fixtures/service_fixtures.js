@@ -251,6 +251,23 @@ module.exports = {
     }
   },
 
+  validUpdateMerchantNameRequest: (value) => {
+    const data = {
+      op: 'replace',
+      path: 'merchant_details/name',
+      value: value
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
   validUpdateServiceRequest: (opts) => {
     opts = opts || {}
 
