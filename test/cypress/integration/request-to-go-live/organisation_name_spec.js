@@ -38,7 +38,7 @@ describe('Request to go live: organisation name page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     serviceRole.role = { permissions: [ ] }
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupSimpleGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -52,7 +52,7 @@ describe('Request to go live: organisation name page', () => {
   describe('Service has invalid go live stage', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('INVALID_GO_LIVE_STAGE')
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupSimpleGetUserAndGatewayAccountStubs(serviceRole)
     })
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
@@ -146,7 +146,7 @@ describe('Request to go live: organisation name page', () => {
   describe('Service has NOT_STARTED go live stage and there are validation errors on the page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupSimpleGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show errors on the page when no organisation name is submitted', () => {

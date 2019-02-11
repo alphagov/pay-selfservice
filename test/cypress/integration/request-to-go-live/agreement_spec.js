@@ -23,7 +23,7 @@ describe('Request to go live: agreement', () => {
       serviceRole.role = {
         permissions: []
       }
-      utils.setupStubs(serviceRole)
+      utils.setupSimpleGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -36,7 +36,7 @@ describe('Request to go live: agreement', () => {
 
   describe('REQUEST_TO_GO_LIVE_STAGE_WRONG_STAGE', () => {
     beforeEach(() => {
-      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+      utils.setupSimpleGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
@@ -53,7 +53,7 @@ describe('Request to go live: agreement', () => {
 
   describe('REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED_STAGE', () => {
     beforeEach(() => {
-      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
+      utils.setupSimpleGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
     })
 
     it('should redirect to "Request to go live: index" page when in not started stage', () => {
@@ -86,7 +86,7 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_STRIPE'), stubGovUkPayAgreement)
+      utils.patchGoLiveStageStub('TERMS_AGREED_STRIPE'), stubGovUkPayAgreement)
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })
@@ -140,7 +140,7 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
+      utils.patchGoLiveStageStub('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
 
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
@@ -178,8 +178,8 @@ describe('Request to go live: agreement', () => {
   })
 
   describe('adminusers error handlings', () => {
-    const stubPayload = lodash.concat(utils.simpleStub(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')),
-      utils.stubGoLiveStageError('TERMS_AGREED_STRIPE'))
+    const stubPayload = lodash.concat(utils.simpleGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')),
+      utils.patchGoLiveStageErrorStub('TERMS_AGREED_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })

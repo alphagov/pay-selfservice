@@ -15,7 +15,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('Service has wrong go live stage', () => {
     beforeEach(() => {
-      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
+      utils.setupSimpleGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
@@ -48,7 +48,7 @@ describe('Request to go live: choose how to process payments', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('CHOSEN_PSP_STRIPE'))
+      utils.patchGoLiveStageStub('CHOSEN_PSP_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })
@@ -95,7 +95,7 @@ describe('Request to go live: choose how to process payments', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('CHOSEN_PSP_EPDQ'))
+      utils.patchGoLiveStageStub('CHOSEN_PSP_EPDQ'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })
@@ -141,7 +141,7 @@ describe('Request to go live: choose how to process payments', () => {
       serviceRole.role = {
         permissions: []
       }
-      utils.setupStubs(serviceRole)
+      utils.setupSimpleGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -154,7 +154,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('other tests', () => {
     beforeEach(() => {
-      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+      utils.setupSimpleGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
     describe('should show an error when no option selected', () => {
       it('should show "You need to select an option" error msg', () => {
@@ -187,8 +187,8 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('adminusers error handlings', () => {
-    const stubPayload = lodash.concat(utils.simpleStub(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')),
-      utils.stubGoLiveStageError('CHOSEN_PSP_STRIPE'))
+    const stubPayload = lodash.concat(utils.simpleGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')),
+      utils.patchGoLiveStageErrorStub('CHOSEN_PSP_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })
