@@ -11,6 +11,7 @@ const moment = require('moment-timezone')
 const {getApp} = require('../../../server')
 const {getMockSession, createAppWithSession, getUser} = require('../../../test/test_helpers/mock_session')
 const paths = require('../../../app/paths')
+const gatewayAccountFixtures = require('../../../test/fixtures/gateway_account_fixtures')
 const {CONNECTOR_URL} = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const DASHBOARD_RESPONSE = {
@@ -27,6 +28,12 @@ const DASHBOARD_RESPONSE = {
   }
 }
 
+const mockConnectorGetGatewayAccount = () => {
+  nock(CONNECTOR_URL)
+    .get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
+    .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: GATEWAY_ACCOUNT_ID }))
+}
+
 describe('dashboard-activity-controller', () => {
   describe('When the dashboard is successfully retrieved from connector', () => {
     describe('and the period is not set', () => {
@@ -38,6 +45,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -100,7 +108,7 @@ describe('dashboard-activity-controller', () => {
           .to.contain(moment().tz('Europe/London').startOf('day').subtract(0, 'days').format('D MMMM YYYY h:mm:ssa z'))
       })
     })
-    describe('and the period is set to today explictly', () => {
+    describe('and the period is set to today explicitly', () => {
       let result, $, app
 
       before('Arrange', () => {
@@ -109,6 +117,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -158,6 +167,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -207,6 +217,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -256,6 +267,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -308,6 +320,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -359,6 +372,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         nock(CONNECTOR_URL)
           .get(`/v1/api/accounts/${GATEWAY_ACCOUNT_ID}/transactions-summary`)
           .query(obj => {
@@ -405,6 +419,7 @@ describe('dashboard-activity-controller', () => {
           permissions: [{name: 'transactions:read'}]
         }))
 
+        mockConnectorGetGatewayAccount()
         app = createAppWithSession(getApp(), session)
       })
 

@@ -134,6 +134,31 @@ module.exports = {
       }
     ]
   },
+  getDirectDebitGatewayAccountSuccess: (opts = {}) => {
+    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: '/v1/api/accounts/' + opts.gateway_account_id,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidGetGatewayAccountResponse
+          }
+        }]
+      }
+    ]
+  },
   getAccountAuthSuccess: (opts = {}) => {
     const getServiceAuthResponse = gatewayAccountFixtures.validGatewayAccountTokensResponse(opts).getPlain()
     return [

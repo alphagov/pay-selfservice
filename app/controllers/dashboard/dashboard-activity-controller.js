@@ -13,12 +13,66 @@ const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION
 const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient
 const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const auth = require('../../services/auth_service.js')
-const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
+const goLiveStage = require('../../models/go-live-stage')
+
+const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const getTimespanDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
 
 // Constants
 const clsXrayConfig = require('../../../config/xray-cls')
+
+const displayGoLiveLink = (service, account, user) => {
+  return account.type === 'test' &&
+    (account.paymentMethod === 'direct debit' ||
+      (service.currentGoLiveStage !== goLiveStage.LIVE &&
+        service.currentGoLiveStage !== goLiveStage.DENIED &&
+        user.hasPermission(service.externalId, 'go-live-stage:read')))
+}
+
+const getLinksToDisplay = (service, account, user) => {
+  const links = ['manageService']
+
+  if (account.payment_provider === 'sandbox') {
+    links.push('demoPayment')
+    links.push('testPaymentLink')
+  } else if (account.paymentMethod === 'direct debit') {
+    links.push('directDebitPaymentFlow')
+  } else {
+    links.push('paymentLinks')
+  }
+
+  if (displayGoLiveLink(service, account, user)) {
+    links.push('goLive')
+  }
+
+  return links
+}
+
+/**
+ * Gets an array of the css classes to be applied to the link boxes on the dashboard in the order they are displayed in.
+ * @param numberOfLinks the number of links that will be displayed
+ * @returns {Array}
+ */
+const getLinkBoxClasses = (numberOfLinks) => {
+  const columnClass = numberOfLinks % 3 === 0 ? 'flex-grid--column-third' : 'flex-grid--column-half'
+
+  const divisor = numberOfLinks % 3 === 0 ? 3 : 2
+  const finalRowStart = numberOfLinks - divisor
+
+  const classes = []
+  for (let i = 0; i < numberOfLinks; i++) {
+    let linkBoxClass = columnClass
+    // if the link isn't on the final row, apply a bottom border
+    if (i < finalRowStart) {
+      linkBoxClass += ' border-bottom'
+    }
+
+    classes.push(linkBoxClass)
+  }
+
+  return classes
+}
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
@@ -30,8 +84,18 @@ module.exports = (req, res) => {
   const customFomDateTime = _.get(req, 'query.fromDateTime', null)
   const customToDateTime = _.get(req, 'query.toDateTime', null)
 
+  const links = getLinksToDisplay(req.service, req.account, req.user)
+  const model = {
+    name: req.user.username,
+    serviceId: req.service.externalId,
+    period,
+    goLiveStage,
+    links,
+    linkBoxClasses: getLinkBoxClasses(links.length)
+  }
+
   try {
-    const {fromDateTime, toDateTime} = getTransactionDateRange(period, {
+    const { fromDateTime, toDateTime } = getTransactionDateRange(period, {
       fromDateTime: customFomDateTime,
       toDateTime: customToDateTime
     })
@@ -42,12 +106,9 @@ module.exports = (req, res) => {
 
     if (isADirectDebitAccount(gatewayAccountId)) {
       // todo implement transaction list for direct debit
-      return response(req, res, 'dashboard/index', {
-        name: req.user.username,
-        serviceId: req.service.externalId,
-        activityError: true,
-        period
-      })
+      return response(req, res, 'dashboard/index', Object.assign(model, {
+        activityError: true
+      }))
     }
 
     const namespace = getNamespace(clsXrayConfig.nameSpaceName)
@@ -62,16 +123,13 @@ module.exports = (req, res) => {
       }, (connectorData, connectorResponse) => {
         subsegment.close()
         const activityResults = connectorResponse.body
-        response(req, res, 'dashboard/index', {
-          name: req.user.username,
-          serviceId: req.service.externalId,
+        response(req, res, 'dashboard/index', Object.assign(model, {
           activity: activityResults,
           successfulTransactionsState: 'payment-success',
           fromDateTime,
           toDateTime,
-          period,
           transactionsPeriodString
-        })
+        }))
       }, subsegment)
         .on('connectorError', (error, connectorResponse) => {
           subsegment.close(error)
@@ -83,12 +141,9 @@ module.exports = (req, res) => {
             error
           })
           res.status(status)
-          response(req, res, 'dashboard/index', {
-            name: req.user.username,
-            serviceId: req.service.externalId,
-            activityError: true,
-            period
-          })
+          response(req, res, 'dashboard/index', Object.assign(model, {
+            activityError: true
+          }))
         })
     }, clsSegment)
   } catch (err) {
@@ -99,12 +154,9 @@ module.exports = (req, res) => {
       status: err.status
     })
     res.status(err.status)
-    response(req, res, 'dashboard/index', {
-      name: req.user.username,
-      serviceId: req.service.externalId,
-      activityError: true,
-      period
-    })
+    response(req, res, 'dashboard/index', Object.assign(model, {
+      activityError: true
+    }))
   }
 }
 
@@ -144,5 +196,5 @@ function getTransactionDateRange (period, customRange) {
     }
   }
 
-  return {fromDateTime, toDateTime}
+  return { fromDateTime, toDateTime }
 }
