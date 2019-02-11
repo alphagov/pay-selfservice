@@ -64,10 +64,25 @@
 
     {% if links.goLive in linksToDisplay %}
     <article class="{{columnClass}} links__box" id="request-to-go-live-link">
+      {% if paymentMethod === 'direct debit' %}
       <a href="https://docs.payments.service.gov.uk/switching_to_live/#switching-to-live">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Next steps to go live</h2>
         <p class="govuk-body govuk-!-margin-bottom-0">Read our documentation to see how your service can go live with GOV.UK&nbsp;Pay.</p>
       </a>
+      {% elif goLiveNotStarted %}
+      <a href="/service/{{ currentService.externalId }}/request-to-go-live">
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Request a live account</h2>
+        <p class="govuk-body govuk-!-margin-bottom-0">To request a live account, tell us your organisation’s name, your payment service provider and agree to our terms and conditions. Once that’s done our team will email you.</p>
+      </a>
+      {% elif goLiveStarted %}
+      <a href="/service/{{ currentService.externalId }}/request-to-go-live">
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Setting up your live account</h2>
+        <p class="govuk-body govuk-!-margin-bottom-0">You’ve started to set up your live account. There are still some steps you need to complete.</p>
+      </a>
+      {% elif goLiveRequested %}
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Your live account</h2>
+        <p class="govuk-body govuk-!-margin-bottom-0">You’ve requested a live account from the GOV.UK Pay team.</p>
+      {% endif %}
     </article>
     {% endif %}
   </div>
