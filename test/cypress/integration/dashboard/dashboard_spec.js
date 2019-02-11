@@ -33,7 +33,7 @@ describe('Dashboard', () => {
     it(`should have the page title 'Dashboard - ${serviceName} test - GOV.UK Pay'`, () => {
       const dashboardUrl = `/?period=custom&fromDateTime=${from}&toDateTime=${to}`
       cy.visit(dashboardUrl)
-      cy.title().should('eq', `Dashboard - ${serviceName} test - GOV.UK Pay`)
+      cy.title().should('eq', `Dashboard - ${serviceName} sandbox test - GOV.UK Pay`)
     })
   })
 })

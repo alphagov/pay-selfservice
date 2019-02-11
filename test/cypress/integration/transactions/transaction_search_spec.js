@@ -136,8 +136,8 @@ describe('Transactions', () => {
   })
 
   describe('Transactions List', () => {
-    it(`should have the page title 'Transactions - ${serviceName} test - GOV.UK Pay'`, () => {
-      cy.title().should('eq', `Transactions - ${serviceName} test - GOV.UK Pay`)
+    it(`should have the page title 'Transactions - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
+      cy.title().should('eq', `Transactions - ${serviceName} sandbox test - GOV.UK Pay`)
     })
 
     describe('Filtering', () => {
