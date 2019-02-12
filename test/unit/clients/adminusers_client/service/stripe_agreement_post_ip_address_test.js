@@ -9,6 +9,7 @@ const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
+const validPostStripeAgreementRequest = require('../../../../fixtures/go_live_requests_fixture').validPostStripeAgreementRequest
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -35,7 +36,8 @@ describe('adminusers client - post stripe agreement - ip address', () => {
 
   describe('post ip address', () => {
     const ipAddress = '93.184.216.34' // example.org
-    const validPostStripeAgreementIpAddressRequest = { ip_address: ipAddress }
+    const opts = { ip_address: ipAddress }
+    const validStripeAgreementRequest = validPostStripeAgreementRequest(opts).getPlain()
 
     before(done => {
       provider.addInteraction(
@@ -43,7 +45,7 @@ describe('adminusers client - post stripe agreement - ip address', () => {
           .withUponReceiving('a valid post stripe agreement - ip address request')
           .withState(`a service exists with external id ${serviceExternalId} and go live stage equals to NOT_STARTED`)
           .withMethod('POST')
-          .withRequestBody(validPostStripeAgreementIpAddressRequest)
+          .withRequestBody(validStripeAgreementRequest)
           .withStatusCode(201)
           .withResponseHeaders({})
           .build()

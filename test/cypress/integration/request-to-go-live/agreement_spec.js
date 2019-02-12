@@ -13,6 +13,14 @@ describe('Request to go live: agreement', () => {
     }
   }
 
+  const stubStripeAgreement = {
+    name: 'postStripeAgreementIpAddress',
+    opts: {
+      external_id: serviceExternalId,
+      ip_address: '93.184.216.34'
+    }
+  }
+
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
   })
@@ -86,7 +94,9 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_STRIPE'), stubGovUkPayAgreement)
+      utils.stubWithGoLiveStage('TERMS_AGREED_STRIPE'),
+      stubGovUkPayAgreement,
+      stubStripeAgreement)
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
     })

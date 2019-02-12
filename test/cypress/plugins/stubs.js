@@ -535,7 +535,29 @@ module.exports = {
             headers: {
               'Accept': 'application/json'
             },
-            body: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts)
+            body: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts).getPlain()
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 201,
+            headers: {}
+          }
+        }]
+      }
+    ]
+  },
+  postStripeAgreementIpAddress: (opts) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: `v1/api/services/${opts.external_id}/stripe-agreement`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: goLiveRequestFixtures.validPostStripeAgreementRequest(opts).getPlain()
           }
         }],
         responses: [{
