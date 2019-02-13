@@ -1,4 +1,9 @@
 #!/bin/bash
 
-npm install && npm run compile &&\
+set -e
+
+cd "$(dirname "$0")"
+
+npm install
+npm run compile
 docker build -t govukpay/selfservice:local .
