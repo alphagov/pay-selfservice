@@ -52,6 +52,12 @@ module.exports = {
     selectBrand: '/card-types/manage-brand',
     summary: '/card-types/summary'
   },
+  digitalWallet: {
+    summary: '/digital-wallet',
+    confirmApplePay: '/digital-wallet/apple-pay',
+    googlePayMerchantId: '/digital-wallet/google-pay-merchant-id',
+    confirmGooglePay: '/digital-wallet/google-pay'
+  },
   emailNotifications: {
     index: '/email-notifications',
     indexRefundTabEnabled: '/email-notifications-refund',
