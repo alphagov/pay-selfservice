@@ -16,6 +16,19 @@ const buildServiceRoleForGoLiveStage = (goLiveStage) => {
   }
 }
 
+const buildServiceRoleForGoLiveStageWithMerchantName = (goLiveStage) => {
+  return {
+    service: {
+      external_id: variables.serviceExternalId,
+      current_go_live_stage: goLiveStage,
+      gateway_account_ids: [variables.gatewayAccountId],
+      merchant_details: {
+        name: 'Merchant name'
+      }
+    }
+  }
+}
+
 const buildServiceRoleForMerchantDetailsField = (merchantDetails, goLiveStage) => {
   return {
     service: {
@@ -96,5 +109,6 @@ module.exports = {
   stubWithGoLiveStage,
   stubGoLiveStageError,
   setupStubs,
-  stubUserSuccessResponse
+  stubUserSuccessResponse,
+  buildServiceRoleForGoLiveStageWithMerchantName
 }

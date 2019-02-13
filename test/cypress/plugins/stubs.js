@@ -531,7 +531,7 @@ module.exports = {
         predicates: [{
           equals: {
             method: 'POST',
-            path: `v1/api/services/${opts.external_id}/govuk-pay-agreement`,
+            path: `/v1/api/services/${opts.external_id}/govuk-pay-agreement`,
             headers: {
               'Accept': 'application/json'
             },
@@ -541,7 +541,10 @@ module.exports = {
         responses: [{
           is: {
             statusCode: 201,
-            headers: {}
+            body: goLiveRequestFixtures.validPostGovUkPayAgreementResponse(opts).getPlain(),
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         }]
       }
@@ -553,7 +556,7 @@ module.exports = {
         predicates: [{
           equals: {
             method: 'POST',
-            path: `v1/api/services/${opts.external_id}/stripe-agreement`,
+            path: `/v1/api/services/${opts.external_id}/stripe-agreement`,
             headers: {
               'Accept': 'application/json'
             },
