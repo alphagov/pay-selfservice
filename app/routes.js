@@ -45,6 +45,7 @@ const apiKeysController = require('./controllers/api-keys')
 const paymentTypesSelectTypeController = require('./controllers/payment_types_select_type_controller')
 const paymentTypesSelectBrandController = require('./controllers/payment_types_select_brand_controller')
 const paymentTypesSummaryController = require('./controllers/payment_types_summary_controller')
+const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email_notifications/email_notifications_controller')
 const forgotPasswordController = require('./controllers/forgotten_password_controller')
 const myServicesController = require('./controllers/my-services')
@@ -76,7 +77,7 @@ const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet
 } = paths
 
 // Exports
@@ -192,6 +193,7 @@ module.exports.bind = function (app) {
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
+    ...lodash.values(digitalWallet),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -232,6 +234,11 @@ module.exports.bind = function (app) {
   app.get(pt.selectBrand, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrandController.showBrands)
   app.post(pt.selectBrand, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrandController.updateBrands)
   app.get(pt.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummaryController.showSummary)
+
+  // DIGITAL WALLET
+  app.get(digitalWallet.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, digitalWalletController.getSummary)
+  app.get(digitalWallet.confirmApplePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getEnableApplePay)
+  app.post(digitalWallet.confirmApplePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postEnableApplePay)
 
   // EMAIL
   app.get(en.index, xraySegmentCls, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)

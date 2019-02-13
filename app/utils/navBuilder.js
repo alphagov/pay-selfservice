@@ -87,7 +87,7 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       id: 'navigation-menu-payment-types',
       name: 'Card types',
       url: paths.paymentTypes.summary,
-      current: pathLookup(originalUrl, paths.paymentTypes.summary),
+      current: pathLookup(originalUrl, paths.paymentTypes.summary) || pathLookup(originalUrl, paths.digitalWallet.summary),
       permissions: permissions.payment_types_read && type === 'card'
     },
     {
