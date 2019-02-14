@@ -1,24 +1,25 @@
 'use strict'
 
 const path = require('path')
-require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
 const request = require('supertest')
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const nock = require('nock')
 const assert = require('assert')
 const notp = require('notp')
 const chai = require('chai')
 const _ = require('lodash')
-const userFixtures = require('../fixtures/user_fixtures')
 const sinon = require('sinon')
+const chaiAsPromised = require('chai-as-promised')
 
+require(path.join(__dirname, '/../test_helpers/serialize_mock.js'))
+const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const userFixtures = require('../fixtures/user_fixtures')
+const gatewayAccountFixtures = require('../fixtures/gateway_account_fixtures')
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
 const mockRes = require('../fixtures/response')
-const {CONNECTOR_URL} = process.env
 
-const chaiAsPromised = require('chai-as-promised')
+const {CONNECTOR_URL} = process.env
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
@@ -34,6 +35,9 @@ describe('The logged in endpoint', function () {
   it('should render ok when logged in', function (done) {
     const app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
+    nock(CONNECTOR_URL)
+      .get(`/v1/frontend/accounts/${ACCOUNT_ID}`)
+      .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: ACCOUNT_ID }))
     nock(CONNECTOR_URL)
       .get(`/v1/api/accounts/${ACCOUNT_ID}/transactions-summary`)
       .query(() => true)
