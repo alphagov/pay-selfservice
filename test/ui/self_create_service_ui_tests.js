@@ -4,8 +4,8 @@
 const renderTemplate = require('../test_helpers/html_assertions').render
 const paths = require('../../app/paths')
 
-describe.only('Self-create service view', function () {
-  it('should render create an account form', function (done) {
+describe('Self-create service view', () => {
+  it('should render create an account form', done => {
     const templateData = {}
 
     const body = renderTemplate('self_create_service/register', templateData)
@@ -20,7 +20,7 @@ describe.only('Self-create service view', function () {
     done()
   })
 
-  it('should render email sent page', function (done) {
+  it('should render email sent page', done => {
     const email = 'bob@example.com'
     const templateData = {
       requesterEmail: email
@@ -35,7 +35,7 @@ describe.only('Self-create service view', function () {
     done()
   })
 
-  it('should render otp verify form', function (done) {
+  it('should render otp verify form', done => {
     const templateData = {}
 
     const body = renderTemplate('self_create_service/verify_otp', templateData)
@@ -51,7 +51,7 @@ describe.only('Self-create service view', function () {
     done()
   })
 
-  it('should render name your service form', function (done) {
+  it('should render name your service form', done => {
     const serviceName = 'My Service name'
     const templateData = {
       serviceName
@@ -67,7 +67,7 @@ describe.only('Self-create service view', function () {
     done()
   })
 
-  it('should render otp resend form with local telephone number', function (done) {
+  it('should render otp resend form with local telephone number', done => {
     const telephoneNumber = '01134960000'
     const templateData = {
       telephoneNumber: telephoneNumber
@@ -83,7 +83,7 @@ describe.only('Self-create service view', function () {
     done()
   })
 
-  it('should render otp resend form with international converted to numbers only telephone number', function (done) {
+  it('should render otp resend form with international converted to numbers only telephone number', done => {
     const templateData = {
       telephoneNumber: '+441134960000'
     }
