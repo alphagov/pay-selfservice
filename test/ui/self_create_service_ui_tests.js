@@ -67,7 +67,7 @@ describe('Self-create service view', function () {
     done()
   })
 
-  it('should render otp resend form', function (done) {
+  it('should render otp resend form with local telephone number', function (done) {
     const telephoneNumber = '07812345678'
     const templateData = {
       telephoneNumber: telephoneNumber
@@ -79,6 +79,21 @@ describe('Self-create service view', function () {
 
     body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
     body.should.containInputField('telephone-number', 'tel').withAttribute('value', telephoneNumber)
+
+    done()
+  })
+
+  it('should render otp resend form with international converted to numbers only telephone number', function (done) {
+    const templateData = {
+      telephoneNumber: '+447812345678'
+    }
+
+    const body = renderTemplate('self_create_service/resend_otp', templateData)
+
+    body.should.containSelector('h1').withExactText('Check your mobile number')
+
+    body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
+    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '00447812345678')
 
     done()
   })
