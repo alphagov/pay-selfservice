@@ -4,7 +4,7 @@
 const renderTemplate = require('../test_helpers/html_assertions').render
 const paths = require('../../app/paths')
 
-describe('Self-create service view', function () {
+describe.only('Self-create service view', function () {
   it('should render create an account form', function (done) {
     const templateData = {}
 
@@ -68,7 +68,7 @@ describe('Self-create service view', function () {
   })
 
   it('should render otp resend form with local telephone number', function (done) {
-    const telephoneNumber = '07812345678'
+    const telephoneNumber = '01134960000'
     const templateData = {
       telephoneNumber: telephoneNumber
     }
@@ -85,7 +85,7 @@ describe('Self-create service view', function () {
 
   it('should render otp resend form with international converted to numbers only telephone number', function (done) {
     const templateData = {
-      telephoneNumber: '+447812345678'
+      telephoneNumber: '+441134960000'
     }
 
     const body = renderTemplate('self_create_service/resend_otp', templateData)
@@ -93,7 +93,7 @@ describe('Self-create service view', function () {
     body.should.containSelector('h1').withExactText('Check your mobile number')
 
     body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
-    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '00447812345678')
+    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '00441134960000')
 
     done()
   })
