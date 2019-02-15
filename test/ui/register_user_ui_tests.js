@@ -17,10 +17,10 @@ describe('Register user view', function () {
     done()
   })
 
-  it('should render create an account form with telephone number pre-populated', function (done) {
+  it('should render create an account form with local telephone number pre-populated', function (done) {
     let templateData = {
       email: 'invitee@example.com',
-      telephone_number: '0328534765'
+      telephone_number: '01134960000'
     }
 
     let body = renderTemplate('user_registration/register', templateData)
@@ -28,7 +28,22 @@ describe('Register user view', function () {
     body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration)
     body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com')
     body.should.containSelector('input#telephone-number')
-      .withAttribute('value', '0328534765')
+      .withAttribute('value', '01134960000')
+    done()
+  })
+
+  it('should render create an account form with international converted to numbers only telephone number pre-populated', function (done) {
+    let templateData = {
+      email: 'invitee@example.com',
+      telephone_number: '+441134960000'
+    }
+
+    let body = renderTemplate('user_registration/register', templateData)
+
+    body.should.containSelector('form#submit-registration').withAttribute('action', paths.registerUser.registration)
+    body.should.containSelector('p#email-display').withExactText('Your account will be created with this email: invitee@example.com')
+    body.should.containSelector('input#telephone-number')
+      .withAttribute('value', '00441134960000')
     done()
   })
 
@@ -44,8 +59,8 @@ describe('Register user view', function () {
     done()
   })
 
-  it('should render resend otp code view', function (done) {
-    let telephoneNumber = '012345678901'
+  it('should render resend otp code view with local telephone number', function (done) {
+    let telephoneNumber = '01134960000'
 
     let templateData = {
       telephone_number: telephoneNumber
@@ -55,6 +70,18 @@ describe('Register user view', function () {
 
     body.should.containSelector('form#otp-send-again').withAttribute('action', paths.registerUser.reVerifyPhone)
     body.should.containSelector('input#telephone-number').withAttribute('value', telephoneNumber)
+    done()
+  })
+
+  it('should render resend otp code view with international converted to numbers only telephone number', function (done) {
+    let templateData = {
+      telephone_number: '+441134960000'
+    }
+
+    let body = renderTemplate('user_registration/re_verify_phone', templateData)
+
+    body.should.containSelector('form#otp-send-again').withAttribute('action', paths.registerUser.reVerifyPhone)
+    body.should.containSelector('input#telephone-number').withAttribute('value', '00441134960000')
     done()
   })
 })
