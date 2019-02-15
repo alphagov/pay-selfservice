@@ -4,8 +4,8 @@
 const renderTemplate = require('../test_helpers/html_assertions').render
 const paths = require('../../app/paths')
 
-describe('Self-create service view', function () {
-  it('should render create an account form', function (done) {
+describe('Self-create service view', () => {
+  it('should render create an account form', done => {
     const templateData = {}
 
     const body = renderTemplate('self_create_service/register', templateData)
@@ -20,7 +20,7 @@ describe('Self-create service view', function () {
     done()
   })
 
-  it('should render email sent page', function (done) {
+  it('should render email sent page', done => {
     const email = 'bob@example.com'
     const templateData = {
       requesterEmail: email
@@ -35,7 +35,7 @@ describe('Self-create service view', function () {
     done()
   })
 
-  it('should render otp verify form', function (done) {
+  it('should render otp verify form', done => {
     const templateData = {}
 
     const body = renderTemplate('self_create_service/verify_otp', templateData)
@@ -51,7 +51,7 @@ describe('Self-create service view', function () {
     done()
   })
 
-  it('should render name your service form', function (done) {
+  it('should render name your service form', done => {
     const serviceName = 'My Service name'
     const templateData = {
       serviceName
@@ -67,8 +67,8 @@ describe('Self-create service view', function () {
     done()
   })
 
-  it('should render otp resend form', function (done) {
-    const telephoneNumber = '07812345678'
+  it('should render otp resend form with local telephone number', done => {
+    const telephoneNumber = '01134960000'
     const templateData = {
       telephoneNumber: telephoneNumber
     }
@@ -79,6 +79,21 @@ describe('Self-create service view', function () {
 
     body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
     body.should.containInputField('telephone-number', 'tel').withAttribute('value', telephoneNumber)
+
+    done()
+  })
+
+  it('should render otp resend form with international converted to numbers only telephone number', done => {
+    const templateData = {
+      telephoneNumber: '+441134960000'
+    }
+
+    const body = renderTemplate('self_create_service/resend_otp', templateData)
+
+    body.should.containSelector('h1').withExactText('Check your mobile number')
+
+    body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
+    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '00441134960000')
 
     done()
   })
