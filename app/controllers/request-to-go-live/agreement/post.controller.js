@@ -12,6 +12,7 @@ const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const { renderErrorView } = require('../../../utils/response.js')
 const { isIPv4, isIPv6 } = require('net')
+const zendeskClient = require('../../../services/clients/zendesk_client')
 
 const NOT_SELECTED_AGREEMENT_ERROR_MSG = 'You need to accept our legal terms to continue'
 const stages = {
@@ -42,16 +43,48 @@ const postUserIpAddress = req => {
       throw new Error('Please try again or contact support team.')
     }
     return addStripeAgreementIpAddress(req.service.externalId, ipAddress, req.correlationId)
+      .then(() => ipAddress)
   }
   return Promise.resolve()
 }
+
+const createZendeskMessage = opts => ` Service name: ${opts.serviceName}
+ Organisation name: ${opts.merchantDetails}
+ Service ID: ${opts.serviceExternalId}
+ PSP: ${opts.psp}
+ IP address: ${opts.ipAddress} 
+ Email address: ${opts.email}
+ Time: ${opts.timestamp}
+`
 
 module.exports = (req, res) => {
   const agreement = lodash.get(req, 'body.agreement')
   if (agreement !== undefined) {
     postUserIpAddress(req)
-      .then(() => {
+      .then((ipAddress) => {
         return addGovUkAgreementEmailAddress(req.service.externalId, req.user.externalId, req.correlationId)
+          .then(agreement => ({ agreement, ipAddress }))
+      })
+      .then(({ agreement, ipAddress }) => {
+        const messageOpts = {
+          serviceName: req.service.name,
+          merchantDetails: req.service.merchantDetails.name,
+          serviceExternalId: req.service.externalId,
+          psp: req.service.currentGoLiveStage,
+          ipAddress: ipAddress || '',
+          email: agreement.email,
+          timestamp: agreement.agreement_time
+        }
+        const zendeskOpts = {
+          correlationId: req.correlationId,
+          email: agreement.email,
+          name: req.user.username,
+          type: 'task',
+          subject: `Service (${req.service.name}) has finished go live request`,
+          tags: ['govuk_pay_support'],
+          message: createZendeskMessage(messageOpts)
+        }
+        return zendeskClient.createTicket(zendeskOpts)
       })
       .then(() => {
         return updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage], req.correlationId)

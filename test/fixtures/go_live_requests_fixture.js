@@ -28,6 +28,23 @@ module.exports = {
     }
   },
 
+  validPostGovUkPayAgreementResponse: opts => {
+    opts = opts || {}
+    const data = {
+      email: opts.email || 'someone@example.org',
+      agreement_time: opts.agreementTime || '2019-02-13T11:11:16.878Z'
+    }
+
+    return {
+      getPactified: () => {
+        return pactServices.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
+
   validPostStripeAgreementRequest: opts => {
     opts = opts || {}
 

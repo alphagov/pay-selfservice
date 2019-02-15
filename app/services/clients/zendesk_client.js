@@ -2,13 +2,14 @@
 
 // NPM dependencies
 const zendesk = require('node-zendesk')
+const logger = require('winston')
 
 const zendeskConfig = require('../../../config/zendesk')
 
 const zendeskClient = zendesk.createClient({
-  username: 'zd-api-pay@digital.cabinet-office.gov.uk',
+  username: process.env.ZENDESK_USER,
   token: process.env.ZENDESK_API_KEY,
-  remoteUri: 'https://govuk.zendesk.com/api/v2',
+  remoteUri: process.env.ZENDESK_URL,
   proxy: process.env.http_proxy
 })
 
@@ -33,7 +34,8 @@ module.exports = {
         }
       }, (err, request, result) => {
         if (err) {
-          reject(new Error(`argument: ${err}`))
+          logger.error(`${opts.correlationId} there was an error creating Zendesk ticket: ${err}`)
+          reject(new Error(`Something went wrong, please contact support team.`))
         }
         resolve()
       })

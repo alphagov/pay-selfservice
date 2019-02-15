@@ -9,7 +9,9 @@ describe('Request to go live: agreement', () => {
     name: 'postGovUkPayAgreement',
     opts: {
       external_id: serviceExternalId,
-      user_external_id: userExternalId
+      user_external_id: userExternalId,
+      email: 'someone@example.org',
+      agreementTime: '2019-02-13T11:11:16.878Z'
     }
   }
 
@@ -81,11 +83,11 @@ describe('Request to go live: agreement', () => {
       name: 'getUserSuccessRepeatFirstResponseNTimes',
       opts: [{
         external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')],
+        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')],
         repeat: 2
       }, {
         external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE')],
+        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_STRIPE')],
         repeat: 2
       }]
     }, {
@@ -137,11 +139,11 @@ describe('Request to go live: agreement', () => {
       name: 'getUserSuccessRepeatFirstResponseNTimes',
       opts: [{
         external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY')],
+        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_WORLDPAY')],
         repeat: 2
       }, {
         external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_WORLDPAY')],
+        service_roles: [utils.buildServiceRoleForGoLiveStageWithMerchantName('TERMS_AGREED_WORLDPAY')],
         repeat: 2
       }]
     }, {
@@ -188,7 +190,8 @@ describe('Request to go live: agreement', () => {
   })
 
   describe('adminusers error handlings', () => {
-    const stubPayload = lodash.concat(utils.simpleStub(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')),
+    const stubPayload = lodash.concat(utils.simpleStub(utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')),
+      stubGovUkPayAgreement,
       utils.stubGoLiveStageError('TERMS_AGREED_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
