@@ -22,13 +22,22 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
               Apple Pay
             </td>
             <td class="govuk-table__cell table-data-label">
-              No
+             {{ "Yes" if currentGatewayAccount.allow_apple_pay else "No" }}
             </td>
             {% if permissions.payment_types_update %}
             <td class="govuk-table__cell table-data-label govuk-text-align-right">
+              {% if not currentGatewayAccount.allow_apple_pay %}
               <a href="{{routes.digitalWallet.confirmApplePay}}" class="govuk-link govuk-link--no-visited-state">
                 Enable
-              </a>
+              </a> 
+              {% else %}
+              <form method="post" action="{{routes.digitalWallet.disableApplePay}}">
+                <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                <button type="submit" class="govuk-button--as-link govuk-!-font-size-19">
+                Disable
+                </button>
+              </form>
+              {% endif %}
             </td>
             {% endif %}
           </tr>
@@ -38,13 +47,22 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
               Google Pay
             </td>
             <td class="govuk-table__cell table-data-label">
-              No
+              {{ "Yes" if currentGatewayAccount.allow_google_pay else "No" }}
             </td>
             {% if permissions.payment_types_update %}
             <td class="govuk-table__cell table-data-label govuk-text-align-right">
+            {% if not currentGatewayAccount.allow_google_pay %}
               <a href="{{routes.digitalWallet.confirmGooglePay}}" class="govuk-link govuk-link--no-visited-state">
                 Enable
               </a>
+              {% else %}
+              <form method="post" action="{{routes.digitalWallet.disableGooglePay}}">
+                  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                  <button type="submit" class="govuk-button--as-link govuk-!-font-size-19">
+                  Disable
+                  </button>
+                </form>              
+              {% endif %}
             </td>
             {% endif %}
           </tr>

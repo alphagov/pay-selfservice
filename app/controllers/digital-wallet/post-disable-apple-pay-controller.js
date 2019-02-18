@@ -10,14 +10,12 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-
-  const enableApplePayBoolean = connector.toggleApplePay(gatewayAccountId, true, correlationId)
-
-  enableApplePayBoolean.then(() => {
-    req.flash('generic', '<h2>Apple Pay successfully enabled.</h2>')
+  const disableApplePayBoolean = connector.toggleApplePay(gatewayAccountId, false, correlationId)
+  disableApplePayBoolean.then(() => {
+    req.flash('generic', '<h2>Apple Pay successfully disabled.</h2>')
     return res.redirect(paths.digitalWallet.summary)
   }).catch(err => {
     req.flash('genericError', `<h2>Something went wrong</h2><p>${err}</p>`)
-    return res.redirect(paths.digitalWallet.confirmApplePay)
+    return res.redirect(paths.digitalWallet.summary)
   })
 }
