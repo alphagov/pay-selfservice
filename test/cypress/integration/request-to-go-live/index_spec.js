@@ -62,14 +62,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request to go live')
       cy.get('h1 + p').should('contain', 'Complete these steps to start taking real payments')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Start now')
@@ -93,14 +93,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request to go live')
       cy.get('h1 + p').should('contain', 'Complete these steps to start taking real payments')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('not.exist')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -124,14 +124,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request to go live')
       cy.get('h1 + p').should('contain', 'Complete these steps to start taking real payments')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -155,14 +155,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request to go live')
       cy.get('h1 + p').should('contain', 'Complete these steps to start taking real payments')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -186,14 +186,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request to go live')
       cy.get('h1 + p').should('contain', 'Complete these steps to start taking real payments')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -217,14 +217,14 @@ describe('Request to go live: index', () => {
       cy.get('h1').should('contain', 'Request to go live')
       cy.get('h1 + p').should('contain', 'Complete these steps to start taking real payments')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('not.exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('exist')
       cy.get('#request-to-go-live-index-form > button').should('contain', 'Continue')
@@ -249,14 +249,14 @@ describe('Request to go live: index', () => {
 
       cy.get('.next-steps-panel h3').should('contain', 'Thank you. We’re creating your live service')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -275,14 +275,14 @@ describe('Request to go live: index', () => {
 
       cy.get('.next-steps-panel h3').should('contain', 'Thank you. We’re creating your live service')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -301,14 +301,14 @@ describe('Request to go live: index', () => {
 
       cy.get('.next-steps-panel h3').should('contain', 'Thank you. We’re creating your live service')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -327,14 +327,14 @@ describe('Request to go live: index', () => {
 
       cy.get('.next-steps-panel h3').should('contain', 'Thank you. We’re creating your live service')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
@@ -374,14 +374,14 @@ describe('Request to go live: index', () => {
 
       cy.get('.next-steps-panel').should('not.exist')
 
-      cy.get('#request-to-go-live-step-1 > h3').should('contain', 'Add your organisation’s name')
-      cy.get('#request-to-go-live-step-1 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-organisation-name > h3').should('exist')
+      cy.get('#request-to-go-live-step-organisation-name > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-2 > h3').should('contain', 'Choose how to process payments')
-      cy.get('#request-to-go-live-step-2 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-choose-psp > h3').should('exist')
+      cy.get('#request-to-go-live-step-choose-psp > h3 > span').should('contain', 'Completed')
 
-      cy.get('#request-to-go-live-step-3 > h3').should('contain', 'Confirm that you accept our legal terms')
-      cy.get('#request-to-go-live-step-3 > h3 > span').should('contain', 'Completed')
+      cy.get('#request-to-go-live-step-agree-terms > h3').should('exist')
+      cy.get('#request-to-go-live-step-agree-terms > h3 > span').should('contain', 'Completed')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
     })
