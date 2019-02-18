@@ -11,8 +11,8 @@ const errorResponse = response.renderErrorView
 const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login')
-const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber} = require('../utils/registration_validations')
-const {validateServiceName} = require('../utils/service_name_validation')
+const { validateServiceRegistrationInputs, validateRegistrationTelephoneNumber } = require('../utils/registration_validations')
+const { validateServiceName } = require('../utils/service_name_validation')
 
 module.exports = {
 

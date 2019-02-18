@@ -14,26 +14,26 @@ const MIN_PASSWORD_LENGTH = 10
 const NUMBERS_ONLY = new RegExp('^[0-9]+$')
 
 // Global functions
-const invalidTelephoneNumber = (telephoneNumber) => {
+const invalidTelephoneNumber = telephoneNumber => {
   if (!telephoneNumber) {
     return true
   }
 
   try {
     const parsedTelephoneNumber = phoneNumberUtilInstance.parseAndKeepRawInput(telephoneNumber, 'GB')
-    return !phoneNumberUtilInstance.isValidNumber(parsedTelephoneNumber);
+    return !phoneNumberUtilInstance.isValidNumber(parsedTelephoneNumber)
   } catch (e) {
     return true
   }
 }
 
-const hasValue = (param) => {
+const hasValue = param => {
   return !_.isEmpty(_.trim(param))
 }
 
 module.exports = {
-  shouldProceedWithRegistration: (registerInviteCookie) => {
-    return new Promise(function (resolve, reject) {
+  shouldProceedWithRegistration: registerInviteCookie => {
+    return new Promise((resolve, reject) => {
       if (!registerInviteCookie) {
         reject(new Error('request does not contain a cookie'))
       }
@@ -47,7 +47,7 @@ module.exports = {
   },
 
   validateUserRegistrationInputs: (telephoneNumber, password) => {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       if (invalidTelephoneNumber(telephoneNumber)) {
         reject('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
       }
@@ -63,7 +63,7 @@ module.exports = {
   },
 
   validateRegistrationTelephoneNumber: (telephoneNumber) => {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       if (invalidTelephoneNumber(telephoneNumber)) {
         reject('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
       } else {
@@ -73,7 +73,7 @@ module.exports = {
   },
 
   validateOtp: (otp) => {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       if (!otp || !NUMBERS_ONLY.test(otp)) {
         reject('Invalid verification code')
       } else {
@@ -83,7 +83,7 @@ module.exports = {
   },
 
   validateServiceRegistrationInputs: (email, telephoneNumber, password) => {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       if (!emailValidator(email)) {
         reject('Invalid email')
       }

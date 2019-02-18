@@ -1,16 +1,18 @@
 'use strict'
 
-const path = require('path')
+// NPM dependencies
 const nock = require('nock')
 const supertest = require('supertest')
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-const userFixtures = require(path.join(__dirname, '/../fixtures/user_fixtures'))
 const csrf = require('csrf')
-
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
+
+// Local dependencies
+const paths = require('../../app/paths')
+const getApp = require('../../server').getApp
+const session = require('../test_helpers/mock_session')
+const userFixtures = require('../fixtures/user_fixtures')
+
 chai.use(chaiAsPromised)
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -20,14 +22,14 @@ const expect = chai.expect
 let app
 let mockRegisterAccountCookie
 
-describe('register user controller', function () {
-  beforeEach((done) => {
+describe('register user controller', () => {
+  beforeEach(done => {
     mockRegisterAccountCookie = {}
     app = session.getAppWithRegisterInvitesCookie(getApp(), mockRegisterAccountCookie)
     done()
   })
 
-  afterEach((done) => {
+  afterEach(done => {
     nock.cleanAll()
     app = null
     done()
@@ -36,8 +38,8 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT showRegistration
    */
-  describe('show registration view endpoint', function () {
-    it('should display create account form', function (done) {
+  describe('show registration view endpoint', () => {
+    it('should display create account form', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -52,7 +54,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should display create account form with telephone populated, if invite has been attempted', function (done) {
+    it('should display create account form with telephone populated, if invite has been attempted', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
       mockRegisterAccountCookie.telephone_number = '+441134960000'
@@ -69,7 +71,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should display error when email and/or code is not in the cookie', function (done) {
+    it('should display error when email and/or code is not in the cookie', done => {
       supertest(app)
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -86,8 +88,8 @@ describe('register user controller', function () {
    *  ENDPOINT submitRegistration
    */
 
-  describe('submit registration details endpoint', function () {
-    it('should error if cookie details are missing', function (done) {
+  describe('submit registration details endpoint', () => {
+    it('should error if cookie details are missing', done => {
       supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -103,7 +105,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect back to registration form if error in phone number', function (done) {
+    it('should redirect back to registration form if error in phone number', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -126,7 +128,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to phone verification page', function (done) {
+    it('should redirect to phone verification page', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -148,7 +150,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error for valid registration data, if code not found', function (done) {
+    it('should error for valid registration data, if code not found', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -176,8 +178,8 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT showOtpVerify
    */
-  describe('show otp verify endpoint', function () {
-    it('should error if cookie details are missing', function (done) {
+  describe('show otp verify endpoint', () => {
+    it('should error if cookie details are missing', done => {
       supertest(app)
         .get(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
@@ -189,7 +191,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should display verify otp page successfully', function (done) {
+    it('should display verify otp page successfully', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -205,12 +207,12 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT submitOtpVerify
    */
-  describe('validate otp code endpoint', function () {
-    it('should validate otp code successfully', function (done) {
+  describe('validate otp code endpoint', () => {
+    it('should validate otp code successfully', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
       const newUserExtId = 'new-user-ext-id'
-      const validUserResponse = userFixtures.validUserResponse({external_id: newUserExtId}).getPlain()
+      const validUserResponse = userFixtures.validUserResponse({ external_id: newUserExtId }).getPlain()
 
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/otp/validate`)
         .reply(201, validUserResponse)
@@ -232,7 +234,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error if cookie details are missing', function (done) {
+    it('should error if cookie details are missing', done => {
       supertest(app)
         .post(paths.registerUser.otpVerify)
         .set('Accept', 'application/json')
@@ -249,7 +251,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error and allow user to reenter otp if invalid otp code entry', function (done) {
+    it('should error and allow user to reenter otp if invalid otp code entry', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -267,7 +269,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error if error during otp code verification', function (done) {
+    it('should error if error during otp code verification', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -294,8 +296,8 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT showReVerifyPhone
    */
-  describe('show re-verify phone endpoint', function () {
-    it('should display re verify otp code form with pre-populated telephone number', function (done) {
+  describe('show re-verify phone endpoint', () => {
+    it('should display re verify otp code form with pre-populated telephone number', done => {
       const telephoneNumber = '+441134960000'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -313,7 +315,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should display error when email and/or code is not in the cookie', function (done) {
+    it('should display error when email and/or code is not in the cookie', done => {
       supertest(app)
         .get(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')
@@ -329,8 +331,8 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT submitReVerifyPhone
    */
-  describe('submit re-verify phone endpoint', function () {
-    it('should proceed to verify otp upon successful telephone number re-entry', function (done) {
+  describe('submit re-verify phone endpoint', () => {
+    it('should proceed to verify otp upon successful telephone number re-entry', done => {
       const telephoneNumber = '+441134960000'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -353,7 +355,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error on an error during resend otp', function (done) {
+    it('should error on an error during resend otp', done => {
       const telephoneNumber = '+441134960000'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
@@ -378,7 +380,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect back to re verify phone view if error in phone number', function (done) {
+    it('should redirect back to re verify phone view if error in phone number', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -401,7 +403,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error if cookie details are missing', function (done) {
+    it('should error if cookie details are missing', done => {
       const telephoneNumber = '+441134960000'
       supertest(app)
         .post(paths.registerUser.reVerifyPhone)
@@ -424,13 +426,13 @@ describe('register user controller', function () {
    * ENDPOINT subscribeService
    */
   describe('subscribe existing user to a service endpoint', () => {
-    it('should redirect user to my-services page and display added to new service message', (done) => {
+    it('should redirect user to my-services page and display added to new service message', done => {
       const inviteCode = 'nfjkh438rf3901jqf'
       mockRegisterAccountCookie.code = inviteCode
 
       const serviceExternalId = '378y235y8234y5'
       adminusersMock.post(`${INVITE_RESOURCE_PATH}/${inviteCode}/complete`)
-        .reply(200, {service_external_id: serviceExternalId})
+        .reply(200, { service_external_id: serviceExternalId })
 
       supertest(app)
         .get(paths.registerUser.subscribeService)
@@ -441,7 +443,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error if cookie details are missing', function (done) {
+    it('should error if cookie details are missing', done => {
       supertest(app)
         .get(paths.registerUser.subscribeService)
         .set('Accept', 'application/json')
@@ -453,7 +455,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error if invitation is expired', function (done) {
+    it('should error if invitation is expired', done => {
       const inviteCode = 'nfjkh438rf3901jqf'
       mockRegisterAccountCookie.code = inviteCode
 
