@@ -88,7 +88,7 @@ describe('register user controller', function () {
     it('should redirect to otp verify view on a valid service invite with non existing user', function (done) {
       const code = '23rer87t8shjkaf'
       const type = 'service'
-      const telephoneNumber = '07562327123'
+      const telephoneNumber = '+441134960000'
       const opts = {
         type,
         telephone_number: telephoneNumber,
@@ -135,7 +135,7 @@ describe('register user controller', function () {
 
     it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', function (done) {
       const code = '7s8ftgw76rwgu'
-      const telephoneNumber = '123456789'
+      const telephoneNumber = '+441134960000'
       const validInviteResponse = inviteFixtures.validInviteResponse({telephone_number: telephoneNumber}).getPlain()
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
@@ -193,7 +193,7 @@ describe('register user controller', function () {
     it('should display create account form with telephone populated, if invite has been attempted', function (done) {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
-      mockRegisterAccountCookie.telephone_number = '123456789'
+      mockRegisterAccountCookie.telephone_number = '+441134960000'
 
       supertest(app)
         .get(paths.registerUser.registration)
@@ -202,7 +202,7 @@ describe('register user controller', function () {
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal('invitee@example.com')
-          expect(res.body.telephone_number).to.equal('123456789')
+          expect(res.body.telephone_number).to.equal('+441134960000')
         })
         .end(done)
     })
@@ -245,7 +245,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      const invalidPhone = '123456789'
+      const invalidPhone = 'abc'
       supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -277,7 +277,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'telephone-number': '12345678901',
+          'telephone-number': '+441134960000',
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
@@ -299,7 +299,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'telephone-number': '12345678901',
+          'telephone-number': '+441134960000',
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })

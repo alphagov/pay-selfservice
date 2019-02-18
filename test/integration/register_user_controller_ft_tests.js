@@ -55,7 +55,7 @@ describe('register user controller', function () {
     it('should display create account form with telephone populated, if invite has been attempted', function (done) {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
-      mockRegisterAccountCookie.telephone_number = '123456789'
+      mockRegisterAccountCookie.telephone_number = '+441134960000'
 
       supertest(app)
         .get(paths.registerUser.registration)
@@ -64,7 +64,7 @@ describe('register user controller', function () {
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal('invitee@example.com')
-          expect(res.body.telephone_number).to.equal('123456789')
+          expect(res.body.telephone_number).to.equal('+441134960000')
         })
         .end(done)
     })
@@ -107,7 +107,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      const invalidPhone = '123456789'
+      const invalidPhone = 'abc'
       supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -139,7 +139,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'telephone-number': '12345678901',
+          'telephone-number': '+441134960000',
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
@@ -161,7 +161,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'telephone-number': '12345678901',
+          'telephone-number': '+441134960000',
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
@@ -296,7 +296,7 @@ describe('register user controller', function () {
    */
   describe('show re-verify phone endpoint', function () {
     it('should display re verify otp code form with pre-populated telephone number', function (done) {
-      const telephoneNumber = '12345678901'
+      const telephoneNumber = '+441134960000'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
@@ -331,7 +331,7 @@ describe('register user controller', function () {
    */
   describe('submit re-verify phone endpoint', function () {
     it('should proceed to verify otp upon successful telephone number re-entry', function (done) {
-      const telephoneNumber = '12345678901'
+      const telephoneNumber = '+441134960000'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
@@ -354,7 +354,7 @@ describe('register user controller', function () {
     })
 
     it('should error on an error during resend otp', function (done) {
-      const telephoneNumber = '12345678901'
+      const telephoneNumber = '+441134960000'
 
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
@@ -382,7 +382,7 @@ describe('register user controller', function () {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      const invalidPhone = '123456789'
+      const invalidPhone = 'abc'
 
       supertest(app)
         .post(paths.registerUser.reVerifyPhone)
@@ -402,7 +402,7 @@ describe('register user controller', function () {
     })
 
     it('should error if cookie details are missing', function (done) {
-      const telephoneNumber = '12345678901'
+      const telephoneNumber = '+441134960000'
       supertest(app)
         .post(paths.registerUser.reVerifyPhone)
         .set('Accept', 'application/json')

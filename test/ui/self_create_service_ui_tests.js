@@ -83,7 +83,7 @@ describe('Self-create service view', () => {
     done()
   })
 
-  it('should render otp resend form with international converted to numbers only telephone number', done => {
+  it('should render otp resend form with international telephone number', done => {
     const templateData = {
       telephoneNumber: '+441134960000'
     }
@@ -93,7 +93,7 @@ describe('Self-create service view', () => {
     body.should.containSelector('h1').withExactText('Check your mobile number')
 
     body.should.containSelector('form#otp-resend-form').withAttribute('action', paths.selfCreateService.otpResend)
-    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '00441134960000')
+    body.should.containInputField('telephone-number', 'tel').withAttribute('value', '+441134960000')
 
     done()
   })
