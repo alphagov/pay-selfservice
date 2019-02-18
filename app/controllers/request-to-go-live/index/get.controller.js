@@ -30,19 +30,22 @@ const agreedToTerms = [
   TERMS_AGREED_STRIPE,
   TERMS_AGREED_WORLDPAY,
   TERMS_AGREED_SMARTPAY,
-  TERMS_AGREED_EPDQ
-].concat(live)
+  TERMS_AGREED_EPDQ,
+  ...live
+]
 
 const chosenHowToProcessPayments = [
   CHOSEN_PSP_STRIPE,
   CHOSEN_PSP_WORLDPAY,
   CHOSEN_PSP_SMARTPAY,
-  CHOSEN_PSP_EPDQ
-].concat(agreedToTerms)
+  CHOSEN_PSP_EPDQ,
+  ...agreedToTerms
+]
 
 const enteredOrganisationName = [
-  ENTERED_ORGANISATION_NAME
-].concat(chosenHowToProcessPayments)
+  ENTERED_ORGANISATION_NAME,
+  ...chosenHowToProcessPayments
+]
 
 const startedButStillStepsToComplete = [
   ENTERED_ORGANISATION_NAME,
