@@ -33,20 +33,4 @@
       color: $govuk-text-colour;
     }
   }
-
-  @include govuk-media-query(tablet) {
-    &.border-bottom {
-      margin-bottom: 45px;
-
-      &:after {
-        content: "";
-        position: absolute;
-        bottom: - govuk-spacing(6);
-        height: 1px;
-        background-color:  govuk-colour("grey-3");
-        right: govuk-spacing(3);
-        left: govuk-spacing(3);
-      }
-    }
-  }
 }

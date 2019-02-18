@@ -13,12 +13,41 @@ const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION
 const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient
 const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const auth = require('../../services/auth_service.js')
-const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
+
+const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 const getTimespanDays = (fromDateTime, toDateTime) => moment(toDateTime).diff(moment(fromDateTime), 'days')
 
 // Constants
 const clsXrayConfig = require('../../../config/xray-cls')
+
+const links = {
+  manageService: 0,
+  demoPayment: 1,
+  testPaymentLink: 2,
+  directDebitPaymentFlow: 3,
+  paymentLinks: 4,
+  goLive: 5
+}
+
+const getLinksToDisplay = function getLinksToDisplay (service, account) {
+  const linksToDisplay = [links.manageService]
+
+  if (account.payment_provider === 'sandbox') {
+    linksToDisplay.push(links.demoPayment)
+    linksToDisplay.push(links.testPaymentLink)
+  } else if (account.paymentMethod === 'direct debit') {
+    linksToDisplay.push(links.directDebitPaymentFlow)
+  } else {
+    linksToDisplay.push(links.paymentLinks)
+  }
+
+  if (account.type === 'test') {
+    linksToDisplay.push(links.goLive)
+  }
+
+  return linksToDisplay
+}
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId((req))
@@ -30,8 +59,17 @@ module.exports = (req, res) => {
   const customFomDateTime = _.get(req, 'query.fromDateTime', null)
   const customToDateTime = _.get(req, 'query.toDateTime', null)
 
+  const linksToDisplay = getLinksToDisplay(req.service, req.account)
+  const model = {
+    name: req.user.username,
+    serviceId: req.service.externalId,
+    period,
+    links,
+    linksToDisplay
+  }
+
   try {
-    const {fromDateTime, toDateTime} = getTransactionDateRange(period, {
+    const { fromDateTime, toDateTime } = getTransactionDateRange(period, {
       fromDateTime: customFomDateTime,
       toDateTime: customToDateTime
     })
@@ -42,12 +80,9 @@ module.exports = (req, res) => {
 
     if (isADirectDebitAccount(gatewayAccountId)) {
       // todo implement transaction list for direct debit
-      return response(req, res, 'dashboard/index', {
-        name: req.user.username,
-        serviceId: req.service.externalId,
-        activityError: true,
-        period
-      })
+      return response(req, res, 'dashboard/index', Object.assign(model, {
+        activityError: true
+      }))
     }
 
     const namespace = getNamespace(clsXrayConfig.nameSpaceName)
@@ -62,16 +97,13 @@ module.exports = (req, res) => {
       }, (connectorData, connectorResponse) => {
         subsegment.close()
         const activityResults = connectorResponse.body
-        response(req, res, 'dashboard/index', {
-          name: req.user.username,
-          serviceId: req.service.externalId,
+        response(req, res, 'dashboard/index', Object.assign(model, {
           activity: activityResults,
           successfulTransactionsState: 'payment-success',
           fromDateTime,
           toDateTime,
-          period,
           transactionsPeriodString
-        })
+        }))
       }, subsegment)
         .on('connectorError', (error, connectorResponse) => {
           subsegment.close(error)
@@ -83,12 +115,9 @@ module.exports = (req, res) => {
             error
           })
           res.status(status)
-          response(req, res, 'dashboard/index', {
-            name: req.user.username,
-            serviceId: req.service.externalId,
-            activityError: true,
-            period
-          })
+          response(req, res, 'dashboard/index', Object.assign(model, {
+            activityError: true
+          }))
         })
     }, clsSegment)
   } catch (err) {
@@ -99,12 +128,9 @@ module.exports = (req, res) => {
       status: err.status
     })
     res.status(err.status)
-    response(req, res, 'dashboard/index', {
-      name: req.user.username,
-      serviceId: req.service.externalId,
-      activityError: true,
-      period
-    })
+    response(req, res, 'dashboard/index', Object.assign(model, {
+      activityError: true
+    }))
   }
 }
 
@@ -144,5 +170,5 @@ function getTransactionDateRange (period, customRange) {
     }
   }
 
-  return {fromDateTime, toDateTime}
+  return { fromDateTime, toDateTime }
 }

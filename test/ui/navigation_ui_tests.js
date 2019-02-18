@@ -14,7 +14,9 @@ describe('navigation menu', function () {
       currentService: {name: 'Service Name'},
       permissions: testPermissions,
       hideServiceNav: false,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
+      links: [],
+      linksToDisplay: []
     }
 
     const body = renderTemplate('dashboard/index', templateData)
@@ -33,7 +35,9 @@ describe('navigation menu', function () {
       currentService: {name: 'Service Name'},
       permissions: testPermissions,
       hideServiceNav: false,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card')
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
+      links: [],
+      linksToDisplay: []
     }
 
     const body = renderTemplate('dashboard/index', templateData)
@@ -52,7 +56,9 @@ describe('navigation menu', function () {
       currentService: {name: 'Service Name'},
       permissions: testPermissions,
       hideServiceNav: false,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'direct debit')
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'direct debit'),
+      links: [],
+      linksToDisplay: []
     }
 
     const body = renderTemplate('dashboard/index', templateData)
