@@ -17,12 +17,13 @@
         id: "telephone-number",
         name: "telephone-number",
         type: "tel",
+        autocomplete: "tel",
         classes: "govuk-input--width-20",
         label: {
             text: "Mobile number",
             classes: "govuk-label--s"
         },
-        value: telephoneNumber | replace("+", "00")
+        value: telephoneNumber
       })
     }}
     {{

@@ -71,6 +71,7 @@
     "correlation-id": "^3.0.2",
     "csrf": "3.0.x",
     "express": "4.16.x",
+    "google-libphonenumber": "^3.2.2",
     "govuk-frontend": "^2.7.0",
     "http-proxy": "1.17.x",
     "json2csv": "4.3.x",

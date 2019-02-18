@@ -11,8 +11,8 @@ const errorResponse = response.renderErrorView
 const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login')
-const {validateServiceRegistrationInputs, validateRegistrationTelephoneNumber} = require('../utils/registration_validations')
-const {validateServiceName} = require('../utils/service_name_validation')
+const { validateServiceRegistrationInputs, validateRegistrationTelephoneNumber } = require('../utils/registration_validations')
+const { validateServiceName } = require('../utils/service_name_validation')
 
 module.exports = {
 
@@ -41,7 +41,7 @@ module.exports = {
   submitRegistration: (req, res) => {
     const correlationId = req.correlationId
     const email = req.body['email']
-    const telephoneNumber = req.body['telephone-number'].replace(/\s/g, '')
+    const telephoneNumber = req.body['telephone-number']
     const password = req.body['password']
 
     const handleServerError = (err) => {

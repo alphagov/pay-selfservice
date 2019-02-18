@@ -1,16 +1,18 @@
 'use strict'
 
-const path = require('path')
+// NPM dependencies
 const nock = require('nock')
 const supertest = require('supertest')
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const session = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
-const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite_fixtures'))
 const csrf = require('csrf')
-
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
+
+// Local dependencies
+const paths = require('../../app/paths')
+const getApp = require('../../server').getApp
+const session = require('../test_helpers/mock_session')
+const inviteFixtures = require('../fixtures/invite_fixtures')
+
 chai.use(chaiAsPromised)
 
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
@@ -20,14 +22,14 @@ const expect = chai.expect
 let app
 let mockRegisterAccountCookie
 
-describe('register user controller', function () {
-  beforeEach((done) => {
+describe('register user controller', () => {
+  beforeEach(done => {
     mockRegisterAccountCookie = {}
     app = session.getAppWithRegisterInvitesCookie(getApp(), mockRegisterAccountCookie)
     done()
   })
 
-  afterEach((done) => {
+  afterEach(done => {
     nock.cleanAll()
     app = null
     done()
@@ -36,8 +38,8 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT validateInvite
    */
-  describe('verify invitation endpoint', function () {
-    it('should redirect to register view on a valid user invite with non existing user', function (done) {
+  describe('verify invitation endpoint', () => {
+    it('should redirect to register view on a valid user invite with non existing user', done => {
       const code = '23rer87t8shjkaf'
       const type = 'user'
       const opts = {
@@ -61,7 +63,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to subscribe service view on a valid user invite with existing user', function (done) {
+    it('should redirect to subscribe service view on a valid user invite with existing user', done => {
       const code = '23rer87t8shjkaf'
       const type = 'user'
       const opts = {
@@ -85,10 +87,10 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to otp verify view on a valid service invite with non existing user', function (done) {
+    it('should redirect to otp verify view on a valid service invite with non existing user', done => {
       const code = '23rer87t8shjkaf'
       const type = 'service'
-      const telephoneNumber = '07562327123'
+      const telephoneNumber = '+441134960000'
       const opts = {
         type,
         telephone_number: telephoneNumber,
@@ -113,7 +115,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to \'My services\' view on a valid service invite with existing user', function (done) {
+    it('should redirect to \'My services\' view on a valid service invite with existing user', done => {
       const code = '23rer87t8shjkaf'
       const type = 'service'
       const opts = {
@@ -133,10 +135,10 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', function (done) {
+    it('should redirect to register with telephone number, if user did not complete previous attempt after entering registration details', done => {
       const code = '7s8ftgw76rwgu'
-      const telephoneNumber = '123456789'
-      const validInviteResponse = inviteFixtures.validInviteResponse({telephone_number: telephoneNumber}).getPlain()
+      const telephoneNumber = '+441134960000'
+      const validInviteResponse = inviteFixtures.validInviteResponse({ telephone_number: telephoneNumber }).getPlain()
 
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${code}`)
         .reply(200, validInviteResponse)
@@ -154,7 +156,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error if the invite code is invalid', function (done) {
+    it('should error if the invite code is invalid', done => {
       const invalidCode = 'invalidCode'
       adminusersMock.get(`${INVITE_RESOURCE_PATH}/${invalidCode}`)
         .reply(404)
@@ -174,8 +176,8 @@ describe('register user controller', function () {
   /**
    *  ENDPOINT showRegistration
    */
-  describe('show registration view endpoint', function () {
-    it('should display create account form', function (done) {
+  describe('show registration view endpoint', () => {
+    it('should display create account form', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -190,10 +192,10 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should display create account form with telephone populated, if invite has been attempted', function (done) {
+    it('should display create account form with telephone populated, if invite has been attempted', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
-      mockRegisterAccountCookie.telephone_number = '123456789'
+      mockRegisterAccountCookie.telephone_number = '+441134960000'
 
       supertest(app)
         .get(paths.registerUser.registration)
@@ -202,12 +204,12 @@ describe('register user controller', function () {
         .expect(200)
         .expect((res) => {
           expect(res.body.email).to.equal('invitee@example.com')
-          expect(res.body.telephone_number).to.equal('123456789')
+          expect(res.body.telephone_number).to.equal('+441134960000')
         })
         .end(done)
     })
 
-    it('should display error when email and/or code is not in the cookie', function (done) {
+    it('should display error when email and/or code is not in the cookie', done => {
       supertest(app)
         .get(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -224,8 +226,8 @@ describe('register user controller', function () {
    *  ENDPOINT submitRegistration
    */
 
-  describe('submit registration details endpoint', function () {
-    it('should error if cookie details are missing', function (done) {
+  describe('submit registration details endpoint', () => {
+    it('should error if cookie details are missing', done => {
       supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -241,11 +243,11 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect back to registration form if error in phone number', function (done) {
+    it('should redirect back to registration form if error in phone number', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
-      const invalidPhone = '123456789'
+      const invalidPhone = 'abc'
       supertest(app)
         .post(paths.registerUser.registration)
         .set('Accept', 'application/json')
@@ -264,7 +266,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should redirect to phone verification page', function (done) {
+    it('should redirect to phone verification page', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -277,7 +279,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'telephone-number': '12345678901',
+          'telephone-number': '+441134960000',
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
@@ -286,7 +288,7 @@ describe('register user controller', function () {
         .end(done)
     })
 
-    it('should error for valid registration data, if code not found', function (done) {
+    it('should error for valid registration data, if code not found', done => {
       mockRegisterAccountCookie.email = 'invitee@example.com'
       mockRegisterAccountCookie.code = 'nfjkh438rf3901jqf'
 
@@ -299,7 +301,7 @@ describe('register user controller', function () {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'bob')
         .send({
-          'telephone-number': '12345678901',
+          'telephone-number': '+441134960000',
           'password': 'password1234',
           csrfToken: csrf().create('123')
         })
