@@ -136,6 +136,11 @@ var _getToggle3dsUrlFor = function (accountID, url) {
 }
 
 /** @private */
+const _getToggleGooglePayUrlFor = function (accountID, url) {
+  return url + ACCOUNT_API_PATH.replace('{accountId}', accountID)
+}
+
+/** @private */
 var _getTransactionSummaryUrlFor = function (accountID, period, url) {
   return url + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID) + '?' + period
 }
@@ -581,6 +586,17 @@ ConnectorClient.prototype = {
   update3dsEnabled: function (params, successCallback) {
     let url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
     oldBaseClient.patch(url, params, this.responseHandler(successCallback))
+    return this
+  },
+
+  /**
+   *
+   * @param {Object} params
+   * @param {Function} successCallback
+   */
+  toggleGooglePayEnabled: function (params, successCallback) {
+    const url = _getToggleGooglePayUrlFor(params.gatewayAccountId, this.connectorUrl)
+    baseClient.patch(url, params, this.responseHandler(successCallback))
     return this
   },
 
