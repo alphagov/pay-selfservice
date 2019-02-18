@@ -24,7 +24,7 @@
               text: "Mobile number",
               classes: "govuk-label--s"
           },
-          value: telephone_number,
+          value: telephone_number | replace("+", "00"),
           hint: {
             text: "We’ll send you a security code by text message"
           }
