@@ -22,7 +22,7 @@ describe('Request to go live: choose how to process payments', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
-      cy.get('h1').should('contain', 'Request to go live')
+      cy.get('h1').should('contain', 'Request a live account')
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
@@ -57,7 +57,7 @@ describe('Request to go live: choose how to process payments', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
-      cy.get('h1').should('contain', 'Choose how to process payments')
+      cy.get('h1').should('contain', 'How will you process payments?')
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
       cy.get('#choose-how-to-process-payments-mode-1').should('exist')
@@ -104,7 +104,7 @@ describe('Request to go live: choose how to process payments', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
-      cy.get('h1').should('contain', 'Choose how to process payments')
+      cy.get('h1').should('contain', 'How will you process payments?')
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
       cy.get('#choose-how-to-process-payments-mode-1').should('exist')
