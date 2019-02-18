@@ -130,7 +130,6 @@ describe('Request to go live: agreement', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
       })
-      cy.get('#request-to-go-live-step-3').should('contain', 'COMPLETED')
     })
   })
 
