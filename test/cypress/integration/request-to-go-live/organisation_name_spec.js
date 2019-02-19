@@ -50,7 +50,7 @@ describe('Request to go live: organisation name page', () => {
   })
 
   describe('Service has invalid go live stage', () => {
-    const serviceRole = utils.buildServiceRoleForGoLiveStage('INVALID_GO_LIVE_STAGE')
+    const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     beforeEach(() => {
       utils.setupStubs(serviceRole)
     })

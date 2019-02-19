@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block mainContent %}
-  {% if currentService.currentGoLiveStage === goLiveStage.LIVE %}
+  {% if showNextSteps %}
     <div class="govuk-grid-column-full govuk-!-margin-top-6">
       <div class="next-steps-panel">
         <h3 class="govuk-heading-l govuk-!-margin-bottom-2">Thank you. We’re creating your live service</h3>
@@ -15,7 +15,7 @@
       </div>
     </div>
   {% endif %}
-  {% if currentService.currentGoLiveStage === goLiveStage.DENIED %}
+  {% if denied %}
     <div class="govuk-grid-column-full govuk-!-margin-top-6">
     {{ govukErrorSummary({
       titleText: 'There is a problem',
@@ -28,76 +28,43 @@
     </div>
   {% else %}
     <div class="govuk-grid-column-two-thirds">
-      {% if currentService.currentGoLiveStage !== goLiveStage.LIVE %}
+      {% if notStarted or startedButStillStepsToComplete %}
         <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Request to go live</h1>
         <p class="govuk-body-l intro">Complete these steps to start taking real payments.</p>
       {% endif %}
       <div class="request-to-go-live-list">
-        <div id="request-to-go-live-step-1">
+        <div id="request-to-go-live-step-organisation-name">
           <h3 class="govuk-heading-m">
             Add your organisation’s name
-            {% if currentService.currentGoLiveStage in [
-              goLiveStage.ENTERED_ORGANISATION_NAME,
-              goLiveStage.CHOSEN_PSP_STRIPE,
-              goLiveStage.CHOSEN_PSP_WORLDPAY,
-              goLiveStage.CHOSEN_PSP_SMARTPAY,
-              goLiveStage.CHOSEN_PSP_EPDQ,
-              goLiveStage.TERMS_AGREED_STRIPE,
-              goLiveStage.TERMS_AGREED_WORLDPAY,
-              goLiveStage.TERMS_AGREED_SMARTPAY,
-              goLiveStage.TERMS_AGREED_EPDQ,
-              goLiveStage.LIVE
-            ] %}
-              <span class="status">COMPLETED</span>
+            {% if enteredOrganisationName %}
+              <span class="status">Completed</span>
             {% endif %}
           </h3>
           <p class="govuk-body">We’ll use this to perform a security check.</p>
         </div>
-        <div id="request-to-go-live-step-2">
+        <div id="request-to-go-live-step-choose-psp">
           <h3 class="govuk-heading-m">
             Choose how to process payments
-            {% if currentService.currentGoLiveStage in [
-              goLiveStage.CHOSEN_PSP_STRIPE,
-              goLiveStage.CHOSEN_PSP_WORLDPAY,
-              goLiveStage.CHOSEN_PSP_SMARTPAY,
-              goLiveStage.CHOSEN_PSP_EPDQ,
-              goLiveStage.TERMS_AGREED_STRIPE,
-              goLiveStage.TERMS_AGREED_WORLDPAY,
-              goLiveStage.TERMS_AGREED_SMARTPAY,
-              goLiveStage.TERMS_AGREED_EPDQ,
-              goLiveStage.LIVE
-            ] %}
-              <span class="status">COMPLETED</span>
+            {% if chosenHowToProcessPayments %}
+              <span class="status">Completed</span>
             {% endif %}
           </h3>
           <p class="govuk-body">Use GOV.UK Pay’s preferred payment service provider (PSP). If you have already procured your own PSP, you can enter their details instead.</p>
         </div>
-        <div id="request-to-go-live-step-3">
+        <div id="request-to-go-live-step-agree-terms">
           <h3 class="govuk-heading-m">
             Confirm that you accept our legal terms
-            {% if currentService.currentGoLiveStage in [
-              goLiveStage.TERMS_AGREED_STRIPE,
-              goLiveStage.TERMS_AGREED_WORLDPAY,
-              goLiveStage.TERMS_AGREED_SMARTPAY,
-              goLiveStage.TERMS_AGREED_EPDQ,
-              goLiveStage.LIVE
-            ] %}
-              <span class="status">COMPLETED</span>
+            {% if agreedToTerms %}
+              <span class="status">Completed</span>
             {% endif %}
           </h3>
           <p class="govuk-body">To start using GOV.UK Pay your organisation must accept GOV.UK Pay’s legal terms.</p>
         </div>
         <form id="request-to-go-live-index-form" method="post" action="/service/{{currentService.externalId}}/request-to-go-live">
           <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-          {% if currentService.currentGoLiveStage === goLiveStage.NOT_STARTED %}
+          {% if notStarted %}
             {{ govukButton({ text: "Start now" }) }}
-          {% elif currentService.currentGoLiveStage not in [
-            goLiveStage.TERMS_AGREED_STRIPE,
-            goLiveStage.TERMS_AGREED_WORLDPAY,
-            goLiveStage.TERMS_AGREED_SMARTPAY,
-            goLiveStage.TERMS_AGREED_EPDQ,
-            goLiveStage.LIVE
-          ] %}
+          {% elif startedButStillStepsToComplete %}
             {{ govukButton({ text: "Continue" }) }}
           {% endif %}
         </form>

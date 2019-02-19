@@ -119,7 +119,6 @@ describe('Request to go live: agreement', () => {
 
       cy.get('#agreement-1').should('exist')
       cy.get('#agreement-1').should('not.be.checked')
-      cy.get('#request-to-go-live-step-3').should('not.contain', 'COMPLETED')
 
       cy.get('#request-to-go-live-agreement-form > button').should('exist')
       cy.get('#request-to-go-live-agreement-form > button').should('contain', 'Continue')
@@ -130,7 +129,6 @@ describe('Request to go live: agreement', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
       })
-      cy.get('#request-to-go-live-step-3').should('contain', 'COMPLETED')
     })
   })
 
@@ -174,7 +172,6 @@ describe('Request to go live: agreement', () => {
 
       cy.get('#agreement-1').should('exist')
       cy.get('#agreement-1').should('not.be.checked')
-      cy.get('#request-to-go-live-step-3').should('not.contain', 'COMPLETED')
 
       cy.get('#request-to-go-live-agreement-form > button').should('exist')
       cy.get('#request-to-go-live-agreement-form > button').should('contain', 'Continue')
@@ -185,7 +182,6 @@ describe('Request to go live: agreement', () => {
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
       })
-      cy.get('#request-to-go-live-step-3').should('contain', 'COMPLETED')
     })
   })
 
