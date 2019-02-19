@@ -1,6 +1,7 @@
 {% extends "../layout.njk" %}
 {% from "components/button/macro.njk" import govukButton %}
 {% from "components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "components/panel/macro.njk" import govukPanel %}
 
 {% block pageTitle %}
   Request a live account - {{ currentService.name }} - GOV.UK Pay
@@ -9,13 +10,30 @@
 {% block mainContent %}
   {% if showNextSteps %}
     <div class="govuk-grid-column-full govuk-!-margin-top-6">
-      <div class="next-steps-panel">
-        <h3 class="govuk-heading-l govuk-!-margin-bottom-2">Thank you. We’re creating your live service</h3>
-        <p class="govuk-body-l govuk-!-margin-bottom-4">We’ll contact you in one business day with a link to your live account and next steps.</p>
-      </div>
+    {{ govukPanel({
+      titleText: "Request submitted"
+    }) }}
     </div>
-  {% endif %}
-  {% if denied %}
+    <div class="govuk-grid-column-two-thirds">
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">What happens next</h3>
+      <p class="govuk-body">We’ll email you in one working day with a link to your live account.</p>
+      <p class="govuk-body">Sign in and follow the account set up instructions.</p>
+      <p class="govuk-body">You’ll need to provide:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        {% if pspIsStripe %}
+          <li>your organisation’s contact details</li>
+          <li>your bank details</li>
+          <li>your VAT number</li>
+          <li>your company number (if you have one)</li>
+          <li>the name, date of birth and home address of the person in your organisation legally responsible for payments (called your ‘responsible person’)</li>
+        {% else %}
+          <li>your organisation’s contact details</li>
+          <li>account credentials related to your payment service provider</li>
+        {% endif %}
+      </ul>
+      <p class="govuk-body">Once that’s done, you can start taking payments.</p>
+    </div>
+  {% elif denied %}
     <div class="govuk-grid-column-full govuk-!-margin-top-6">
     {{ govukErrorSummary({
       titleText: 'There is a problem',

@@ -62,6 +62,11 @@ const showNextSteps = [
   TERMS_AGREED_EPDQ
 ]
 
+const pspIsStripe = [
+  CHOSEN_PSP_STRIPE,
+  TERMS_AGREED_STRIPE
+]
+
 module.exports = (req, res) => {
   const currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
 
@@ -77,7 +82,8 @@ module.exports = (req, res) => {
     agreedToTerms: agreedToTerms.includes(currentGoLiveStage),
     startedButStillStepsToComplete: startedButStillStepsToComplete.includes(currentGoLiveStage),
     showNextSteps: showNextSteps.includes(currentGoLiveStage),
-    denied: currentGoLiveStage === DENIED
+    denied: currentGoLiveStage === DENIED,
+    pspIsStripe: pspIsStripe.includes(currentGoLiveStage)
   }
 
   return response.response(req, res,'request-to-go-live/index', pageData)
