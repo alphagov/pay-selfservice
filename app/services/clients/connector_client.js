@@ -590,30 +590,33 @@ ConnectorClient.prototype = {
   },
 
   /**
-   *
-   * @param {Object} params
-   * @param {Function} successCallback
+   * Patch a payload to the account endpoint
+   * @param params
+   *          An object with the following elements;
+   *            gatewayAccountId (required)
+   *            payload (required)
+   *            correlationId (optional)
+   *@return {Promise}
    */
-  toggleGooglePayEnabled: function (params) { 
+  toggleGooglePayEnabled: function (params) {
     return new Promise((resolve, reject) => {
+      const url = _getToggleGooglePayUrlFor(params.gatewayAccountId, this.connectorUrl)
+      const startTime = new Date()
+      const context = {
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId: params.correlationId,
+        method: 'PATCH',
+        description: 'toggle google pay'
+      }
 
-    const url = _getToggleGooglePayUrlFor(params.gatewayAccountId, this.connectorUrl)
-    const startTime = new Date()
-    const context = {
-      url: url,
-      defer: { resolve: resolve, reject: reject },
-      startTime: startTime,
-      correlationId: params.correlationId,
-      method: 'PATCH',
-      description: 'toggle google pay'
-    }
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-    baseClient.patch(url, params, callbackToPromiseConverter)
-      .on('error', callbackToPromiseConverter)
-  })
-},
+      baseClient.patch(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
+  },
 
   /**
    *
