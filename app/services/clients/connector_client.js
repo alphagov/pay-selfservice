@@ -501,7 +501,7 @@ ConnectorClient.prototype = {
 
       requestLogger.logRequestStart(context)
 
-      oldBaseClient.patch(url, params, callbackToPromiseConverter)
+      baseClient.patch(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
   },
@@ -594,11 +594,26 @@ ConnectorClient.prototype = {
    * @param {Object} params
    * @param {Function} successCallback
    */
-  toggleGooglePayEnabled: function (params, successCallback) {
+  toggleGooglePayEnabled: function (params) { 
+    return new Promise((resolve, reject) => {
+
     const url = _getToggleGooglePayUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.patch(url, params, this.responseHandler(successCallback))
-    return this
-  },
+    const startTime = new Date()
+    const context = {
+      url: url,
+      defer: { resolve: resolve, reject: reject },
+      startTime: startTime,
+      correlationId: params.correlationId,
+      method: 'PATCH',
+      description: 'toggle google pay'
+    }
+
+    const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+    baseClient.patch(url, params, callbackToPromiseConverter)
+      .on('error', callbackToPromiseConverter)
+  })
+},
 
   /**
    *

@@ -12,22 +12,25 @@ module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const gatewayMerchantId = req.body.merchantId
   const enableGooglePayPayload = { 'op': 'replace', 'path': 'allow_google_pay', 'value': 'true' }
-  connector.toggleGooglePayEnabled({
+  const setGatewayMerchantIdPayload = { 'op': 'add', 'path': 'credentials/gateway_merchant_id', 'value': gatewayMerchantId }
+
+  const enableGooglePayBoolean = connector.toggleGooglePayEnabled({
     gatewayAccountId,
     correlationId,
     payload: enableGooglePayPayload
-  }, (success) => {
-    console.log(success)
   })
 
-  const setGatewayMerchantIdPayload = { 'op': 'add', 'path': 'credentials/gateway_merchant_id', 'value': gatewayMerchantId }
-  connector.toggleGooglePayEnabled({
+  const setGatewayMerchantID = connector.toggleGooglePayEnabled({
     gatewayAccountId,
     correlationId,
     payload: setGatewayMerchantIdPayload
-  }, (success) => {
-    console.log(success)
   })
 
-  return res.redirect(paths.digitalWallet.summary)
+  Promise.all([enableGooglePayBoolean, setGatewayMerchantID]).then(toggleGooglePayResponse => {
+    req.flash('generic', '<h2>Google Pay successfully enabled.</h2>')
+    return res.redirect(paths.digitalWallet.summary)
+  }).catch(err => {
+    req.flash('genericError', `<h2>Something went wrong</h2><p>${err.message.errors.join(', ')}</p>`)
+    return res.redirect(paths.digitalWallet.confirmGooglePay)
+  })
 }
