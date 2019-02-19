@@ -5,7 +5,7 @@
 {% from "components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block pageTitle %}
-  Request to go live - {{ currentService.name }} - GOV.UK Pay
+  Request a live account - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
@@ -50,7 +50,7 @@
         name: 'choose-how-to-process-payments-mode',
         fieldset: {
           legend: {
-            text: 'Choose how to process payments',
+            text: 'How will you process payments?',
             isPageHeading: true,
             classes: 'govuk-fieldset__legend--l'
           }
@@ -58,17 +58,17 @@
         items: [
           {
             value: 'stripe',
-            text: 'GOV.UK Pay',
+            text: 'GOV.UK Pay’s provider',
             label: {
               classes: "govuk-label--s"
             },
             hint: {
-              text: 'Using GOV.UK Pay’s payment service provider (PSP) will save you the time and cost of procuring your own. GOV.UK Pay uses Stripe to process payments.'
+              text: 'GOV.UK Pay uses Stripe to process payments. Using Stripe means you don’t need to have your own payment service provider.'
             }
           },
           {
             value: 'other_psp',
-            text: 'I have already procured my own payment service provider',
+            text: 'Other providers',
             label: {
               classes: "govuk-label--s"
             },

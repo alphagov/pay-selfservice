@@ -58,7 +58,7 @@ describe('Request to go live: organisation name page', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'Request to go live')
+      cy.get('h1').should('contain', 'Request a live account')
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live`)
@@ -81,7 +81,7 @@ describe('Request to go live: organisation name page', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'What is the name of your organisation?')
+      cy.get('h1').should('contain', 'What is your organisation called?')
 
       cy.get('#request-to-go-live-current-step').should('exist')
 
@@ -120,7 +120,7 @@ describe('Request to go live: organisation name page', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'What is the name of your organisation?')
+      cy.get('h1').should('contain', 'What is your organisation called?')
 
       cy.get('#request-to-go-live-current-step').should('exist')
 
@@ -153,7 +153,7 @@ describe('Request to go live: organisation name page', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'What is the name of your organisation?')
+      cy.get('h1').should('contain', 'What is your organisation called?')
 
       cy.get('#request-to-go-live-current-step').should('exist')
 
@@ -166,7 +166,7 @@ describe('Request to go live: organisation name page', () => {
       cy.get('#request-to-go-live-organisation-name-form > button').click()
 
       cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is the name of your organisation?')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is your organisation called?')
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('have.class', 'govuk-input--error')
@@ -185,7 +185,7 @@ describe('Request to go live: organisation name page', () => {
 
       cy.visit(requestToGoLivePageOrganisationNameUrl)
 
-      cy.get('h1').should('contain', 'What is the name of your organisation?')
+      cy.get('h1').should('contain', 'What is your organisation called?')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('exist')
       cy.get('input#request-to-go-live-organisation-name-input').type(exceedMaxLengthOrganisationName)
@@ -196,7 +196,7 @@ describe('Request to go live: organisation name page', () => {
       cy.get('#request-to-go-live-organisation-name-form > button').click()
 
       cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
-      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is the name of your organisation?')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'What is your organisation called?')
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#request-to-go-live-organisation-name-input')
 
       cy.get('input#request-to-go-live-organisation-name-input').should('have.class', 'govuk-input--error')
