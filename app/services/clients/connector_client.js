@@ -8,10 +8,12 @@ const logger = require('winston')
 const querystring = require('querystring')
 
 // Local dependencies
-const baseClient = require('./old_base_client')
+const oldBaseClient = require('./old_base_client')
+const baseClient = require('./base_client/base_client')
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
+const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -22,6 +24,7 @@ const V2_CHARGES_API_PATH = '/v2/api/accounts/{accountId}/charges'
 const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
 const CARD_TYPES_API_PATH = '/v1/api/card-types'
+const STRIPE_ACCOUNT_SETUP_PATH = ACCOUNT_API_PATH + '/stripe-setup'
 
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
@@ -32,6 +35,8 @@ const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
+
+const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
 
 /**
  * @private
@@ -169,7 +174,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    baseClient.get(url, {correlationId: params.correlationId}, function (error, response, body) {
+    oldBaseClient.get(url, {correlationId: params.correlationId}, function (error, response, body) {
       logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url, new Date() - startTime)
       responseHandler(error, response, body)
     })
@@ -222,7 +227,7 @@ ConnectorClient.prototype = {
       url: url,
       chargeId: params.chargeId
     })
-    baseClient.get(url, {correlationId: params.correlationId}, this.responseHandler(successCallback))
+    oldBaseClient.get(url, {correlationId: params.correlationId}, this.responseHandler(successCallback))
     return this
   },
 
@@ -244,7 +249,7 @@ ConnectorClient.prototype = {
       url: url,
       chargeId: params.chargeId
     })
-    baseClient.get(url, params, this.responseHandler(successCallback))
+    oldBaseClient.get(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -272,7 +277,7 @@ ConnectorClient.prototype = {
 
       let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-      baseClient.get(url, params, callbackToPromiseConverter, null)
+      oldBaseClient.get(url, params, callbackToPromiseConverter, null)
         .on('error', callbackToPromiseConverter)
     })
   },
@@ -301,7 +306,7 @@ ConnectorClient.prototype = {
 
       let callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-      baseClient.get(url, params, callbackToPromiseConverter)
+      oldBaseClient.get(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
   },
@@ -348,7 +353,7 @@ ConnectorClient.prototype = {
         params.payload.analytics_id = analyticsId
       }
 
-      baseClient.post(url, params, callbackToPromiseConverter)
+      oldBaseClient.post(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
   },
@@ -368,7 +373,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    baseClient.patch(url, params, this.responseHandler(successCallback))
+    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -387,7 +392,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    baseClient.post(url, params, this.responseHandler(successCallback))
+    oldBaseClient.post(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -409,7 +414,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    baseClient.get(url, params, this.responseHandler(successCallback))
+    oldBaseClient.get(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -432,7 +437,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    baseClient.post(url, params, this.responseHandler(successCallback))
+    oldBaseClient.post(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -455,7 +460,7 @@ ConnectorClient.prototype = {
       method: 'GET',
       url: url
     })
-    baseClient.get(url, params, this.responseHandler(successCallback))
+    oldBaseClient.get(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -491,7 +496,7 @@ ConnectorClient.prototype = {
 
       requestLogger.logRequestStart(context)
 
-      baseClient.patch(url, params, callbackToPromiseConverter)
+      oldBaseClient.patch(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
   },
@@ -517,7 +522,7 @@ ConnectorClient.prototype = {
       payload: params.payload
     })
 
-    baseClient.post(url, params, this.responseHandler(successCallback))
+    oldBaseClient.post(url, params, this.responseHandler(successCallback))
     return this
   },
   /**
@@ -527,7 +532,7 @@ ConnectorClient.prototype = {
    */
   updateConfirmationEmail: function (params, successCallback) {
     let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.patch(url, params, this.responseHandler(successCallback))
+    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -539,7 +544,7 @@ ConnectorClient.prototype = {
    */
   updateConfirmationEmailEnabled: function (params, successCallback) {
     let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.patch(url, params, this.responseHandler(successCallback))
+    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -551,7 +556,7 @@ ConnectorClient.prototype = {
    */
   updateEmailCollectionMode: function (params, successCallback) {
     let url = _accountApiUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.patch(url, params, this.responseHandler(successCallback))
+    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -563,7 +568,7 @@ ConnectorClient.prototype = {
    */
   updateRefundEmailEnabled: function (params, successCallback) {
     let url = _getNotificationEmailUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.patch(url, params, this.responseHandler(successCallback))
+    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
 
     return this
   },
@@ -575,7 +580,7 @@ ConnectorClient.prototype = {
    */
   update3dsEnabled: function (params, successCallback) {
     let url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
-    baseClient.patch(url, params, this.responseHandler(successCallback))
+    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
     return this
   },
 
@@ -591,9 +596,45 @@ ConnectorClient.prototype = {
     }
     const period = querystring.stringify(queryStrings)
     let url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period, this.connectorUrl)
-    baseClient.get(url, params, this.responseHandler(successCallback), subsegment)
+    oldBaseClient.get(url, params, this.responseHandler(successCallback), subsegment)
 
     return this
+  },
+
+  getStripeAccountSetup: function (gatewayAccountId, correlationId) {
+    return baseClient.get(
+      {
+        baseUrl: this.connectorUrl,
+        url: STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        correlationId,
+        description: 'get stripe account setup flags for gateway account',
+        service: SERVICE_NAME,
+        transform: responseBodyToStripeAccountSetupTransformer,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  },
+
+  setStripeAccountSetupFlag: function (gatewayAccountId, stripeAccountSetupFlag, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: STRIPE_ACCOUNT_SETUP_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: [
+          {
+            op: 'replace',
+            path: stripeAccountSetupFlag,
+            value: true
+          }
+        ],
+        correlationId,
+        description: 'set stripe account setup flag to true for gateway account',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
   }
 }
 
