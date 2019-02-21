@@ -18,13 +18,13 @@ module.exports = (req, res) => {
   const enableGooglePayPayload = { 'op': 'replace', 'path': 'allow_google_pay', 'value': 'true' }
   const setGatewayMerchantIdPayload = { 'op': 'add', 'path': 'credentials/gateway_merchant_id', 'value': gatewayMerchantId }
 
-  const enableGooglePayBoolean = connector.toggleGooglePayEnabled({
+  const enableGooglePayBoolean = connector.patchAccount({
     gatewayAccountId,
     correlationId,
     payload: enableGooglePayPayload
   })
 
-  const setGatewayMerchantId = connector.toggleGooglePayEnabled({
+  const setGatewayMerchantId = connector.patchAccount({
     gatewayAccountId,
     correlationId,
     payload: setGatewayMerchantIdPayload

@@ -136,7 +136,7 @@ var _getToggle3dsUrlFor = function (accountID, url) {
 }
 
 /** @private */
-const _getToggleGooglePayUrlFor = function (accountID, url) {
+const _getAccountUrlFor = function (accountID, url) {
   return url + ACCOUNT_API_PATH.replace('{accountId}', accountID)
 }
 
@@ -598,9 +598,9 @@ ConnectorClient.prototype = {
    *            correlationId (optional)
    *@return {Promise}
    */
-  toggleGooglePayEnabled: function (params) {
+  patchAccount: function (params) {
     return new Promise((resolve, reject) => {
-      const url = _getToggleGooglePayUrlFor(params.gatewayAccountId, this.connectorUrl)
+      const url = _getAccountUrlFor(params.gatewayAccountId, this.connectorUrl)
       const startTime = new Date()
       const context = {
         url: url,
@@ -608,7 +608,7 @@ ConnectorClient.prototype = {
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'PATCH',
-        description: 'toggle google pay'
+        description: 'patch account'
       }
 
       const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
