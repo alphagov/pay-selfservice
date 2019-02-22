@@ -240,6 +240,7 @@ module.exports.bind = function (app) {
   app.get(digitalWallet.confirmGooglePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getEnableGooglePay)
   app.post(digitalWallet.confirmGooglePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postEnableGooglePay)
   app.post(digitalWallet.disableApplePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postDisableApplePay)
+  app.post(digitalWallet.disableGooglePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postDisableGooglePay)
 
   // EMAIL
   app.get(en.index, xraySegmentCls, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)

@@ -27,7 +27,11 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
             </td>
             {% if permissions.payment_types_update %}
             <td class="govuk-table__cell table-data-label govuk-text-align-right">
-              {% if currentGatewayAccount.allow_apple_pay %}
+              {% if not currentGatewayAccount.allow_apple_pay %}
+              <a href="{{routes.digitalWallet.confirmApplePay}}" class="govuk-link govuk-link--no-visited-state">
+                Enable
+              </a> 
+              {% else %}
               <form method="post" action="{{routes.digitalWallet.disableApplePay}}">
                   <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
                   {{
@@ -36,12 +40,6 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
                     })
                   }}
                 </form>
-              {% else %}
-              <a href="{{routes.digitalWallet.confirmApplePay}}" class="govuk-link govuk-link--no-visited-state">
-                Enable
-              </a> 
-              </a>
-
               {% endif %}
             </td>
             {% endif %}
@@ -56,9 +54,20 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
             </td>
             {% if permissions.payment_types_update %}
             <td class="govuk-table__cell table-data-label govuk-text-align-right">
+            {% if not currentGatewayAccount.allow_google_pay %}
               <a href="{{routes.digitalWallet.confirmGooglePay}}" class="govuk-link govuk-link--no-visited-state">
                 Enable
               </a>
+              {% else %}
+              <form method="post" action="{{routes.digitalWallet.disableGooglePay}}">
+                  <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+                  {{
+                    govukButton({
+                      text: "Disable"
+                    })
+                  }}
+                </form>              
+              {% endif %}
             </td>
             {% endif %}
           </tr>
