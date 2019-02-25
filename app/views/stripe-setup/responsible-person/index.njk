@@ -1,0 +1,156 @@
+{% extends "../../layout.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/date-input/macro.njk" import govukDateInput %}
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block pageTitle %}
+  Nominate a responsible person - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+
+    <span id="request-to-go-live-current-step" class="govuk-caption-l">Before you can take payments</span>
+    <h1 class="govuk-heading-l">Nominate a responsible person</h1>
+    <p class="govuk-body">To meet financial regulations you need to upload details of the person responsible
+      for managing payments to your service. This is for anti money laundering (AML) purposes.</p>
+    <p class="govuk-body">The responsible person can be you, or someone else in your organisation authorised to
+      sign contracts.</p>
+
+    <form id="stripe-setup-responsible-person-form" method="post"
+          action="/responsible-person" data-validate="true" >
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}">
+      {{ govukInput({
+        label: {
+          text: "First name"
+        },
+        id: "first-name",
+        name: "first-name",
+        value: firstName,
+        type: "text",
+        autocomplete: "given-name",
+        errorMessage: firstNameError,
+        classes: "govuk-input--width-20",
+        attributes: {
+          "data-validate": "required isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "255"
+        }
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Last name"
+        },
+        id: "last-name",
+        name: "last-name",
+        value: lastName,
+        type: "text",
+        autocomplete: "family-name",
+        errorMessage: lastNameNameError,
+        classes: "govuk-input--width-20",
+        attributes: {
+          "data-validate": "required isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "255"
+        }
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Home address"
+        },
+        id: "home-address-line-1",
+        name: "home-address-line-1",
+        value: homeAddressLine1,
+        type: "text",
+        autocomplete: "address-line1",
+        errorMessage: homeAddressLine1Error,
+        attributes: {
+          "data-validate": "required isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "255"
+        }
+      }) }}
+
+      {{ govukInput({
+        id: "home-address-line-2",
+        name: "home-address-line-2",
+        value: homeAddressLine2,
+        type: "text",
+        autocomplete: "address-line2",
+        errorMessage: homeAddressLine2Error,
+        attributes: {
+          "aria-label": "Enter address line 2",
+          "data-validate": "isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "255"
+        }
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "City"
+        },
+        id: "home-address-city",
+        name: "home-address-city",
+        value: homeAddressCity,
+        type: "text",
+        autocomplete: "address-level2",
+        errorMessage: homeAddressCityError,
+        classes: "govuk-input--width-20",
+        attributes: {
+          "data-validate": "required isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "255"
+        }
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Postcode"
+        },
+        id: "home-address-postcode",
+        name: "home-address-postcode",
+        value: homeAddressPostcode,
+        type: "text",
+        autocomplete: "postal-code",
+        classes: "govuk-input--width-10",
+        errorMessage: homeAddressPostcodeError,
+        attributes: {
+          "data-validate": "required isFieldGreaterThanMaxLengthChars",
+          "data-validate-max-length": "10"
+        }
+      }) }}
+
+      {{ govukDateInput({
+        id: "dob",
+        namePrefix: "dob",
+        fieldset: {
+          legend: {
+            text: "Date of birth"
+          }
+        },
+        hint: {
+          text: "For example, 26 5 1980"
+        },
+        items: [
+          {
+            name: "day",
+            classes: "govuk-input--width-2",
+            autocomplete: "bday-day"
+          },
+          {
+            name: "month",
+            classes: "govuk-input--width-2",
+            autocomplete: "bday-month"
+          },
+          {
+            name: "year",
+            classes: "govuk-input--width-4",
+            autocomplete: "bday-year"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+
+  </div>
+{% endblock %}
