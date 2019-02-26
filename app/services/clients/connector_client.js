@@ -525,8 +525,7 @@ ConnectorClient.prototype = {
         },
         correlationId,
         description: 'toggle allow apple pay',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   },
@@ -551,8 +550,7 @@ ConnectorClient.prototype = {
         },
         correlationId,
         description: 'toggle allow google pay',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   },
@@ -576,8 +574,7 @@ ConnectorClient.prototype = {
         },
         correlationId,
         description: 'set gateway merchant id',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+        service: SERVICE_NAME
       }
     )
   },
