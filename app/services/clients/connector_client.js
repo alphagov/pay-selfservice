@@ -613,7 +613,7 @@ ConnectorClient.prototype = {
 
       const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
 
-      baseClient.patch(url, params, callbackToPromiseConverter)
+      oldBaseClient.patch(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
   },
