@@ -15,20 +15,8 @@ module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const gatewayMerchantId = req.body.merchantId
-  const enableGooglePayPayload = { 'op': 'replace', 'path': 'allow_google_pay', 'value': 'true' }
-  const setGatewayMerchantIdPayload = { 'op': 'add', 'path': 'credentials/gateway_merchant_id', 'value': gatewayMerchantId }
-
-  const enableGooglePayBoolean = connector.patchAccount({
-    gatewayAccountId,
-    correlationId,
-    payload: enableGooglePayPayload
-  })
-
-  const setGatewayMerchantId = connector.patchAccount({
-    gatewayAccountId,
-    correlationId,
-    payload: setGatewayMerchantIdPayload
-  })
+  const enableGooglePayBoolean = connector.toggleGooglePay(gatewayAccountId, true, correlationId)
+  const setGatewayMerchantId = connector.setGatewayMerchantId(gatewayAccountId, gatewayMerchantId, correlationId)
 
   Promise.all([setGatewayMerchantId, enableGooglePayBoolean]).then(() => {
     req.flash('generic', '<h2>Google Pay successfully enabled.</h2>')

@@ -507,6 +507,82 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * @param gatewayAccountId
+   * @param allowApplePay (boolean)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+  toggleApplePay: function (gatewayAccountId, allowApplePay, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'allow_apple_pay',
+          value: `${allowApplePay}`
+        },
+        correlationId,
+        description: 'toggle allow apple pay',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  },
+    
+  /**
+   * @param gatewayAccountId
+   * @param allowGooglePay (boolean)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+
+  toggleGooglePay: function (gatewayAccountId, allowGooglePay, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'allow_google_pay',
+          value: `${allowGooglePay}`
+        },
+        correlationId,
+        description: 'toggle allow google pay',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  },
+  /**
+   * @param gatewayAccountId
+   * @param gatewayMerchantId (string)
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+
+  setGatewayMerchantId: function (gatewayAccountId, gatewayMerchantId, correlationId) {
+    return baseClient.patch(
+      {
+        baseUrl: this.connectorUrl,
+        url: ACCOUNT_API_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        body: {
+          op: 'add',
+          path: 'credentials/gateway_merchant_id',
+          value: gatewayMerchantId
+        },
+        correlationId,
+        description: 'set gateway merchant id',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  },
+
+  /**
    * Create a refund of the provided amount for the given payment
    * @param params
    *          An object with the following elements;

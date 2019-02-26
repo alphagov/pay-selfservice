@@ -14,19 +14,14 @@ const displayErrorMessage = (error) => {
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  const enableApplePayPayload = { 'op': 'replace', 'path': 'allow_apple_pay', 'value': 'true' }
 
-  const enableApplePayBoolean = connector.patchAccount({
-    gatewayAccountId,
-    correlationId,
-    payload: enableApplePayPayload
-  })
+  const enableApplePayBoolean = connector.toggleApplePay(gatewayAccountId, true, correlationId)
 
   enableApplePayBoolean.then(() => {
     req.flash('generic', '<h2>Apple Pay successfully enabled.</h2>')
     return res.redirect(paths.digitalWallet.summary)
   }).catch(err => {
     req.flash('genericError', `<h2>Something went wrong</h2><p>${displayErrorMessage(err)}</p>`)
-    return res.redirect(paths.digitalWallet.confirmGooglePay)
+    return res.redirect(paths.digitalWallet.confirmApplePay)
   })
 }
