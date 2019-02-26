@@ -92,6 +92,12 @@ function validateField (form, field) {
       case 'isNaxsiSafe':
         result = checks.isNaxsiSafe(field.value)
         break
+      case 'accountNumber':
+        result = checks.isNotAccountNumber(field.value)
+        break
+      case 'sortCode':
+        result = checks.isNotSortCode(field.value)
+        break
       default:
         result = checks.isEmpty(field.value)
         break
