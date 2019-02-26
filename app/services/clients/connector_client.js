@@ -529,7 +529,7 @@ ConnectorClient.prototype = {
       }
     )
   },
-    
+
   /**
    * @param gatewayAccountId
    * @param allowGooglePay (boolean)
@@ -660,35 +660,6 @@ ConnectorClient.prototype = {
     let url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
     oldBaseClient.patch(url, params, this.responseHandler(successCallback))
     return this
-  },
-
-  /**
-   * Patch a payload to the account endpoint
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            payload (required)
-   *            correlationId (optional)
-   *@return {Promise}
-   */
-  patchAccount: function (params) {
-    return new Promise((resolve, reject) => {
-      const url = _getAccountUrlFor(params.gatewayAccountId, this.connectorUrl)
-      const startTime = new Date()
-      const context = {
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: params.correlationId,
-        method: 'PATCH',
-        description: 'patch account'
-      }
-
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      oldBaseClient.patch(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
-    })
   },
 
   /**
