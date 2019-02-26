@@ -66,16 +66,17 @@ const feedbackController = require('./controllers/feedback')
 const toggleBillingAddressController = require('./controllers/billing-address/toggle-billing-address-controller')
 const requestToGoLiveIndexController = require('./controllers/request-to-go-live/index')
 const requestToGoLiveOrganisationNameController = require('./controllers/request-to-go-live/organisation-name')
-const policyDocumentsController = require('./controllers/policy')
 const requestToGoLiveChooseHowToProcessPaymentsController = require('./controllers/request-to-go-live/choose-how-to-process-payments')
-const requestToGoLiveAgreement = require('./controllers/request-to-go-live/agreement')
+const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
+const policyDocumentsController = require('./controllers/policy')
+const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup
 } = paths
 
 // Exports
@@ -190,6 +191,7 @@ module.exports.bind = function (app) {
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
     ...lodash.values(policyPages),
+    ...lodash.values(stripeSetup),
     paths.feedback
   ] // Extract all the authenticated paths as a single array
 
@@ -340,11 +342,15 @@ module.exports.bind = function (app) {
   app.get(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
   app.post(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
   // Request to go live: agreement
-  app.get(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveAgreement.get)
-  app.post(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreement.post)
+  app.get(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveAgreementController.get)
+  app.post(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.post)
 
   // Private policy document downloads
   app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)
+
+  // Stripe setup: bank details
+  app.get(stripeSetup.bankDetails, xraySegmentCls, permission('go-live-stage:read'), getAccount, paymentMethodIsCard, stripeSetupBankDetailsController.get)
+  app.post(stripeSetup.bankDetails, xraySegmentCls, permission('go-live-stage:update'), getAccount, paymentMethodIsCard, stripeSetupBankDetailsController.post)
 
   app.all('*', (req, res) => {
     res.status(404)
