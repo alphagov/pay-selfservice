@@ -110,6 +110,12 @@ describe('field validation checks', () => {
       expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
     })
 
+    it('should validate successfully for 6 digits with random whitespace', () => {
+      const sortCode = '1 0 88 00'
+
+      expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
+    })
+
     it('should be not valid when is not a number', () => {
       const sortCode = 'abcdef'
 
