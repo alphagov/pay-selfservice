@@ -501,7 +501,7 @@ ConnectorClient.prototype = {
 
       requestLogger.logRequestStart(context)
 
-      baseClient.patch(url, params, callbackToPromiseConverter)
+      baseClient.patch(url, params, callbackToPromiseConverter, null)
         .on('error', callbackToPromiseConverter)
     })
   },
