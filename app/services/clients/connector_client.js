@@ -136,11 +136,6 @@ var _getToggle3dsUrlFor = function (accountID, url) {
 }
 
 /** @private */
-const _getAccountUrlFor = function (accountID, url) {
-  return url + ACCOUNT_API_PATH.replace('{accountId}', accountID)
-}
-
-/** @private */
 var _getTransactionSummaryUrlFor = function (accountID, period, url) {
   return url + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID) + '?' + period
 }
@@ -501,7 +496,7 @@ ConnectorClient.prototype = {
 
       requestLogger.logRequestStart(context)
 
-      baseClient.patch(url, params, callbackToPromiseConverter, null)
+      oldBaseClient.patch(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
   },
