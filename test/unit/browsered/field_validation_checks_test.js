@@ -1,10 +1,16 @@
 'use strict'
 
 // NPM dependencies
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 // Local dependencies
-const {isAboveMaxAmount, isPasswordLessThanTenChars, isFieldGreaterThanMaxLengthChars} = require('../../../app/browsered/field-validation-checks')
+const {
+  isAboveMaxAmount,
+  isPasswordLessThanTenChars,
+  isFieldGreaterThanMaxLengthChars,
+  isNotAccountNumber,
+  isNotSortCode
+} = require('../../../app/browsered/field-validation-checks')
 
 describe('field validation checks', () => {
   describe('isAboveMaxAmount', () => {
@@ -39,6 +45,93 @@ describe('field validation checks', () => {
     })
     it('should return false, ignoring the validation if max length is not numeric', () => {
       expect(isFieldGreaterThanMaxLengthChars('123456ABC', 'que')).to.equal(false)
+    })
+  })
+  describe('isNotValidAccountNumber', () => {
+    it('should validate successfully for 8 digits', () => {
+      const accountNumber = '00012345'
+
+      expect(isNotAccountNumber(accountNumber)).to.be.false // eslint-disable-line
+    })
+
+    it('should validate successfully for 6 digits', () => {
+      const accountNumber = '012345'
+
+      expect(isNotAccountNumber(accountNumber)).to.be.false // eslint-disable-line
+    })
+
+    it('should validate successfully for 7 digits', () => {
+      const accountNumber = '0012345'
+
+      expect(isNotAccountNumber(accountNumber)).to.be.false // eslint-disable-line
+    })
+
+    it('should be not valid when is not a number', () => {
+      const accountNumber = 'abcdefgh'
+
+      expect(isNotAccountNumber(accountNumber)).to.be.equal('Please enter a valid account number')
+    })
+
+    it('should be not valid when is too short', () => {
+      const accountNumber = '12345'
+
+      expect(isNotAccountNumber(accountNumber)).to.be.equal('Please enter a valid account number')
+    })
+
+    it('should be not valid when is too long', () => {
+      const accountNumber = '123456789'
+
+      expect(isNotAccountNumber(accountNumber)).to.be.equal('Please enter a valid account number')
+    })
+  })
+
+  describe('isNotValidSortCode', () => {
+    it('should validate successfully for 6 digits', () => {
+      const sortCode = '108800'
+
+      expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
+    })
+
+    it('should validate successfully for 6 digits with dashes', () => {
+      const sortCode = '10-88-00'
+
+      expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
+    })
+
+    it('should validate successfully for 6 digits with spaces', () => {
+      const sortCode = '10 88 00'
+
+      expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
+    })
+
+    it('should validate successfully for 6 digits with mix of dashes and spaces', () => {
+      const sortCode = '10-88 00'
+
+      expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
+    })
+
+    it('should validate successfully for 6 digits with random whitespace', () => {
+      const sortCode = '1 0 88 00'
+
+      expect(isNotSortCode(sortCode)).to.be.false // eslint-disable-line
+    })
+
+    it('should be not valid when is not a number', () => {
+      const sortCode = 'abcdef'
+
+      expect(isNotSortCode(sortCode)).to.be.equal('Please enter a valid sort code')
+    })
+
+    it('should be not valid when is too short', () => {
+      const sortCode = '12345'
+
+      expect(isNotSortCode(sortCode)).to.be.equal('Please enter a valid sort code')
+    })
+
+    it('should be not valid when is too long', () => {
+      const sortCode = '1234567'
+
+      expect(isNotSortCode(sortCode)).to.be.equal('Please enter a valid sort code')
     })
   })
 })
