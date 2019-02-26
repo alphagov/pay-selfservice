@@ -85,7 +85,7 @@ exports.isNaxsiSafe = function (value) {
 }
 
 exports.isNotAccountNumber = value => {
-  if (NUMBERS_ONLY.test(value) && (value.length >= 6 && value.length <= 8)) {
+  if (/^[0-9]{6,8}$/.test(value)) {
     return false
   } else {
     return validationErrors.invalidBankAccountNumber
@@ -93,7 +93,7 @@ exports.isNotAccountNumber = value => {
 }
 
 exports.isNotSortCode = value => {
-  if (/^[ -]*(?:[0-9][ -]*){6}$/.test(value)) {
+  if (/^(?:[ -]*[0-9][ -]*){6}$/.test(value)) {
     return false
   } else {
     return validationErrors.invalidSortCode
