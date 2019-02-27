@@ -148,6 +148,58 @@ describe('Stripe setup: bank details page', () => {
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
     })
+
+    describe('Check your answers page', () => {
+      const accountNumber = '00012345'
+      const sortCode = '108800'
+
+      beforeEach(() => {
+        cy.task('setupStubs', [
+          commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+          commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
+          getStripeSetupStub(false)
+        ])
+
+        cy.visit('/bank-details')
+
+        cy.get('#stripe-setup-account-number-input').type(accountNumber)
+        cy.get('#stripe-setup-sort-code-input').type(sortCode)
+        cy.get('#stripe-setup-bank-details-form > button[type=submit]').click()
+      })
+
+      it('should go to check your answers page when inputs are valid', () => {
+        cy.get('#stripe-setup-account-number-value').should('contain', accountNumber)
+        cy.get('#stripe-setup-sort-code-value').should('contain', sortCode)
+
+        cy.get('h1').should('contain', 'Check details before saving')
+      })
+
+      it('should go to the dashboard page when save details button clicked', () => {
+        cy.get('#stripe-setup-bank-details-check-submit-form > button[type=submit]').click()
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/`)
+        })
+      })
+
+      it('should go back to index page when change account number link clicked', () => {
+        cy.get('#stripe-setup-account-number-change-button').click()
+        cy.get('.govuk-error-summary').should('not.exist')
+
+        cy.get('h1').should('contain', 'Add bank details')
+        cy.get('#stripe-setup-account-number-input').should('have.value', accountNumber)
+        cy.get('#stripe-setup-sort-code-input').should('have.value', sortCode)
+      })
+
+      it('should go back to index page when change sort code link clicked', () => {
+        cy.get('#stripe-setup-sort-code-change-button').click()
+        cy.get('.govuk-error-summary').should('not.exist')
+
+        cy.get('h1').should('contain', 'Add bank details')
+        cy.get('#stripe-setup-account-number-input').should('have.value', accountNumber)
+        cy.get('#stripe-setup-sort-code-input').should('have.value', sortCode)
+      })
+    })
   })
 
   describe('Direct Debit gateway account', () => {
