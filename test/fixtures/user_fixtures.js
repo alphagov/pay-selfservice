@@ -154,6 +154,14 @@ const defaultPermissions = [
   {
     name: 'go-live-stage:read',
     description: 'View Go Live stage'
+  },
+  {
+    name: 'stripe-bank-details:update',
+    description: 'Update Stripe bank details'
+  },
+  {
+    name: 'stripe-bank-details:read',
+    description: 'View Stripe bank details'
   }
 ]
 
