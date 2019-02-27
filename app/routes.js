@@ -349,8 +349,8 @@ module.exports.bind = function (app) {
   app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)
 
   // Stripe setup: bank details
-  app.get(stripeSetup.bankDetails, xraySegmentCls, permission('go-live-stage:read'), getAccount, paymentMethodIsCard, stripeSetupBankDetailsController.get)
-  app.post(stripeSetup.bankDetails, xraySegmentCls, permission('go-live-stage:update'), getAccount, paymentMethodIsCard, stripeSetupBankDetailsController.post)
+  app.get(stripeSetup.bankDetails, xraySegmentCls, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, stripeSetupBankDetailsController.get)
+  app.post(stripeSetup.bankDetails, xraySegmentCls, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, stripeSetupBankDetailsController.post)
 
   app.all('*', (req, res) => {
     res.status(404)
