@@ -15,13 +15,6 @@ const ANSWERS_NEED_CHANGING_FIELD = 'answers-need-changing'
 const ANSWERS_CHECKED_FIELD = 'answers-checked'
 
 module.exports = (req, res) => {
-  if (req.account.payment_provider.toLowerCase() !== 'stripe' ||
-    req.account.type.toLowerCase() !== 'live') {
-    res.status(404)
-    res.render('404')
-    return
-  }
-
   const accountNumber = req.body[ACCOUNT_NUMBER_FIELD]
   const sortCode = req.body[SORT_CODE_FIELD]
 
