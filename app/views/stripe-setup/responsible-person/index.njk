@@ -13,13 +13,16 @@
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Before you can take payments</span>
     <h1 class="govuk-heading-l">Nominate a responsible person</h1>
-    <p class="govuk-body">To meet financial regulations you need to upload details of the person responsible
-      for managing payments to your service. This is for anti money laundering (AML) purposes.</p>
-    <p class="govuk-body">The responsible person can be you, or someone else in your organisation authorised to
-      sign contracts.</p>
-
+    <p class="govuk-body">Before you can make any payments, we need a named person in your organisation. It’s a legal
+      requirement to provide this information. This person will be responsible for the management of payments.</p>
+    <p class="govuk-body">The responsible person can be:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>someone in your organisation authorised to sign contracts</li>
+      <li>the head of finance</li>
+      <li>the head of the organisation</li>
+    </ul>
     <form id="stripe-setup-responsible-person-form" method="post"
-          action="/responsible-person" data-validate="true" >
+          action="/responsible-person" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}">
       {{ govukInput({
         label: {
@@ -154,6 +157,11 @@
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
-
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <h1 class="govuk-heading-m">What will happen to this information</h1>
+    <p class="govuk-body">We’ll send this information to our payment service provider, Stripe. Stripe will use these
+      details to confirm the responsible person’s identity.</p>
+    <p class="govuk-body">Their details will be processed and stored by Stripe. GOV.UK Pay will not store these
+      details.</p>
   </div>
 {% endblock %}
