@@ -6,10 +6,13 @@ const lodash = require('lodash')
 // Local dependencies
 const response = require('../../../utils/response')
 const bankDetailsValidations = require('./bank-details-validations')
+const paths = require('../../../paths')
 
 // Constants
 const ACCOUNT_NUMBER_FIELD = 'account-number'
 const SORT_CODE_FIELD = 'sort-code'
+const ANSWERS_NEED_CHANGING_FIELD = 'answers-need-changing'
+const ANSWERS_CHECKED_FIELD = 'answers-checked'
 
 module.exports = (req, res) => {
   if (req.account.payment_provider.toLowerCase() !== 'stripe' ||
@@ -19,8 +22,8 @@ module.exports = (req, res) => {
     return
   }
 
-  const accountNumber = lodash.get(req.body, ACCOUNT_NUMBER_FIELD)
-  const sortCode = lodash.get(req.body, SORT_CODE_FIELD)
+  const accountNumber = req.body[ACCOUNT_NUMBER_FIELD]
+  const sortCode = req.body[SORT_CODE_FIELD]
 
   const errors = validateBankDetails(accountNumber, sortCode)
   const pageData = {
@@ -29,14 +32,17 @@ module.exports = (req, res) => {
     errors
   }
 
-  if (lodash.isEmpty(errors)) {
-    // go to confirm page
-  } else {
+  if (!lodash.isEmpty(errors)) {
     return response.response(req, res, 'stripe-setup/bank-details/index', pageData)
   }
-
-  // TODO
-  return response.response(req, res, 'stripe-setup/bank-details/index', pageData)
+  if (req.body[ANSWERS_NEED_CHANGING_FIELD]) {
+    return response.response(req, res, 'stripe-setup/bank-details/index', pageData)
+  }
+  if (req.body[ANSWERS_CHECKED_FIELD]) {
+    // TODO: Stripe submission
+    return res.redirect(303, paths.dashboard.index)
+  }
+  return response.response(req, res, 'stripe-setup/bank-details/check-your-answers', pageData)
 }
 
 function validateBankDetails (accountNumber, sortCode) {

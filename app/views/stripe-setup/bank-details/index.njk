@@ -9,7 +9,7 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
-    {% if errors %}
+    {% if errors.length > 0 %}
       {% set errorList = [] %}
       {% if errors['account-number'] %}
         {% set errorList = (errorList.push({
@@ -48,6 +48,7 @@
         },
         id: "stripe-setup-account-number-input",
         name: "account-number",
+        classes: "govuk-input--width-10",
         value: accountNumber,
         type: "text",
         errorMessage: accountNumberError,
@@ -69,6 +70,7 @@
         },
         id: "stripe-setup-sort-code-input",
         name: "sort-code",
+        classes: "govuk-input--width-10",
         value: sortCode,
         type: "text",
         errorMessage: sortCodeError,
