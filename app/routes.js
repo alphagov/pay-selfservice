@@ -336,13 +336,13 @@ module.exports.bind = function (app) {
   app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)
   app.post(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveIndexController.post)
   // Request to go live: organisation name
-  app.get(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveOrganisationNameController.get)
+  app.get(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.get)
   app.post(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.post)
   // Request to go live: choose how to process payments
-  app.get(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
+  app.get(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
   app.post(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
   // Request to go live: agreement
-  app.get(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveAgreementController.get)
+  app.get(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.get)
   app.post(requestToGoLive.agreement, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveAgreementController.post)
 
   // Private policy document downloads
