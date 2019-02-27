@@ -1,0 +1,83 @@
+{% extends "../../layout.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block pageTitle %}
+  Add bank details - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    {% if errors %}
+      {% set errorList = [] %}
+      {% if errors['account-number'] %}
+        {% set errorList = (errorList.push({
+          text: 'Account number',
+          href: '#stripe-setup-account-number-input'
+        }), errorList) %}
+      {% endif %}
+      {% if errors['sort-code'] %}
+        {% set errorList = (errorList.push({
+          text: 'Sort code',
+          href: '#stripe-setup-sort-code-input'
+        }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add bank details</h1>
+    <p class="govuk-body govuk-!-margin-bottom-6">This is the bank account payments will go into.</p>
+
+    <form id="stripe-setup-bank-details-form" method="post"
+          action="/bank-details" data-validate="true">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set accountNumberError = false %}
+      {% if errors['account-number'] %}
+        {% set accountNumberError = {
+          text: errors['account-number']
+        } %}
+      {% endif %}
+
+      {{ govukInput({
+        label: {
+          text: "Account number"
+        },
+        id: "stripe-setup-account-number-input",
+        name: "account-number",
+        value: accountNumber,
+        type: "text",
+        errorMessage: accountNumberError,
+        attributes: {
+          "data-validate": "required accountNumber"
+        }
+      }) }}
+
+      {% set sortCodeError = false %}
+      {% if errors['sort-code'] %}
+        {% set sortCodeError = {
+          text: errors['sort-code']
+        } %}
+      {% endif %}
+
+      {{ govukInput({
+        label: {
+          text: "Sort code"
+        },
+        id: "stripe-setup-sort-code-input",
+        name: "sort-code",
+        value: sortCode,
+        type: "text",
+        errorMessage: sortCodeError,
+        attributes: {
+          "data-validate": "required sortCode"
+        }
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+{% endblock %}

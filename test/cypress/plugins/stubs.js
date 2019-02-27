@@ -10,6 +10,7 @@ const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures'
 const cardFixtures = require('../../fixtures/card_fixtures')
 const serviceFixtures = require('../../fixtures/service_fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
+const stripeAccountSetupFixtures = require('../../fixtures/stripe_account_setup_fixtures')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -103,6 +104,31 @@ module.exports = {
               'Content-Type': 'application/json'
             },
             body: aValidGetGatewayAccountResponse
+          }
+        }]
+      }
+    ]
+  },
+  getGatewayAccountStripeSetupSuccess: (opts = {}) => {
+    const aValidGetGatewayAccountStripeSetupResponse = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidGetGatewayAccountStripeSetupResponse
           }
         }]
       }

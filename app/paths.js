@@ -164,5 +164,8 @@ module.exports = {
   },
   policyPages: {
     download: '/policy/download/:key'
+  },
+  stripeSetup: {
+    bankDetails: '/bank-details'
   }
 }
