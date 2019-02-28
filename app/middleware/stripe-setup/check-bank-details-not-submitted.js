@@ -1,12 +1,12 @@
 'use strict'
 
 // Local dependencies
-const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient
+const { ConnectorClient } = require('../../services/clients/connector_client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
 
-module.exports = (req, res, next) => {
+module.exports = function checkBankDetailsNotSubmitted (req, res, next) {
   if (!req.account) {
     renderErrorView(req, res, 'Internal server error')
     return
