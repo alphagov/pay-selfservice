@@ -23,10 +23,10 @@ describe('Apple Pay', () => {
         name: 'getGatewayAccountSuccessRepeatNTimes',
         opts: [{
           gateway_account_id: gatewayAccountId,
-          payment_provider: 'Worldpay'
+          payment_provider: 'worldpay'
         }, {
           gateway_account_id: gatewayAccountId,
-          payment_provider: 'Worldpay',
+          payment_provider: 'worldpay',
           allow_apple_pay: true
         }]
       }
@@ -36,7 +36,7 @@ describe('Apple Pay', () => {
   describe('Enable Apple Pay', () => {
     it('should enable apple pay', () => {
       cy.visit('/digital-wallet')
-      cy.title().should('eq', `Manage digital wallet - ${serviceName} Worldpay test - GOV.UK Pay`)
+      cy.title().should('eq', `Manage digital wallet - ${serviceName} worldpay test - GOV.UK Pay`)
       cy.get('td').contains('Apple Pay').siblings().find('a').contains('Enable').click()
       cy.get('button').contains('turn on Apple Pay').click()
       cy.get('.notification').should('contain', 'Apple Pay successfully enabled.')
