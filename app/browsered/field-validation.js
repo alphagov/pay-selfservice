@@ -120,14 +120,32 @@ function applyErrorMessaging (form, field, result) {
   }
 }
 
+function getLabel (field) {
+  if (field.hasAttribute('data-validate-override-label')) {
+    const overrideField = field.getAttribute('data-validate-override-label')
+    const overrideLabel = document.querySelector('label[for="' + overrideField + '"]')
+    if (overrideLabel) {
+      return overrideLabel
+    }
+  }
+  return field
+}
+
 function populateErrorSummary (form) {
-  const erroringFields = Array.prototype.slice.call(form.querySelectorAll(`${FORM_GROUP_WITH_ERROR} label`))
+  const erroringFieldLabels = Array.prototype.slice.call(form.querySelectorAll(`${FORM_GROUP_WITH_ERROR} label`))
+
+  const erroringFieldLabelsAndIds = erroringFieldLabels.map(field => {
+    const label = getLabel(field).innerHTML.split('<')[0].trim()
+    const id = field.getAttribute('for')
+    return {label, id}
+  })
+
+  const erroringFieldLabelsAndIdsDuplicateLabelsRemoved = erroringFieldLabelsAndIds.filter((field, index, fields) => {
+    return fields.indexOf(fields.find(f => f.label === field.label)) >= index
+  })
+
   const configuration = {
-    fields: erroringFields.map(field => {
-      const label = field.innerHTML.split('<')[0].trim()
-      const id = field.getAttribute('for')
-      return {label, id}
-    })
+    fields: erroringFieldLabelsAndIdsDuplicateLabelsRemoved
   }
 
   form.parentNode.insertAdjacentHTML(
