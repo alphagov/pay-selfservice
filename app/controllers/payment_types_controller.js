@@ -93,5 +93,5 @@ module.exports.inferAcceptedCardType = function (acceptedCards) {
  * Filter out card types that require 3DS when account doesn't support 3DS.
  */
 module.exports.filter3dsRequiredCardTypesIfNotSupported = function (accountSupports3ds, cards) {
-  return _.filter(cards, card => accountSupports3ds || (!accountSupports3ds && !card.requires3ds))
+  return _.filter(cards, card => accountSupports3ds || !card.requires3ds)
 }
