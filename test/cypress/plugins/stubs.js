@@ -134,6 +134,35 @@ module.exports = {
       }
     ]
   },
+  getGatewayAccountStripeSetupBankAccountFlagChanged: (opts = {}) => {
+    const responses = []
+    opts.data.forEach(item => {
+      responses.push({
+        is: {
+          statusCode: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(item).getPlain()
+        }
+      })
+    })
+
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses
+      }
+    ]
+  },
   getGatewayAccountQueryParamsSuccess: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
     return [
