@@ -10,6 +10,53 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    {% if errors %}
+      {% set errorList = [] %}
+
+      {% if errors['first-name'] %}
+        {% set errorList = (errorList.push({
+          text: 'First name',
+          href: '#stripe-setup-first-name-input'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['last-name'] %}
+        {% set errorList = (errorList.push({
+          text: 'Last name',
+          href: '#stripe-setup-last-name-input'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['home-address-line-1'] or errors['home-address-line-2'] %}
+        {% if errors['home-address-line-1'] %}
+          {% set href = '#stripe-setup-home-address-line-1-input' %}
+        {% else %}
+          {% set href = '#stripe-setup-home-address-line-2-input' %}
+        {% endif %}
+        {% set errorList = (errorList.push({
+          text: 'Home address',
+          href: href
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['home-address-city'] %}
+        {% set errorList = (errorList.push({
+          text: 'City',
+          href: '#stripe-setup-home-address-city-input'
+        }), errorList) %}
+      {% endif %}
+
+      {% if errors['home-address-postcode'] %}
+        {% set errorList = (errorList.push({
+          text: 'Postcode',
+          href: '#stripe-setup-home-address-postcode-input'
+        }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Before you can take payments</span>
     <h1 class="govuk-heading-l">Nominate a responsible person</h1>
@@ -23,12 +70,19 @@
     </ul>
     <form id="stripe-setup-responsible-person-form" method="post"
           action="/responsible-person" data-validate="true">
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set firstNameError = false %}
+      {% if errors['first-name'] %}
+        {% set firstNameError = {
+          text: errors['first-name']
+        } %}
+      {% endif %}
       {{ govukInput({
         label: {
           text: "First name"
         },
-        id: "first-name",
+        id: "stripe-setup-first-name-input",
         name: "first-name",
         value: firstName,
         type: "text",
@@ -37,15 +91,20 @@
         classes: "govuk-input--width-20",
         attributes: {
           "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "255"
+          "data-validate-max-length": "100"
         }
       }) }}
-
+      {% set lastNameNameError = false %}
+      {% if errors['last-name'] %}
+        {% set lastNameNameError = {
+          text: errors['last-name']
+        } %}
+      {% endif %}
       {{ govukInput({
         label: {
           text: "Last name"
         },
-        id: "last-name",
+        id: "stripe-setup-last-name-input",
         name: "last-name",
         value: lastName,
         type: "text",
@@ -54,15 +113,20 @@
         classes: "govuk-input--width-20",
         attributes: {
           "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "255"
+          "data-validate-max-length": "100"
         }
       }) }}
-
+      {% set homeAddressLine1Error = false %}
+      {% if errors['home-address-line-1'] %}
+        {% set homeAddressLine1Error = {
+          text: errors['home-address-line-1']
+        } %}
+      {% endif %}
       {{ govukInput({
         label: {
-          text: "Home address"
+          html: 'Home address <span class="govuk-visually-hidden">line 1 of 2</span>'
         },
-        id: "home-address-line-1",
+        id: "stripe-setup-home-address-line-1-input",
         name: "home-address-line-1",
         value: homeAddressLine1,
         type: "text",
@@ -70,12 +134,23 @@
         errorMessage: homeAddressLine1Error,
         attributes: {
           "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "255"
+          "data-validate-max-length": "200"
         }
       }) }}
-
+      {% set homeAddressLine2Error = false %}
+      {% if errors['home-address-line-2'] %}
+        {% set homeAddressLine2Error = {
+          text: errors['home-address-line-2']
+        } %}
+      {% endif %}
       {{ govukInput({
-        id: "home-address-line-2",
+        label: {
+          html: '<span class="govuk-visually-hidden">Home address line 2 of 2</span>',
+          attributes: {
+            "data-validate-override-label": "stripe-setup-home-address-line-1-input"
+          }
+        },
+        id: "stripe-setup-home-address-line-2-input",
         name: "home-address-line-2",
         value: homeAddressLine2,
         type: "text",
@@ -84,15 +159,20 @@
         attributes: {
           "aria-label": "Enter address line 2",
           "data-validate": "isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "255"
+          "data-validate-max-length": "200"
         }
       }) }}
-
+      {% set homeAddressCityError = false %}
+      {% if errors['home-address-city'] %}
+        {% set homeAddressCityError = {
+          text: errors['home-address-city']
+        } %}
+      {% endif %}
       {{ govukInput({
         label: {
           text: "City"
         },
-        id: "home-address-city",
+        id: "stripe-setup-home-address-city-input",
         name: "home-address-city",
         value: homeAddressCity,
         type: "text",
@@ -101,15 +181,20 @@
         classes: "govuk-input--width-20",
         attributes: {
           "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "255"
+          "data-validate-max-length": "100"
         }
       }) }}
-
+      {% set homeAddressPostcodeError = false %}
+      {% if errors['home-address-postcode'] %}
+        {% set homeAddressPostcodeError = {
+          text: errors['home-address-postcode']
+        } %}
+      {% endif %}
       {{ govukInput({
         label: {
           text: "Postcode"
         },
-        id: "home-address-postcode",
+        id: "stripe-setup-home-address-postcode-input",
         name: "home-address-postcode",
         value: homeAddressPostcode,
         type: "text",
@@ -117,13 +202,17 @@
         classes: "govuk-input--width-10",
         errorMessage: homeAddressPostcodeError,
         attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "10"
+          "data-validate": "required postcode"
         }
       }) }}
-
+      {% set homeAddressPostcodeError = false %}
+      {% if errors['home-address-postcode'] %}
+        {% set homeAddressPostcodeError = {
+          text: errors['home-address-postcode']
+        } %}
+      {% endif %}
       {{ govukDateInput({
-        id: "dob",
+        id: "stripe-setup-dob-input",
         namePrefix: "dob",
         fieldset: {
           legend: {
@@ -133,24 +222,34 @@
         hint: {
           text: "For example, 26 5 1980"
         },
+        errorMessage: dobError,
         items: [
           {
             value: dobDay,
             name: "day",
             classes: "govuk-input--width-2",
-            autocomplete: "bday-day"
+            autocomplete: "bday-day",
+            attributes: {
+            "data-validate": "required dobDay"
+          }
           },
           {
             value: dobMonth,
             name: "month",
             classes: "govuk-input--width-2",
-            autocomplete: "bday-month"
+            autocomplete: "bday-month",
+            attributes: {
+            "data-validate": "required dobMonth"
+          }
           },
           {
             value: dobYear,
             name: "year",
             classes: "govuk-input--width-4",
-            autocomplete: "bday-year"
+            autocomplete: "bday-year",
+            attributes: {
+            "data-validate": "required dobYear"
+          }
           }
         ]
       }) }}
