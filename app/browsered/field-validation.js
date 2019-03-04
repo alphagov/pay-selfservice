@@ -98,6 +98,9 @@ function validateField (form, field) {
       case 'sortCode':
         result = checks.isNotSortCode(field.value)
         break
+      case 'postcode':
+        result = checks.isInvalidUkPostcode(field.value)
+        break
       default:
         result = checks.isEmpty(field.value)
         break
