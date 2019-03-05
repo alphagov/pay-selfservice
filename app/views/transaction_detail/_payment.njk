@@ -18,6 +18,12 @@
       <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Card expiry date:</th>
       <td class="govuk-table__cell govuk-!-font-size-16" id="card_expiry_date">{{card_details.expiry_date}}</td>
     </tr>
+    {% if wallet_type %}
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Wallet type:</th>
+      <td class="govuk-table__cell govuk-!-font-size-16" id="wallet_type">{{wallet_type}}</td>
+    </tr>
+    {% endif %}
     {% if permissions.transactions_email_read %}
     <tr class="govuk-table__row">
       <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Email:</th>
