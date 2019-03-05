@@ -1,5 +1,8 @@
 'use strict'
 
+// NPM dependencies
+const ukPostcode = require('uk-postcode')
+
 // Local dependencies
 const {
   isEmpty, isFieldGreaterThanMaxLengthChars, isInvalidUkPostcode
@@ -56,11 +59,11 @@ exports.validatePostcode = (postcode) => {
     }
   }
 
-  const invalidPostcodeErrorMessage = isInvalidUkPostcode(postcode)
-  if (invalidPostcodeErrorMessage) {
+  const postcodeIsInvalid = !ukPostcode.fromString(postcode).isComplete()
+  if (postcodeIsInvalid) {
     return {
       valid: false,
-      message: invalidPostcodeErrorMessage
+      message: 'Please enter a real postcode'
     }
   }
 
