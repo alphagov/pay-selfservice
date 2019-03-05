@@ -1,0 +1,37 @@
+{% extends "../layout.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+   Enable Apple Pay - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">
+    Enable Apple Pay
+  </h1>
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  <h2 class="govuk-heading-m">
+    Are you sure?
+  </h2>
+  <p class="govuk-body">
+    Corporate card fees cannot be applied to payments made with Apple Pay.
+  </p>
+
+  <form method="post" action="{{routes.digitalWallet.enableApplePay}}">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{
+      govukButton({
+        text: "Yes, turn on Apple Pay"
+      })
+    }}
+  </form>
+  <p class="govuk-body">
+    <a href="{{routes.digitalWallet.summary}}" class="govuk-link govuk-link--no-visited-state">
+      No, cancel
+    </a>
+  </p>
+</div>
+{% endblock %}

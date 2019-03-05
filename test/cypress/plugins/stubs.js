@@ -189,6 +189,46 @@ module.exports = {
       }
     ]
   },
+  getGatewayAccountSuccessRepeatNTimes: (opts = {}) => {
+    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
+    const aSecondValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1]).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/frontend/accounts/${opts[0].gateway_account_id}`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidGetGatewayAccountResponse
+          },
+          _behaviors: {
+            repeat: 1
+          }
+        }, {
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aSecondValidGetGatewayAccountResponse
+          },
+          _behaviors: {
+            repeat: 1
+          }
+        }]
+      }
+    ]
+  },
   getDirectDebitGatewayAccountSuccess: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts).getPlain()
     return [

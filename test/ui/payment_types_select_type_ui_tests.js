@@ -25,9 +25,7 @@ describe('The payment select type view', () => {
     }
 
     const body = renderTemplate('card-payment-types/select_type', templateData)
-
-    body.should.containSelector('.page-title').withExactText('Card types')
-
+    body.should.containSelector('.page-title').withExactText('Manage payment types')
     body.should.containSelector('#payment-types-all-type')
       .withAttribute('name', 'payment-types-card-type')
       .withAttribute('value', TYPES.ALL)
