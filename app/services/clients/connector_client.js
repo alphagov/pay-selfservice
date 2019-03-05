@@ -14,6 +14,7 @@ const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
+const StripeAccount = require('../../models/StripeAccount.class')
 
 // Constants
 const SERVICE_NAME = 'connector'
@@ -25,6 +26,7 @@ const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
 const CARD_TYPES_API_PATH = '/v1/api/card-types'
 const STRIPE_ACCOUNT_SETUP_PATH = ACCOUNT_API_PATH + '/stripe-setup'
+const STRIPE_ACCOUNT_PATH = ACCOUNT_API_PATH + '/stripe-account'
 
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
@@ -37,6 +39,7 @@ const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
 
 const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
+const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
 
 /**
  * @private
@@ -174,7 +177,7 @@ ConnectorClient.prototype = {
       url: url
     })
 
-    oldBaseClient.get(url, {correlationId: params.correlationId}, function (error, response, body) {
+    oldBaseClient.get(url, { correlationId: params.correlationId }, function (error, response, body) {
       logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url, new Date() - startTime)
       responseHandler(error, response, body)
     })
@@ -227,7 +230,7 @@ ConnectorClient.prototype = {
       url: url,
       chargeId: params.chargeId
     })
-    oldBaseClient.get(url, {correlationId: params.correlationId}, this.responseHandler(successCallback))
+    oldBaseClient.get(url, { correlationId: params.correlationId }, this.responseHandler(successCallback))
     return this
   },
 
@@ -267,7 +270,7 @@ ConnectorClient.prototype = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'GET',
@@ -296,7 +299,7 @@ ConnectorClient.prototype = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'GET',
@@ -328,7 +331,7 @@ ConnectorClient.prototype = {
       const startTime = new Date()
       const context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: correlationId,
         method: 'POST',
@@ -484,7 +487,7 @@ ConnectorClient.prototype = {
       const startTime = new Date()
       const context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: correlationId,
         method: 'PATCH',
@@ -632,6 +635,21 @@ ConnectorClient.prototype = {
         correlationId,
         description: 'set stripe account setup flag to true for gateway account',
         service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  },
+
+  getStripeAccount: function (gatewayAccountId, correlationId) {
+    return baseClient.get(
+      {
+        baseUrl: this.connectorUrl,
+        url: STRIPE_ACCOUNT_PATH.replace('{accountId}', gatewayAccountId),
+        json: true,
+        correlationId,
+        description: 'get stripe account for gateway account',
+        service: SERVICE_NAME,
+        transform: responseBodyToStripeAccountTransformer,
         baseClientErrorHandler: 'old'
       }
     )
