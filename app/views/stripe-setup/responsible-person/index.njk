@@ -68,8 +68,7 @@
       <li>the head of finance</li>
       <li>the head of the organisation</li>
     </ul>
-    <form id="stripe-setup-responsible-person-form" method="post"
-          action="/responsible-person" data-validate="true">
+    <form id="stripe-setup-responsible-person-form" method="post" action="/responsible-person">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set firstNameError = false %}
@@ -88,11 +87,7 @@
         type: "text",
         autocomplete: "given-name",
         errorMessage: firstNameError,
-        classes: "govuk-input--width-20",
-        attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "100"
-        }
+        classes: "govuk-input--width-20"
       }) }}
       {% set lastNameNameError = false %}
       {% if errors['last-name'] %}
@@ -110,11 +105,7 @@
         type: "text",
         autocomplete: "family-name",
         errorMessage: lastNameNameError,
-        classes: "govuk-input--width-20",
-        attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "100"
-        }
+        classes: "govuk-input--width-20"
       }) }}
       {% set homeAddressLine1Error = false %}
       {% if errors['home-address-line-1'] %}
@@ -131,11 +122,7 @@
         value: homeAddressLine1,
         type: "text",
         autocomplete: "address-line1",
-        errorMessage: homeAddressLine1Error,
-        attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "200"
-        }
+        errorMessage: homeAddressLine1Error
       }) }}
       {% set homeAddressLine2Error = false %}
       {% if errors['home-address-line-2'] %}
@@ -145,10 +132,7 @@
       {% endif %}
       {{ govukInput({
         label: {
-          html: '<span class="govuk-visually-hidden">Home address line 2 of 2</span>',
-          attributes: {
-            "data-validate-override-label": "stripe-setup-home-address-line-1-input"
-          }
+          html: '<span class="govuk-visually-hidden">Home address line 2 of 2</span>'
         },
         id: "stripe-setup-home-address-line-2-input",
         name: "home-address-line-2",
@@ -157,9 +141,7 @@
         autocomplete: "address-line2",
         errorMessage: homeAddressLine2Error,
         attributes: {
-          "aria-label": "Enter address line 2",
-          "data-validate": "isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "200"
+          "aria-label": "Enter address line 2"
         }
       }) }}
       {% set homeAddressCityError = false %}
@@ -178,11 +160,7 @@
         type: "text",
         autocomplete: "address-level2",
         errorMessage: homeAddressCityError,
-        classes: "govuk-input--width-20",
-        attributes: {
-          "data-validate": "required isFieldGreaterThanMaxLengthChars",
-          "data-validate-max-length": "100"
-        }
+        classes: "govuk-input--width-20"
       }) }}
       {% set homeAddressPostcodeError = false %}
       {% if errors['home-address-postcode'] %}
@@ -200,10 +178,7 @@
         type: "text",
         autocomplete: "postal-code",
         classes: "govuk-input--width-10",
-        errorMessage: homeAddressPostcodeError,
-        attributes: {
-          "data-validate": "required postcode"
-        }
+        errorMessage: homeAddressPostcodeError
       }) }}
       {% set homeAddressPostcodeError = false %}
       {% if errors['home-address-postcode'] %}
@@ -228,28 +203,19 @@
             value: dobDay,
             name: "day",
             classes: "govuk-input--width-2",
-            autocomplete: "bday-day",
-            attributes: {
-            "data-validate": "required dobDay"
-          }
+            autocomplete: "bday-day"
           },
           {
             value: dobMonth,
             name: "month",
             classes: "govuk-input--width-2",
-            autocomplete: "bday-month",
-            attributes: {
-            "data-validate": "required dobMonth"
-          }
+            autocomplete: "bday-month"
           },
           {
             value: dobYear,
             name: "year",
             classes: "govuk-input--width-4",
-            autocomplete: "bday-year",
-            attributes: {
-            "data-validate": "required dobYear"
-          }
+            autocomplete: "bday-year"
           }
         ]
       }) }}

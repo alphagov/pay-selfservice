@@ -1,6 +1,4 @@
 'use strict'
-// NPM dependencies
-const ukPostcode = require('uk-postcode')
 
 // Local dependencies
 const emailValidator = require('../utils/email_tools.js')
@@ -20,8 +18,7 @@ const validationErrors = {
   isGreaterThanMaxLengthChars: `The text is too long`,
   invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`,
   invalidBankAccountNumber: 'Please enter a valid account number',
-  invalidSortCode: 'Please enter a valid sort code',
-  invalidPostcode: 'Please enter a real postcode'
+  invalidSortCode: 'Please enter a valid sort code'
 }
 
 exports.isEmpty = function (value) {
@@ -100,13 +97,5 @@ exports.isNotSortCode = value => {
     return false
   } else {
     return validationErrors.invalidSortCode
-  }
-}
-
-exports.isInvalidUkPostcode = (value) => {
-  if (!ukPostcode.fromString(value).isComplete()) {
-    return validationErrors.invalidPostcode
-  } else {
-    return false
   }
 }
