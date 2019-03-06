@@ -7,7 +7,7 @@ const lodash = require('lodash')
 const paths = require('../../../paths')
 const response = require('../../../utils/response')
 const {
-  validateMandatoryField, validateOptionalField, validatePostcode
+  validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
 } = require('./responsible-person-validations')
 
 const FIRST_NAME_FIELD = 'first-name'
@@ -61,6 +61,11 @@ module.exports = (req, res) => {
     return errors
   }, {})
 
+  const dateOfBirthErrorMessage = validateDoB(req)
+  if (dateOfBirthErrorMessage) {
+    errors['dob'] = dateOfBirthErrorMessage
+  }
+
   const pageData = {
     firstName: lodash.get(req.body, FIRST_NAME_FIELD),
     lastName: lodash.get(req.body, LAST_NAME_FIELD),
@@ -86,7 +91,7 @@ module.exports = (req, res) => {
 }
 
 const validate = (req, fieldName, fieldValidator, maxLength) => {
-  const field = getFieldValue(req, fieldName)
+  const field = lodash.get(req.body, fieldName)
   const isFieldValid = fieldValidator(field, maxLength)
   if (!isFieldValid.valid) {
     return isFieldValid.message
@@ -94,6 +99,13 @@ const validate = (req, fieldName, fieldValidator, maxLength) => {
   return null
 }
 
-const getFieldValue = (req, fieldNames) => {
-  return lodash.get(req.body, fieldNames)
+const validateDoB = (req) => {
+  const day = lodash.get(req.body, DOB_DAY_FIELD)
+  const month = lodash.get(req.body, DOB_MONTH_FIELD)
+  const year = lodash.get(req.body, DOB_YEAR_FIELD)
+  const dateOfBirthValidationResult = validateDateOfBirth(day, month, year)
+  if (!dateOfBirthValidationResult.valid) {
+    return dateOfBirthValidationResult.message
+  }
+  return null
 }

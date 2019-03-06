@@ -52,6 +52,13 @@
           href: '#stripe-setup-home-address-postcode-input'
         }), errorList) %}
       {% endif %}
+
+      {% if errors['dob'] %}
+        {% set errorList = (errorList.push({
+          text: 'Date of birth',
+          href: '#stripe-setup-dob-input-day'
+        }), errorList) %}
+      {% endif %}
       {{ govukErrorSummary({
         titleText: 'There was a problem with the details you gave for:',
         errorList: errorList
@@ -180,10 +187,10 @@
         classes: "govuk-input--width-10",
         errorMessage: homeAddressPostcodeError
       }) }}
-      {% set homeAddressPostcodeError = false %}
-      {% if errors['home-address-postcode'] %}
-        {% set homeAddressPostcodeError = {
-          text: errors['home-address-postcode']
+      {% set dobError = false %}
+      {% if errors['dob'] %}
+        {% set dobError = {
+          text: errors['dob']
         } %}
       {% endif %}
       {{ govukDateInput({
