@@ -311,4 +311,19 @@ describe('Transactions details page', () => {
       cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(chargeDetails.charge.refund_summary_available)}`)
     })
   })
+
+  it('should display Wallet Type where available', () => {
+    const chargeDetails = defaultChargeDetails()
+    chargeDetails.charge.wallet_type = 'APPLE_PAY'
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('th').contains('Wallet type').siblings().first().should('contain', 'Apple Pay')
+  })
+
+  it('should not display Wallet Type when not included in charge', () => {
+    const chargeDetails = defaultChargeDetails()
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
+  })
 })

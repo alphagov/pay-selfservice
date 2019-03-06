@@ -116,6 +116,7 @@ module.exports = {
     chargeData.net_amount_display = asGBP(chargeData.refund_summary.amount_available)
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
+    chargeData.wallet_type = changeCase.titleCase(chargeData.wallet_type)
     chargeData.updated = dates.utcToDisplay(eventsData.events[0] && eventsData.events[0].updated)
     chargeData.events = eventsData.events.map(eventData => new TransactionEvent(eventData)).reverse()
     chargeData.events.forEach(event => {
