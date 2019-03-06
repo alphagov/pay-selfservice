@@ -82,7 +82,7 @@
     "moment-timezone": "^0.5.23",
     "morgan": "^1.9.1",
     "node-zendesk": "^1.4.0",
-    "nunjucks": "^3.1.7",
+    "nunjucks": "^3.2.0",
     "passport": "0.4.x",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
