@@ -61,8 +61,10 @@
           <dd class="govuk-summary-list__value">
             {{ homeAddressLine1 }}
             <br>
+            {%  if homeAddressLine2 %}
             {{ homeAddressLine2 }}
             <br>
+            {% endif %}
             {{ homeAddressCity }}
             <br>
             {{ homeAddressPostcode }}
@@ -79,7 +81,7 @@
             Date of birth
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ dobDay }} {{ dobMonth }} {{ dobYear }}
+            {{ friendlyDateOfBirth }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <button class="govuk-button--as-link" type="submit">

@@ -2,6 +2,7 @@
 
 // NPM dependencies
 const lodash = require('lodash')
+const moment = require('moment-timezone')
 
 // Local dependencies
 const paths = require('../../../paths')
@@ -101,14 +102,13 @@ module.exports = (req, res) => {
   } else if (lodash.get(req.body, 'answers-need-changing') === 'true') {
     return response.response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else {
+    const friendlyDob = formatDateOfBirth(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD] - 1, formFields[DOB_YEAR_FIELD])
+    pageData['friendlyDateOfBirth'] = friendlyDob
     return response.response(req, res, 'stripe-setup/responsible-person/check-your-answers', pageData)
   }
 }
 
 const validate = (formFields, fieldName, fieldValidator, maxLength) => {
-  console.log('field name ' + fieldName)
-  console.log('field value ' +  formFields[fieldName])
-
   const field = formFields[fieldName]
   const isFieldValid = fieldValidator(field, maxLength)
   if (!isFieldValid.valid) {
@@ -126,4 +126,12 @@ const validateDoB = (formFields) => {
     return dateOfBirthValidationResult.message
   }
   return null
+}
+
+const formatDateOfBirth = (day, month, year) => {
+  return moment({
+    day: day,
+    month: month - 1,
+    year: year,
+  }).format('D MMMM YYYY')
 }
