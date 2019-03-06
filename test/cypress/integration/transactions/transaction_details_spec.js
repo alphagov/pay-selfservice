@@ -317,6 +317,13 @@ describe('Transactions details page', () => {
     chargeDetails.charge.wallet_type = 'APPLE_PAY'
     cy.task('setupStubs', getStubs(chargeDetails))
     cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
-    cy.get('th').contains('Wallet type').siblings().first().contains('Apple Pay')
+    cy.get('th').contains('Wallet type').siblings().first().should('contain', 'Apple Pay')
+  })
+
+  it('should not display Wallet Type when not included in charge', () => {
+    const chargeDetails = defaultChargeDetails()
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
   })
 })
