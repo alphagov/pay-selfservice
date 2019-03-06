@@ -53,34 +53,44 @@ const validationRules = [
 ]
 
 module.exports = (req, res) => {
-  const trimmedFormFields = {}
-  Object.entries(req.body).forEach(
-    ([name, value]) => trimmedFormFields[name] = value.trim()
-  );
+  const normaliseField = (fieldName) => {
+    return lodash.get(req.body, fieldName, '').trim()
+  }
+
+  const formFields = {}
+  formFields[FIRST_NAME_FIELD] = normaliseField(FIRST_NAME_FIELD)
+  formFields[LAST_NAME_FIELD] = normaliseField(LAST_NAME_FIELD)
+  formFields[HOME_ADDRESS_LINE1_FIELD] = normaliseField(HOME_ADDRESS_LINE1_FIELD)
+  formFields[HOME_ADDRESS_LINE2_FIELD] = normaliseField(HOME_ADDRESS_LINE2_FIELD)
+  formFields[HOME_ADDRESS_CITY_FIELD] = normaliseField(HOME_ADDRESS_CITY_FIELD)
+  formFields[HOME_ADDRESS_POSTCODE_FIELD] = normaliseField(HOME_ADDRESS_POSTCODE_FIELD)
+  formFields[DOB_DAY_FIELD] = normaliseField(DOB_DAY_FIELD)
+  formFields[DOB_MONTH_FIELD] = normaliseField(DOB_MONTH_FIELD)
+  formFields[DOB_YEAR_FIELD] = normaliseField(DOB_YEAR_FIELD)
 
   const errors = validationRules.reduce((errors, validationRule) => {
-    const errorMessage = validate(trimmedFormFields, validationRule.field, validationRule.validator, validationRule.maxLength)
+    const errorMessage = validate(formFields, validationRule.field, validationRule.validator, validationRule.maxLength)
     if (errorMessage) {
       errors[validationRule.field] = errorMessage
     }
     return errors
   }, {})
 
-  const dateOfBirthErrorMessage = validateDoB(trimmedFormFields)
+  const dateOfBirthErrorMessage = validateDoB(formFields)
   if (dateOfBirthErrorMessage) {
     errors['dob'] = dateOfBirthErrorMessage
   }
 
   const pageData = {
-    firstName: lodash.get(trimmedFormFields, FIRST_NAME_FIELD),
-    lastName: lodash.get(trimmedFormFields, LAST_NAME_FIELD),
-    homeAddressLine1: lodash.get(trimmedFormFields, HOME_ADDRESS_LINE1_FIELD),
-    homeAddressLine2: lodash.get(trimmedFormFields, HOME_ADDRESS_LINE2_FIELD),
-    homeAddressCity: lodash.get(trimmedFormFields, HOME_ADDRESS_CITY_FIELD),
-    homeAddressPostcode: lodash.get(trimmedFormFields, HOME_ADDRESS_POSTCODE_FIELD),
-    dobDay: lodash.get(trimmedFormFields, DOB_DAY_FIELD),
-    dobMonth: lodash.get(trimmedFormFields, DOB_MONTH_FIELD),
-    dobYear: lodash.get(trimmedFormFields, DOB_YEAR_FIELD),
+    firstName: formFields[FIRST_NAME_FIELD],
+    lastName: formFields[LAST_NAME_FIELD],
+    homeAddressLine1: formFields[HOME_ADDRESS_LINE1_FIELD],
+    homeAddressLine2: formFields[HOME_ADDRESS_LINE2_FIELD],
+    homeAddressCity: formFields[HOME_ADDRESS_CITY_FIELD],
+    homeAddressPostcode: formFields[HOME_ADDRESS_POSTCODE_FIELD],
+    dobDay: formFields[DOB_DAY_FIELD],
+    dobMonth: formFields[DOB_MONTH_FIELD],
+    dobYear: formFields[DOB_YEAR_FIELD],
   }
 
   if (!lodash.isEmpty(errors)) {
@@ -96,7 +106,10 @@ module.exports = (req, res) => {
 }
 
 const validate = (formFields, fieldName, fieldValidator, maxLength) => {
-  const field = lodash.get(formFields, fieldName)
+  console.log('field name ' + fieldName)
+  console.log('field value ' +  formFields[fieldName])
+
+  const field = formFields[fieldName]
   const isFieldValid = fieldValidator(field, maxLength)
   if (!isFieldValid.valid) {
     return isFieldValid.message
@@ -105,9 +118,9 @@ const validate = (formFields, fieldName, fieldValidator, maxLength) => {
 }
 
 const validateDoB = (formFields) => {
-  const day = lodash.get(formFields, DOB_DAY_FIELD)
-  const month = lodash.get(formFields, DOB_MONTH_FIELD)
-  const year = lodash.get(formFields, DOB_YEAR_FIELD)
+  const day = formFields[DOB_DAY_FIELD]
+  const month = formFields[DOB_MONTH_FIELD]
+  const year = formFields[DOB_YEAR_FIELD]
   const dateOfBirthValidationResult = validateDateOfBirth(day, month, year)
   if (!dateOfBirthValidationResult.valid) {
     return dateOfBirthValidationResult.message
