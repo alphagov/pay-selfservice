@@ -31,6 +31,7 @@ const goCardlessRedirect = require('./middleware/partnerapp/handle_redirect_to_g
 const goCardlessOAuthGet = require('./middleware/partnerapp/handle_gocardless_connect_get')
 const cookieMessage = require('./middleware/cookie_message')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
+const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 
 // Controllers
@@ -362,8 +363,28 @@ module.exports.bind = function (app) {
   app.get(policyPages.download, xraySegmentCls, policyDocumentsController.download)
 
   // Stripe setup: bank details
-  app.get(stripeSetup.bankDetails, xraySegmentCls, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, stripeSetupBankDetailsController.get)
-  app.post(stripeSetup.bankDetails, xraySegmentCls, permission('stripe-bank-details:update'), getAccount, paymentMethodIsCard, restrictToLiveStripeAccount, checkBankDetailsNotSubmitted, stripeSetupBankDetailsController.post)
+  app.get(
+    stripeSetup.bankDetails,
+    xraySegmentCls,
+    permission('stripe-bank-details:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    checkBankDetailsNotSubmitted,
+    getStripeAccount,
+    stripeSetupBankDetailsController.get
+  )
+  app.post(
+    stripeSetup.bankDetails,
+    xraySegmentCls,
+    permission('stripe-bank-details:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    checkBankDetailsNotSubmitted,
+    getStripeAccount,
+    stripeSetupBankDetailsController.post
+  )
 
   app.all('*', (req, res) => {
     res.status(404)

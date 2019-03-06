@@ -21,6 +21,8 @@ const validationErrors = {
   invalidSortCode: 'Please enter a valid sort code'
 }
 
+exports.validationErrors = validationErrors
+
 exports.isEmpty = function (value) {
   if (value === '') {
     return validationErrors.required
