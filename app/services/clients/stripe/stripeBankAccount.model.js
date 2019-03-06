@@ -32,8 +32,8 @@ function build (params) {
       country: 'GB',
       currency: 'GBP',
       account_holder_type: 'company',
-      routing_number: params.bank_account_sort_code,
-      account_number: params.bank_account_number
+      routing_number: params.bank_account_sort_code.replace(/\D/g, ''),
+      account_number: params.bank_account_number.replace(/\D/g, '')
     }
   }
 }
