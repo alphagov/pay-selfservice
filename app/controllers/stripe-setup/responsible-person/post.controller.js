@@ -54,14 +54,14 @@ const validationRules = [
 
 module.exports = (req, res) => {
   const errors = validationRules.reduce((errors, validationRule) => {
-    const errorMessage = validate(req, validationRule.field, validationRule.validator, validationRule.maxLength)
+    const errorMessage = validate(req.body, validationRule.field, validationRule.validator, validationRule.maxLength)
     if (errorMessage) {
       errors[validationRule.field] = errorMessage
     }
     return errors
   }, {})
 
-  const dateOfBirthErrorMessage = validateDoB(req)
+  const dateOfBirthErrorMessage = validateDoB(req.body)
   if (dateOfBirthErrorMessage) {
     errors['dob'] = dateOfBirthErrorMessage
   }
@@ -90,8 +90,8 @@ module.exports = (req, res) => {
   }
 }
 
-const validate = (req, fieldName, fieldValidator, maxLength) => {
-  const field = lodash.get(req.body, fieldName)
+const validate = (formSubmission, fieldName, fieldValidator, maxLength) => {
+  const field = lodash.get(formSubmission, fieldName)
   const isFieldValid = fieldValidator(field, maxLength)
   if (!isFieldValid.valid) {
     return isFieldValid.message
@@ -99,10 +99,10 @@ const validate = (req, fieldName, fieldValidator, maxLength) => {
   return null
 }
 
-const validateDoB = (req) => {
-  const day = lodash.get(req.body, DOB_DAY_FIELD)
-  const month = lodash.get(req.body, DOB_MONTH_FIELD)
-  const year = lodash.get(req.body, DOB_YEAR_FIELD)
+const validateDoB = (formSubmission) => {
+  const day = lodash.get(formSubmission, DOB_DAY_FIELD)
+  const month = lodash.get(formSubmission, DOB_MONTH_FIELD)
+  const year = lodash.get(formSubmission, DOB_YEAR_FIELD)
   const dateOfBirthValidationResult = validateDateOfBirth(day, month, year)
   if (!dateOfBirthValidationResult.valid) {
     return dateOfBirthValidationResult.message

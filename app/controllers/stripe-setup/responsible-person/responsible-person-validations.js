@@ -10,7 +10,7 @@ const {
   isFieldGreaterThanMaxLengthChars
 } = require('../../../browsered/field-validation-checks')
 
-exports.validateOptionalField = (value, maxLength) => {
+exports.validateOptionalField = function validateOptionalField (value, maxLength) {
   if (!isEmpty(value)) {
     const textTooLongErrorMessage = isFieldGreaterThanMaxLengthChars(value, maxLength)
 
@@ -28,7 +28,7 @@ exports.validateOptionalField = (value, maxLength) => {
   }
 }
 
-exports.validateMandatoryField = (value, maxLength) => {
+exports.validateMandatoryField = function validateMandatoryField (value, maxLength) {
   const isEmptyErrorMessage = isEmpty(value)
   if (isEmptyErrorMessage) {
     return {
@@ -52,7 +52,7 @@ exports.validateMandatoryField = (value, maxLength) => {
   }
 }
 
-exports.validatePostcode = (postcode) => {
+exports.validatePostcode = function validatePostcode (postcode) {
   const isEmptyErrorMessage = isEmpty(postcode)
   if (isEmptyErrorMessage) {
     return {
@@ -75,7 +75,7 @@ exports.validatePostcode = (postcode) => {
   }
 }
 
-exports.validateDateOfBirth = (day, month, year) => {
+exports.validateDateOfBirth = function validateDateOfBirth (day, month, year) {
   const dayIsEmptyErrorMessage = isEmpty(day)
   const monthIsEmptyErrorMessage = isEmpty(month)
   const yearIsEmptyErrorMessage = isEmpty(year)
