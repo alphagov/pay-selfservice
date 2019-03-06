@@ -129,10 +129,17 @@ exports.validateDateOfBirth = (day, month, year) => {
     }
   }
 
-  if (!/^[0-9]{1,2}$/.test(day) || !/^[0-9]{1,2}$/.test(month) || !/^[1-9][0-9]{3}$/.test(year)) {
+  if (!/^[0-9]{1,2}$/.test(day) || !/^[0-9]{1,2}$/.test(month) || !/^[0-9]+$/.test(year)) {
     return {
       valid: false,
       message: 'Enter a real date of birth'
+    }
+  }
+
+  if (!/^[1-9][0-9]{3}$/.test(year)) {
+    return {
+      valid: false,
+      message: 'Date of birth must have a four-digit year'
     }
   }
 
