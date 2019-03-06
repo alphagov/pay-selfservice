@@ -54,7 +54,7 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Check your phone')
 
-      body.should.containSelector('.govuk-error-message').withExactText('Invalid security code')
+      body.should.containSelector('.govuk-error-message').withExactText('Error: Invalid security code')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
 
@@ -115,7 +115,7 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Use your authenticator app')
 
-      body.should.containSelector('.govuk-error-message').withExactText('Invalid security code')
+      body.should.containSelector('.govuk-error-message').withExactText('Error: Invalid security code')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
 
