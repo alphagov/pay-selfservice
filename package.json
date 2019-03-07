@@ -33,7 +33,7 @@
     "start": "node start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "./node_modules/.bin/grunt watch",
-    "lint": "./node_modules/.bin/standard",
+    "lint": "./node_modules/.bin/standard --fix",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "npm run snyk-protect && rm -rf ./pacts && ./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
     "cypress:server": "mb | node --inspect -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
@@ -42,6 +42,17 @@
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect",
     "publish-pacts": "./bin/publish-pacts.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint",
+      "git add"
+    ]
   },
   "nodemonConfig": {
     "ignore": [
@@ -128,6 +139,8 @@
     "grunt-contrib-watch": "1.1.x",
     "grunt-sass": "^3.0.2",
     "html5shiv": "3.7.x",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
     "mocha": "^6.0.2",
     "mountebank": "^1.16.0",
     "nock": "^10.0.6",
