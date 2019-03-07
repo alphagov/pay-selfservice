@@ -20,6 +20,17 @@ describe('Stripe setup: bank details page', () => {
       return stripeSetupStub
     }
 
+    const getStripeAccountStub = function getStripeAccountSuccess (stripeAccountId) {
+      const stripeAccountStub = {
+        name: 'getStripeAccountSuccess',
+        opts: {
+          gateway_account_id: gatewayAccountId,
+          stripe_account_id: stripeAccountId
+        }
+      }
+      return stripeAccountStub
+    }
+
     /**
      * When request to /v1/api/accounts/${gateway_account_id}/stripe-setup is made
      * it will use data[].bank_account as a response
@@ -29,14 +40,14 @@ describe('Stripe setup: bank details page', () => {
      * @returns {{opts: {gateway_account_id: number, data: *}, name: string}}
      */
     const getStripeBankAccountFlagChangedSetupStub = function getStripeBankAccountFlagChangedSetupStub (data) {
-      const stripeSetupStub = {
+      const stripeBankAccountFlagStub = {
         name: 'getGatewayAccountStripeSetupBankAccountFlagChanged',
         opts: {
           gateway_account_id: gatewayAccountId,
           data: data
         }
       }
-      return stripeSetupStub
+      return stripeBankAccountFlagStub
     }
 
     beforeEach(() => {
@@ -48,7 +59,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -126,7 +138,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          getStripeSetupStub(true)
+          getStripeSetupStub(true),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -145,7 +158,8 @@ describe('Stripe setup: bank details page', () => {
           getStripeBankAccountFlagChangedSetupStub([
             { bank_account: false },
             { bank_account: true }
-          ])
+          ]),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -169,7 +183,8 @@ describe('Stripe setup: bank details page', () => {
             { bank_account: false },
             { bank_account: false },
             { bank_account: true }
-          ])
+          ]),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -196,7 +211,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -211,7 +227,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -239,7 +256,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')

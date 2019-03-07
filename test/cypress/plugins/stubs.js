@@ -163,6 +163,31 @@ module.exports = {
       }
     ]
   },
+  getStripeAccountSuccess: (opts = {}) => {
+    const aValidGetStripeAccountResponse = stripeAccountSetupFixtures.buildGetStripeAccountResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/accounts/${opts.gateway_account_id}/stripe-account`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidGetStripeAccountResponse
+          }
+        }]
+      }
+    ]
+  },
   getGatewayAccountQueryParamsSuccess: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
     return [
