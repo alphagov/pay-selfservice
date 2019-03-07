@@ -14,7 +14,7 @@ const auth = require('../../services/auth_service.js')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const {paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceNamePath, productNamePath, paymentReferenceType, paymentReferenceLabel, paymentReferenceHint} = lodash.get(req, 'session.pageData.createPaymentLink', {})
+  const { paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceNamePath, productNamePath, paymentReferenceType, paymentReferenceLabel, paymentReferenceHint } = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
     return res.redirect(paths.paymentLinks.start)
@@ -34,7 +34,6 @@ module.exports = (req, res) => {
         payApiToken: publicAuthData.token,
         gatewayAccountId,
         name: paymentLinkTitle,
-        serviceName: req.service.name,
         type: productTypes.ADHOC,
         serviceNamePath,
         productNamePath

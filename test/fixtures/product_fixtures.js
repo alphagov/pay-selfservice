@@ -9,39 +9,11 @@ module.exports = {
     pactProducts.pactify(opts)
   },
 
-  validUpdateServiceNameOfProductsByGatewayAccountIdRequest: (serviceName) => {
-    const data = {
-      op: 'replace',
-      path: 'service_name',
-      value: serviceName || 'New Service Name'
-    }
-    return {
-      getPactified: () => {
-        return pactProducts.pactify(data)
-      },
-      getPlain: () => data
-    }
-  },
-
-  invalidUpdateServiceNameOfProductsByGatewayAccountIdRequest: () => {
-    const data = {
-      op: 'replace',
-      path: 'service_name'
-    }
-    return {
-      getPactified: () => {
-        return pactProducts.pactify(data)
-      },
-      getPlain: () => data
-    }
-  },
-
   validCreateProductRequest: (opts = {}) => {
     const data = {
       gateway_account_id: opts.gatewayAccountId || 'd5gzn',
       pay_api_token: opts.payApiToken || 'pay-api-token',
       name: opts.name || 'A Product Name',
-      service_name: opts.serviceName || 'Example Service',
       type: opts.type || 'DEMO'
     }
     if (opts.type === 'ADHOC') data.reference_enabled = opts.reference_enabled || false
@@ -101,7 +73,6 @@ module.exports = {
       type: opts.type || 'DEMO',
       gateway_account_id: opts.gateway_account_id || 'xr9nkd',
       name: opts.name || 'A Product Name',
-      service_name: opts.serviceName || 'Example Service',
       _links: opts.links
     }
 

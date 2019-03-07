@@ -32,7 +32,6 @@ module.exports = (req, res) => {
       payApiToken: publicAuthData.token,
       gatewayAccountId,
       name: paymentDescription,
-      serviceName: req.service.name,
       price: paymentAmount,
       type: productTypes.DEMO
     }))

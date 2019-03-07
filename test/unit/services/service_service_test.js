@@ -25,7 +25,6 @@ const nonExistentDirectDebitId = 'DIRECT_DEBIT:XXXsadasdkasjdlkjlkeuo2'
 let directDebitClientStub
 let connectorClientStub
 let adminusersClientStub
-let productsClientStub
 let serviceService
 
 const getGatewayAccounts = function () {
@@ -173,15 +172,6 @@ describe('service service', function () {
           }
         }
       }
-      productsClientStub = {
-        product: {
-          updateServiceNameOfProductsByGatewayAccountId: () => {
-            return new Promise(resolve => {
-              resolve()
-            })
-          }
-        }
-      }
       directDebitClientStub = {
         gatewayAccount: {
           create: () => {
@@ -202,7 +192,6 @@ describe('service service', function () {
 
       serviceService = proxyquire('../../../app/services/service_service',
         {
-          '../services/clients/products_client': productsClientStub,
           '../services/clients/connector_client': connectorClientStub,
           '../services/clients/direct_debit_connector_client': directDebitClientStub,
           './clients/adminusers_client': adminusersClientStub
@@ -212,7 +201,7 @@ describe('service service', function () {
         expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[1]}')
       }).should.notify(done)
     })
-    it('should not call products nor connector for direct debit accounts', function (done) {
+    it('should not call connector for direct debit accounts', function (done) {
       const externalServiceId = 'sdfjksdnfkjn'
       const newServiceName = 'blabla'
       connectorClientStub = {
@@ -220,7 +209,7 @@ describe('service service', function () {
           return {
             patchServiceName: () => {
               return new Promise(() => {
-                console.log('connector should not be called')
+                console.log('---> connector should not be called')
                 done('should not be called')
               })
             }
@@ -236,27 +225,17 @@ describe('service service', function () {
           }
         }
       }
-      productsClientStub = {
-        product: {
-          updateServiceNameOfProductsByGatewayAccountId: () => {
-            return new Promise(() => {
-              console.log('products should not be called')
-              done('should not be called')
-            })
-          }
-        }
-      }
       directDebitClientStub = {
         gatewayAccount: {
           create: () => {
             return new Promise(() => {
-              console.log('dd connector should not be called')
+              console.log('---> dd connector should not be called')
               done('should not be called')
             })
           },
           get: () => {
             return new Promise(() => {
-              console.log('dd connector should not be called')
+              console.log('---< dd connector should not be called')
               done('should not be called')
             })
           }
@@ -266,7 +245,6 @@ describe('service service', function () {
 
       serviceService = proxyquire('../../../app/services/service_service',
         {
-          '../services/clients/products_client': productsClientStub,
           '../services/clients/connector_client': connectorClientStub,
           '../services/clients/direct_debit_connector_client': directDebitClientStub,
           './clients/adminusers_client': adminusersClientStub

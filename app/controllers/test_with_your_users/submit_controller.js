@@ -48,7 +48,6 @@ module.exports = (req, res) => {
       gatewayAccountId,
       name: req.body['payment-description'],
       returnUrl: req.body['confirmation-page'],
-      serviceName: req.service.name,
       price: paymentAmountInPence,
       type: productTypes.PROTOTYPE
     }))

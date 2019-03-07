@@ -8,7 +8,6 @@ const getAdminUsersClient = require('./clients/adminusers_client')
 const { ConnectorClient } = require('../services/clients/connector_client')
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client')
 const { isADirectDebitAccount } = directDebitConnectorClient
-const productsClient = require('../services/clients/products_client')
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const DirectDebitGatewayAccount = require('../models/DirectDebitGatewayAccount.class')
 const Service = require('../models/Service.class')
@@ -85,11 +84,13 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
           return resolve(new Service(result))
         } else {
           const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
-          return Promise.all([
-            ...accounts[1].map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
-            ...accounts[1].map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
-          ])
-            .then(() => resolve(new Service(result)))
+          const gatewayAccountId = accounts[1]
+          if (!isADirectDebitAccount(gatewayAccountId)) {
+            connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
+              .then(() => resolve(new Service(result)))
+          } else {
+            return resolve(new Service(result))
+          }
         }
       })
   })
