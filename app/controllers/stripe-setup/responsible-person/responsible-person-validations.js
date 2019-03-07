@@ -139,7 +139,7 @@ exports.validateDateOfBirth = function validateDateOfBirth (day, month, year) {
   if (!/^[1-9][0-9]{3}$/.test(year)) {
     return {
       valid: false,
-      message: 'Date of birth must have a four-digit year'
+      message: 'Year must have 4 numbers'
     }
   }
 
