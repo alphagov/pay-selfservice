@@ -4,6 +4,7 @@
 const logger = require('winston')
 const json2csv = require('json2csv')
 const lodash = require('lodash')
+const changeCase = require('change-case')
 
 // Local dependencies
 const dates = require('./dates')
@@ -95,6 +96,12 @@ module.exports = function (data) {
           value: row => {
             const amountInPence = row.total_amount ? row.total_amount : row.amount
             return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
+          }
+        },
+        {
+          label: 'Wallet Type',
+          value: row => {
+            return changeCase.titleCase(row.wallet_type)
           }
         }
       ]
