@@ -91,7 +91,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#stripe-setup-account-number-input')
 
         cy.get('input#stripe-setup-account-number-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=stripe-setup-account-number-input] > span').should('contain', 'Please enter a valid account number')
+        cy.get('label[for=stripe-setup-account-number-input] > span').should('contain', 'Enter a valid account number')
       })
 
       it('should display an error when sort code is invalid', () => {
@@ -105,7 +105,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#stripe-setup-sort-code-input')
 
         cy.get('input#stripe-setup-sort-code-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=stripe-setup-sort-code-input] > span').should('contain', 'Please enter a valid sort code')
+        cy.get('label[for=stripe-setup-sort-code-input] > span').should('contain', 'Enter a valid sort code')
       })
 
       it('should go to check your answers page when inputs are valid', () => {
@@ -135,7 +135,7 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'Bank details flag already set')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
@@ -158,7 +158,7 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'Bank details flag already set')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Check your answers page', () => {
@@ -187,7 +187,7 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'Bank details flag already set')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
     })
 

@@ -17,8 +17,8 @@ const validationErrors = {
   isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`,
   isGreaterThanMaxLengthChars: `The text is too long`,
   invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`,
-  invalidBankAccountNumber: 'Please enter a valid account number',
-  invalidSortCode: 'Please enter a valid sort code'
+  invalidBankAccountNumber: 'Enter a valid account number',
+  invalidSortCode: 'Enter a valid sort code'
 }
 
 exports.validationErrors = validationErrors

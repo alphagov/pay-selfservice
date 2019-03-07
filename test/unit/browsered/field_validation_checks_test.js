@@ -69,19 +69,19 @@ describe('field validation checks', () => {
     it('should be not valid when is not a number', () => {
       const accountNumber = 'abcdefgh'
 
-      expect(isNotAccountNumber(accountNumber)).to.be.equal('Please enter a valid account number')
+      expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number')
     })
 
     it('should be not valid when is too short', () => {
       const accountNumber = '12345'
 
-      expect(isNotAccountNumber(accountNumber)).to.be.equal('Please enter a valid account number')
+      expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number')
     })
 
     it('should be not valid when is too long', () => {
       const accountNumber = '123456789'
 
-      expect(isNotAccountNumber(accountNumber)).to.be.equal('Please enter a valid account number')
+      expect(isNotAccountNumber(accountNumber)).to.be.equal('Enter a valid account number')
     })
   })
 
@@ -119,19 +119,19 @@ describe('field validation checks', () => {
     it('should be not valid when is not a number', () => {
       const sortCode = 'abcdef'
 
-      expect(isNotSortCode(sortCode)).to.be.equal('Please enter a valid sort code')
+      expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code')
     })
 
     it('should be not valid when is too short', () => {
       const sortCode = '12345'
 
-      expect(isNotSortCode(sortCode)).to.be.equal('Please enter a valid sort code')
+      expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code')
     })
 
     it('should be not valid when is too long', () => {
       const sortCode = '1234567'
 
-      expect(isNotSortCode(sortCode)).to.be.equal('Please enter a valid sort code')
+      expect(isNotSortCode(sortCode)).to.be.equal('Enter a valid sort code')
     })
   })
 })
