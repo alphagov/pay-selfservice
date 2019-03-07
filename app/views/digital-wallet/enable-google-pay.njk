@@ -6,56 +6,59 @@
 {% block pageTitle %}
    Enable Google Pay - GOV.UK Pay
 {% endblock %}
+  {% block mainContent %}
+  <div class="govuk-grid-column-full govuk-!-margin-top-6">
+    <h1 class="govuk-heading-l">
+      Enable Google Pay
+    </h1>
+  </div>
 
-{% block mainContent %}
-<div class="govuk-grid-column-full govuk-!-margin-top-6">
-  <h1 class="govuk-heading-l">
-    Enable Google Pay
-  </h1>
-</div>
+  {% if isDigitalWalletSupported %}
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">
+        Are you sure?
+      </h2>
+        {{ govukInsetText({
+        text: "Your service will accept both credit and debit cards."
+        }) }}
+      <p class="govuk-body">
+        Corporate card fees cannot be applied to payments made with Google Pay.
+      </p>
 
-<div class="govuk-grid-column-two-thirds">
-  <h2 class="govuk-heading-m">
-    Are you sure?
-  </h2>
-    {{ govukInsetText({
-    text: "Your service will accept both credit and debit cards."
-    }) }}
-  <p class="govuk-body">
-    Corporate card fees cannot be applied to payments made with Google Pay.
-  </p>
+      <p class="govuk-body">
+        You’ll need a Google Pay merchant ID. Refer to the <a class="govuk-link" href="https://docs.payments.service.gov.uk/optional_features/digital_wallets/#enable-google-pay">GOV.UK Pay documentation on enabling Google Pay</a> to learn where to find your merchant ID.
+      </p>
 
-  <p class="govuk-body">
-    You’ll need a Google Pay merchant ID. Refer to the <a class="govuk-link" href="https://docs.payments.service.gov.uk/optional_features/digital_wallets/#enable-google-pay">GOV.UK Pay documentation on enabling Google Pay</a> to learn where to find your merchant ID.
-  </p>
+      <form method="post" action="{{routes.digitalWallet.enableGooglePay}}">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-  <form method="post" action="{{routes.digitalWallet.enableGooglePay}}">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-
-    {{
-      govukInput({
-        id: "merchantId",
-        name: "merchantId",
-        label: {
-          text: "Merchant ID",
-          classes: "govuk-label--s"
-        },
-        attributes: {
-          required: true
-        },
-        classes: "govuk-!-width-two-thirds"
-      })
-    }}
-    {{
-      govukButton({
-        text: "Yes, turn on Google Pay"
-      })
-    }}
-  </form>
-  <p class="govuk-body">
-    <a href="{{routes.digitalWallet.summary}}" class="govuk-link govuk-link--no-visited-state">
-      No, cancel
-    </a>
-  </p>
-</div>
+        {{
+          govukInput({
+            id: "merchantId",
+            name: "merchantId",
+            label: {
+              text: "Merchant ID",
+              classes: "govuk-label--s"
+            },
+            attributes: {
+              required: true
+            },
+            classes: "govuk-!-width-two-thirds"
+          })
+        }}
+        {{
+          govukButton({
+            text: "Yes, turn on Google Pay"
+          })
+        }}
+      </form>
+      <p class="govuk-body">
+        <a href="{{routes.digitalWallet.summary}}" class="govuk-link govuk-link--no-visited-state">
+          No, cancel
+        </a>
+      </p>
+    </div>
+  {% else %}
+    {% include ('./_digital_wallet_not_supported_message.njk') %}
+  {% endif %}
 {% endblock %}
