@@ -155,7 +155,7 @@ describe('Responsible person page field validations', () => {
     it('should not be valid when year does not have four digits', () => {
       expect(responsiblePersonValidations.validateDateOfBirth('10', '6', '00')).to.deep.equal({
         valid: false,
-        message: 'Date of birth must have a four-digit year'
+        message: 'Year must have 4 numbers'
       })
     })
 
