@@ -14,7 +14,7 @@ module.exports = function checkBankDetailsNotSubmitted (req, res, next) {
 
   connector.getStripeAccountSetup(req.account.gateway_account_id, req.correlationId).then(stripeSetupResponse => {
     if (stripeSetupResponse.bankAccount) {
-      req.flash('genericError', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+      req.flash('genericError', 'You’ve already provided your bank details.<br />Contact GOV.UK Pay support if you need to update them.')
       res.redirect(303, paths.dashboard.index)
     } else {
       next()

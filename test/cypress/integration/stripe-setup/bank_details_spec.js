@@ -148,7 +148,8 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
@@ -172,7 +173,8 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Check your answers page', () => {
@@ -202,7 +204,8 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
     })
 
