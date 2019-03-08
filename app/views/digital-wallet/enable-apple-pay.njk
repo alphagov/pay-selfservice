@@ -12,26 +12,30 @@
   </h1>
 </div>
 
-<div class="govuk-grid-column-two-thirds">
-  <h2 class="govuk-heading-m">
-    Are you sure?
-  </h2>
-  <p class="govuk-body">
-    Corporate card fees cannot be applied to payments made with Apple Pay.
-  </p>
+{% if isDigitalWalletSupported %}
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">
+      Are you sure?
+    </h2>
+    <p class="govuk-body">
+      Corporate card fees cannot be applied to payments made with Apple Pay.
+    </p>
 
-  <form method="post" action="{{routes.digitalWallet.enableApplePay}}">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    {{
-      govukButton({
-        text: "Yes, turn on Apple Pay"
-      })
-    }}
-  </form>
-  <p class="govuk-body">
-    <a href="{{routes.digitalWallet.summary}}" class="govuk-link govuk-link--no-visited-state">
-      No, cancel
-    </a>
-  </p>
-</div>
+    <form method="post" action="{{routes.digitalWallet.enableApplePay}}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      {{
+        govukButton({
+          text: "Yes, turn on Apple Pay"
+        })
+      }}
+    </form>
+    <p class="govuk-body">
+      <a href="{{routes.digitalWallet.summary}}" class="govuk-link govuk-link--no-visited-state">
+        No, cancel
+      </a>
+    </p>
+  </div>
+  {% else %}
+    {% include('./_digital_wallet_not_supported_message.njk') %}
+  {% endif %}
 {% endblock %}
