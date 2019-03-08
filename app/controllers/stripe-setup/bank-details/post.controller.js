@@ -22,7 +22,7 @@ module.exports = (req, res) => {
   const accountNumber = req.body[ACCOUNT_NUMBER_FIELD]
   const sortCode = req.body[SORT_CODE_FIELD]
 
-  let errors = validateBankDetails(accountNumber, sortCode)
+  const errors = validateBankDetails(accountNumber, sortCode)
   const pageData = {
     accountNumber,
     sortCode,
@@ -51,16 +51,12 @@ module.exports = (req, res) => {
         if (error.code) {
           if (error.code === 'routing_number_invalid') {
             // invalid sort code
-            errors = {}
-            errors[SORT_CODE_FIELD] = fieldValidationChecks.validationErrors.invalidSortCode
-            pageData.errors = errors
+            pageData.errors[SORT_CODE_FIELD] = fieldValidationChecks.validationErrors.invalidSortCode
             return response(req, res, 'stripe-setup/bank-details/index', pageData)
           }
           if (error.code === 'account_number_invalid') {
             // invalid account number
-            errors = {}
-            errors[ACCOUNT_NUMBER_FIELD] = fieldValidationChecks.validationErrors.invalidBankAccountNumber
-            pageData.errors = errors
+            pageData.errors[ACCOUNT_NUMBER_FIELD] = fieldValidationChecks.validationErrors.invalidBankAccountNumber
             return response(req, res, 'stripe-setup/bank-details/index', pageData)
           }
         }
