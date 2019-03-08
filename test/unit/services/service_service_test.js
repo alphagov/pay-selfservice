@@ -96,8 +96,7 @@ describe('service service', function () {
           return {
             getAccounts: () => {
               return new Promise(() => {
-                console.log('connector should not be called')
-                done('should not be called')
+                done('connector should not be called')
               })
             }
           }
@@ -122,8 +121,7 @@ describe('service service', function () {
         gatewayAccounts: {
           get: function () {
             return new Promise(function () {
-              console.log('dd connector should not be called')
-              done('should not be called')
+              done('dd connector should not be called')
             })
           }
         },
@@ -143,115 +141,6 @@ describe('service service', function () {
       serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2], correlationId).should.be.fulfilled.then(gatewayAccounts => {
         expect(gatewayAccounts).to.have.lengthOf(2)
         expect(gatewayAccounts.map(accountObj => accountObj.id)).to.have.all.members(['1', '2'])
-      }).should.notify(done)
-    })
-  })
-
-  describe('when editing service name', function () {
-    it('should not call direct debit connector for card accounts', function (done) {
-      const externalServiceId = 'sdfjksdnfkjn'
-      const newServiceName = 'blabla'
-
-      connectorClientStub = {
-        ConnectorClient: function () {
-          return {
-            patchServiceName: () => {
-              return new Promise(resolve => {
-                resolve()
-              })
-            }
-          }
-        }
-      }
-      adminusersClientStub = () => {
-        return {
-          updateServiceName: () => {
-            return new Promise(resolve => {
-              resolve({ gateway_account_ids: [1] })
-            })
-          }
-        }
-      }
-      directDebitClientStub = {
-        gatewayAccount: {
-          create: () => {
-            return new Promise(() => {
-              console.log('dd connector should not be called')
-              done('should not be called')
-            })
-          },
-          get: () => {
-            return new Promise(() => {
-              console.log('dd connector should not be called')
-              done('should not be called')
-            })
-          }
-        },
-        isADirectDebitAccount: () => false
-      }
-
-      serviceService = proxyquire('../../../app/services/service_service',
-        {
-          '../services/clients/connector_client': connectorClientStub,
-          '../services/clients/direct_debit_connector_client': directDebitClientStub,
-          './clients/adminusers_client': adminusersClientStub
-        })
-
-      serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled.then((service) => {
-        expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[1]}')
-      }).should.notify(done)
-    })
-    it('should not call connector for direct debit accounts', function (done) {
-      const externalServiceId = 'sdfjksdnfkjn'
-      const newServiceName = 'blabla'
-      connectorClientStub = {
-        ConnectorClient: function () {
-          return {
-            patchServiceName: () => {
-              return new Promise(() => {
-                console.log('---> connector should not be called')
-                done('should not be called')
-              })
-            }
-          }
-        }
-      }
-      adminusersClientStub = () => {
-        return {
-          updateServiceName: () => {
-            return new Promise(resolve => {
-              resolve({ gateway_account_ids: [10] })
-            })
-          }
-        }
-      }
-      directDebitClientStub = {
-        gatewayAccount: {
-          create: () => {
-            return new Promise(() => {
-              console.log('---> dd connector should not be called')
-              done('should not be called')
-            })
-          },
-          get: () => {
-            return new Promise(() => {
-              console.log('---< dd connector should not be called')
-              done('should not be called')
-            })
-          }
-        },
-        isADirectDebitAccount: () => true
-      }
-
-      serviceService = proxyquire('../../../app/services/service_service',
-        {
-          '../services/clients/connector_client': connectorClientStub,
-          '../services/clients/direct_debit_connector_client': directDebitClientStub,
-          './clients/adminusers_client': adminusersClientStub
-        })
-
-      serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled.then((service) => {
-        expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10]}')
       }).should.notify(done)
     })
   })

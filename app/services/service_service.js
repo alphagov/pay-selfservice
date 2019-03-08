@@ -77,21 +77,10 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
     if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
     getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
       .then(result => {
-        const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
-
-        // Update gateway account service names
-        if (gatewayAccountIds.length <= 0) {
-          return resolve(new Service(result))
-        } else {
-          const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
-          const gatewayAccountId = accounts[1]
-          if (!isADirectDebitAccount(gatewayAccountId)) {
-            connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
-              .then(() => resolve(new Service(result)))
-          } else {
-            return resolve(new Service(result))
-          }
-        }
+        resolve(new Service(result))
+      })
+      .catch(function (err) {
+        reject(err)
       })
   })
 }
