@@ -55,5 +55,20 @@ module.exports = {
         return _.clone(data)
       }
     }
+  },
+
+  buildGetStripeAccountResponse (opts = {}) {
+    const data = {
+      'stripe_account_id': opts.stripe_account_id || 'acct_123example123'
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
   }
 }

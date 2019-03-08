@@ -20,6 +20,17 @@ describe('Stripe setup: bank details page', () => {
       return stripeSetupStub
     }
 
+    const getStripeAccountStub = function getStripeAccountSuccess (stripeAccountId) {
+      const stripeAccountStub = {
+        name: 'getStripeAccountSuccess',
+        opts: {
+          gateway_account_id: gatewayAccountId,
+          stripe_account_id: stripeAccountId
+        }
+      }
+      return stripeAccountStub
+    }
+
     /**
      * When request to /v1/api/accounts/${gateway_account_id}/stripe-setup is made
      * it will use data[].bank_account as a response
@@ -29,14 +40,14 @@ describe('Stripe setup: bank details page', () => {
      * @returns {{opts: {gateway_account_id: number, data: *}, name: string}}
      */
     const getStripeBankAccountFlagChangedSetupStub = function getStripeBankAccountFlagChangedSetupStub (data) {
-      const stripeSetupStub = {
+      const stripeBankAccountFlagStub = {
         name: 'getGatewayAccountStripeSetupBankAccountFlagChanged',
         opts: {
           gateway_account_id: gatewayAccountId,
           data: data
         }
       }
-      return stripeSetupStub
+      return stripeBankAccountFlagStub
     }
 
     beforeEach(() => {
@@ -48,7 +59,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -91,7 +103,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#stripe-setup-account-number-input')
 
         cy.get('input#stripe-setup-account-number-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=stripe-setup-account-number-input] > span').should('contain', 'Please enter a valid account number')
+        cy.get('label[for=stripe-setup-account-number-input] > span').should('contain', 'Enter a valid account number')
       })
 
       it('should display an error when sort code is invalid', () => {
@@ -105,7 +117,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#stripe-setup-sort-code-input')
 
         cy.get('input#stripe-setup-sort-code-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=stripe-setup-sort-code-input] > span').should('contain', 'Please enter a valid sort code')
+        cy.get('label[for=stripe-setup-sort-code-input] > span').should('contain', 'Enter a valid sort code')
       })
 
       it('should go to check your answers page when inputs are valid', () => {
@@ -126,7 +138,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          getStripeSetupStub(true)
+          getStripeSetupStub(true),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -135,7 +148,7 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'Bank details flag already set')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
@@ -145,7 +158,8 @@ describe('Stripe setup: bank details page', () => {
           getStripeBankAccountFlagChangedSetupStub([
             { bank_account: false },
             { bank_account: true }
-          ])
+          ]),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -158,7 +172,7 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'Bank details flag already set')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Check your answers page', () => {
@@ -169,7 +183,8 @@ describe('Stripe setup: bank details page', () => {
             { bank_account: false },
             { bank_account: false },
             { bank_account: true }
-          ])
+          ]),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -187,7 +202,7 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'Bank details flag already set')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
       })
     })
 
@@ -196,7 +211,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -211,7 +227,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -239,7 +256,8 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          getStripeSetupStub(false)
+          getStripeSetupStub(false),
+          getStripeAccountStub('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -254,14 +272,6 @@ describe('Stripe setup: bank details page', () => {
         cy.get('#stripe-setup-sort-code-value').should('contain', sortCode)
 
         cy.get('h1').should('contain', 'Check details before saving')
-      })
-
-      it('should go to the dashboard page when save details button clicked', () => {
-        cy.get('#stripe-setup-bank-details-check-submit-form > button[type=submit]').click()
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/`)
-        })
       })
 
       it('should go back to index page when change account number link clicked', () => {
