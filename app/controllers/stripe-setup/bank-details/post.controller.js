@@ -2,6 +2,7 @@
 
 // NPM dependencies
 const lodash = require('lodash')
+const logger = require('winston')
 
 // Local dependencies
 const { response, renderErrorView } = require('../../../utils/response')
@@ -19,26 +20,33 @@ const ANSWERS_NEED_CHANGING_FIELD = 'answers-need-changing'
 const ANSWERS_CHECKED_FIELD = 'answers-checked'
 
 module.exports = (req, res) => {
-  const accountNumber = req.body[ACCOUNT_NUMBER_FIELD]
-  const sortCode = req.body[SORT_CODE_FIELD]
+  const rawAccountNumber = lodash.get(req.body, ACCOUNT_NUMBER_FIELD, '')
+  const rawSortCode = lodash.get(req.body, SORT_CODE_FIELD, '')
+  const sanitisedAccountNumber = rawAccountNumber.replace(/\D/g, '')
+  const sanitisedSortCode = rawSortCode.replace(/\D/g, '')
+  const displayAccountNumber = sanitisedAccountNumber
+  const displaySortCode = sanitisedSortCode.match(/.{2}/g).join(' ')
 
-  const errors = validateBankDetails(accountNumber, sortCode)
-  const pageData = {
-    accountNumber,
-    sortCode,
-    errors
-  }
-
+  const errors = validateBankDetails(rawAccountNumber, rawSortCode)
   if (!lodash.isEmpty(errors)) {
-    return response(req, res, 'stripe-setup/bank-details/index', pageData)
+    return response(req, res, 'stripe-setup/bank-details/index', {
+      accountNumber: rawAccountNumber,
+      sortCode: rawSortCode,
+      errors
+    })
   }
+
   if (req.body[ANSWERS_NEED_CHANGING_FIELD]) {
-    return response(req, res, 'stripe-setup/bank-details/index', pageData)
+    return response(req, res, 'stripe-setup/bank-details/index', {
+      accountNumber: rawAccountNumber,
+      sortCode: rawSortCode,
+      errors
+    })
   }
   if (req.body[ANSWERS_CHECKED_FIELD]) {
     return updateBankAccount(res.locals.stripeAccount.stripeAccountId, {
-      bank_account_sort_code: sortCode,
-      bank_account_number: accountNumber
+      bank_account_sort_code: sanitisedSortCode,
+      bank_account_number: rawAccountNumber
     })
       .then(() => {
         return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
@@ -51,20 +59,35 @@ module.exports = (req, res) => {
         if (error.code) {
           if (error.code === 'routing_number_invalid') {
             // invalid sort code
-            pageData.errors[SORT_CODE_FIELD] = fieldValidationChecks.validationErrors.invalidSortCode
-            return response(req, res, 'stripe-setup/bank-details/index', pageData)
+            return response(req, res, 'stripe-setup/bank-details/index', {
+              accountNumber: rawAccountNumber,
+              sortCode: rawSortCode,
+              errors: {
+                [SORT_CODE_FIELD]: fieldValidationChecks.validationErrors.invalidSortCode
+              }
+            })
           }
           if (error.code === 'account_number_invalid') {
             // invalid account number
-            pageData.errors[ACCOUNT_NUMBER_FIELD] = fieldValidationChecks.validationErrors.invalidBankAccountNumber
-            return response(req, res, 'stripe-setup/bank-details/index', pageData)
+            return response(req, res, 'stripe-setup/bank-details/index', {
+              accountNumber: rawAccountNumber,
+              sortCode: rawSortCode,
+              errors: {
+                [ACCOUNT_NUMBER_FIELD]: fieldValidationChecks.validationErrors.invalidBankAccountNumber
+              }
+            })
           }
         }
         // the error is generic
+        logger.error(`[${req.correlationId}] Error submitting bank details, error = `, error)
         return renderErrorView(req, res, 'Please try again or contact support team')
       })
   }
-  return response(req, res, 'stripe-setup/bank-details/check-your-answers', pageData)
+  return response(req, res, 'stripe-setup/bank-details/check-your-answers', {
+    accountNumber: displayAccountNumber,
+    sortCode: displaySortCode,
+    errors
+  })
 }
 
 function validateBankDetails (accountNumber, sortCode) {

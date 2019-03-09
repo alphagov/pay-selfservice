@@ -7,6 +7,7 @@ describe('Stripe setup: bank details page', () => {
   const userExternalId = 'userExternalId'
   const accountNumber = '00012345'
   const sortCode = '108800'
+  const displaySortCode = '10 88 00'
 
   describe('Card gateway account', () => {
     const getStripeSetupStub = function getStripeSetupStub (bankAccountCompleted) {
@@ -127,7 +128,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('#stripe-setup-bank-details-form > button[type=submit]').click()
 
         cy.get('#stripe-setup-account-number-value').should('contain', accountNumber)
-        cy.get('#stripe-setup-sort-code-value').should('contain', sortCode)
+        cy.get('#stripe-setup-sort-code-value').should('contain', displaySortCode)
 
         cy.get('h1').should('contain', 'Check details before saving')
       })
@@ -148,7 +149,8 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Bank details page', () => {
@@ -172,7 +174,8 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
 
       it('should redirect to Dashboard with an error message when submitting Check your answers page', () => {
@@ -202,7 +205,8 @@ describe('Stripe setup: bank details page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/`)
         })
-        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details. Contact GOV.UK Pay support if you need to update them.')
+        cy.get('.flash-container > .generic-error').should('contain', 'You’ve already provided your bank details.')
+        cy.get('.flash-container > .generic-error').should('contain', 'Contact GOV.UK Pay support if you need to update them.')
       })
     })
 
@@ -269,7 +273,7 @@ describe('Stripe setup: bank details page', () => {
 
       it('should go to check your answers page when inputs are valid', () => {
         cy.get('#stripe-setup-account-number-value').should('contain', accountNumber)
-        cy.get('#stripe-setup-sort-code-value').should('contain', sortCode)
+        cy.get('#stripe-setup-sort-code-value').should('contain', displaySortCode)
 
         cy.get('h1').should('contain', 'Check details before saving')
       })
@@ -280,7 +284,7 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('h1').should('contain', 'Add bank details')
         cy.get('#stripe-setup-account-number-input').should('have.value', accountNumber)
-        cy.get('#stripe-setup-sort-code-input').should('have.value', sortCode)
+        cy.get('#stripe-setup-sort-code-input').should('have.value', displaySortCode)
       })
 
       it('should go back to index page when change sort code link clicked', () => {
@@ -289,7 +293,7 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('h1').should('contain', 'Add bank details')
         cy.get('#stripe-setup-account-number-input').should('have.value', accountNumber)
-        cy.get('#stripe-setup-sort-code-input').should('have.value', sortCode)
+        cy.get('#stripe-setup-sort-code-input').should('have.value', displaySortCode)
       })
     })
   })
