@@ -3,6 +3,7 @@
 // NPM dependencies
 const lodash = require('lodash')
 const moment = require('moment-timezone')
+const ukPostcode = require('uk-postcode')
 
 // Local dependencies
 const paths = require('../../../paths')
@@ -91,7 +92,7 @@ module.exports = (req, res) => {
     homeAddressPostcode: formFields[HOME_ADDRESS_POSTCODE_FIELD],
     dobDay: formFields[DOB_DAY_FIELD],
     dobMonth: formFields[DOB_MONTH_FIELD],
-    dobYear: formFields[DOB_YEAR_FIELD],
+    dobYear: formFields[DOB_YEAR_FIELD]
   }
 
   if (!lodash.isEmpty(errors)) {
@@ -100,10 +101,11 @@ module.exports = (req, res) => {
   } else if (lodash.get(req.body, 'answers-checked') === 'true') {
     return res.redirect(303, paths.dashboard.index)
   } else if (lodash.get(req.body, 'answers-need-changing') === 'true') {
+    pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
     return response.response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else {
-    const friendlyDob = formatDateOfBirth(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD] - 1, formFields[DOB_YEAR_FIELD])
-    pageData['friendlyDateOfBirth'] = friendlyDob
+    pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
+    pageData.friendlyDateOfBirth = formatDateOfBirth(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD] - 1, formFields[DOB_YEAR_FIELD])
     return response.response(req, res, 'stripe-setup/responsible-person/check-your-answers', pageData)
   }
 }
@@ -132,6 +134,6 @@ const formatDateOfBirth = (day, month, year) => {
   return moment({
     day: day,
     month: month - 1,
-    year: year,
+    year: year
   }).format('D MMMM YYYY')
 }

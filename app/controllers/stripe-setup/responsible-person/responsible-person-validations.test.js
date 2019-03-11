@@ -54,10 +54,29 @@ describe('Responsible person page field validations', () => {
       expect(responsiblePersonValidations.validatePostcode('NW1 5GH').valid).to.be.true // eslint-disable-line
     })
 
+    it('should be valid when UK postcode but all lower-case', () => {
+      expect(responsiblePersonValidations.validatePostcode('nw1 5gh').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should be valid when UK postcode but no space', () => {
+      expect(responsiblePersonValidations.validatePostcode('NW15GH').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should be valid when UK postcode but no space and all lower-case', () => {
+      expect(responsiblePersonValidations.validatePostcode('nw15gh').valid).to.be.true // eslint-disable-line
+    })
+
     it('should not be valid when postcode is blank', () => {
       expect(responsiblePersonValidations.validatePostcode(BLANK_TEXT)).to.deep.equal({
         valid: false,
         message: 'This field cannot be blank'
+      })
+    })
+
+    it('should not be valid when postcode is UK postcode with extra punctuation', () => {
+      expect(responsiblePersonValidations.validatePostcode('NW1! 5GH')).to.deep.equal({
+        valid: false,
+        message: 'Please enter a real postcode'
       })
     })
 
@@ -183,5 +202,4 @@ describe('Responsible person page field validations', () => {
       })
     })
   })
-
 })

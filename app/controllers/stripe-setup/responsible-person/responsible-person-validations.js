@@ -39,7 +39,6 @@ exports.validateMandatoryField = function validateMandatoryField (value, maxLeng
 
   const textTooLongErrorMessage = isFieldGreaterThanMaxLengthChars(value, maxLength)
   if (textTooLongErrorMessage) {
-
     return {
       valid: false,
       message: textTooLongErrorMessage
@@ -58,6 +57,13 @@ exports.validatePostcode = function validatePostcode (postcode) {
     return {
       valid: false,
       message: isEmptyErrorMessage
+    }
+  }
+
+  if (!/^[A-z0-9 ]+$/.test(postcode)) {
+    return {
+      valid: false,
+      message: 'Please enter a real postcode'
     }
   }
 
