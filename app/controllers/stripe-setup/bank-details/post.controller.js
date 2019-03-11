@@ -46,7 +46,7 @@ module.exports = (req, res) => {
   if (req.body[ANSWERS_CHECKED_FIELD]) {
     return updateBankAccount(res.locals.stripeAccount.stripeAccountId, {
       bank_account_sort_code: sanitisedSortCode,
-      bank_account_number: rawAccountNumber
+      bank_account_number: sanitisedAccountNumber
     })
       .then(() => {
         return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'bank_account', req.correlationId)
