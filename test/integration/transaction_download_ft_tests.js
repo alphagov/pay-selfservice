@@ -225,6 +225,41 @@ describe('Transaction download endpoints', function () {
         })
     })
 
+    it('should download a csv file when the next_page is relative URI (not full connector URL) ', done => {
+      const results = require('./json/transaction_download_spreadsheet_formula_injection.json')
+
+      const mockJson = {
+        results: results,
+        _links: {
+          next_page: { href: 'bar' }
+        }
+      }
+
+      const secondPageMock = nock('http://localhost:8001')
+
+      secondPageMock.get('/bar')
+        .reply(200, {
+          results: results
+        })
+      connectorMockResponds(200, mockJson, { payment_states: 'success' })
+      adminusersMock.get('/v1/api/users').reply(200, [])
+
+      request(app)
+        .get(paths.transactions.download + '?payment_states=success')
+        .set('Accept', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'text/csv; charset=utf-8')
+        .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
+        .end(function (err, res) {
+          if (err) return done(err)
+          const csvContent = res.text
+          const arrayOfLines = csvContent.split('\n')
+          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount"')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45"')
+          done()
+        })
+    })
+
     it('should show error message on a bad request', done => {
       const errorMessage = 'Unable to download list of transactions.'
       connectorMockResponds(400, { 'message': errorMessage }, {})
