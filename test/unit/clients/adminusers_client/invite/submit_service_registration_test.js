@@ -2,7 +2,7 @@
 
 // NPM dependencies
 
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -19,12 +19,12 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 const INVITE_PATH = '/v1/api/invites'
 
 describe('adminusers client - self register service', function () {
-  let provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,

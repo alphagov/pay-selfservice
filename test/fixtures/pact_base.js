@@ -1,18 +1,18 @@
 const _ = require('lodash')
-let Pact = require('pact')
-let matchers = Pact.Matchers
+const { Matchers } = require('@pact-foundation/pact')
+const { somethingLike, eachLike, term } = Matchers
 
 module.exports = function (options = {}) {
   let pactifySimpleArray = (arr) => {
     let pactified = []
     arr.forEach((val) => {
-      pactified.push(matchers.somethingLike(val))
+      pactified.push(somethingLike(val))
     })
     return pactified
   }
 
   let pactifyNestedArray = (arr) => {
-    return matchers.eachLike(pactify(arr[0]), {min: arr.length})
+    return eachLike(pactify(arr[0]), { min: arr.length })
   }
 
   let pactify = (object) => {
@@ -27,13 +27,13 @@ module.exports = function (options = {}) {
         } else {
           length = value.length
         }
-        pactified[key] = matchers.eachLike(matchers.somethingLike(value[0]), {min: length})
+        pactified[key] = eachLike(somethingLike(value[0]), { min: length })
       } else if (value.constructor === Array) {
         pactified[key] = pactifySimpleArray(value)
       } else if (value.constructor === Object) {
         pactified[key] = pactify(value)
       } else {
-        pactified[key] = matchers.somethingLike(value)
+        pactified[key] = somethingLike(value)
       }
     })
     return pactified
@@ -47,7 +47,7 @@ module.exports = function (options = {}) {
   }
 
   let pactifyMatch = (generate, matcher) => {
-    return matchers.term({generate: generate, matcher: matcher})
+    return term({ generate: generate, matcher: matcher })
   }
 
   return {

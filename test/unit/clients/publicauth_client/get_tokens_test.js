@@ -1,10 +1,10 @@
 'use strict'
 
 // npm dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
-const {expect} = chai
+const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
 
 // user dependencies
@@ -19,7 +19,7 @@ const TOKENS_PATH = '/v1/frontend/auth'
 chai.use(chaiAsPromised)
 
 describe('publicauth client - get tokens', function () {
-  let provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'publicauth',
     port: port,

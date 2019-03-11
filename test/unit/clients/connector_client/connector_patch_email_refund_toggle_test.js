@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -24,7 +24,7 @@ const existingGatewayAccountId = 42
 const defaultState = `Gateway account ${existingGatewayAccountId} exists in the database`
 
 describe('connector client - patch email refund toggle', function () {
-  let provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
     port: port,

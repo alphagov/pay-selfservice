@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
@@ -23,7 +23,7 @@ const existingGatewayAccountId = 42
 const defaultState = `a stripe gateway account with external id ${existingGatewayAccountId} exists in the database`
 
 describe('connector client - set stripe account setup flag', () => {
-  const provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     port: port,
