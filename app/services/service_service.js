@@ -8,7 +8,6 @@ const getAdminUsersClient = require('./clients/adminusers_client')
 const { ConnectorClient } = require('../services/clients/connector_client')
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client')
 const { isADirectDebitAccount } = directDebitConnectorClient
-const productsClient = require('../services/clients/products_client')
 const CardGatewayAccount = require('../models/GatewayAccount.class')
 const DirectDebitGatewayAccount = require('../models/DirectDebitGatewayAccount.class')
 const Service = require('../models/Service.class')
@@ -78,19 +77,10 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
     if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
     getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
       .then(result => {
-        const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
-
-        // Update gateway account service names
-        if (gatewayAccountIds.length <= 0) {
-          return resolve(new Service(result))
-        } else {
-          const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
-          return Promise.all([
-            ...accounts[1].map(gatewayAccountId => connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)),
-            ...accounts[1].map(gatewayAccountId => productsClient.product.updateServiceNameOfProductsByGatewayAccountId(gatewayAccountId, serviceName))
-          ])
-            .then(() => resolve(new Service(result)))
-        }
+        resolve(new Service(result))
+      })
+      .catch(function (err) {
+        reject(err)
       })
   })
 }

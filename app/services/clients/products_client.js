@@ -4,7 +4,7 @@
 const Product = require('../../models/Product.class')
 const Payment = require('../../models/Payment.class')
 const baseClient = require('./base_client/base_client')
-const {PRODUCTS_URL} = require('../../../config')
+const { PRODUCTS_URL } = require('../../../config')
 
 // Constants
 const SERVICE_NAME = 'products'
@@ -19,7 +19,6 @@ module.exports = {
     update: updateProduct,
     disable: disableProduct,
     delete: deleteProduct,
-    updateServiceNameOfProductsByGatewayAccountId: updateServiceNameOfProductsByGatewayAccountId,
     getByProductExternalId: getProductByExternalId,
     getByGatewayAccountId: getProductsByGatewayAccountId,
     getByProductPath: getProductByPath
@@ -38,7 +37,6 @@ module.exports = {
  * @param {string} options.payApiToken - The API token to use to access GOV.UK Pay in order to initiate payments for the product
  * @param {string} options.name - The name of the product
  * @param {number} options.price - The price of product in pence
- * @param {string} options.serviceName - The name of the service with which the product is associated
  * @param {string=} options.description - The description of the product
  * @param {string=} options.type - The type of the product
  * @param {string=} options.returnUrl - Where to redirect to upon completion of a charge for this product
@@ -57,7 +55,6 @@ function createProduct (options) {
       name: options.name,
       price: options.price,
       description: options.description,
-      service_name: options.serviceName,
       type: options.type,
       return_url: options.returnUrl,
       service_name_path: options.serviceNamePath,
@@ -118,25 +115,6 @@ function getProductsByGatewayAccountId (gatewayAccountId) {
     description: 'find a list products associated with a gateway account',
     service: SERVICE_NAME
   }).then(products => products.map(product => new Product(product)))
-}
-
-/**
- * @param {String} gatewayAccountId: the id of the gateway account whose service name you wish to update
- * @returns {Promise<Product>}
- */
-function updateServiceNameOfProductsByGatewayAccountId (gatewayAccountId, serviceName) {
-  return baseClient.patch({
-    baseUrl,
-    url: `/gateway-account/${gatewayAccountId}`,
-    json: true,
-    body: {
-      op: 'replace',
-      path: 'service_name',
-      value: serviceName
-    },
-    description: `update a product's service name`,
-    service: SERVICE_NAME
-  })
 }
 
 /**

@@ -10,7 +10,6 @@ const querystring = require('querystring')
 // Local dependencies
 const oldBaseClient = require('./old_base_client')
 const baseClient = require('./base_client/base_client')
-const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
@@ -30,7 +29,6 @@ const STRIPE_ACCOUNT_PATH = ACCOUNT_API_PATH + '/stripe-account'
 
 const ACCOUNTS_FRONTEND_PATH = '/v1/frontend/accounts'
 const ACCOUNT_FRONTEND_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}'
-const SERVICE_NAME_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/servicename'
 const ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
 const ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
 const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
@@ -111,11 +109,6 @@ function _accountAcceptedCardTypesUrlFor (gatewayAccountId, url) {
 /** @private */
 function _cardTypesUrlFor (url) {
   return url + CARD_TYPES_API_PATH
-}
-
-/** @private */
-function _serviceNameUrlFor (gatewayAccountId, url) {
-  return url + SERVICE_NAME_FRONTEND_PATH.replace('{accountId}', gatewayAccountId)
 }
 
 /** @private */
@@ -465,43 +458,6 @@ ConnectorClient.prototype = {
     })
     oldBaseClient.get(url, params, this.responseHandler(successCallback))
     return this
-  },
-
-  /**
-   * @param gatewayAccountId
-   * @param serviceName
-   * @param correlationId
-   * @returns {Promise<Object>}
-   */
-  patchServiceName: function (gatewayAccountId, serviceName, correlationId) {
-    return new Promise((resolve, reject) => {
-      const params = {
-        gatewayAccountId: gatewayAccountId,
-        payload: {
-          service_name: serviceName
-        },
-        correlationId: correlationId
-      }
-
-      const url = _serviceNameUrlFor(gatewayAccountId, this.connectorUrl)
-      const startTime = new Date()
-      const context = {
-        url: url,
-        defer: { resolve: resolve, reject: reject },
-        startTime: startTime,
-        correlationId: correlationId,
-        method: 'PATCH',
-        description: 'update service name',
-        service: SERVICE_NAME
-      }
-
-      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
-
-      requestLogger.logRequestStart(context)
-
-      oldBaseClient.patch(url, params, callbackToPromiseConverter)
-        .on('error', callbackToPromiseConverter)
-    })
   },
 
   /**
