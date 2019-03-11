@@ -14,6 +14,11 @@ chai.use(chaiAsPromised)
 const { expect } = chai // must be called after chai.use(chaiAsPromised) to use "should.eventually"
 
 describe('Bank details post controller', () => {
+  const rawAccountNumber = '00012345'
+  const rawSortCode = '10 - 88 - 00'
+  const sanitisedAccountNumber = '00012345'
+  const sanitisedSortCode = '108800'
+
   let req
   let res
   let setStripeAccountSetupFlagMock
@@ -26,8 +31,8 @@ describe('Bank details post controller', () => {
         gateway_account_id: '1'
       },
       body: {
-        'account-number': '00012345',
-        'sort-code': '108800',
+        'account-number': rawAccountNumber,
+        'sort-code': rawSortCode,
         'answers-checked': true
       }
     }
@@ -61,8 +66,8 @@ describe('Bank details post controller', () => {
 
     setTimeout(() => {
       expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: req.body['sort-code'],
-        bank_account_number: req.body['account-number']
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })).to.be.true
       expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
       expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
@@ -87,8 +92,8 @@ describe('Bank details post controller', () => {
 
     setTimeout(() => {
       expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: req.body['sort-code'],
-        bank_account_number: req.body['account-number']
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })).to.be.true
       expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
       expect(res.redirect.notCalled).to.be.true // eslint-disable-line
@@ -117,8 +122,8 @@ describe('Bank details post controller', () => {
 
     setTimeout(() => {
       expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: req.body['sort-code'],
-        bank_account_number: req.body['account-number'],
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })).to.be.true
       expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
       expect(res.redirect.notCalled).to.be.true // eslint-disable-line
@@ -146,8 +151,8 @@ describe('Bank details post controller', () => {
 
     setTimeout(() => {
       expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: req.body['sort-code'],
-        bank_account_number: req.body['account-number'],
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })).to.be.true
       expect(setStripeAccountSetupFlagMock.notCalled).to.be.true // eslint-disable-line
       expect(res.redirect.notCalled).to.be.true // eslint-disable-line
@@ -173,8 +178,8 @@ describe('Bank details post controller', () => {
 
     setTimeout(() => {
       expect(updateBankAccountMock.calledWith(res.locals.stripeAccount.stripeAccountId, { // eslint-disable-line
-        bank_account_sort_code: req.body['sort-code'],
-        bank_account_number: req.body['account-number']
+        bank_account_sort_code: sanitisedSortCode,
+        bank_account_number: sanitisedAccountNumber
       })).to.be.true
       expect(setStripeAccountSetupFlagMock.calledWith(req.account.gateway_account_id, 'bank_account', req.correlationId)).to.be.true // eslint-disable-line
       expect(res.redirect.notCalled).to.be.true // eslint-disable-line
