@@ -2,6 +2,7 @@
 
 // NPM dependencies
 const _ = require('lodash')
+const url = require('url')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const logger = require('winston')
@@ -201,7 +202,7 @@ ConnectorClient.prototype = {
         results = results.concat(data.results)
         if (next === undefined) return successCallback(results)
 
-        recursiveParams.url = next.href
+        recursiveParams.url = url.resolve(connectorClient.connectorUrl, next.href)
         recursiveRetrieve(recursiveParams)
       })
     }
