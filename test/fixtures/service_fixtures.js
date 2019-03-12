@@ -10,36 +10,6 @@ const pactBase = require(path.join(__dirname, '/pact_base'))
 // Global setup
 const pactServices = pactBase({ array: ['service_ids'] })
 
-const buildMerchantDetailsWithDefaults = (opts = {}) => {
-  _.defaults(opts, {
-    name: 'name',
-    address_line1: 'line1',
-    address_city: 'City',
-    address_postcode: 'POSTCODE',
-    address_country: 'GB'
-  })
-
-  const merchantDetails = {
-    name: opts.name,
-    address_line1: opts.address_line1,
-    address_city: opts.address_city,
-    address_postcode: opts.address_postcode,
-    address_country: opts.address_country
-  }
-
-  if (opts.address_line2) {
-    merchantDetails.address_line2 = opts.address_line2
-  }
-  if (opts.telephone_number) {
-    merchantDetails.telephone_number = opts.telephone_number
-  }
-  if (opts.email) {
-    merchantDetails.email = opts.email
-  }
-
-  return merchantDetails
-}
-
 const buildServiceNameWithDefaults = (opts = {}) => {
   _.defaults(opts, {
     en: 'System Generated'
@@ -313,7 +283,16 @@ module.exports = {
     }
 
     if (opts.merchant_details) {
-      service.merchant_details = buildMerchantDetailsWithDefaults(opts.merchant_details)
+      service.merchant_details = _.pick(opts.merchant_details, [
+        'name',
+        'address_line1',
+        'address_line2',
+        'address_city',
+        'address_postcode',
+        'address_country',
+        'email',
+        'telephone_number'
+      ])
     }
 
     return {
