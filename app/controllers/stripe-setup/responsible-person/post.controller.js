@@ -55,20 +55,20 @@ const validationRules = [
 ]
 
 module.exports = (req, res) => {
-  const normaliseField = (fieldName) => {
+  const trimField = (fieldName) => {
     return lodash.get(req.body, fieldName, '').trim()
   }
 
   const formFields = {}
-  formFields[FIRST_NAME_FIELD] = normaliseField(FIRST_NAME_FIELD)
-  formFields[LAST_NAME_FIELD] = normaliseField(LAST_NAME_FIELD)
-  formFields[HOME_ADDRESS_LINE1_FIELD] = normaliseField(HOME_ADDRESS_LINE1_FIELD)
-  formFields[HOME_ADDRESS_LINE2_FIELD] = normaliseField(HOME_ADDRESS_LINE2_FIELD)
-  formFields[HOME_ADDRESS_CITY_FIELD] = normaliseField(HOME_ADDRESS_CITY_FIELD)
-  formFields[HOME_ADDRESS_POSTCODE_FIELD] = normaliseField(HOME_ADDRESS_POSTCODE_FIELD)
-  formFields[DOB_DAY_FIELD] = normaliseField(DOB_DAY_FIELD)
-  formFields[DOB_MONTH_FIELD] = normaliseField(DOB_MONTH_FIELD)
-  formFields[DOB_YEAR_FIELD] = normaliseField(DOB_YEAR_FIELD)
+  formFields[FIRST_NAME_FIELD] = trimField(FIRST_NAME_FIELD)
+  formFields[LAST_NAME_FIELD] = trimField(LAST_NAME_FIELD)
+  formFields[HOME_ADDRESS_LINE1_FIELD] = trimField(HOME_ADDRESS_LINE1_FIELD)
+  formFields[HOME_ADDRESS_LINE2_FIELD] = trimField(HOME_ADDRESS_LINE2_FIELD)
+  formFields[HOME_ADDRESS_CITY_FIELD] = trimField(HOME_ADDRESS_CITY_FIELD)
+  formFields[HOME_ADDRESS_POSTCODE_FIELD] = trimField(HOME_ADDRESS_POSTCODE_FIELD)
+  formFields[DOB_DAY_FIELD] = trimField(DOB_DAY_FIELD)
+  formFields[DOB_MONTH_FIELD] = trimField(DOB_MONTH_FIELD)
+  formFields[DOB_YEAR_FIELD] = trimField(DOB_YEAR_FIELD)
 
   const errors = validationRules.reduce((errors, validationRule) => {
     const errorMessage = validate(formFields, validationRule.field, validationRule.validator, validationRule.maxLength)
