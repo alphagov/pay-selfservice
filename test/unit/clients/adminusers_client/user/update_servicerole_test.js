@@ -1,4 +1,4 @@
-const { Pact } = require('@pact-foundation/pact')
+let Pact = require('pact')
 let path = require('path')
 let chai = require('chai')
 let chaiAsPromised = require('chai-as-promised')
@@ -11,13 +11,13 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
 const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - update user service role', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

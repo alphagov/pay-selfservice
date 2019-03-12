@@ -1,4 +1,4 @@
-const { Pact } = require('@pact-foundation/pact')
+var Pact = require('pact')
 var path = require('path')
 var chai = require('chai')
 var chaiAsPromised = require('chai-as-promised')
@@ -11,10 +11,10 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const RESET_PASSWORD_PATH = '/v1/api/reset-password'
 var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
 describe('adminusers client - update password', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

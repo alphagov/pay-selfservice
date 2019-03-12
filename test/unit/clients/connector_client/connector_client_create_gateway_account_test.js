@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -21,7 +21,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('connector client - create gateway account', function () {
-  const provider = new Pact({
+  const provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'connector',
     port: port,

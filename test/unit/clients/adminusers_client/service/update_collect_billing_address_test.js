@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -14,7 +14,7 @@ const serviceFixtures = require('../../../../fixtures/service_fixtures')
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 
@@ -22,7 +22,7 @@ const serviceExternalId = 'cp5wa'
 chai.use(chaiAsPromised)
 
 describe('adminusers client - patch collect billing address toggle', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
@@ -36,7 +36,7 @@ describe('adminusers client - patch collect billing address toggle', function ()
   after((done) => provider.finalize().then(done()))
 
   describe('patch collect billing address toggle - disabled', () => {
-    const validUpdateCollectBillingAddressRequest = serviceFixtures.validCollectBillingAddressToggleRequest({ enabled: false })
+    const validUpdateCollectBillingAddressRequest = serviceFixtures.validCollectBillingAddressToggleRequest({enabled: false})
     const validUpdateCollectBillingAddressResponse = serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
       collect_billing_address: false

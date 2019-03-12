@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -21,7 +21,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('adminusers client - patch request to update merchant name', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

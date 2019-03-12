@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -14,10 +14,10 @@ const expect = chai.expect
 
 const INVITES_PATH = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 
 describe('adminusers client - get a validated invite', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,

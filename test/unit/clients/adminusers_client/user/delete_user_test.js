@@ -1,4 +1,4 @@
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -6,13 +6,13 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const SERVICES_PATH = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const expect = chai.expect
 
 chai.use(chaiAsPromised)
 
 describe('adminusers client - delete user', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

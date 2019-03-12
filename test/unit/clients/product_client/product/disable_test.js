@@ -1,8 +1,8 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
-const { expect } = require('chai')
+const Pact = require('pact')
+const {expect} = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -23,7 +23,7 @@ function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey
 }
 
 describe('products client - disable a product', () => {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
     port: port,

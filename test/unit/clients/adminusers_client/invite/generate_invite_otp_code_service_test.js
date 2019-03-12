@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -13,14 +13,14 @@ const getAdminUsersClient = require('../../../../../app/services/clients/adminus
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
 
 describe('adminusers client - generate otp code for service invite', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
