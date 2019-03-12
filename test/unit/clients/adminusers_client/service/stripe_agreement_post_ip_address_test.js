@@ -32,7 +32,7 @@ describe('adminusers client - post stripe agreement - ip address', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('post ip address', () => {
     const ipAddress = '93.184.216.34' // example.org

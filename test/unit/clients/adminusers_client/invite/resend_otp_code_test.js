@@ -32,7 +32,7 @@ describe('submit resend otp code API', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('success', () => {
     const validOtpResend = inviteFixtures.validResendOtpCodeRequest()

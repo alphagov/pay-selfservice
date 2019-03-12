@@ -36,7 +36,7 @@ describe('products client - find a payment by it\'s associated product external 
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('when a product is successfully found', () => {
     before(done => {

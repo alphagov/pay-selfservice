@@ -34,7 +34,7 @@ describe('products client - delete a product', () => {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('when a product is successfully deleted', () => {
     before(done => {

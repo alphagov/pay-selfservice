@@ -25,7 +25,7 @@ describe('adminusers client - validate otp code for a service', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('success', () => {
     let validRequest = registrationFixtures.validVerifyOtpCodeRequest({code: 'aValidCode'})

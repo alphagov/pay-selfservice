@@ -32,7 +32,7 @@ describe('adminusers client - create a new service', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('success', () => {
     const name = 'Service name'

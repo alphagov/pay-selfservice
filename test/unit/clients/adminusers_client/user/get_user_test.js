@@ -31,7 +31,7 @@ describe('adminusers client - get user', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('find a valid user', () => {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'

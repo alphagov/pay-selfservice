@@ -34,7 +34,7 @@ describe('connector client - get gateway account', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('get single gateway account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({

@@ -33,7 +33,7 @@ describe('adminusers client - post govuk pay agreement - email address', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   describe('post email address', () => {
     const payload = { user_external_id: userExternalId }

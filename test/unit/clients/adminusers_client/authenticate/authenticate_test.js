@@ -32,7 +32,7 @@ describe('adminusers client - authenticate', () => {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(() => { done() }))
+  after(() => provider.finalize())
 
   const existingUsername = 'existing-user'
   const validPassword = 'password'
