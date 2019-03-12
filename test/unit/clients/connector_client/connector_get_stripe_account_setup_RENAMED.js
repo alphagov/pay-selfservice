@@ -23,7 +23,7 @@ chai.use(chaiAsPromised)
 const existingGatewayAccountId = 42
 const defaultState = `a stripe gateway account with external id ${existingGatewayAccountId} exists in the database`
 
-describe.skip('connector client - get stripe account setup', () => {
+describe('connector client - get stripe account setup', () => {
   const provider = Pact({
     consumer: 'selfservice',
     provider: 'connector',
