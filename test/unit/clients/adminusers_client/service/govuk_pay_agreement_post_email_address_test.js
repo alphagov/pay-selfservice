@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
+const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -22,7 +22,7 @@ const serviceExternalId = 'cp5wa'
 chai.use(chaiAsPromised)
 
 describe('adminusers client - post govuk pay agreement - email address', () => {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

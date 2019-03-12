@@ -1,5 +1,5 @@
 'use strict'
-const { Pact } = require('@pact-foundation/pact')
+let Pact = require('pact')
 let path = require('path')
 let chai = require('chai')
 let chaiAsPromised = require('chai-as-promised')
@@ -8,13 +8,13 @@ let random = require('../../../../../app/utils/random')
 let getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
 let PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
+let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
 chai.use(chaiAsPromised)
-const { expect } = chai
+const {expect} = chai
 const USER_PATH = '/v1/api/users'
 
 describe('adminusers client - get users', function () {
-  const provider = new Pact({
+  let provider = Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
