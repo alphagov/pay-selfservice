@@ -25,7 +25,7 @@ describe('adminusers client - session', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('increment session version  API - success', () => {
     let request = userFixtures.validIncrementSessionVersionRequest()

@@ -35,7 +35,7 @@ describe('products client - creating a new payment', () => {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('when a charge is successfully created', () => {
     before((done) => {

@@ -32,7 +32,7 @@ describe('connector client', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('get card types', () => {
     const validCardTypesResponse = cardFixtures.validCardTypesResponse()

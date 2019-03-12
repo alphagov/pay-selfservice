@@ -31,7 +31,7 @@ describe('adminusers client - get user', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(done()))
+  after(done => provider.finalize().then(() => { done() }))
 
   describe('find a valid user', () => {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -44,7 +44,7 @@ describe('adminusers client - get user', () => {
           .withUponReceiving('a valid get user request')
           .withResponseBody(getUserResponse.getPactified())
           .build()
-      ).then(done())
+      ).then(() => { done() })
     })
 
     afterEach(() => provider.verify())
@@ -80,7 +80,7 @@ describe('adminusers client - get user', () => {
           .withStatusCode(404)
           .withResponseHeaders({})
           .build()
-      ).then(done())
+      ).then(() => { done() })
     })
 
     afterEach(() => provider.verify())

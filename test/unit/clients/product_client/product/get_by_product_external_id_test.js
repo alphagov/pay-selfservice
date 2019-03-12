@@ -35,7 +35,7 @@ describe('products client - find a product by it\'s external id', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('when a product is successfully found', () => {
     before(done => {

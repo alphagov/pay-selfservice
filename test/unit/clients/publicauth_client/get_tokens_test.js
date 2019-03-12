@@ -30,7 +30,7 @@ describe('publicauth client - get tokens', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   process.env.PUBLIC_AUTH_URL = `http://localhost:${port}${TOKENS_PATH}`
 
@@ -48,10 +48,10 @@ describe('publicauth client - get tokens', function () {
           .withUponReceiving('a valid service auth request')
           .withResponseBody(getServiceAuthResponse.getPactified())
           .build()
-      ).then(done())
+      ).then(() => { done() })
     })
 
-    afterEach((done) => provider.verify().then(done()))
+    afterEach((done) => provider.verify().then(() => { done() }))
 
     it('should return service tokens information successfully', function (done) {
       const expectedTokensData = getServiceAuthResponse.getPlain()

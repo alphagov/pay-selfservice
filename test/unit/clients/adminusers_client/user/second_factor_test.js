@@ -27,7 +27,7 @@ describe('adminusers client', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('send new second factor API - success', () => {
     before((done) => {

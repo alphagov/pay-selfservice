@@ -32,7 +32,7 @@ describe('connector client - get multiple gateway accounts', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('get multiple gateway accounts - success', () => {
     const validGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse({

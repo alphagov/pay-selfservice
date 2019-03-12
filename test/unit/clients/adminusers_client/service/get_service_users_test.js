@@ -34,7 +34,7 @@ describe('adminusers client - service users', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(done()))
+  after(done => provider.finalize().then(() => { done() }))
 
   describe('single user is returned for service', () => {
     const getServiceUsersResponse = userServiceFixtures.validServiceUsersResponse([{

@@ -33,7 +33,7 @@ describe('adminusers client - patch request to go live stage', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('patch request to go live stage', () => {
     const value = 'ENTERED_ORGANISATION_NAME'

@@ -34,7 +34,7 @@ describe('connector client - set stripe account setup flag', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(done()))
+  after(done => provider.finalize().then(() => { done() }))
 
   describe('set bank account flag', () => {
     const request = stripeAccountSetupFixtures.buildUpdateBankAccountDetailsFlagRequest(true).getPlain()

@@ -25,7 +25,7 @@ describe('adminusers client - submit verification details', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   context('verify otp code - success', () => {
     let validRequest = registrationFixtures.validVerifyOtpCodeRequest()

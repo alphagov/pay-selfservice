@@ -23,7 +23,7 @@ describe('adminusers client - delete user', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   const serviceId = 'pact-delete-service-id'
   const removerId = 'pact-delete-remover-id'

@@ -35,7 +35,7 @@ describe('adminusers client - self register service', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('success', () => {
     const validRegistration = registerFixtures.validRegisterRequest()

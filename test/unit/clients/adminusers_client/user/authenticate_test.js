@@ -26,7 +26,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('authenticate user API - success', () => {
     let request = userFixtures.validAuthenticateRequest({username: 'existing-user'})

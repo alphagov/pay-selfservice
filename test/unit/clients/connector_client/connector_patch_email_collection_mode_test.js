@@ -35,7 +35,7 @@ describe('connector client - patch email collection mode', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('patch email collection mode - mandatory', () => {
     const validGatewayAccountEmailCollectionModeRequest =

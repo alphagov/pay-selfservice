@@ -36,7 +36,7 @@ describe('admin users client - add gateway accounts to service', () => {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('a successful add gateway account to service request', () => {
     const gatewayAccountsIdsToAdd = ['42']

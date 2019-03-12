@@ -34,7 +34,7 @@ describe('adminusers client - update service name', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after((done) => provider.finalize().then(() => { done() }))
 
   describe('success with en and cy', () => {
     const serviceName = {

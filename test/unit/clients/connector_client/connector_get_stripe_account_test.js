@@ -35,7 +35,7 @@ describe('connector client - get stripe account', () => {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(done()))
+  after(done => provider.finalize().then(() => { done() }))
 
   describe('get stripe account setup success', () => {
     const stripeAccountOpts = {
