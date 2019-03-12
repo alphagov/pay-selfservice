@@ -1,4 +1,4 @@
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -11,10 +11,10 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const OTP_VALIDATE_RESOURCE = '/v1/api/invites/otp/validate/service'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - validate otp code for a service', function () {
-  let provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
@@ -28,7 +28,7 @@ describe('adminusers client - validate otp code for a service', function () {
   after((done) => provider.finalize().then(done()))
 
   describe('success', () => {
-    let validRequest = registrationFixtures.validVerifyOtpCodeRequest({code: 'aValidCode'})
+    let validRequest = registrationFixtures.validVerifyOtpCodeRequest({ code: 'aValidCode' })
 
     before((done) => {
       let pactified = validRequest.getPactified()

@@ -1,8 +1,8 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
-const {expect} = require('chai')
+const { Pact } = require('@pact-foundation/pact')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -25,7 +25,7 @@ function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey
 }
 
 describe('products client - find a payment by it\'s associated product external id', function () {
-  let provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',
     port: port,
@@ -43,9 +43,9 @@ describe('products client - find a payment by it\'s associated product external 
       const productsClient = getProductsClient()
       productExternalId = 'existing-id'
       response = [
-        productFixtures.validCreatePaymentResponse({product_external_id: productExternalId}),
-        productFixtures.validCreatePaymentResponse({product_external_id: productExternalId}),
-        productFixtures.validCreatePaymentResponse({product_external_id: productExternalId})
+        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
+        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
+        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId })
       ]
       const interaction = new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/payments`)
         .withUponReceiving('a valid get payment request')
