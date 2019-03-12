@@ -63,7 +63,7 @@ describe('connector client - set stripe account setup flag', () => {
     })
   })
 
-  describe('set organisation details flag', () => {
+  describe.skip('set organisation details flag', () => {
     const request = stripeAccountSetupFixtures.buildUpdateOrganisationDetailsFlagRequest(true).getPlain()
 
     before(done => {
