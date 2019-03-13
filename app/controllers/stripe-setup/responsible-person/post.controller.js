@@ -4,13 +4,17 @@
 const lodash = require('lodash')
 const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
+const logger = require('winston')
 
 // Local dependencies
 const paths = require('../../../paths')
-const response = require('../../../utils/response')
+const { response, renderErrorView } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
 } = require('./responsible-person-validations')
+const { createPerson } = require('../../../services/clients/stripe/stripe_client')
+const { ConnectorClient } = require('../../../services/clients/connector_client')
+const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 const FIRST_NAME_FIELD = 'first-name'
 const LAST_NAME_FIELD = 'last-name'
@@ -99,15 +103,42 @@ module.exports = (req, res) => {
     pageData['errors'] = errors
     return response.response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else if (lodash.get(req.body, 'answers-checked') === 'true') {
-    return res.redirect(303, paths.dashboard.index)
+    return createPerson(res.locals.stripeAccount.stripeAccountId, buildStripePerson(formFields))
+      .then(() => {
+        return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
+      })
+      .then(() => {
+        return res.redirect(303, paths.dashboard.index)
+      })
+      .catch(error => {
+        logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
+        return renderErrorView(req, res, 'Please try again or contact support team')
+      })
   } else if (lodash.get(req.body, 'answers-need-changing') === 'true') {
     pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
-    return response.response(req, res, 'stripe-setup/responsible-person/index', pageData)
+    return response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else {
     pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
-    pageData.friendlyDateOfBirth = formatDateOfBirth(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD] - 1, formFields[DOB_YEAR_FIELD])
-    return response.response(req, res, 'stripe-setup/responsible-person/check-your-answers', pageData)
+    pageData.friendlyDateOfBirth = formatDateOfBirth(formFields[DOB_DAY_FIELD], formFields[DOB_MONTH_FIELD], formFields[DOB_YEAR_FIELD])
+    return response(req, res, 'stripe-setup/responsible-person/check-your-answers', pageData)
   }
+}
+
+const buildStripePerson = (formFields) => {
+  const stripePerson = {
+    first_name: formFields[FIRST_NAME_FIELD],
+    last_name: formFields[LAST_NAME_FIELD],
+    address_line1: formFields[HOME_ADDRESS_LINE1_FIELD],
+    address_city: formFields[HOME_ADDRESS_CITY_FIELD],
+    address_postcode: ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString(),
+    dob_day: parseInt(formFields[DOB_DAY_FIELD], 10),
+    dob_month: parseInt(formFields[DOB_MONTH_FIELD], 10),
+    dob_year: parseInt(formFields[DOB_YEAR_FIELD], 10)
+  }
+  if (formFields[HOME_ADDRESS_LINE2_FIELD]) {
+    stripePerson.address_line2 = formFields[HOME_ADDRESS_LINE2_FIELD]
+  }
+  return stripePerson
 }
 
 const validate = (formFields, fieldName, fieldValidator, maxLength) => {
@@ -132,8 +163,8 @@ const validateDoB = (formFields) => {
 
 const formatDateOfBirth = (day, month, year) => {
   return moment({
-    day: day,
-    month: month - 1,
-    year: year
+    day: parseInt(day, 10),
+    month: parseInt(month, 10) - 1,
+    year: parseInt(year, 10)
   }).format('D MMMM YYYY')
 }
