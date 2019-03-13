@@ -14,7 +14,7 @@ describe('error_handler middleware', function () {
 
   beforeEach(() => {
     winstonErrorSpy = sinon.spy()
-    errorHandler = proxyquire(path.join(__dirname, '/../../../app/middleware/error_handler'), {
+    errorHandler = proxyquire(path.join(__dirname, '/../../../app/middleware/error_logger'), {
       'winston': {
         error: winstonErrorSpy
       }
