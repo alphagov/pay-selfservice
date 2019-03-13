@@ -101,7 +101,7 @@ module.exports = (req, res) => {
 
   if (!lodash.isEmpty(errors)) {
     pageData['errors'] = errors
-    return response.response(req, res, 'stripe-setup/responsible-person/index', pageData)
+    return response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else if (lodash.get(req.body, 'answers-checked') === 'true') {
     return createPerson(res.locals.stripeAccount.stripeAccountId, buildStripePerson(formFields))
       .then(() => {
