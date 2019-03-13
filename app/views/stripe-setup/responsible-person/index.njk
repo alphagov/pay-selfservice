@@ -16,22 +16,22 @@
       {% if errors['first-name'] %}
         {% set errorList = (errorList.push({
           text: 'First name',
-          href: '#stripe-setup-first-name-input'
+          href: '#first-name'
         }), errorList) %}
       {% endif %}
 
       {% if errors['last-name'] %}
         {% set errorList = (errorList.push({
           text: 'Last name',
-          href: '#stripe-setup-last-name-input'
+          href: '#last-name'
         }), errorList) %}
       {% endif %}
 
       {% if errors['home-address-line-1'] or errors['home-address-line-2'] %}
         {% if errors['home-address-line-1'] %}
-          {% set href = '#stripe-setup-home-address-line-1-input' %}
+          {% set href = '#home-address-line-1' %}
         {% else %}
-          {% set href = '#stripe-setup-home-address-line-2-input' %}
+          {% set href = '#home-address-line-2' %}
         {% endif %}
         {% set errorList = (errorList.push({
           text: 'Home address',
@@ -42,21 +42,21 @@
       {% if errors['home-address-city'] %}
         {% set errorList = (errorList.push({
           text: 'City',
-          href: '#stripe-setup-home-address-city-input'
+          href: '#home-address-city'
         }), errorList) %}
       {% endif %}
 
       {% if errors['home-address-postcode'] %}
         {% set errorList = (errorList.push({
           text: 'Postcode',
-          href: '#stripe-setup-home-address-postcode-input'
+          href: '#home-address-postcode'
         }), errorList) %}
       {% endif %}
 
       {% if errors['dob'] %}
         {% set errorList = (errorList.push({
           text: 'Date of birth',
-          href: '#stripe-setup-dob-input-day'
+          href: '#dob-day'
         }), errorList) %}
       {% endif %}
       {{ govukErrorSummary({
@@ -75,7 +75,7 @@
       <li>the head of finance</li>
       <li>the head of the organisation</li>
     </ul>
-    <form id="stripe-setup-responsible-person-form" method="post" action="/responsible-person">
+    <form method="post" action="/responsible-person">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set firstNameError = false %}
@@ -88,7 +88,7 @@
         label: {
           text: "First name"
         },
-        id: "stripe-setup-first-name-input",
+        id: "first-name",
         name: "first-name",
         value: firstName,
         type: "text",
@@ -106,7 +106,7 @@
         label: {
           text: "Last name"
         },
-        id: "stripe-setup-last-name-input",
+        id: "last-name",
         name: "last-name",
         value: lastName,
         type: "text",
@@ -124,7 +124,7 @@
         label: {
           html: 'Home address <span class="govuk-visually-hidden">line 1 of 2</span>'
         },
-        id: "stripe-setup-home-address-line-1-input",
+        id: "home-address-line-1",
         name: "home-address-line-1",
         value: homeAddressLine1,
         type: "text",
@@ -141,7 +141,7 @@
         label: {
           html: '<span class="govuk-visually-hidden">Home address line 2 of 2</span>'
         },
-        id: "stripe-setup-home-address-line-2-input",
+        id: "home-address-line-2",
         name: "home-address-line-2",
         value: homeAddressLine2,
         type: "text",
@@ -161,7 +161,7 @@
         label: {
           text: "City"
         },
-        id: "stripe-setup-home-address-city-input",
+        id: "home-address-city",
         name: "home-address-city",
         value: homeAddressCity,
         type: "text",
@@ -179,7 +179,7 @@
         label: {
           text: "Postcode"
         },
-        id: "stripe-setup-home-address-postcode-input",
+        id: "home-address-postcode",
         name: "home-address-postcode",
         value: homeAddressPostcode,
         type: "text",
@@ -194,7 +194,7 @@
         } %}
       {% endif %}
       {{ govukDateInput({
-        id: "stripe-setup-dob-input",
+        id: "dob",
         namePrefix: "dob",
         fieldset: {
           legend: {
