@@ -26,7 +26,8 @@ const noCache = require(path.join(__dirname, '/app/utils/no_cache'))
 const customCertificate = require(path.join(__dirname, '/app/utils/custom_certificate'))
 const auth = require(path.join(__dirname, '/app/services/auth_service'))
 const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
-const errorHandler = require(path.join(__dirname, '/app/middleware/error_handler'))
+const errorLogger = require(path.join(__dirname, '/app/middleware/error_logger'))
+const errorHandler = require(path.join(__dirname, '/app/middleware/express_unhandled_error_handler'))
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 
 // Global constants
@@ -136,6 +137,10 @@ function initialiseCookies (app) {
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.cookieMessageCookie()))
 }
 
+function initialiseErrorLogging (app) {
+  app.use(errorLogger)
+}
+
 function initialiseErrorHandling (app) {
   app.use(errorHandler)
 }
@@ -162,9 +167,10 @@ function initialise () {
   initialiseAuth(app)
   initialiseGlobalMiddleware(app)
   initialiseTemplateEngine(app)
-  initialiseErrorHandling(app)
+  initialiseErrorLogging(app)
   initialiseRoutes(app) // This contains the 404 overrider and so should be last
   warnIfAnalyticsNotSet()
+  initialiseErrorHandling(app)
 
   return app
 }
