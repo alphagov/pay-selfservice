@@ -3,7 +3,7 @@
 class StripeAccountSetup {
   constructor (opts) {
     this.bankAccount = opts.bank_account
-    this.organisationDetails = opts.organisation_details
+    this.vatNumberCompanyNumber = opts.vat_number_company_number
     this.responsiblePerson = opts.responsible_person
   }
 }

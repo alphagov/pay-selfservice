@@ -32,8 +32,8 @@ module.exports = {
     return buildUpdateStripeAccountSetupFlagRequest('bank_account', completed)
   },
 
-  buildUpdateOrganisationDetailsFlagRequest (completed) {
-    return buildUpdateStripeAccountSetupFlagRequest('organisation_details', completed)
+  buildUpdateVatNumberCompanyNumberFlagRequest (completed) {
+    return buildUpdateStripeAccountSetupFlagRequest('vat_number_company_number', completed)
   },
 
   buildUpdateResponsiblePersonFlagRequest (completed) {
@@ -43,7 +43,7 @@ module.exports = {
   buildGetStripeAccountSetupResponse (opts = {}) {
     const data = {
       'bank_account': opts.bank_account || false,
-      'organisation_details': opts.organisation_details || false,
+      'vat_number_company_number': opts.vat_number_company_number || false,
       'responsible_person': opts.responsible_person || false
     }
 
