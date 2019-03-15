@@ -63,13 +63,13 @@ describe('connector client - set stripe account setup flag', () => {
     })
   })
 
-  describe('set organisation details flag', () => {
-    const request = stripeAccountSetupFixtures.buildUpdateOrganisationDetailsFlagRequest(true).getPlain()
+  describe('set vat number company number flag', () => {
+    const request = stripeAccountSetupFixtures.buildUpdateVatNumberCompanyNumberFlagRequest(true).getPlain()
 
     before(done => {
       provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
-          .withUponReceiving('a valid patch update stripe account organisation details flag request')
+          .withUponReceiving('a valid patch update stripe account vat number company number flag request')
           .withState(defaultState)
           .withMethod('PATCH')
           .withRequestBody(request)
@@ -84,7 +84,7 @@ describe('connector client - set stripe account setup flag', () => {
     afterEach(() => provider.verify())
 
     it('should update successfully', done => {
-      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'organisation_details')
+      connectorClient.setStripeAccountSetupFlag(existingGatewayAccountId, 'vat_number_company_number')
         .should.be.fulfilled
         .notify(done)
     })
