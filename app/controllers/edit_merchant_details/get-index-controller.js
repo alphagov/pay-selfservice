@@ -6,12 +6,17 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 const formatPath = require('../../utils/replace_params_in_path')
-const {response} = require('../../utils/response')
+const { response } = require('../../utils/response')
 
 module.exports = (req, res) => {
   const externalServiceId = req.service.externalId
   const merchantDetails = lodash.get(req, 'service.merchantDetails', undefined)
-  if (!merchantDetails) {
+  if (!merchantDetails ||
+    !merchantDetails.name ||
+    !merchantDetails.address_line1 ||
+    !merchantDetails.address_city ||
+    !merchantDetails.address_postcode ||
+    !merchantDetails.address_country) {
     return res.redirect(formatPath(paths.merchantDetails.edit, externalServiceId))
   }
 
