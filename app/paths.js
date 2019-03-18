@@ -174,6 +174,7 @@ module.exports = {
     download: '/policy/download/:key'
   },
   stripeSetup: {
-    bankDetails: '/bank-details'
+    bankDetails: '/bank-details',
+    responsiblePerson: '/responsible-person'
   }
 }

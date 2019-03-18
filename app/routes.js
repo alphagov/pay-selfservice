@@ -33,6 +33,7 @@ const cookieMessage = require('./middleware/cookie_message')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
 const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
+const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
 
 // Controllers
 const staticController = require('./controllers/static_controller')
@@ -74,6 +75,7 @@ const requestToGoLiveChooseHowToProcessPaymentsController = require('./controlle
 const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
+const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
 
 // Assignments
 const {
@@ -385,6 +387,27 @@ module.exports.bind = function (app) {
     getStripeAccount,
     stripeSetupBankDetailsController.post
   )
+
+  // Stripe setup: responsible person
+  app.get(stripeSetup.responsiblePerson,
+    xraySegmentCls,
+    permission('stripe-responsible-person:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    getStripeAccount,
+    checkResponsiblePersonNotSubmitted,
+    stripeSetupResponsiblePersonController.get
+  )
+  app.post(stripeSetup.responsiblePerson,
+    xraySegmentCls,
+    permission('stripe-responsible-person:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    getStripeAccount,
+    checkResponsiblePersonNotSubmitted,
+    stripeSetupResponsiblePersonController.post)
 
   app.all('*', (req, res) => {
     res.status(404)

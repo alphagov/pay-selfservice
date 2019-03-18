@@ -162,6 +162,14 @@ const defaultPermissions = [
   {
     name: 'stripe-bank-details:read',
     description: 'View Stripe bank details'
+  },
+  {
+    name: 'stripe-responsible-person:update',
+    description: 'Update Stripe responsible person'
+  },
+  {
+    name: 'stripe-responsible-person:read',
+    description: 'View Stripe responsible person'
   }
 ]
 
