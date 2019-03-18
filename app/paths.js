@@ -167,6 +167,7 @@ module.exports = {
   requestToGoLive: {
     index: '/service/:externalServiceId/request-to-go-live',
     organisationName: '/service/:externalServiceId/request-to-go-live/organisation-name',
+    organisationAddress: '/service/:externalServiceId/request-to-go-live/organisation-address',
     chooseHowToProcessPayments: '/service/:externalServiceId/request-to-go-live/choose-how-to-process-payments',
     agreement: '/service/:externalServiceId/request-to-go-live/agreement'
   },
