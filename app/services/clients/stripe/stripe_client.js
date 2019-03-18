@@ -6,8 +6,8 @@ const ProxyAgent = require('https-proxy-agent')
 
 // Local dependencies
 const StripeBankAccount = require('./stripeBankAccount.model')
+const StripeCompany = require('./stripeCompany.model')
 const StripePerson = require('./stripePerson.model')
-
 
 // Constants
 const STRIPE_HOST = process.env.STRIPE_HOST
@@ -30,6 +30,11 @@ module.exports = {
   updateBankAccount: function (stripeAccountId, body) {
     const bankAccount = new StripeBankAccount(body)
     return stripe.accounts.update(stripeAccountId, bankAccount.basicObject())
+  },
+
+  updateCompany: function (stripeAccountId, body) {
+    const company = new StripeCompany(body)
+    return stripe.accounts.update(stripeAccountId, company.basicObject())
   },
 
   createPerson: function (stripeAccountId, body) {
