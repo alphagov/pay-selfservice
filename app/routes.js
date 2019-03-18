@@ -71,6 +71,7 @@ const feedbackController = require('./controllers/feedback')
 const toggleBillingAddressController = require('./controllers/billing-address/toggle-billing-address-controller')
 const requestToGoLiveIndexController = require('./controllers/request-to-go-live/index')
 const requestToGoLiveOrganisationNameController = require('./controllers/request-to-go-live/organisation-name')
+const requestToGoLiveOrganisationAddressController = require('./controllers/request-to-go-live/organisation-address')
 const requestToGoLiveChooseHowToProcessPaymentsController = require('./controllers/request-to-go-live/choose-how-to-process-payments')
 const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
 const policyDocumentsController = require('./controllers/policy')
@@ -354,6 +355,8 @@ module.exports.bind = function (app) {
   // Request to go live: organisation name
   app.get(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.get)
   app.post(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.post)
+  // Request to go live: organisation name
+  app.get(requestToGoLive.organisationAddress, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.get)
   // Request to go live: choose how to process payments
   app.get(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
   app.post(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
