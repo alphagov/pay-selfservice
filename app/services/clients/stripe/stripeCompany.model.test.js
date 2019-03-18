@@ -24,20 +24,6 @@ describe('StripeCompany', () => {
     })
   })
 
-  it('should successfully create a StripeCompany object with normalised fields', () => {
-    const stripeCompany = new StripeCompany({
-      vat_id: ' 000000000 ',
-      tax_id: ' 000000000 '
-    })
-
-    expect(stripeCompany.basicObject()).to.deep.equal({
-      company: {
-        vat_id: '000000000',
-        tax_id: '000000000'
-      }
-    })
-  })
-
   it('should fail when vat_id is numeric', () => {
     const vatId = 123456789
     const taxId = '000000000'

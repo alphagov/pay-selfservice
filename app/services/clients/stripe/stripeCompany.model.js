@@ -28,12 +28,12 @@ class StripeCompany {
 function build (params) {
   const stripeCompany = {
     company: {
-      vat_id: params.vat_id.replace(/\W/g, '')
+      vat_id: params.vat_id
     }
   }
 
   if (params.tax_id) {
-    stripeCompany.company.tax_id = params.tax_id.replace(/\W/g, '')
+    stripeCompany.company.tax_id = params.tax_id
   }
 
   return stripeCompany
