@@ -7,12 +7,12 @@ const schema = {
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
   address_line1: Joi.string().required(),
-  address_line2:  Joi.string(),
+  address_line2: Joi.string().optional(),
   address_city: Joi.string().required(),
   address_postcode: Joi.string().required(),
   dob_day: Joi.number().integer().strict().min(1).max(31),
   dob_month: Joi.number().integer().strict().min(1).max(12),
-  dob_year: Joi.number().integer().strict().min(1000).max(9999),
+  dob_year: Joi.number().integer().strict().min(1000).max(9999)
 }
 
 class StripePerson {

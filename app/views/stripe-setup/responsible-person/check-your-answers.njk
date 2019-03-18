@@ -12,7 +12,7 @@
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Before you can take payments</span>
     <h1 class="govuk-heading-l">Check details before saving</h1>
 
-    <form action="/responsible-person" method="POST" novalidate>
+    <form id="responsible-person-check-display-form" method="post" action="/responsible-person" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}">
       <input name="answers-need-changing" type="hidden" value="true">
       <input name="first-name" type="hidden" value="{{ firstName }}">
@@ -34,7 +34,7 @@
             {{ firstName }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <button class="govuk-button--as-link" type="submit">
+            <button id="first-name-change-button" class="govuk-button--as-link" type="submit">
               Change
               <span class="govuk-visually-hidden">first name</span>
             </button>
@@ -48,7 +48,7 @@
             {{ lastName }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <button class="govuk-button--as-link" type="submit">
+            <button id="last-name-change-button" class="govuk-button--as-link" type="submit">
               Change
               <span class="govuk-visually-hidden">last name</span>
             </button>
@@ -70,7 +70,7 @@
             {{ homeAddressPostcode }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <button class="govuk-button--as-link" type="submit">
+            <button id="home-address-change-button" class="govuk-button--as-link" type="submit">
               Change
               <span class="govuk-visually-hidden">home address</span>
             </button>
@@ -84,7 +84,7 @@
             {{ friendlyDateOfBirth }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <button class="govuk-button--as-link" type="submit">
+            <button id="date-of-birth-change-button" class="govuk-button--as-link" type="submit">
               Change
               <span class="govuk-visually-hidden">date of birth</span>
             </button>
@@ -93,7 +93,7 @@
       </dl>
     </form>
 
-    <form method="post" action="/responsible-person" novalidate>
+    <form id="responsible-person-check-submit-form" method="post" action="/responsible-person" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}">
       <input name="answers-checked" type="hidden" value="true">
       <input name="first-name" type="hidden" value="{{ firstName }}">

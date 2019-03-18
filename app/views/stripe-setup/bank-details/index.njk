@@ -14,13 +14,13 @@
       {% if errors['account-number'] %}
         {% set errorList = (errorList.push({
           text: 'Account number',
-          href: '#stripe-setup-account-number-input'
+          href: '#account-number-input'
         }), errorList) %}
       {% endif %}
       {% if errors['sort-code'] %}
         {% set errorList = (errorList.push({
           text: 'Sort code',
-          href: '#stripe-setup-sort-code-input'
+          href: '#sort-code-input'
         }), errorList) %}
       {% endif %}
       {{ govukErrorSummary({
@@ -31,7 +31,7 @@
     <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add bank details</h1>
     <p class="govuk-body govuk-!-margin-bottom-6">This is the bank account payments will go into.</p>
 
-    <form id="stripe-setup-bank-details-form" method="post"
+    <form id="bank-details-form" method="post"
           action="/bank-details" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
@@ -46,7 +46,7 @@
         label: {
           text: "Account number"
         },
-        id: "stripe-setup-account-number-input",
+        id: "account-number-input",
         name: "account-number",
         classes: "govuk-input--width-10",
         value: accountNumber,
@@ -69,7 +69,7 @@
         label: {
           text: "Sort code"
         },
-        id: "stripe-setup-sort-code-input",
+        id: "sort-code-input",
         name: "sort-code",
         classes: "govuk-input--width-10",
         value: sortCode,

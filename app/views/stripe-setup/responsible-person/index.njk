@@ -74,7 +74,7 @@
       <li>the head of finance</li>
       <li>the head of the organisation</li>
     </ul>
-    <form method="post" action="/responsible-person">
+    <form id="responsible-person-form" method="post" action="/responsible-person" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set firstNameError = false %}

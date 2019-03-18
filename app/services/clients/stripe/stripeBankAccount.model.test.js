@@ -28,24 +28,6 @@ describe('StripeBankAccount', () => {
     })
   })
 
-  it('should successfully create a StripeBankAccount object with normalised fields', () => {
-    const stripeBankAccount = new StripeBankAccount({
-      bank_account_sort_code: ' 00 - 00 00 ',
-      bank_account_number: ' 000 123 45 '
-    })
-
-    expect(stripeBankAccount.basicObject()).to.deep.equal({
-      external_account: {
-        object: 'bank_account',
-        country: 'GB',
-        currency: 'GBP',
-        account_holder_type: 'company',
-        routing_number: '000000',
-        account_number: '00012345'
-      }
-    })
-  })
-
   it('should fail when sort code is numeric', () => {
     const bankAccountSortCode = 108800
     const bankAccountNumber = '00012345'

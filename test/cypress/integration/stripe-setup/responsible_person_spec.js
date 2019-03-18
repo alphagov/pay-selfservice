@@ -25,7 +25,7 @@ describe('Stripe setup: responsible person page', () => {
   const dobYear = '1971'
   const typedDobYear = '1971 '
   const friendlyDob = '25 February 1971'
-  const longText = 'This text is 300 ...............................................................................' +
+  const longText = 'This text is 300 ................................................................................' +
     '...............................................................................................................' +
     '............................................................................ characters long'
 
@@ -83,7 +83,7 @@ describe('Stripe setup: responsible person page', () => {
     it('should display form', () => {
       cy.get('h1').should('contain', 'Nominate a responsible person')
 
-      cy.get('form[method=post][action="/responsible-person"]').should('exist')
+      cy.get('#responsible-person-form').should('exist')
         .within(() => {
           cy.get('label[for="first-name"]').should('exist')
           cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('exist')
@@ -118,7 +118,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should display check answers page with second address line', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedFirstName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -133,10 +133,7 @@ describe('Stripe setup: responsible person page', () => {
 
       cy.get('h1').should('contain', 'Check details before saving')
 
-      const hiddenFieldIdentifyingSummaryForm = cy.get('form[method=post][action="/responsible-person"] > ' +
-        'input[type=hidden][name="answers-need-changing"][value="true"]')
-
-      hiddenFieldIdentifyingSummaryForm.parent().within(() => {
+      cy.get('#responsible-person-check-display-form').within(() => {
         cy.get('input[type=hidden][name="first-name"]').should('have.attr', 'value', firstName)
         cy.get('input[type=hidden][name="last-name"]').should('have.attr', 'value', lastName)
 
@@ -162,10 +159,7 @@ describe('Stripe setup: responsible person page', () => {
         })
       })
 
-      const hiddenFieldIdentifyingSaveForm = cy.get('form[method=post][action="/responsible-person"] > ' +
-        'input[type=hidden][name="answers-checked"][value="true"]')
-
-      hiddenFieldIdentifyingSaveForm.parent().within(() => {
+      cy.get('#responsible-person-check-submit-form').within(() => {
         cy.get('input[type=hidden][name="first-name"]').should('have.attr', 'value', firstName)
         cy.get('input[type=hidden][name="last-name"]').should('have.attr', 'value', lastName)
 
@@ -183,7 +177,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should display check answers page without second address line', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedFirstName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -197,10 +191,7 @@ describe('Stripe setup: responsible person page', () => {
 
       cy.get('h1').should('contain', 'Check details before saving')
 
-      const hiddenFieldIdentifyingSummaryForm = cy.get('form[method=post][action="/responsible-person"] ' +
-        'input[type=hidden][name="answers-need-changing"][value="true"]')
-
-      hiddenFieldIdentifyingSummaryForm.parent().within(() => {
+      cy.get('#responsible-person-check-display-form').within(() => {
         cy.get('input[type=hidden][name="first-name"]').should('have.attr', 'value', firstName)
         cy.get('input[type=hidden][name="last-name"]').should('have.attr', 'value', lastName)
 
@@ -224,10 +215,7 @@ describe('Stripe setup: responsible person page', () => {
         })
       })
 
-      const hiddenFieldIdentifyingSaveForm = cy.get('form[method=post][action="/responsible-person"] ' +
-        'input[type=hidden][name="answers-checked"][value="true"]')
-
-      hiddenFieldIdentifyingSaveForm.parent().within(() => {
+      cy.get('#responsible-person-check-submit-form').within(() => {
         cy.get('input[type=hidden][name="first-name"]').should('have.attr', 'value', firstName)
         cy.get('input[type=hidden][name="last-name"]').should('have.attr', 'value', lastName)
 
@@ -244,7 +232,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should allow going back to change answers', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedFirstName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -259,12 +247,16 @@ describe('Stripe setup: responsible person page', () => {
 
       cy.get('h1').should('contain', 'Check details before saving')
 
-      cy.get('form[method=post][action="/responsible-person"] >  input[type=hidden][name="answers-need-changing"][value="true"]')
-        .parent().get('button[type=submit]').first().click()
+      cy.get('#first-name-change-button[type=submit]').should('exist')
+      cy.get('#last-name-change-button[type=submit]').should('exist')
+      cy.get('#home-address-change-button[type=submit]').should('exist')
+      cy.get('#date-of-birth-change-button[type=submit]').should('exist')
+
+      cy.get('#first-name-change-button[type=submit]').click()
 
       cy.get('h1').should('contain', 'Nominate a responsible person')
 
-      cy.get('form[method=post][action="/responsible-person"]').should('exist').within(() => {
+      cy.get('#responsible-person-form').should('exist').within(() => {
         cy.get('input#first-name[name="first-name"][autocomplete="given-name"]').should('have.attr', 'value', firstName)
         cy.get('input#last-name[name="last-name"][autocomplete="family-name"]').should('have.attr', 'value', lastName)
 
@@ -285,7 +277,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should show errors when validation fails', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedFirstName)
         // No last name, which is an error
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -306,7 +298,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#home-address-postcode"]').should('contain', 'Postcode')
       })
 
-      cy.get('form[method=post][action="/responsible-person"]').should('exist').within(() => {
+      cy.get('#responsible-person-form').should('exist').within(() => {
         cy.get('.govuk-form-group--error > input#last-name').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('input#last-name[name=last-name][autocomplete=family-name]').should('exist')
@@ -334,7 +326,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should show error for second address line using first address line label', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedLastName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -351,7 +343,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#home-address-line-2"]').should('contain', 'Home address')
       })
 
-      cy.get('form[method=post][action="/responsible-person"]').should('exist').within(() => {
+      cy.get('#responsible-person-form').should('exist').within(() => {
         cy.get('.govuk-form-group--error > input#home-address-line-2').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('input#home-address-line-2').should('have.attr', 'value', longText)
@@ -360,7 +352,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should only show address once in error summary if error in both address lines', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedLastName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(longText)
@@ -378,7 +370,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#home-address-line-2"]').should('not.exist')
       })
 
-      cy.get('form[method=post][action="/responsible-person"]').should('exist').within(() => {
+      cy.get('#responsible-person-form').should('exist').within(() => {
         cy.get('.govuk-form-group--error > input#home-address-line-1').parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('input#home-address-line-1').should('have.attr', 'value', longText)
@@ -391,7 +383,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should error when validation for the date of birth fails', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedLastName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -410,7 +402,7 @@ describe('Stripe setup: responsible person page', () => {
         cy.get('a[href="#dob-year"]').should('not.exist')
       })
 
-      cy.get('form[method=post][action="/responsible-person"]').should('exist').within(() => {
+      cy.get('#responsible-person-form').should('exist').within(() => {
         cy.get('.govuk-form-group--error > fieldset > #dob-error').parent().parent().should('exist').within(() => {
           cy.get('.govuk-error-message').should('exist')
           cy.get('input#dob-day').should('have.attr', 'value', '29')
@@ -455,7 +447,7 @@ describe('Stripe setup: responsible person page', () => {
     })
 
     it('should redirect to dashboard with error message instead of saving details', () => {
-      cy.get('form[method=post][action="/responsible-person"]').within(() => {
+      cy.get('#responsible-person-form').within(() => {
         cy.get('#first-name').type(typedFirstName)
         cy.get('#last-name').type(typedLastName)
         cy.get('#home-address-line-1').type(typedAddressLine1)
@@ -470,8 +462,7 @@ describe('Stripe setup: responsible person page', () => {
 
       cy.get('h1').should('contain', 'Check details before saving')
 
-      cy.get('form[method=post][action="/responsible-person"] > input[type=hidden][name="answers-checked"][value="true"]')
-        .parent().get('button[type=submit]').first().click()
+      cy.get('#responsible-person-check-submit-form > button[type=submit]').click()
 
       cy.get('h1').should('contain', 'Dashboard')
       cy.location().should((location) => {
