@@ -8,7 +8,13 @@ const ukPostcode = require('uk-postcode')
 const {
   isEmpty,
   isFieldGreaterThanMaxLengthChars
-} = require('../../../browsered/field-validation-checks')
+} = require('../../browsered/field-validation-checks')
+const { invalidTelephoneNumber } = require('./telephone-number-validation')
+
+const validReturnObject = {
+  valid: true,
+  message: null
+}
 
 exports.validateOptionalField = function validateOptionalField (value, maxLength) {
   if (!isEmpty(value)) {
@@ -22,10 +28,7 @@ exports.validateOptionalField = function validateOptionalField (value, maxLength
     }
   }
 
-  return {
-    valid: true,
-    message: null
-  }
+  return validReturnObject
 }
 
 exports.validateMandatoryField = function validateMandatoryField (value, maxLength) {
@@ -45,19 +48,41 @@ exports.validateMandatoryField = function validateMandatoryField (value, maxLeng
     }
   }
 
-  return {
-    valid: true,
-    message: null
-  }
+  return validReturnObject
 }
 
-exports.validatePostcode = function validatePostcode (postcode) {
+exports.validatePhoneNumber = function validatePhoneNumber (phoneNumber) {
+  const isEmptyErrorMessage = isEmpty(phoneNumber)
+  if (isEmptyErrorMessage) {
+    return {
+      valid: false,
+      message: isEmptyErrorMessage
+    }
+  }
+
+  const phoneNumberInvalid = invalidTelephoneNumber(phoneNumber)
+  if (phoneNumberInvalid) {
+    return {
+      valid: false,
+      message: 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+    }
+  }
+
+  return validReturnObject
+}
+
+exports.validatePostcode = function validatePostcode (postcode, countryCode) {
   const isEmptyErrorMessage = isEmpty(postcode)
   if (isEmptyErrorMessage) {
     return {
       valid: false,
       message: isEmptyErrorMessage
     }
+  }
+
+  // only do proper validation on UK postcodes
+  if (countryCode && countryCode !== 'GB') {
+    return validReturnObject
   }
 
   if (!/^[A-z0-9 ]+$/.test(postcode)) {
@@ -75,10 +100,7 @@ exports.validatePostcode = function validatePostcode (postcode) {
     }
   }
 
-  return {
-    valid: true,
-    message: null
-  }
+  return validReturnObject
 }
 
 exports.validateDateOfBirth = function validateDateOfBirth (day, month, year) {
@@ -170,8 +192,5 @@ exports.validateDateOfBirth = function validateDateOfBirth (day, month, year) {
     }
   }
 
-  return {
-    valid: true,
-    message: null
-  }
+  return validReturnObject
 }

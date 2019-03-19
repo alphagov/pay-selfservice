@@ -11,7 +11,7 @@ const paths = require('../../../paths')
 const { response, renderErrorView } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
-} = require('./responsible-person-validations')
+} = require('../../../utils/validation/server-side-form-validations')
 const { createPerson } = require('../../../services/clients/stripe/stripe_client')
 const { ConnectorClient } = require('../../../services/clients/connector_client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
