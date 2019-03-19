@@ -116,11 +116,11 @@ describe('Error handler register service', function () {
 
   it('should handle no error code as 303 redirect to index', function (done) {
     telephoneNumber = '0751234567'
-    const error = 'Invalid phone number'
+    const error = new Error('Invalid phone number')
 
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
-        expect(flashStub.calledWith('genericError', error)).to.equal(true)
+        expect(flashStub.calledWith('genericError', error.message)).to.equal(true)
         expect(redirectStub.calledWith(303, paths.selfCreateService.register)).to.equal(true)
       }).should.notify(done)
   })
@@ -139,7 +139,7 @@ describe('Error handler register service', function () {
     controller(error).submitRegistration(req, res).should.be.fulfilled
       .then(() => {
         expect(statusStub.calledWith(errorCode)).to.eq(true)
-        expect(renderStub.calledWith('error', {message: 'Unable to process registration at this time'})).to.equal(true)
+        expect(renderStub.calledWith('error', { message: 'Unable to process registration at this time' })).to.equal(true)
       }).should.notify(done)
   })
 })
