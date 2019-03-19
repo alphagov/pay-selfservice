@@ -59,7 +59,7 @@ describe('Check responsible person not submitted middleware', () => {
 
     setTimeout(() => {
       expect(next.notCalled).to.be.true // eslint-disable-line
-      expect(req.flash.calledWith('genericError', 'You’ve already nominated your responsible person.<br>Contact GOV.UK Pay support if you need to change them')).to.be.true // eslint-disable-line
+      expect(req.flash.calledWith('genericError', 'You’ve already nominated your responsible person.<br>Contact GOV.UK Pay support if you need to change them.')).to.be.true // eslint-disable-line
       expect(res.redirect.calledWith(303, paths.dashboard.index)).to.be.true // eslint-disable-line
       done()
     }, 250)
