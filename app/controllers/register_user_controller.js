@@ -29,7 +29,7 @@ const withValidatedRegistrationCookie = (req, res, next) => {
   return shouldProceedWithRegistration(req.register_invite)
     .then(next)
     .catch(err => {
-      logger.warn(`[requestId=${correlationId}] unable to validate required cookie for registration - ${err.errorCode}`)
+      logger.warn(`[requestId=${correlationId}] unable to validate required cookie for registration - ${err.message}`)
       errorResponse(req, res, messages.missingCookie, 404)
     })
 }
@@ -80,7 +80,7 @@ module.exports = {
     const correlationId = req.correlationId
 
     if (!inviteCode) {
-      handleError(req, res, {errorCode: 404})
+      handleError(req, res, { errorCode: 404 })
       return
     }
 
@@ -111,7 +111,7 @@ module.exports = {
 
     const redirectToDetailEntry = (err) => {
       req.register_invite.telephone_number = telephoneNumber
-      req.flash('genericError', err)
+      req.flash('genericError', err.message)
       res.redirect(303, paths.registerUser.registration)
     }
 
@@ -177,7 +177,7 @@ module.exports = {
     return withValidatedRegistrationCookie(req, res, () => {
       validateOtp(verificationCode)
         .then(verifyOtpAndCreateUser)
-        .catch(err => handleInvalidOtp(err))
+        .catch(err => handleInvalidOtp(err.message))
     })
   },
 
@@ -223,7 +223,7 @@ module.exports = {
         .then(resendOtpAndProceedToVerify)
         .catch(err => {
           logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`)
-          req.flash('genericError', err)
+          req.flash('genericError', err.message)
           req.register_invite.telephone_number = telephoneNumber
           res.redirect(303, paths.registerUser.reVerifyPhone)
         })

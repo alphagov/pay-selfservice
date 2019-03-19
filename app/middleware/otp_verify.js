@@ -7,7 +7,7 @@ const logger = require('winston')
 const paths = require('../paths')
 const errorResponse = require('../utils/response').renderErrorView
 const registrationService = require('../services/service_registration_service')
-const {validateOtp} = require('../utils/registration_validations')
+const { validateOtp } = require('../utils/registration_validations')
 
 // Exports
 module.exports = {
@@ -44,7 +44,7 @@ function verifyOtpForServiceInvite (req, res, next) {
       logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
       switch (err.errorCode) {
         case undefined:
-          handleInvalidOtp(err)
+          handleInvalidOtp(err.message)
           break
         case 401:
           handleInvalidOtp('Invalid verification code')

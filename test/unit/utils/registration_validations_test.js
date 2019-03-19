@@ -25,86 +25,32 @@ describe('registration_validation module', () => {
         .notify(done)
     })
 
-    it('should find the provided details valid for telephone number with spaces', done => {
-      const validPhoneNumber = '0113 496 0000'
-      const validPassword = 'dnvlkHdPlfw8e_+@!'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided details valid for telephone number with dashes', done => {
-      const validPhoneNumber = '0113-496-0000'
-      const validPassword = 'dnvlkHdPlfw8e_+@!'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided details valid for telephone number with mixed format', done => {
-      const validPhoneNumber = '(0113) 496 / 0000'
-      const validPassword = 'dnvlkHdPlfw8e_+@!'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided details valid for telephone number with international mixed format', done => {
-      const validPhoneNumber = '+44 / (113) 496 - 0000'
-      const validPassword = 'dnvlkHdPlfw8e_+@!'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided telephone number invalid', done => {
-      const validPhoneNumber = 'abc'
-      const validPassword = 'dnvlkHdPlfw8e_+@!'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
-        })
-        .should.notify(done)
-    })
-
-    it('should find the provided telephone number missing', done => {
+    it('should find the provided telephone number missing', () => {
       const validPhoneNumber = ''
       const validPassword = 'dnvlkHdPlfw8e_+@!'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
-        })
-        .should.notify(done)
+      expect(validation.validateUserRegistrationInputs(validPhoneNumber, validPassword))
+        .to.be.rejectedWith('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
     })
 
-    it('should invalidate if the provided password null/undefined', done => {
+    it('should invalidate if the provided password null/undefined', () => {
       const validPhoneNumber = '01134960000'
       const password = undefined
-      validation.validateUserRegistrationInputs(validPhoneNumber, password)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Your password must be at least 10 characters.')
-        })
-        .should.notify(done)
+      expect(validation.validateUserRegistrationInputs(validPhoneNumber, password))
+        .to.be.rejectedWith('Your password must be at least 10 characters.')
     })
 
-    it('should invalidate if the provided password a common password', done => {
+    it('should invalidate if the provided password a common password', () => {
       const validPhoneNumber = '01134960000'
       const password = '1234567890'
-      validation.validateUserRegistrationInputs(validPhoneNumber, password)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
-        })
-        .should.notify(done)
+      expect(validation.validateUserRegistrationInputs(validPhoneNumber, password))
+        .to.be.rejectedWith('The password you tried to create contains a common phrase or combination of characters. Choose something that’s harder to guess.')
     })
 
-    it('should invalidate if the provided password invalid if its too short', done => {
+    it('should invalidate if the provided password invalid if its too short', () => {
       const validPhoneNumber = '01134960000'
       const validPassword = '2se45&s'
-      validation.validateUserRegistrationInputs(validPhoneNumber, validPassword)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Your password must be at least 10 characters.')
-        })
-        .should.notify(done)
+      expect(validation.validateUserRegistrationInputs(validPhoneNumber, validPassword))
+        .to.be.rejectedWith('Your password must be at least 10 characters.')
     })
   })
 
@@ -155,56 +101,18 @@ describe('registration_validation module', () => {
         .notify(done)
     })
 
-    it('should find the provided details valid for telephone number with spaces', done => {
-      const validPhoneNumber = '0113 496 0000'
-
-      validation.validateRegistrationTelephoneNumber(validPhoneNumber)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided details valid for telephone number with dashes', done => {
-      const validPhoneNumber = '0113-496-0000'
-
-      validation.validateRegistrationTelephoneNumber(validPhoneNumber)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided details valid for telephone number with mixed format', done => {
-      const validPhoneNumber = '(0113) 496 / 0000'
-
-      validation.validateRegistrationTelephoneNumber(validPhoneNumber)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided details valid for telephone number with international mixed format', done => {
-      const validPhoneNumber = '+44 / (113) 496 - 0000'
-
-      validation.validateRegistrationTelephoneNumber(validPhoneNumber)
-        .should.be.fulfilled
-        .notify(done)
-    })
-
-    it('should find the provided phone number invalid', done => {
+    it('should find the provided phone number invalid', () => {
       const validPhoneNumber = 'abc'
 
-      validation.validateRegistrationTelephoneNumber(validPhoneNumber)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
-        })
-        .should.notify(done)
+      expect(validation.validateRegistrationTelephoneNumber(validPhoneNumber))
+        .to.be.rejectedWith('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
     })
 
-    it('should find the provided phone number missing', done => {
+    it('should find the provided phone number missing', () => {
       const validPhoneNumber = ''
 
-      validation.validateRegistrationTelephoneNumber(validPhoneNumber)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
-        })
-        .should.notify(done)
+      expect(validation.validateRegistrationTelephoneNumber(validPhoneNumber))
+        .to.be.rejectedWith('Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
     })
   })
 
@@ -217,22 +125,18 @@ describe('registration_validation module', () => {
         .notify(done)
     })
 
-    it('should error if otp is undefined', done => {
+    it('should error if otp is undefined', () => {
       const otp = undefined
 
-      validation.validateOtp(otp)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Invalid verification code')
-        }).should.notify(done)
+      expect(validation.validateOtp(otp))
+        .to.be.rejectedWith('Invalid verification code')
     })
 
-    it('should error if otp is not a number', done => {
+    it('should error if otp is not a number', () => {
       const otp = 'werb37'
 
-      validation.validateOtp(otp)
-        .should.be.rejected.then((response) => {
-          expect(response).to.equal('Invalid verification code')
-        }).should.notify(done)
+      expect(validation.validateOtp(otp))
+        .to.be.rejectedWith('Invalid verification code')
     })
   })
 

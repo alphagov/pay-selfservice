@@ -60,13 +60,13 @@ module.exports = {
       }
     }
 
-    const handleInvalidUserInput = (err) => {
+    const handleInvalidUserInput = (message) => {
       _.set(req, 'session.pageData.submitRegistration', {
         email,
         telephoneNumber
       })
       logger.debug(`[requestId=${correlationId}] invalid user input`)
-      req.flash('genericError', err)
+      req.flash('genericError', message)
       res.redirect(303, paths.selfCreateService.register)
     }
 
@@ -74,7 +74,7 @@ module.exports = {
       if (err.errorCode) {
         handleServerError(err)
       } else {
-        handleInvalidUserInput(err)
+        handleInvalidUserInput(err.message)
       }
     }
 
@@ -196,7 +196,7 @@ module.exports = {
       .then(resendOtpAndProceedToVerify)
       .catch(err => {
         logger.debug(`[requestId=${correlationId}] invalid user input - telephone number`)
-        req.flash('genericError', err)
+        req.flash('genericError', err.message)
         req.register_invite.telephone_number = telephoneNumber
         res.redirect(303, paths.selfCreateService.otpResend)
       })
