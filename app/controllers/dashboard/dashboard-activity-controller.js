@@ -17,6 +17,7 @@ const { datetime } = require('@govuk-pay/pay-js-commons').nunjucksFilters
 const {
   NOT_STARTED,
   ENTERED_ORGANISATION_NAME,
+  ENTERED_ORGANISATION_ADDRESS,
   CHOSEN_PSP_STRIPE,
   CHOSEN_PSP_WORLDPAY,
   CHOSEN_PSP_SMARTPAY,
@@ -46,6 +47,7 @@ const links = {
 
 const goLiveStartedStages = [
   ENTERED_ORGANISATION_NAME,
+  ENTERED_ORGANISATION_ADDRESS,
   CHOSEN_PSP_STRIPE,
   CHOSEN_PSP_EPDQ,
   CHOSEN_PSP_SMARTPAY,

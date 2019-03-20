@@ -10,7 +10,8 @@ const validPaths = {
     addressCountry: 'merchant_details/address_country',
     telephoneNumber: 'merchant_details/telephone_number',
     email: 'merchant_details/email'
-  }
+  },
+  currentGoLiveStage: 'current_go_live_stage'
 }
 
 const ops = {
