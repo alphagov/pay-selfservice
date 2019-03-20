@@ -58,21 +58,24 @@ const validationRules = [
   }
 ]
 
-module.exports = (req, res) => {
-  const trimField = (fieldName) => {
-    return lodash.get(req.body, fieldName, '').trim()
-  }
+const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-  const formFields = {}
-  formFields[FIRST_NAME_FIELD] = trimField(FIRST_NAME_FIELD)
-  formFields[LAST_NAME_FIELD] = trimField(LAST_NAME_FIELD)
-  formFields[HOME_ADDRESS_LINE1_FIELD] = trimField(HOME_ADDRESS_LINE1_FIELD)
-  formFields[HOME_ADDRESS_LINE2_FIELD] = trimField(HOME_ADDRESS_LINE2_FIELD)
-  formFields[HOME_ADDRESS_CITY_FIELD] = trimField(HOME_ADDRESS_CITY_FIELD)
-  formFields[HOME_ADDRESS_POSTCODE_FIELD] = trimField(HOME_ADDRESS_POSTCODE_FIELD)
-  formFields[DOB_DAY_FIELD] = trimField(DOB_DAY_FIELD)
-  formFields[DOB_MONTH_FIELD] = trimField(DOB_MONTH_FIELD)
-  formFields[DOB_YEAR_FIELD] = trimField(DOB_YEAR_FIELD)
+module.exports = (req, res) => {
+  const fields = [
+    FIRST_NAME_FIELD,
+    LAST_NAME_FIELD,
+    HOME_ADDRESS_LINE1_FIELD,
+    HOME_ADDRESS_LINE2_FIELD,
+    HOME_ADDRESS_CITY_FIELD,
+    HOME_ADDRESS_POSTCODE_FIELD,
+    DOB_DAY_FIELD,
+    DOB_MONTH_FIELD,
+    DOB_YEAR_FIELD
+  ]
+  const formFields = fields.reduce((form, field) => {
+    form[field] = trimField(field, req.body)
+    return form
+  }, {})
 
   const errors = validationRules.reduce((errors, validationRule) => {
     const errorMessage = validate(formFields, validationRule.field, validationRule.validator, validationRule.maxLength)

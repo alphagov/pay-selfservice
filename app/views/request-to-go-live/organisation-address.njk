@@ -79,28 +79,7 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
     {% set addressLine1Error = false %}
     {% if errors["address-line1"] %}
       {% set addressLine1Error = {
-      text: "Please enter a valid address"
-      } %}
-    {% endif %}
-
-    {% set cityError = false %}
-    {% if errors["address-city"] %}
-      {% set cityError = {
-      text: "Please enter a valid town or city"
-      } %}
-    {% endif %}
-
-    {% set postcodeError = false %}
-    {% if errors["address-postcode"] %}
-      {% set postcodeError = {
-      text: "Please enter a valid postcode"
-      } %}
-    {% endif %}
-
-    {% set countryError = false %}
-    {% if errors["address-country"] %}
-      {% set countryError = {
-      text: "Please enter a valid country"
+        text: errors["address-line1"]
       } %}
     {% endif %}
 
@@ -115,6 +94,13 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
       value: address_line1
     }) }}
 
+    {% set addressLine2Error = false %}
+    {% if errors["address-line2"] %}
+      {% set addressLine2Error = {
+        text: errors["address-line2"]
+      } %}
+    {% endif %}
+
     {{ govukInput({
       label: {
         html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
@@ -122,8 +108,16 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
       classes: "govuk-!-width-two-thirds",
       id: "address-line2",
       name: "address-line2",
+      errorMessage: addressLine2Error,
       value: address_line2
     }) }}
+
+    {% set cityError = false %}
+    {% if errors["address-city"] %}
+      {% set cityError = {
+        text: errors["address-city"]
+      } %}
+    {% endif %}
 
     {{ govukInput({
       label: {
@@ -136,6 +130,13 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
       value: address_city
     }) }}
 
+    {% set countryError = false %}
+    {% if errors["address-country"] %}
+      {% set countryError = {
+        text: errors["address-country"]
+      } %}
+    {% endif %}
+
     {{ govukSelect({
       id: "address-country",
       classes: "govuk-!-width-one-half",
@@ -146,6 +147,13 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
       },
       items: countries
     }) }}
+
+    {% set postcodeError = false %}
+    {% if errors["address-postcode"] %}
+      {% set postcodeError = {
+        text: errors["address-postcode"]
+      } %}
+    {% endif %}
 
     {{ govukInput({
       label: {
@@ -161,7 +169,7 @@ Request a live account - {{ currentService.name }} - GOV.UK Pay
     {% set phoneError = false %}
     {% if errors["telephone-number"] %}
       {% set phoneError = {
-        text: "Please enter a valid phone number"
+        text: errors["telephone-number"]
       } %}
     {% endif %}
 

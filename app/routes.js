@@ -355,8 +355,9 @@ module.exports.bind = function (app) {
   // Request to go live: organisation name
   app.get(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.get)
   app.post(requestToGoLive.organisationName, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationNameController.post)
-  // Request to go live: organisation name
+  // Request to go live: organisation address
   app.get(requestToGoLive.organisationAddress, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.get)
+  app.post(requestToGoLive.organisationAddress, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveOrganisationAddressController.post)
   // Request to go live: choose how to process payments
   app.get(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.get)
   app.post(requestToGoLive.chooseHowToProcessPayments, xraySegmentCls, permission('go-live-stage:update'), getAccount, requestToGoLiveChooseHowToProcessPaymentsController.post)
