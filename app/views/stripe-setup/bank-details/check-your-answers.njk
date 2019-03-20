@@ -11,7 +11,7 @@
 
     <h1 class="govuk-heading-l">Check details before saving</h1>
 
-    <form id="stripe-setup-bank-details-check-display-form" method="post" action="/bank-details" novalidate>
+    <form id="bank-details-check-display-form" method="post" action="/bank-details" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
       <input name="answers-need-changing" type="hidden" value="true"/>
       <input name="account-number" type="hidden" value="{{ accountNumber }}"/>
@@ -22,11 +22,11 @@
           <dt class="govuk-summary-list__key">
             Account number
           </dt>
-          <dd id="stripe-setup-account-number-value" class="govuk-summary-list__value">
+          <dd id="account-number-value" class="govuk-summary-list__value">
             {{ accountNumber }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <button id="stripe-setup-account-number-change-button" class="govuk-button--as-link" type="submit">
+            <button id="account-number-change-button" class="govuk-button--as-link" type="submit">
               Change
               <span class="govuk-visually-hidden">account number</span>
             </button>
@@ -36,11 +36,11 @@
           <dt class="govuk-summary-list__key">
             Sort code
           </dt>
-          <dd id="stripe-setup-sort-code-value" class="govuk-summary-list__value">
+          <dd id="sort-code-value" class="govuk-summary-list__value">
             {{ sortCode }}
           </dd>
           <dd class="govuk-summary-list__actions">
-            <button id="stripe-setup-sort-code-change-button" class="govuk-button--as-link" type="submit">
+            <button id="sort-code-change-button" class="govuk-button--as-link" type="submit">
               Change
               <span class="govuk-visually-hidden">sort code</span>
             </button>
@@ -49,7 +49,7 @@
       </dl>
     </form>
 
-    <form id="stripe-setup-bank-details-check-submit-form" method="post" action="/bank-details" novalidate>
+    <form id="bank-details-check-submit-form" method="post" action="/bank-details" novalidate>
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
       <input name="answers-checked" type="hidden" value="true"/>
       <input name="account-number" type="hidden" value="{{ accountNumber }}"/>
