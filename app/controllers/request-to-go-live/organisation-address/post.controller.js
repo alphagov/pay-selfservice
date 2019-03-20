@@ -44,15 +44,17 @@ const validationRules = [
   }
 ]
 
+const trimField = (key, store) => lodash.get(store, key, '').trim()
+
 const validate = function validate (formFields) {
-  const errors = {}
-  validationRules.forEach(validationRule => {
+  const errors = validationRules.reduce((errors, validationRule) => {
     const value = formFields[validationRule.field]
     const validationResponse = validationRule.validator(value, validationRule.maxLength)
     if (!validationResponse.valid) {
       errors[validationRule.field] = validationResponse.message
     }
-  })
+    return errors
+  }, {})
 
   const postCode = formFields[ADDRESS_POSTCODE_FIELD]
   const country = formFields[ADDRESS_COUNTRY_FIELD]
@@ -64,17 +66,18 @@ const validate = function validate (formFields) {
 }
 
 module.exports = (req, res) => {
-  const trimField = (fieldName) => {
-    return lodash.get(req.body, fieldName, '').trim()
-  }
-
-  const formFields = {}
-  formFields[ADDRESS_LINE1_FIELD] = trimField(ADDRESS_LINE1_FIELD)
-  formFields[ADDRESS_LINE2_FIELD] = trimField(ADDRESS_LINE2_FIELD)
-  formFields[ADDRESS_CITY_FIELD] = trimField(ADDRESS_CITY_FIELD)
-  formFields[ADDRESS_COUNTRY_FIELD] = trimField(ADDRESS_COUNTRY_FIELD)
-  formFields[ADDRESS_POSTCODE_FIELD] = trimField(ADDRESS_POSTCODE_FIELD)
-  formFields[TELEPHONE_NUMBER_FIELD] = trimField(TELEPHONE_NUMBER_FIELD)
+  const fields = [
+    ADDRESS_LINE1_FIELD,
+    ADDRESS_LINE2_FIELD,
+    ADDRESS_CITY_FIELD,
+    ADDRESS_COUNTRY_FIELD,
+    ADDRESS_POSTCODE_FIELD,
+    TELEPHONE_NUMBER_FIELD
+  ]
+  const formFields = fields.reduce((form, field) => {
+    form[field] = trimField(field, req.body)
+    return form
+  }, {})
 
   const errors = validate(formFields)
 
