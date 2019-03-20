@@ -28,8 +28,9 @@ describe('Request to go live: organisation name page', () => {
         external_id: serviceExternalId,
         gateway_account_ids: [gatewayAccountId],
         current_go_live_stage: currentGoLiveStage,
-        path: 'merchant_details/name',
-        value: organisationName
+        merchant_details: {
+          name: organisationName
+        }
       }
     }]
   }

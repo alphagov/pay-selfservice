@@ -39,13 +39,13 @@ describe('edit merchant details controller - post', () => {
     role: {
       name: 'admin',
       description: 'Administrator',
-      permissions: [{name: 'merchant-details:read'}, {name: 'merchant-details:update'}]
+      permissions: [{ name: 'merchant-details:read' }, { name: 'merchant-details:update' }]
     }
   }]
   describe('when the update merchant details call is successful', () => {
     before(done => {
       response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
+      adminusersMock.patch(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
         .reply(200, response)
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
@@ -53,7 +53,7 @@ describe('edit merchant details controller - post', () => {
       })
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: userInSession
         },
@@ -91,7 +91,7 @@ describe('edit merchant details controller - post', () => {
   describe('when the update merchant details call is missing mandatory fields', () => {
     before(done => {
       response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
+      adminusersMock.patch(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
         .reply(200, response)
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
@@ -99,7 +99,7 @@ describe('edit merchant details controller - post', () => {
       })
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: userInSession
         },
@@ -138,16 +138,13 @@ describe('edit merchant details controller - post', () => {
   })
   describe('when the update merchant details call has invalid postcode and the country is GB', () => {
     before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
-        .reply(200, response)
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: userInSession
         },
@@ -187,16 +184,13 @@ describe('edit merchant details controller - post', () => {
   })
   describe('when the update merchant details call has invalid telephone number', () => {
     before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
-        .reply(200, response)
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: userInSession
         },
@@ -236,16 +230,13 @@ describe('edit merchant details controller - post', () => {
   })
   describe('when the update merchant details call has invalid email', () => {
     before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
-        .reply(200, response)
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: userInSession
         },
@@ -285,16 +276,13 @@ describe('edit merchant details controller - post', () => {
   })
   describe('when the update merchant details call has empty email', () => {
     before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
-        .reply(200, response)
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',
         service_roles: serviceRoles
       })
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: userInSession
         },
@@ -334,8 +322,7 @@ describe('edit merchant details controller - post', () => {
   })
   describe('when the update merchant details call is unsuccessful', () => {
     before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.put(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}/merchant-details`)
+      adminusersMock.patch(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
         .reply(400, 'Oops something went wrong')
       const userInSession = mockSession.getUser({
         external_id: 'exsfjpwoi34op23i4',

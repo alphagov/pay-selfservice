@@ -631,7 +631,7 @@ module.exports = {
             headers: {
               'Accept': 'application/json'
             },
-            body: serviceFixtures.validUpdateMerchantNameRequest(opts.value).getPlain()
+            body: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details).getPlain()
           }
         }],
         responses: [{

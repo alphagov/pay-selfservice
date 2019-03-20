@@ -625,33 +625,22 @@ module.exports = function (clientOptions = {}) {
      * @returns {*|Constructor|promise}
      */
   const updateMerchantDetails = (serviceExternalId, merchantDetails) => {
-    return baseClient.put(
-      {
-        baseUrl,
-        url: `${serviceResource}/${serviceExternalId}/merchant-details`,
-        json: true,
-        body: merchantDetails,
-        correlationId: correlationId,
-        description: 'update merchant details',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
+    const patchData = Object.keys(merchantDetails).map(key => {
+      return {
+        op: 'replace',
+        path: `merchant_details/${key}`,
+        value: merchantDetails[key]
       }
-    )
-  }
+    })
 
-  const updateMerchantName = (serviceExternalId, merchantName) => {
     return baseClient.patch(
       {
         baseUrl,
         url: `${serviceResource}/${serviceExternalId}`,
         json: true,
-        body: {
-          op: 'replace',
-          path: 'merchant_details/name',
-          value: merchantName
-        },
+        body: patchData,
         correlationId: correlationId,
-        description: 'update merchant name',
+        description: 'update merchant details',
         transform: responseBodyToServiceTransformer,
         service: SERVICE_NAME,
         baseClientErrorHandler: 'old'
@@ -817,7 +806,6 @@ module.exports = function (clientOptions = {}) {
     createService,
     updateServiceName,
     updateMerchantDetails,
-    updateMerchantName,
     updateCollectBillingAddress,
     addGatewayAccountsToService,
     updateCurrentGoLiveStage,
