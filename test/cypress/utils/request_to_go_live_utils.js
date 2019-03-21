@@ -29,7 +29,7 @@ const buildServiceRoleForGoLiveStageWithMerchantName = (goLiveStage) => {
   }
 }
 
-const buildServiceRoleForMerchantDetailsField = (merchantDetails, goLiveStage) => {
+const buildServiceRoleWithMerchantDetails = (merchantDetails, goLiveStage) => {
   return {
     service: {
       external_id: variables.serviceExternalId,
@@ -40,7 +40,7 @@ const buildServiceRoleForMerchantDetailsField = (merchantDetails, goLiveStage) =
   }
 }
 
-const simpleStub = (serviceRole) => {
+const getUserAndGatewayAccountStubs = (serviceRole) => {
   return [
     {
       name: 'getUserSuccess',
@@ -56,35 +56,7 @@ const simpleStub = (serviceRole) => {
   ]
 }
 
-const stubWithGoLiveStage = (currentGoLiveStage) => {
-  return {
-    name: 'patchUpdateServiceSuccess',
-    opts: {
-      external_id: variables.serviceExternalId,
-      gateway_account_ids: [variables.gatewayAccountId],
-      current_go_live_stage: currentGoLiveStage
-    }
-  }
-}
-
-const stubGoLiveStageError = (currentGoLiveStage) => {
-  return {
-    name: 'patchGoLiveStageFailure',
-    opts: {
-      external_id: variables.serviceExternalId,
-      gateway_account_ids: [variables.gatewayAccountId],
-      current_go_live_stage: currentGoLiveStage,
-      path: 'current_go_live_stage',
-      value: currentGoLiveStage
-    }
-  }
-}
-
-const setupStubs = (serviceRole) => {
-  cy.task('setupStubs', simpleStub(serviceRole))
-}
-
-const stubUserSuccessResponse = (serviceRoleBefore, serviceRoleAfter) =>
+const getUserWithModifiedServiceRoleOnNextRequestStub = (serviceRoleBefore, serviceRoleAfter) =>
   [{
     name: 'getUserSuccessRepeatFirstResponseNTimes',
     opts: [{
@@ -101,14 +73,42 @@ const stubUserSuccessResponse = (serviceRoleBefore, serviceRoleAfter) =>
     opts: { gateway_account_id: variables.gatewayAccountId }
   }]
 
+const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
+  return {
+    name: 'patchUpdateServiceSuccess',
+    opts: {
+      external_id: variables.serviceExternalId,
+      gateway_account_ids: [variables.gatewayAccountId],
+      current_go_live_stage: currentGoLiveStage
+    }
+  }
+}
+
+const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
+  return {
+    name: 'patchGoLiveStageFailure',
+    opts: {
+      external_id: variables.serviceExternalId,
+      gateway_account_ids: [variables.gatewayAccountId],
+      current_go_live_stage: currentGoLiveStage,
+      path: 'current_go_live_stage',
+      value: currentGoLiveStage
+    }
+  }
+}
+
+const setupGetUserAndGatewayAccountStubs = (serviceRole) => {
+  cy.task('setupGetUserAndGatewayAccountStubs', getUserAndGatewayAccountStubs(serviceRole))
+}
+
 module.exports = {
   variables,
-  buildServiceRoleForMerchantDetailsField,
   buildServiceRoleForGoLiveStage,
-  simpleStub,
-  stubWithGoLiveStage,
-  stubGoLiveStageError,
-  setupStubs,
-  stubUserSuccessResponse,
-  buildServiceRoleForGoLiveStageWithMerchantName
+  buildServiceRoleForGoLiveStageWithMerchantName,
+  buildServiceRoleWithMerchantDetails,
+  getUserAndGatewayAccountStubs,
+  getUserWithModifiedServiceRoleOnNextRequestStub,
+  patchUpdateGoLiveStageSuccessStub,
+  patchUpdateGoLiveStageErrorStub,
+  setupGetUserAndGatewayAccountStubs
 }

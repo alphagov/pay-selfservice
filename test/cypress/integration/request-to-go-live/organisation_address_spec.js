@@ -16,7 +16,7 @@ describe('The organisation address page', () => {
   describe('The go-live stage is ENTERED_ORGANISATION_NAME and there are no existing merchant details', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
       cy.visit(pageUrl)
     })
@@ -163,7 +163,7 @@ describe('The organisation address page', () => {
     serviceRole.service.merchant_details = merchantDetails
 
     it('should display form with existing details pre-filled', () => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
       cy.visit(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
 
       cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
@@ -182,7 +182,7 @@ describe('The organisation address page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     serviceRole.role = { permissions: [] }
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -195,7 +195,7 @@ describe('The organisation address page', () => {
   describe('Service has invalid go live stage', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {

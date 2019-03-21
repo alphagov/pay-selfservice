@@ -6,7 +6,7 @@ describe('Login Page', () => {
   const invalidPassword = 'some-invalid-password'
 
   beforeEach(() => {
-    cy.task('setupStubs', [
+    cy.task('setupGetUserAndGatewayAccountStubs', [
       {
         name: 'getUserSuccess',
         opts: {
