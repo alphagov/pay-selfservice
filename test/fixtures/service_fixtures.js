@@ -99,63 +99,6 @@ module.exports = {
       }
     }
   },
-  validUpdateMerchantDetailsRequest: (opts) => {
-    opts = opts || {}
-
-    const data = {
-      name: opts.name || 'updated-merchant-details-name',
-      address_line1: opts.address_line1 || 'updated-merchant-details-addressline1',
-      address_line2: opts.address_line2 || 'updated-merchant-details-addressline2',
-      address_city: opts.address_city || 'updated-merchant-details-city',
-      address_postcode: opts.address_postcode || 'updated-merchant-details-postcode',
-      address_country: opts.address_country || 'updated-merchant-details-country'
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-  badRequestWhenMissingMandatoryMerchantDetails: (opts) => {
-    opts = opts || {}
-
-    const merchantName = opts.name || 'updated-merchant-details-name'
-    const merchantAddressLine2 = opts.address_line2 || 'updated-merchant-details-addressline2'
-    const merchantAddressCity = opts.address_city || 'updated-merchant-details-city'
-    const merchantAddressPostcode = opts.address_postcode || 'updated-merchant-details-postcode'
-    const merchantAddressCountry = opts.address_country || 'updated-merchant-details-country'
-
-    const data = {
-      merchant_details: {
-        name: merchantName,
-        address_line2: merchantAddressLine2,
-        address_city: merchantAddressCity,
-        address_postcode: merchantAddressPostcode,
-        address_country: merchantAddressCountry
-      }
-    }
-
-    return {
-      getPactified: () => {
-        return pactServices.pactify(data)
-      },
-      getPlain: () => {
-        return _.clone(data)
-      }
-    }
-  },
-  badResponseWhenMissingMandatoryMerchantDetails: () => {
-    const responseData = [`Field [address_line1] is required`]
-    const response = {
-      errors: responseData
-    }
-
-    return pactServices.withPactified(response)
-  },
 
   badRequestResponseWhenNonNumericGatewayAccountIds: (nonNumericGatewayAccountIds) => {
     const responseData = _.map(nonNumericGatewayAccountIds, (field) => {
@@ -221,12 +164,14 @@ module.exports = {
     }
   },
 
-  validUpdateMerchantNameRequest: (value) => {
-    const data = {
-      op: 'replace',
-      path: 'merchant_details/name',
-      value: value
-    }
+  validUpdateMerchantDetailsRequest: (merchantDetails) => {
+    const data = Object.keys(merchantDetails).map(key => {
+      return {
+        op: 'replace',
+        path: `merchant_details/${key}`,
+        value: merchantDetails[key]
+      }
+    })
 
     return {
       getPactified: () => {

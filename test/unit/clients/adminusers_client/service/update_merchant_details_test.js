@@ -14,15 +14,17 @@ const serviceFixtures = require('../../../../fixtures/service_fixtures')
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminUsersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
 
-describe('adminusers client - update merchant details', function () {
+const existingServiceExternalId = 'cp5wa'
+
+describe('adminusers client - patch request to update details', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'adminusers',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -32,88 +34,113 @@ describe('adminusers client - update merchant details', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(done => provider.finalize().then(done()))
 
-  describe('when updating merchant details with a valid request', () => {
-    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const serviceName = 'serviceName'
-    const merchantDetails = {
-      name: 'new-name',
-      address_line1: 'new-line1',
-      address_line2: 'new-line2',
-      address_city: 'new-city',
-      address_postcode: 'new-postcode',
-      address_country: 'new-country'
-    }
-    const validUpdateMerchantDetailsRequest = serviceFixtures.validUpdateMerchantDetailsRequest(merchantDetails)
-    const validUpdateMerchantDetailsResponse = serviceFixtures.validServiceResponse({
+  describe('a valid update merchant details patch request to update only the name', () => {
+    const merchantDetails = { name: 'updated-merchant-details-name' }
+    const validUpdateMerchantNameRequest = serviceFixtures.validUpdateMerchantDetailsRequest(merchantDetails)
+    const validUpdateMerchantNameResponse = serviceFixtures.validServiceResponse({
       external_id: existingServiceExternalId,
-      name: serviceName,
       merchant_details: merchantDetails
     })
-    let result
 
-    before((done) => {
+    before(done => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}/merchant-details`)
-          .withUponReceiving('a valid update merchant detail request')
-          .withMethod('PUT')
-          .withRequestBody(validUpdateMerchantDetailsRequest.getPactified())
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
+          .withUponReceiving('a valid update merchant name request')
+          .withState(`a service exists with external id ${existingServiceExternalId}`)
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateMerchantNameRequest.getPlain())
           .withStatusCode(200)
-          .withResponseBody(validUpdateMerchantDetailsResponse.getPactified())
+          .withResponseBody(validUpdateMerchantNameResponse.getPactified())
           .build()
       )
-        .then(() => adminusersClient.updateMerchantDetails(existingServiceExternalId, validUpdateMerchantDetailsRequest.getPlain()))
-        .then(res => {
-          result = res
-          done()
-        })
+        .then(() => done())
         .catch(done)
     })
 
     afterEach(() => provider.verify())
 
-    it('should succeed', function () {
-      expect(result.external_id).to.equal(existingServiceExternalId)
-      expect(result.name).to.equal(serviceName)
-      expect(result.merchant_details.name).to.equal(validUpdateMerchantDetailsRequest.getPlain().name)
-      expect(result.merchant_details.address_line1).to.equal(validUpdateMerchantDetailsRequest.getPlain().address_line1)
-      expect(result.merchant_details.address_line2).to.equal(validUpdateMerchantDetailsRequest.getPlain().address_line2)
-      expect(result.merchant_details.address_city).to.equal(validUpdateMerchantDetailsRequest.getPlain().address_city)
-      expect(result.merchant_details.address_country).to.equal(validUpdateMerchantDetailsRequest.getPlain().address_country)
-      expect(result.merchant_details.address_postcode).to.equal(validUpdateMerchantDetailsRequest.getPlain().address_postcode)
+    it('should update a merchant name successfully', (done) => {
+      adminUsersClient.updateMerchantDetails(existingServiceExternalId, merchantDetails)
+        .should.be.fulfilled
+        .then(service => {
+          expect(service.externalId).to.equal(existingServiceExternalId)
+          expect(service.merchantDetails.name).to.equal(merchantDetails.name)
+        }).should.notify(done)
     })
   })
 
-  describe('when updating merchant details with an invalid request', () => {
-    const existingServiceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const invalidUpdateMerchantDetailsRequest = serviceFixtures.badRequestWhenMissingMandatoryMerchantDetails()
-    const invalidUpdateMerchantDetailsResponse = serviceFixtures.badResponseWhenMissingMandatoryMerchantDetails()
-    let result
+  describe('a valid update merchant details patch request to update all fields', () => {
+    const merchantDetails = {
+      name: 'new-name',
+      address_line1: 'new-line1',
+      address_line2: 'new-line2',
+      address_city: 'new-city',
+      address_postcode: 'E1 8QS',
+      address_country: 'GB',
+      telephone_number: '07700 900 982',
+      email: 'foo@example.com'
+    }
+    const validUpdateMerchantDetailsRequest = serviceFixtures.validUpdateMerchantDetailsRequest(merchantDetails)
+    const validUpdateMerchantDetailsResponse = serviceFixtures.validServiceResponse({
+      external_id: existingServiceExternalId,
+      merchant_details: merchantDetails
+    })
 
-    before((done) => {
+    before(done => {
       provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}/merchant-details`)
-          .withUponReceiving('an invalid update merchant detail request')
-          .withMethod('PUT')
-          .withRequestBody(invalidUpdateMerchantDetailsRequest.getPactified())
-          .withStatusCode(400)
-          .withResponseBody(invalidUpdateMerchantDetailsResponse.getPactified())
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
+          .withUponReceiving('a valid update merchant details request to update all fields')
+          .withState(`a service exists with external id ${existingServiceExternalId}`)
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateMerchantDetailsRequest.getPlain())
+          .withStatusCode(200)
+          .withResponseBody(validUpdateMerchantDetailsResponse.getPactified())
           .build()
       )
-        .then(() => adminusersClient.updateMerchantDetails(existingServiceExternalId, invalidUpdateMerchantDetailsRequest.getPlain()))
-        .then(() => done(new Error('Promise resolved unexpectedly')))
-        .catch(err => {
-          result = err
-          done()
-        })
+        .then(() => done())
+        .catch(done)
     })
 
     afterEach(() => provider.verify())
 
-    it('should be rejected', function () {
-      expect(result.errorCode).to.equal(400)
-      expect(result.message).to.deep.equal(invalidUpdateMerchantDetailsResponse.getPlain())
+    it('should update a merchant details successfully', (done) => {
+      adminUsersClient.updateMerchantDetails(existingServiceExternalId, merchantDetails)
+        .should.be.fulfilled
+        .then(service => {
+          expect(service.externalId).to.equal(existingServiceExternalId)
+          expect(service.merchantDetails).to.deep.equal(merchantDetails)
+        }).should.notify(done)
+    })
+  })
+
+  describe('an invalid update merchant details patch request', () => {
+    const merchantDetails = { 'non-existent-path': 'foo' }
+    const invalidRequest = serviceFixtures.validUpdateMerchantDetailsRequest(merchantDetails)
+
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
+          .withUponReceiving('an invalid update merchant details request')
+          .withState(`a service exists with external id ${existingServiceExternalId}`)
+          .withMethod('PATCH')
+          .withRequestBody(invalidRequest.getPlain())
+          .withStatusCode(400)
+          .build()
+      )
+        .then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should return a 400 response', (done) => {
+      adminUsersClient.updateMerchantDetails(existingServiceExternalId, merchantDetails)
+        .should.be.rejected
+        .then(response => {
+          expect(response.errorCode).to.equal(400)
+        }).should.notify(done)
     })
   })
 })

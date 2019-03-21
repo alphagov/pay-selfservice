@@ -4,7 +4,7 @@ const ukPostcode = require('uk-postcode')
 const responses = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service_service')
-const {isPhoneNumber, isValidEmail} = require('../../browsered/field-validation-checks')
+const { isPhoneNumber, isValidEmail } = require('../../browsered/field-validation-checks')
 const formattedPathFor = require('../../utils/replace_params_in_path')
 
 const MERCHANT_NAME = 'merchant-name'
@@ -16,21 +16,39 @@ const ADDRESS_POSTCODE = 'address-postcode'
 const ADDRESS_COUNTRY = 'address-country'
 const MERCHANT_EMAIL = 'merchant-email'
 
+const trimField = (key, store) => lodash.get(store, key, '').trim()
+
 module.exports = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const externalServiceId = req.service.externalId
   const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
+
+  const fields = [
+    MERCHANT_NAME,
+    TELEPHONE_NUMBER,
+    ADDRESS_LINE1,
+    ADDRESS_LINE2,
+    ADDRESS_CITY,
+    ADDRESS_POSTCODE,
+    ADDRESS_COUNTRY,
+    MERCHANT_EMAIL
+  ]
+  const formFields = fields.reduce((form, field) => {
+    form[field] = trimField(field, req.body)
+    return form
+  }, {})
+
   const reqMerchantDetails = {
-    name: req.body[MERCHANT_NAME],
-    telephone_number: req.body[TELEPHONE_NUMBER] ? req.body[TELEPHONE_NUMBER].replace(/\s/g, '') : req.body[TELEPHONE_NUMBER],
-    email: req.body[MERCHANT_EMAIL],
-    address_line1: req.body[ADDRESS_LINE1],
-    address_line2: req.body[ADDRESS_LINE2],
-    address_city: req.body[ADDRESS_CITY],
-    address_postcode: req.body[ADDRESS_POSTCODE],
-    address_country: req.body[ADDRESS_COUNTRY]
+    name: formFields[MERCHANT_NAME],
+    telephone_number: formFields[TELEPHONE_NUMBER].replace(/\s/g, ''),
+    email: formFields[MERCHANT_EMAIL],
+    address_line1: formFields[ADDRESS_LINE1],
+    address_line2: formFields[ADDRESS_LINE2],
+    address_city: formFields[ADDRESS_CITY],
+    address_postcode: formFields[ADDRESS_POSTCODE],
+    address_country: formFields[ADDRESS_COUNTRY]
   }
-  const errors = isValidForm(req, hasDirectDebitGatewayAccount)
+  const errors = isValidForm(formFields, hasDirectDebitGatewayAccount)
   if (lodash.isEmpty(errors)) {
     return serviceService.updateMerchantDetails(externalServiceId, reqMerchantDetails, correlationId)
       .then(() => {
@@ -52,10 +70,10 @@ module.exports = (req, res) => {
   }
 }
 
-function validateNotEmpty (req, fieldNames) {
+function validateNotEmpty (formFields, fieldNames) {
   let errors = {}
   fieldNames.forEach(fieldName => {
-    let field = req.body[fieldName]
+    let field = formFields[fieldName]
     if (!field || typeof field !== 'string') {
       errors[fieldName] = true
     }
@@ -67,23 +85,23 @@ function isValidPostcode (postcode, countryCode) {
   return !(countryCode === 'GB' && !ukPostcode.fromString(postcode).isComplete())
 }
 
-function isValidForm (req, isDirectDebitForm) {
+function isValidForm (formFields, isDirectDebitForm) {
   const mandatoryFields = [MERCHANT_NAME, ADDRESS_LINE1, ADDRESS_CITY, ADDRESS_POSTCODE, ADDRESS_COUNTRY]
   if (isDirectDebitForm) {
     mandatoryFields.push(TELEPHONE_NUMBER)
     mandatoryFields.push(MERCHANT_EMAIL)
   }
 
-  const errors = validateNotEmpty(req, mandatoryFields)
+  const errors = validateNotEmpty(formFields, mandatoryFields)
 
-  if (isDirectDebitForm && req.body[TELEPHONE_NUMBER] && (isPhoneNumber(req.body[TELEPHONE_NUMBER]) !== false)) {
+  if (isDirectDebitForm && formFields[TELEPHONE_NUMBER] && (isPhoneNumber(formFields[TELEPHONE_NUMBER]) !== false)) {
     errors[TELEPHONE_NUMBER] = true
   }
-  if (isDirectDebitForm && req.body[MERCHANT_EMAIL] && (isValidEmail(req.body[MERCHANT_EMAIL]) !== false)) {
+  if (isDirectDebitForm && formFields[MERCHANT_EMAIL] && (isValidEmail(formFields[MERCHANT_EMAIL]) !== false)) {
     errors[MERCHANT_EMAIL] = true
   }
 
-  if (!isValidPostcode(req.body[ADDRESS_POSTCODE], req.body[ADDRESS_COUNTRY])) {
+  if (!isValidPostcode(formFields[ADDRESS_POSTCODE], formFields[ADDRESS_COUNTRY])) {
     errors[ADDRESS_POSTCODE] = true
   }
 

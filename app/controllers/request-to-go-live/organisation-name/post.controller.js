@@ -8,7 +8,7 @@ const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const { requestToGoLive } = require('../../../paths')
 const { validateOrganisationName } = require('../../../utils/organisation_name_validation')
-const { updateCurrentGoLiveStage, updateMerchantName } = require('../../../services/service_service')
+const { updateCurrentGoLiveStage, updateMerchantDetails } = require('../../../services/service_service')
 const { renderErrorView } = require('../../../utils/response')
 // Constants
 const ORGANISATION_NAME_FIELD = 'organisation-name'
@@ -17,7 +17,8 @@ module.exports = (req, res) => {
   const organisationName = lodash.get(req.body, ORGANISATION_NAME_FIELD)
   const errors = validateOrganisationName(organisationName, ORGANISATION_NAME_FIELD, true)
   if (lodash.isEmpty(errors)) {
-    return updateMerchantName(req.service.externalId, organisationName, req.correlationId)
+    const merchantDetails = { name: organisationName }
+    return updateMerchantDetails(req.service.externalId, merchantDetails, req.correlationId)
       .then(service => {
         return updateCurrentGoLiveStage(service.externalId, goLiveStage.ENTERED_ORGANISATION_NAME, req.correlationId)
       })

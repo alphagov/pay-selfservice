@@ -17,7 +17,6 @@ module.exports = {
   getGatewayAccounts,
   updateServiceName,
   updateMerchantDetails,
-  updateMerchantName,
   createService,
   toggleCollectBillingAddress,
   updateCurrentGoLiveStage,
@@ -96,38 +95,16 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
 }
 
 /**
- * Update merchant details
+ * Update the merchant details
  *
  * @param serviceExternalId
  * @param merchantDetails
  * @param correlationId
  * @returns {Promise<Service>} the updated service
  */
+
 function updateMerchantDetails (serviceExternalId, merchantDetails, correlationId) {
-  return new Promise(function (resolve, reject) {
-    if (!serviceExternalId) return reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-    if (!merchantDetails) return reject(new Error(`argument: 'merchantDetails' cannot be undefined`))
-    getAdminUsersClient({ correlationId }).updateMerchantDetails(serviceExternalId, merchantDetails)
-      .then(result => {
-        return resolve(new Service(result))
-      })
-      .catch(function (err) {
-        return reject(err)
-      })
-  })
-}
-
-/**
- * Update the merchant name
- *
- * @param serviceExternalId
- * @param merchantName
- * @param correlationId
- * @returns {Promise<Service>} the updated service
- */
-
-function updateMerchantName (serviceExternalId, merchantName, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateMerchantName(serviceExternalId, merchantName)
+  return getAdminUsersClient({ correlationId }).updateMerchantDetails(serviceExternalId, merchantDetails)
 }
 
 /**
