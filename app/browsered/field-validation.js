@@ -98,6 +98,9 @@ function validateField (form, field) {
       case 'sortCode':
         result = checks.isNotSortCode(field.value)
         break
+      case 'vatNumber':
+        result = checks.isNotVatNumber(field.value)
+        break
       default:
         result = checks.isEmpty(field.value)
         break
@@ -137,7 +140,7 @@ function populateErrorSummary (form) {
   const erroringFieldLabelsAndIds = erroringFieldLabels.map(field => {
     const label = getLabel(field).innerHTML.split('<')[0].trim()
     const id = field.getAttribute('for')
-    return {label, id}
+    return { label, id }
   })
 
   const erroringFieldLabelsAndIdsDuplicateLabelsRemoved = erroringFieldLabelsAndIds.filter((field, index, fields) => {

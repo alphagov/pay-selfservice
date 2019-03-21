@@ -1,0 +1,63 @@
+{% extends "../../layout.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block pageTitle %}
+  Add your organisation’s VAT number - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+
+  {% if errors | length %}
+    {% set errorList = [] %}
+    {% if errors['vat-number'] %}
+      {% set errorList = (errorList.push({
+        text: 'VAT number',
+        href: '#stripe-setup-vat-number-input'
+      }), errorList) %}
+    {% endif %}
+    {{ govukErrorSummary({
+      titleText: 'There was a problem with the details you gave for:',
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add your organisation’s VAT number</h1>
+
+    <form id="stripe-setup-vat-number-form" method="post" action="/vat-number-company-number" data-validate="true">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {% set vatNumberError = false %}
+      {% if errors['vat-number'] %}
+        {% set vatNumberError = {
+          text: errors['vat-number']
+        } %}
+      {% endif %}
+
+      {{
+        govukInput({
+          name: "vat-number",
+          id: "stripe-setup-vat-number-input",
+          label: {
+            text: "VAT number"
+          },
+          hint: {
+            text: "For example, 'GBGD001'"
+          },
+          value: vatNumber,
+          classes: "govuk-input--width-30",
+          type: "text",
+          errorMessage: vatNumberError,
+          attributes: {
+            "data-validate": "required isFieldGreaterThanMaxLengthChars vatNumber",
+            "data-validate-max-length": "14",
+            "autocomplete": "off"
+          }
+        })
+      }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+{% endblock %}

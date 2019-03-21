@@ -176,6 +176,7 @@ module.exports = {
   },
   stripeSetup: {
     bankDetails: '/bank-details',
-    responsiblePerson: '/responsible-person'
+    responsiblePerson: '/responsible-person',
+    vatNumberCompanyNumber: '/vat-number-company-number'
   }
 }

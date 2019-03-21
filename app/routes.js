@@ -77,6 +77,7 @@ const requestToGoLiveAgreementController = require('./controllers/request-to-go-
 const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
 const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
+const stripeSetupVatNumberCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number')
 
 // Assignments
 const {
@@ -412,6 +413,23 @@ module.exports.bind = function (app) {
     getStripeAccount,
     checkResponsiblePersonNotSubmitted,
     stripeSetupResponsiblePersonController.post)
+
+  // Stripe setup: organisation VAT number
+  app.get(stripeSetup.vatNumberCompanyNumber,
+    xraySegmentCls,
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    stripeSetupVatNumberCompanyNumberController.get
+  )
+
+  app.post(stripeSetup.vatNumberCompanyNumber,
+    xraySegmentCls,
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    stripeSetupVatNumberCompanyNumberController.post
+  )
 
   app.all('*', (req, res) => {
     res.status(404)
