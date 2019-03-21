@@ -13,17 +13,6 @@ const DirectDebitGatewayAccount = require('../models/DirectDebitGatewayAccount.c
 const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
-module.exports = {
-  getGatewayAccounts,
-  updateServiceName,
-  updateMerchantDetails,
-  createService,
-  toggleCollectBillingAddress,
-  updateCurrentGoLiveStage,
-  addStripeAgreementIpAddress,
-  addGovUkAgreementEmailAddress
-}
-
 /**
  * @method getServicesForUser
  * @param {string[]} gatewayAccountIds - The ids of interested gateway accounts.
@@ -95,16 +84,15 @@ function updateServiceName (serviceExternalId, serviceName, serviceNameCy, corre
 }
 
 /**
- * Update the merchant details
+ * Update the service
  *
  * @param serviceExternalId
  * @param merchantDetails
  * @param correlationId
  * @returns {Promise<Service>} the updated service
  */
-
-function updateMerchantDetails (serviceExternalId, merchantDetails, correlationId) {
-  return getAdminUsersClient({ correlationId }).updateMerchantDetails(serviceExternalId, merchantDetails)
+function updateService (serviceExternalId, serviceUpdateRequest, correlationId) {
+  return getAdminUsersClient({ correlationId }).updateService(serviceExternalId, serviceUpdateRequest)
 }
 
 /**
@@ -169,4 +157,15 @@ function addStripeAgreementIpAddress (serviceExternalId, ipAddress, correlationI
  */
 function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId, correlationId) {
   return getAdminUsersClient({ correlationId }).addGovUkAgreementEmailAddress(serviceExternalId, userExternalId)
+}
+
+module.exports = {
+  getGatewayAccounts,
+  updateService,
+  updateServiceName,
+  createService,
+  toggleCollectBillingAddress,
+  updateCurrentGoLiveStage,
+  addStripeAgreementIpAddress,
+  addGovUkAgreementEmailAddress
 }
