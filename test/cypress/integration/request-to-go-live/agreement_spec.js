@@ -33,7 +33,7 @@ describe('Request to go live: agreement', () => {
       serviceRole.role = {
         permissions: []
       }
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -46,7 +46,7 @@ describe('Request to go live: agreement', () => {
 
   describe('REQUEST_TO_GO_LIVE_STAGE_WRONG_STAGE', () => {
     beforeEach(() => {
-      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
     })
 
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
@@ -63,7 +63,7 @@ describe('Request to go live: agreement', () => {
 
   describe('REQUEST_TO_GO_LIVE_STAGE_NOT_STARTED_STAGE', () => {
     beforeEach(() => {
-      utils.setupStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
     })
 
     it('should redirect to "Request to go live: index" page when in not started stage', () => {
@@ -96,11 +96,11 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_STRIPE'),
+      utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_STRIPE'),
       stubGovUkPayAgreement,
       stubStripeAgreement)
     beforeEach(() => {
-      cy.task('setupStubs', stubPayload)
+      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
     })
 
     it('should display "Confirm that you accept our legal terms" page when in CHOSEN_PSP_STRIPE', () => {
@@ -150,10 +150,10 @@ describe('Request to go live: agreement', () => {
     }]
 
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
-      utils.stubWithGoLiveStage('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
+      utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
 
     beforeEach(() => {
-      cy.task('setupStubs', stubPayload)
+      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
     })
 
     it('should display "Confirm that you accept our legal terms" page when in CHOSEN_PSP_WORLDPAY', () => {
@@ -186,11 +186,11 @@ describe('Request to go live: agreement', () => {
   })
 
   describe('adminusers error handlings', () => {
-    const stubPayload = lodash.concat(utils.simpleStub(utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')),
+    const stubPayload = lodash.concat(utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStageWithMerchantName('CHOSEN_PSP_STRIPE')),
       stubGovUkPayAgreement,
-      utils.stubGoLiveStageError('TERMS_AGREED_STRIPE'))
+      utils.patchUpdateGoLiveStageErrorStub('TERMS_AGREED_STRIPE'))
     beforeEach(() => {
-      cy.task('setupStubs', stubPayload)
+      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
     })
     it('should show "An error occurred: There is a problem with the payments platform"', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`

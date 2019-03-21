@@ -39,7 +39,7 @@ describe('Request to go live: organisation name page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     serviceRole.role = { permissions: [ ] }
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show an error when the user does not have enough permissions', () => {
@@ -53,7 +53,7 @@ describe('Request to go live: organisation name page', () => {
   describe('Service has invalid go live stage', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
     it('should redirect to "Request to go live: index" page when in wrong stage', () => {
       const requestToGoLivePageOrganisationNameUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-name`
@@ -71,11 +71,11 @@ describe('Request to go live: organisation name page', () => {
     const serviceRoleBefore = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     const serviceRoleAfter = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     const stubPayload = lodash.concat(
-      utils.stubUserSuccessResponse(serviceRoleBefore, serviceRoleAfter),
+      utils.getUserWithModifiedServiceRoleOnNextRequestStub(serviceRoleBefore, serviceRoleAfter),
       stubPatchRequests('ENTERED_ORGANISATION_NAME', organisationName))
 
     beforeEach(() => {
-      cy.task('setupStubs', stubPayload)
+      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
     })
 
     it('should allow users to type valid organisation name and submit', () => {
@@ -105,16 +105,16 @@ describe('Request to go live: organisation name page', () => {
   })
 
   describe('Service has NOT_STARTED go live stage and organisation name is pre-filled', () => {
-    const serviceRoleBefore = utils.buildServiceRoleForMerchantDetailsField({ name: organisationName }, 'NOT_STARTED')
+    const serviceRoleBefore = utils.buildServiceRoleWithMerchantDetails({ name: organisationName }, 'NOT_STARTED')
     const serviceRoleAfter = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     const changeOrganisationName = 'GDS'
 
     const stubPayload = lodash.concat(
-      utils.stubUserSuccessResponse(serviceRoleBefore, serviceRoleAfter),
+      utils.getUserWithModifiedServiceRoleOnNextRequestStub(serviceRoleBefore, serviceRoleAfter),
       stubPatchRequests('ENTERED_ORGANISATION_NAME', changeOrganisationName))
 
     beforeEach(() => {
-      cy.task('setupStubs', stubPayload)
+      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
     })
 
     it('should show page correctly and allow users to change pre-filled organisation name successfully', () => {
@@ -147,7 +147,7 @@ describe('Request to go live: organisation name page', () => {
   describe('Service has NOT_STARTED go live stage and there are validation errors on the page', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
     beforeEach(() => {
-      utils.setupStubs(serviceRole)
+      utils.setupGetUserAndGatewayAccountStubs(serviceRole)
     })
 
     it('should show errors on the page when no organisation name is submitted', () => {

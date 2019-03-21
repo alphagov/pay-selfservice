@@ -12,7 +12,7 @@ describe('Go live link on dashboard', () => {
   describe('Card gateway account', () => {
     describe('Go live link shown', () => {
       beforeEach(() => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('NOT_STARTED'))
         cy.visit('/')
       })
 
@@ -25,7 +25,7 @@ describe('Go live link on dashboard', () => {
 
     describe('Continue link shown', () => {
       it('should show continue link when go-live stage is ENTERED_ORGANISATION_NAME', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -34,7 +34,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_STRIPE', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -43,7 +43,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_WORLDPAY', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_WORLDPAY'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -52,7 +52,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_SMARTPAY', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_SMARTPAY'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_SMARTPAY'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -61,7 +61,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_EPDQ', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_EPDQ'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -72,7 +72,7 @@ describe('Go live link on dashboard', () => {
 
     describe('Waiting to go live text shown', () => {
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_STRIPE', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -80,7 +80,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_WORLDPAY', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_WORLDPAY'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_WORLDPAY'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -88,7 +88,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_SMARTPAY', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_SMARTPAY'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_SMARTPAY'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -96,7 +96,7 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_EPDQ', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_EPDQ'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('TERMS_AGREED_EPDQ'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('exist')
@@ -106,14 +106,14 @@ describe('Go live link on dashboard', () => {
 
     describe('Go live link not shown', () => {
       it('should not show request to go live link when go-live stage is LIVE', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('LIVE'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('LIVE'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })
 
       it('should not show request to go live link when go-live stage is DENIED', () => {
-        utils.setupStubs(utils.buildServiceRoleForGoLiveStage('DENIED'))
+        utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('DENIED'))
         cy.visit('/')
 
         cy.get('#request-to-go-live-link').should('not.exist')
@@ -124,7 +124,7 @@ describe('Go live link on dashboard', () => {
         serviceRole.role = {
           permissions: []
         }
-        utils.setupStubs(serviceRole)
+        utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })
@@ -135,7 +135,7 @@ describe('Go live link on dashboard', () => {
     it('should display next steps to go live link', () => {
       const directDebitGatewayAccountId = 'DIRECT_DEBIT:101'
 
-      cy.task('setupStubs', [
+      cy.task('setupGetUserAndGatewayAccountStubs', [
         commonStubs.getUserStub(userExternalId, [directDebitGatewayAccountId], serviceExternalId, 'NOT_STARTED'),
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'test', 'sandbox')
       ])

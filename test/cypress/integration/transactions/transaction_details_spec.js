@@ -96,7 +96,7 @@ describe('Transactions details page', () => {
   describe('page content', () => {
     it('should display transaction details correctly when delayed capture is OFF', () => {
       const chargeDetails = defaultChargeDetails()
-      cy.task('setupStubs', getStubs(chargeDetails))
+      cy.task('setupGetUserAndGatewayAccountStubs', getStubs(chargeDetails))
 
       cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
@@ -150,7 +150,7 @@ describe('Transactions details page', () => {
     it('should display transaction details correctly when delayed capture is ON', () => {
       const aDelayedCaptureCharge = defaultChargeDetails()
       aDelayedCaptureCharge.charge.delayed_capture = true
-      cy.task('setupStubs', getStubs(aDelayedCaptureCharge))
+      cy.task('setupGetUserAndGatewayAccountStubs', getStubs(aDelayedCaptureCharge))
 
       cy.visit(`${transactionsUrl}/${aDelayedCaptureCharge.charge.charge_id}`)
 
@@ -207,7 +207,7 @@ describe('Transactions details page', () => {
       const aCorporateCardSurchargeCharge = defaultChargeDetails()
       aCorporateCardSurchargeCharge.charge.corporate_card_surcharge = 250
       aCorporateCardSurchargeCharge.charge.total_amount = 1250
-      cy.task('setupStubs', getStubs(aCorporateCardSurchargeCharge))
+      cy.task('setupGetUserAndGatewayAccountStubs', getStubs(aCorporateCardSurchargeCharge))
 
       cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge.charge_id}`)
 
@@ -238,7 +238,7 @@ describe('Transactions details page', () => {
           }
         }
       ])
-      cy.task('setupStubs', stubs)
+      cy.task('setupGetUserAndGatewayAccountStubs', stubs)
 
       cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
@@ -263,7 +263,7 @@ describe('Transactions details page', () => {
     it('should allow a refund to be re-attempted in the event of a failed refund', () => {
       const aFailedRefundCharge = defaultChargeDetails()
       aFailedRefundCharge.charge.refund_summary_status = 'error'
-      cy.task('setupStubs', getStubs(aFailedRefundCharge))
+      cy.task('setupGetUserAndGatewayAccountStubs', getStubs(aFailedRefundCharge))
 
       cy.visit(`${transactionsUrl}/${aFailedRefundCharge.charge.charge_id}`)
 
@@ -288,7 +288,7 @@ describe('Transactions details page', () => {
       const aCorporateCardSurchargeCharge = defaultChargeDetails()
       aCorporateCardSurchargeCharge.charge.corporate_card_surcharge = 250
       aCorporateCardSurchargeCharge.charge.total_amount = 1250
-      cy.task('setupStubs', getStubs(aCorporateCardSurchargeCharge))
+      cy.task('setupGetUserAndGatewayAccountStubs', getStubs(aCorporateCardSurchargeCharge))
 
       cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeCharge.charge.charge_id}`)
 
@@ -301,7 +301,7 @@ describe('Transactions details page', () => {
 
     it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
       const chargeDetails = defaultChargeDetails()
-      cy.task('setupStubs', getStubs(chargeDetails))
+      cy.task('setupGetUserAndGatewayAccountStubs', getStubs(chargeDetails))
       cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
 
       // Click the refund button
@@ -315,14 +315,14 @@ describe('Transactions details page', () => {
   it('should display Wallet Type where available', () => {
     const chargeDetails = defaultChargeDetails()
     chargeDetails.charge.wallet_type = 'APPLE_PAY'
-    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.task('setupGetUserAndGatewayAccountStubs', getStubs(chargeDetails))
     cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
     cy.get('th').contains('Wallet type').siblings().first().should('contain', 'Apple Pay')
   })
 
   it('should not display Wallet Type when not included in charge', () => {
     const chargeDetails = defaultChargeDetails()
-    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.task('setupGetUserAndGatewayAccountStubs', getStubs(chargeDetails))
     cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
     cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
   })
