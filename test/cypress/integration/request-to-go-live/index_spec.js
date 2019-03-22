@@ -14,7 +14,7 @@ describe('Request to go live: index', () => {
   }
 
   const setupStubs = (serviceRole) => {
-    cy.task('setupGetUserAndGatewayAccountStubs', [
+    cy.task('setupStubs', [
       {
         name: 'getUserSuccess',
         opts: {
