@@ -52,7 +52,7 @@ describe('adminusers client - patch request to update service', function () {
     })
 
     before(() => {
-      provider.addInteraction(
+      return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update single service field request')
           .withState(`a service exists with external id ${existingServiceExternalId}`)
@@ -105,7 +105,7 @@ describe('adminusers client - patch request to update service', function () {
     })
 
     before(() => {
-      provider.addInteraction(
+      return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update service request to update all fields')
           .withState(`a service exists with external id ${existingServiceExternalId}`)
@@ -134,7 +134,7 @@ describe('adminusers client - patch request to update service', function () {
     }]
 
     before(() => {
-      provider.addInteraction(
+      return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('an invalid update service patch request')
           .withState(`a service exists with external id ${existingServiceExternalId}`)
