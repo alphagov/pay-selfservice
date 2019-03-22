@@ -10,7 +10,7 @@ const { requestToGoLive } = require('../../../paths')
 const { validateOrganisationName } = require('../../../utils/organisation_name_validation')
 const { updateCurrentGoLiveStage, updateService } = require('../../../services/service_service')
 const { renderErrorView } = require('../../../utils/response')
-const { validPaths, validOps, ServiceUpdateRequest } = require('../../../services/ServiceUpdateRequest.class')
+const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 
 // Constants
 const ORGANISATION_NAME_FIELD = 'organisation-name'
@@ -20,7 +20,7 @@ module.exports = (req, res) => {
   const errors = validateOrganisationName(organisationName, ORGANISATION_NAME_FIELD, true)
   if (lodash.isEmpty(errors)) {
     const updateServiceRequest = new ServiceUpdateRequest()
-      .addUpdate(validOps.replace, validPaths.merchantDetails.name, organisationName)
+      .replace(validPaths.merchantDetails.name, organisationName)
       .formatPayload()
 
     return updateService(req.service.externalId, updateServiceRequest, req.correlationId)

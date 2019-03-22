@@ -6,7 +6,7 @@ const paths = require('../../paths')
 const serviceService = require('../../services/service_service')
 const { isPhoneNumber, isValidEmail } = require('../../browsered/field-validation-checks')
 const formattedPathFor = require('../../utils/replace_params_in_path')
-const { validPaths, validOps, ServiceUpdateRequest } = require('../../services/ServiceUpdateRequest.class')
+const { validPaths, ServiceUpdateRequest } = require('../../models/ServiceUpdateRequest.class')
 
 const MERCHANT_NAME = 'merchant-name'
 const TELEPHONE_NUMBER = 'telephone-number'
@@ -42,14 +42,14 @@ module.exports = (req, res) => {
   formFields[TELEPHONE_NUMBER] = formFields[TELEPHONE_NUMBER].replace(/\s/g, '')
 
   const serviceUpdateRequest = new ServiceUpdateRequest()
-    .addUpdate(validOps.replace, validPaths.merchantDetails.name, formFields[MERCHANT_NAME])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.telephoneNumber, formFields[TELEPHONE_NUMBER])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.email, formFields[MERCHANT_EMAIL])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.addressLine1, formFields[ADDRESS_LINE1])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.addressLine2, formFields[ADDRESS_LINE2])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.addressCity, formFields[ADDRESS_CITY])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.addressPostcode, formFields[ADDRESS_POSTCODE])
-    .addUpdate(validOps.replace, validPaths.merchantDetails.addressCountry, formFields[ADDRESS_COUNTRY])
+    .replace(validPaths.merchantDetails.name, formFields[MERCHANT_NAME])
+    .replace(validPaths.merchantDetails.telephoneNumber, formFields[TELEPHONE_NUMBER])
+    .replace(validPaths.merchantDetails.email, formFields[MERCHANT_EMAIL])
+    .replace(validPaths.merchantDetails.addressLine1, formFields[ADDRESS_LINE1])
+    .replace(validPaths.merchantDetails.addressLine2, formFields[ADDRESS_LINE2])
+    .replace(validPaths.merchantDetails.addressCity, formFields[ADDRESS_CITY])
+    .replace(validPaths.merchantDetails.addressPostcode, formFields[ADDRESS_POSTCODE])
+    .replace(validPaths.merchantDetails.addressCountry, formFields[ADDRESS_COUNTRY])
     .formatPayload()
 
   const errors = isValidForm(formFields, hasDirectDebitGatewayAccount)

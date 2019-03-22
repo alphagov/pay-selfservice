@@ -10,7 +10,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
 const serviceFixtures = require('../../../../fixtures/service_fixtures')
-const { validPaths, validOps, ServiceUpdateRequest } = require('../../../../../app/services/ServiceUpdateRequest.class')
+const { validPaths, ServiceUpdateRequest } = require('../../../../../app/models/ServiceUpdateRequest.class')
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -40,7 +40,7 @@ describe('adminusers client - patch request to update service', function () {
   describe('a valid update service patch request to update single field', () => {
     const merchantDetailsName = 'updated-name'
     const validUpdateServiceRequest = new ServiceUpdateRequest()
-      .addUpdate(validOps.replace, validPaths.merchantDetails.name, merchantDetailsName)
+      .replace(validPaths.merchantDetails.name, merchantDetailsName)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
@@ -90,14 +90,14 @@ describe('adminusers client - patch request to update service', function () {
     }
 
     const validUpdateServiceRequest = new ServiceUpdateRequest()
-      .addUpdate(validOps.replace, validPaths.merchantDetails.name, merchantDetails.name)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.addressLine1, merchantDetails.address_line1)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.addressLine2, merchantDetails.address_line2)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.addressCity, merchantDetails.address_city)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.addressCountry, merchantDetails.address_country)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.addressPostcode, merchantDetails.address_postcode)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.telephoneNumber, merchantDetails.telephone_number)
-      .addUpdate(validOps.replace, validPaths.merchantDetails.email, merchantDetails.email)
+      .replace(validPaths.merchantDetails.name, merchantDetails.name)
+      .replace(validPaths.merchantDetails.addressLine1, merchantDetails.address_line1)
+      .replace(validPaths.merchantDetails.addressLine2, merchantDetails.address_line2)
+      .replace(validPaths.merchantDetails.addressCity, merchantDetails.address_city)
+      .replace(validPaths.merchantDetails.addressCountry, merchantDetails.address_country)
+      .replace(validPaths.merchantDetails.addressPostcode, merchantDetails.address_postcode)
+      .replace(validPaths.merchantDetails.telephoneNumber, merchantDetails.telephone_number)
+      .replace(validPaths.merchantDetails.email, merchantDetails.email)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({

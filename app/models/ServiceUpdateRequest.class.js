@@ -13,19 +13,40 @@ const validPaths = {
   }
 }
 
-const validOps = {
+const ops = {
   add: 'add',
   replace: 'replace'
 }
 
-class ServiceUpdateRequestClass {
+class ServiceUpdateRequest {
   constructor () {
     this.updates = []
   }
 
-  addUpdate (op, path, value) {
+  /**
+   * Adds an update with op "replace" to the request
+   * @param path
+   * @param value
+   */
+  add (path, value) {
     this.updates.push({
-      op, path, value
+      'op': ops.add,
+      path,
+      value
+    })
+    return this
+  }
+
+  /**
+   * Adds an update with op "add" to the request
+   * @param path
+   * @param value
+   */
+  replace (path, value) {
+    this.updates.push({
+      'op': ops.replace,
+      path,
+      value
     })
     return this
   }
@@ -35,4 +56,4 @@ class ServiceUpdateRequestClass {
   }
 }
 
-module.exports = { validPaths, validOps, ServiceUpdateRequest: ServiceUpdateRequestClass }
+module.exports = { validPaths, ServiceUpdateRequest }
