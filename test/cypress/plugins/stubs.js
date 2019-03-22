@@ -596,7 +596,7 @@ module.exports = {
       }
     ]
   },
-  patchUpdateServiceSuccess: (opts = {}) => {
+  patchUpdateServiceGoLiveStageSuccess: (opts = {}) => {
     return [
       {
         predicates: [{
@@ -621,7 +621,7 @@ module.exports = {
       }
     ]
   },
-  patchSingleMerchantDetailsSuccess: (opts = {}) => {
+  patchUpdateMerchantDetailsSuccess: (opts = {}) => {
     return [
       {
         predicates: [{
@@ -632,6 +632,30 @@ module.exports = {
               'Accept': 'application/json'
             },
             body: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details).getPlain()
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            body: serviceFixtures.validServiceResponse(opts).getPlain(),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        }]
+      }
+    ]
+  },
+  patchUpdateServiceSuccessCatchAll: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PATCH',
+            path: `/v1/api/services/${opts.external_id}`,
+            headers: {
+              'Accept': 'application/json'
+            }
           }
         }],
         responses: [{

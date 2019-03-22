@@ -75,7 +75,7 @@ const getUserWithModifiedServiceRoleOnNextRequestStub = (serviceRoleBefore, serv
 
 const patchUpdateGoLiveStageSuccessStub = (currentGoLiveStage) => {
   return {
-    name: 'patchUpdateServiceSuccess',
+    name: 'patchUpdateServiceGoLiveStageSuccess',
     opts: {
       external_id: variables.serviceExternalId,
       gateway_account_ids: [variables.gatewayAccountId],
@@ -97,6 +97,16 @@ const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
   }
 }
 
+const patchUpdateServiceSuccessCatchAllStub = (currentGoLiveStage) => {
+  return {
+    name: 'patchUpdateServiceSuccessCatchAll',
+    opts: {
+      external_id: variables.serviceExternalId,
+      current_go_live_stage: currentGoLiveStage
+    }
+  }
+}
+
 const setupGetUserAndGatewayAccountStubs = (serviceRole) => {
   cy.task('setupStubs', getUserAndGatewayAccountStubs(serviceRole))
 }
@@ -110,5 +120,6 @@ module.exports = {
   getUserWithModifiedServiceRoleOnNextRequestStub,
   patchUpdateGoLiveStageSuccessStub,
   patchUpdateGoLiveStageErrorStub,
+  patchUpdateServiceSuccessCatchAllStub,
   setupGetUserAndGatewayAccountStubs
 }

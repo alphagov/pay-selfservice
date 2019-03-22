@@ -13,7 +13,7 @@ describe('Request to go live: organisation name page', () => {
 
   const stubPatchRequests = (currentGoLiveStage, organisationName) => {
     return [{
-      name: 'patchUpdateServiceSuccess',
+      name: 'patchUpdateServiceGoLiveStageSuccess',
       opts: {
         external_id: serviceExternalId,
         gateway_account_ids: [gatewayAccountId],
@@ -23,7 +23,7 @@ describe('Request to go live: organisation name page', () => {
       }
     },
     {
-      name: 'patchSingleMerchantDetailsSuccess',
+      name: 'patchUpdateMerchantDetailsSuccess',
       opts: {
         external_id: serviceExternalId,
         gateway_account_ids: [gatewayAccountId],
