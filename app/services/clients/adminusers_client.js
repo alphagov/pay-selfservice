@@ -558,6 +558,27 @@ module.exports = function (clientOptions = {}) {
   }
 
   /**
+   * Update service
+   *
+   * @param serviceExternalId
+   * @param body
+   * @returns {*|Constructor|promise}
+   */
+  const updateService = (serviceExternalId, body) => {
+    return baseClient.patch({
+      baseUrl,
+      url: `${serviceResource}/${serviceExternalId}`,
+      json: true,
+      body,
+      correlationId: correlationId,
+      description: 'update service',
+      transform: responseBodyToServiceTransformer,
+      service: SERVICE_NAME,
+      baseClientErrorHandler: 'old'
+    })
+  }
+
+  /**
      * Update service name
      *
      * @param serviceExternalId
@@ -611,37 +632,6 @@ module.exports = function (clientOptions = {}) {
           },
         correlationId: correlationId,
         description: 'update collect billing address',
-        service: SERVICE_NAME,
-        baseClientErrorHandler: 'old'
-      }
-    )
-  }
-
-  /**
-     * Update merchant details
-     *
-     * @param serviceExternalId
-     * @param merchantDetails
-     * @returns {*|Constructor|promise}
-     */
-  const updateMerchantDetails = (serviceExternalId, merchantDetails) => {
-    const patchData = Object.keys(merchantDetails).map(key => {
-      return {
-        op: 'replace',
-        path: `merchant_details/${key}`,
-        value: merchantDetails[key]
-      }
-    })
-
-    return baseClient.patch(
-      {
-        baseUrl,
-        url: `${serviceResource}/${serviceExternalId}`,
-        json: true,
-        body: patchData,
-        correlationId: correlationId,
-        description: 'update merchant details',
-        transform: responseBodyToServiceTransformer,
         service: SERVICE_NAME,
         baseClientErrorHandler: 'old'
       }
@@ -804,8 +794,8 @@ module.exports = function (clientOptions = {}) {
 
     // Service-related Methods
     createService,
+    updateService,
     updateServiceName,
-    updateMerchantDetails,
     updateCollectBillingAddress,
     addGatewayAccountsToService,
     updateCurrentGoLiveStage,

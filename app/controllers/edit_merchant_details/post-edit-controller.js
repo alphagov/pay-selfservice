@@ -6,6 +6,7 @@ const paths = require('../../paths')
 const serviceService = require('../../services/service_service')
 const { isPhoneNumber, isValidEmail } = require('../../browsered/field-validation-checks')
 const formattedPathFor = require('../../utils/replace_params_in_path')
+const { validPaths, ServiceUpdateRequest } = require('../../models/ServiceUpdateRequest.class')
 
 const MERCHANT_NAME = 'merchant-name'
 const TELEPHONE_NUMBER = 'telephone-number'
@@ -38,19 +39,22 @@ module.exports = (req, res) => {
     return form
   }, {})
 
-  const reqMerchantDetails = {
-    name: formFields[MERCHANT_NAME],
-    telephone_number: formFields[TELEPHONE_NUMBER].replace(/\s/g, ''),
-    email: formFields[MERCHANT_EMAIL],
-    address_line1: formFields[ADDRESS_LINE1],
-    address_line2: formFields[ADDRESS_LINE2],
-    address_city: formFields[ADDRESS_CITY],
-    address_postcode: formFields[ADDRESS_POSTCODE],
-    address_country: formFields[ADDRESS_COUNTRY]
-  }
+  formFields[TELEPHONE_NUMBER] = formFields[TELEPHONE_NUMBER].replace(/\s/g, '')
+
+  const serviceUpdateRequest = new ServiceUpdateRequest()
+    .replace(validPaths.merchantDetails.name, formFields[MERCHANT_NAME])
+    .replace(validPaths.merchantDetails.telephoneNumber, formFields[TELEPHONE_NUMBER])
+    .replace(validPaths.merchantDetails.email, formFields[MERCHANT_EMAIL])
+    .replace(validPaths.merchantDetails.addressLine1, formFields[ADDRESS_LINE1])
+    .replace(validPaths.merchantDetails.addressLine2, formFields[ADDRESS_LINE2])
+    .replace(validPaths.merchantDetails.addressCity, formFields[ADDRESS_CITY])
+    .replace(validPaths.merchantDetails.addressPostcode, formFields[ADDRESS_POSTCODE])
+    .replace(validPaths.merchantDetails.addressCountry, formFields[ADDRESS_COUNTRY])
+    .formatPayload()
+
   const errors = isValidForm(formFields, hasDirectDebitGatewayAccount)
   if (lodash.isEmpty(errors)) {
-    return serviceService.updateMerchantDetails(externalServiceId, reqMerchantDetails, correlationId)
+    return serviceService.updateService(externalServiceId, serviceUpdateRequest, correlationId)
       .then(() => {
         req.flash('generic', `<h2>Organisation details updated</h2>`)
         res.redirect(formattedPathFor(paths.merchantDetails.index, externalServiceId))
@@ -62,7 +66,16 @@ module.exports = (req, res) => {
     lodash.set(req, 'session.pageData.editMerchantDetails', {
       success: false,
       errors: errors,
-      merchant_details: reqMerchantDetails,
+      merchant_details: {
+        name: formFields[MERCHANT_NAME],
+        telephone_number: formFields[TELEPHONE_NUMBER],
+        email: formFields[MERCHANT_EMAIL],
+        address_line1: formFields[ADDRESS_LINE1],
+        address_line2: formFields[ADDRESS_LINE2],
+        address_city: formFields[ADDRESS_CITY],
+        address_postcode: formFields[ADDRESS_POSTCODE],
+        address_country: formFields[ADDRESS_COUNTRY]
+      },
       has_direct_debit_gateway_account: hasDirectDebitGatewayAccount,
       externalServiceId
     })
