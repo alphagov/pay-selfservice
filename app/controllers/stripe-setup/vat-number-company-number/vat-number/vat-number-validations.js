@@ -1,22 +1,14 @@
 'use strict'
 
 // Local dependencies
-const { isEmpty, isNotVatNumber, isFieldGreaterThanMaxLengthChars } = require('../../../browsered/field-validation-checks')
+const { isEmpty, isNotVatNumber } = require('../../../../browsered/field-validation-checks')
 
-exports.validateMandatoryField = function validateMandatoryField (value, maxLength) {
+exports.validateMandatoryField = function validateMandatoryField (value) {
   const isEmptyErrorMessage = isEmpty(value)
   if (isEmptyErrorMessage) {
     return {
       valid: false,
       message: isEmptyErrorMessage
-    }
-  }
-
-  const textTooLongErrorMessage = isFieldGreaterThanMaxLengthChars(value, maxLength)
-  if (textTooLongErrorMessage) {
-    return {
-      valid: false,
-      message: textTooLongErrorMessage
     }
   }
 

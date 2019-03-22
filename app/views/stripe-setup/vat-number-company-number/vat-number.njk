@@ -25,7 +25,7 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
     <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add your organisation’s VAT number</h1>
 
-    <form id="stripe-setup-vat-number-form" method="post" action="/vat-number-company-number" data-validate="true">
+    <form id="stripe-setup-vat-number-form" method="post" action="/vat-number-company-number/vat-number" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set vatNumberError = false %}
@@ -50,8 +50,7 @@
           type: "text",
           errorMessage: vatNumberError,
           attributes: {
-            "data-validate": "required isFieldGreaterThanMaxLengthChars vatNumber",
-            "data-validate-max-length": "14",
+            "data-validate": "required vatNumber",
             "autocomplete": "off"
           }
         })

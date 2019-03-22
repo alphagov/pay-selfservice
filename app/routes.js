@@ -78,6 +78,8 @@ const policyDocumentsController = require('./controllers/policy')
 const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
 const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
 const stripeSetupVatNumberCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number')
+const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number-company-number/vat-number')
+const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
 
 // Assignments
 const {
@@ -414,7 +416,7 @@ module.exports.bind = function (app) {
     checkResponsiblePersonNotSubmitted,
     stripeSetupResponsiblePersonController.post)
 
-  // Stripe setup: organisation VAT number
+  // Stripe setup: VAT number company number
   app.get(stripeSetup.vatNumberCompanyNumber,
     xraySegmentCls,
     getAccount,
@@ -423,12 +425,38 @@ module.exports.bind = function (app) {
     stripeSetupVatNumberCompanyNumberController.get
   )
 
-  app.post(stripeSetup.vatNumberCompanyNumber,
+  // Stripe setup: VAT number
+  app.get(stripeSetup.vatNumber,
     xraySegmentCls,
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
-    stripeSetupVatNumberCompanyNumberController.post
+    stripeSetupVatNumberController.get
+  )
+
+  app.post(stripeSetup.vatNumber,
+    xraySegmentCls,
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    stripeSetupVatNumberController.post
+  )
+
+  // Stripe setup: company number
+  app.get(stripeSetup.companyNumber,
+    xraySegmentCls,
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    stripeSetupCompanyNumberController.get
+  )
+
+  app.post(stripeSetup.companyNumber,
+    xraySegmentCls,
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    stripeSetupCompanyNumberController.post
   )
 
   app.all('*', (req, res) => {

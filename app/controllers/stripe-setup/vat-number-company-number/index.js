@@ -1,6 +1,3 @@
 'use strict'
 
-module.exports = {
-  get: require('./get.controller'),
-  post: require('./post.controller')
-}
+module.exports = { get: require('./get.controller') }
