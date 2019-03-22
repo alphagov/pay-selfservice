@@ -75,7 +75,7 @@ describe('Request to go live: organisation name page', () => {
       stubPatchRequests('ENTERED_ORGANISATION_NAME', organisationName))
 
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
 
     it('should allow users to type valid organisation name and submit', () => {
@@ -114,7 +114,7 @@ describe('Request to go live: organisation name page', () => {
       stubPatchRequests('ENTERED_ORGANISATION_NAME', changeOrganisationName))
 
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
 
     it('should show page correctly and allow users to change pre-filled organisation name successfully', () => {

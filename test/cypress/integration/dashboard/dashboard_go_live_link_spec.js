@@ -135,7 +135,7 @@ describe('Go live link on dashboard', () => {
     it('should display next steps to go live link', () => {
       const directDebitGatewayAccountId = 'DIRECT_DEBIT:101'
 
-      cy.task('setupGetUserAndGatewayAccountStubs', [
+      cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [directDebitGatewayAccountId], serviceExternalId, 'NOT_STARTED'),
         commonStubs.getDirectDebitGatewayAccountStub(directDebitGatewayAccountId, 'test', 'sandbox')
       ])
