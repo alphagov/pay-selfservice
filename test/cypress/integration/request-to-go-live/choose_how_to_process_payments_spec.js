@@ -50,7 +50,7 @@ describe('Request to go live: choose how to process payments', () => {
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('CHOSEN_PSP_STRIPE'))
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
 
     it('should patch adminusers then redirect to agreement when chosen Stripe', () => {
@@ -97,7 +97,7 @@ describe('Request to go live: choose how to process payments', () => {
     const stubPayload = lodash.concat(repeatGetUserSuccessStub,
       utils.patchUpdateGoLiveStageSuccessStub('CHOSEN_PSP_EPDQ'))
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
 
     it('should patch choice and then redirect to agreement when chosen ePDQ', () => {
@@ -190,7 +190,7 @@ describe('Request to go live: choose how to process payments', () => {
     const stubPayload = lodash.concat(utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')),
       utils.patchUpdateGoLiveStageErrorStub('CHOSEN_PSP_STRIPE'))
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
     it('should show "An error occurred: There is a problem with the payments platform"', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`

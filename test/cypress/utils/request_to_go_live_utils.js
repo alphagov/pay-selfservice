@@ -98,7 +98,7 @@ const patchUpdateGoLiveStageErrorStub = (currentGoLiveStage) => {
 }
 
 const setupGetUserAndGatewayAccountStubs = (serviceRole) => {
-  cy.task('setupGetUserAndGatewayAccountStubs', getUserAndGatewayAccountStubs(serviceRole))
+  cy.task('setupStubs', getUserAndGatewayAccountStubs(serviceRole))
 }
 
 module.exports = {

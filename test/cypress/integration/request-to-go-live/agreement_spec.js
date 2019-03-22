@@ -100,7 +100,7 @@ describe('Request to go live: agreement', () => {
       stubGovUkPayAgreement,
       stubStripeAgreement)
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
 
     it('should display "Confirm that you accept our legal terms" page when in CHOSEN_PSP_STRIPE', () => {
@@ -153,7 +153,7 @@ describe('Request to go live: agreement', () => {
       utils.patchUpdateGoLiveStageSuccessStub('TERMS_AGREED_WORLDPAY'), stubGovUkPayAgreement)
 
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
 
     it('should display "Confirm that you accept our legal terms" page when in CHOSEN_PSP_WORLDPAY', () => {
@@ -190,7 +190,7 @@ describe('Request to go live: agreement', () => {
       stubGovUkPayAgreement,
       utils.patchUpdateGoLiveStageErrorStub('TERMS_AGREED_STRIPE'))
     beforeEach(() => {
-      cy.task('setupGetUserAndGatewayAccountStubs', stubPayload)
+      cy.task('setupStubs', stubPayload)
     })
     it('should show "An error occurred: There is a problem with the payments platform"', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`

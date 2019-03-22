@@ -43,7 +43,7 @@ module.exports = (on, config) => {
      * the name of a function defined in plugins/stubs.js, and the opts is an object passed to this function providing
      * the configuration options for building the stub predicates and responses.
      */
-    setupGetUserAndGatewayAccountStubs (stubSpecs) {
+    setupStubs (stubSpecs) {
       const stubsArray = lodash.flatMap(stubSpecs, spec => stubs[spec.name](spec.opts))
       return request({
         method: 'POST',

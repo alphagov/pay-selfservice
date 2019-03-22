@@ -7,7 +7,7 @@ describe('Settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
 
-    cy.task('setupGetUserAndGatewayAccountStubs', [
+    cy.task('setupStubs', [
       {
         name: 'getUserSuccess',
         opts: {
