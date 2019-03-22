@@ -53,26 +53,7 @@ const validationRules = [
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-const validate = function validate (formFields) {
-  const errors = validationRules.reduce((errors, validationRule) => {
-    const value = formFields[validationRule.field]
-    const validationResponse = validationRule.validator(value, validationRule.maxLength)
-    if (!validationResponse.valid) {
-      errors[validationRule.field] = validationResponse.message
-    }
-    return errors
-  }, {})
-
-  const postCode = formFields[clientFormIds.addressPostcode]
-  const country = formFields[clientFormIds.addressCountry]
-  const postCodeValidResponse = validatePostcode(postCode, country)
-  if (!postCodeValidResponse.valid) {
-    errors[clientFormIds.addressPostcode] = postCodeValidResponse.message
-  }
-  return errors
-}
-
-const submit = async function submit (req, res) {
+const normaliseForm = (formBody) => {
   const fields = [
     clientFormIds.addressLine1,
     clientFormIds.addressLine2,
@@ -81,50 +62,76 @@ const submit = async function submit (req, res) {
     clientFormIds.addressPostcode,
     clientFormIds.telephoneNumber
   ]
-  const formFields = fields.reduce((form, field) => {
-    form[field] = trimField(field, req.body)
+  return fields.reduce((form, field) => {
+    form[field] = trimField(field, formBody)
     return form
   }, {})
+}
 
-  const errors = validate(formFields)
+const validateForm = function validate (form) {
+  const errors = validationRules.reduce((errors, validationRule) => {
+    const value = form[validationRule.field]
+    const validationResponse = validationRule.validator(value, validationRule.maxLength)
+    if (!validationResponse.valid) {
+      errors[validationRule.field] = validationResponse.message
+    }
+    return errors
+  }, {})
 
-  if (lodash.isEmpty(errors)) {
-    const updateRequest = new ServiceUpdateRequest()
-      .replace(validPaths.merchantDetails.addressLine1, formFields[clientFormIds.addressLine1])
-      .replace(validPaths.merchantDetails.addressLine2, formFields[clientFormIds.addressLine2])
-      .replace(validPaths.merchantDetails.addressCity, formFields[clientFormIds.addressCity])
-      .replace(validPaths.merchantDetails.addressPostcode, formFields[clientFormIds.addressPostcode])
-      .replace(validPaths.merchantDetails.addressCountry, formFields[clientFormIds.addressCountry])
-      .replace(validPaths.merchantDetails.telephoneNumber, formFields[clientFormIds.telephoneNumber])
-      .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
-      .formatPayload()
+  const postCode = form[clientFormIds.addressPostcode]
+  const country = form[clientFormIds.addressCountry]
+  const postCodeValidResponse = validatePostcode(postCode, country)
+  if (!postCodeValidResponse.valid) {
+    errors[clientFormIds.addressPostcode] = postCodeValidResponse.message
+  }
+  return errors
+}
 
-    const updatedService = await updateService(req.service.externalId, updateRequest, req.correlationId)
+const submitForm = async function (form, serviceExternalId, correlationId) {
+  const updateRequest = new ServiceUpdateRequest()
+    .replace(validPaths.merchantDetails.addressLine1, form[clientFormIds.addressLine1])
+    .replace(validPaths.merchantDetails.addressLine2, form[clientFormIds.addressLine2])
+    .replace(validPaths.merchantDetails.addressCity, form[clientFormIds.addressCity])
+    .replace(validPaths.merchantDetails.addressPostcode, form[clientFormIds.addressPostcode])
+    .replace(validPaths.merchantDetails.addressCountry, form[clientFormIds.addressCountry])
+    .replace(validPaths.merchantDetails.telephoneNumber, form[clientFormIds.telephoneNumber])
+    .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+    .formatPayload()
 
-    res.redirect(
-      303,
-      goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
-    )
-  } else {
-    lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', {
-      success: false,
-      errors: errors,
-      address_line1: formFields[clientFormIds.addressLine1],
-      address_line2: formFields[clientFormIds.addressLine2],
-      address_city: formFields[clientFormIds.addressCity],
-      address_postcode: formFields[clientFormIds.addressPostcode],
-      address_country: formFields[clientFormIds.addressCountry],
-      telephone_number: formFields[clientFormIds.telephoneNumber]
-    })
-    res.redirect(303, requestToGoLive.organisationAddress.replace(':externalServiceId', req.service.externalId))
+  return updateService(serviceExternalId, updateRequest, correlationId)
+}
+
+const buildErrorsPageData = (form, errors) => {
+  return {
+    success: false,
+    errors: errors,
+    address_line1: form[clientFormIds.addressLine1],
+    address_line2: form[clientFormIds.addressLine2],
+    address_city: form[clientFormIds.addressCity],
+    address_postcode: form[clientFormIds.addressPostcode],
+    address_country: form[clientFormIds.addressCountry],
+    telephone_number: form[clientFormIds.telephoneNumber]
   }
 }
 
 module.exports = async function (req, res) {
   try {
-    await submit(req, res)
-  } catch (err) {
-    logger.error('Error submitting organisation address - ' + err.stack)
+    const form = normaliseForm(req.body)
+    const errors = validateForm(form)
+
+    if (lodash.isEmpty(errors)) {
+      const updatedService = await submitForm(form, req.service.externalId, req.correlationId)
+      res.redirect(
+        303,
+        goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+      )
+    } else {
+      const pageData = buildErrorsPageData(form, errors)
+      lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', pageData)
+      res.redirect(303, requestToGoLive.organisationAddress.replace(':externalServiceId', req.service.externalId))
+    }
+  } catch (error) {
+    logger.error(`Error submitting organisation address - ${error.stack}`)
     renderErrorView(req, res)
   }
 }

@@ -178,8 +178,8 @@ describe('request to go live organisation address post controller', () => {
       })
     })
 
-    describe('error updating service', done => {
-      it('should show an error page if updating service throws error', done => {
+    describe('error updating service', () => {
+      it('should show an error page if updating service throws error', async function () {
         const mockUpdateService = sinon.spy(() => {
           return new Promise((resolve, reject) => {
             reject(new Error())
@@ -188,9 +188,8 @@ describe('request to go live organisation address post controller', () => {
         const mockServiceService = { updateService: mockUpdateService }
         const controller = getController(mockServiceService)
 
-        controller(req, res).then(() => {
-          expect(mockResponse.renderErrorView.called)
-        }).should.notify(done)
+        await controller(req, res)
+        expect(mockResponse.renderErrorView.called).to.equal(true)
       })
     })
   })
