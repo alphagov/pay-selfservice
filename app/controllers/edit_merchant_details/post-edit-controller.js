@@ -121,7 +121,6 @@ const submitForm = async function (form, serviceExternalId, correlationId, hasDi
   }
 
   const payload = serviceUpdateRequest.formatPayload()
-  console.log('PAYLOAD ' + JSON.stringify(payload))
   return serviceService.updateService(serviceExternalId, payload, correlationId)
 }
 

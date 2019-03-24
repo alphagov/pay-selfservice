@@ -49,7 +49,7 @@ describe('Dashboard', () => {
         .contains('Postcode')
         .should('have.attr', 'href', '#address-postcode')
       cy.get('.govuk-error-message')
-        .contains('Please enter a valid postcode')
+        .contains('Please enter a real postcode')
     })
   })
 })

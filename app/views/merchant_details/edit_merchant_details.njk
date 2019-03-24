@@ -63,7 +63,7 @@
     {% set nameError = false %}
     {% if errors["merchant-name"] %}
       {% set nameError = {
-        text: "Please enter a valid name"
+        text: errors["merchant-name"]
       } %}
     {% endif %}
 
@@ -93,7 +93,7 @@
       {% set phoneError = false %}
       {% if errors["telephone-number"] %}
         {% set phoneError = {
-          text: "Please enter a valid phone number"
+          text: errors["telephone-number"]
         } %}
       {% endif %}
 
@@ -114,7 +114,7 @@
       {% set emailError = false %}
       {% if errors["merchant-email"] %}
         {% set emailError = {
-          text: "Please enter a valid email"
+          text: errors["merchant-email"]
         } %}
       {% endif %}
 
@@ -136,28 +136,35 @@
     {% set addressLine1Error = false %}
     {% if errors["address-line1"] %}
       {% set addressLine1Error = {
-        text: "Please enter a valid address"
+        text: errors["address-line1"]
+      } %}
+    {% endif %}
+
+    {% set addressLine2Error = false %}
+    {% if errors["address-line2"] %}
+      {% set addressLine2Error = {
+        text: errors["address-line2"]
       } %}
     {% endif %}
 
     {% set cityError = false %}
     {% if errors["address-city"] %}
       {% set cityError = {
-        text: "Please enter a valid town or city"
+        text: errors["address-city"]
       } %}
     {% endif %}
 
     {% set postcodeError = false %}
     {% if errors["address-postcode"] %}
       {% set postcodeError = {
-        text: "Please enter a valid postcode"
+        text: errors["address-postcode"]
       } %}
     {% endif %}
 
     {% set countryError = false %}
     {% if errors["address-country"] %}
       {% set countryError = {
-        text: "Please enter a valid country"
+        text: errors["address-country"]
       } %}
     {% endif %}
 
@@ -187,6 +194,7 @@
         classes: "govuk-!-width-two-thirds",
         id: "address-line2",
         name: "address-line2",
+        errorMessage: addressLine2Error,
         value: merchant_details.address_line2
       }) }}
 
