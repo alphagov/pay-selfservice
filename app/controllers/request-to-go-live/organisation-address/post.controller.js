@@ -15,7 +15,7 @@ const { updateService } = require('../../../services/service_service')
 const { renderErrorView } = require('../../../utils/response')
 const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 
-const clientFormIds = {
+const clientFieldNames = {
   addressLine1: 'address-line1',
   addressLine2: 'address-line2',
   addressCity: 'address-city',
@@ -26,27 +26,27 @@ const clientFormIds = {
 
 const validationRules = [
   {
-    field: clientFormIds.addressLine1,
+    field: clientFieldNames.addressLine1,
     validator: validateMandatoryField,
     maxLength: 200
   },
   {
-    field: clientFormIds.addressLine2,
+    field: clientFieldNames.addressLine2,
     validator: validateOptionalField,
     maxLength: 200
   },
   {
-    field: clientFormIds.addressCity,
+    field: clientFieldNames.addressCity,
     validator: validateMandatoryField,
     maxLength: 100
   },
   {
-    field: clientFormIds.addressCountry,
+    field: clientFieldNames.addressCountry,
     validator: validateMandatoryField,
     maxLength: 2
   },
   {
-    field: clientFormIds.telephoneNumber,
+    field: clientFieldNames.telephoneNumber,
     validator: validatePhoneNumber
   }
 ]
@@ -55,12 +55,12 @@ const trimField = (key, store) => lodash.get(store, key, '').trim()
 
 const normaliseForm = (formBody) => {
   const fields = [
-    clientFormIds.addressLine1,
-    clientFormIds.addressLine2,
-    clientFormIds.addressCity,
-    clientFormIds.addressCountry,
-    clientFormIds.addressPostcode,
-    clientFormIds.telephoneNumber
+    clientFieldNames.addressLine1,
+    clientFieldNames.addressLine2,
+    clientFieldNames.addressCity,
+    clientFieldNames.addressCountry,
+    clientFieldNames.addressPostcode,
+    clientFieldNames.telephoneNumber
   ]
   return fields.reduce((form, field) => {
     form[field] = trimField(field, formBody)
@@ -78,23 +78,23 @@ const validateForm = function validate (form) {
     return errors
   }, {})
 
-  const postCode = form[clientFormIds.addressPostcode]
-  const country = form[clientFormIds.addressCountry]
+  const postCode = form[clientFieldNames.addressPostcode]
+  const country = form[clientFieldNames.addressCountry]
   const postCodeValidResponse = validatePostcode(postCode, country)
   if (!postCodeValidResponse.valid) {
-    errors[clientFormIds.addressPostcode] = postCodeValidResponse.message
+    errors[clientFieldNames.addressPostcode] = postCodeValidResponse.message
   }
   return errors
 }
 
 const submitForm = async function (form, serviceExternalId, correlationId) {
   const updateRequest = new ServiceUpdateRequest()
-    .replace(validPaths.merchantDetails.addressLine1, form[clientFormIds.addressLine1])
-    .replace(validPaths.merchantDetails.addressLine2, form[clientFormIds.addressLine2])
-    .replace(validPaths.merchantDetails.addressCity, form[clientFormIds.addressCity])
-    .replace(validPaths.merchantDetails.addressPostcode, form[clientFormIds.addressPostcode])
-    .replace(validPaths.merchantDetails.addressCountry, form[clientFormIds.addressCountry])
-    .replace(validPaths.merchantDetails.telephoneNumber, form[clientFormIds.telephoneNumber])
+    .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
+    .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
+    .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
+    .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
+    .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
+    .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
     .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
     .formatPayload()
 
@@ -105,12 +105,12 @@ const buildErrorsPageData = (form, errors) => {
   return {
     success: false,
     errors: errors,
-    address_line1: form[clientFormIds.addressLine1],
-    address_line2: form[clientFormIds.addressLine2],
-    address_city: form[clientFormIds.addressCity],
-    address_postcode: form[clientFormIds.addressPostcode],
-    address_country: form[clientFormIds.addressCountry],
-    telephone_number: form[clientFormIds.telephoneNumber]
+    address_line1: form[clientFieldNames.addressLine1],
+    address_line2: form[clientFieldNames.addressLine2],
+    address_city: form[clientFieldNames.addressCity],
+    address_postcode: form[clientFieldNames.addressPostcode],
+    address_country: form[clientFieldNames.addressCountry],
+    telephone_number: form[clientFieldNames.telephoneNumber]
   }
 }
 

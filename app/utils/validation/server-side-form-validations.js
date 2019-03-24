@@ -7,7 +7,8 @@ const ukPostcode = require('uk-postcode')
 // Local dependencies
 const {
   isEmpty,
-  isFieldGreaterThanMaxLengthChars
+  isFieldGreaterThanMaxLengthChars,
+  isValidEmail
 } = require('../../browsered/field-validation-checks')
 const { invalidTelephoneNumber } = require('./telephone-number-validation')
 
@@ -189,6 +190,26 @@ exports.validateDateOfBirth = function validateDateOfBirth (day, month, year) {
     return {
       valid: false,
       message: 'Date of birth must be in the past'
+    }
+  }
+
+  return validReturnObject
+}
+
+exports.validateEmail = function validateEmail (email) {
+  const isEmptyErrorMessage = isEmpty(email)
+  if (isEmptyErrorMessage) {
+    return {
+      valid: false,
+      message: isEmptyErrorMessage
+    }
+  }
+
+  const invalidEmailErrorMessage = isValidEmail(email)
+  if (invalidEmailErrorMessage) {
+    return {
+      valid: false,
+      message: invalidEmailErrorMessage
     }
   }
 

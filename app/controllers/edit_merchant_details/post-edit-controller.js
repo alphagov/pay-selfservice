@@ -1,122 +1,167 @@
-const lodash = require('lodash')
-const ukPostcode = require('uk-postcode')
+'use strict'
 
-const responses = require('../../utils/response')
+const lodash = require('lodash')
+const logger = require('winston')
+
+const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service_service')
-const { isPhoneNumber, isValidEmail } = require('../../browsered/field-validation-checks')
 const formattedPathFor = require('../../utils/replace_params_in_path')
 const { validPaths, ServiceUpdateRequest } = require('../../models/ServiceUpdateRequest.class')
+const {
+  validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber, validateEmail
+} = require('../../utils/validation/server-side-form-validations')
 
-const MERCHANT_NAME = 'merchant-name'
-const TELEPHONE_NUMBER = 'telephone-number'
-const ADDRESS_LINE1 = 'address-line1'
-const ADDRESS_LINE2 = 'address-line2'
-const ADDRESS_CITY = 'address-city'
-const ADDRESS_POSTCODE = 'address-postcode'
-const ADDRESS_COUNTRY = 'address-country'
-const MERCHANT_EMAIL = 'merchant-email'
+const clientFieldNames = {
+  name: 'merchant-name',
+  telephoneNumber: 'telephone-number',
+  addressLine1: 'address-line1',
+  addressLine2: 'address-line2',
+  addressCity: 'address-city',
+  addressPostcode: 'address-postcode',
+  addressCountry: 'address-country',
+  email: 'merchant-email'
+}
+
+const validationRules = [
+  {
+    field: clientFieldNames.name,
+    validator: validateMandatoryField,
+    maxLength: 255
+  },
+  {
+    field: clientFieldNames.addressLine1,
+    validator: validateMandatoryField,
+    maxLength: 255
+  },
+  {
+    field: clientFieldNames.addressLine2,
+    validator: validateOptionalField,
+    maxLength: 255
+  },
+  {
+    field: clientFieldNames.addressCity,
+    validator: validateMandatoryField,
+    maxLength: 255
+  },
+  {
+    field: clientFieldNames.addressCountry,
+    validator: validateMandatoryField,
+    maxLength: 2
+  }
+]
+
+const directDebitAccountValidationRules = [
+  {
+    field: clientFieldNames.telephoneNumber,
+    validator: validatePhoneNumber
+  },
+  {
+    field: clientFieldNames.email,
+    validator: validateEmail
+  },
+  ...validationRules
+]
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-module.exports = (req, res) => {
-  const correlationId = lodash.get(req, 'correlationId')
-  const externalServiceId = req.service.externalId
-  const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
-
+const normaliseForm = (formBody) => {
   const fields = [
-    MERCHANT_NAME,
-    TELEPHONE_NUMBER,
-    ADDRESS_LINE1,
-    ADDRESS_LINE2,
-    ADDRESS_CITY,
-    ADDRESS_POSTCODE,
-    ADDRESS_COUNTRY,
-    MERCHANT_EMAIL
+    clientFieldNames.name,
+    clientFieldNames.telephoneNumber,
+    clientFieldNames.addressLine1,
+    clientFieldNames.addressLine2,
+    clientFieldNames.addressCity,
+    clientFieldNames.addressPostcode,
+    clientFieldNames.addressCountry,
+    clientFieldNames.email
   ]
-  const formFields = fields.reduce((form, field) => {
-    form[field] = trimField(field, req.body)
+  return fields.reduce((form, field) => {
+    form[field] = trimField(field, formBody)
     return form
   }, {})
+}
 
-  formFields[TELEPHONE_NUMBER] = formFields[TELEPHONE_NUMBER].replace(/\s/g, '')
+const validateForm = (formFields, hasDirectDebitGatewayAccount) => {
+  const rules = hasDirectDebitGatewayAccount ? directDebitAccountValidationRules : validationRules
+
+  const errors = rules.reduce((errors, validationRule) => {
+    const value = formFields[validationRule.field]
+    const validationResponse = validationRule.validator(value, validationRule.maxLength)
+    if (!validationResponse.valid) {
+      errors[validationRule.field] = validationResponse.message
+    }
+    return errors
+  }, {})
+
+  const postCode = formFields[clientFieldNames.addressPostcode]
+  const country = formFields[clientFieldNames.addressCountry]
+  const postCodeValidResponse = validatePostcode(postCode, country)
+  if (!postCodeValidResponse.valid) {
+    errors[clientFieldNames.addressPostcode] = postCodeValidResponse.message
+  }
+  return errors
+}
+
+const submitForm = async function (form, serviceExternalId, correlationId, hasDirectDebitGatewayAccount) {
+  form[clientFieldNames.telephoneNumber] = form[clientFieldNames.telephoneNumber].replace(/\s/g, '')
 
   const serviceUpdateRequest = new ServiceUpdateRequest()
-    .replace(validPaths.merchantDetails.name, formFields[MERCHANT_NAME])
-    .replace(validPaths.merchantDetails.telephoneNumber, formFields[TELEPHONE_NUMBER])
-    .replace(validPaths.merchantDetails.email, formFields[MERCHANT_EMAIL])
-    .replace(validPaths.merchantDetails.addressLine1, formFields[ADDRESS_LINE1])
-    .replace(validPaths.merchantDetails.addressLine2, formFields[ADDRESS_LINE2])
-    .replace(validPaths.merchantDetails.addressCity, formFields[ADDRESS_CITY])
-    .replace(validPaths.merchantDetails.addressPostcode, formFields[ADDRESS_POSTCODE])
-    .replace(validPaths.merchantDetails.addressCountry, formFields[ADDRESS_COUNTRY])
-    .formatPayload()
+    .replace(validPaths.merchantDetails.name, form[clientFieldNames.name])
+    .replace(validPaths.merchantDetails.addressLine1, form[clientFieldNames.addressLine1])
+    .replace(validPaths.merchantDetails.addressLine2, form[clientFieldNames.addressLine2])
+    .replace(validPaths.merchantDetails.addressCity, form[clientFieldNames.addressCity])
+    .replace(validPaths.merchantDetails.addressPostcode, form[clientFieldNames.addressPostcode])
+    .replace(validPaths.merchantDetails.addressCountry, form[clientFieldNames.addressCountry])
 
-  const errors = isValidForm(formFields, hasDirectDebitGatewayAccount)
-  if (lodash.isEmpty(errors)) {
-    return serviceService.updateService(externalServiceId, serviceUpdateRequest, correlationId)
-      .then(() => {
-        req.flash('generic', `<h2>Organisation details updated</h2>`)
-        res.redirect(formattedPathFor(paths.merchantDetails.index, externalServiceId))
-      })
-      .catch(err => {
-        responses.renderErrorView(req, res, err.message)
-      })
-  } else {
-    lodash.set(req, 'session.pageData.editMerchantDetails', {
-      success: false,
-      errors: errors,
-      merchant_details: {
-        name: formFields[MERCHANT_NAME],
-        telephone_number: formFields[TELEPHONE_NUMBER],
-        email: formFields[MERCHANT_EMAIL],
-        address_line1: formFields[ADDRESS_LINE1],
-        address_line2: formFields[ADDRESS_LINE2],
-        address_city: formFields[ADDRESS_CITY],
-        address_postcode: formFields[ADDRESS_POSTCODE],
-        address_country: formFields[ADDRESS_COUNTRY]
-      },
-      has_direct_debit_gateway_account: hasDirectDebitGatewayAccount,
-      externalServiceId
-    })
-    res.redirect(formattedPathFor(paths.merchantDetails.edit, externalServiceId))
+  if (hasDirectDebitGatewayAccount) {
+    serviceUpdateRequest
+      .replace(validPaths.merchantDetails.telephoneNumber, form[clientFieldNames.telephoneNumber])
+      .replace(validPaths.merchantDetails.email, form[clientFieldNames.email])
   }
+
+  const payload = serviceUpdateRequest.formatPayload()
+  console.log('PAYLOAD ' + JSON.stringify(payload))
+  return serviceService.updateService(serviceExternalId, payload, correlationId)
 }
 
-function validateNotEmpty (formFields, fieldNames) {
-  let errors = {}
-  fieldNames.forEach(fieldName => {
-    let field = formFields[fieldName]
-    if (!field || typeof field !== 'string') {
-      errors[fieldName] = true
+const buildErrorsPageData = (errors, form) => {
+  return {
+    success: false,
+    errors: errors,
+    merchant_details: {
+      name: form[clientFieldNames.name],
+      telephone_number: form[clientFieldNames.telephoneNumber],
+      email: form[clientFieldNames.email],
+      address_line1: form[clientFieldNames.addressLine1],
+      address_line2: form[clientFieldNames.addressLine2],
+      address_city: form[clientFieldNames.addressCity],
+      address_postcode: form[clientFieldNames.addressPostcode],
+      address_country: form[clientFieldNames.addressCountry]
     }
-  })
-  return errors
+  }
 }
 
-function isValidPostcode (postcode, countryCode) {
-  return !(countryCode === 'GB' && !ukPostcode.fromString(postcode).isComplete())
-}
+module.exports = async function (req, res) {
+  try {
+    const correlationId = lodash.get(req, 'correlationId')
+    const serviceExternalId = req.service.externalId
+    const hasDirectDebitGatewayAccount = lodash.get(req, 'service.hasDirectDebitGatewayAccount') || lodash.get(req, 'service.hasCardAndDirectDebitGatewayAccount')
 
-function isValidForm (formFields, isDirectDebitForm) {
-  const mandatoryFields = [MERCHANT_NAME, ADDRESS_LINE1, ADDRESS_CITY, ADDRESS_POSTCODE, ADDRESS_COUNTRY]
-  if (isDirectDebitForm) {
-    mandatoryFields.push(TELEPHONE_NUMBER)
-    mandatoryFields.push(MERCHANT_EMAIL)
+    const form = normaliseForm(req.body)
+    const errors = validateForm(form, hasDirectDebitGatewayAccount)
+
+    if (lodash.isEmpty(errors)) {
+      await submitForm(form, serviceExternalId, correlationId, hasDirectDebitGatewayAccount)
+      req.flash('generic', 'Organisation details updated')
+      res.redirect(formattedPathFor(paths.merchantDetails.index, serviceExternalId))
+    } else {
+      const pageData = buildErrorsPageData(errors, form)
+      lodash.set(req, 'session.pageData.editMerchantDetails', pageData)
+      res.redirect(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))
+    }
+  } catch (error) {
+    logger.error(`Error submitting organisation details - ${error.stack}`)
+    renderErrorView(req, res)
   }
-
-  const errors = validateNotEmpty(formFields, mandatoryFields)
-
-  if (isDirectDebitForm && formFields[TELEPHONE_NUMBER] && (isPhoneNumber(formFields[TELEPHONE_NUMBER]) !== false)) {
-    errors[TELEPHONE_NUMBER] = true
-  }
-  if (isDirectDebitForm && formFields[MERCHANT_EMAIL] && (isValidEmail(formFields[MERCHANT_EMAIL]) !== false)) {
-    errors[MERCHANT_EMAIL] = true
-  }
-
-  if (!isValidPostcode(formFields[ADDRESS_POSTCODE], formFields[ADDRESS_COUNTRY])) {
-    errors[ADDRESS_POSTCODE] = true
-  }
-
-  return errors
 }

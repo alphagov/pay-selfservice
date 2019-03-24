@@ -233,4 +233,24 @@ describe('Responsible person page field validations', () => {
       })
     })
   })
+
+  describe('email validation', () => {
+    it('should be valid for valid email address', () => {
+      expect(validations.validateEmail('foo@example.com').valid).to.be.true // eslint-disable-line
+    })
+
+    it('should not be valid for empty email address', () => {
+      expect(validations.validateEmail('')).to.deep.equal({
+        valid: false,
+        message: 'This field cannot be blank'
+      })
+    })
+
+    it('should not be valid for an invalid email address', () => {
+      expect(validations.validateEmail('abd')).to.deep.equal({
+        valid: false,
+        message: 'Please use a valid email address'
+      })
+    })
+  })
 })
