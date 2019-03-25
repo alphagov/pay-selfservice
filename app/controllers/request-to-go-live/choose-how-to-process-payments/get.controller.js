@@ -10,7 +10,7 @@ const response = require('../../../utils/response')
 
 module.exports = (req, res) => {
   // redirect on wrong stage
-  if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_NAME) {
+  if (req.service.currentGoLiveStage !== goLiveStage.ENTERED_ORGANISATION_ADDRESS) {
     return res.redirect(
       303,
       requestToGoLive.index.replace(':externalServiceId', req.service.externalId)

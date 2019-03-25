@@ -43,10 +43,14 @@ const chosenHowToProcessPayments = [
   ...agreedToTerms
 ]
 
-const enteredOrganisationName = [
-  ENTERED_ORGANISATION_NAME,
+const enteredOrganisationAddress = [
   ENTERED_ORGANISATION_ADDRESS,
   ...chosenHowToProcessPayments
+]
+
+const enteredOrganisationName = [
+  ENTERED_ORGANISATION_NAME,
+  ...enteredOrganisationAddress
 ]
 
 const startedButStillStepsToComplete = [
@@ -81,6 +85,7 @@ module.exports = (req, res) => {
   pageData = {
     notStarted: currentGoLiveStage === NOT_STARTED,
     enteredOrganisationName: enteredOrganisationName.includes(currentGoLiveStage),
+    enteredOrganisationAddress: enteredOrganisationAddress.includes(currentGoLiveStage),
     chosenHowToProcessPayments: chosenHowToProcessPayments.includes(currentGoLiveStage),
     agreedToTerms: agreedToTerms.includes(currentGoLiveStage),
     startedButStillStepsToComplete: startedButStillStepsToComplete.includes(currentGoLiveStage),

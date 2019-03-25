@@ -42,11 +42,19 @@ describe('go-live-stage-to-next-page-path tests', () => {
     })
   })
 
-  describe('should return "choose-how-to-process-payments" path', () => {
-    const path = '/service/:externalServiceId/request-to-go-live/choose-how-to-process-payments'
+  describe('should return "organisation-address" path', () => {
+    const path = '/service/:externalServiceId/request-to-go-live/organisation-address'
 
     it('should resolve ENTERED_ORGANISATION_NAME stage correctly', () => {
       expect(goLiveStageToNextPagePath[goLiveStage.ENTERED_ORGANISATION_NAME]).to.equal(path)
+    })
+  })
+
+  describe('should return "choose-how-to-process-payments" path', () => {
+    const path = '/service/:externalServiceId/request-to-go-live/choose-how-to-process-payments'
+
+    it('should resolve ENTERED_ORGANISATION_ADDRESS stage correctly', () => {
+      expect(goLiveStageToNextPagePath[goLiveStage.ENTERED_ORGANISATION_ADDRESS]).to.equal(path)
     })
   })
 
