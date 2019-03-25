@@ -1,0 +1,95 @@
+{% extends "../../layout.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block pageTitle %}
+  Add your organisation’s Company registration number - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+
+  {% if errors | length %}
+    {% set errorList = [] %}
+    {% if errors['company-number'] %}
+      {% set errorList = (errorList.push({
+        text: 'Companies registration number',
+        href: '#stripe-setup-company-number-input'
+      }), errorList) %}
+    {% endif %}
+    {{ govukErrorSummary({
+      titleText: 'There was a problem with the details you gave for:',
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+
+    <form id="stripe-setup-company-number-form" method="post" action="/lets-go-no-where" data-validate="true">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+
+      {% set companyNumberError = false %}
+      {% if errors['company-number'] %}
+        {% set companyNumberError = {
+          text: errors['company-number']
+        } %}
+      {% endif %}
+
+      {% set companyHouseMode %}
+        {{ govukInput({
+          name: "company-number",
+          id: "stripe-setup-company-number-input",
+          label: {
+            text: "Companies House registration number"
+          },
+          hint: {
+            text: "For example, '12345678'"
+          },
+          value: companyNumber,
+          classes: "govuk-input--width-30",
+          type: "text",
+          errorMessage: companyNumberError,
+          attributes: {
+            "data-validate": "isFieldGreaterThanMaxLengthChars",
+            "autocomplete": "off",
+            "data-validate-max-length": "8"
+          }
+        }) }}
+      {% endset %}
+
+      {{ govukRadios({
+        idPrefix: 'company-number-mode',
+        name: 'company-number-mode',
+        fieldset: {
+          legend: {
+            text: 'Does your organisation have a company registration number?',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l'
+          }
+        },
+        items: [
+          {
+            text: 'Yes',
+            value: 'Yes',
+            label: {
+            classes: "govuk-label--s"
+          },
+            conditional: {
+            html: companyHouseMode
+          }
+          },
+          {
+            text: 'No',
+            value: 'No',
+            label: {
+            classes: "govuk-label--s"
+          }
+          }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+{% endblock %}

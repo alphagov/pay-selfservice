@@ -18,7 +18,8 @@ const validationErrors = {
   isGreaterThanMaxLengthChars: `The text is too long`,
   invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`,
   invalidBankAccountNumber: 'Enter a valid account number',
-  invalidSortCode: 'Enter a valid sort code'
+  invalidSortCode: 'Enter a valid sort code',
+  invalidVatNumber: 'Enter a valid VAT number'
 }
 
 exports.validationErrors = validationErrors
@@ -99,5 +100,14 @@ exports.isNotSortCode = value => {
     return false
   } else {
     return validationErrors.invalidSortCode
+  }
+}
+
+exports.isNotVatNumber = value => {
+  const alphaNumeric = value.replace(/\W/g, '')
+  if (/^(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})$/.test(alphaNumeric)) {
+    return false
+  } else {
+    return validationErrors.invalidVatNumber
   }
 }
