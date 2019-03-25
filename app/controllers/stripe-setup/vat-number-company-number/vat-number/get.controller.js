@@ -8,9 +8,14 @@ const response = require('../../../../utils/response')
 
 module.exports = (req, res) => {
   // initialise pageData
-  let pageData = {
-    errors: lodash.get(req, 'session.stripeSetup.vatNumber.errors'),
-    vatNumber: lodash.get(req, 'session.stripeSetup.vatNumber.vatNumber', '')
+  let pageData = lodash.get(req, 'session.pageData.stripeSetup.vatNumber')
+  if (pageData) {
+    delete req.session.pageData.stripeSetup.vatNumber
+  } else {
+    pageData = {
+      errors: {},
+      vatNumber: ''
+    }
   }
 
   return response.response(req, res, 'stripe-setup/vat-number-company-number/vat-number', pageData)

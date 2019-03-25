@@ -16,28 +16,28 @@ module.exports = (req, res) => {
   const errors = validateVatNumber(vatNumber)
 
   if (!lodash.isEmpty(errors)) {
-    lodash.set(req, 'session.stripeSetup.vatNumber', {
+    lodash.set(req, 'session.pageData.stripeSetup.vatNumber', {
       success: false,
       errors: errors,
       vatNumber: rawVatNumber
     })
     return res.redirect(303, stripeSetup.vatNumber)
   } else {
-    lodash.set(req, 'session.stripeSetup.vatNumber', {
+    lodash.set(req, 'session.pageData.stripeSetup.vatNumber', {
       success: true,
       vatNumber: vatNumber
     })
     return res.redirect(303, stripeSetup.companyNumber)
   }
+}
 
-  function validateVatNumber (vatNumber) {
-    const errors = {}
+function validateVatNumber (vatNumber) {
+  const errors = {}
 
-    const vatNumberValidationResult = vatNumberValidations.validateMandatoryField(vatNumber)
-    if (!vatNumberValidationResult.valid) {
-      errors[VAT_NUMBER_FIELD] = vatNumberValidationResult.message
-    }
-
-    return errors
+  const vatNumberValidationResult = vatNumberValidations.validateMandatoryField(vatNumber)
+  if (!vatNumberValidationResult.valid) {
+    errors[VAT_NUMBER_FIELD] = vatNumberValidationResult.message
   }
+
+  return errors
 }
