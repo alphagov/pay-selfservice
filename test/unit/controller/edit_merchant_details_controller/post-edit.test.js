@@ -1,359 +1,468 @@
-const chai = require('chai')
-const cheerio = require('cheerio')
-const nock = require('nock')
-const mockSession = require('../../../test_helpers/mock_session.js')
-const getApp = require('../../../../server.js').getApp
-const supertest = require('supertest')
+'use strict'
+
+const { expect } = require('chai')
+const proxyquire = require('proxyquire')
+const sinon = require('sinon')
+
 const serviceFixtures = require('../../../fixtures/service_fixtures')
 const paths = require('../../../../app/paths.js')
 const formattedPathFor = require('../../../../app/utils/replace_params_in_path')
-const csrf = require('csrf')
-const expect = chai.expect
-const adminusersMock = nock(process.env.ADMINUSERS_URL)
-const SERVICE_RESOURCE = '/v1/api/services'
-let response, $
-let session
+const Service = require('../../../../app/models/Service.class')
+
+const mockResponse = {}
+const getController = function getController (mockServiceService) {
+  return proxyquire('../../../../app/controllers/edit_merchant_details/post-edit-controller', {
+    '../../services/service_service': mockServiceService,
+    '../../utils/response': mockResponse
+  })
+}
+
+const setupMocks = () => {
+  const res = {
+    setHeader: sinon.stub(),
+    status: sinon.spy(),
+    redirect: sinon.spy(),
+    render: sinon.spy(),
+    flash: sinon.spy()
+  }
+  mockResponse.renderErrorView = sinon.spy()
+  return res
+}
+
+const getMockServiceService = (serviceExternalId, shouldSucceed = true) => {
+  const updatedService = new Service(serviceFixtures.validServiceResponse({
+    external_id: serviceExternalId
+  }).getPlain())
+
+  const mockUpdateService = sinon.spy(() => {
+    return new Promise((resolve, reject) => {
+      if (shouldSucceed) {
+        resolve(updatedService)
+      } else {
+        reject(new Error())
+      }
+    })
+  })
+
+  return { updateService: mockUpdateService }
+}
+
+const buildServiceModel = (serviceExternalId) => {
+  return new Service(serviceFixtures.validServiceResponse({
+    external_id: serviceExternalId
+  }).getPlain())
+}
 
 describe('edit merchant details controller - post', () => {
-  afterEach(() => {
-    nock.cleanAll()
+  const correlationId = 'correlation-id'
+  const serviceExternalId = 'dsfkbskjalksjdlk342'
+  const validName = 'An organisation'
+  const validTelephoneNumber = '01134960000'
+  const validLine1 = 'A building'
+  const validLine2 = 'A street'
+  const validCity = 'A city'
+  const countryGB = 'GB'
+  const validPostcode = 'E1 8QS'
+  const validEmail = 'foo@example.com'
+
+  describe('successful submission for a service with only a card gateway account', () => {
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: buildServiceModel(serviceExternalId),
+        body: {
+          'merchant-name': validName,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': countryGB
+        },
+        flash: sinon.spy(),
+        session: {}
+      }
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
+    })
+
+    it('should update merchant details', () => {
+      const expectedUpdateServiceRequest = [
+        {
+          'op': 'replace',
+          'path': 'merchant_details/name',
+          'value': validName
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_line1',
+          'value': validLine1
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_line2',
+          'value': validLine2
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_city',
+          'value': validCity
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_postcode',
+          'value': validPostcode
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_country',
+          'value': countryGB
+        }
+      ]
+      expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
+    })
+
+    it('should redirect back to the index page', () => {
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).to.equal(true)
+    })
+
+    it('should set the success notification in the session', () => {
+      expect(req.flash.calledWith('generic', 'Organisation details updated')).to.equal(true)
+    })
   })
 
-  const EXTERNAL_SERVICE_ID = 'dsfkbskjalksjdlk342'
-  const serviceRoles = [{
-    service: {
-      name: 'System Generated',
-      external_id: EXTERNAL_SERVICE_ID,
-      gateway_account_ids: ['20', 'DIRECT_DEBIT:somerandomidhere'],
-      merchant_details: {
-        name: 'name',
-        telephone_number: '03069990000',
-        email: 'dd-merchant@example.com',
-        address_line1: 'line1',
-        address_line2: 'line2',
-        address_city: 'City',
-        address_postcode: 'POSTCODE',
-        address_country: 'GB'
-      }
-    },
-    role: {
-      name: 'admin',
-      description: 'Administrator',
-      permissions: [{ name: 'merchant-details:read' }, { name: 'merchant-details:update' }]
-    }
-  }]
-  describe('when the update merchant details call is successful', () => {
-    before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.patch(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
-        .reply(200, response)
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      session = {
-        csrfSecret: '123',
-        12345: { refunded_amount: 5 },
-        passport: {
-          user: userInSession
+  describe('successful submission for a service with a direct debit gateway account', () => {
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      const service = buildServiceModel(serviceExternalId)
+      service.hasDirectDebitGatewayAccount = true
+
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': validName,
+          'telephone-number': validTelephoneNumber,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': countryGB,
+          'merchant-email': validEmail
         },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0
+        flash: sinon.spy(),
+        session: {}
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'merchant-name': 'new-name',
-          'telephone-number': '03069990001',
-          'merchant-email': 'new-dd-merchant@example.com',
-          'address-line1': 'new-line1',
-          'address-city': 'new-city',
-          'address-postcode': 'new-postcode',
-          'address-country': 'AR',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
     })
-    it(`should redirect back to the index page`, () => {
-      expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.index, EXTERNAL_SERVICE_ID))
+
+    it('should update merchant details', () => {
+      const expectedUpdateServiceRequest = [
+        {
+          'op': 'replace',
+          'path': 'merchant_details/name',
+          'value': validName
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_line1',
+          'value': validLine1
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_line2',
+          'value': validLine2
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_city',
+          'value': validCity
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_postcode',
+          'value': validPostcode
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/address_country',
+          'value': countryGB
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/telephone_number',
+          'value': validTelephoneNumber
+        },
+        {
+          'op': 'replace',
+          'path': 'merchant_details/email',
+          'value': validEmail
+        }
+      ]
+      expect(mockServiceService.updateService.calledWith(serviceExternalId, expectedUpdateServiceRequest, correlationId)).to.equal(true)
     })
-    it(`should set the success notification in the session`, () => {
-      expect(session.flash.generic).to.have.property('length').to.equal(1)
+
+    it('should redirect back to the index page', () => {
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.index, serviceExternalId))).to.equal(true)
+    })
+
+    it('should set the success notification in the session', () => {
+      expect(req.flash.calledWith('generic', 'Organisation details updated')).to.equal(true)
     })
   })
-  describe('when the update merchant details call is missing mandatory fields', () => {
-    before(done => {
-      response = serviceFixtures.validServiceResponse(serviceRoles[0].service).getPlain()
-      adminusersMock.patch(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
-        .reply(200, response)
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      session = {
-        csrfSecret: '123',
-        12345: { refunded_amount: 5 },
-        passport: {
-          user: userInSession
+
+  describe('when missing mandatory fields for a service without a direct debit gateway account', () => {
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: buildServiceModel(serviceExternalId),
+        body: {
+          'merchant-name': '',
+          'telephone-number': '',
+          'address-line1': '',
+          'address-line2': '',
+          'address-city': '',
+          'address-postcode': '',
+          'address-country': '',
+          'merchant-email': ''
         },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0
+        flash: sinon.spy()
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'address-city': 'new-city',
-          'address-postcode': 'new-postcode',
-          'address-country': 'AR',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
     })
+
     it(`should redirect back to the page`, () => {
-      expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
     })
+
     it(`should the errors in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
-        'merchant-name': true,
-        'telephone-number': true,
-        'merchant-email': true,
-        'address-line1': true
+      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'merchant-name': 'This field cannot be blank',
+        'address-line1': 'This field cannot be blank',
+        'address-city': 'This field cannot be blank',
+        'address-postcode': 'This field cannot be blank',
+        'address-country': 'This field cannot be blank'
       })
     })
   })
-  describe('when the update merchant details call has invalid postcode and the country is GB', () => {
-    before(done => {
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      session = {
-        csrfSecret: '123',
-        12345: { refunded_amount: 5 },
-        passport: {
-          user: userInSession
+
+  describe('when missing mandatory fields for a service with a direct debit gateway account', () => {
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      const service = buildServiceModel(serviceExternalId)
+      service.hasDirectDebitGatewayAccount = true
+
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': '',
+          'telephone-number': '',
+          'address-line1': '',
+          'address-line2': '',
+          'address-city': '',
+          'address-postcode': '',
+          'address-country': '',
+          'merchant-email': ''
         },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0
+        flash: sinon.spy()
       }
-      let app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'merchant-name': 'new-name',
-          'telephone-number': '03069990001',
-          'merchant-email': 'dd-merchant@example.com',
-          'address-line1': 'new-line1',
-          'address-city': 'new-city',
-          'address-postcode': 'wrong',
-          'address-country': 'GB',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
     })
+
     it(`should redirect back to the page`, () => {
-      expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
     })
+
+    it(`should the errors in the session`, () => {
+      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'merchant-name': 'This field cannot be blank',
+        'address-line1': 'This field cannot be blank',
+        'address-city': 'This field cannot be blank',
+        'address-postcode': 'This field cannot be blank',
+        'address-country': 'This field cannot be blank',
+        'telephone-number': 'This field cannot be blank',
+        'merchant-email': 'This field cannot be blank'
+      })
+    })
+  })
+
+  describe('when the update merchant details call has invalid postcode and the country is GB', () => {
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: buildServiceModel(serviceExternalId),
+        body: {
+          'merchant-name': validName,
+          'telephone-number': validTelephoneNumber,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': 'invalid',
+          'address-country': countryGB,
+          'merchant-email': validEmail
+        },
+        flash: sinon.spy()
+      }
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
+    })
+
+    it(`should redirect back to the page`, () => {
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
+    })
+
     it(`should set errors in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
-        'address-postcode': true
+      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'address-postcode': 'Please enter a real postcode'
       })
     })
   })
   describe('when the update merchant details call has invalid telephone number', () => {
-    before(done => {
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      session = {
-        csrfSecret: '123',
-        12345: { refunded_amount: 5 },
-        passport: {
-          user: userInSession
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      const service = buildServiceModel(serviceExternalId)
+      service.hasDirectDebitGatewayAccount = true
+
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': validName,
+          'telephone-number': 'invalid',
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': countryGB,
+          'merchant-email': validEmail
         },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0
+        flash: sinon.spy()
       }
-      const app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'merchant-name': 'new-name',
-          'telephone-number': 'call me maybe',
-          'address-line1': 'new-line1',
-          'address-city': 'new-city',
-          'address-postcode': 'new-postcode',
-          'address-country': 'AR',
-          'merchant-email': 'dd-merchant@example.com',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
     })
     it(`should redirect back to the page`, () => {
-      expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
     })
     it(`should set errors in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
-        'telephone-number': true
+      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'telephone-number': 'Invalid telephone number. Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
       })
     })
   })
   describe('when the update merchant details call has invalid email', () => {
-    before(done => {
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      session = {
-        csrfSecret: '123',
-        12345: { refunded_amount: 5 },
-        passport: {
-          user: userInSession
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      const service = buildServiceModel(serviceExternalId)
+      service.hasDirectDebitGatewayAccount = true
+
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': validName,
+          'telephone-number': validTelephoneNumber,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': countryGB,
+          'merchant-email': 'invalid'
         },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0
+        flash: sinon.spy()
       }
-      const app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'merchant-name': 'new-name',
-          'telephone-number': '03069990001',
-          'address-line1': 'new-line1',
-          'address-city': 'new-city',
-          'address-postcode': 'new-postcode',
-          'address-country': 'AR',
-          'merchant-email': 'this is not a valid email',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
+
+      mockServiceService = getMockServiceService(serviceExternalId)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
     })
+
     it(`should redirect back to the page`, () => {
-      expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
+      expect(res.redirect.calledWith(formattedPathFor(paths.merchantDetails.edit, serviceExternalId))).to.equal(true)
     })
+
     it(`should set errors in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
-        'merchant-email': true
-      })
-    })
-  })
-  describe('when the update merchant details call has empty email', () => {
-    before(done => {
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      session = {
-        csrfSecret: '123',
-        12345: { refunded_amount: 5 },
-        passport: {
-          user: userInSession
-        },
-        secondFactor: 'totp',
-        last_url: 'last_url',
-        version: 0
-      }
-      const app = mockSession.createAppWithSession(getApp(), session)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'merchant-name': 'new-name',
-          'telephone-number': '03069990001',
-          'address-line1': 'new-line1',
-          'address-city': 'new-city',
-          'address-postcode': 'new-postcode',
-          'address-country': 'AR',
-          'merchant-email': '',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          done(err)
-        })
-    })
-    it(`should redirect back to the page`, () => {
-      expect(response.statusCode).to.equal(302)
-      expect(response.headers.location).to.equal(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-    })
-    it(`should set errors in the session`, () => {
-      expect(session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
-      expect(session.pageData.editMerchantDetails.errors).to.deep.equal({
-        'merchant-email': true
+      expect(req.session.pageData.editMerchantDetails.success).to.be.false // eslint-disable-line
+      expect(req.session.pageData.editMerchantDetails.errors).to.deep.equal({
+        'merchant-email': 'Please use a valid email address'
       })
     })
   })
   describe('when the update merchant details call is unsuccessful', () => {
-    before(done => {
-      adminusersMock.patch(`${SERVICE_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
-        .reply(400, 'Oops something went wrong')
-      const userInSession = mockSession.getUser({
-        external_id: 'exsfjpwoi34op23i4',
-        service_roles: serviceRoles
-      })
-      const app = mockSession.getAppWithLoggedInUser(getApp(), userInSession)
-      supertest(app)
-        .post(formattedPathFor(paths.merchantDetails.edit, EXTERNAL_SERVICE_ID))
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          'merchant-name': 'new-name',
-          'telephone-number': '03069990001',
-          'merchant-email': 'new-dd-merchant@example.com',
-          'address-line1': 'new-line1',
-          'address-city': 'new-city',
-          'address-postcode': 'new-postcode',
-          'address-country': 'AR',
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          $ = cheerio.load(res.text || '')
-          done(err)
-        })
+    let mockServiceService
+    let req
+    let res
+    before(async function () {
+      const service = buildServiceModel(serviceExternalId)
+      service.hasDirectDebitGatewayAccount = true
+
+      res = setupMocks()
+      req = {
+        correlationId,
+        service: service,
+        body: {
+          'merchant-name': validName,
+          'telephone-number': validTelephoneNumber,
+          'address-line1': validLine1,
+          'address-line2': validLine2,
+          'address-city': validCity,
+          'address-postcode': validPostcode,
+          'address-country': countryGB,
+          'merchant-email': validEmail
+        },
+        flash: sinon.spy()
+      }
+
+      mockServiceService = getMockServiceService(serviceExternalId, false)
+      const controller = getController(mockServiceService)
+      await controller(req, res)
     })
-    it('should respond with a 500 code', () => {
-      expect(response.statusCode).to.equal(500)
-    })
+
     it('should render error page', () => {
-      expect($('.page-title').text()).to.equal('An error occurred:')
-      expect($('#errorMsg').text()).to.equal('Oops something went wrong')
+      expect(mockResponse.renderErrorView.called).to.equal(true)
     })
   })
 })
