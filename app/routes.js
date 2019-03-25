@@ -34,6 +34,7 @@ const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-
 const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
+const checkVatNumberCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-company-number-not-submitted')
 
 // Controllers
 const staticController = require('./controllers/static_controller')
@@ -419,43 +420,51 @@ module.exports.bind = function (app) {
   // Stripe setup: VAT number company number
   app.get(stripeSetup.vatNumberCompanyNumber,
     xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupVatNumberCompanyNumberController.get
   )
 
   // Stripe setup: VAT number
   app.get(stripeSetup.vatNumber,
     xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupVatNumberController.get
   )
-
   app.post(stripeSetup.vatNumber,
     xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupVatNumberController.post
   )
 
   // Stripe setup: company number
   app.get(stripeSetup.companyNumber,
     xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCompanyNumberController.get
   )
-
   app.post(stripeSetup.companyNumber,
     xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCompanyNumberController.post
   )
 
