@@ -6,6 +6,16 @@ const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 const pageUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-address`
 
 describe('The organisation address page', () => {
+  const validLine1 = 'A building'
+  const validLine2 = 'A street'
+  const validCity = 'A city'
+  const countryIe = 'IE'
+  const countryGb = 'GB'
+  const validPostcodeGb = 'E1 8QS'
+  const validPostcodeIe = 'D01 F5P2'
+  const invalidPostcode = '123'
+  const validTelephoneNumber = '01134960000'
+  const invalidTelephoneNumber = 'abd'
   const longText = 'This text is 256 ...............................................................................' +
     '...............................................................................................................' +
     '..................................characters long'
@@ -15,8 +25,8 @@ describe('The organisation address page', () => {
   })
 
   describe('The go-live stage is ENTERED_ORGANISATION_NAME and there are no existing merchant details', () => {
-    const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     beforeEach(() => {
+      const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
       cy.visit(pageUrl)
@@ -85,20 +95,13 @@ describe('The organisation address page', () => {
     })
 
     it('should keep entered responses when validation fails', () => {
-      const validLine1 = 'A building'
-      const validLine2 = 'A street'
-      const validCity = 'A city'
-      const country = 'IE'
-      const validPostcode = 'D01 F5P2'
-      const invalidTelephoneNumber = 'abd'
-
       cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
         .within(() => {
           cy.get('#address-line1').type(validLine1)
           cy.get('#address-line2').type(validLine2)
           cy.get('#address-city').type(validCity)
-          cy.get('#address-country').select(country)
-          cy.get('#address-postcode').type(validPostcode)
+          cy.get('#address-country').select(countryIe)
+          cy.get('#address-postcode').type(validPostcodeIe)
           cy.get('#telephone-number').type(invalidTelephoneNumber)
           cy.get('button[type=submit]').click()
         })
@@ -117,23 +120,21 @@ describe('The organisation address page', () => {
           cy.get('#address-line1').should('have.value', validLine1)
           cy.get('#address-line2').should('have.value', validLine2)
           cy.get('#address-city').should('have.value', validCity)
-          cy.get('#address-country').should('have.value', country)
-          cy.get('#address-postcode').should('have.value', validPostcode)
+          cy.get('#address-country').should('have.value', countryIe)
+          cy.get('#address-postcode').should('have.value', validPostcodeIe)
           cy.get('#telephone-number').should('have.value', invalidTelephoneNumber)
         })
     })
 
     it('should show errors for invalid postcode', () => {
-      const invalidPostcode = '123'
-
       cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
         .within(() => {
-          cy.get('#address-line1').type('A building')
-          cy.get('#address-line2').type('A street')
-          cy.get('#address-city').type('A city')
-          cy.get('#address-country').select('GB')
+          cy.get('#address-line1').type(validLine1)
+          cy.get('#address-line2').type(validLine2)
+          cy.get('#address-city').type(validCity)
+          cy.get('#address-country').select(countryGb)
           cy.get('#address-postcode').type(invalidPostcode)
-          cy.get('#telephone-number').type('01134960000')
+          cy.get('#telephone-number').type(validTelephoneNumber)
           cy.get('button[type=submit]').click()
         })
 
@@ -151,15 +152,48 @@ describe('The organisation address page', () => {
     })
   })
 
+  describe('Valid details submitted', () => {
+    beforeEach(() => {
+      const initialServiceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
+      const afterUpdateServiceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')
+
+      const getUserAndGateayAccountStubs = utils.getUserWithModifiedServiceRoleOnNextRequestStub(initialServiceRole, afterUpdateServiceRole)
+
+      cy.task('setupStubs', [
+        utils.patchUpdateServiceSuccessCatchAllStub('ENTERED_ORGANISATION_ADDRESS'),
+        ...getUserAndGateayAccountStubs
+      ])
+
+      cy.visit(pageUrl)
+    })
+
+    it('should submit organisation address when validation succeeds', () => {
+      cy.get(`form[method=post][action="/service/${serviceExternalId}/request-to-go-live/organisation-address"]`)
+        .within(() => {
+          cy.get('#address-line1').type(validLine1)
+          cy.get('#address-line2').type(validLine2)
+          cy.get('#address-city').type(validCity)
+          cy.get('#address-country').select(countryGb)
+          cy.get('#address-postcode').type(validPostcodeGb)
+          cy.get('#telephone-number').type(validTelephoneNumber)
+          cy.get('button[type=submit]').click()
+        })
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+      })
+    })
+  })
+
   describe('There are existing organisation details', () => {
     const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
     const merchantDetails = {
-      address_line1: 'A building',
-      address_line2: 'A street',
-      address_city: 'A city',
-      address_country: 'IE',
-      address_postcode: 'E8 4ER',
-      telephone_number: '01134960000'
+      address_line1: validLine1,
+      address_line2: validLine2,
+      address_city: validCity,
+      address_country: countryIe,
+      address_postcode: validPostcodeIe,
+      telephone_number: validTelephoneNumber
     }
     serviceRole.service.merchant_details = merchantDetails
 
