@@ -229,6 +229,13 @@ describe('edit merchant details controller - get', () => {
     })
   })
   describe('when errors and merchant details are set in the session (CREDIT CARD GATEWAY ACCOUNT)', () => {
+    const merchantNameError = 'merchant name error'
+    const addressLine1Error = 'address line 1 error'
+    const addressLine2Error = 'address line 2 error'
+    const addressCityError = 'address city error'
+    const addressPostcodeError = 'address postcode error'
+    const addressCountryError = 'address country error'
+
     before(done => {
       const user = buildUserResponse(['20'])
 
@@ -236,7 +243,7 @@ describe('edit merchant details controller - get', () => {
         .reply(200, user.getPlain())
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: user.getAsObject()
         },
@@ -255,8 +262,12 @@ describe('edit merchant details controller - get', () => {
               address_country: 'GB'
             },
             errors: {
-              'merchant-name': true,
-              'address-country': true
+              'merchant-name': merchantNameError,
+              'address-line1': addressLine1Error,
+              'address-line2': addressLine2Error,
+              'address-city': addressCityError,
+              'address-postcode': addressPostcodeError,
+              'address-country': addressCountryError
             }
           }
         }
@@ -274,14 +285,24 @@ describe('edit merchant details controller - get', () => {
       expect(response.statusCode).to.be.equal(200)
     })
     it(`should show a list of errors`, () => {
-      expect($('.govuk-error-summary__list li').length).to.equal(2)
+      expect($('.govuk-error-summary__list li').length).to.equal(5)
       expect($('.govuk-error-summary__list li a[href$="#merchant-name"]').text()).to.equal('Name')
       expect($('.govuk-error-summary__list li a[href$="#address-country"]').text()).to.equal('Country')
     })
     it(`should show inline error messages`, () => {
-      expect($('.govuk-error-message').length).to.equal(2)
-      expect($('.govuk-error-message').eq(0).text()).to.contain('Please enter a valid name')
-      expect($('.govuk-error-message').eq(1).text()).to.contain('Please enter a valid country')
+      expect($('.govuk-error-message').length).to.equal(6)
+      expect($('.govuk-form-group--error > input#merchant-name').parent().find('.govuk-error-message').text())
+        .to.contain(merchantNameError)
+      expect($('.govuk-form-group--error > input#address-line1').parent().find('.govuk-error-message').text())
+        .to.contain(addressLine1Error)
+      expect($('.govuk-form-group--error > input#address-line2').parent().find('.govuk-error-message').text())
+        .to.contain(addressLine2Error)
+      expect($('.govuk-form-group--error > input#address-city').parent().find('.govuk-error-message').text())
+        .to.contain(addressCityError)
+      expect($('.govuk-form-group--error > input#address-postcode').parent().find('.govuk-error-message').text())
+        .to.contain(addressPostcodeError)
+      expect($('.govuk-form-group--error > select#address-country').parent().find('.govuk-error-message').text())
+        .to.contain(addressCountryError)
     })
     it(`should not show an updated successful banner`, () => {
       expect($('.notification').length).to.equal(0)
@@ -296,13 +317,17 @@ describe('edit merchant details controller - get', () => {
     })
   })
   describe('when errors and merchant details are set in the session (DIRECT DEBIT GATEWAY ACCOUNT)', () => {
+    const merchantNameError = 'merchant name error'
+    const telephoneNumberError = 'telephone number error'
+    const merchantEmailError = 'merchant email error'
+
     before(done => {
       const user = buildUserResponse(['DIRECT_DEBIT:somerandomidhere'])
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       session = {
         csrfSecret: '123',
-        12345: {refunded_amount: 5},
+        12345: { refunded_amount: 5 },
         passport: {
           user: user.getAsObject()
         },
@@ -324,10 +349,9 @@ describe('edit merchant details controller - get', () => {
             },
             has_direct_debit_gateway_account: true,
             errors: {
-              'merchant-name': true,
-              'telephone-number': true,
-              'merchant-email': true,
-              'address-country': true
+              'merchant-name': merchantNameError,
+              'telephone-number': telephoneNumberError,
+              'merchant-email': merchantEmailError
             }
           }
         }
@@ -345,18 +369,19 @@ describe('edit merchant details controller - get', () => {
       expect(response.statusCode).to.be.equal(200)
     })
     it(`should show a list of errors`, () => {
-      expect($('.govuk-error-summary__list li').length).to.equal(4)
+      expect($('.govuk-error-summary__list li').length).to.equal(3)
       expect($('.govuk-error-summary__list li a[href$="#merchant-name"]').text()).to.equal('Name')
       expect($('.govuk-error-summary__list li a[href$="#telephone-number"]').text()).to.equal('Phone number')
       expect($('.govuk-error-summary__list li a[href$="#merchant-email"]').text()).to.equal('Email')
-      expect($('.govuk-error-summary__list li a[href$="#address-country"]').text()).to.equal('Country')
     })
     it(`should show inline error messages`, () => {
-      expect($('.govuk-error-message').length).to.equal(4)
-      expect($('.govuk-error-message').eq(0).text()).to.contain('Please enter a valid name')
-      expect($('.govuk-error-message').eq(1).text()).to.contain('Please enter a valid phone number')
-      expect($('.govuk-error-message').eq(2).text()).to.contain('Please enter a valid email')
-      expect($('.govuk-error-message').eq(3).text()).to.contain('Please enter a valid country')
+      expect($('.govuk-error-message').length).to.equal(3)
+      expect($('.govuk-form-group--error > input#merchant-name').parent().find('.govuk-error-message').text())
+        .to.contain(merchantNameError)
+      expect($('.govuk-form-group--error > input#telephone-number').parent().find('.govuk-error-message').text())
+        .to.contain(telephoneNumberError)
+      expect($('.govuk-form-group--error > input#merchant-email').parent().find('.govuk-error-message').text())
+        .to.contain(merchantEmailError)
     })
     it(`should not show an updated successful banner`, () => {
       expect($('.notification').length).to.equal(0)
