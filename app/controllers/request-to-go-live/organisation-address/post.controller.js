@@ -28,17 +28,17 @@ const validationRules = [
   {
     field: clientFieldNames.addressLine1,
     validator: validateMandatoryField,
-    maxLength: 200
+    maxLength: 255
   },
   {
     field: clientFieldNames.addressLine2,
     validator: validateOptionalField,
-    maxLength: 200
+    maxLength: 255
   },
   {
     field: clientFieldNames.addressCity,
     validator: validateMandatoryField,
-    maxLength: 100
+    maxLength: 255
   },
   {
     field: clientFieldNames.addressCountry,

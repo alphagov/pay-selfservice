@@ -6,8 +6,9 @@ const { userExternalId, gatewayAccountId, serviceExternalId } = utils.variables
 const pageUrl = `/service/${serviceExternalId}/request-to-go-live/organisation-address`
 
 describe('The organisation address page', () => {
-  const longText = 'This text is 201 ...............................................................................' +
-    '..........................................................................................characters long'
+  const longText = 'This text is 256 ...............................................................................' +
+    '...............................................................................................................' +
+    '..................................characters long'
 
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
