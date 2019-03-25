@@ -99,7 +99,7 @@ describe('Request to go live: organisation name page', () => {
       cy.get('#request-to-go-live-organisation-name-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
       })
     })
   })
@@ -139,7 +139,7 @@ describe('Request to go live: organisation name page', () => {
       cy.get('#request-to-go-live-organisation-name-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/organisation-address`)
       })
     })
   })

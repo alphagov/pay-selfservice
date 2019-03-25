@@ -6,7 +6,7 @@ const { requestToGoLive } = require('../../paths')
 
 const goLiveStageToNextPagePathMap = {}
 goLiveStageToNextPagePathMap[goLiveStage.NOT_STARTED] = requestToGoLive.organisationName
-goLiveStageToNextPagePathMap[goLiveStage.ENTERED_ORGANISATION_NAME] = requestToGoLive.chooseHowToProcessPayments
+goLiveStageToNextPagePathMap[goLiveStage.ENTERED_ORGANISATION_NAME] = requestToGoLive.organisationAddress
 goLiveStageToNextPagePathMap[goLiveStage.ENTERED_ORGANISATION_ADDRESS] = requestToGoLive.chooseHowToProcessPayments
 goLiveStageToNextPagePathMap[goLiveStage.CHOSEN_PSP_STRIPE] = requestToGoLive.agreement
 goLiveStageToNextPagePathMap[goLiveStage.CHOSEN_PSP_WORLDPAY] = requestToGoLive.agreement

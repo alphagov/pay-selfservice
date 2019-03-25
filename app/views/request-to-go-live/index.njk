@@ -53,12 +53,14 @@
       <div class="request-to-go-live-list">
         <div id="request-to-go-live-step-organisation-name">
           <h3 class="govuk-heading-m">
-            Add your organisation’s name
-            {% if enteredOrganisationName %}
+            Add your organisation’s name and address
+            {% if enteredOrganisationAddress %}
               <span class="status">Completed</span>
+            {% elif enteredOrganisationName %}
+              <span class="status">In Progress</span>
             {% endif %}
           </h3>
-          <p class="govuk-body">We’ll use this information to help us set up your live account.</p>
+          <p class="govuk-body">These details will appear on your payment pages.</p>
         </div>
         <div id="request-to-go-live-step-choose-psp">
           <h3 class="govuk-heading-m">

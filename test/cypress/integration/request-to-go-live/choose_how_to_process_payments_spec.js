@@ -35,7 +35,7 @@ describe('Request to go live: choose how to process payments', () => {
       name: 'getUserSuccessRepeatFirstResponseNTimes',
       opts: [{
         external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')],
+        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')],
         repeat: 2
       }, {
         external_id: userExternalId,
@@ -82,7 +82,7 @@ describe('Request to go live: choose how to process payments', () => {
       name: 'getUserSuccessRepeatFirstResponseNTimes',
       opts: [{
         external_id: userExternalId,
-        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')],
+        service_roles: [utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')],
         repeat: 2
       }, {
         external_id: userExternalId,
@@ -137,7 +137,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('User does not have the correct permissions', () => {
     beforeEach(() => {
-      const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')
+      const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')
       serviceRole.role = {
         permissions: []
       }
@@ -154,7 +154,7 @@ describe('Request to go live: choose how to process payments', () => {
 
   describe('other tests', () => {
     beforeEach(() => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME'))
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
     })
     describe('should show an error when no option selected', () => {
       it('should show "You need to select an option" error msg', () => {
@@ -187,7 +187,7 @@ describe('Request to go live: choose how to process payments', () => {
   })
 
   describe('adminusers error handlings', () => {
-    const stubPayload = lodash.concat(utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_NAME')),
+    const stubPayload = lodash.concat(utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')),
       utils.patchUpdateGoLiveStageErrorStub('CHOSEN_PSP_STRIPE'))
     beforeEach(() => {
       cy.task('setupStubs', stubPayload)
