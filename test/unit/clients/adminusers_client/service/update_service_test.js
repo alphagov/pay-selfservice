@@ -11,6 +11,7 @@ const PactInteractionBuilder = require('../../../../fixtures/pact_interaction_bu
 const getAdminUsersClient = require('../../../../../app/services/clients/adminusers_client')
 const serviceFixtures = require('../../../../fixtures/service_fixtures')
 const { validPaths, ServiceUpdateRequest } = require('../../../../../app/models/ServiceUpdateRequest.class')
+const goLiveStage = require('../../../../../app/models/go-live-stage')
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -35,7 +36,7 @@ describe('adminusers client - patch request to update service', function () {
   })
 
   before(() => provider.setup())
-  after(done => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('a valid update service patch request to update single field', () => {
     const merchantDetailsName = 'updated-name'
@@ -50,8 +51,8 @@ describe('adminusers client - patch request to update service', function () {
       }
     })
 
-    before(done => {
-      provider.addInteraction(
+    before(() => {
+      return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update single service field request')
           .withState(`a service exists with external id ${existingServiceExternalId}`)
@@ -59,21 +60,16 @@ describe('adminusers client - patch request to update service', function () {
           .withRequestBody(validUpdateServiceRequest)
           .withStatusCode(200)
           .withResponseBody(validUpdateServiceResponse.getPactified())
-          .build()
-      )
-        .then(() => done())
-        .catch(done)
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should update a merchant name successfully', (done) => {
-      adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
-        .should.be.fulfilled
-        .then(service => {
-          expect(service.externalId).to.equal(existingServiceExternalId)
-          expect(service.merchantDetails.name).to.equal(merchantDetailsName)
-        }).should.notify(done)
+    it('should update a merchant name successfully', async function () {
+      const service = await adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
+
+      expect(service.externalId).to.equal(existingServiceExternalId)
+      expect(service.merchantDetails.name).to.equal(merchantDetailsName)
     })
   })
 
@@ -88,6 +84,7 @@ describe('adminusers client - patch request to update service', function () {
       telephone_number: '07700 900 982',
       email: 'foo@example.com'
     }
+    const currentGoLiveStage = goLiveStage.ENTERED_ORGANISATION_NAME
 
     const validUpdateServiceRequest = new ServiceUpdateRequest()
       .replace(validPaths.merchantDetails.name, merchantDetails.name)
@@ -98,15 +95,17 @@ describe('adminusers client - patch request to update service', function () {
       .replace(validPaths.merchantDetails.addressPostcode, merchantDetails.address_postcode)
       .replace(validPaths.merchantDetails.telephoneNumber, merchantDetails.telephone_number)
       .replace(validPaths.merchantDetails.email, merchantDetails.email)
+      .replace(validPaths.currentGoLiveStage, currentGoLiveStage)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
       external_id: existingServiceExternalId,
-      merchant_details: merchantDetails
+      merchant_details: merchantDetails,
+      current_go_live_stage: currentGoLiveStage
     })
 
-    before(done => {
-      provider.addInteraction(
+    before(() => {
+      return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('a valid update service request to update all fields')
           .withState(`a service exists with external id ${existingServiceExternalId}`)
@@ -114,21 +113,16 @@ describe('adminusers client - patch request to update service', function () {
           .withRequestBody(validUpdateServiceRequest)
           .withStatusCode(200)
           .withResponseBody(validUpdateServiceResponse.getPactified())
-          .build()
-      )
-        .then(() => done())
-        .catch(done)
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should update service successfully', (done) => {
-      adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
-        .should.be.fulfilled
-        .then(service => {
-          expect(service.externalId).to.equal(existingServiceExternalId)
-          expect(service.merchantDetails).to.deep.equal(merchantDetails)
-        }).should.notify(done)
+    it('should update service successfully', async function () {
+      const service = await adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
+      expect(service.externalId).to.equal(existingServiceExternalId)
+      expect(service.merchantDetails).to.deep.equal(merchantDetails)
+      expect(service.currentGoLiveStage).to.equal(currentGoLiveStage)
     })
   })
 
@@ -139,28 +133,21 @@ describe('adminusers client - patch request to update service', function () {
       'value': 'bar'
     }]
 
-    before(done => {
-      provider.addInteraction(
+    before(() => {
+      return provider.addInteraction(
         new PactInteractionBuilder(`${SERVICE_RESOURCE}/${existingServiceExternalId}`)
           .withUponReceiving('an invalid update service patch request')
           .withState(`a service exists with external id ${existingServiceExternalId}`)
           .withMethod('PATCH')
           .withRequestBody(invalidRequest)
           .withStatusCode(400)
-          .build()
-      )
-        .then(() => done())
-        .catch(done)
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should return a 400 response', (done) => {
-      adminUsersClient.updateService(existingServiceExternalId, invalidRequest)
-        .should.be.rejected
-        .then(response => {
-          expect(response.errorCode).to.equal(400)
-        }).should.notify(done)
+    it('should reject promise', () => {
+      adminUsersClient.updateService(existingServiceExternalId, invalidRequest).should.be.rejected // eslint-disable-line
     })
   })
 })

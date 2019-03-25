@@ -10,6 +10,7 @@ const response = require('../../../utils/response')
 const {
   NOT_STARTED,
   ENTERED_ORGANISATION_NAME,
+  ENTERED_ORGANISATION_ADDRESS,
   CHOSEN_PSP_STRIPE,
   CHOSEN_PSP_WORLDPAY,
   CHOSEN_PSP_SMARTPAY,
@@ -44,11 +45,13 @@ const chosenHowToProcessPayments = [
 
 const enteredOrganisationName = [
   ENTERED_ORGANISATION_NAME,
+  ENTERED_ORGANISATION_ADDRESS,
   ...chosenHowToProcessPayments
 ]
 
 const startedButStillStepsToComplete = [
   ENTERED_ORGANISATION_NAME,
+  ENTERED_ORGANISATION_ADDRESS,
   CHOSEN_PSP_STRIPE,
   CHOSEN_PSP_WORLDPAY,
   CHOSEN_PSP_SMARTPAY,
@@ -86,6 +89,5 @@ module.exports = (req, res) => {
     pspIsStripe: pspIsStripe.includes(currentGoLiveStage)
   }
 
-  return response.response(req, res,'request-to-go-live/index', pageData)
-
+  return response.response(req, res, 'request-to-go-live/index', pageData)
 }

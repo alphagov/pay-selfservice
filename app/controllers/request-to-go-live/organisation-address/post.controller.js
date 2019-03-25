@@ -2,53 +2,75 @@
 
 // NPM dependencies
 const lodash = require('lodash')
+const logger = require('winston')
 
 // Local dependencies
+const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
+const goLiveStage = require('../../../models/go-live-stage')
 const { requestToGoLive } = require('../../../paths')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validatePhoneNumber
 } = require('../../../utils/validation/server-side-form-validations')
+const { updateService } = require('../../../services/service_service')
 const { renderErrorView } = require('../../../utils/response')
+const { validPaths, ServiceUpdateRequest } = require('../../../models/ServiceUpdateRequest.class')
 
-const ADDRESS_LINE1_FIELD = 'address-line1'
-const ADDRESS_LINE2_FIELD = 'address-line2'
-const ADDRESS_CITY_FIELD = 'address-city'
-const ADDRESS_COUNTRY_FIELD = 'address-country'
-const ADDRESS_POSTCODE_FIELD = 'address-postcode'
-const TELEPHONE_NUMBER_FIELD = 'telephone-number'
+const clientFormIds = {
+  addressLine1: 'address-line1',
+  addressLine2: 'address-line2',
+  addressCity: 'address-city',
+  addressPostcode: 'address-postcode',
+  addressCountry: 'address-country',
+  telephoneNumber: 'telephone-number'
+}
 
 const validationRules = [
   {
-    field: ADDRESS_LINE1_FIELD,
+    field: clientFormIds.addressLine1,
     validator: validateMandatoryField,
     maxLength: 200
   },
   {
-    field: ADDRESS_LINE2_FIELD,
+    field: clientFormIds.addressLine2,
     validator: validateOptionalField,
     maxLength: 200
   },
   {
-    field: ADDRESS_CITY_FIELD,
+    field: clientFormIds.addressCity,
     validator: validateMandatoryField,
     maxLength: 100
   },
   {
-    field: ADDRESS_COUNTRY_FIELD,
+    field: clientFormIds.addressCountry,
     validator: validateMandatoryField,
     maxLength: 2
   },
   {
-    field: TELEPHONE_NUMBER_FIELD,
+    field: clientFormIds.telephoneNumber,
     validator: validatePhoneNumber
   }
 ]
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-const validate = function validate (formFields) {
+const normaliseForm = (formBody) => {
+  const fields = [
+    clientFormIds.addressLine1,
+    clientFormIds.addressLine2,
+    clientFormIds.addressCity,
+    clientFormIds.addressCountry,
+    clientFormIds.addressPostcode,
+    clientFormIds.telephoneNumber
+  ]
+  return fields.reduce((form, field) => {
+    form[field] = trimField(field, formBody)
+    return form
+  }, {})
+}
+
+const validateForm = function validate (form) {
   const errors = validationRules.reduce((errors, validationRule) => {
-    const value = formFields[validationRule.field]
+    const value = form[validationRule.field]
     const validationResponse = validationRule.validator(value, validationRule.maxLength)
     if (!validationResponse.valid) {
       errors[validationRule.field] = validationResponse.message
@@ -56,45 +78,60 @@ const validate = function validate (formFields) {
     return errors
   }, {})
 
-  const postCode = formFields[ADDRESS_POSTCODE_FIELD]
-  const country = formFields[ADDRESS_COUNTRY_FIELD]
+  const postCode = form[clientFormIds.addressPostcode]
+  const country = form[clientFormIds.addressCountry]
   const postCodeValidResponse = validatePostcode(postCode, country)
   if (!postCodeValidResponse.valid) {
-    errors[ADDRESS_POSTCODE_FIELD] = postCodeValidResponse.message
+    errors[clientFormIds.addressPostcode] = postCodeValidResponse.message
   }
   return errors
 }
 
-module.exports = (req, res) => {
-  const fields = [
-    ADDRESS_LINE1_FIELD,
-    ADDRESS_LINE2_FIELD,
-    ADDRESS_CITY_FIELD,
-    ADDRESS_COUNTRY_FIELD,
-    ADDRESS_POSTCODE_FIELD,
-    TELEPHONE_NUMBER_FIELD
-  ]
-  const formFields = fields.reduce((form, field) => {
-    form[field] = trimField(field, req.body)
-    return form
-  }, {})
+const submitForm = async function (form, serviceExternalId, correlationId) {
+  const updateRequest = new ServiceUpdateRequest()
+    .replace(validPaths.merchantDetails.addressLine1, form[clientFormIds.addressLine1])
+    .replace(validPaths.merchantDetails.addressLine2, form[clientFormIds.addressLine2])
+    .replace(validPaths.merchantDetails.addressCity, form[clientFormIds.addressCity])
+    .replace(validPaths.merchantDetails.addressPostcode, form[clientFormIds.addressPostcode])
+    .replace(validPaths.merchantDetails.addressCountry, form[clientFormIds.addressCountry])
+    .replace(validPaths.merchantDetails.telephoneNumber, form[clientFormIds.telephoneNumber])
+    .replace(validPaths.currentGoLiveStage, goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+    .formatPayload()
 
-  const errors = validate(formFields)
+  return updateService(serviceExternalId, updateRequest, correlationId)
+}
 
-  if (lodash.isEmpty(errors)) {
-    // TODO: handle submission
+const buildErrorsPageData = (form, errors) => {
+  return {
+    success: false,
+    errors: errors,
+    address_line1: form[clientFormIds.addressLine1],
+    address_line2: form[clientFormIds.addressLine2],
+    address_city: form[clientFormIds.addressCity],
+    address_postcode: form[clientFormIds.addressPostcode],
+    address_country: form[clientFormIds.addressCountry],
+    telephone_number: form[clientFormIds.telephoneNumber]
+  }
+}
+
+module.exports = async function (req, res) {
+  try {
+    const form = normaliseForm(req.body)
+    const errors = validateForm(form)
+
+    if (lodash.isEmpty(errors)) {
+      const updatedService = await submitForm(form, req.service.externalId, req.correlationId)
+      res.redirect(
+        303,
+        goLiveStageToNextPagePath[updatedService.currentGoLiveStage].replace(':externalServiceId', req.service.externalId)
+      )
+    } else {
+      const pageData = buildErrorsPageData(form, errors)
+      lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', pageData)
+      res.redirect(303, requestToGoLive.organisationAddress.replace(':externalServiceId', req.service.externalId))
+    }
+  } catch (error) {
+    logger.error(`Error submitting organisation address - ${error.stack}`)
     renderErrorView(req, res)
-  } else {
-    lodash.set(req, 'session.pageData.requestToGoLive.organisationAddress', {
-      success: false,
-      errors: errors,
-      address_line1: formFields[ADDRESS_LINE1_FIELD],
-      address_line2: formFields[ADDRESS_LINE2_FIELD],
-      address_city: formFields[ADDRESS_CITY_FIELD],
-      address_postcode: formFields[ADDRESS_POSTCODE_FIELD],
-      address_country: formFields[ADDRESS_COUNTRY_FIELD],
-      telephone_number: formFields[TELEPHONE_NUMBER_FIELD]
-    })
-    return res.redirect(303, requestToGoLive.organisationAddress.replace(':externalServiceId', req.service.externalId))
   }
 }
