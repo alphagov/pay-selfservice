@@ -135,7 +135,7 @@
     "grunt-browserify": "^5.3.0",
     "grunt-contrib-clean": "2.0.x",
     "grunt-contrib-copy": "1.0.x",
-    "grunt-contrib-uglify": "^4.0.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "1.1.x",
     "grunt-sass": "^3.0.2",
     "html5shiv": "3.7.x",
