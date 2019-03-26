@@ -36,7 +36,7 @@ describe('connector client', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('get transaction details', () => {
     const params = {

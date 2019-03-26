@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -34,7 +34,7 @@ describe('products client - disable a product', () => {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('when a product is successfully disabled', () => {
     before(done => {
@@ -69,7 +69,7 @@ describe('products client - disable a product', () => {
       productExternalId = 'a_non_existant_external_id'
       provider.addInteraction(
         new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`)
-          .withUponReceiving('an invalid create product request')
+          .withUponReceiving('an invalid disable product request')
           .withMethod('PATCH')
           .withStatusCode(400)
           .build()

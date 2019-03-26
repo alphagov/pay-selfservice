@@ -28,7 +28,7 @@ describe('adminusers client - assign service role to user', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('assign user service role API - success', () => {
     let role = 'view-and-refund'

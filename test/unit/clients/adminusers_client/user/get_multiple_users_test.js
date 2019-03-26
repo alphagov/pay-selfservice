@@ -25,7 +25,7 @@ describe('adminusers client - get users', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('success', () => {
     let existingExternalIds = [

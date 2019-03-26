@@ -23,7 +23,7 @@ describe('adminusers client - create forgotten password', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('success', () => {
     const username = 'existing-user'

@@ -35,7 +35,7 @@ describe('connector client - patch email confirmation toggle', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('patch email confirmation toggle - enabled', () => {
     const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(true)

@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -35,7 +35,7 @@ describe('products client - find a product by it\'s external id', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('when a product is successfully found', () => {
     before(done => {
@@ -52,7 +52,7 @@ describe('products client - find a product by it\'s external id', function () {
       })
       provider.addInteraction(
         new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
-          .withUponReceiving('a valid get product request')
+          .withUponReceiving('a valid get product request by external id')
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(response.getPactified())

@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -36,19 +36,19 @@ describe('products client - find a payment by it\'s associated product external 
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('when a product is successfully found', () => {
     before(done => {
       const productsClient = getProductsClient()
       productExternalId = 'existing-id'
       response = [
-        productFixtures.validCreatePaymentResponse({product_external_id: productExternalId}),
-        productFixtures.validCreatePaymentResponse({product_external_id: productExternalId}),
-        productFixtures.validCreatePaymentResponse({product_external_id: productExternalId})
+        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
+        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId }),
+        productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId })
       ]
       const interaction = new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/payments`)
-        .withUponReceiving('a valid get payment request')
+        .withUponReceiving('a valid get payment by product request')
         .withMethod('GET')
         .withStatusCode(200)
         .withResponseBody(response.map(item => item.getPactified()))
@@ -91,7 +91,7 @@ describe('products client - find a payment by it\'s associated product external 
       productExternalId = 'non-existing-id'
       provider.addInteraction(
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}/${productExternalId}/payments`)
-          .withUponReceiving('a valid find product request with non existing id')
+          .withUponReceiving('a valid find product payments request with non existing id')
           .withMethod('GET')
           .withStatusCode(404)
           .build()

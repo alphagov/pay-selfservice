@@ -32,7 +32,7 @@ describe('connector client - create gateway account', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('create gateway account - success', () => {
     const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()

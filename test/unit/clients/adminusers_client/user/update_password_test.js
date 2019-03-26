@@ -25,7 +25,7 @@ describe('adminusers client - update password', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('update password for user API - success', () => {
     let request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')

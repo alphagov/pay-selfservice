@@ -26,7 +26,7 @@ describe('adminusers client - invite user', function () {
   })
 
   before(() => provider.setup())
-  after((done) => provider.finalize().then(done()))
+  after(() => provider.finalize())
 
   describe('success', function () {
     let validInvite = inviteFixtures.validInviteRequest({externalServiceId: externalServiceId})
