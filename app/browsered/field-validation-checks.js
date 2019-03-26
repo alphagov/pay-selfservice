@@ -14,8 +14,8 @@ const validationErrors = {
   validEmail: 'Please use a valid email address',
   isHttps: 'URL must begin with https://',
   isAboveMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
-  isPasswordLessThanTenChars: `Choose a Password of 10 characters or longer`,
-  isGreaterThanMaxLengthChars: `The text is too long`,
+  isPasswordLessThanTenChars: 'Choose a Password of 10 characters or longer',
+  isGreaterThanMaxLengthChars: 'The text is too long',
   invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`,
   invalidBankAccountNumber: 'Enter a valid account number',
   invalidSortCode: 'Enter a valid sort code',
@@ -104,8 +104,8 @@ exports.isNotSortCode = value => {
 }
 
 exports.isNotVatNumber = value => {
-  const alphaNumeric = value.replace(/\W/g, '')
-  if (/^(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})$/.test(alphaNumeric)) {
+  const trimmedVatNumber = value.replace(/\s/g, '')
+  if (/^(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})$/.test(trimmedVatNumber)) {
     return false
   } else {
     return validationErrors.invalidVatNumber

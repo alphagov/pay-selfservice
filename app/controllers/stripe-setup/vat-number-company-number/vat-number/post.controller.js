@@ -12,20 +12,20 @@ const VAT_NUMBER_FIELD = 'vat-number'
 
 module.exports = (req, res) => {
   const rawVatNumber = lodash.get(req.body, VAT_NUMBER_FIELD, '')
-  const vatNumber = rawVatNumber.replace(/\s/g, '').toUpperCase()
-  const errors = validateVatNumber(vatNumber)
+  const sanitisedVatNumber = rawVatNumber.replace(/\s/g, '').toUpperCase()
+  const displayVatNumber = sanitisedVatNumber
 
+  const errors = validateVatNumber(rawVatNumber)
   if (!lodash.isEmpty(errors)) {
-    lodash.set(req, 'session.pageData.stripeSetup.vatNumber', {
-      success: false,
+    lodash.set(req, 'session.pageData.stripeSetup.vatNumberData', {
       errors: errors,
       vatNumber: rawVatNumber
     })
     return res.redirect(303, stripeSetup.vatNumber)
   } else {
-    lodash.set(req, 'session.pageData.stripeSetup.vatNumber', {
-      success: true,
-      vatNumber: vatNumber
+    lodash.set(req, 'session.pageData.stripeSetup.vatNumberData', {
+      errors: {},
+      vatNumber: displayVatNumber
     })
     return res.redirect(303, stripeSetup.companyNumber)
   }
@@ -34,7 +34,7 @@ module.exports = (req, res) => {
 function validateVatNumber (vatNumber) {
   const errors = {}
 
-  const vatNumberValidationResult = vatNumberValidations.validateMandatoryField(vatNumber)
+  const vatNumberValidationResult = vatNumberValidations.validateVatNumber(vatNumber)
   if (!vatNumberValidationResult.valid) {
     errors[VAT_NUMBER_FIELD] = vatNumberValidationResult.message
   }
