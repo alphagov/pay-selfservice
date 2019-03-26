@@ -1,8 +1,8 @@
 'use strict'
 
 // Local dependencies
-const response = require('../../../utils/response')
+const { response } = require('../../../utils/response')
 
 module.exports = (req, res) => {
-  return response.response(req, res, 'stripe-setup/responsible-person/index')
+  return response(req, res, 'stripe-setup/responsible-person/index')
 }

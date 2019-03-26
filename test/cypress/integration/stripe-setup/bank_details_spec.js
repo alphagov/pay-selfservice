@@ -21,7 +21,7 @@ describe('Stripe setup: bank details page', () => {
       return stripeSetupStub
     }
 
-    const stubGetStripeAccountSuccess = function getStripeAccountSuccess (stripeAccountId) {
+    const stubGetStripeAccountSuccess = function stubGetStripeAccountSuccess (stripeAccountId) {
       const stripeAccountStub = {
         name: 'getStripeAccountSuccess',
         opts: {
@@ -40,14 +40,14 @@ describe('Stripe setup: bank details page', () => {
      * @param bankAccountCompleted
      * @returns {{opts: {gateway_account_id: number, data: *}, name: string}}
      */
-    const stubGetGatewayAccountStripeSetupBankAccountFlagChanged = function getGatewayAccountStripeSetupBankAccountFlagChanged (...bankAccountCompleted) {
+    const stubGetGatewayAccountStripeSetupBankAccountFlagChanged = function stubGetGatewayAccountStripeSetupBankAccountFlagChanged (...bankAccountCompleted) {
       const data = bankAccountCompleted.map(completed => (
         {
           bank_account: completed
         }
       ))
       const stripeBankAccountFlagStub = {
-        name: 'getGatewayAccountStripeSetupBankAccountFlagChanged',
+        name: 'getGatewayAccountStripeSetupFlagChanged',
         opts: {
           gateway_account_id: gatewayAccountId,
           data: data

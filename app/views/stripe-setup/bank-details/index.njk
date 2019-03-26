@@ -43,11 +43,11 @@
       {% endif %}
 
       {{ govukInput({
+        name: "account-number",
+        id: "account-number-input",
         label: {
           text: "Account number"
         },
-        id: "account-number-input",
-        name: "account-number",
         classes: "govuk-input--width-10",
         value: accountNumber,
         type: "text",
