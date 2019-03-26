@@ -134,7 +134,7 @@ module.exports = {
       }
     ]
   },
-  getGatewayAccountStripeSetupBankAccountFlagChanged: (opts = {}) => {
+  getGatewayAccountStripeSetupFlagChanged: (opts = {}) => {
     const responses = []
     opts.data.forEach(item => {
       responses.push({

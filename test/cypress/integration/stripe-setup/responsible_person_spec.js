@@ -56,7 +56,7 @@ describe('Stripe setup: responsible person page', () => {
       }
     ))
     return {
-      name: 'getGatewayAccountStripeSetupBankAccountFlagChanged',
+      name: 'getGatewayAccountStripeSetupFlagChanged',
       opts: {
         gateway_account_id: gatewayAccountId,
         data: data
