@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -43,7 +43,7 @@ describe('products client - delete a product', () => {
       productExternalId = 'a_valid_external_id'
       provider.addInteraction(
         new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
-          .withUponReceiving('a valid disable product request')
+          .withUponReceiving('a valid delete product request')
           .withMethod('DELETE')
           .withStatusCode(204)
           .build()

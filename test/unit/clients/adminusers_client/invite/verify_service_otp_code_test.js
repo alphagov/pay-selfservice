@@ -11,7 +11,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const OTP_VALIDATE_RESOURCE = '/v1/api/invites/otp/validate/service'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - validate otp code for a service', function () {
   let provider = Pact({
@@ -28,7 +28,7 @@ describe('adminusers client - validate otp code for a service', function () {
   after(() => provider.finalize())
 
   describe('success', () => {
-    let validRequest = registrationFixtures.validVerifyOtpCodeRequest({code: 'aValidCode'})
+    let validRequest = registrationFixtures.validVerifyOtpCodeRequest({ code: 'aValidCode' })
 
     before((done) => {
       let pactified = validRequest.getPactified()
@@ -62,7 +62,7 @@ describe('adminusers client - validate otp code for a service', function () {
       let pactified = verifyCodeRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-          .withUponReceiving('a verify otp code request with missing code')
+          .withUponReceiving('a verify service otp code request with missing code')
           .withMethod('POST')
           .withRequestBody(pactified)
           .withStatusCode(400)
@@ -91,7 +91,7 @@ describe('adminusers client - validate otp code for a service', function () {
       let pactified = verifyCodeRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-          .withUponReceiving('a verify otp code request with non existent code')
+          .withUponReceiving('a verify service otp code request with non existent code')
           .withMethod('POST')
           .withRequestBody(pactified)
           .withStatusCode(404)
@@ -117,7 +117,7 @@ describe('adminusers client - validate otp code for a service', function () {
       let pactified = verifyCodeRequest.getPactified()
       provider.addInteraction(
         new PactInteractionBuilder(`${OTP_VALIDATE_RESOURCE}`)
-          .withUponReceiving('a registration details submission for locked code')
+          .withUponReceiving('a service registration details submission for locked code')
           .withMethod('POST')
           .withRequestBody(pactified)
           .withStatusCode(410)

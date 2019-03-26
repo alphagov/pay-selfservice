@@ -4,17 +4,17 @@
 const Pact = require('pact')
 const path = require('path')
 const chai = require('chai')
-const {expect} = chai
+const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
-
-// user dependencies
-const gatewayAccountFixtures = require('../../../fixtures/gateway_account_fixtures')
-const publicauthClient = require('../../../../app/services/clients/public_auth_client')
-const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
 // constants
 const port = Math.floor(Math.random() * 48127) + 1024
 const TOKENS_PATH = '/v1/frontend/auth'
+process.env.PUBLIC_AUTH_URL = `http://localhost:${port}${TOKENS_PATH}`
+
+const gatewayAccountFixtures = require('../../../fixtures/gateway_account_fixtures')
+const publicauthClient = require('../../../../app/services/clients/public_auth_client')
+const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 
 chai.use(chaiAsPromised)
 
@@ -31,8 +31,6 @@ describe('publicauth client - get tokens', function () {
 
   before(() => provider.setup())
   after(() => provider.finalize())
-
-  process.env.PUBLIC_AUTH_URL = `http://localhost:${port}${TOKENS_PATH}`
 
   describe('success', () => {
     const params = {
@@ -51,7 +49,7 @@ describe('publicauth client - get tokens', function () {
       ).then(() => { done() })
     })
 
-    afterEach(() => provider.finalize())
+    afterEach(() => provider.verify())
 
     it('should return service tokens information successfully', function (done) {
       const expectedTokensData = getServiceAuthResponse.getPlain()

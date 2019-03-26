@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -41,7 +41,7 @@ describe('products client - find a payment by it\'s own external id', function (
     before(done => {
       const productsClient = getProductsClient()
       paymentExternalId = 'existing-id'
-      response = productFixtures.validCreatePaymentResponse({external_id: paymentExternalId})
+      response = productFixtures.validCreatePaymentResponse({ external_id: paymentExternalId })
       const interaction = new PactInteractionBuilder(`${PAYMENT_RESOURCE}/${paymentExternalId}`)
         .withUponReceiving('a valid get payment request')
         .withMethod('GET')
@@ -82,7 +82,7 @@ describe('products client - find a payment by it\'s own external id', function (
       paymentExternalId = 'non-existing-id'
       provider.addInteraction(
         new PactInteractionBuilder(`${PAYMENT_RESOURCE}/${paymentExternalId}`)
-          .withUponReceiving('a valid find product request with non existing id')
+          .withUponReceiving('a valid find payment request with non existing id')
           .withMethod('GET')
           .withStatusCode(404)
           .build()

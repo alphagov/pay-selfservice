@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -56,7 +56,7 @@ describe('products client - find a product by it\'s product path', function () {
         new PactInteractionBuilder(`${PRODUCT_RESOURCE}`)
           .withQuery('serviceNamePath', serviceNamePath)
           .withQuery('productNamePath', productNamePath)
-          .withUponReceiving('a valid get product request')
+          .withUponReceiving('a valid get product request by product path')
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(response.getPactified())
