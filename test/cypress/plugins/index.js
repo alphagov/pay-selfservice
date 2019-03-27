@@ -24,7 +24,8 @@ module.exports = (on, config) => {
     getCookies (opts) {
       const encryptedSessionCookie = generateEncryptedSessionCookie(
         config.env.TEST_SESSION_ENCRYPTION_KEY,
-        opts.user_external_id
+        opts.user_external_id,
+        opts.pageData
       )
       const encryptedGatewayAccountCookie = generateEncryptedGatewayAccountCookie(
         config.env.TEST_SESSION_ENCRYPTION_KEY,
@@ -68,13 +69,14 @@ module.exports = (on, config) => {
   return config
 }
 
-function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId) {
+function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId, pageData = {}) {
   const encryptedSessionCookie = cookieMonster.getCookie('session', sessionEncyptionKey,
     {
       passport: { user: userExternalId },
       secondFactor: 'totp',
       version: 0,
-      icamefrom: 'cypress.io'
+      icamefrom: 'cypress.io',
+      pageData
     })
   return encryptedSessionCookie
 }

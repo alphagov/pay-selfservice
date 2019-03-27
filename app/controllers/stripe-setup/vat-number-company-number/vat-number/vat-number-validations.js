@@ -3,7 +3,7 @@
 // Local dependencies
 const { isEmpty, isNotVatNumber } = require('../../../../browsered/field-validation-checks')
 
-exports.validateMandatoryField = function validateMandatoryField (value) {
+exports.validateVatNumber = function validateVatNumber (value) {
   const isEmptyErrorMessage = isEmpty(value)
   if (isEmptyErrorMessage) {
     return {

@@ -81,6 +81,7 @@ const stripeSetupResponsiblePersonController = require('./controllers/stripe-set
 const stripeSetupVatNumberCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number')
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number-company-number/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
+const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setup/vat-number-company-number/check-your-answers')
 
 // Assignments
 const {
@@ -417,7 +418,7 @@ module.exports.bind = function (app) {
     checkResponsiblePersonNotSubmitted,
     stripeSetupResponsiblePersonController.post)
 
-  // Stripe setup: VAT number company number
+  // Stripe setup: vat-number-company-number / index
   app.get(stripeSetup.vatNumberCompanyNumber,
     xraySegmentCls,
     permission('stripe-vat-number-company-number:update'),
@@ -428,7 +429,7 @@ module.exports.bind = function (app) {
     stripeSetupVatNumberCompanyNumberController.get
   )
 
-  // Stripe setup: VAT number
+  // Stripe setup: vat-number-company-number / VAT number
   app.get(stripeSetup.vatNumber,
     xraySegmentCls,
     permission('stripe-vat-number-company-number:update'),
@@ -448,7 +449,7 @@ module.exports.bind = function (app) {
     stripeSetupVatNumberController.post
   )
 
-  // Stripe setup: company number
+  // Stripe setup: vat-number-company-number / company number
   app.get(stripeSetup.companyNumber,
     xraySegmentCls,
     permission('stripe-vat-number-company-number:update'),
@@ -466,6 +467,26 @@ module.exports.bind = function (app) {
     restrictToLiveStripeAccount,
     checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCompanyNumberController.post
+  )
+
+  // Stripe setup: vat-number-company-number / check your answers
+  app.get(stripeSetup.checkYourAnswers,
+    xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
+    stripeSetupCheckYourAnswersController.get
+  )
+  app.post(stripeSetup.checkYourAnswers,
+    xraySegmentCls,
+    permission('stripe-vat-number-company-number:update'),
+    getAccount,
+    paymentMethodIsCard,
+    restrictToLiveStripeAccount,
+    checkVatNumberCompanyNumberNotSubmitted,
+    stripeSetupCheckYourAnswersController.post
   )
 
   app.all('*', (req, res) => {

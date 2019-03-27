@@ -4,13 +4,12 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const response = require('../../../../utils/response')
+const { response } = require('../../../../utils/response')
 
 module.exports = (req, res) => {
-  // initialise pageData
-  let pageData = lodash.get(req, 'session.pageData.stripeSetup.vatNumber')
+  let pageData = lodash.get(req, 'session.pageData.stripeSetup.vatNumberData')
   if (pageData) {
-    delete req.session.pageData.stripeSetup.vatNumber
+    delete req.session.pageData.stripeSetup.vatNumberData
   } else {
     pageData = {
       errors: {},
@@ -18,5 +17,5 @@ module.exports = (req, res) => {
     }
   }
 
-  return response.response(req, res, 'stripe-setup/vat-number-company-number/vat-number', pageData)
+  return response(req, res, 'stripe-setup/vat-number-company-number/vat-number', pageData)
 }

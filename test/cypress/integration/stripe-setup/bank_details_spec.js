@@ -21,7 +21,7 @@ describe('Stripe setup: bank details page', () => {
       return stripeSetupStub
     }
 
-    const stubGetStripeAccountSuccess = function getStripeAccountSuccess (stripeAccountId) {
+    const stubStripeAccountGet = function stubStripeAccountGet (stripeAccountId) {
       const stripeAccountStub = {
         name: 'getStripeAccountSuccess',
         opts: {
@@ -40,14 +40,14 @@ describe('Stripe setup: bank details page', () => {
      * @param bankAccountCompleted
      * @returns {{opts: {gateway_account_id: number, data: *}, name: string}}
      */
-    const stubGetGatewayAccountStripeSetupBankAccountFlagChanged = function getGatewayAccountStripeSetupBankAccountFlagChanged (...bankAccountCompleted) {
+    const stubStripeSetupGetForMultipleCalls = function stubStripeSetupGetForMultipleCalls (...bankAccountCompleted) {
       const data = bankAccountCompleted.map(completed => (
         {
           bank_account: completed
         }
       ))
       const stripeBankAccountFlagStub = {
-        name: 'getGatewayAccountStripeSetupBankAccountFlagChanged',
+        name: 'getGatewayAccountStripeSetupFlagChanged',
         opts: {
           gateway_account_id: gatewayAccountId,
           data: data
@@ -66,7 +66,7 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(false),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -77,8 +77,8 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('#bank-details-form').should('exist')
           .within(() => {
-            cy.get('input#account-number-input').should('exist')
-            cy.get('input#sort-code-input').should('exist')
+            cy.get('input#account-number').should('exist')
+            cy.get('input#sort-code').should('exist')
             cy.get('button[type=submit]').should('exist')
             cy.get('button[type=submit]').should('contain', 'Continue')
           })
@@ -89,48 +89,48 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Account number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#account-number-input')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#account-number')
         cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('contain', 'Sort code')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('have.attr', 'href', '#sort-code-input')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(2) > a').should('have.attr', 'href', '#sort-code')
 
-        cy.get('input#account-number-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=account-number-input] > span').should('contain', 'This field cannot be blank')
+        cy.get('input#account-number').should('have.class', 'govuk-input--error')
+        cy.get('label[for=account-number] > span').should('contain', 'This field cannot be blank')
 
-        cy.get('input#sort-code-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=sort-code-input] > span').should('contain', 'This field cannot be blank')
+        cy.get('input#sort-code').should('have.class', 'govuk-input--error')
+        cy.get('label[for=sort-code] > span').should('contain', 'This field cannot be blank')
       })
 
       it('should display an error when account number is invalid', () => {
-        cy.get('#account-number-input').type('abc')
-        cy.get('#sort-code-input').type(sortCode)
+        cy.get('input#account-number[name="account-number"]').type('abc')
+        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
 
         cy.get('#bank-details-form > button[type=submit]').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Account number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#account-number-input')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#account-number')
 
-        cy.get('input#account-number-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=account-number-input] > span').should('contain', 'Enter a valid account number')
+        cy.get('input#account-number').should('have.class', 'govuk-input--error')
+        cy.get('label[for=account-number] > span').should('contain', 'Enter a valid account number')
       })
 
       it('should display an error when sort code is invalid', () => {
-        cy.get('#account-number-input').type(accountNumber)
-        cy.get('#sort-code-input').type('abc')
+        cy.get('input#account-number[name="account-number"]').type(accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').type('abc')
 
         cy.get('#bank-details-form > button[type=submit]').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Sort code')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#sort-code-input')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#sort-code')
 
-        cy.get('input#sort-code-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=sort-code-input] > span').should('contain', 'Enter a valid sort code')
+        cy.get('input#sort-code').should('have.class', 'govuk-input--error')
+        cy.get('label[for=sort-code] > span').should('contain', 'Enter a valid sort code')
       })
 
       it('should go to check your answers page when inputs are valid', () => {
-        cy.get('#account-number-input').type(accountNumber)
-        cy.get('#sort-code-input').type(sortCode)
+        cy.get('input#account-number[name="account-number"]').type(accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
 
         cy.get('#bank-details-form > button[type=submit]').click()
 
@@ -147,7 +147,7 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(true),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details')
@@ -164,14 +164,14 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubGetGatewayAccountStripeSetupBankAccountFlagChanged(false, true),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeSetupGetForMultipleCalls(false, true),
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details')
 
-        cy.get('#account-number-input').type(accountNumber)
-        cy.get('#sort-code-input').type(sortCode)
+        cy.get('input#account-number[name="account-number"]').type(accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
         cy.get('#bank-details-form > button[type=submit]').click()
 
         cy.get('h1').should('contain', 'Dashboard')
@@ -186,15 +186,15 @@ describe('Stripe setup: bank details page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubGetGatewayAccountStripeSetupBankAccountFlagChanged(false, false, true),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeSetupGetForMultipleCalls(false, false, true),
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details')
 
         // Bank details page
-        cy.get('#account-number-input').type(accountNumber)
-        cy.get('#sort-code-input').type(sortCode)
+        cy.get('input#account-number[name="account-number"]').type(accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
         cy.get('#bank-details-form > button[type=submit]').click()
 
         // Check your answers page
@@ -216,7 +216,7 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
           stubGetGatewayAccountStripeSetupSuccess(false),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -232,7 +232,7 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(false),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details', {
@@ -261,13 +261,13 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(false),
-          stubGetStripeAccountSuccess('acct_123example123')
+          stubStripeAccountGet('acct_123example123')
         ])
 
         cy.visit('/bank-details')
 
-        cy.get('#account-number-input').type(accountNumber)
-        cy.get('#sort-code-input').type(sortCode)
+        cy.get('input#account-number[name="account-number"]').type(accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
         cy.get('#bank-details-form > button[type=submit]').click()
       })
 
@@ -283,8 +283,8 @@ describe('Stripe setup: bank details page', () => {
         cy.get('.govuk-error-summary').should('not.exist')
 
         cy.get('h1').should('contain', 'Add bank details')
-        cy.get('#account-number-input').should('have.value', accountNumber)
-        cy.get('#sort-code-input').should('have.value', displaySortCode)
+        cy.get('input#account-number[name="account-number"]').should('have.value', accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').should('have.value', displaySortCode)
       })
 
       it('should go back to index page when change sort code link clicked', () => {
@@ -292,8 +292,8 @@ describe('Stripe setup: bank details page', () => {
         cy.get('.govuk-error-summary').should('not.exist')
 
         cy.get('h1').should('contain', 'Add bank details')
-        cy.get('#account-number-input').should('have.value', accountNumber)
-        cy.get('#sort-code-input').should('have.value', displaySortCode)
+        cy.get('input#account-number[name="account-number"]').should('have.value', accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').should('have.value', displaySortCode)
       })
     })
   })

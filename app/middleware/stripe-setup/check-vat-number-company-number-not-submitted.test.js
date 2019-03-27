@@ -13,7 +13,7 @@ const paths = require('../../paths')
 chai.use(chaiAsPromised)
 const { expect } = chai // must be called after chai.use(chaiAsPromised) to use "should.eventually"
 
-describe('Check VAT number company number not submitted middleware', () => {
+describe('Check "VAT number / company number" not submitted middleware', () => {
   let req
   let res
   let next
@@ -35,7 +35,7 @@ describe('Check VAT number company number not submitted middleware', () => {
     next = sinon.spy()
   })
 
-  it('should call next when VAT number company number flag is false', done => {
+  it('should call next when "VAT number / company number" flag is false', done => {
     const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock({
       vatNumberCompanyNumber: false
     })
@@ -50,7 +50,7 @@ describe('Check VAT number company number not submitted middleware', () => {
     }, 250)
   })
 
-  it('should redirect to the dashboard with error message when VAT number company number flag is true', done => {
+  it('should redirect to the dashboard with error message when "VAT number / company number" flag is true', done => {
     const middleware = getMiddlewareWithConnectorClientResolvedPromiseMock({
       vatNumberCompanyNumber: true
     })

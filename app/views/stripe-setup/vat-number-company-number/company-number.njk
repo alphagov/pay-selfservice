@@ -15,7 +15,7 @@
     {% if errors['company-number'] %}
       {% set errorList = (errorList.push({
         text: 'Companies registration number',
-        href: '#stripe-setup-company-number-input'
+        href: '#company-number'
       }), errorList) %}
     {% endif %}
     {{ govukErrorSummary({
@@ -25,7 +25,7 @@
   {% endif %}
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
 
-    <form id="stripe-setup-company-number-form" method="post" action="/lets-go-no-where" data-validate="true">
+    <form id="company-number-form" method="post" action="/lets-go-no-where" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
 
@@ -39,7 +39,7 @@
       {% set companyHouseMode %}
         {{ govukInput({
           name: "company-number",
-          id: "stripe-setup-company-number-input",
+          id: "company-number",
           label: {
             text: "Companies House registration number"
           },

@@ -8,24 +8,24 @@
 {% endblock %}
 
 {% block mainContent %}
-
-  {% if errors | length %}
-    {% set errorList = [] %}
-    {% if errors['vat-number'] %}
-      {% set errorList = (errorList.push({
-        text: 'VAT number',
-        href: '#stripe-setup-vat-number-input'
-      }), errorList) %}
-    {% endif %}
-    {{ govukErrorSummary({
-      titleText: 'There was a problem with the details you gave for:',
-      errorList: errorList
-    }) }}
-  {% endif %}
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    {% if errors | length %}
+      {% set errorList = [] %}
+      {% if errors['vat-number'] %}
+        {% set errorList = (errorList.push({
+          text: 'VAT number',
+          href: '#vat-number'
+        }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
     <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Add your organisation’s VAT number</h1>
 
-    <form id="stripe-setup-vat-number-form" method="post" action="/vat-number-company-number/vat-number" data-validate="true">
+    <form id="vat-number-form" method="post"
+          action="/vat-number-company-number/vat-number" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set vatNumberError = false %}
@@ -35,26 +35,24 @@
         } %}
       {% endif %}
 
-      {{
-        govukInput({
-          name: "vat-number",
-          id: "stripe-setup-vat-number-input",
-          label: {
-            text: "VAT number"
-          },
-          hint: {
-            text: "For example, 'GBGD001'"
-          },
-          value: vatNumber,
-          classes: "govuk-input--width-30",
-          type: "text",
-          errorMessage: vatNumberError,
-          attributes: {
-            "data-validate": "required vatNumber",
-            "autocomplete": "off"
-          }
-        })
-      }}
+      {{ govukInput({
+        name: "vat-number",
+        id: "vat-number",
+        label: {
+          text: "VAT number"
+        },
+        hint: {
+          text: "For example, 'GBGD001'"
+        },
+        classes: "govuk-input--width-30",
+        value: vatNumber,
+        type: "text",
+        errorMessage: vatNumberError,
+        attributes: {
+          "data-validate": "required vatNumber",
+          "autocomplete": "off"
+        }
+      }) }}
 
       {{ govukButton({ text: "Continue" }) }}
     </form>
