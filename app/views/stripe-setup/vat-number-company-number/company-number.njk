@@ -15,7 +15,7 @@
     {% if errors['company-number'] %}
       {% set errorList = (errorList.push({
         text: 'Companies registration number',
-        href: '#company-number-input'
+        href: '#company-number'
       }), errorList) %}
     {% endif %}
     {{ govukErrorSummary({
@@ -39,7 +39,7 @@
       {% set companyHouseMode %}
         {{ govukInput({
           name: "company-number",
-          id: "company-number-input",
+          id: "company-number",
           label: {
             text: "Companies House registration number"
           },

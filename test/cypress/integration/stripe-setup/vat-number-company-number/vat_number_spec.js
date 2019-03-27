@@ -4,8 +4,8 @@
 const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
-  stubGetStripeAccountSuccess,
-  stubGetGatewayAccountStripeSetupVatNumberCompanyNumberFlagChanged
+  stubStripeAccountGet,
+  stubStripeSetupGetForMultipleCalls
 } = require('./support')
 
 describe('Stripe setup: VAT number page', () => {
@@ -13,13 +13,13 @@ describe('Stripe setup: VAT number page', () => {
   const userExternalId = 'userExternalId'
 
   describe('Card gateway account', () => {
-    describe('when user is admin, account is Stripe and VAT number company number is not finished', () => {
+    describe('when user is admin, account is Stripe and "VAT number / company number" is not already submitted', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
@@ -32,38 +32,38 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('#vat-number-form').should('exist')
           .within(() => {
-            cy.get('input#vat-number-input').should('exist')
+            cy.get('input#vat-number[name="vat-number"]').should('exist')
             cy.get('button[type=submit]').should('exist')
             cy.get('button[type=submit]').should('contain', 'Continue')
           })
       })
 
-      it('should display an error when all fields are blank', () => {
+      it('should display an error when VAT number input is blank', () => {
         cy.get('#vat-number-form > button[type=submit]').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'VAT number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number-input')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
-        cy.get('input#vat-number-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=vat-number-input] > span').should('contain', 'This field cannot be blank')
+        cy.get('input#vat-number[name="vat-number"]').should('have.class', 'govuk-input--error')
+        cy.get('label[for=vat-number] > span').should('contain', 'This field cannot be blank')
       })
 
       it('should display an error when VAT number is invalid', () => {
-        cy.get('#vat-number-input').type('(╯°□°)╯︵ ┻━┻')
+        cy.get('input#vat-number[name="vat-number"]').type('(╯°□°)╯︵ ┻━┻')
 
         cy.get('#vat-number-form > button[type=submit]').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'VAT number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number-input')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#vat-number')
 
-        cy.get('input#vat-number-input').should('have.class', 'govuk-input--error')
-        cy.get('label[for=vat-number-input] > span').should('contain', 'Enter a valid VAT number')
+        cy.get('input#vat-number[name="vat-number"]').should('have.class', 'govuk-input--error')
+        cy.get('label[for=vat-number] > span').should('contain', 'Enter a valid VAT number')
       })
 
       it('should redirect to /company-number page when inputs are valid', () => {
-        cy.get('#vat-number-input').type('GB999 9999 73')
+        cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
         cy.get('#vat-number-form > button[type=submit]').click()
 
@@ -73,7 +73,7 @@ describe('Stripe setup: VAT number page', () => {
       })
     })
 
-    describe('when user is admin, account is Stripe and VAT number company number is finished', () => {
+    describe('when user is admin, account is Stripe and "VAT number / company number" is already submitted', () => {
       beforeEach(() => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       })
@@ -83,7 +83,7 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, true),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number/vat-number')
@@ -100,13 +100,13 @@ describe('Stripe setup: VAT number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubGetGatewayAccountStripeSetupVatNumberCompanyNumberFlagChanged(gatewayAccountId, false, true),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, true),
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number/vat-number')
 
-        cy.get('#vat-number-input').type('GB999 9999 73')
+        cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
         cy.get('#vat-number-form > button[type=submit]').click()
 
@@ -129,7 +129,7 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number/vat-number', {
@@ -149,7 +149,7 @@ describe('Stripe setup: VAT number page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number/vat-number', {

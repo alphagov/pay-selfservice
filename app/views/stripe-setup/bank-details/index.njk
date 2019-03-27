@@ -14,13 +14,13 @@
       {% if errors['account-number'] %}
         {% set errorList = (errorList.push({
           text: 'Account number',
-          href: '#account-number-input'
+          href: '#account-number'
         }), errorList) %}
       {% endif %}
       {% if errors['sort-code'] %}
         {% set errorList = (errorList.push({
           text: 'Sort code',
-          href: '#sort-code-input'
+          href: '#sort-code'
         }), errorList) %}
       {% endif %}
       {{ govukErrorSummary({
@@ -44,7 +44,7 @@
 
       {{ govukInput({
         name: "account-number",
-        id: "account-number-input",
+        id: "account-number",
         label: {
           text: "Account number"
         },
@@ -69,7 +69,7 @@
         label: {
           text: "Sort code"
         },
-        id: "sort-code-input",
+        id: "sort-code",
         name: "sort-code",
         classes: "govuk-input--width-10",
         value: sortCode,

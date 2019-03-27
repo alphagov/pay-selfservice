@@ -11,7 +11,7 @@ module.exports = {
     }
     return stripeSetupStub
   },
-  stubGetStripeAccountSuccess: function stubGetStripeAccountSuccess (gatewayAccountId, stripeAccountId) {
+  stubStripeAccountGet: function stubStripeAccountGet (gatewayAccountId, stripeAccountId) {
     const stripeAccountStub = {
       name: 'getStripeAccountSuccess',
       opts: {
@@ -21,7 +21,7 @@ module.exports = {
     }
     return stripeAccountStub
   },
-  stubGetGatewayAccountStripeSetupVatNumberCompanyNumberFlagChanged: function stubGetGatewayAccountStripeSetupVatNumberCompanyNumberFlagChanged (gatewayAccountId, ...vatNumberCompanyNumberCompleted) {
+  stubStripeSetupGetForMultipleCalls: function stubStripeSetupGetForMultipleCalls (gatewayAccountId, ...vatNumberCompanyNumberCompleted) {
     const data = vatNumberCompanyNumberCompleted.map(completed => (
       {
         vat_number_company_number: completed

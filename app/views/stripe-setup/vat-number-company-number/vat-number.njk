@@ -14,7 +14,7 @@
       {% if errors['vat-number'] %}
         {% set errorList = (errorList.push({
           text: 'VAT number',
-          href: '#vat-number-input'
+          href: '#vat-number'
         }), errorList) %}
       {% endif %}
       {{ govukErrorSummary({
@@ -37,7 +37,7 @@
 
       {{ govukInput({
         name: "vat-number",
-        id: "vat-number-input",
+        id: "vat-number",
         label: {
           text: "VAT number"
         },

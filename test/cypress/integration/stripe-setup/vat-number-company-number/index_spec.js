@@ -4,21 +4,21 @@
 const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
-  stubGetStripeAccountSuccess
+  stubStripeAccountGet
 } = require('./support')
 
-describe('Stripe setup: VAT number company number index page', () => {
+describe('Stripe setup: "VAT number / company number" index page', () => {
   const gatewayAccountId = 42
   const userExternalId = 'userExternalId'
 
   describe('Card gateway account', () => {
-    describe('when user is admin, account is Stripe and VAT number company number is not finished', () => {
+    describe('when user is admin, account is Stripe and "VAT number / company number" is not already submitted', () => {
       beforeEach(() => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
       })
 
@@ -76,7 +76,7 @@ describe('Stripe setup: VAT number company number index page', () => {
       })
     })
 
-    describe('when user is admin, account is Stripe and VAT number company number is finished', () => {
+    describe('when user is admin, account is Stripe and "VAT number / company number" is already submitted', () => {
       beforeEach(() => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       })
@@ -86,7 +86,7 @@ describe('Stripe setup: VAT number company number index page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, true),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number')
@@ -110,7 +110,7 @@ describe('Stripe setup: VAT number company number index page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number', {
@@ -130,7 +130,7 @@ describe('Stripe setup: VAT number company number index page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, false),
-          stubGetStripeAccountSuccess(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
         cy.visit('/vat-number-company-number', {
