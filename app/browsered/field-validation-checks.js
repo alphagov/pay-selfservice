@@ -49,8 +49,8 @@ exports.isValidEmail = function (value) {
 }
 
 exports.isPhoneNumber = function (value) {
-  const trimmedTelephoneNumber = value.replace(/\s/g, '')
-  if (trimmedTelephoneNumber.length < 11 || !NUMBERS_ONLY.test(trimmedTelephoneNumber)) {
+  const noWhitespaceTelephoneNumber = value.replace(/\s/g, '')
+  if (noWhitespaceTelephoneNumber.length < 11 || !NUMBERS_ONLY.test(noWhitespaceTelephoneNumber)) {
     return validationErrors.phoneNumber
   } else {
     return false
@@ -104,8 +104,8 @@ exports.isNotSortCode = value => {
 }
 
 exports.isNotVatNumber = value => {
-  const trimmedVatNumber = value.replace(/\s/g, '')
-  if (/^(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})$/.test(trimmedVatNumber)) {
+  const sanitisedVatNumber = value.replace(/\s/g, '').toUpperCase()
+  if (/^(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})$/.test(sanitisedVatNumber)) {
     return false
   } else {
     return validationErrors.invalidVatNumber
