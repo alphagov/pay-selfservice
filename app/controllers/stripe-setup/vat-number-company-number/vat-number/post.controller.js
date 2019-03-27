@@ -12,8 +12,7 @@ const VAT_NUMBER_FIELD = 'vat-number'
 
 module.exports = (req, res) => {
   const rawVatNumber = lodash.get(req.body, VAT_NUMBER_FIELD, '')
-  const sanitisedVatNumber = rawVatNumber.replace(/\s/g, '').toUpperCase()
-  const displayVatNumber = sanitisedVatNumber
+  const displayVatNumber = rawVatNumber
 
   const errors = validateVatNumber(rawVatNumber)
   if (!lodash.isEmpty(errors)) {
