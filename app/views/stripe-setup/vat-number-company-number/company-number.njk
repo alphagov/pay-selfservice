@@ -9,25 +9,24 @@
 {% endblock %}
 
 {% block mainContent %}
-
-  {% if errors | length %}
-    {% set errorList = [] %}
-    {% if errors['company-number'] %}
-      {% set errorList = (errorList.push({
-        text: 'Companies registration number',
-        href: '#company-number'
-      }), errorList) %}
-    {% endif %}
-    {{ govukErrorSummary({
-      titleText: 'There was a problem with the details you gave for:',
-      errorList: errorList
-    }) }}
-  {% endif %}
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    {% if errors | length %}
+      {% set errorList = [] %}
+      {% if errors['company-number'] %}
+        {% set errorList = (errorList.push({
+          text: 'Companies registration number',
+          href: '#company-number'
+        }), errorList) %}
+      {% endif %}
+      {{ govukErrorSummary({
+        titleText: 'There was a problem with the details you gave for:',
+        errorList: errorList
+      }) }}
+    {% endif %}
 
-    <form id="company-number-form" method="post" action="/lets-go-no-where" data-validate="true">
+    <form id="company-number-form" method="post"
+          action="/vat-number-company-number/check-your-answers" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
 
       {% set companyNumberError = false %}
       {% if errors['company-number'] %}
@@ -73,18 +72,18 @@
             text: 'Yes',
             value: 'Yes',
             label: {
-            classes: "govuk-label--s"
-          },
+              classes: "govuk-label--s"
+            },
             conditional: {
-            html: companyHouseMode
-          }
+              html: companyHouseMode
+            }
           },
           {
             text: 'No',
             value: 'No',
             label: {
-            classes: "govuk-label--s"
-          }
+              classes: "govuk-label--s"
+            }
           }
         ]
       }) }}
