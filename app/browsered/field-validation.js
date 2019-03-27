@@ -101,6 +101,9 @@ function validateField (form, field) {
       case 'vatNumber':
         result = checks.isNotVatNumber(field.value)
         break
+      case 'companyNumber':
+        result = checks.isNotCompanyNumber(field.value)
+        break
       default:
         result = checks.isEmpty(field.value)
         break

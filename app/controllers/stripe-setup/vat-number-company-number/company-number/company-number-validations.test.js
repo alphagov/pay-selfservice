@@ -6,14 +6,26 @@ const { expect } = require('chai')
 // Local dependencies
 const companyNumberValidations = require('./company-number-validations')
 
-describe('Company number validations', () => {
-  it('should not be valid when mandatory text is blank', () => {
+// Constants
+const validCompanyNumber = '01234567'
+const invalidCompanyNumber = '¯\\_(ツ)_/¯'
+
+describe('company number validations', () => {
+  it('should validate successfully', () => {
+    expect(companyNumberValidations.validateCompanyNumber(validCompanyNumber).valid).to.be.true // eslint-disable-line
+  })
+
+  it('should not be valid when blank', () => {
     expect(companyNumberValidations.validateCompanyNumber('')).to.deep.equal({
       valid: false,
       message: 'This field cannot be blank'
     })
   })
 
-  // TODO
-  // implement the rest of the tests once we have the validation implemented
+  it('should not be valid when company number is invalid', () => {
+    expect(companyNumberValidations.validateCompanyNumber(invalidCompanyNumber)).to.deep.equal({
+      valid: false,
+      message: 'Enter a valid company number'
+    })
+  })
 })

@@ -19,7 +19,9 @@ const validationErrors = {
   invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`,
   invalidBankAccountNumber: 'Enter a valid account number',
   invalidSortCode: 'Enter a valid sort code',
-  invalidVatNumber: 'Enter a valid VAT number'
+  invalidVatNumber: 'Enter a valid VAT number',
+  invalidCompanyNumber: 'Enter a valid company number',
+  sevenDigitCompanyNumber: 'Company numbers in England and Wales have 8 digits and always start with 0'
 }
 
 exports.validationErrors = validationErrors
@@ -110,4 +112,14 @@ exports.isNotVatNumber = value => {
   } else {
     return validationErrors.invalidVatNumber
   }
+}
+
+exports.isNotCompanyNumber = value => {
+  const sanitisedCompanyNumber = value.replace(/\s/g, '').toUpperCase()
+  if (/^[0-9]{7}$/.test(sanitisedCompanyNumber)) {
+    return validationErrors.sevenDigitCompanyNumber
+  } else if (!/^(?:0[0-9]|OC|LP|SC|SO|SL|NI|R0|NC|NL)[0-9]{6}$/.test(sanitisedCompanyNumber)) {
+    return validationErrors.invalidCompanyNumber
+  }
+  return false
 }
