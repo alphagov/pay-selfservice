@@ -45,6 +45,12 @@ module.exports = {
 
     connectorData.results.forEach(element => {
       element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
+      if (element.fee) {
+        // @TODO(sfount) this should be done somewhere it will be shared across all required views
+        element.net = lodash.subtract(element.amount, element.fee)
+        element.fee = asGBP(element.fee)
+        element.net = asGBP(element.net)
+      }
       element.amount = asGBP(element.amount)
       if (element.total_amount && element.corporate_card_surcharge) {
         element.total_amount = asGBP(element.total_amount)

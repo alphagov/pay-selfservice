@@ -1,4 +1,5 @@
 {% if results.length %}
+{% set isStripeAccount = accountType === 'stripe' %}
 <table id="transactions-list" class="govuk-table">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
@@ -8,6 +9,10 @@
       {% endif %}
       {% if permissions.transactions_amount_read %}
       <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
+        {% if isStripeAccount %}
+        <th class="govuk-table__header" scope="col" id="amount-header">Fee</th>
+        <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
+        {% endif %}
       {% endif %}
       {% if permissions.transactions_card_type_read %}
       <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
@@ -28,14 +33,18 @@
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email">{{result.email}}</td>
       {% endif %}
       {% if permissions.transactions_amount_read %}
-             <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
-                   {%- if result.total_amount and result.corporate_card_surcharge -%}
-                     {{result.total_amount}}
-                     <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
-                   {%- else -%}
-                     {{result.amount}}
-                   {%- endif -%}
-             </td>
+            <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
+                  {%- if result.total_amount and result.corporate_card_surcharge -%}
+                    {{result.total_amount}}
+                    <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
+                  {%- else -%}
+                    {{result.amount}}
+                  {%- endif -%}
+            </td>
+            {% if isStripeAccount %}
+              <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
+              <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.net}}</td>
+            {% endif %}
       {% endif %}
       {% if permissions.transactions_card_type_read %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>
