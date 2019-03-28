@@ -43,7 +43,7 @@
             </td>
             {% if isStripeAccount %}
               <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
-              <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.net}}</td>
+              <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.net or result.amount}}</td>
             {% endif %}
       {% endif %}
       {% if permissions.transactions_card_type_read %}

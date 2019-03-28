@@ -90,6 +90,13 @@ module.exports = {
   buildPaymentView: function (chargeData, eventsData, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
 
+    if (chargeData.fee) {
+      // @TODO(sfount) this should be done somewhere it will be shared across all required views
+      chargeData.net = lodash.subtract(chargeData.amount, chargeData.fee)
+      chargeData.fee = asGBP(chargeData.fee)
+      chargeData.net = asGBP(chargeData.net)
+    }
+
     chargeData.amount = asGBP(chargeData.amount)
     if (chargeData.total_amount) {
       chargeData.total_amount = asGBP(chargeData.total_amount)
