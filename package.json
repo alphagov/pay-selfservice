@@ -159,7 +159,7 @@
     "start-server-and-test": "^1.7.12",
     "superagent": "^4.1.0",
     "supertest": "^4.0.2",
-    "supertest-session": "^3.2.0"
+    "supertest-session": "^4.0.0"
   },
   "snyk": true
 }
