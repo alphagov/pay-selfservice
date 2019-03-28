@@ -9,6 +9,7 @@ const MAX_AMOUNT = 100000
 
 const validationErrors = {
   required: 'This field cannot be blank',
+  mandatoryQuestion: 'You must answer this question',
   currency: 'Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”',
   phoneNumber: 'Must be a 11 digit phone number',
   validEmail: 'Please use a valid email address',
@@ -116,10 +117,19 @@ exports.isNotVatNumber = value => {
 
 exports.isNotCompanyNumber = value => {
   const sanitisedCompanyNumber = value.replace(/\s/g, '').toUpperCase()
+
+  // check explicitly for empty string and make it valid,
+  // to be able to handle the validation on the client side.
+  // the empty string validation will be checked on server side.
+  if (sanitisedCompanyNumber === '') {
+    return false
+  }
+
   if (/^[0-9]{7}$/.test(sanitisedCompanyNumber)) {
     return validationErrors.sevenDigitCompanyNumber
   } else if (!/^(?:0[0-9]|OC|LP|SC|SO|SL|NI|R0|NC|NL)[0-9]{6}$/.test(sanitisedCompanyNumber)) {
     return validationErrors.invalidCompanyNumber
   }
+
   return false
 }

@@ -1,7 +1,24 @@
 'use strict'
 
 // Local dependencies
-const { isEmpty, isNotCompanyNumber } = require('../../../../browsered/field-validation-checks')
+const {
+  validationErrors,
+  isEmpty,
+  isNotCompanyNumber
+} = require('../../../../browsered/field-validation-checks')
+
+exports.validateCompanyNumberMode = function validateCompanyNumberMode (value) {
+  if (!value) {
+    return {
+      valid: false,
+      message: validationErrors.mandatoryQuestion
+    }
+  }
+  return {
+    valid: true,
+    message: null
+  }
+}
 
 exports.validateCompanyNumber = function validateCompanyNumber (value) {
   const isEmptyErrorMessage = isEmpty(value)
