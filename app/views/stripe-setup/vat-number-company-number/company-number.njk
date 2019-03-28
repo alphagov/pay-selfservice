@@ -12,9 +12,15 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
     {% if errors | length %}
       {% set errorList = [] %}
+      {% if errors['company-number-mode'] %}
+        {% set errorList = (errorList.push({
+          text: 'Company registration number',
+          href: '#company-number-mode-1'
+        }), errorList) %}
+      {% endif %}
       {% if errors['company-number'] %}
         {% set errorList = (errorList.push({
-          text: 'Companies registration number',
+          text: 'Company registration number',
           href: '#company-number'
         }), errorList) %}
       {% endif %}
@@ -25,7 +31,7 @@
     {% endif %}
 
     <form id="company-number-form" method="post"
-          action="/vat-number-company-number/check-your-answers" data-validate="true">
+          action="/vat-number-company-number/company-number" data-validate="true">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set companyNumberError = false %}
@@ -34,29 +40,33 @@
           text: errors['company-number']
         } %}
       {% endif %}
-
       {% set companyHouseMode %}
         {{ govukInput({
           name: "company-number",
           id: "company-number",
           label: {
-            text: "Companies House registration number"
+            text: "Company registration number"
           },
           hint: {
-            text: "For example, '12345678'"
+            text: "For example, '01234567'"
           },
           value: companyNumber,
           classes: "govuk-input--width-30",
           type: "text",
           errorMessage: companyNumberError,
           attributes: {
-            "data-validate": "isFieldGreaterThanMaxLengthChars",
-            "autocomplete": "off",
-            "data-validate-max-length": "8"
+            "data-validate": "companyNumber",
+            "autocomplete": "off"
           }
         }) }}
       {% endset %}
 
+      {% set companyNumberModeError = false %}
+      {% if errors['company-number-mode'] %}
+        {% set companyNumberModeError = {
+          text: errors['company-number-mode']
+        } %}
+      {% endif %}
       {{ govukRadios({
         idPrefix: 'company-number-mode',
         name: 'company-number-mode',
@@ -67,23 +77,26 @@
             classes: 'govuk-fieldset__legend--l'
           }
         },
+        errorMessage: companyNumberModeError,
         items: [
           {
             text: 'Yes',
-            value: 'Yes',
+            value: 'yes',
             label: {
               classes: "govuk-label--s"
             },
             conditional: {
               html: companyHouseMode
-            }
+            },
+            checked: (companyNumberMode === 'yes')
           },
           {
             text: 'No',
-            value: 'No',
+            value: 'no',
             label: {
               classes: "govuk-label--s"
-            }
+            },
+            checked: (companyNumberMode === 'no')
           }
         ]
       }) }}
