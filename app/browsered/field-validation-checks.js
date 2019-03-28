@@ -118,9 +118,8 @@ exports.isNotVatNumber = value => {
 exports.isNotCompanyNumber = value => {
   const sanitisedCompanyNumber = value.replace(/\s/g, '').toUpperCase()
 
-  // check explicitly for empty string and make it valid,
-  // to be able to handle the validation on the client side.
-  // the empty string validation will be checked on server side.
+  // Allow an empty string, as company number is not always required.
+  // If it is required, this will be flagged by the server side validation.
   if (sanitisedCompanyNumber === '') {
     return false
   }
