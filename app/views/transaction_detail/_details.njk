@@ -1,5 +1,5 @@
 {% from "components/details/macro.njk" import govukDetails %}
-{% set isStripeAccount = accountType === 'stripe' %}
+{% set isStripeAccount = currentGatewayAccount.payment_provider === 'stripe' %}
 <table class="transaction-details govuk-table">
   <tbody class="govuk-table__body">
   <tr class="govuk-table__row">
@@ -89,14 +89,14 @@
     </td>
   </tr>
   
-  {% if isStripeAccount and fee %}
+  {% if isStripeAccount %}
     <tr class="govuk-table__row">
       <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Stripe fee:</th>
-      <td class="govuk-table__cell govuk-!-font-size-16" id="fee-amount" class="qa-refunded-amount ">{{ fee }}</td>
+      <td class="govuk-table__cell govuk-!-font-size-16" data-cell-type="fee">{{ fee }}</td>
     </tr>
     <tr class="govuk-table__row">
       <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Net amount:</th>
-      <td class="govuk-table__cell govuk-!-font-size-16" id="fee-amount" class="qa-refunded-amount ">{{ net }}</td>
+      <td class="govuk-table__cell govuk-!-font-size-16" data-cell-type="net">{{ net }}</td>
     </tr>
   {% endif %}
 
