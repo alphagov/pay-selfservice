@@ -36,7 +36,7 @@ const getSanitisableFields = fieldArray => {
   return ret
 }
 
-module.exports = function (data) {
+module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
   return new Promise(function (resolve, reject) {
     logger.debug('Converting transactions list from json to csv')
     try {
@@ -52,6 +52,10 @@ module.exports = function (data) {
             return (row.transaction_type === 'refund') ? penceToPounds(parseInt(row.amount) * -1) : penceToPounds(parseInt(row.amount))
           }
         },
+        ...supportsGatewayFees ? [
+          { label: 'Fee', value: row => row.fee && penceToPounds(parseInt(row.fee)) },
+          { label: 'Net', value: row => penceToPounds(parseInt(row.amount - (row.fee || 0))) }
+        ] : [],
         ...getSanitisableFields([
           { label: 'Card Brand', value: 'card_details.card_brand' },
           { label: 'Cardholder Name', value: 'card_details.cardholder_name' },
@@ -111,6 +115,7 @@ module.exports = function (data) {
           fields: parseFields
         }))
     } catch (err) {
+      logger.error('Cannot parse CSV ', err)
       reject(err)
     }
   })
