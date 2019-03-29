@@ -18,6 +18,7 @@ module.exports = (req, res) => {
   const filters = req.query
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
   const correlationId = req.headers[CORRELATION_HEADER]
+  const isStripeAccount = req.account.payment_provider === 'stripe'
   transactionService.searchAll(accountId, filters, correlationId)
     .then(json => {
       let refundTransactionUserIds = json.results
@@ -26,7 +27,7 @@ module.exports = (req, res) => {
         .filter(userId => userId) // we call filter because we want to filter out all "falsy" values
       refundTransactionUserIds = lodash.uniq(refundTransactionUserIds)
       if (refundTransactionUserIds.length === 0) { // if there are no refunds found
-        return jsonToCsv(json.results)
+        return jsonToCsv(json.results, isStripeAccount)
       } else {
         return userService.findMultipleByExternalIds(refundTransactionUserIds, correlationId)
           .then(users => {
@@ -43,7 +44,7 @@ module.exports = (req, res) => {
                 }
                 return res
               })
-            return jsonToCsv(results)
+            return jsonToCsv(results, isStripeAccount)
           })
       }
     })
