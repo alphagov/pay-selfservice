@@ -115,6 +115,43 @@ describe('connector client', function () {
     })
   })
 
+  describe('get transactions that have associated fees', () => {
+    const gatewayAccountId = 42
+    const validGetTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse({
+      transactions: [
+        { reference: 'payment1', fee: 200 },
+        { reference: 'payment2', fee: 200 }
+      ]
+    })
+
+    before((done) => {
+      const pactified = validGetTransactionsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${gatewayAccountId}/charges`)
+          .withUponReceiving('a valid transactions request with associated fees')
+          .withState(`Account ${gatewayAccountId} exists in the database and has 2 transactions available, both with associated fees with value 200`)
+          .withMethod('GET')
+          .withQuery('page', '1')
+          .withQuery('display_size', '100')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get fee associated transactions successfully', function (done) {
+      const getFeeTransactions = validGetTransactionsResponse.getPlain()
+      connectorClient.searchTransactions({ gatewayAccountId: gatewayAccountId },
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getFeeTransactions)
+          done()
+        })
+    })
+  })
+
   // these date tests replace some end-to-end tests
   describe('get filtered transactions with a \'from_date\' defined and an EXPLICIT time specified', () => {
     const params = {
