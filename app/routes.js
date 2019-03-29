@@ -485,6 +485,7 @@ module.exports.bind = function (app) {
     getAccount,
     paymentMethodIsCard,
     restrictToLiveStripeAccount,
+    getStripeAccount,
     checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCheckYourAnswersController.post
   )
