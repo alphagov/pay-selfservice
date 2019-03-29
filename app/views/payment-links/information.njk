@@ -14,7 +14,11 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
-  <h1 class="govuk-heading-l">Set payment link information</h1>
+  {% if isWelsh %}
+    <h1 class="govuk-heading-l">Set Welsh payment link information</h1>
+  {% else %}
+    <h1 class="govuk-heading-l">Set payment link information</h1>
+  {% endif %}
 
   <form action="{{ routes.paymentLinks.information }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -31,6 +35,18 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     {% endif %}
     {% set confirmationLabel %}{{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/{% endset %}
 
+    {% if isWelsh %}
+      {% set titleLabel = 'Welsh title' %}
+      {% set titleHint = 'Briefly describe what the user is paying for. For example, <span lang="cy">“Talu am drwydded barcio”</span>. This will also be your website address.' %}
+      {% set detailsHint = 'Give your users more information in Welsh. For example, you could tell them how long it takes for their application to be processed.' %}
+      {% set lang = "cy" %}
+    {% else %}
+      {% set titleLabel = 'Title' %}
+      {% set titleHint = 'Briefly describe what the user is paying for. For example, “Pay for a parking permit”. This will also be your website address.' %}
+      {% set detailsHint = 'Give your users more information. For example, you could tell them how long it takes for their application to be processed.' %}
+      {% set lang = "en" %}
+    {% endif %}
+
     {{
       govukInput({
         id: 'payment-link-title',
@@ -38,13 +54,11 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         value: paymentLinkTitle,
         classes: '',
         label: {
-            text: 'Title',
+            text: titleLabel,
             classes: 'govuk-label--s'
         },
         hint: {
-          text: 'Briefly describe what the user is paying for.
-          For example, “Pay for a parking permit”.
-          This will also be your website address.'
+          html: titleHint
         },
         errorMessage: titleError,
         attributes: {
@@ -55,7 +69,8 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           "data-confirmation-title": "The website address for this payment link will look like:",
           "data-confirmation-label": confirmationLabel,
           "data-confirmation-filter": "slugify",
-          "data-confirmation-display": "onload" if change.length else false
+          "data-confirmation-display": "onload" if change.length else false,
+          "lang": lang
         }
       })
     }}
@@ -71,12 +86,13 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
             classes: 'govuk-label--s'
         },
         hint: {
-          text: 'Give your users more information. For example, you could tell them how long it takes for their application to be processed.'
+          text: detailsHint
         },
         errorMessage: titleError,
         attributes: {
           "autofocus": change !== "payment-link-description",
-          "rows": "5"
+          "rows": "5",
+          "lang": lang
         }
       })
     }}
