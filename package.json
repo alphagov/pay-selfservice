@@ -154,7 +154,7 @@
     "proxyquire": "~2.1.0",
     "sass-lint": "^1.12.1",
     "sinon": "^7.3.0",
-    "snyk": "^1.143.1",
+    "snyk": "^1.143.2",
     "standard": "^12.0.1",
     "start-server-and-test": "^1.7.12",
     "superagent": "^4.1.0",
