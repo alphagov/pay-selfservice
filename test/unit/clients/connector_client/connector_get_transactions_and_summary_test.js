@@ -115,7 +115,9 @@ describe('connector client', function () {
     })
   })
 
-  describe('get transactions that have associated fees', () => {
+  // @FIXME(sfount) activate this contract when Connector has an equivalent
+  //                producer test
+  describe.skip('get transactions that have associated fees', () => {
     const gatewayAccountId = 42
     const validGetTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse({
       transactions: [

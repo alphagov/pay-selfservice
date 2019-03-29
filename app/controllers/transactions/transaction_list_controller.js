@@ -29,7 +29,6 @@ module.exports = (req, res) => {
   transactionService
     .search(accountId, filters.result, correlationId)
     .then(transactions => {
-      console.log('got all transactions', transactions)
       client
         .getAllCardTypes({ correlationId }, allCards => {
           const model = buildPaymentList(transactions, allCards, accountId, filters.result)
