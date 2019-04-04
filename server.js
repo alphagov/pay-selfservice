@@ -23,7 +23,6 @@ const staticify = require('staticify')(path.join(__dirname, 'public'))
 const router = require(path.join(__dirname, '/app/routes'))
 const cookieUtil = require(path.join(__dirname, '/app/utils/cookie'))
 const noCache = require(path.join(__dirname, '/app/utils/no_cache'))
-const customCertificate = require(path.join(__dirname, '/app/utils/custom_certificate'))
 const auth = require(path.join(__dirname, '/app/services/auth_service'))
 const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
 const errorLogger = require(path.join(__dirname, '/app/middleware/error_logger'))
@@ -118,14 +117,6 @@ function initialiseRoutes (app) {
   router.bind(app)
 }
 
-function initialiseTLS () {
-  if (process.env.DISABLE_INTERNAL_HTTPS !== 'true') {
-    customCertificate.addCertsToAgent(httpsAgent)
-  } else {
-    logger.warn('DISABLE_INTERNAL_HTTPS is set.')
-  }
-}
-
 function initialiseAuth (app) {
   auth.initialise(app)
 }
@@ -161,7 +152,10 @@ function initialise () {
   app.disable('x-powered-by')
   app.use(flash())
 
-  initialiseTLS()
+  if (process.env.DISABLE_INTERNAL_HTTPS === 'true') {
+    logger.warn('DISABLE_INTERNAL_HTTPS is set.')
+  }
+
   initialisePublic(app)
   initialiseCookies(app)
   initialiseAuth(app)
