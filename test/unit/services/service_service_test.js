@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
+const sinon = require('sinon')
 
 // Local Dependencies
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
@@ -274,6 +275,63 @@ describe('service service', function () {
       serviceService.updateCurrentGoLiveStage(serviceExternalId, newStage, correlationId).should.be.fulfilled.then((updatedStage) => {
         expect(JSON.stringify(updatedStage)).to.deep.equal('{"current_go_live_stage":"CHOSEN_PSP_STRIPE"}')
       }).should.notify(done)
+    })
+  })
+
+  describe('when editing service name with multiple gateway accounts', function () {
+    it('should call connector 2 times and not call direct debit connector at all', function (done) {
+      const externalServiceId = 'ext3rnalserv1ce1d'
+      const newServiceName = 'New Name'
+      const gatewayAccountIds = [10, 9, directDebitAccountId1]
+      const patchServiceName = sinon.stub()
+      patchServiceName.resolves()
+      adminusersClientStub = () => {
+        return {
+          updateServiceName: () => {
+            return new Promise(resolve => {
+              resolve({ gateway_account_ids: gatewayAccountIds })
+            })
+          }
+        }
+      }
+      connectorClientStub = {
+        ConnectorClient: function () {
+          return {
+            patchServiceName: patchServiceName
+          }
+        }
+      }
+      directDebitClientStub = {
+        gatewayAccount: {
+          create: () => {
+            return new Promise(() => {
+              console.log('---> dd connector should not be called')
+              done('should not be called')
+            })
+          },
+          get: () => {
+            return new Promise(() => {
+              console.log('---< dd connector should not be called')
+              done('should not be called')
+            })
+          }
+        }
+      }
+
+      serviceService = proxyquire('../../../app/services/service_service',
+        {
+          '../services/clients/connector_client': connectorClientStub,
+          '../services/clients/direct_debit_connector_client': directDebitClientStub,
+          './clients/adminusers_client': adminusersClientStub
+        })
+
+      serviceService.updateServiceName(externalServiceId, newServiceName, correlationId).should.be.fulfilled
+        .then((service) => {
+          setTimeout(() => {
+            expect(patchServiceName.callCount).to.equal(2)
+          }, 250)
+          expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10,9,"DIRECT_DEBIT:adashdkjlq3434lk"]}')
+        }).should.notify(done)
     })
   })
 })
