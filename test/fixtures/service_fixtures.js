@@ -54,7 +54,6 @@ module.exports = {
 
     const data = {}
     if (opts.name) {
-      data.name = opts.name
       data.service_name = { en: opts.name }
     }
     if (opts.gateway_account_ids) {
