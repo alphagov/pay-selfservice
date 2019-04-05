@@ -543,7 +543,6 @@ module.exports = function (clientOptions = {}) {
     }
 
     if (serviceName) {
-      postBody.body.name = serviceName
       postBody.body.service_name = lodash.merge(postBody.body.service_name, { en: serviceName })
     }
     if (serviceNameCy) {
