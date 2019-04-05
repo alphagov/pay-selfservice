@@ -12,7 +12,6 @@ const getNamespace = require('continuation-local-storage').getNamespace
 const AWSXRay = require('aws-xray-sdk')
 
 // Local dependencies
-const customCertificate = require('../../utils/custom_certificate')
 const getRequestContext = require('../../middleware/get_request_context').getRequestContext
 const CORRELATION_HEADER_NAME = require(path.join(__dirname, '/../../utils/correlation_header')).CORRELATION_HEADER
 
@@ -34,12 +33,6 @@ function retryOnEconnreset (err) {
  */
 const httpAgent = http.globalAgent
 const httpsAgent = new https.Agent(agentOptions)
-
-if (process.env.DISABLE_INTERNAL_HTTPS !== 'true') {
-  customCertificate.addCertsToAgent(httpsAgent)
-} else {
-  logger.warn('DISABLE_INTERNAL_HTTPS is set.')
-}
 
 const client = request
   .defaults({
