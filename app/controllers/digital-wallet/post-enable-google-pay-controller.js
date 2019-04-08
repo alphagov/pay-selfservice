@@ -13,7 +13,12 @@ module.exports = (req, res) => {
   const enableGooglePayBoolean = connector.toggleGooglePay(gatewayAccountId, true, correlationId)
   const setGatewayMerchantId = connector.setGatewayMerchantId(gatewayAccountId, gatewayMerchantId, correlationId)
 
-  Promise.all([setGatewayMerchantId, enableGooglePayBoolean]).then(() => {
+  async function enableGooglePay () {
+    await setGatewayMerchantId
+    await enableGooglePayBoolean
+  }
+
+  enableGooglePay().then(() => {
     req.flash('generic', '<h2>Google Pay successfully enabled.</h2>')
     return res.redirect(paths.digitalWallet.summary)
   }).catch(err => {
