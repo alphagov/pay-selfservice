@@ -12,7 +12,7 @@ const COMPANY_NUMBER_MODE_FIELD = 'company-number-mode'
 const COMPANY_NUMBER_FIELD = 'company-number'
 
 module.exports = (req, res) => {
-  const rawCompanyNumberMode = lodash.get(req.body, COMPANY_NUMBER_MODE_FIELD, null)
+  const rawCompanyNumberMode = lodash.get(req.body, COMPANY_NUMBER_MODE_FIELD, '')
   const rawCompanyNumber = lodash.get(req.body, COMPANY_NUMBER_FIELD, '')
   const trimmedCompanyNumber = rawCompanyNumber.trim()
 
@@ -25,10 +25,11 @@ module.exports = (req, res) => {
     })
     return res.redirect(303, stripeSetup.companyNumber)
   } else {
+    const sessionCompanyNumber = (rawCompanyNumberMode === 'no') ? '' : trimmedCompanyNumber
     lodash.set(req, 'session.pageData.stripeSetup.companyNumberData', {
       errors: {},
       companyNumberMode: rawCompanyNumberMode,
-      companyNumber: trimmedCompanyNumber
+      companyNumber: sessionCompanyNumber
     })
     return res.redirect(303, stripeSetup.checkYourAnswers)
   }
