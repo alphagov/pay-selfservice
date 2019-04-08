@@ -35,6 +35,16 @@
     } %}
     {% endif %}
 
+    {% if isWelsh %}
+      {% set referenceNameHint = 'For example, <span lang="cy">“rhif anfoneb”</span>' %}
+      {% set referenceHintHint = 'Explain in Welsh what the payment reference looks like and where to find it.' %}
+      {% set lang = 'cy' %}
+    {% else %}
+      {% set referenceNameHint = 'For example, “invoice number”' %}
+      {% set referenceHintHint = 'Tell users what the payment reference looks like and where they can find it.' %}
+      {% set lang = 'en' %}
+    {% endif %}
+
     {% set customReferenceHTML %}
       {{
         govukInput({
@@ -48,10 +58,11 @@
               classes: "govuk-label--s"
           },
           hint: {
-            text: "For example, 'invoice number'"
+            html: referenceNameHint
           },
           attributes: {
-            "data-validate": "isNaxsiSafe"
+            "data-validate": "isNaxsiSafe",
+            "lang": lang
           }
         })
       }}
@@ -68,12 +79,13 @@
               classes: "govuk-label--s"
           },
           hint: {
-            text: "Tell users what the payment reference looks like and where they can find it."
+            text: referenceHintHint
           },
           attributes: {
             "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
             "maxlength": "255",
-            "data-validate-max-length": "255"
+            "data-validate-max-length": "255",
+            "lang": lang
           }
         })
       }}

@@ -87,9 +87,16 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         </dd>
       </div>
     </dl>
+
+    {% if pageData.isWelsh %}
+      {% set submitText = "Create Welsh payment link" %}
+    {% else %}
+      {% set submitText = "Create payment link" %}
+    {% endif %}
+
     {{
       govukButton({
-        text: "Create link",
+        text: submitText,
         attributes: {
           id: "create-payment-link-publish"
         }
