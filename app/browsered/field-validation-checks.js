@@ -108,7 +108,14 @@ exports.isNotSortCode = value => {
 
 exports.isNotVatNumber = value => {
   const sanitisedVatNumber = value.replace(/\s/g, '').toUpperCase()
-  if (/^(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})$/.test(sanitisedVatNumber)) {
+
+  if (/^GB[0-9]{9}$/.test(sanitisedVatNumber)) {
+    return false
+  } else if (/^GB[0-9]{12}$/.test(sanitisedVatNumber)) {
+    return false
+  } else if (/^GBGD[0-4][0-9]{2}$/.test(sanitisedVatNumber)) {
+    return false
+  } else if (/^GBHA[5-9][0-9]{2}$/.test(sanitisedVatNumber)) {
     return false
   } else {
     return validationErrors.invalidVatNumber

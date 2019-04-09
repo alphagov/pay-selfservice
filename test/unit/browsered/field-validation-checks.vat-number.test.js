@@ -6,63 +6,100 @@ const { expect } = require('chai')
 // Local dependencies
 const { isNotVatNumber } = require('../../../app/browsered/field-validation-checks')
 
-describe('isNotVatNumber', () => {
-  const standardVatNumber = 'GB999 9999 73'
-  const standardVatNumberInNonStandardFormat = `  g B 9  
-        99 999 9 7 3   `
-  const governmentDepartmentsVatNumber = 'GBGD001'
-  const governmentDepartmentsVatNumberInNonStandardFormat = ` g BG 
-        d 001    `
-  const branchTradersVatNumber = 'GB123456789123'
-  const branchTradersVatNumberInNonStandardFormat = ` gb 123456789 
-        123     `
-  const healthAuthoritiesVatNumber = 'GBHA599'
-  const healthAuthoritiesVatNumberInNonStandardFormat = `gb HA 
-        599   `
+describe('UK VAT number validations', () => {
+  it('should validate that standard VAT numbers are valid', () => {
+    expect(isNotVatNumber('GB999 9999 73')).to.be.false // eslint-disable-line
+  })
 
-  describe('UK VAT number validations', () => {
-    it('should validate that Standard VAT numbers are valid', () => {
-      expect(isNotVatNumber(standardVatNumber)).to.be.false // eslint-disable-line
-    })
+  it('should validate that standard VAT numbers in non-standard format are valid', () => {
+    expect(isNotVatNumber(' g B 9  99 999 9 7 3 ')).to.be.false // eslint-disable-line
+  })
 
-    it('should validate that Standard VAT numbers are valid (in non standard format)', () => {
-      expect(isNotVatNumber(standardVatNumberInNonStandardFormat)).to.be.false // eslint-disable-line
-    })
+  it('should validate that standard VAT numbers without GB prefix are not valid', () => {
+    expect(isNotVatNumber('999999973')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
 
-    it('should validate that Government Department VAT numbers are valid', () => {
-      expect(isNotVatNumber(governmentDepartmentsVatNumber)).to.be.false // eslint-disable-line
-    })
+  it('should validate that standard VAT numbers that are too short are not valid', () => {
+    expect(isNotVatNumber('GB99999997')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
 
-    it('should validate that Government Department VAT numbers are valid (in non standard format)', () => {
-      expect(isNotVatNumber(governmentDepartmentsVatNumberInNonStandardFormat)).to.be.false // eslint-disable-line
-    })
+  it('should validate that standard VAT numbers that are too long are not valid', () => {
+    expect(isNotVatNumber('GB9999999731')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
 
-    it('should validate that Branch Trader VAT numbers are valid', () => {
-      expect(isNotVatNumber(branchTradersVatNumber)).to.be.false // eslint-disable-line
-    })
+  it('should validate that branch trader VAT numbers are valid', () => {
+    expect(isNotVatNumber('GB123 4567 891 23')).to.be.false // eslint-disable-line
+  })
 
-    it('should validate that Branch Trader VAT numbers are valid (in non standard format)', () => {
-      expect(isNotVatNumber(branchTradersVatNumberInNonStandardFormat)).to.be.false // eslint-disable-line
-    })
+  it('should validate that branch trader VAT numbers in non-standard format are valid ()', () => {
+    expect(isNotVatNumber(' gb 123456789 123 ')).to.be.false // eslint-disable-line
+  })
 
-    it('should validate that Health Authority VAT numbers are valid', () => {
-      expect(isNotVatNumber(healthAuthoritiesVatNumber)).to.be.false // eslint-disable-line
-    })
+  it('should validate that branch trader VAT numbers that are too short are not valid ()', () => {
+    expect(isNotVatNumber('GB12345678912')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
 
-    it('should validate that Health Authority VAT numbers are valid (in non standard format)', () => {
-      expect(isNotVatNumber(healthAuthoritiesVatNumberInNonStandardFormat)).to.be.false // eslint-disable-line
-    })
+  it('should validate that branch trader VAT numbers that are too long are not valid ()', () => {
+    expect(isNotVatNumber('GB1234567891231')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
 
-    it('should not be valid when mandatory text is blank', () => {
-      expect(isNotVatNumber('')).to.be.equal('Enter a valid VAT number')
-    })
+  it('should validate that government department VAT numbers are valid', () => {
+    expect(isNotVatNumber('GBGD001')).to.be.false // eslint-disable-line
+  })
 
-    it('should not be valid when mandatory text is too long', () => {
-      expect(isNotVatNumber('GB999 9999 7333333333333')).to.be.equal('Enter a valid VAT number')
-    })
+  it('should validate that government department VAT numbers in non-standard format are valid', () => {
+    expect(isNotVatNumber(' g BG d 001 ')).to.be.false // eslint-disable-line
+  })
 
-    it('should not be valid when mandatory text is invalid VAT number', () => {
-      expect(isNotVatNumber('BADD000')).to.be.equal('Enter a valid VAT number')
-    })
+  it('should validate that health authority VAT numbers that don’t begin with 1–4 are not valid', () => {
+    expect(isNotVatNumber('GBGD500')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that government department VAT numbers without GB prefix are not valid', () => {
+    expect(isNotVatNumber('GD001')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that government department VAT numbers that are too short are not valid', () => {
+    expect(isNotVatNumber('GBGD12')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that government department VAT numbers that are too long are not valid', () => {
+    expect(isNotVatNumber('GBGD0123')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that health authority VAT numbers are valid', () => {
+    expect(isNotVatNumber('GBHA599')).to.be.false // eslint-disable-line
+  })
+
+  it('should validate that health authority VAT numbers in non-standard format are valid ()', () => {
+    expect(isNotVatNumber(' gb HA 599 ')).to.be.false // eslint-disable-line
+  })
+
+  it('should validate that health authority VAT numbers in non-standard format are valid ()', () => {
+    expect(isNotVatNumber(' gb HA 599 ')).to.be.false // eslint-disable-line
+  })
+
+  it('should validate that health authority VAT numbers that don’t begin with 5–9 are not valid', () => {
+    expect(isNotVatNumber('GBHA499')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that government department VAT numbers without GB prefix are not valid', () => {
+    expect(isNotVatNumber('HA599')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that government department VAT numbers that are too short are not valid', () => {
+    expect(isNotVatNumber('GBHA59')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should validate that government department VAT numbers that are too long are not valid', () => {
+    expect(isNotVatNumber('GBHA5991')).to.be.equal('Enter a valid VAT number') // eslint-disable-line
+  })
+
+  it('should not be valid when mandatory text is blank', () => {
+    expect(isNotVatNumber('')).to.be.equal('Enter a valid VAT number')
+  })
+
+  it('should not be valid when wrong prefix', () => {
+    expect(isNotVatNumber('GBAB123')).to.be.equal('Enter a valid VAT number')
   })
 })
