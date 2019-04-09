@@ -14,8 +14,17 @@ module.exports = (req, res) => {
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
 
   const change = lodash.get(req, 'query.field', {})
-  const language = lodash.get(req, 'query.language', supportedLanguage.ENGLISH)
-  const isWelsh = language === supportedLanguage.WELSH
+
+  let isWelsh
+  if (pageData.hasOwnProperty('isWelsh')) {
+    isWelsh = pageData.isWelsh
+  } else {
+    isWelsh = lodash.get(req, 'query.language') === supportedLanguage.WELSH
+    lodash.set(req, 'session.pageData.createPaymentLink', {
+      ...pageData,
+      isWelsh
+    })
+  }
 
   return response(req, res, 'payment-links/information', {
     change,

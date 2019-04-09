@@ -27,11 +27,10 @@ module.exports = (req, res) => {
     return res.redirect(paths.paymentLinks.information)
   }
 
-  if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
-    req.flash('generic', `<h2>The details have been updated</h2>`)
-  }
-
   if (req.body['change'] === 'true') {
+    if (!lodash.isEmpty(pageData) && !lodash.isEqual(pageData, updatedPageData)) {
+      req.flash('generic', `<h2>The details have been updated</h2>`)
+    }
     return res.redirect(paths.paymentLinks.review)
   }
 
