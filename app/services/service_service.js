@@ -61,26 +61,24 @@ function getGatewayAccounts (gatewayAccountIds, correlationId) {
  * @returns {Promise<Service>} the updated service
  */
 function updateServiceName (serviceExternalId, serviceName, serviceNameCy, correlationId) {
-  return new Promise(function (resolve, reject) {
-    if (!serviceExternalId) reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
-    getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
-      .then(result => {
-        const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
-        // Update gateway account service names
-        if (gatewayAccountIds.length <= 0) {
-          return resolve(new Service(result))
-        } else {
-          const accounts = lodash.partition(gatewayAccountIds, id => isADirectDebitAccount(id))
-          const gatewayAccountId = accounts[1]
-          if (gatewayAccountId && gatewayAccountId.length > 0 && !isADirectDebitAccount(gatewayAccountId)) {
-            connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
-              .then(() => resolve(new Service(result)))
-          } else {
-            return resolve(new Service(result))
-          }
+  if (!serviceExternalId) {
+    return Promise.reject(new Error(`argument: 'serviceExternalId' cannot be undefined`))
+  }
+  return getAdminUsersClient({ correlationId }).updateServiceName(serviceExternalId, serviceName, serviceNameCy)
+    .then(result => {
+      // Update gateway account service names in connector
+      const gatewayAccountIds = lodash.get(result, 'gateway_account_ids', [])
+      return Promise.all(gatewayAccountIds.map(gatewayAccountId => {
+        if (gatewayAccountId && !isADirectDebitAccount(gatewayAccountId)) {
+          return connectorClient.patchServiceName(gatewayAccountId, serviceName, correlationId)
         }
       })
-  })
+      )
+        .then(() => result)
+    })
+    .then(result => {
+      return new Service(result)
+    })
 }
 
 /**
