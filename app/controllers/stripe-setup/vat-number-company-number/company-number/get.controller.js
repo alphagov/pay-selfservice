@@ -13,7 +13,8 @@ module.exports = (req, res) => {
   } else {
     pageData = {
       errors: {},
-      vatNumber: ''
+      companyNumberMode: '',
+      companyNumber: ''
     }
   }
 
