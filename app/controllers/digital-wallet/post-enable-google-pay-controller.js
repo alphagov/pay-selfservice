@@ -12,10 +12,10 @@ module.exports = async function enableGooglePay (req, res) {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const gatewayMerchantId = req.body.merchantId
   try {
-    await connector.toggleGooglePay(gatewayAccountId, true, correlationId)
-    logger.info(`${correlationId} enabled google pay boolean for ${gatewayAccountId}`)
     await connector.setGatewayMerchantId(gatewayAccountId, gatewayMerchantId, correlationId)
     logger.info(`${correlationId} set google pay merchant ID for ${gatewayAccountId}`)
+    await connector.toggleGooglePay(gatewayAccountId, true, correlationId)
+    logger.info(`${correlationId} enabled google pay boolean for ${gatewayAccountId}`)
     req.flash('generic', '<h2>Google Pay successfully enabled.</h2>')
     return res.redirect(paths.digitalWallet.summary)
   } catch (err) {
