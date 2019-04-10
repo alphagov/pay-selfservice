@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -27,7 +27,7 @@ function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey
 
 describe('products client - find products associated with a particular gateway account id', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'products',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -42,15 +42,16 @@ describe('products client - find products associated with a particular gateway a
   describe('when products are successfully found', () => {
     before(done => {
       const productsClient = getProductsClient()
-      gatewayAccountId = 123456
+      gatewayAccountId = 42
       response = [
-        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()}),
-        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()}),
-        productFixtures.validCreateProductResponse({gateway_account_id: gatewayAccountId, price: randomPrice()})
+        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: randomPrice() }),
+        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: randomPrice() }),
+        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: randomPrice() })
       ]
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id request')
         .withMethod('GET')
+        .withState('three products with gateway account id 42 exist')
         .withStatusCode(200)
         .withResponseBody(response.map(item => item.getPactified()))
         .build()
@@ -73,6 +74,7 @@ describe('products client - find products associated with a particular gateway a
         expect(product.externalId).to.exist.and.equal(plainResponse[index].external_id)
         expect(product.name).to.exist.and.equal(plainResponse[index].name)
         expect(product.price).to.exist.and.equal(plainResponse[index].price)
+        expect(product.language).to.exist.and.equal(plainResponse[index].language)
         expect(product).to.have.property('links')
         expect(Object.keys(product.links).length).to.equal(2)
         expect(product.links).to.have.property('self')
@@ -92,21 +94,22 @@ describe('products client - find products associated with a particular gateway a
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id where the gateway account has no products')
         .withMethod('GET')
-        .withStatusCode(404)
+        .withStatusCode(200)
+        .withResponseBody([])
         .build()
       provider.addInteraction(interaction)
         .then(() => productsClient.product.getByGatewayAccountId(gatewayAccountId), done)
-        .then(() => done(new Error('Promise unexpectedly resolved')))
-        .catch((err) => {
-          result = err
+        .then(res => {
+          result = res
           done()
         })
+        .catch(e => done(e))
     })
 
     after(() => provider.verify())
 
-    it('should reject with error: 404 not found', () => {
-      expect(result.errorCode).to.equal(404)
+    it('should return an empty array', () => {
+      expect(result).to.be.an('array').that.is.empty // eslint-disable-line
     })
   })
 })
