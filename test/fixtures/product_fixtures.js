@@ -71,8 +71,9 @@ module.exports = {
     const data = {
       external_id: opts.external_id || 'cf3hp2',
       type: opts.type || 'DEMO',
-      gateway_account_id: opts.gateway_account_id || 'xr9nkd',
+      gateway_account_id: opts.gateway_account_id || 99,
       name: opts.name || 'A Product Name',
+      language: opts.language || 'en',
       _links: opts.links
     }
 

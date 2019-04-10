@@ -25,7 +25,7 @@ function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey
 
 describe('products client - find a product by it\'s external id', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'products',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -40,10 +40,11 @@ describe('products client - find a product by it\'s external id', function () {
   describe('when a product is successfully found', () => {
     before(done => {
       const productsClient = getProductsClient()
-      gatewayAccountId = 999
+      gatewayAccountId = 42
       productExternalId = 'existing-id'
       response = productFixtures.validCreateProductResponse({
         external_id: productExternalId,
+        gateway_account_id: 42,
         price: 1000,
         name: 'A Product Name',
         description: 'About this product',
@@ -54,6 +55,7 @@ describe('products client - find a product by it\'s external id', function () {
         new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
           .withUponReceiving('a valid get product request by external id')
           .withMethod('GET')
+          .withState('a product with external id existing-id and gateway account id 42 exists')
           .withStatusCode(200)
           .withResponseBody(response.getPactified())
           .build()
@@ -76,6 +78,7 @@ describe('products client - find a product by it\'s external id', function () {
       expect(result.price).to.exist.and.equal(plainResponse.price)
       expect(result.returnUrl).to.exist.and.equal(plainResponse.return_url)
       expect(result.type).to.equal('DEMO')
+      expect(result.language).to.exist.and.equal(plainResponse.language)
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')
@@ -97,6 +100,7 @@ describe('products client - find a product by it\'s external id', function () {
           .withUponReceiving('a valid find product request with non existing id')
           .withMethod('GET')
           .withStatusCode(404)
+          .withResponseHeaders({})
           .build()
       )
         .then(() => productsClient.product.getByProductExternalId(gatewayAccountId, productExternalId), done)

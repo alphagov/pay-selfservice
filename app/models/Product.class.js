@@ -13,7 +13,7 @@ const lodash = require('lodash')
  * @property {string} type - The type of the product
  * @property {string} returnUrl
  * @property {string} govukStatus - the current status of the gov.uk pay charge
- * @property {string} serviceName - the name of the service with which the product is associated
+ * @property {string} language - the language product and payment pages is displayed in
  * @property {object} links
  * @property {object} links.pay
  * @property {string} links.pay.href - url to use to create a payment for the product
@@ -31,8 +31,7 @@ class Product {
    * @param {string} opts.pay_api_token - The token used to make payments on behalf of the service
    * @param {string} opts.name - The name of the product
    * @param {number} opts.price - price of the product in pence
-   * @param {string} opts.govuk_status - the current status of the gov.uk pay charge
-   * @param {string} opts.service_name - the name of the service with which the product is associated
+   * @param {string} opts.status - the current status of the gov.uk pay charge
    * @param {Object[]} opts._links - links for the product ('self' to re-GET this product from the server, and 'pay' to create a payment for this product)
    * @param {string} opts._links[].href - url of the link
    * @param {string} opts._links[].method - the http method of the link
@@ -40,19 +39,20 @@ class Product {
    * @param {string=} opts.description - The name of the product
    * @param {string=} opts.type - The type of the product
    * @param {string=} opts.return_url - return url of where to redirect for any charge of this product
+   * @param {string} opts.language - the language product and payment pages is displayed in
    **/
   constructor (opts) {
     this.externalId = opts.external_id
     this.gatewayAccountId = opts.gateway_account_id
     this.name = opts.name
     this.price = opts.price
-    this.govukStatus = opts.govuk_status
+    this.govukStatus = opts.status
     this.apiToken = opts.pay_api_token
-    this.serviceName = opts.service_name
     this.description = opts.description
     this.type = opts.type
     this.returnUrl = opts.return_url
-    opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, {method: link.method, href: link.href}))
+    this.language = opts.language
+    opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, { method: link.method, href: link.href }))
   }
 }
 
