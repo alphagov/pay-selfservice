@@ -16,6 +16,10 @@ module.exports = (req, res) => {
   const rawCompanyNumber = lodash.get(req.body, COMPANY_NUMBER_FIELD, '')
   const trimmedCompanyNumber = rawCompanyNumber.trim()
 
+  if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.vatNumberData.vatNumber'))) {
+    return res.redirect(303, stripeSetup.vatNumberCompanyNumber)
+  }
+
   const errors = validateCompanyNumberForm(rawCompanyNumberMode, trimmedCompanyNumber)
   if (!lodash.isEmpty(errors)) {
     lodash.set(req, 'session.pageData.stripeSetup.companyNumberData', {

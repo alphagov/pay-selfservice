@@ -85,7 +85,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
           .should('contain', 'None')
       })
 
-      it('should go to VAT number page when VAT number "change" button is clicked and change tbe value', () => {
+      it('should go to VAT number page when VAT number "change" button is clicked and change the value', () => {
         const newVatNumber = 'GBGD001'
 
         cy.visit('/vat-number-company-number/vat-number')
@@ -123,14 +123,6 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
 
             cy.get('input#vat-number[name="vat-number"]').clear()
             cy.get('input#vat-number[name="vat-number"]').type(newVatNumber)
-            cy.get('button[type=submit]').click()
-          })
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq('/vat-number-company-number/company-number')
-        })
-        cy.get('#company-number-form').should('exist')
-          .within(() => {
             cy.get('button[type=submit]').click()
           })
 

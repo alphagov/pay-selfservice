@@ -12,10 +12,11 @@ module.exports = (req, res) => {
     return res.redirect(303, stripeSetup.vatNumber)
   }
 
-  if (stripeSetupPageData.vatNumberData && stripeSetupPageData.companyNumberData) {
-    return res.redirect(303, stripeSetup.checkYourAnswers)
-  } else if (stripeSetupPageData.vatNumberData) {
+  if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.vatNumberData.vatNumber'))) {
+    return res.redirect(303, stripeSetup.vatNumber)
+  } else if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.companyNumberData.companyNumberMode'))) {
     return res.redirect(303, stripeSetup.companyNumber)
   }
-  return res.redirect(303, stripeSetup.vatNumber)
+
+  return res.redirect(303, stripeSetup.checkYourAnswers)
 }

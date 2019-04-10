@@ -24,7 +24,9 @@ describe('Stripe setup: company number page', () => {
 
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {})
 
-        cy.visit('/vat-number-company-number/company-number')
+        cy.visit('/vat-number-company-number/vat-number')
+        cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
+        cy.get('#vat-number-form > button[type=submit]').click()
       })
 
       it('should display page correctly', () => {
@@ -143,11 +145,13 @@ describe('Stripe setup: company number page', () => {
         cy.task('setupStubs', [
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
-          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, true),
+          stubStripeSetupGetForMultipleCalls(gatewayAccountId, false, false, false, true),
           stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
         ])
 
-        cy.visit('/vat-number-company-number/company-number')
+        cy.visit('/vat-number-company-number/vat-number')
+        cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
+        cy.get('#vat-number-form > button[type=submit]').click()
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
