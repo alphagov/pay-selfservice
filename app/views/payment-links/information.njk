@@ -22,7 +22,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
 
   <form action="{{ routes.paymentLinks.information }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input type="hidden" name="service-name-path" value="{{currentService.name}}">
+    <input type="hidden" name="service-name-path" value="{{serviceName}}">
     {% if change.length %}
       <input name="change" type="hidden" value="true"/>
     {% endif %}
@@ -33,7 +33,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
         text: 'This field cannot be blank'
       } %}
     {% endif %}
-    {% set confirmationLabel %}{{friendlyURL}}/{{currentService.name | removeIndefiniteArticles | slugify}}/{% endset %}
+    {% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}
 
     {% if isWelsh %}
       {% set titleLabel = 'Welsh title' %}

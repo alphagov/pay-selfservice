@@ -2,17 +2,26 @@
 
 // NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
+const sinon = require('sinon')
+const proxyquire = require('proxyquire')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {CONNECTOR_URL} = process.env
+
+const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
+
+const getController = (mockResponse) => {
+  return proxyquire('../../../../app/controllers/payment-links/get-information-controller', {
+    '../../utils/response': { response: mockResponse }
+  })
+}
 
 describe('Create payment link information controller', () => {
   describe('if landing here for the first time', () => {
@@ -20,7 +29,7 @@ describe('Create payment link information controller', () => {
     before(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{ name: 'tokens:create' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -64,7 +73,7 @@ describe('Create payment link information controller', () => {
     before(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{ name: 'tokens:create' }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -92,5 +101,63 @@ describe('Create payment link information controller', () => {
     it(`should pre-set the value of the Details textarea to pre-existing data if present in the session`, () =>
       expect($(`textarea[name='payment-link-description']`).val()).to.equal(session.pageData.createPaymentLink.paymentLinkDescription)
     )
+  })
+
+  describe('service name resolution', () => {
+    it('should resolve the English service name when creating an English payment link', () => {
+      const req = {
+        service: {
+          serviceName: {
+            en: 'English name',
+            cy: 'Welsh name'
+          }
+        },
+        body: {}
+      }
+
+      const mockResponse = sinon.stub()
+      const controller = getController(mockResponse)
+      controller(req, {})
+      expect(mockResponse.getCall(0).args[3].serviceName).to.equal(req.service.serviceName.en)
+    })
+
+    it('should resolve the Welsh service name when creating a Welsh payment link and there is a Welsh service name', () => {
+      const req = {
+        service: {
+          serviceName: {
+            en: 'English name',
+            cy: 'Welsh name'
+          }
+        },
+        query: {
+          language: 'cy'
+        },
+        body: {}
+      }
+
+      const mockResponse = sinon.stub()
+      const controller = getController(mockResponse)
+      controller(req, {})
+      expect(mockResponse.getCall(0).args[3].serviceName).to.equal(req.service.serviceName.cy)
+    })
+
+    it('should resolve the English service name when creating a Welsh payment link and there is NOT a Welsh service name', () => {
+      const req = {
+        service: {
+          serviceName: {
+            en: 'English name'
+          }
+        },
+        query: {
+          language: 'cy'
+        },
+        body: {}
+      }
+
+      const mockResponse = sinon.stub()
+      const controller = getController(mockResponse)
+      controller(req, {})
+      expect(mockResponse.getCall(0).args[3].serviceName).to.equal(req.service.serviceName.en)
+    })
   })
 })
