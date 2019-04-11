@@ -39,7 +39,7 @@ describe('"VAT number / company number - check your answers" post controller', (
             },
             companyNumberData: {
               errors: {},
-              companyNumberMode: 'yes',
+              companyNumberDeclaration: 'true',
               companyNumber: rawCompanyNumber
             }
           }
@@ -88,7 +88,7 @@ describe('"VAT number / company number - check your answers" post controller', (
   it('should call stripe and connector with VAT number only and redirect to the dashboard', done => {
     req.session.pageData.stripeSetup.companyNumberData = {
       errors: {},
-      companyNumberMode: '',
+      companyNumberDeclaration: '',
       companyNumber: ''
     }
     updateCompanyMock = sinon.spy((stripeAccountId, body) => {

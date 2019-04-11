@@ -14,7 +14,7 @@ module.exports = (req, res) => {
 
   if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.vatNumberData.vatNumber'))) {
     return res.redirect(303, stripeSetup.vatNumber)
-  } else if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.companyNumberData.companyNumberMode'))) {
+  } else if (lodash.isEmpty(lodash.get(req, 'session.pageData.stripeSetup.companyNumberData.companyNumberDeclaration'))) {
     return res.redirect(303, stripeSetup.companyNumber)
   }
 

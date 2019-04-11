@@ -12,10 +12,10 @@
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
     {% if errors | length %}
       {% set errorList = [] %}
-      {% if errors['company-number-mode'] %}
+      {% if errors['company-number-declaration'] %}
         {% set errorList = (errorList.push({
           text: 'Company registration number',
-          href: '#company-number-mode-1'
+          href: '#company-number-declaration-1'
         }), errorList) %}
       {% endif %}
       {% if errors['company-number'] %}
@@ -40,7 +40,7 @@
           text: errors['company-number']
         } %}
       {% endif %}
-      {% set companyHouseMode %}
+      {% set companyNumberInput %}
         {{ govukInput({
           name: "company-number",
           id: "company-number",
@@ -61,15 +61,15 @@
         }) }}
       {% endset %}
 
-      {% set companyNumberModeError = false %}
-      {% if errors['company-number-mode'] %}
-        {% set companyNumberModeError = {
-          text: errors['company-number-mode']
+      {% set companyNumberDeclarationError = false %}
+      {% if errors['company-number-declaration'] %}
+        {% set companyNumberDeclarationError = {
+          text: errors['company-number-declaration']
         } %}
       {% endif %}
       {{ govukRadios({
-        idPrefix: 'company-number-mode',
-        name: 'company-number-mode',
+        idPrefix: 'company-number-declaration',
+        name: 'company-number-declaration',
         fieldset: {
           legend: {
             text: 'Does your organisation have a company registration number?',
@@ -77,26 +77,26 @@
             classes: 'govuk-fieldset__legend--l'
           }
         },
-        errorMessage: companyNumberModeError,
+        errorMessage: companyNumberDeclarationError,
         items: [
           {
             text: 'Yes',
-            value: 'yes',
+            value: 'true',
             label: {
               classes: "govuk-label--s"
             },
             conditional: {
-              html: companyHouseMode
+              html: companyNumberInput
             },
-            checked: (companyNumberMode === 'yes')
+            checked: (companyNumberDeclaration === 'true')
           },
           {
             text: 'No',
-            value: 'no',
+            value: 'false',
             label: {
               classes: "govuk-label--s"
             },
-            checked: (companyNumberMode === 'no')
+            checked: (companyNumberDeclaration === 'false')
           }
         ]
       }) }}

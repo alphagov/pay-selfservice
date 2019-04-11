@@ -8,11 +8,11 @@ const { stripeSetup } = require('../../../../paths')
 const companyNumberValidations = require('./company-number-validations')
 
 // Constants
-const COMPANY_NUMBER_MODE_FIELD = 'company-number-mode'
+const COMPANY_NUMBER_DECLARATION_FIELD = 'company-number-declaration'
 const COMPANY_NUMBER_FIELD = 'company-number'
 
 module.exports = (req, res) => {
-  const rawCompanyNumberMode = lodash.get(req.body, COMPANY_NUMBER_MODE_FIELD, '')
+  const companyNumberDeclaration = lodash.get(req.body, COMPANY_NUMBER_DECLARATION_FIELD, '')
   const rawCompanyNumber = lodash.get(req.body, COMPANY_NUMBER_FIELD, '')
   const trimmedCompanyNumber = rawCompanyNumber.trim()
 
@@ -20,32 +20,32 @@ module.exports = (req, res) => {
     return res.redirect(303, stripeSetup.vatNumberCompanyNumber)
   }
 
-  const errors = validateCompanyNumberForm(rawCompanyNumberMode, trimmedCompanyNumber)
+  const errors = validateCompanyNumberForm(companyNumberDeclaration, trimmedCompanyNumber)
   if (!lodash.isEmpty(errors)) {
     lodash.set(req, 'session.pageData.stripeSetup.companyNumberData', {
       errors: errors,
-      companyNumberMode: rawCompanyNumberMode,
+      companyNumberDeclaration: companyNumberDeclaration,
       companyNumber: rawCompanyNumber
     })
     return res.redirect(303, stripeSetup.companyNumber)
   } else {
-    const sessionCompanyNumber = (rawCompanyNumberMode === 'no') ? '' : trimmedCompanyNumber
+    const sessionCompanyNumber = (companyNumberDeclaration === 'false') ? '' : trimmedCompanyNumber
     lodash.set(req, 'session.pageData.stripeSetup.companyNumberData', {
       errors: {},
-      companyNumberMode: rawCompanyNumberMode,
+      companyNumberDeclaration: companyNumberDeclaration,
       companyNumber: sessionCompanyNumber
     })
     return res.redirect(303, stripeSetup.checkYourAnswers)
   }
 }
 
-function validateCompanyNumberForm (companyNumberMode, companyNumber) {
+function validateCompanyNumberForm (companyNumberDeclaration, companyNumber) {
   const errors = {}
 
-  const companyNumberModeValidationResult = companyNumberValidations.validateCompanyNumberMode(companyNumberMode)
-  if (!companyNumberModeValidationResult.valid) {
-    errors[COMPANY_NUMBER_MODE_FIELD] = companyNumberModeValidationResult.message
-  } else if (companyNumberMode === 'yes') {
+  const companyNumberDeclarationValidationResult = companyNumberValidations.validateCompanyNumberDeclaration(companyNumberDeclaration)
+  if (!companyNumberDeclarationValidationResult.valid) {
+    errors[COMPANY_NUMBER_DECLARATION_FIELD] = companyNumberDeclarationValidationResult.message
+  } else if (companyNumberDeclaration === 'true') {
     const companyNumberValidationResult = companyNumberValidations.validateCompanyNumber(companyNumber)
     if (!companyNumberValidationResult.valid) {
       errors[COMPANY_NUMBER_FIELD] = companyNumberValidationResult.message
