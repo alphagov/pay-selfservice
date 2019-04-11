@@ -35,7 +35,9 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       it('should redirect to /company-number page when pageData has vatNumber only', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {
           stripeSetup: {
-            vatNumberData: {}
+            vatNumberData: {
+              vatNumber: 'GBGD001'
+            }
           }
         })
 
@@ -49,8 +51,12 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       it('should redirect to /check-your-answers page when pageData has vatNumber and companyNumber', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {
           stripeSetup: {
-            vatNumberData: {},
-            companyNumberData: {}
+            vatNumberData: {
+              vatNumber: 'GBGD001'
+            },
+            companyNumberData: {
+              companyNumberMode: 'no'
+            }
           }
         })
 
@@ -64,7 +70,9 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       it('should redirect to /vat-number page when pageData has companyNumber only (invalid cookie structure)', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {
           stripeSetup: {
-            companyNumberData: {}
+            companyNumberData: {
+              companyNumberMode: 'no'
+            }
           }
         })
 

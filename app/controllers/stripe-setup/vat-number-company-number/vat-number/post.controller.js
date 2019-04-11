@@ -26,6 +26,12 @@ module.exports = (req, res) => {
       errors: {},
       vatNumber: displayVatNumber
     })
+
+    const companyNumberMode = lodash.get(req, 'session.pageData.stripeSetup.companyNumberData.companyNumberMode')
+
+    if (companyNumberMode) {
+      return res.redirect(303, stripeSetup.checkYourAnswers)
+    }
     return res.redirect(303, stripeSetup.companyNumber)
   }
 }
