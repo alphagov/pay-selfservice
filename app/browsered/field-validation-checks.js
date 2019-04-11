@@ -125,12 +125,6 @@ exports.isNotVatNumber = value => {
 exports.isNotCompanyNumber = value => {
   const sanitisedCompanyNumber = value.replace(/\s/g, '').toUpperCase()
 
-  // Allow an empty string, as company number is not always required.
-  // If it is required, this will be flagged by the server side validation.
-  if (sanitisedCompanyNumber === '') {
-    return false
-  }
-
   if (/^[0-9]{7}$/.test(sanitisedCompanyNumber)) {
     return validationErrors.sevenDigitCompanyNumber
   } else if (!/^(?:0[0-9]|OC|LP|SC|SO|SL|NI|R0|NC|NL)[0-9]{6}$/.test(sanitisedCompanyNumber)) {
