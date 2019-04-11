@@ -11,6 +11,7 @@ const cardFixtures = require('../../fixtures/card_fixtures')
 const serviceFixtures = require('../../fixtures/service_fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
 const stripeAccountSetupFixtures = require('../../fixtures/stripe_account_setup_fixtures')
+const productFixtures = require('../../fixtures/product_fixtures')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -736,6 +737,56 @@ module.exports = {
           is: {
             statusCode: 201,
             headers: {}
+          }
+        }]
+      }
+    ]
+  },
+  getProductsByGatewayAccountIdSuccess: (opts) => {
+    const response = opts.products.map(product =>
+      productFixtures.validCreateProductResponse(product).getPlain())
+
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/gateway-account/${opts.gateway_account_id}/products`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: response
+          }
+        }]
+      }
+    ]
+  },
+  getProductsByGatewayAccountIdFailure: (opts) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/gateway-account/${opts.gateway_account_id}/products`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 500,
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         }]
       }
