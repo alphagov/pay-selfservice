@@ -5,6 +5,7 @@ const Product = require('../../models/Product.class')
 const Payment = require('../../models/Payment.class')
 const baseClient = require('./base_client/base_client')
 const { PRODUCTS_URL } = require('../../../config')
+const supportedLanguage = require('../../models/supported-language')
 
 // Constants
 const SERVICE_NAME = 'products'
@@ -61,7 +62,8 @@ function createProduct (options) {
       product_name_path: options.productNamePath,
       reference_enabled: options.referenceEnabled,
       reference_label: options.referenceLabel,
-      reference_hint: options.referenceHint
+      reference_hint: options.referenceHint,
+      language: options.language || supportedLanguage.ENGLISH
     },
     description: 'create a product for a service',
     service: SERVICE_NAME
