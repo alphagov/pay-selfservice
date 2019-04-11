@@ -42,7 +42,7 @@
           text: "VAT number"
         },
         hint: {
-          text: "For example, 'GBGD001'"
+          text: "For example, ‘GBGD001’"
         },
         classes: "govuk-input--width-30",
         value: vatNumber,
@@ -50,7 +50,8 @@
         errorMessage: vatNumberError,
         attributes: {
           "data-validate": "required vatNumber",
-          "autocomplete": "off"
+          autocomplete: "off",
+          spellcheck: "false"
         }
       }) }}
 
