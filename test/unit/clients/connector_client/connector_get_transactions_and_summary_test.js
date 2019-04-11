@@ -264,6 +264,42 @@ describe('connector client', function () {
     })
   })
 
+  describe('get transactions that have associated fees', () => {
+    const gatewayAccountId = 42
+    const validGetTransactionsResponse = transactionSummaryFixtures.validTransactionsResponse({
+      transactions: [
+        { reference: 'payment1', fee: 200 },
+        { reference: 'payment2', fee: 200 }
+      ]
+    })
+
+    before((done) => {
+      const pactified = validGetTransactionsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${gatewayAccountId}/charges`)
+          .withUponReceiving('a valid transactions request with associated fees')
+          .withState(`Account ${gatewayAccountId} exists in the database and has 2 transactions with fees`)
+          .withMethod('GET')
+          .withQuery('page', '1')
+          .withQuery('display_size', '100')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get fee associated transactions successfully', function (done) {
+      const getFeeTransactions = validGetTransactionsResponse.getPlain()
+      connectorClient.searchTransactions({ gatewayAccountId: gatewayAccountId }, (connectorData, connectorResponse) => {
+        expect(connectorResponse.body).to.deep.equal(getFeeTransactions)
+        done()
+      })
+    })
+  })
+
   describe('get filtered transactions with multiple values for \'payment_states\', a partial value for \'reference\' and a to/from date defined', () => {
     const params = {
       gatewayAccountId: 42,
