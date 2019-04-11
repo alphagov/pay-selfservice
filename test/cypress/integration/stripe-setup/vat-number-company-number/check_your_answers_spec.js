@@ -41,7 +41,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
         })
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type(validCompanyNumber)
 
             cy.get('button[type=submit]').click()
@@ -70,7 +70,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
         })
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-2[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
             cy.get('button[type=submit]').click()
@@ -101,7 +101,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
         })
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type(validCompanyNumber)
 
             cy.get('button[type=submit]').click()
@@ -149,7 +149,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
         })
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type(validCompanyNumber)
 
             cy.get('button[type=submit]').click()
@@ -165,7 +165,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
         })
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').should('be.checked')
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').should('be.checked')
             cy.get('input#company-number[name="company-number"]').should('have.value', validCompanyNumber)
             cy.get('button[type=submit]').should('exist')
             cy.get('button[type=submit]').should('contain', 'Continue')
@@ -227,7 +227,7 @@ describe('Stripe setup: "VAT number / company number - check your answers" page'
         })
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type(validCompanyNumber)
 
             cy.get('button[type=submit]').click()

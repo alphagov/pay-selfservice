@@ -55,7 +55,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
               vatNumber: 'GBGD001'
             },
             companyNumberData: {
-              companyNumberMode: 'no'
+              companyNumberDeclaration: 'false'
             }
           }
         })
@@ -71,7 +71,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId, {
           stripeSetup: {
             companyNumberData: {
-              companyNumberMode: 'no'
+              companyNumberDeclaration: 'false'
             }
           }
         })

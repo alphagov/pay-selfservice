@@ -7,7 +7,7 @@ const {
   isNotCompanyNumber
 } = require('../../../../browsered/field-validation-checks')
 
-exports.validateCompanyNumberMode = function validateCompanyNumberMode (value) {
+exports.validateCompanyNumberDeclaration = function validateCompanyNumberDeclaration (value) {
   if (!value) {
     return {
       valid: false,

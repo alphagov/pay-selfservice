@@ -34,10 +34,10 @@ describe('Stripe setup: company number page', () => {
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('be.visible')
 
-            cy.get('input#company-number-mode-2[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
             cy.get('button[type=submit]').should('exist')
@@ -50,15 +50,15 @@ describe('Stripe setup: company number page', () => {
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Company registration number')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number-mode-1')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number-declaration-1')
 
-        cy.get('#company-number-mode-error').should('contain', 'You must answer this question')
+        cy.get('#company-number-declaration-error').should('contain', 'You must answer this question')
       })
 
       it('should display an error when company number input is blank and "Yes" option is selected', () => {
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type('        ')
 
             cy.get('button[type=submit]').click()
@@ -75,7 +75,7 @@ describe('Stripe setup: company number page', () => {
       it('should display an error when company number is invalid and "Yes" option is selected', () => {
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type('(╯°□°)╯︵ ┻━┻')
 
             cy.get('button[type=submit]').click()
@@ -92,7 +92,7 @@ describe('Stripe setup: company number page', () => {
       it('should redirect to /check-your-answers page when company number is valid and "Yes" option is selected', () => {
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-1[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type('01234567')
 
             cy.get('button[type=submit]').click()
@@ -106,7 +106,7 @@ describe('Stripe setup: company number page', () => {
       it('should redirect to /check-your-answers page when "No" option is selected', () => {
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-2[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
             cy.get('button[type=submit]').click()
@@ -155,7 +155,7 @@ describe('Stripe setup: company number page', () => {
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
-            cy.get('input#company-number-mode-2[name="company-number-mode"]').check()
+            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
             cy.get('button[type=submit]').click()

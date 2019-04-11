@@ -18,7 +18,7 @@ module.exports = (req, res) => {
   } else {
     pageData = {
       errors: {},
-      companyNumberMode: '',
+      companyNumberDeclaration: '',
       companyNumber: ''
     }
   }
