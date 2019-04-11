@@ -72,6 +72,8 @@ describe('The manage payment links page', () => {
       cy.get('.payment-links-list--header').should('contain',
         'There are 2 payment links')
 
+      cy.get('ul.payment-links-list').should('have.length', 1)
+
       cy.get('ul.payment-links-list').find('li').should('have.length', 2)
       cy.get('ul.payment-links-list').find('li').eq(0).within(() => {
         cy.get('h2').contains(products[0].name)
@@ -108,6 +110,8 @@ describe('The manage payment links page', () => {
       cy.get('h1').should('contain', 'Manage payment links')
       cy.get('.payment-links-list--header').should('contain',
         'There are 4 payment links')
+
+      cy.get('ul.payment-links-list').should('have.length', 2)
 
       cy.get('ul.payment-links-list').eq(0).find('li').should('have.length', 2)
       cy.get('ul.payment-links-list').eq(0).find('li').eq(0).within(() => {
@@ -157,6 +161,7 @@ describe('The manage payment links page', () => {
         'There are 2 payment links')
 
       cy.get('h3').contains('Welsh payment links').should('exist')
+      cy.get('ul.payment-links-list').should('have.length', 1)
 
       cy.get('div#welsh-payment-links').should('exist').within(() => {
         cy.get('ul.payment-links-list').find('li').should('have.length', 2)
