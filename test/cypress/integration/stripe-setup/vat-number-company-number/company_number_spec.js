@@ -86,7 +86,7 @@ describe('Stripe setup: company number page', () => {
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#company-number')
 
         cy.get('input#company-number[name="company-number"]').should('have.class', 'govuk-input--error')
-        cy.get('label[for=company-number] > span').should('contain', 'Enter a valid company number')
+        cy.get('#company-number-error').should('contain', 'Enter a valid company number')
       })
 
       it('should redirect to /check-your-answers page when company number is valid and "Yes" option is selected', () => {
@@ -107,7 +107,20 @@ describe('Stripe setup: company number page', () => {
         cy.get('#company-number-form').should('exist')
           .within(() => {
             cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
-            cy.get('input#company-number[name="company-number"]').should('not.be.visible')
+            cy.get('button[type=submit]').click()
+          })
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq('/vat-number-company-number/check-your-answers')
+        })
+      })
+
+      it('should redirect to /check-your-answers page when "No" option is selected even if company number is invalid', () => {
+        cy.get('#company-number-form').should('exist')
+          .within(() => {
+            cy.get('input#company-number-declaration-1[name="company-number-declaration"]').check()
+            cy.get('input#company-number[name="company-number"]').type('(╯°□°)╯︵ ┻━┻')
+            cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
 
             cy.get('button[type=submit]').click()
           })
@@ -115,6 +128,9 @@ describe('Stripe setup: company number page', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq('/vat-number-company-number/check-your-answers')
         })
+
+        cy.get('dl.govuk-summary-list > div.govuk-summary-list__row:nth-child(2) > dd.govuk-summary-list__value')
+          .should('contain', 'None')
       })
     })
 

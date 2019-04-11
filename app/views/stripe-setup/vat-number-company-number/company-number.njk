@@ -31,7 +31,7 @@
     {% endif %}
 
     <form id="company-number-form" method="post"
-          action="/vat-number-company-number/company-number" data-validate="true">
+          action="/vat-number-company-number/company-number">
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
       {% set companyNumberError = false %}
@@ -55,7 +55,6 @@
           type: "text",
           errorMessage: companyNumberError,
           attributes: {
-            "data-validate": "companyNumber",
             autocomplete: "off",
             spellcheck: "false"
           }
