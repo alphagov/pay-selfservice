@@ -48,7 +48,7 @@
             text: "Company registration number"
           },
           hint: {
-            text: "For example, '01234567'"
+            text: "For example, ‘01234567’"
           },
           value: companyNumber,
           classes: "govuk-input--width-30",
@@ -56,7 +56,8 @@
           errorMessage: companyNumberError,
           attributes: {
             "data-validate": "companyNumber",
-            "autocomplete": "off"
+            autocomplete: "off",
+            spellcheck: "false"
           }
         }) }}
       {% endset %}
