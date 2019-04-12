@@ -13,7 +13,6 @@
 <section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input name="service-name" type="hidden" value="{{currentService.name}}"/>
     <h1 class="govuk-heading-l">Edit your payment link</h1>
     <dl class="govuk-check-your-answers cya-questions-short">
       <div class="review-title">
