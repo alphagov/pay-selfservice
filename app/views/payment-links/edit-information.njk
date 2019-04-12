@@ -24,25 +24,6 @@
       <input name="change" type="hidden" value="true"/>
     {% endif %}
 
-    {% set titleAttributes = {
-      "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
-      "data-validate-max-length": "254"
-    } %}
-    {% set descriptionAttributes = {
-      "rows": "5"
-    } %}
-    {% if change !== 'payment-link-description' %}
-      {% set titleAttributes = {
-        "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
-        "data-validate-max-length": "254",
-        "autofocus": true
-      } %}
-    {% else %}
-      {% set descriptionAttributes = {
-        "rows": "5",
-        "autofocus": true
-      } %}
-    {% endif %}
     {% set titleError = false %}
     {% if flash.genericError %}
     {% set titleError = {
@@ -50,16 +31,52 @@
     } %}
     {% endif %}
 
+  {% if isWelsh %}
+      {% set titleLabel = 'Welsh title' %}
+      {% set titleHint = 'Briefly describe what the user is paying for. For example, <span lang="cy">“Talu am drwydded barcio”</span>.' %}
+      {% set detailsHint = 'Give your users more information in Welsh. For example, you could tell them how long it takes for their application to be processed.' %}
+      {% set lang = "cy" %}
+    {% else %}
+      {% set titleLabel = 'Title' %}
+      {% set titleHint = 'Briefly describe what the user is paying for. For example, “Pay for a parking permit”.' %}
+      {% set detailsHint = 'Give your users more information. For example, you could tell them how long it takes for their application to be processed.' %}
+      {% set lang = "en" %}
+    {% endif %}
+
+    {% set titleAttributes = {
+      "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
+      "data-validate-max-length": "254",
+      "lang": lang
+    } %}
+    {% set descriptionAttributes = {
+      "rows": "5",
+      "lang": lang
+    } %}
+    {% if change !== 'payment-link-description' %}
+      {% set titleAttributes = {
+        "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
+        "data-validate-max-length": "254",
+        "lang": lang,
+        "autofocus": true
+      } %}
+    {% else %}
+      {% set descriptionAttributes = {
+        "rows": "5",
+        "lang": lang,
+        "autofocus": true
+      } %}
+    {% endif %}
+
     {{
       govukInput({
         id: "payment-link-title",
         name: "payment-link-title",
         label: {
-            text: "Title",
+            text: titleLabel,
             classes: "govuk-label--s"
         },
         hint: {
-          text: "Briefly describe what the user is paying for. For example, “Pay for a parking permit”."
+          html: titleHint
         },
         value: product.name,
         attributes: titleAttributes,
@@ -76,7 +93,7 @@
             classes: "govuk-label--s"
         },
         hint: {
-          text: "Give your users more information. For example, you could tell them how long it takes for their application to be processed."
+          text: detailsHint
         },
         value: product.description,
         attributes: descriptionAttributes
@@ -92,9 +109,12 @@
 
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage }}">Cancel</a></p>
   </form>
-  <div class="govuk-!-margin-top-9">
+
+  {% if not isWelsh %}
+  <div class="govuk-!-margin-top-9" id="payment-link-example">
     <h3 class="govuk-heading-s">Example of what the user will see</h3>
     <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of payment link landing page">
   </div>
+  {% endif %}
 </section>
 {% endblock %}

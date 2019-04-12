@@ -1,4 +1,5 @@
 const commonStubs = require('../../utils/common_stubs')
+const { getProductsStub } = require('../../utils/products_stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 
@@ -17,16 +18,6 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (name, href, language
   }
 }
 
-const getProductsStub = function getProductsStub (products) {
-  return {
-    name: 'getProductsByGatewayAccountIdSuccess',
-    opts: {
-      gateway_account_id: gatewayAccountId,
-      products: products
-    }
-  }
-}
-
 describe('The manage payment links page', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -37,7 +28,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
-        getProductsStub([])
+        getProductsStub([], gatewayAccountId)
       ])
     })
 
@@ -61,7 +52,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
-        getProductsStub(products)
+        getProductsStub(products, gatewayAccountId)
       ])
     })
 
@@ -100,7 +91,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
-        getProductsStub(products)
+        getProductsStub(products, gatewayAccountId)
       ])
     })
 
@@ -149,7 +140,7 @@ describe('The manage payment links page', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
-        getProductsStub(products)
+        getProductsStub(products, gatewayAccountId)
       ])
     })
 
