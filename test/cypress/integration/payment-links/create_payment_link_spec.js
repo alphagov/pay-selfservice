@@ -29,7 +29,10 @@ describe('The create payment link flow', () => {
 
         cy.get('h1').should('contain', 'Create a payment link')
         cy.get('a#create-payment-link').should('exist')
+        cy.get('a[href="/create-payment-link/information?language=cy"]').should('exist')
+          .should('contain', 'Create a payment link in Welsh')
       })
+
       it('Should navigate to create payment link in English information page', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
         cy.visit('/create-payment-link')
@@ -221,14 +224,21 @@ describe('The create payment link flow', () => {
     const referenceHint = 'mewn e-bost'
     const amount = 10
 
+    describe('The create payment link start page', () => {
+      it('Should navigate to create payment link in Welsh information page', () => {
+        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+        cy.visit('/create-payment-link')
+
+        cy.get('a[href="/create-payment-link/information?language=cy"]').click()
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/create-payment-link/information`)
+        })
+      })
+    })
+
     describe('Information page', () => {
       it('Should display Welsh-specific instructions', () => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-        // TODO start the flow by clicking "Create payment link in Welsh" link when this
-        // exists
-        cy.visit('/create-payment-link/information?language=cy')
-
         cy.get('h1').should('contain', 'Set Welsh payment link information')
 
         cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
@@ -375,6 +385,33 @@ describe('The create payment link flow', () => {
 
       it('should have Welsh-specific instructions', () => {
         cy.get('button[type=submit]').should('exist').should('contain', 'Create Welsh payment link')
+      })
+    })
+
+    describe('Should clear session when returning to the create payment link start page', () => {
+      it('should return to the start page', () => {
+        cy.get('nav').contains('Create a payment link').click()
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/create-payment-link`)
+        })
+      })
+
+      it('should show English instructions when the "Create a payment link" button is pressed', () => {
+        cy.get('a#create-payment-link').click()
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(`/create-payment-link/information`)
+        })
+
+        cy.get('h1').should('contain', 'Set payment link information')
+      })
+
+      it('should have empty inputs', () => {
+        cy.get('form[method=post][action="/create-payment-link/information"]').should('exist')
+          .within(() => {
+            cy.get('input#payment-link-title').should('be.empty')
+            cy.get('textarea#payment-link-description').should('be.empty')
+          })
       })
     })
   })
