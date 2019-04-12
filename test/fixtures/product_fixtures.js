@@ -14,7 +14,8 @@ module.exports = {
       gateway_account_id: opts.gatewayAccountId || 'd5gzn',
       pay_api_token: opts.payApiToken || 'pay-api-token',
       name: opts.name || 'A Product Name',
-      type: opts.type || 'DEMO'
+      type: opts.type || 'DEMO',
+      language: opts.language || 'en'
     }
     if (opts.type === 'ADHOC') data.reference_enabled = opts.reference_enabled || false
     if (opts.description) data.description = opts.description

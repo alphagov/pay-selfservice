@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const Pact = require('pact')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 // Custom dependencies
@@ -40,12 +40,15 @@ describe('products client - create a new product', () => {
   after(() => provider.finalize())
 
   describe('when a product is successfully created', () => {
+    const language = 'cy'
+
     before(done => {
       const productsClient = getProductsClient()
       request = productFixtures.validCreateProductRequest({
         description: 'a test product',
         returnUrl: 'https://example.gov.uk/paid-for-somet',
-        price: randomPrice()
+        price: randomPrice(),
+        language
       })
       const requestPlain = request.getPlain()
       response = productFixtures.validCreateProductResponse(requestPlain)
@@ -65,7 +68,8 @@ describe('products client - create a new product', () => {
           price: requestPlain.price,
           description: requestPlain.description,
           returnUrl: requestPlain.return_url,
-          type: 'DEMO'
+          type: 'DEMO',
+          language
         }))
         .then(res => {
           result = res
@@ -85,6 +89,7 @@ describe('products client - create a new product', () => {
       expect(result.price).to.equal(plainRequest.price)
       expect(result.returnUrl).to.equal('https://example.gov.uk/paid-for-somet')
       expect(result.type).to.equal('DEMO')
+      expect(result.language).to.equal(language)
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')
@@ -99,7 +104,7 @@ describe('products client - create a new product', () => {
   describe('create a product - bad request', () => {
     before(done => {
       const productsClient = getProductsClient()
-      request = productFixtures.validCreateProductRequest({pay_api_token: ''})
+      request = productFixtures.validCreateProductRequest({ pay_api_token: '' })
       const requestPlain = request.getPlain()
       provider.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
@@ -116,7 +121,8 @@ describe('products client - create a new product', () => {
           price: requestPlain.price,
           description: requestPlain.description,
           returnUrl: requestPlain.return_url,
-          type: requestPlain.type
+          type: requestPlain.type,
+          language: requestPlain.language
         }), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {

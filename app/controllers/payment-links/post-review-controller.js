@@ -11,10 +11,20 @@ const productsClient = require('../../services/clients/products_client.js')
 const productTypes = require('../../utils/product_types')
 const publicAuthClient = require('../../services/clients/public_auth_client')
 const auth = require('../../services/auth_service.js')
+const supportedLanguage = require('../../models/supported-language')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const { paymentLinkTitle, paymentLinkDescription, paymentLinkAmount, serviceNamePath, productNamePath, paymentReferenceType, paymentReferenceLabel, paymentReferenceHint } = lodash.get(req, 'session.pageData.createPaymentLink', {})
+  const { paymentLinkTitle,
+    paymentLinkDescription,
+    paymentLinkAmount,
+    serviceNamePath,
+    productNamePath,
+    paymentReferenceType,
+    paymentReferenceLabel,
+    paymentReferenceHint,
+    isWelsh
+  } = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
     return res.redirect(paths.paymentLinks.start)
@@ -36,7 +46,8 @@ module.exports = (req, res) => {
         name: paymentLinkTitle,
         type: productTypes.ADHOC,
         serviceNamePath,
-        productNamePath
+        productNamePath,
+        language: isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
       }
 
       if (paymentLinkDescription) {
