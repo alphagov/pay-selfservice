@@ -21,11 +21,16 @@
     govukButton({
       text: "Create a payment link",
       href: routes.paymentLinks.information,
+      classes: "govuk-!-margin-bottom-4",
       attributes: {
         id: "create-payment-link"
       }
     })
   }}
+
+  <p class="govuk-body govuk-!-margin-bottom-6">
+    <a href="{{routes.paymentLinks.information}}?language=cy">Create a payment link in Welsh</a>
+  </p>
 
   {% set example %}
     <ol>
