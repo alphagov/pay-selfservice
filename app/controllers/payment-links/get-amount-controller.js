@@ -4,7 +4,7 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const {response} = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 
 module.exports = (req, res) => {
@@ -17,6 +17,7 @@ module.exports = (req, res) => {
     paymentAmountType,
     nextPage: paths.paymentLinks.amount,
     returnToStart: paths.paymentLinks.start,
-    manage: paths.paymentLinks.manage
+    manage: paths.paymentLinks.manage,
+    isWelsh: pageData.isWelsh
   })
 }
