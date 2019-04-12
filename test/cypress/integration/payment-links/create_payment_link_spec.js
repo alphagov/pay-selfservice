@@ -1,11 +1,15 @@
 const commonStubs = require('../../utils/common_stubs')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
+const serviceName = {
+  en: 'pay for something',
+  cy: 'talu am rywbeth'
+}
 
 describe('The create payment link flow', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
-      commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
+      commonStubs.getUserStubWithServiceName(userExternalId, [gatewayAccountId], serviceName),
       commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay')
     ])
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
@@ -56,14 +60,26 @@ describe('The create payment link flow', () => {
             cy.get('textarea#payment-link-description').parent('.govuk-form-group').get('span')
               .should('contain', 'Give your users more information.')
 
+            cy.get('div#payment-link-title-confirmation').should('not.exist')
+
             cy.get('button[type=submit]').should('exist')
           })
       })
 
-      it('Should continue to the reference page', () => {
+      it('Should display URL when title is entered', () => {
         cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
           cy.get('input#payment-link-title').type(name)
           cy.get('textarea#payment-link-description').type(description)
+
+          cy.get('div#payment-link-title-confirmation').should('exist').within(() => {
+            cy.get('h3').should('contain', 'The website address for this payment link will look like:')
+            cy.contains('/pay-for-something/pay-for-parking-permit')
+          })
+        })
+      })
+
+      it('Should continue to the reference page', () => {
+        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
           cy.get('button[type=submit]').click()
         })
 
@@ -218,10 +234,19 @@ describe('The create payment link flow', () => {
           })
       })
 
-      it('Should continue to the reference page', () => {
-        cy.get('input#payment-link-title').type(name)
-        cy.get('textarea#payment-link-description').type(description)
+      it('Should display URL with Welsh service name when title is entered', () => {
+        cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
+          cy.get('input#payment-link-title').type(name)
+          cy.get('textarea#payment-link-description').type(description)
 
+          cy.get('div#payment-link-title-confirmation').should('exist').within(() => {
+            cy.get('h3').should('contain', 'The website address for this payment link will look like:')
+            cy.contains('/talu-am-rywbeth/talu-am-drwydded-barcio')
+          })
+        })
+      })
+
+      it('Should continue to the reference page', () => {
         cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
           cy.get('button[type=submit]').click()
         })

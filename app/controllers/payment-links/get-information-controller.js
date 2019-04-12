@@ -26,11 +26,15 @@ module.exports = (req, res) => {
     })
   }
 
+  const language = isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
+  const serviceName = req.service.serviceName[language] || req.service.serviceName.en
+
   return response(req, res, 'payment-links/information', {
     change,
     friendlyURL,
     paymentLinkTitle,
     paymentLinkDescription,
-    isWelsh
+    isWelsh,
+    serviceName
   })
 }
