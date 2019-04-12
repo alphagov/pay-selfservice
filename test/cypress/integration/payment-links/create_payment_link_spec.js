@@ -64,6 +64,11 @@ describe('The create payment link flow', () => {
 
             cy.get('button[type=submit]').should('exist')
           })
+
+        cy.get('#payment-link-example').should('exist').within(() => {
+          cy.get('h3').should('contain', 'Example of what the user will see')
+          cy.get('img').should('exist')
+        })
       })
 
       it('Should display URL when title is entered', () => {
@@ -111,6 +116,11 @@ describe('The create payment link flow', () => {
 
             cy.get('button[type=submit]').should('exist')
           })
+
+        cy.get('#payment-link-example').should('exist').within(() => {
+          cy.get('h3').should('contain', 'Example of what the user will see')
+          cy.get('img').should('exist')
+        })
       })
 
       it('should continue to the amount page', () => {
@@ -136,6 +146,11 @@ describe('The create payment link flow', () => {
             cy.get('input#payment-amount').should('exist')
             cy.get('button[type=submit]').should('exist')
           })
+
+        cy.get('#payment-link-example').should('exist').within(() => {
+          cy.get('h3').should('contain', 'Example of what the user will see')
+          cy.get('img').should('exist')
+        })
       })
 
       it('should continue to the confirm page', () => {
@@ -232,6 +247,8 @@ describe('The create payment link flow', () => {
 
             cy.get('button[type=submit]').should('exist')
           })
+
+        cy.get('#payment-link-example').should('not.exist')
       })
 
       it('Should display URL with Welsh service name when title is entered', () => {
@@ -278,6 +295,8 @@ describe('The create payment link flow', () => {
 
             cy.get('button[type=submit]').should('exist')
           })
+
+        cy.get('#payment-link-example').should('not.exist')
       })
 
       it('should continue to the amount page', () => {
@@ -303,6 +322,8 @@ describe('The create payment link flow', () => {
             cy.get('input#payment-amount').should('exist')
             cy.get('button[type=submit]').should('exist')
           })
+
+        cy.get('#payment-link-example').should('not.exist')
       })
 
       it('should continue to the confirm page', () => {
