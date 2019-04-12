@@ -791,5 +791,30 @@ module.exports = {
         }]
       }
     ]
+  },
+  getProductByExternalIdSuccess: (opts) => {
+    const response = productFixtures.validCreateProductResponse(opts.product).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: response
+          }
+        }]
+      }
+    ]
   }
 }
