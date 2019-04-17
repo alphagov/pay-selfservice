@@ -148,7 +148,7 @@
     "nodemon": "^1.18.10",
     "notp": "^2.0.3",
     "nunjucksify": "^2.2.0",
-    "nyc": "^13.3.0",
+    "nyc": "^14.0.0",
     "pact": "4.3.2",
     "portfinder": "^1.0.20",
     "proxyquire": "~2.1.0",
