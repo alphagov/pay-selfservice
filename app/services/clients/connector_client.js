@@ -520,7 +520,7 @@ ConnectorClient.prototype = {
         body: {
           op: 'replace',
           path: 'allow_apple_pay',
-          value: `${allowApplePay}`
+          value: allowApplePay
         },
         correlationId,
         description: 'toggle allow apple pay',
@@ -545,7 +545,7 @@ ConnectorClient.prototype = {
         body: {
           op: 'replace',
           path: 'allow_google_pay',
-          value: `${allowGooglePay}`
+          value: allowGooglePay
         },
         correlationId,
         description: 'toggle allow google pay',
