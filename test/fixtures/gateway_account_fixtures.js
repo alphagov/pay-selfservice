@@ -45,6 +45,22 @@ function validGatewayAccount (opts) {
 }
 
 module.exports = {
+  validGatewayAccountPatchRequest: (opts = {}) => {
+    const data = {
+      op: 'replace',
+      path: opts.path,
+      value: opts.value
+    }
+
+    return {
+      getPactified: () => {
+        return pactRegister.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
+    }
+  },
   validGatewayAccountEmailRefundToggleRequest: (enabled = true) => {
     const data = {
       op: 'replace',
