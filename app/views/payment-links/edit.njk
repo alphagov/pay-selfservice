@@ -45,6 +45,28 @@
           </a>
         </dd>
       </div>
+      <div class="review-reference">
+        <dt class="cya-question">
+          Reference number
+        </dt>
+        <dd class="cya-answer" id="create-payment-link-reference">
+          {% if product.referenceEnabled === true %}
+            {{ product.referenceLabel }}
+            {% if product.referenceHint %}
+              <span class="govuk-!-display-block govuk-text-grey">
+                {{ product.referenceHint | striptags(true) | escape | nl2br }}
+              </span>
+            {% endif %}
+          {% else %}
+            <span class="govuk-text-grey">Created by GOV.UK Pay</span>
+          {% endif %}
+        </dd>
+        <dd class="cya-change">
+          <a class="govuk-link govuk-link--no-visited-state" href="#">
+            Change <span class="govuk-visually-hidden">payment reference</span>
+          </a>
+        </dd>
+      </div>
       <div class="review-amount">
         <dt class="cya-question">
           Payment amount
