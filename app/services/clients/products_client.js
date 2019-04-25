@@ -86,7 +86,10 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
     body: {
       name: options.name,
       description: options.description,
-      price: options.price
+      price: options.price,
+      reference_enabled: options.referenceEnabled,
+      reference_label: options.referenceLabel,
+      reference_hint: options.referenceHint
     },
     description: 'update an existing product',
     service: SERVICE_NAME
