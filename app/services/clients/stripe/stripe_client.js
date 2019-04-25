@@ -37,8 +37,12 @@ module.exports = {
     return stripe.accounts.update(stripeAccountId, company.basicObject())
   },
 
-  createPerson: function (stripeAccountId, body) {
+  listPersons: function (stripeAccountId) {
+    return stripe.accounts.listPersons(stripeAccountId)
+  },
+
+  updatePerson: function (stripeAccountId, stripePersonId, body) {
     const stripePerson = new StripePerson(body)
-    return stripe.accounts.createPerson(stripeAccountId, stripePerson.basicObject())
+    return stripe.accounts.updatePerson(stripeAccountId, stripePersonId, stripePerson.basicObject())
   }
 }
