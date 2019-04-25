@@ -338,7 +338,7 @@ module.exports.bind = function (app) {
   app.get(paymentLinks.editInformation, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEditInformation)
   app.post(paymentLinks.editInformation, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditInformation)
   app.get(paymentLinks.editReference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEditReference)
-  // app.post(paymentLinks.editReference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditReference)
+  app.post(paymentLinks.editReference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditReference)
   app.get(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEditAmount)
   app.post(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditAmount)
 
