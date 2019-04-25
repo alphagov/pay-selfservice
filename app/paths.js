@@ -156,6 +156,7 @@ module.exports = {
     delete: '/create-payment-link/manage/delete/:productExternalId',
     edit: '/create-payment-link/manage/edit/:productExternalId',
     editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
+    editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
     editAmount: '/create-payment-link/manage/edit/amount/:productExternalId'
   },
   feedback: '/feedback',
