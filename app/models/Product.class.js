@@ -51,6 +51,12 @@ class Product {
     this.description = opts.description
     this.type = opts.type
     this.returnUrl = opts.return_url
+    this.referenceEnabled = opts.reference_enabled
+    if (opts.reference_enabled) {
+      this.referenceLabel = opts.reference_label
+      this.referenceHint = opts.reference_hint
+    }
+    this.language = opts.language
     this.language = opts.language
     opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, { method: link.method, href: link.href }))
   }
