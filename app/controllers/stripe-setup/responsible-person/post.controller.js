@@ -12,7 +12,7 @@ const { response, renderErrorView } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth
 } = require('../../../utils/validation/server-side-form-validations')
-const { createPerson } = require('../../../services/clients/stripe/stripe_client')
+const { listPersons, updatePerson } = require('../../../services/clients/stripe/stripe_client')
 const { ConnectorClient } = require('../../../services/clients/connector_client')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -60,7 +60,7 @@ const validationRules = [
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
-module.exports = (req, res) => {
+module.exports = async function (req, res) {
   const fields = [
     FIRST_NAME_FIELD,
     LAST_NAME_FIELD,
@@ -106,17 +106,17 @@ module.exports = (req, res) => {
     pageData['errors'] = errors
     return response(req, res, 'stripe-setup/responsible-person/index', pageData)
   } else if (lodash.get(req.body, 'answers-checked') === 'true') {
-    return createPerson(res.locals.stripeAccount.stripeAccountId, buildStripePerson(formFields))
-      .then(() => {
-        return connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
-      })
-      .then(() => {
-        return res.redirect(303, paths.dashboard.index)
-      })
-      .catch(error => {
-        logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
-        return renderErrorView(req, res, 'Please try again or contact support team')
-      })
+    try {
+      const stripeAccountId = res.locals.stripeAccount.stripeAccountId
+      const personsResponse = await listPersons(stripeAccountId)
+      const person = personsResponse.data.pop()
+      await updatePerson(stripeAccountId, person.id, buildStripePerson(formFields))
+      await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'responsible_person', req.correlationId)
+      await res.redirect(303, paths.dashboard.index)
+    } catch (error) {
+      logger.error(`[requestId=${req.correlationId}] Error creating responsible person with Stripe - ${error.message}`)
+      return renderErrorView(req, res, 'Please try again or contact support team')
+    }
   } else if (lodash.get(req.body, 'answers-need-changing') === 'true') {
     pageData.homeAddressPostcode = ukPostcode.fromString(formFields[HOME_ADDRESS_POSTCODE_FIELD]).toString()
     return response(req, res, 'stripe-setup/responsible-person/index', pageData)
