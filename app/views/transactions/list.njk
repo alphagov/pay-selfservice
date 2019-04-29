@@ -10,7 +10,7 @@
       {% if permissions.transactions_amount_read %}
       <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
         {% if isStripeAccount %}
-        <th class="govuk-table__header" scope="col" id="amount-header">Fee</th>
+        <th class="govuk-table__header" scope="col" id="amount-header">PSP Fee</th>
         <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
         {% endif %}
       {% endif %}
@@ -43,7 +43,7 @@
             </td>
             {% if isStripeAccount %}
               <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
-              <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.net or result.amount}}</td>
+              <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.net_amount or result.total_amount or result.amount}}</td>
             {% endif %}
       {% endif %}
       {% if permissions.transactions_card_type_read %}

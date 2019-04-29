@@ -45,11 +45,10 @@ module.exports = {
 
     connectorData.results.forEach(element => {
       element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
-      if (element.fee) {
-        // @TODO(sfount) this should be done somewhere it will be shared across all required views
-        element.net = lodash.subtract(element.amount, element.fee)
+
+      if (['fee', 'net_amount'].every(key => key in element)) {
         element.fee = asGBP(element.fee)
-        element.net = asGBP(element.net)
+        element.net_amount = asGBP(element.net_amount)
       }
       element.amount = asGBP(element.amount)
       if (element.total_amount && element.corporate_card_surcharge) {
@@ -90,11 +89,9 @@ module.exports = {
   buildPaymentView: function (chargeData, eventsData, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
 
-    if (chargeData.fee) {
-      // @TODO(sfount) this should be done somewhere it will be shared across all required views
-      chargeData.net = lodash.subtract(chargeData.amount, chargeData.fee)
+    if (['fee', 'net_amount'].every(key => key in chargeData)) {
       chargeData.fee = asGBP(chargeData.fee)
-      chargeData.net = asGBP(chargeData.net)
+      chargeData.net_amount = asGBP(chargeData.net_amount)
     }
 
     chargeData.amount = asGBP(chargeData.amount)
@@ -123,10 +120,8 @@ module.exports = {
 
     chargeData.card_details.first_digits_card_number = formatFirstSixDigitsCardNumber(chargeData.card_details.first_digits_card_number)
     chargeData.refundable = chargeData.refund_summary.status === 'available' || chargeData.refund_summary.status === 'error'
-    chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
     chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted)
     chargeData.refunded = chargeData.refund_summary.amount_submitted !== 0
-    chargeData.net_amount_display = asGBP(chargeData.refund_summary.amount_available)
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.wallet_type = changeCase.titleCase(chargeData.wallet_type)
