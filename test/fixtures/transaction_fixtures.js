@@ -82,7 +82,8 @@ const buildTransactionWithDefaults = (opts = {}) => {
       card_brand: opts.card_brand || 'Visa'
     },
     delayed_capture: opts.delayed_capture || false,
-    wallet_type: opts.wallet_type || null
+    wallet_type: opts.wallet_type || null,
+    metadata: opts.metadata || null
   }
 
   if (opts.corporate_card_surcharge) {
