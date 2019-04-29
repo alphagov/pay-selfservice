@@ -83,7 +83,7 @@
     "csrf": "3.1.x",
     "express": "4.16.x",
     "google-libphonenumber": "^3.2.2",
-    "govuk-frontend": "^2.10.0",
+    "govuk-frontend": "^2.11.0",
     "http-proxy": "1.17.x",
     "https-proxy-agent": "^2.2.1",
     "joi": "^14.3.1",
