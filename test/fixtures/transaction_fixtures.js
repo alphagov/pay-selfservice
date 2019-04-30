@@ -91,6 +91,7 @@ const buildTransactionWithDefaults = (opts = {}) => {
     data.total_amount = opts.total_amount
   }
   if (opts.fee) data.fee = opts.fee
+  if (opts.net_amount) data.net_amount = opts.net_amount
 
   return data
 }

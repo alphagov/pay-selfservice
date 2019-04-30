@@ -8,7 +8,7 @@ const userCreator = require('../test_helpers/user_creator.js')
 const getApp = require('../../server.js').getApp
 const paths = require('../../app/paths.js')
 const session = require('../test_helpers/mock_session.js')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const gatewayAccountId = '15486734'
 
 let app
@@ -23,7 +23,7 @@ function connectorMockResponds (path, data) {
 
 function whenGetTransactionHistory (chargeId, baseApp) {
   return request(baseApp)
-    .get(paths.generateRoute(paths.transactions.detail, {chargeId: chargeId}))
+    .get(paths.generateRoute(paths.transactions.detail, { chargeId: chargeId }))
     .set('Accept', 'application/json')
 }
 
@@ -41,7 +41,7 @@ describe('The transaction view scenarios', function () {
     let permissions = 'transactions-details:read'
     let user = session.getUser({
       gateway_account_ids: [gatewayAccountId],
-      permissions: [{name: permissions}]
+      permissions: [{ name: permissions }]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -159,8 +159,8 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'refundable': true,
-        'net_amount': '50.00',
-        'net_amount_display': '£50.00',
+        'refundable_amount': '50.00',
+        'refundable_amount_display': '£50.00',
         'refunded_amount': '£0.00',
         'refunded': false,
         'amount': '£50.00',
@@ -339,8 +339,8 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'refundable': true,
-        'net_amount': '50.00',
-        'net_amount_display': '£50.00',
+        'refundable_amount': '50.00',
+        'refundable_amount_display': '£50.00',
         'refunded_amount': '£0.00',
         'refunded': false,
         'amount': '£50.00',
@@ -480,8 +480,8 @@ describe('The transaction view scenarios', function () {
         'reference': 'Ref-1234',
         'email': 'alice.111@mail.fake',
         'refundable': true,
-        'net_amount': '50.00',
-        'net_amount_display': '£50.00',
+        'refundable_amount': '50.00',
+        'refundable_amount_display': '£50.00',
         'refunded_amount': '£0.00',
         'refunded': false,
         'amount': '£50.00',
@@ -684,8 +684,8 @@ describe('The transaction view scenarios', function () {
           'amount_available': 0,
           'amount_submitted': 5000
         },
-        'net_amount_display': '£0.00',
-        'net_amount': '0.00',
+        'refundable_amount_display': '£0.00',
+        'refundable_amount': '0.00',
         'refundable': false,
         'refunded_amount': '£50.00',
         'refunded': true,
@@ -777,7 +777,7 @@ describe('The transaction view scenarios', function () {
 
     it('should return charge not found if a non existing charge id requested', function (done) {
       let nonExistentChargeId = 888
-      let connectorError = {'message': 'Charge not found'}
+      let connectorError = { 'message': 'Charge not found' }
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
         .reply(404, connectorError)
 
@@ -788,19 +788,19 @@ describe('The transaction view scenarios', function () {
 
     it('should return a generic if connector responds with an error', function (done) {
       let nonExistentChargeId = 888
-      let connectorError = {'message': 'Internal server error'}
+      let connectorError = { 'message': 'Internal server error' }
       connectorMock.get(connectorChargePathFor(nonExistentChargeId))
         .reply(500, connectorError)
 
       whenGetTransactionHistory(nonExistentChargeId, app)
-        .expect(500, {'message': 'Error processing transaction view'})
+        .expect(500, { 'message': 'Error processing transaction view' })
         .end(done)
     })
 
     it('should return a generic if unable to communicate with connector', function (done) {
       let chargeId = 452345
       whenGetTransactionHistory(chargeId, app)
-        .expect(500, {'message': 'Error processing transaction view'})
+        .expect(500, { 'message': 'Error processing transaction view' })
         .end(done)
     })
   })

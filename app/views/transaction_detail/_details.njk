@@ -1,5 +1,5 @@
 {% from "components/details/macro.njk" import govukDetails %}
-{% set isStripeAccount = currentGatewayAccount.payment_provider !== 'stripe' %}
+{% set isStripeAccount = currentGatewayAccount.payment_provider === 'stripe' %}
 <table class="transaction-details govuk-table">
   <tbody class="govuk-table__body">
   <tr class="govuk-table__row">
@@ -96,8 +96,7 @@
     </tr>
     <tr class="govuk-table__row">
       <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Net amount:</th>
-      <td class="govuk-table__cell govuk-!-font-size-16" data-cell-type="net">{{ net_amount }}</td>
-    </tr>
+      <td class="govuk-table__cell govuk-!-font-size-16" data-cell-type="net">{{ net_amount or total_amount or amount }}</td> </tr>
   {% endif %}
 
   <tr class="govuk-table__row">

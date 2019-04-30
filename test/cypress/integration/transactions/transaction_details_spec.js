@@ -39,7 +39,8 @@ function defaultChargeDetails (paymentProvider = 'sandbox') {
       email: 'example@example.com',
       payment_provider: paymentProvider,
       delayed_capture: false,
-      ...(paymentProvider === 'stripe' && { fee: 100 })
+      ...(paymentProvider === 'stripe' && { fee: 100 }),
+      ...(paymentProvider === 'stripe' && { net_amount: 900 })
     },
     events: [{
       amount: defaultAmount,

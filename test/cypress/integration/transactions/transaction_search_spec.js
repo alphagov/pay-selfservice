@@ -53,8 +53,8 @@ describe('Transactions', () => {
   ]
 
   const transactionsWithAssociatedFees = [
-    { reference: 'first-transaction-with-fee', amount: 3000, fee: 300 },
-    { reference: 'second-transaction-with-fee', amount: 5000, fee: 500 }
+    { reference: 'first-transaction-with-fee', amount: 3000, fee: 300, net_amount: 2700 },
+    { reference: 'second-transaction-with-fee', amount: 5000, fee: 500, net_amount: 4500 }
   ]
 
   describe('Default sandbox gatway transactions', () => {
