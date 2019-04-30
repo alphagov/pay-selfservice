@@ -3,14 +3,17 @@ const { getProductsStub, getProductByExternalIdStub } = require('../../utils/pro
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 
-const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price) {
+const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price, referenceEnabled, referenceLabel, referenceHint) {
   return {
     external_id: externalId,
     name: name,
     description: description,
     price: price,
     language: language,
-    type: 'ADHOC'
+    type: 'ADHOC',
+    reference_enabled: referenceEnabled,
+    reference_label: referenceLabel,
+    reference_hint: referenceHint
   }
 }
 
@@ -23,7 +26,10 @@ describe('Editing a payment link', () => {
     const productId = 'product-id'
     const name = 'Pay for a firearm'
     const description = 'a description'
-    const product = buildPaymentLinkOpts(productId, name, 'en', description, 1000)
+    const referenceEnabled = true
+    const referenceLabel = 'License number'
+    const referenceHint = 'You can find this on your license card'
+    const product = buildPaymentLinkOpts(productId, name, 'en', description, 1000, referenceEnabled, referenceLabel, referenceHint)
 
     beforeEach(() => {
       cy.task('setupStubs', [
@@ -46,7 +52,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should show the details to edit', () => {
-      cy.get('dl').find('div').should('have.length', 3)
+      cy.get('dl').find('div').should('have.length', 4)
 
       cy.get('dl').find('div').eq(0).should('exist').within(() => {
         cy.get('dt').should('contain', 'Title')
@@ -59,6 +65,12 @@ describe('Editing a payment link', () => {
         cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-description`)
       })
       cy.get('dl').find('div').eq(2).should('exist').within(() => {
+        cy.get('dt').should('contain', 'Reference number')
+        cy.get('dd.cya-answer').should('contain', referenceLabel)
+        cy.get('dd.cya-answer').should('contain', referenceHint)
+        cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/reference/${productId}`)
+      })
+      cy.get('dl').find('div').eq(3).should('exist').within(() => {
         cy.get('dt').should('contain', 'Payment amount')
         cy.get('dd.cya-answer').should('contain', '£10.00')
         cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/amount/${productId}`)
@@ -110,6 +122,56 @@ describe('Editing a payment link', () => {
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
+        cy.get('button[type=submit]').click()
+      })
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+      })
+    })
+
+    it('should navigate to edit reference page', () => {
+      cy.get('div.review-reference > dd.cya-change > a').click()
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/reference/${productId}`)
+      })
+    })
+
+    it('should have English instructions', () => {
+      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
+        .within(() => {
+          cy.get('input[type="radio"]').should('have.length', 2)
+
+          cy.get('input#reference-label').should('exist')
+          cy.get('input#reference-label').should('have.attr', 'lang', 'en')
+          cy.get('label[for="reference-label"]').should('contain', 'Name of payment reference')
+          cy.get('input#reference-label').parent('.govuk-form-group').get('span')
+            .should('contain', 'For example, “invoice number”')
+
+          cy.get('textarea#reference-hint-text').should('exist')
+          cy.get('textarea#reference-hint-text').should('have.attr', 'lang', 'en')
+          cy.get('label[for="reference-hint-text"]').should('exist')
+          cy.get('label[for="reference-hint-text"]').should('contain', 'Hint text (optional)')
+          cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
+            .should('contain', 'Tell users what the payment reference looks like and where they can find it.')
+
+          cy.get('button[type=submit]').should('exist')
+        })
+
+      cy.get('#payment-link-example').should('exist').within(() => {
+        cy.get('h3').should('contain', 'Example of what the user will see')
+        cy.get('img').should('exist')
+      })
+    })
+
+    it('should have payment link details pre-filled', () => {
+      cy.get('input#reference-label').should('have.value', referenceLabel)
+      cy.get('textarea#reference-hint-text').should('have.value', referenceHint)
+    })
+
+    it('should navigate to edit details page when "Save changes" clicked', () => {
+      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
         cy.get('button[type=submit]').click()
       })
 
@@ -220,6 +282,46 @@ describe('Editing a payment link', () => {
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
+        cy.get('button[type=submit]').click()
+      })
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/${productId}`)
+      })
+    })
+
+    it('should navigate to edit reference page', () => {
+      cy.get('div.review-reference > dd.cya-change > a').click()
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/create-payment-link/manage/edit/reference/${productId}`)
+      })
+    })
+
+    it('should have Welsh instructions', () => {
+      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).should('exist')
+        .within(() => {
+          cy.get('input[type="radio"]').should('have.length', 2)
+
+          cy.get('input#reference-label').should('exist')
+          cy.get('input#reference-label').should('have.attr', 'lang', 'cy')
+          cy.get('label[for="reference-label"]').should('contain', 'Name of payment reference')
+          cy.get('input#reference-label').parent('.govuk-form-group').get('span')
+            .should('contain', 'For example, “rhif anfoneb”')
+
+          cy.get('textarea#reference-hint-text').should('exist')
+          cy.get('textarea#reference-hint-text').should('have.attr', 'lang', 'cy')
+          cy.get('label[for="reference-hint-text"]').should('exist')
+          cy.get('label[for="reference-hint-text"]').should('contain', 'Hint text (optional)')
+          cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
+            .should('contain', 'Explain in Welsh what the payment reference looks like and where to find it.')
+
+          cy.get('button[type=submit]').should('exist')
+        })
+    })
+
+    it('should navigate to edit details page when "Save changes" clicked', () => {
+      cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
         cy.get('button[type=submit]').click()
       })
 
