@@ -1,0 +1,147 @@
+{% extends "../layout.njk" %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/character-count/macro.njk" import govukCharacterCount %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  Edit your payment link reference - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% set createLink = true %}
+  {% include "./_nav.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  <form action="{{ self }}" class="form" method="post" data-validate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {% if change.length %}
+      <input name="change" type="hidden" value="true"/>
+    {% endif %}
+
+    {% set noSelectionError = false %}
+    {% if flash.errorType[0] === "paymentReferenceType" %}
+    {% set noSelectionError = {
+        text: "Please choose an option"
+    } %}
+    {% endif %}
+
+    {% set blankReferenceLabelError = false %}
+    {% if flash.errorType[0] === "label" %}
+    {% set blankReferenceLabelError = {
+        text: "Reference number cannot be blank"
+    } %}
+    {% endif %}
+
+    {% if isWelsh %}
+      {% set referenceNameHint = 'For example, <span lang="cy">“rhif anfoneb”</span>' %}
+      {% set referenceHintHint = 'Explain in Welsh what the payment reference looks like and where to find it.' %}
+      {% set lang = 'cy' %}
+    {% else %}
+      {% set referenceNameHint = 'For example, “invoice number”' %}
+      {% set referenceHintHint = 'Tell users what the payment reference looks like and where they can find it.' %}
+      {% set lang = 'en' %}
+    {% endif %}
+
+    {% set customReferenceHTML %}
+      {{
+        govukInput({
+          id: "reference-label",
+          name: "reference-label",
+          value: product.referenceLabel,
+          errorMessage: blankReferenceLabelError,
+          classes: "govuk-input--width-20",
+          label: {
+              text: "Name of payment reference",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            html: referenceNameHint
+          },
+          attributes: {
+            "data-validate": "isNaxsiSafe",
+            "lang": lang
+          }
+        })
+      }}
+
+      {{
+        govukCharacterCount({
+          id: "reference-hint-text",
+          name: "reference-hint-text",
+          value: product.referenceHint,
+          classes: "govuk-input--width-20",
+          maxlength: 255,
+          label: {
+              text: "Hint text (optional)",
+              classes: "govuk-label--s"
+          },
+          hint: {
+            text: referenceHintHint
+          },
+          attributes: {
+            "data-validate": "isFieldGreaterThanMaxLengthChars isNaxsiSafe",
+            "maxlength": "255",
+            "data-validate-max-length": "255",
+            "lang": lang
+          }
+        })
+      }}
+    {% endset %}
+    {% set standardReferenceHTML %}
+    <p class="govuk-body">GOV.UK Pay will create a unique payment reference for each transaction.</p>
+    {% endset %}
+    {{
+      govukRadios({
+        idPrefix: "reference-type-group",
+        name: "reference-type-group",
+        fieldset: {
+            legend: {
+                text: "Do your users already have a payment reference?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+            }
+        },
+        errorMessage: noSelectionError,
+        items: [
+          {
+              value: "custom",
+              text: "Yes",
+              checked: product.referenceEnabled,
+              id: "reference-type-custom",
+              conditional: {
+                html: customReferenceHTML
+              }
+          },
+          {
+              value: "standard",
+              text: "No",
+              checked: referenceEnabled,
+              id: "reference-type-standard",
+              conditional: {
+                html: standardReferenceHTML
+              }
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue",
+        classes: "button"
+      })
+    }}
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage }}">Cancel</a></p>
+  </form>
+
+  {% if not isWelsh %}
+  <div class="govuk-!-margin-top-9" id="payment-link-example">
+    <h3 class="govuk-heading-s">Example of what the user will see</h3>
+    <img src="/public/images/adhoc-1-start.svg" alt="Screenshot of a payment link page showing a input for the user to enter a reference">
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
