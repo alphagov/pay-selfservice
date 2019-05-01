@@ -8,15 +8,15 @@ const _ = require('lodash')
 const auth = require('../../services/auth_service.js')
 const router = require('../../routes.js')
 const transactionService = require('../../services/transaction_service')
-const {ConnectorClient} = require('../../services/clients/connector_client.js')
-const {buildPaymentList} = require('../../utils/transaction_view.js')
-const {response} = require('../../utils/response.js')
-const {renderErrorView} = require('../../utils/response.js')
-const {getFilters, describeFilters} = require('../../utils/filters.js')
+const { ConnectorClient } = require('../../services/clients/connector_client.js')
+const { buildPaymentList } = require('../../utils/transaction_view.js')
+const { response } = require('../../utils/response.js')
+const { renderErrorView } = require('../../utils/response.js')
+const { getFilters, describeFilters } = require('../../utils/filters.js')
 const states = require('../../utils/states')
 const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
-const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
+const { CORRELATION_HEADER } = require('../../utils/correlation_header.js')
 
 module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
@@ -30,19 +30,19 @@ module.exports = (req, res) => {
     .search(accountId, filters.result, correlationId)
     .then(transactions => {
       client
-        .getAllCardTypes({correlationId}, allCards => {
+        .getAllCardTypes({ correlationId }, allCards => {
           const model = buildPaymentList(transactions, allCards, accountId, filters.result)
           model.search_path = router.paths.transactions.index
           model.filtersDescription = describeFilters(filters.result)
           model.eventStates = states.allDisplayStateSelectorObjects()
-          .map(state => {
-            return {
-              value: state.key,
-              text: state.name,
-              selected: filters.result.selectedStates && filters.result.selectedStates.includes(state.name)
-            }
-          })
-          model.eventStates.unshift({value: '', text: 'Any', selected: false})
+            .map(state => {
+              return {
+                value: state.key,
+                text: state.name,
+                selected: filters.result.selectedStates && filters.result.selectedStates.includes(state.name)
+              }
+            })
+          model.eventStates.unshift({ value: '', text: 'Any', selected: false })
 
           model.stateFiltersFriendly = model.eventStates
             .filter(state => state.selected)

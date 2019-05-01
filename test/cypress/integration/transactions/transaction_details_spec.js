@@ -20,7 +20,7 @@ function formatDate (date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' — '
 }
 
-function defaultChargeDetails () {
+function defaultChargeDetails (paymentProvider = 'sandbox') {
   return {
     charge: {
       charge_id: '12345',
@@ -37,8 +37,10 @@ function defaultChargeDetails () {
       last_digits_card_number: '0002',
       expiry_date: '08/23',
       email: 'example@example.com',
-      payment_provider: 'sandbox',
-      delayed_capture: false
+      payment_provider: paymentProvider,
+      delayed_capture: false,
+      ...(paymentProvider === 'stripe' && { fee: 100 }),
+      ...(paymentProvider === 'stripe' && { net_amount: 900 })
     },
     events: [{
       amount: defaultAmount,
@@ -47,7 +49,7 @@ function defaultChargeDetails () {
   }
 }
 
-describe('Transactions details page', () => {
+describe('Transaction details page', () => {
   const transactionsUrl = `/transactions`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
@@ -69,7 +71,7 @@ describe('Transactions details page', () => {
       },
       {
         name: 'getGatewayAccountSuccess',
-        opts: { gateway_account_id: gatewayAccountId }
+        opts: { gateway_account_id: gatewayAccountId, payment_provider: chargeDetails.charge.payment_provider }
       },
       {
         name: 'getChargeSuccess',
@@ -347,5 +349,13 @@ describe('Transactions details page', () => {
     cy.task('setupStubs', getStubs(chargeDetails))
     cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
     cy.get('h2').should('not.contain', 'Metadata')
+  })
+
+  it('should show fee breakdown for stripe tranaction with associated fees', () => {
+    const chargeDetails = defaultChargeDetails('stripe')
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(chargeDetails.charge.fee))
+    cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(chargeDetails.charge.amount - chargeDetails.charge.fee))
   })
 })

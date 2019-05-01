@@ -90,6 +90,9 @@ const buildTransactionWithDefaults = (opts = {}) => {
     data.corporate_card_surcharge = opts.corporate_card_surcharge
     data.total_amount = opts.total_amount
   }
+  if (opts.fee) data.fee = opts.fee
+  if (opts.net_amount) data.net_amount = opts.net_amount
+
   return data
 }
 

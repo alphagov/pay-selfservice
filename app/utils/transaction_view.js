@@ -45,6 +45,11 @@ module.exports = {
 
     connectorData.results.forEach(element => {
       element.state_friendly = states.getDisplayNameForConnectorState(element.state, element.transaction_type)
+
+      if (['fee', 'net_amount'].every(key => key in element)) {
+        element.fee = asGBP(element.fee)
+        element.net_amount = asGBP(element.net_amount)
+      }
       element.amount = asGBP(element.amount)
       if (element.total_amount && element.corporate_card_surcharge) {
         element.total_amount = asGBP(element.total_amount)
@@ -84,6 +89,11 @@ module.exports = {
   buildPaymentView: function (chargeData, eventsData, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
 
+    if (['fee', 'net_amount'].every(key => key in chargeData)) {
+      chargeData.fee = asGBP(chargeData.fee)
+      chargeData.net_amount = asGBP(chargeData.net_amount)
+    }
+
     chargeData.amount = asGBP(chargeData.amount)
     if (chargeData.total_amount) {
       chargeData.total_amount = asGBP(chargeData.total_amount)
@@ -110,10 +120,10 @@ module.exports = {
 
     chargeData.card_details.first_digits_card_number = formatFirstSixDigitsCardNumber(chargeData.card_details.first_digits_card_number)
     chargeData.refundable = chargeData.refund_summary.status === 'available' || chargeData.refund_summary.status === 'error'
-    chargeData.net_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
+    chargeData.refundable_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
     chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted)
     chargeData.refunded = chargeData.refund_summary.amount_submitted !== 0
-    chargeData.net_amount_display = asGBP(chargeData.refund_summary.amount_available)
+    chargeData.refundable_amount_display = asGBP(chargeData.refund_summary.amount_available)
 
     chargeData.payment_provider = changeCase.upperCaseFirst(chargeData.payment_provider)
     chargeData.wallet_type = changeCase.titleCase(chargeData.wallet_type)

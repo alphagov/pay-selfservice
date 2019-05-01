@@ -2,7 +2,7 @@
 {% from "components/button/macro.njk" import govukButton %}
 
 <form id="refundForm" action="/transactions/{{charge_id}}/refund" method="post" class="target-to-show {% if flash.genericError %}active{% endif %}">
-  <input id="full-amount" type="hidden" name="full-amount" value="{{ net_amount }}" >
+  <input id="full-amount" type="hidden" name="full-amount" value="{{ refundable_amount }}" >
   <input id="amount-available" type="hidden" name="refund-amount-available-in-pence" value="{{ refund_summary.amount_available }}" />
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
   <div class="govuk-form-group">
@@ -19,7 +19,7 @@
             Remaining amount
           </label>
           <span class="govuk-hint govuk-radios__hint">
-            Refund the remaining {{ net_amount_display }} ({{ refunded_amount }} has already been refunded)
+            Refund the remaining {{ refundable_amount_display }} ({{ refunded_amount }} has already been refunded)
           </span>
         </div>
       {% else %}
@@ -29,7 +29,7 @@
             Full refund
           </label>
           <span class="govuk-hint govuk-radios__hint govuk-!-font-size-16">
-            Refund the full amount of {{ net_amount_display }}{% if corporate_card_surcharge %} (including a card fee of {{corporate_card_surcharge}}){% endif %}
+            Refund the full amount of {{ refundable_amount_display }}{% if corporate_card_surcharge %} (including a card fee of {{corporate_card_surcharge}}){% endif %}
           </span>
         </div>
       {% endif %}
