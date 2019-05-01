@@ -326,4 +326,26 @@ describe('Transactions details page', () => {
     cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
     cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
   })
+
+  it('should display metadata when available', () => {
+    const chargeDetails = defaultChargeDetails()
+    chargeDetails.charge.metadata = {
+      key1: 123,
+      key2: true,
+      key3: 'some string'
+    }
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('h2').should('contain', 'Metadata')
+    cy.get('th').contains('key1').siblings().first().should('contain', '123')
+    cy.get('th').contains('key2').siblings().first().should('contain', 'true')
+    cy.get('th').contains('key3').siblings().first().should('contain', 'some string')
+  })
+
+  it('should not display metadata when unavailable', () => {
+    const chargeDetails = defaultChargeDetails()
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('h2').should('not.contain', 'Metadata')
+  })
 })

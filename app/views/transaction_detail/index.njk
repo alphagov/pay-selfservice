@@ -25,6 +25,11 @@
     <h2 class="govuk-heading-m govuk-!-margin-top-9">Payment method</h2>
     {% include "./_payment.njk" %}
 
+    {% if metadata %}
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Metadata</h2>
+        {% include "./_metadata.njk" %}
+    {% endif %}
+
     {% if permissions.transactions_events_read %}
       <h2 class="govuk-heading-m govuk-!-margin-top-9">Transaction events</h2>
       {% include "./_events.njk" %}
