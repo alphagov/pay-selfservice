@@ -307,10 +307,10 @@ describe('Transactions', () => {
         cy.get('#transactions-list tbody').find('tr').should('have.length', transactionsWithAssociatedFees.length)
 
         cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[0].fee))
-        cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[0].amount - transactionsWithAssociatedFees[0].fee))
+        cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').first().find('span').should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[0].amount - transactionsWithAssociatedFees[0].fee))
 
         cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="fee"]').eq(1).should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[1].fee))
-        cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(1).should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[1].amount - transactionsWithAssociatedFees[1].fee))
+        cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').eq(1).find('span').should('have.text', convertPenceToPoundsFormatted(transactionsWithAssociatedFees[1].amount - transactionsWithAssociatedFees[1].fee))
       })
     })
   })

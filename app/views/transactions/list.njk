@@ -38,12 +38,14 @@
                     {{result.total_amount}}
                     <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
                   {%- else -%}
-                    {{result.amount}}
+                    <span style="white-space: pre">{{result.amount}}</span>
                   {%- endif -%}
             </td>
             {% if isStripeAccount %}
               <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
-              <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.net_amount or result.total_amount or result.amount}}</td>
+              <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
+                <span style="white-space: pre">{{result.net_amount or result.total_amount or result.amount}}</span>
+              </td>
             {% endif %}
       {% endif %}
       {% if permissions.transactions_card_type_read %}
