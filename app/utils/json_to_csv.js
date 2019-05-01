@@ -52,10 +52,6 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
             return (row.transaction_type === 'refund') ? penceToPounds(parseInt(row.amount) * -1) : penceToPounds(parseInt(row.amount))
           }
         },
-        ...supportsGatewayFees ? [
-          { label: 'Fee', value: row => row.fee && penceToPounds(parseInt(row.fee)) },
-          { label: 'Net', value: row => penceToPounds(parseInt(row.amount - (row.fee || 0))) }
-        ] : [],
         ...getSanitisableFields([
           { label: 'Card Brand', value: 'card_details.card_brand' },
           { label: 'Cardholder Name', value: 'card_details.cardholder_name' },
@@ -107,7 +103,15 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
           value: row => {
             return changeCase.titleCase(row.wallet_type)
           }
-        }
+        },
+        ...supportsGatewayFees ? [
+          { label: 'Fee', value: row => row.fee && penceToPounds(parseInt(row.fee)) },
+          { label: 'Net',
+            value: row => {
+              const amountInPence = row.net_amount || row.total_amount || row.amount
+              return penceToPounds(parseInt(amountInPence))
+            } }
+        ] : []
       ]
       return resolve(json2csv.parse(
         data, {
