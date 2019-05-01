@@ -8,6 +8,7 @@
     }
 
     &__link {
+      display: block;
       text-decoration: none;
 
       &:link, &:visited {
@@ -16,14 +17,13 @@
 
       &:hover {
         .dashboard-total-group__values {
-          background-color: $govuk-border-colour;
+          background-color: govuk-colour("grey-3");
         }
       }
 
       &:focus {
-        .dashboard-total-group__values {
-          background-color: $govuk-focus-colour;
-        }
+        outline: 3px solid $govuk-focus-colour;
+        outline-offset: 0;
       }
     }
 
