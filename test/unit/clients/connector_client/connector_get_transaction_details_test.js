@@ -110,6 +110,46 @@ describe('connector client', function () {
     })
   })
 
+  describe('get transaction details with metadata', () => {
+    const params = {
+      gatewayAccountId: '42',
+      chargeId: '100'
+    }
+    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse({
+      charge_id: params.chargeId,
+      metadata: {
+        key1: 'some string',
+        key2: true,
+        key3: 123
+      }
+    })
+
+    before((done) => {
+      const pactified = validGetTransactionDetailsResponse.getPactified()
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}`)
+          .withUponReceiving('a valid transaction details request')
+          .withState(`a charge in state CREATED with accountId ${params.gatewayAccountId} and chargeExternalId ${params.chargeId} and metadata exists`)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactified)
+          .build()
+      ).then(() => done())
+        .catch(done)
+    })
+
+    afterEach(() => provider.verify())
+
+    it('should get transaction details with metadata successfully', function (done) {
+      const getTransactionDetails = validGetTransactionDetailsResponse.getPlain()
+      connectorClient.getCharge(params,
+        (connectorData, connectorResponse) => {
+          expect(connectorResponse.body).to.deep.equal(getTransactionDetails)
+          done()
+        })
+    })
+  })
+
   describe('get charge events', () => {
     const params = {
       gatewayAccountId: existingGatewayAccountId,
