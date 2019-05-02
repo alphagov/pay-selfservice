@@ -109,7 +109,7 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
           { label: 'Net',
             value: row => {
               const amountInPence = row.net_amount || row.total_amount || row.amount
-              return penceToPounds(parseInt(amountInPence))
+              return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
             } }
         ] : []
       ]
