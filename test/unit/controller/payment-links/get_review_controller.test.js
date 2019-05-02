@@ -2,16 +2,16 @@
 
 // NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 
 describe('Create payment link review controller', () => {
@@ -20,7 +20,9 @@ describe('Create payment link review controller', () => {
     before(done => {
       const user = getUser({
         gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-        permissions: [{name: 'tokens:create'}]
+        permissions: [{
+          name: 'tokens:create'
+        }]
       })
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
         payment_provider: 'sandbox'
@@ -53,23 +55,23 @@ describe('Create payment link review controller', () => {
     })
 
     it(`should include link to change title`, () => {
-      expect($('.review-title .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-title`)
+      expect($('.govuk-summary-list__row:nth-child(1) a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-title`)
     })
 
     it(`should include link to change description`, () => {
-      expect($('.review-details .cya-change a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-description`)
+      expect($('.govuk-summary-list__row:nth-child(2) a').attr('href')).to.equal(`${paths.paymentLinks.information}?field=payment-link-description`)
     })
 
     it(`should display the Title in the definition list`, () =>
-      expect($(`.review-title .cya-answer`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkTitle)
+      expect($(`.govuk-summary-list__row:nth-child(1) .govuk-summary-list__value`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkTitle)
     )
 
     it(`should display some details in the definition list`, () =>
-      expect($(`.review-details .cya-answer`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkDescription)
+      expect($(`.govuk-summary-list__row:nth-child(2) .govuk-summary-list__value`).text()).to.contain(session.pageData.createPaymentLink.paymentLinkDescription)
     )
 
     it(`should display the reference in the definition list`, () =>
-      expect($(`.review-reference .cya-answer`).text()).to.contain(session.pageData.createPaymentLink.paymentReferenceLabel)
+      expect($(`.govuk-summary-list__row:nth-child(3) .govuk-summary-list__value`).text()).to.contain(session.pageData.createPaymentLink.paymentReferenceLabel)
     )
   })
 })

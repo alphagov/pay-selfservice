@@ -172,33 +172,33 @@ describe('The create payment link flow', () => {
 
     describe('Review page', () => {
       it('should display entered values', () => {
-        cy.get('dl').find('div').eq(0).should('exist').within(() => {
-          cy.get('dt').should('contain', 'Title')
-          cy.get('dd.cya-answer').should('contain', name)
-          cy.get('dd.cya-change > a').should('have.attr', 'href', '/create-payment-link/information?field=payment-link-title')
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'Title')
+          cy.get('.govuk-summary-list__value').should('contain', name)
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/information?field=payment-link-title')
         })
-        cy.get('dl').find('div').eq(1).should('exist').within(() => {
-          cy.get('dt').should('contain', 'More details')
-          cy.get('dd.cya-answer').should('contain', description)
-          cy.get('dd.cya-change > a').should('have.attr', 'href', '/create-payment-link/information?field=payment-link-description')
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'More details')
+          cy.get('.govuk-summary-list__value').should('contain', description)
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/information?field=payment-link-description')
         })
-        cy.get('dl').find('div').eq(2).should('exist').within(() => {
-          cy.get('dt').should('contain', 'Reference number')
-          cy.get('dd.cya-answer').should('contain', referenceName)
-          cy.get('dd.cya-answer').get('span').should('contain', referenceHint)
-          cy.get('dd.cya-change > a').should('have.attr', 'href', '/create-payment-link/reference?change=true')
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'Reference number')
+          cy.get('.govuk-summary-list__value').should('contain', referenceName)
+          cy.get('.govuk-summary-list__value').get('span').should('contain', referenceHint)
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/reference?change=true')
         })
-        cy.get('dl').find('div').eq(3).should('exist').within(() => {
-          cy.get('dt').should('contain', 'Payment amount')
-          cy.get('dd.cya-answer').should('contain', '£10.00')
-          cy.get('dd.cya-change > a').should('have.attr', 'href', '/create-payment-link/amount')
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'Payment amount')
+          cy.get('.govuk-summary-list__value').should('contain', '£10.00')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/amount')
         })
 
         cy.get('button[type=submit]').should('exist').should('contain', 'Create payment link')
       })
 
       it('should redirect to information page when "Change" clicked', () => {
-        cy.get('dl').find('div').eq(0).find('dd.cya-change > a').click()
+        cy.get('dl').find('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/create-payment-link/information`)
@@ -356,7 +356,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should redirect to information page when "Change" clicked', () => {
-        cy.get('dl').find('div').eq(0).find('dd.cya-change > a').click()
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(`/create-payment-link/information`)
