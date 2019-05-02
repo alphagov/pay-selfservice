@@ -57,6 +57,7 @@ const buildTransactionWithDefaults = (opts = {}) => {
       : 'https://demoservice.pymnt.localdomain:443/return/532aad2f833a3b8234921ca85a98ca5b/ref188888',
     email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
     payment_provider: opts.payment_provider || 'sandbox',
+    transaction_type: opts.transaction_type || 'charge',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
     refund_summary: {
       status: opts.refund_summary_status || 'unavailable',
