@@ -20,7 +20,7 @@ function formatDate (date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' — '
 }
 
-function defaultChargeDetails (paymentProvider = 'sandbox') {
+function defaultChargeDetails (paymentProvider = 'sandbox', transactionType = 'charge') {
   return {
     charge: {
       charge_id: '12345',
@@ -38,6 +38,7 @@ function defaultChargeDetails (paymentProvider = 'sandbox') {
       expiry_date: '08/23',
       email: 'example@example.com',
       payment_provider: paymentProvider,
+      transaction_type: transactionType,
       delayed_capture: false,
       ...(paymentProvider === 'stripe' && { fee: 100 }),
       ...(paymentProvider === 'stripe' && { net_amount: 900 })
@@ -357,5 +358,13 @@ describe('Transaction details page', () => {
     cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
     cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(chargeDetails.charge.fee))
     cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(chargeDetails.charge.amount - chargeDetails.charge.fee))
+  })
+
+  it('should not show fee or net details for a refund transaction', () => {
+    const chargeDetails = defaultChargeDetails('stripe', 'refund')
+    cy.task('setupStubs', getStubs(chargeDetails))
+    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
+    cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').should('not.exist')
+    cy.get('.transaction-details tbody').find('[data-cell-type="net"]').should('not.exist')
   })
 })
