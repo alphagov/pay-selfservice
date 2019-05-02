@@ -83,6 +83,13 @@ module.exports = function (grunt) {
           livereload: true
         }
       },
+      templates: {
+        files: ['app/**/*.njk'],
+        options: {
+          spawn: false,
+          livereload: true
+        }
+      },
       assets: {
         files: ['app/assets/**/*', '!app/assets/sass/**'],
         tasks: ['copy:assets'],
