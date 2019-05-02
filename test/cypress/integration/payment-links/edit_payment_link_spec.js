@@ -52,35 +52,35 @@ describe('Editing a payment link', () => {
     })
 
     it('should show the details to edit', () => {
-      cy.get('dl').find('div').should('have.length', 4)
+      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').should('have.length', 4)
 
-      cy.get('dl').find('div').eq(0).should('exist').within(() => {
-        cy.get('dt').should('contain', 'Title')
-        cy.get('dd.cya-answer').should('contain', name)
-        cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-title`)
+      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'Title')
+        cy.get('.govuk-summary-list__value').should('contain', name)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-title`)
       })
-      cy.get('dl').find('div').eq(1).should('exist').within(() => {
-        cy.get('dt').should('contain', 'More details')
-        cy.get('dd.cya-answer').should('contain', description)
-        cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-description`)
+      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'More details')
+        cy.get('.govuk-summary-list__value').should('contain', description)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-description`)
       })
-      cy.get('dl').find('div').eq(2).should('exist').within(() => {
-        cy.get('dt').should('contain', 'Reference number')
-        cy.get('dd.cya-answer').should('contain', referenceLabel)
-        cy.get('dd.cya-answer').should('contain', referenceHint)
-        cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/reference/${productId}`)
+      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'Reference number')
+        cy.get('.govuk-summary-list__value').should('contain', referenceLabel)
+        cy.get('.govuk-summary-list__value').should('contain', referenceHint)
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/reference/${productId}?change=true`)
       })
-      cy.get('dl').find('div').eq(3).should('exist').within(() => {
-        cy.get('dt').should('contain', 'Payment amount')
-        cy.get('dd.cya-answer').should('contain', '£10.00')
-        cy.get('dd.cya-change > a').should('have.attr', 'href', `/create-payment-link/manage/edit/amount/${productId}`)
+      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'Payment amount')
+        cy.get('.govuk-summary-list__value').should('contain', '£10.00')
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/amount/${productId}`)
       })
 
       cy.get('button[type=submit]').should('exist').should('contain', 'Save changes')
     })
 
     it('should navigate to edit information page', () => {
-      cy.get('div.review-title > dd.cya-change > a').click()
+      cy.get('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/create-payment-link/manage/edit/information/${productId}`)
@@ -131,7 +131,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit reference page', () => {
-      cy.get('div.review-reference > dd.cya-change > a').click()
+      cy.get('.govuk-summary-list__row').eq(2).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/create-payment-link/manage/edit/reference/${productId}`)
@@ -181,7 +181,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit amount page', () => {
-      cy.get('div.review-amount > dd.cya-change > a').click()
+      cy.get('.govuk-summary-list__row').eq(3).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/create-payment-link/manage/edit/amount/${productId}`)
@@ -248,7 +248,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit information page', () => {
-      cy.get('div.review-title > dd.cya-change > a').click()
+      cy.get('.govuk-summary-list__row').eq(0).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/create-payment-link/manage/edit/information/${productId}`)
@@ -291,7 +291,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit reference page', () => {
-      cy.get('div.review-reference > dd.cya-change > a').click()
+      cy.get('.govuk-summary-list__row').eq(2).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/create-payment-link/manage/edit/reference/${productId}`)
@@ -331,7 +331,7 @@ describe('Editing a payment link', () => {
     })
 
     it('should navigate to edit amount page', () => {
-      cy.get('div.review-amount > dd.cya-change > a').click()
+      cy.get('.govuk-summary-list__row').eq(3).find('.govuk-summary-list__actions a').click()
 
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/create-payment-link/manage/edit/amount/${productId}`)
