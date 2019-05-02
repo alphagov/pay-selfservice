@@ -36,7 +36,7 @@ const getSanitisableFields = fieldArray => {
   return ret
 }
 
-module.exports = function (data) {
+module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
   return new Promise(function (resolve, reject) {
     logger.debug('Converting transactions list from json to csv')
     try {
@@ -103,7 +103,15 @@ module.exports = function (data) {
           value: row => {
             return changeCase.titleCase(row.wallet_type)
           }
-        }
+        },
+        ...supportsGatewayFees ? [
+          { label: 'Fee', value: row => row.fee && penceToPounds(parseInt(row.fee)) },
+          { label: 'Net',
+            value: row => {
+              const amountInPence = row.net_amount || row.total_amount || row.amount
+              return penceToPounds(parseInt(amountInPence))
+            } }
+        ] : []
       ]
       return resolve(json2csv.parse(
         data, {
