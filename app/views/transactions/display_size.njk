@@ -1,3 +1,5 @@
+{% from "components/button/macro.njk" import govukButton %}
+
   {% if hasPageSizeLinks %}
   <div id="displaySize" class="display-size govuk-!-margin-top-3">
     <span>Results per page:</span>
@@ -14,7 +16,12 @@
         <input type="hidden" name="pageSize" value="{{pageSizeLink.value}}"/>
         <input type="hidden" name="fromTime" value="{{pageSizeLink.filters.fromTime}}">
         <input type="hidden" name="toTime" value="{{pageSizeLink.filters.toTime}}">
-        <input class="govuk-button--as-link displaySize govuk-!-font-size-19" type="submit" value="{{pageSizeLink.name}}"/>
+        {{
+          govukButton({
+            classes: "govuk-button--as-link displaySize govuk-!-font-size-19",
+            text: pageSizeLink.name
+          })
+        }}
       </form>
     {% endif %}
     {% endfor %}
