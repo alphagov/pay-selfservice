@@ -1,5 +1,6 @@
 {% extends "../layout.njk" %}
 {% from "components/button/macro.njk" import govukButton %}
+{% from "components/summary-list/macro.njk" import govukSummaryList %}
 
 {% block pageTitle %}
   Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -11,80 +12,118 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">Edit your payment link</h1>
+
+  {% set detailsHTML %}
+    {% if product.description %}
+      {{ product.description | striptags(true) | escape | nl2br }}
+    {% else %}
+      <span class="govuk-text-grey">None given</span>
+    {% endif %}
+  {% endset %}
+
+  {% set referenceHTML %}
+    {% if product.referenceEnabled === true %}
+      {{ product.referenceLabel }}
+      {% if product.referenceHint %}
+        <span class="govuk-!-display-block govuk-text-grey">
+          {{ product.referenceHint | striptags(true) | escape | nl2br }}
+        </span>
+      {% endif %}
+    {% else %}
+      <span class="govuk-text-grey">Created by GOV.UK Pay</span>
+    {% endif %}
+  {% endset %}
+
+  {% set paymentAmountHTML %}
+    {% if product.price %}
+      {{ product.price | penceToPoundsWithCurrency }}
+    {% else %}
+      <span class="govuk-text-grey">User can choose</span>
+    {% endif %}
+  {% endset %}
+
+  {{
+    govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Title"
+          },
+          value: {
+            text: product.name
+          },
+          actions: {
+            items: [
+              {
+                href: editInformation + '?field=payment-link-title',
+                text: "Change",
+                visuallyHiddenText: "title",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "More details"
+          },
+          value: {
+            html: detailsHTML
+          },
+          actions: {
+            items: [
+              {
+                href: editInformation + '?field=payment-link-description',
+                text: "Change",
+                visuallyHiddenText: "more details",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Reference number"
+          },
+          value: {
+            html: referenceHTML
+          },
+          actions: {
+            items: [
+              {
+                href: editReference + '?change=true',
+                text: "Change",
+                visuallyHiddenText: "payment reference",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Payment amount"
+          },
+          value: {
+            html: paymentAmountHTML
+          },
+          actions: {
+            items: [
+              {
+                href: editAmount,
+                text: "Change",
+                visuallyHiddenText: "payment amount",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        }
+      ]
+    })
+  }}
+
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <h1 class="govuk-heading-l">Edit your payment link</h1>
-    <dl class="govuk-check-your-answers cya-questions-short">
-      <div class="review-title">
-        <dt class="cya-question">
-          Title
-        </dt>
-        <dd class="cya-answer" id="edit-payment-link-title">
-          {{ product.name }}
-        </dd>
-        <dd class="cya-change">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{ editInformation }}?field=payment-link-title">
-            Change <span class="govuk-visually-hidden">Title</span>
-          </a>
-        </dd>
-      </div>
-      <div class="review-details">
-        <dt class="cya-question">
-          More details
-        </dt>
-        <dd class="cya-answer" id="edit-payment-link-description">
-          {% if product.description %}
-            {{ product.description | striptags(true) | escape | nl2br }}
-          {% else %}
-            <span class="govuk-text-grey">None given</span>
-          {% endif %}
-        </dd>
-        <dd class="cya-change">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{ editInformation }}?field=payment-link-description">
-            Change <span class="govuk-visually-hidden">More details</span>
-          </a>
-        </dd>
-      </div>
-      <div class="review-reference">
-        <dt class="cya-question">
-          Reference number
-        </dt>
-        <dd class="cya-answer" id="create-payment-link-reference">
-          {% if product.referenceEnabled === true %}
-            {{ product.referenceLabel }}
-            {% if product.referenceHint %}
-              <span class="govuk-!-display-block govuk-text-grey">
-                {{ product.referenceHint | striptags(true) | escape | nl2br }}
-              </span>
-            {% endif %}
-          {% else %}
-            <span class="govuk-text-grey">Created by GOV.UK Pay</span>
-          {% endif %}
-        </dd>
-        <dd class="cya-change">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{ editReference }}">
-            Change <span class="govuk-visually-hidden">payment reference</span>
-          </a>
-        </dd>
-      </div>
-      <div class="review-amount">
-        <dt class="cya-question">
-          Payment amount
-        </dt>
-        <dd class="cya-answer" id="edit-payment-link-amount">
-          {% if product.price %}
-            {{ product.price | penceToPoundsWithCurrency }}
-          {% else %}
-            <span class="govuk-text-grey">User can choose</span>
-          {% endif %}
-        </dd>
-        <dd class="cya-change">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{ editAmount }}">
-            Change <span class="govuk-visually-hidden">payment amount</span>
-          </a>
-        </dd>
-      </div>
-    </dl>
     {{
       govukButton({
         text: "Save changes",
