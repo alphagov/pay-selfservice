@@ -54,7 +54,7 @@ module.exports = {
       if (element.total_amount && element.corporate_card_surcharge) {
         element.total_amount = asGBP(element.total_amount)
       }
-      element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '...' : element.email
+      element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '…' : element.email
       element.updated = dates.utcToDisplay(element.updated)
       element.created = dates.utcToDisplay(element.created_date)
       element.gateway_account_id = gatewayAccountId
