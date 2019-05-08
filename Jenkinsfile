@@ -6,7 +6,7 @@ pipeline {
   agent any
 
   parameters {
-    booleanParam(defaultValue: true, description: '', name: 'runEndToEndTestsOnPR')
+    booleanParam(defaultValue: false, description: '', name: 'runEndToEndTestsOnPR')
   }
 
   options {
