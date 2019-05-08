@@ -11,12 +11,13 @@ const jsonToCSV = require('../../../app/utils/json_to_csv')
 chai.use(chaiAsPromised)
 const expect = chai.expect
 const { transactions, transactionsWithMetadata, refunds } = require('./json/transaction_download_json_to_csv_tests.json')
+const COLUMN_NAMES = '"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"'
 
 describe('json2csv module', () => {
   it('should transform JSON data to CSV format for charges witout metadata', () => {
     const csvDataPromise = jsonToCSV(transactions)
 
-    const csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"
+    const csvDataExpected = `${COLUMN_NAMES}
 "red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45",""
 "blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99",""
 "red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","12.34",""
@@ -31,7 +32,7 @@ describe('json2csv module', () => {
   it('should transform JSON data to CSV format for charges with metadata', () => {
     const csvDataPromise = jsonToCSV([...transactions, ...transactionsWithMetadata])
 
-    const csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type","key1","key2","key3"
+    const csvDataExpected = `${COLUMN_NAMES},"key1 (metadata)","key2 (metadata)","key3 (metadata)"
 "red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","","",""
 "blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","",""
 "red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","12.34","","","",""
@@ -48,7 +49,7 @@ describe('json2csv module', () => {
   it('should transform JSON data containing refund to CSV format', () => {
     const csvDataPromise = jsonToCSV([...transactions, ...refunds, ...transactionsWithMetadata])
 
-    const csvDataExpected = `"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type","key1","key2","key3"
+    const csvDataExpected = `${COLUMN_NAMES},"key1 (metadata)","key2 (metadata)","key3 (metadata)"
 "red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","","",""
 "blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","",""
 "red","desc-red","alice.111@mail.fake","12.34","Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","12.34","","","",""

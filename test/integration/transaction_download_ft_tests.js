@@ -102,7 +102,7 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines.length).to.equal(5)
-          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES + ',"key1","key2","key3"')
+          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES + ',"key1 (metadata)","key2 (metadata)","key3 (metadata)"')
           expect(arrayOfLines[1]).to.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","some string",true,123')
           expect(arrayOfLines[2]).to.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","",""')
           expect(arrayOfLines[3]).to.equal('"red","desc-red","alice.111@mail.fake","120.00","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","2.50","122.50","","some string",true,123')

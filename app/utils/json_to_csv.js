@@ -37,11 +37,10 @@ const getSanitisableFields = fieldArray => {
   return ret
 }
 
-module.exports = function jsonToCSV(data, supportsGatewayFees = false) {
-
+module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
   const createCsvFieldFromMetadataKey = function (key) {
     return {
-      label: key,
+      label: `${key} (metadata)`,
       value: row => {
         return row.metadata ? row.metadata[key] : null
       }
