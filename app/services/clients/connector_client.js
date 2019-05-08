@@ -454,25 +454,32 @@ ConnectorClient.prototype = {
 
   /**
    * Updates the accepted card Types for to the given gateway account
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            payload (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function upon saving accepted cards successfully
+   * @param gatewayAccountId (required)
+   * @param payload (required)
+   * @param correlationId (optional)
+   * @returns {Promise<Object>}
    */
-  postAcceptedCardsForAccount: function (params, successCallback) {
-    let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
+  postAcceptedCardsForAccount: function (gatewayAccountId, payload, correlationId) {
+    return new Promise((resolve, reject) => {
+      const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+      const params = { gatewayAccountId, payload, correlationId }
+      const startTime = new Date()
+      const context = {
+        description: 'post accepted card types for account',
+        method: 'POST',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId
+      }
+      requestLogger.logRequestStart(context)
 
-    logger.debug('Calling connector to post accepted card types for account -', {
-      service: 'connector',
-      method: 'POST',
-      url: url
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      oldBaseClient.post(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
     })
-
-    oldBaseClient.post(url, params, this.responseHandler(successCallback))
-    return this
   },
 
   /**
