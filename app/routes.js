@@ -47,9 +47,6 @@ const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
 const healthcheckController = require('./controllers/healthcheck_controller')
 const apiKeysController = require('./controllers/api-keys')
-const paymentTypesSelectTypeController = require('./controllers/payment_types_select_type_controller')
-const paymentTypesSelectBrandController = require('./controllers/payment_types_select_brand_controller')
-const paymentTypesSummaryController = require('./controllers/payment_types_summary_controller')
 const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email_notifications/email_notifications_controller')
 const forgotPasswordController = require('./controllers/forgotten_password_controller')
@@ -241,11 +238,6 @@ module.exports.bind = function (app) {
   app.post(apiKeys.update, xraySegmentCls, permission('tokens:update'), getAccount, apiKeysController.postUpdate)
 
   // PAYMENT TYPES
-  app.get(pt.selectType, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectTypeController.selectType)
-  app.post(pt.selectType, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectTypeController.updateType)
-  app.get(pt.selectBrand, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrandController.showBrands)
-  app.post(pt.selectBrand, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrandController.updateBrands)
-  app.get(pt.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummaryController.showSummary)
   app.get(pt.index, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesController.getIndex)
   app.post(pt.index, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesController.postIndex)
 
