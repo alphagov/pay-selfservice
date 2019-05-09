@@ -82,6 +82,7 @@ const stripeSetupVatNumberCompanyNumberController = require('./controllers/strip
 const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number-company-number/vat-number')
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
 const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setup/vat-number-company-number/check-your-answers')
+const paymentTypesController = require('./controllers/payment-types')
 
 // Assignments
 const {
@@ -245,6 +246,8 @@ module.exports.bind = function (app) {
   app.get(pt.selectBrand, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSelectBrandController.showBrands)
   app.post(pt.selectBrand, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesSelectBrandController.updateBrands)
   app.get(pt.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesSummaryController.showSummary)
+  app.get(pt.index, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, paymentTypesController.getIndex)
+  app.post(pt.index, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesController.postIndex)
 
   // DIGITAL WALLET
   app.get(digitalWallet.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, digitalWalletController.getSummary)

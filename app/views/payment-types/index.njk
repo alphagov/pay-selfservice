@@ -1,0 +1,49 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Manage payment types - {{currentService.name}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  {% if not permissions.payment_types_update %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
+
+  <h1 class="govuk-heading-l page-title">Manage payment types</h1>
+
+  <p class="govuk-body">Choose which credit and debit cards you want to accept.
+  {# TODO: uncomment this block for Digital Wallet global launch
+  {% if isDigitalWalletSupported %} You can also let users pay using a digital wallet, like Apple Pay.{% endif %} #}
+  </p>
+
+{# TODO: uncomment this block for Digital Wallet global launch
+  {% if isDigitalWalletSupported %}
+  <div class="govuk-tabs govuk-!-margin-top-9">
+    <ul class="govuk-tabs__list">
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab {% if not walletsTab %}
+govuk-tabs__tab--selected{% endif %}" href="{{routes.paymentTypes.summary}}">
+          Card types
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab {% if walletsTab %}
+govuk-tabs__tab--selected{% endif %}" href="{{routes.digitalWallet.summary}}">
+          Digital wallet
+        </a>
+      </li>
+    </ul>
+  </div>
+  {% endif %}
+#}
+  <div id="payment-types">
+    {% block page_content %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}
