@@ -1,4 +1,4 @@
-{% extends "../card-payment-types/index.njk" %}
+{% extends "../payment-types/index.njk" %}
 {% from "components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
@@ -30,7 +30,7 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
                 {% if not currentGatewayAccount.allow_apple_pay %}
                 <a href="{{routes.digitalWallet.confirmApplePay}}" class="govuk-link govuk-link--no-visited-state">
                   Enable
-                </a> 
+                </a>
                 {% else %}
                 <form method="post" action="{{routes.digitalWallet.disableApplePay}}">
                   <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -62,7 +62,7 @@ Manage digital wallet - {{currentService.name}} {{currentGatewayAccount.full_typ
                     <button type="submit" class="govuk-button--as-link govuk-!-font-size-19">
                     Disable
                     </button>
-                  </form>              
+                  </form>
                 {% endif %}
               </td>
               {% endif %}

@@ -1,0 +1,42 @@
+{% extends "./index.njk" %}
+{% from "components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block page_content %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{
+      govukCheckboxes({
+        idPrefix: "debit",
+        name: "debit",
+        fieldset: {
+          legend: {
+            text: "Debit cards",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: debitCards
+      })
+    }}
+
+    {{
+      govukCheckboxes({
+        idPrefix: "credit",
+        name: "credit",
+        fieldset: {
+          legend: {
+            text: "Credit cards",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        items: creditCards
+      })
+    }}
+
+    {{
+      govukButton({
+        text: 'Save changes'
+      })
+    }}
+  </form>
+{% endblock %}
