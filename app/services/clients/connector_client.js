@@ -423,6 +423,36 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * This will replace the callback version soon
+   * Retrieves the accepted card Types for the given account
+   * @param gatewayAccountId (required)
+   * @param correlationId (optional)
+   * @returns {Promise<Object>}
+   */
+  getAcceptedCardsForAccountPromise: function (gatewayAccountId, correlationId) {
+    return new Promise((resolve, reject) => {
+      const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+      const params = { correlationId }
+      const startTime = new Date()
+      const context = {
+        description: 'get accepted card types for account',
+        method: 'GET',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId
+      }
+      requestLogger.logRequestStart(context)
+
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      oldBaseClient.get(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
+  },
+
+  /**
    * Updates the accepted card Types for to the given gateway account
    * @param params
    *          An object with the following elements;
@@ -466,6 +496,35 @@ ConnectorClient.prototype = {
     })
     oldBaseClient.get(url, params, this.responseHandler(successCallback))
     return this
+  },
+
+  /**
+   * This will replace the callback version soon
+   * Retrieves all card types
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+  getAllCardTypesPromise: function (correlationId) {
+    return new Promise((resolve, reject) => {
+      const url = _cardTypesUrlFor(this.connectorUrl)
+      const params = { correlationId }
+      const startTime = new Date()
+      const context = {
+        description: 'get all card types',
+        method: 'GET',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId
+      }
+      requestLogger.logRequestStart(context)
+
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      oldBaseClient.get(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**
