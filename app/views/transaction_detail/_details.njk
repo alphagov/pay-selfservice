@@ -48,8 +48,8 @@
       {% elif state_friendly === "Cancelled" %}
         {% set stateInfo %}
           {% if state.code === "P0040"%}
-            <p class="govuk-!-font-size-16">The user’s payment session timed out. This means the user took longer than 90 minutes to complete their payment details.</p>
-            <p class="govuk-!-font-size-16">If the payment was already authorised, GOV.UK Pay will send a cancellation to the payment provider.</p>
+            <p class="govuk-!-font-size-16">Your service has cancelled the payment.</p>
+            <p class="govuk-!-font-size-16">If the payment has already been authorised, GOV.UK Pay will cancel it with your payment provider.</p>
           {% else %}
             <p class="govuk-!-font-size-16">The payment was cancelled by the user. This means the user clicked on the ‘Cancel payment’ button.</p>
             <p class="govuk-!-font-size-16">If the payment was already authorised, GOV.UK Pay will send a cancellation to the payment provider.</p>
