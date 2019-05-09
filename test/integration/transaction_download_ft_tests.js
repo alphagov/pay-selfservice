@@ -26,6 +26,8 @@ const CHARGES_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
+const CSV_COLUMN_NAMES = '"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"'
+
 function connectorMockResponds (code, data, searchParameters) {
   searchParameters.pageSize = searchParameters.pageSize || 500
   const queryStr = '?' + getQueryStringForParams(searchParameters)
@@ -92,19 +94,19 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           assert(5, arrayOfLines.length)
-          assert.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45",""', arrayOfLines[1])
-          assert.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99",""', arrayOfLines[2])
+          assert.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","some string",true,123', arrayOfLines[1])
+          assert.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","",""', arrayOfLines[2])
         })
         .end(function (err, res) {
           if (err) return done(err)
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines.length).to.equal(5)
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"')
-          expect(arrayOfLines[1]).to.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45",""')
-          expect(arrayOfLines[2]).to.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99",""')
-          expect(arrayOfLines[3]).to.equal('"red","desc-red","alice.111@mail.fake","120.00","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","2.50","122.50",""')
-          expect(arrayOfLines[4]).to.equal('"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","1.23","Google Pay"')
+          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES + ',"key1 (metadata)","key2 (metadata)","key3 (metadata)"')
+          expect(arrayOfLines[1]).to.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","some string",true,123')
+          expect(arrayOfLines[2]).to.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","",""')
+          expect(arrayOfLines[3]).to.equal('"red","desc-red","alice.111@mail.fake","120.00","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","2.50","122.50","","some string",true,123')
+          expect(arrayOfLines[4]).to.equal('"blue","desc-blue","alice.222@mail.fake","1.23","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","1.23","Google Pay","","",""')
           done()
         })
     })
@@ -138,7 +140,7 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"')
+          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES)
           expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45",""')
           done()
         })
@@ -183,7 +185,7 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"')
+          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES)
           expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","first_user_name","12 May 2016","17:37:29","0.00","-123.45",""')
           expect(arrayOfLines[2]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge2","","12 May 2016","17:37:29","0.00","-123.45",""')
           expect(arrayOfLines[3]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge3","second_user_name","12 May 2016","17:37:29","0.00","-123.45",""')
@@ -220,7 +222,7 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"')
+          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES)
           expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45",""')
           done()
         })
@@ -255,7 +257,7 @@ describe('Transaction download endpoints', function () {
           if (err) return done(err)
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal('"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"')
+          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES)
           expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45",""')
           done()
         })

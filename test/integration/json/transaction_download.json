@@ -10,9 +10,7 @@
     "description": "desc-red",
     "reference": "red",
     "email": "alice.111@mail.fake",
-    "links": [
-
-    ],
+    "links": [],
     "charge_id": "charge1",
     "gateway_transaction_id": "transaction-1",
     "return_url": "https:\/\/demoservice.pymnt.localdomain:443\/return\/red",
@@ -30,6 +28,11 @@
       "cardholder_name": "TEST01",
       "expiry_date": "12\/19",
       "last_digits_card_number": "4242"
+    },
+    "metadata": {
+      "key1": "some string",
+      "key2": true,
+      "key3": 123
     }
   },
   {
@@ -45,9 +48,7 @@
     "description": "desc-blue",
     "reference": "blue",
     "email": "alice.222@mail.fake",
-    "links": [
-
-    ],
+    "links": [],
     "charge_id": "charge2",
     "gateway_transaction_id": "transaction-2",
     "return_url": "https:\/\/demoservice.pymnt.localdomain:443\/return\/blue",

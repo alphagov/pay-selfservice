@@ -13,6 +13,7 @@ const { penceToPounds } = require('./currency_formatter')
 
 // Constants
 const injectionTriggerRegexp = /(^[=@+-])/g
+const MAX_METADATA_COLUMNS = 100
 
 const sanitiseAgainstSpreadsheetFormulaInjection = fieldValue => {
   if (typeof (fieldValue) !== 'string') {
@@ -37,6 +38,34 @@ const getSanitisableFields = fieldArray => {
 }
 
 module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
+  const createCsvFieldFromMetadataKey = function (key) {
+    return {
+      label: `${key} (metadata)`,
+      value: row => {
+        return row.metadata ? row.metadata[key] : null
+      }
+    }
+  }
+
+  const getUniqueMetadataKeys = function (charges) {
+    return [...charges.reduce((uniqueKeys, charge) => {
+      if (charge.metadata) {
+        Object.keys(charge.metadata).forEach((key) => uniqueKeys.add(key))
+      }
+      return uniqueKeys
+    }, new Set())]
+  }
+
+  const getMetadataFields = function (charges) {
+    return getUniqueMetadataKeys(charges)
+      .sort()
+      .slice(0, MAX_METADATA_COLUMNS)
+      .reduce((csvFields, metadataKey) => {
+        csvFields.push(createCsvFieldFromMetadataKey(metadataKey))
+        return csvFields
+      }, [])
+  }
+
   return new Promise(function (resolve, reject) {
     logger.debug('Converting transactions list from json to csv')
     try {
@@ -106,13 +135,17 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
         },
         ...supportsGatewayFees ? [
           { label: 'Fee', value: row => row.fee && penceToPounds(parseInt(row.fee)) },
-          { label: 'Net',
+          {
+            label: 'Net',
             value: row => {
               const amountInPence = row.net_amount || row.total_amount || row.amount
               return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
-            } }
-        ] : []
+            }
+          }
+        ] : [],
+        ...getMetadataFields(data)
       ]
+
       return resolve(json2csv.parse(
         data, {
           defaultValue: '',
