@@ -26,7 +26,7 @@ const defaultChargeState = `Gateway account ${existingGatewayAccountId} exists a
 
 describe('connector client', function () {
   const provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'connector',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -76,7 +76,7 @@ describe('connector client', function () {
   describe('get transaction details with corporate card surcharge', () => {
     const params = {
       gatewayAccountId: existingGatewayAccountId,
-      chargeId: 'charge-with-corporate-charge'
+      chargeId: defaultChargeId
     }
     const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse({
       charge_id: params.chargeId,
@@ -113,7 +113,7 @@ describe('connector client', function () {
   describe('get transaction details with metadata', () => {
     const params = {
       gatewayAccountId: '42',
-      chargeId: '100'
+      chargeId: defaultChargeId
     }
     const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse({
       charge_id: params.chargeId,
@@ -171,7 +171,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${CHARGES_RESOURCE}/${params.gatewayAccountId}/charges/${params.chargeId}/events`)
           .withUponReceiving('a valid charge events request')
-          .withState(defaultChargeState)
+          .withState(`Gateway account ${params.gatewayAccountId} exists and has a charge with id ${params.chargeId} and has CREATED and AUTHORISATION_REJECTED charge events`)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactified)
@@ -239,7 +239,7 @@ describe('connector client', function () {
 
       const params = {
         gatewayAccountId: 42,
-        chargeId: 'refund-success',
+        chargeId: defaultChargeId,
         payload: invalidTransactionRefundRequest.getPlain()
       }
 

@@ -23,7 +23,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client', function () {
   const provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'connector',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -234,7 +234,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by partial email and card_brand of visa')
-          .withState(`Account ${params.gatewayAccountId} exists in the database and has 1 available transaction with a card brands visa and mastercard and a partial email matching ${params.email}`)
+          .withState(`Account ${params.gatewayAccountId} exists in the database and has 1 available transaction with a card brand visa and a partial email matching ${params.email}`)
           .withMethod('GET')
           .withQuery('reference', '')
           .withQuery('cardholder_name', '')
