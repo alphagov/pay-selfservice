@@ -90,17 +90,6 @@
   </tr>
   
   {% if isStripeAccount %}
-    {# 
-      @TODO(sfount) with the current behaviour, self service will always go to the 
-      charge end point to get details -- this means a refund will have all of the 
-      same attributes as a charge (including fee and net amount). The fee and net 
-      amount have nothing to do with the refund and should only be shown for the charge. 
-      In future we should look at calling the /refunds end point to get the refund
-      (will not include additional charge details) -- this could look like 
-      /transactions/charges/${ID}
-      /transactions/refunds/${ID}
-    #}
-    {% if transaction_type !== 'refund' %}
       <tr class="govuk-table__row">
         <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">PSP fee:</th>
         <td class="govuk-table__cell govuk-!-font-size-16" data-cell-type="fee">{{ fee }}</td>
@@ -109,7 +98,6 @@
         <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Net amount:</th>
         <td class="govuk-table__cell govuk-!-font-size-16" data-cell-type="net">{{ net_amount or total_amount or amount }}</td> 
       </tr>
-    {% endif %}
   {% endif %}
 
   <tr class="govuk-table__row">

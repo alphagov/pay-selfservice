@@ -359,12 +359,4 @@ describe('Transaction details page', () => {
     cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(chargeDetails.charge.fee))
     cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(chargeDetails.charge.amount - chargeDetails.charge.fee))
   })
-
-  it('should not show fee or net details for a refund transaction', () => {
-    const chargeDetails = defaultChargeDetails('stripe', 'refund')
-    cy.task('setupStubs', getStubs(chargeDetails))
-    cy.visit(`${transactionsUrl}/${chargeDetails.charge.charge_id}`)
-    cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').should('not.exist')
-    cy.get('.transaction-details tbody').find('[data-cell-type="net"]').should('not.exist')
-  })
 })
