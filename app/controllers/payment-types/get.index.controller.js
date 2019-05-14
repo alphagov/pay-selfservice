@@ -30,7 +30,7 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
       if (card.requires3ds && !threeDSEnabled) {
         formatted.disabled = true
         formatted.hint = {
-          html: `You must <a class="govuk-link" href="/3ds">enable 3D Secure</a> to accept Maestro`
+          html: `You must <a class="govuk-link" href="/3ds">enable 3D Secure</a> to accept ${card.label}`
         }
       }
       return formatted
