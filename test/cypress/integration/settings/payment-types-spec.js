@@ -116,4 +116,47 @@ describe('Payment types', () => {
       cy.get('#credit-4').should('be.checked')
     })
   })
+
+  describe('Card types', () => {
+    beforeEach(() => {
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                gateway_account_ids: [gatewayAccountId],
+                name: serviceName
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        },
+        {
+          name: 'getCardTypesSuccess'
+        },
+        {
+          name: 'getAcceptedCardTypesSuccess',
+          opts: {
+            account_id: gatewayAccountId
+          }
+        }
+      ])
+    })
+
+    it('should show error if user tries to disable all card types', () => {
+      cy.get('#debit-1').click()
+      cy.get('#debit-2').click()
+      cy.get('#credit-1').click()
+      cy.get('#credit-2').click()
+      cy.get('#credit-3').click()
+      cy.get('#credit-4').click()
+      cy.get('.govuk-button').click()
+      cy.get('.error-summary').should('be.visible')
+    })
+  })
 })
