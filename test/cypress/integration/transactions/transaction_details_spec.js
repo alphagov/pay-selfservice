@@ -26,8 +26,10 @@ function defaultChargeDetails (paymentProvider = 'sandbox', transactionType = 'c
       charge_id: '12345',
       reference: 'ref123',
       amount: defaultAmount,
-      state_finished: true,
-      state_status: 'success',
+      state: {
+        finished: true,
+        status: 'success'
+      },
       refund_summary_status: 'available',
       refund_summary_available: 1000,
       refund_summary_submitted: 0,
@@ -113,7 +115,7 @@ describe('Transaction details page', () => {
         chargeDetails.charge.reference)
       // Status
       cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
-        capitalise(chargeDetails.charge.state_status))
+        capitalise(chargeDetails.charge.state.status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
         convertPenceToPoundsFormatted(chargeDetails.charge.amount))
@@ -167,7 +169,7 @@ describe('Transaction details page', () => {
         aDelayedCaptureCharge.charge.reference)
       // Status
       cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
-        capitalise(aDelayedCaptureCharge.charge.state_status))
+        capitalise(aDelayedCaptureCharge.charge.state.status))
       // Amount
       cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
         convertPenceToPoundsFormatted(aDelayedCaptureCharge.charge.amount))
