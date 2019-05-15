@@ -5,58 +5,39 @@ const lodash = require('lodash')
 const logger = require('winston')
 
 // Local dependencies
-const response = require('../../utils/response.js').response
-const router = require('../../routes.js')
-const renderErrorView = require('../../utils/response.js').renderErrorView
+const { response } = require('../../utils/response')
+const router = require('../../routes')
+const { renderErrorView } = require('../../utils/response')
 const serviceService = require('../../services/service_service')
-const CORRELATION_HEADER = require('../../utils/correlation_header.js').CORRELATION_HEADER
+const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 
-const index = (req, res) => {
+const getIndex = (req, res) => {
   const model = {
     collectBillingAddress: req.service.collectBillingAddress
   }
-  show(req, res, 'index', model)
+  response(req, res, 'billing-address/index', model)
 }
 
-const toggleOn = (req, res) => {
-  toggle(req, res, true)
-}
-
-const toggleOff = (req, res) => {
-  toggle(req, res, false)
-}
-
-const confirmOff = (req, res) => {
-  show(req, res, 'confirm-off', {})
-}
-
-const show = (req, res, resource, data) => {
-  const template = 'billing-address/' + resource
-  response(req, res, template, data)
-}
-
-const toggle = (req, res, enabled) => {
+const postIndex = async (req, res) => {
   const correlationId = lodash.get(req, 'headers.' + CORRELATION_HEADER, '')
   const serviceExternalId = lodash.get(req, 'service.externalId')
+  const isEnabled = req.body['billing-address-toggle'] === 'on'
+  const result = await serviceService.toggleCollectBillingAddress(serviceExternalId, isEnabled, correlationId)
 
-  serviceService.toggleCollectBillingAddress(serviceExternalId, enabled, correlationId)
-    .then(() => {
-      if (enabled) {
-        req.flash('generic', 'Billing address is turned on for this service')
-      } else {
-        req.flash('generic', 'Billing address is turned off for this service')
-      }
-      logger.info(`[${correlationId}] - Updated collect billing address enabled(${enabled}). user=${req.session.passport.user}`)
-      res.redirect(router.paths.toggleBillingAddress.index)
-    })
-    .catch(err => {
-      renderErrorView(req, res, err.message)
-    })
+  try {
+    if (result.collect_billing_address) {
+      req.flash('generic', 'Billing address is turned on for this service')
+    } else {
+      req.flash('generic', 'Billing address is turned off for this service')
+    }
+    logger.info(`[${correlationId}] - Updated collect billing address enabled(${req.body['billing-address-toggle']}). user=${req.session.passport.user}`)
+    res.redirect(router.paths.toggleBillingAddress.index)
+  } catch (error) {
+    renderErrorView(req, res, error.message)
+  }
 }
 
 module.exports = {
-  index,
-  toggleOn,
-  toggleOff,
-  confirmOff
+  getIndex,
+  postIndex
 }
