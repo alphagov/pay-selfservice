@@ -48,9 +48,7 @@ module.exports = {
     update: '/api-keys/update'
   },
   paymentTypes: {
-    selectType: '/card-types/manage-type',
-    selectBrand: '/card-types/manage-brand',
-    summary: '/card-types/summary'
+    index: '/payment-types'
   },
   digitalWallet: {
     summary: '/digital-wallet',

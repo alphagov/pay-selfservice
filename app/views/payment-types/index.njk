@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
-Card types - GOV.UK Pay
+  Manage payment types - {{currentService.name}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -17,10 +17,10 @@ Card types - GOV.UK Pay
   <h1 class="govuk-heading-l page-title">Manage payment types</h1>
 
   <p class="govuk-body">Choose which credit and debit cards you want to accept.
-  {# TODO: uncomment this block for Digital Wallet global launch 
+  {# TODO: uncomment this block for Digital Wallet global launch
   {% if isDigitalWalletSupported %} You can also let users pay using a digital wallet, like Apple Pay.{% endif %} #}
-  </p> 
-  
+  </p>
+
 {# TODO: uncomment this block for Digital Wallet global launch
   {% if isDigitalWalletSupported %}
   <div class="govuk-tabs govuk-!-margin-top-9">

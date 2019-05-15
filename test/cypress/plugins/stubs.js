@@ -597,6 +597,57 @@ module.exports = {
       }
     ]
   },
+  getAcceptedCardTypesSuccess: opts => {
+    const validAcceptedCardTypesResponse = cardFixtures.validAcceptedCardTypesResponse().getPlain()
+    const validUpdatedAcceptedCardTypesResponse = cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/frontend/accounts/${opts.account_id}/card-types`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: opts.updated ? validUpdatedAcceptedCardTypesResponse : validAcceptedCardTypesResponse
+          }
+        }]
+      }
+    ]
+  },
+  postAcceptedCardsForAccountSuccess: opts => {
+    const validUpdatedAcceptedCardTypesResponse = cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/frontend/accounts/${opts.account_id}/card-types`,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: validUpdatedAcceptedCardTypesResponse
+          }
+        }]
+      }
+    ]
+  },
   patchUpdateServiceGoLiveStageSuccess: (opts = {}) => {
     return [
       {

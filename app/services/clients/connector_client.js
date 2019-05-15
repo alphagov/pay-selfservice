@@ -423,26 +423,63 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Updates the accepted card Types for to the given gateway account
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            payload (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function upon saving accepted cards successfully
+   * This will replace the callback version soon
+   * Retrieves the accepted card Types for the given account
+   * @param gatewayAccountId (required)
+   * @param correlationId (optional)
+   * @returns {Promise<Object>}
    */
-  postAcceptedCardsForAccount: function (params, successCallback) {
-    let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
+  getAcceptedCardsForAccountPromise: function (gatewayAccountId, correlationId) {
+    return new Promise((resolve, reject) => {
+      const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+      const params = { correlationId }
+      const startTime = new Date()
+      const context = {
+        description: 'get accepted card types for account',
+        method: 'GET',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId
+      }
+      requestLogger.logRequestStart(context)
 
-    logger.debug('Calling connector to post accepted card types for account -', {
-      service: 'connector',
-      method: 'POST',
-      url: url
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      oldBaseClient.get(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
     })
+  },
 
-    oldBaseClient.post(url, params, this.responseHandler(successCallback))
-    return this
+  /**
+   * Updates the accepted card Types for to the given gateway account
+   * @param gatewayAccountId (required)
+   * @param payload (required)
+   * @param correlationId (optional)
+   * @returns {Promise<Object>}
+   */
+  postAcceptedCardsForAccount: function (gatewayAccountId, payload, correlationId) {
+    return new Promise((resolve, reject) => {
+      const url = _accountAcceptedCardTypesUrlFor(gatewayAccountId, this.connectorUrl)
+      const params = { gatewayAccountId, payload, correlationId }
+      const startTime = new Date()
+      const context = {
+        description: 'post accepted card types for account',
+        method: 'POST',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId
+      }
+      requestLogger.logRequestStart(context)
+
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      oldBaseClient.post(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**
@@ -466,6 +503,35 @@ ConnectorClient.prototype = {
     })
     oldBaseClient.get(url, params, this.responseHandler(successCallback))
     return this
+  },
+
+  /**
+   * This will replace the callback version soon
+   * Retrieves all card types
+   * @param correlationId
+   * @returns {Promise<Object>}
+   */
+  getAllCardTypesPromise: function (correlationId) {
+    return new Promise((resolve, reject) => {
+      const url = _cardTypesUrlFor(this.connectorUrl)
+      const params = { correlationId }
+      const startTime = new Date()
+      const context = {
+        description: 'get all card types',
+        method: 'GET',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId
+      }
+      requestLogger.logRequestStart(context)
+
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+
+      oldBaseClient.get(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**
