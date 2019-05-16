@@ -56,8 +56,9 @@ describe('Toggle billing address collection controller', () => {
     it(`should get a nice 200 status code`, () => {
       expect(response.statusCode).to.equal(200)
     })
-    it('should display content when setting is on ', () => {
-      expect($('h1').text()).to.contain('You are collecting the billing address')
+    it('should have correct checkbox checked', () => {
+      expect($('#billing-address-toggle-1:checked').length).to.equal(1)
+      expect($('#billing-address-toggle-2:checked').length).to.equal(0)
     })
   })
   describe('should get index with billing address off', () => {
@@ -77,33 +78,9 @@ describe('Toggle billing address collection controller', () => {
     it(`should get a nice 200 status code`, () => {
       expect(response.statusCode).to.equal(200)
     })
-    it('should display content when setting is off', () => {
-      expect($('h1').text()).to.contain('You are not collecting the billing address')
-    })
-  })
-  describe('should get warning with billing address off', () => {
-    before(done => {
-      user = buildUserWithCollectBillingAddress(true)
-      adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
-        .reply(200, user.getPlain())
-      const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
-      supertest(app)
-        .post(paths.toggleBillingAddress.confirmOff)
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({
-          csrfToken: csrf().create('123')
-        })
-        .end((err, res) => {
-          response = res
-          $ = cheerio.load(res.text || '')
-          done(err)
-        })
-    })
-    it('should get a nice 200 status code', () => {
-      expect(response.statusCode).to.equal(200)
-    })
-    it('should display content when setting is off', () => {
-      expect($('h1').text()).to.contain('Are you sure you want to turn off the billing address?')
+    it('should have correct checkbox checked', () => {
+      expect($('#billing-address-toggle-1:checked').length).to.equal(0)
+      expect($('#billing-address-toggle-2:checked').length).to.equal(1)
     })
   })
   describe('should redirect to index on enable billing address', () => {
@@ -112,14 +89,17 @@ describe('Toggle billing address collection controller', () => {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
-        .reply(200)
+        .reply(200, {
+          collect_billing_address: false
+        })
 
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
-        .post(paths.toggleBillingAddress.on)
+        .post(paths.toggleBillingAddress.index)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'a-request-id')
         .send({
+          'billing-address-toggle': 'on',
           csrfToken: csrf().create('123')
         })
         .end((err, res) => {
@@ -141,14 +121,17 @@ describe('Toggle billing address collection controller', () => {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_IN_SESSION}`)
         .reply(200, user.getPlain())
       adminusersMock.patch(`${SERVICES_RESOURCE}/${EXTERNAL_SERVICE_ID}`)
-        .reply(200)
+        .reply(200, {
+          collect_billing_address: false
+        })
 
       const app = mockSession.getAppWithLoggedInUser(getApp(), user.getAsObject())
       supertest(app)
-        .post(paths.toggleBillingAddress.off)
+        .post(paths.toggleBillingAddress.index)
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .set('x-request-id', 'a-request-id')
         .send({
+          'billing-address-toggle': 'off',
           csrfToken: csrf().create('123')
         })
         .end((err, res) => {

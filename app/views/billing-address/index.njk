@@ -1,8 +1,8 @@
 {% extends "layout.njk" %}
+{% from "components/radios/macro.njk" import govukRadios %}
 {% from "components/button/macro.njk" import govukButton %}
-{% from "components/inset-text/macro.njk" import govukInsetText %}
-{% from "components/warning-text/macro.njk" import govukWarningText %}
 {% from "components/details/macro.njk" import govukDetails %}
+{% from "components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
   Billing address - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
@@ -18,68 +18,74 @@
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}
 
+    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Billing address</h1>
+    <p class="govuk-body-l">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
+
     {% if collectBillingAddress %}
-      {% if permissions.toggle_billing_address_read %}
-        <h1 class="govuk-heading-l govuk-!-margin-top-6">You are collecting the billing address</h1>
-      {% endif %}
-
-      {% if permissions.toggle_billing_address_update %}
-        <p class="govuk-body">Your service is currently set to collect the billing address from users.</p>
-
-        <p class="govuk-body">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
-
-        <h3 class="govuk-heading-m">Turn off the billing address</h3>
-
-        <p class="govuk-body">If you turn off the billing address:</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>your payment service provider (PSP) or your users’ banks may decline more payments — if you’re unsure, check with your PSP</li>
-          <li>your GOV.UK Pay integration may stop working correctly — if you’re unsure, check with your technical team</li>
-        </ul>
-
-        <form class="permission-main" method="post" action="{{ routes.toggleBillingAddress.confirmOff }}">
-          <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-          {{ govukButton({
-            text: "Turn off billing address",
-            attributes: {
-              id:"billing-address-off-button"
-            }
-          }) }}
-        </form>
-      {% endif %}
+      <p class="govuk-body govuk-!-font-weight-bold">If you turn off the billing address:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>your payment service provider (PSP) or your users’ banks may decline more payments — if you’re unsure, check with your PSP</li>
+        <li>your GOV.UK Pay integration may stop working correctly — if you’re unsure, check with your technical team</li>
+      </ul>
     {% else %}
-      {% if permissions.toggle_billing_address_read %}
-        <h1 class="govuk-heading-l govuk-!-margin-top-6">You are not collecting the billing address</h1>
-      {% endif %}
+      {% set detailsHTML %}
+      <p class="govuk-body">Turning on the billing address adds the billing address section to the payment page.</p>
 
-      {% if permissions.toggle_billing_address_update %}
-        <p class="govuk-body">Your service is not currently set to collect the billing address from users.
-        <p class="govuk-body">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
+      <img width="100%" src="/public/images/remove-address.png">
+      {% endset %}
 
-        {% set detailsHTML %}
-        <p class="govuk-body">Turning on the billing address adds the billing address section to the payment page.</p>
-
-        <img width="100%" src="/public/images/remove-address.png">
-        {% endset %}
-
-        {{
-          govukDetails({
-            summaryText: "See an example payment page",
-            html: detailsHTML,
-            id: "billing-address-add-section-message"
-          })
-        }}
-
-        <form class="permission-main" method="post" action="{{ routes.toggleBillingAddress.on }}">
-          <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-          {{ govukButton({
-            text: "Turn on billing address",
-            attributes: {
-              id:"billing-address-on-button"
-            }
-          }) }}
-        </form>
-      {% endif %}
+      {{
+        govukDetails({
+          summaryText: "See an example payment page",
+          html: detailsHTML,
+          id: "billing-address-add-section-message"
+        })
+      }}
     {% endif %}
 
+    <form class="permission-main" method="post" action="{{ routes.toggleBillingAddress.index }}">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      {{
+        govukRadios({
+          name: "billing-address-toggle",
+          fieldset: {
+            legend: {
+              text: "Billing address",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "On",
+              checked: collectBillingAddress,
+              disabled: true if not permissions.toggle_billing_address_update
+            },
+            {
+              value: "off",
+              text: "Off",
+              checked: true if not collectBillingAddress,
+              disabled: true if not permissions.toggle_billing_address_update
+            }
+          ]
+        })
+      }}
+
+      {{
+        govukButton({
+          text: "Save changes",
+          classes: "govuk-!-margin-bottom-4",
+          attributes: {
+            id:"billing-address-toggle-button"
+          },
+          disabled: true if not permissions.toggle_billing_address_update
+        })
+      }}
+      <p class="govuk-body">
+        <a href="{{routes.dashboard.index}}" class="govuk-link govuk-link--no-visited-state">
+          Cancel
+        </a>
+      </p>
+    </form>
   </div>
 {% endblock %}
