@@ -10,16 +10,16 @@ describe('The team members view', function () {
       'number_view-only_members': 3,
       'team_members': {
         'admin': [
-          {username: 'username1', link: 'view-username1-link'},
-          {username: 'username2', link: 'view-username2-my-profile-link', is_current: true}
+          { username: 'username1', link: 'view-username1-link' },
+          { username: 'username2', link: 'view-username2-my-profile-link', is_current: true }
         ],
         'view-only': [
-          {username: 'username3', link: 'view-username3-link'},
-          {username: 'username4', link: 'view-username4-link'},
-          {username: 'username5', link: 'view-username5-link'}
+          { username: 'username3', link: 'view-username3-link' },
+          { username: 'username4', link: 'view-username4-link' },
+          { username: 'username5', link: 'view-username5-link' }
         ],
         'view-and-refund': [
-          {username: 'username6', link: 'view-username6-link'}
+          { username: 'username6', link: 'view-username6-link' }
         ]
       },
       permissions: {
@@ -29,7 +29,6 @@ describe('The team members view', function () {
 
     let body = renderTemplate('team-members/team_members', templateData)
 
-    body.should.containSelector('#active-team-members-heading').withExactText('Active (6)')
     body.should.containSelector('#admin-role-header').withExactText('Administrators (2)')
     body.should.containSelector('#view-only-role-header').withExactText('View only (3)')
     body.should.containSelector('#view-and-refund-role-header').withExactText('View and refund (1)')
@@ -60,10 +59,10 @@ describe('The team members view', function () {
       'number_view-only_members': 1,
       'team_members': {
         'admin': [
-          {username: 'username2', link: 'view-username2-my-profile-link', is_current: true}
+          { username: 'username2', link: 'view-username2-my-profile-link', is_current: true }
         ],
         'view-only': [
-          {username: 'username5', link: 'view-username5-link'}
+          { username: 'username5', link: 'view-username5-link' }
         ],
         'view-and-refund': []
       }
@@ -72,29 +71,6 @@ describe('The team members view', function () {
     let body = renderTemplate('team-members/team_members', templateData)
 
     body.should.containSelector('#team-members-view-only-list .govuk-table').havingRowAt(1).withNoLink()
-  })
-
-  it('should render number of users of a role as 0 if no users are grouped in that role', function () {
-    let templateData = {
-      'number_active_members': 2,
-      'number_admin_members': 1,
-      'number_view-and-refund_members': 1,
-      'number_view-only_members': 0,
-      'team_members': {
-        'admin': [
-          {username: 'username1'}
-        ],
-        'view-only': [],
-        'view-and-refund': [
-          {username: 'username2', is_current: true}
-        ]
-      }
-    }
-
-    let body = renderTemplate('team-members/team_members', templateData)
-
-    body.should.containSelector('#view-only-role-header').withExactText('View only (0)')
-    body.should.containSelector('#team-members-view-only-list').havingNumberOfRows(0)
   })
 
   it('should render invite a team member option when user has create permissions', function () {
@@ -130,15 +106,15 @@ describe('The team members view', function () {
       'number_view-and-refund_invited_members': 2,
       'invited_team_members': {
         'admin': [
-          {username: 'username1'},
-          {username: 'username2'}
+          { username: 'username1' },
+          { username: 'username2' }
         ],
         'view-only': [
-          {username: 'username3'}
+          { username: 'username3' }
         ],
         'view-and-refund': [
-          {username: 'username6'},
-          {username: 'username5'}
+          { username: 'username6' },
+          { username: 'username5' }
         ]
       },
       permissions: {
@@ -163,30 +139,6 @@ describe('The team members view', function () {
     body.should.containSelector('#invited-team-members-view-and-refund-list .govuk-table').havingNumberOfRows(2)
     body.should.containSelector('#invited-team-members-view-and-refund-list .govuk-table').havingRowAt(1).withText('username6')
     body.should.containSelector('#invited-team-members-view-and-refund-list .govuk-table').havingRowAt(2).withText('username5')
-  })
-  it('should render number of invited members of a role as 0 if no users are grouped in that role', function () {
-    let templateData = {
-      'number_invited_members': 5,
-      'number_admin_invited_members': 2,
-      'number_view-only_invited_members': 0,
-      'number_view-and-refund_invited_members': 2,
-      'invited_team_members': {
-        'admin': [
-          {username: 'username1'},
-          {username: 'username2'}
-        ],
-        'view-only': [],
-        'view-and-refund': [
-          {username: 'username6'},
-          {username: 'username5'}
-        ]
-      }
-    }
-
-    let body = renderTemplate('team-members/team_members', templateData)
-
-    body.should.containSelector('#invited-team-members-view-only-role-header').withExactText('View only (0)')
-    body.should.containSelector('#invited-team-members-view-only-list').havingNumberOfRows(0)
   })
   it('should not render invited team members list if there are no invitations', function () {
     let templateData = {

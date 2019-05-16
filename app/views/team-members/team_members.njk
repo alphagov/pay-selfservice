@@ -11,14 +11,13 @@ Team members - GOV.UK Pay
     {{ govukBackLink({ text: "Back to My services", href: routes.serviceSwitcher.index }) }}
   </div>
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l page-title">Team members</h1>
+    <h1 class="govuk-heading-l page-title govuk-!-margin-bottom-2">Team members</h1>
     {% if permissions.users_service_create %}
-      <p class="govuk-body admin-lede">Team member changes affect both live and test environments.</p>
+      <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">Team member changes affect both live and test environments.</p>
     {% else %}
-      <p class="govuk-body admin-lede">Contact an administrator to invite team members and change permissions.</p>
+      <p class="govuk-body govuk-!-margin-bottom-6 admin-lede">Contact an administrator to invite team members and change permissions.</p>
     {% endif %}
-  </div>
-  <div class="govuk-grid-column-one-third govuk-text-align-right">
+
     {% if permissions.users_service_create %}
       {{
         govukButton({
@@ -31,11 +30,12 @@ Team members - GOV.UK Pay
       }}
     {% endif %}
   </div>
-  <div class="govuk-grid-column-two-thirds admin-list-group">
-    <h2 id="active-team-members-heading" class="govuk-heading-m">Active ({{number_active_members}})</h2>
+  <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
     <div class="admin-list" id="team-members-admin-list">
-      <h3 id="admin-role-header" class="govuk-heading-s">Administrators ({{team_members["admin"].length}})</h3>
-      <table class="govuk-table">
+      <h3 id="admin-role-header" class="govuk-heading-m">
+        Administrators <span class="govuk-!-font-weight-regular govuk-text-grey">({{team_members["admin"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for admin in team_members["admin"] %}
             <tr class="govuk-table__row">
@@ -57,9 +57,12 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
+    {% if team_members["view-and-refund"].length %}
     <div class="admin-list" id="team-members-view-and-refund-list">
-      <h3 id="view-and-refund-role-header" class="govuk-heading-s">View and refund ({{team_members["view-and-refund"].length}})</h3>
-      <table class="govuk-table">
+      <h3 id="view-and-refund-role-header" class="govuk-heading-m">
+        View and refund <span class="govuk-!-font-weight-regular govuk-text-grey">({{team_members["view-and-refund"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for team_member in team_members["view-and-refund"] %}
             <tr class="govuk-table__row">
@@ -81,9 +84,13 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
+    {% endif %}
+    {% if team_members["view-only"].length %}
     <div class="admin-list" id="team-members-view-only-list">
-      <h3 id="view-only-role-header" class="govuk-heading-s">View only ({{team_members["view-only"].length}})</h3>
-      <table class="govuk-table">
+      <h3 id="view-only-role-header" class="govuk-heading-m">
+        View only <span class="govuk-!-font-weight-regular govuk-text-grey">({{team_members["view-only"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for team_member in team_members["view-only"] %}
             <tr class="govuk-table__row">
@@ -105,13 +112,17 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
+    {% endif %}
   </div>
   {% if number_invited_members > 0 %}
-  <div class="govuk-grid-column-two-thirds admin-list-group">
-    <h2 id="invited-team-members-heading" class="govuk-heading-m">Invited ({{number_invited_members}})</h2>
+  <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
+    <h2 id="invited-team-members-heading" class="govuk-heading-m">
+      Invited <span class="govuk-!-font-weight-regular govuk-text-grey">({{number_invited_members}})</span>
+    </h2>
+    {% if invited_team_members["admin"].length %}
     <div class="admin-list" id="invited-team-members-admin-list">
-      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators ({{invited_team_members["admin"].length}})</h3>
-      <table class="govuk-table">
+      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators <span class="govuk-!-font-weight-regular govuk-text-grey">({{invited_team_members["admin"].length}})</span></h3>
+      <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for admin in invited_team_members["admin"] %}
             <tr class="govuk-table__row">
@@ -125,9 +136,13 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
+    {% endif %}
+    {% if invited_team_members["view-and-refund"].length %}
     <div class="admin-list" id="invited-team-members-view-and-refund-list">
-      <h3 id="invited-team-members-view-and-refund-role-header" class="govuk-heading-s">View and refund ({{invited_team_members["view-and-refund"].length}})</h3>
-      <table class="govuk-table">
+      <h3 id="invited-team-members-view-and-refund-role-header" class="govuk-heading-s">
+        View and refund <span class="govuk-!-font-weight-regular govuk-text-grey">({{invited_team_members["view-and-refund"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for team_member in invited_team_members["view-and-refund"] %}
             <tr class="govuk-table__row">
@@ -141,9 +156,13 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
+    {% endif %}
+    {% if invited_team_members["view-only"].length %}
     <div class="admin-list" id="invited-team-members-view-only-list">
-      <h3 id="invited-team-members-view-only-role-header" class="govuk-heading-s">View only ({{invited_team_members["view-only"].length}})</h3>
-      <table class="govuk-table">
+      <h3 id="invited-team-members-view-only-role-header" class="govuk-heading-s">
+        View only <span class="govuk-!-font-weight-regular govuk-text-grey">({{invited_team_members["view-only"].length}})</span>
+      </h3>
+      <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for team_member in invited_team_members["view-only"] %}
             <tr class="govuk-table__row">
@@ -157,5 +176,6 @@ Team members - GOV.UK Pay
         </tbody>
       </table>
     </div>
+  {% endif %}
   {% endif %}
 {% endblock %}
