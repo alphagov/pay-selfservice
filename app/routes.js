@@ -347,7 +347,7 @@ module.exports.bind = function (app) {
   app.post(paths.feedback, xraySegmentCls, hasServices, resolveService, getAccount, feedbackController.postIndex)
 
   // Partner app link GoCardless account
-  app.get(paths.partnerApp.linkAccount, xraySegmentCls, getAccount, goCardlessRedirect.index)
+  app.get(paths.partnerApp.linkAccount, xraySegmentCls, permission('connected-gocardless-account:update'), getAccount, goCardlessRedirect.index)
 
   // Request to go live: index
   app.get(requestToGoLive.index, xraySegmentCls, permission('go-live-stage:read'), getAccount, requestToGoLiveIndexController.get)

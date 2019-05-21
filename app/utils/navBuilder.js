@@ -1,3 +1,5 @@
+'use strict'
+
 const _ = require('lodash')
 const paths = require('./../paths')
 const pathLookup = require('./pathLookup')
@@ -102,7 +104,7 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       name: 'Link GoCardless Merchant Account',
       url: paths.partnerApp.linkAccount,
       current: pathLookup(originalUrl, paths.partnerApp.linkAccount),
-      permissions: permissions.tokens_update && type === 'direct debit'
+      permissions: permissions.connected_gocardless_account_update && type === 'direct debit'
     },
     {
       id: 'navigation-menu-billing-address',
