@@ -178,6 +178,14 @@ const defaultPermissions = [
   {
     name: 'stripe-vat-number-company-number:read',
     description: 'View Stripe VAT number company number'
+  },
+  {
+    name: 'connected-gocardless-account:read',
+    description: 'View connected go cardless account'
+  },
+  {
+    name: 'connected-gocardless-account:update',
+    description: 'Update connected go cardless account'
   }
 ]
 

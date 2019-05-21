@@ -3,7 +3,7 @@
 require('../../test_helpers/serialize_mock.js')
 const request = require('supertest')
 const sinon = require('sinon')
-const {getUser, getMockSession, getAppWithSessionAndGatewayAccountCookies} = require('../../test_helpers/mock_session.js')
+const { getUser, getMockSession, getAppWithSessionAndGatewayAccountCookies } = require('../../test_helpers/mock_session.js')
 const directDebitClient = require('../../../app/services/clients/direct_debit_connector_client')
 
 const paths = require('../../../app/paths.js')
@@ -21,8 +21,11 @@ describe('GET /link/account - GoCardless Connect partner app', function () {
 
   beforeEach(() => {
     let stubbedCreateState = directDebitClient.partnerApp.createState = sinon.stub()
-    stubbedCreateState.resolves({state: stateParam})
-    const user = getUser({external_id: 'DIRECT_DEBIT:121391373c1844dd99cb3416b70785c8'})
+    stubbedCreateState.resolves({ state: stateParam })
+    const user = getUser({
+      external_id: 'DIRECT_DEBIT:121391373c1844dd99cb3416b70785c8',
+      permissions: [{ name: 'connected-gocardless-account:update' }]
+    })
     const mockSession = getMockSession(user)
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), mockSession, user)
   })
@@ -41,7 +44,7 @@ describe('GET /link/account - GoCardless Connect partner app', function () {
 
 describe('GET /link/account - GoCardless Connect partner app', function () {
   beforeEach(() => {
-    const user = getUser()
+    const user = getUser({ permissions: [{ name: 'connected-gocardless-account:update' }] })
     const mockSession = getMockSession(user)
     app = getAppWithSessionAndGatewayAccountCookies(server.getApp(), mockSession, user)
   })
