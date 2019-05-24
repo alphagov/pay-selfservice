@@ -37,7 +37,6 @@ function createGatewayAccount (options) {
     json: true,
     body: {
       payment_provider: options.paymentProvider,
-      service_name: options.serviceName,
       type: options.type,
       description: options.description,
       analytics_id: options.analyticsId
