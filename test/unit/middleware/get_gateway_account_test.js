@@ -5,7 +5,7 @@ const path = require('path')
 const proxyquire = require('proxyquire')
 const lodash = require('lodash')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const AWSXRay = require('aws-xray-sdk')
 
 const DirectDebitGatewayAccount = require('../../../app/models/DirectDebitGatewayAccount.class')
@@ -17,7 +17,7 @@ const connectorMock = {
   }
 }
 const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvider) {
-  const authServiceMock = {getCurrentGatewayAccountId: () => currentGatewayAccountID}
+  const authServiceMock = { getCurrentGatewayAccountId: () => currentGatewayAccountID }
   req = {
     correlationId: 'sdfghjk'
   }
@@ -68,74 +68,54 @@ const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvide
 
 describe('middleware: getGatewayAccount', () => {
   it('should call connectorClient.getAccount if it can resolve a currentGatewayAccountId', done => {
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
     const getGatewayAccount = setupGetGatewayAccount('1', 'worldpay')
     next = function () {
       expect(connectorGetAccountMock.called).to.equal(true)
-      expect(connectorGetAccountMock.calledWith({gatewayAccountId: '1', correlationId: 'sdfghjk'})).to.equal(true)
+      expect(connectorGetAccountMock.calledWith({ gatewayAccountId: '1', correlationId: 'sdfghjk' })).to.equal(true)
       expect(res.redirect.called).to.equal(false)
       done()
     }
     getGatewayAccount(req, res, next)
   })
   it('should extend the account data with supports3ds set to true if the account type is worldpay', done => {
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
     const getGatewayAccount = setupGetGatewayAccount('1', 'worldpay')
     next = function () {
-      expect(req.account).to.deep.equal({id: '1', payment_provider: 'worldpay', supports3ds: true, disableToggle3ds: false})
+      expect(req.account).to.deep.equal({ id: '1', payment_provider: 'worldpay', supports3ds: true, disableToggle3ds: false })
       done()
     }
     getGatewayAccount(req, res, next)
   })
-  it('should extend the account data with supports3ds set to false if the account type is epdq and feature flag default disabled', done => {
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+  it('should extend the account data with supports3ds set to true if the account type is epdq', done => {
+    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
     const getGatewayAccount = setupGetGatewayAccount('1', 'epdq')
     next = function () {
-      expect(req.account).to.deep.equal({id: '1', payment_provider: 'epdq', supports3ds: false, disableToggle3ds: false})
+      expect(req.account).to.deep.equal({ id: '1', payment_provider: 'epdq', supports3ds: true, disableToggle3ds: false })
       done()
     }
     getGatewayAccount(req, res, next)
   })
-  it('should extend the account data with supports3ds set to true if the account type is epdq and feature flag enabled', done => {
-    process.env.EPDQ_3DS_ENABLED = 'true'
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
-    const getGatewayAccount = setupGetGatewayAccount('1', 'epdq')
-    next = function () {
-      expect(req.account).to.deep.equal({id: '1', payment_provider: 'epdq', supports3ds: true, disableToggle3ds: false})
-      done()
-    }
-    getGatewayAccount(req, res, next)
-  })
-  it('should not extend the account data with supports3ds set to false if the account type is smartpay and feature flag disabled', done => {
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+  it('should not extend the account data with supports3ds set to true if the account type is smartpay', done => {
+    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
     const getGatewayAccount = setupGetGatewayAccount('1', 'smartpay')
     next = function () {
-      expect(req.account).to.deep.equal({id: '1', payment_provider: 'smartpay', supports3ds: false, disableToggle3ds: false})
-      done()
-    }
-    getGatewayAccount(req, res, next)
-  })
-  it('should extend the account data with supports3ds set to true if the account type is smartpay and feature flag enabled', done => {
-    process.env.SMARTPAY_3DS_ENABLED = 'true'
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
-    const getGatewayAccount = setupGetGatewayAccount('1', 'smartpay')
-    next = function () {
-      expect(req.account).to.deep.equal({id: '1', payment_provider: 'smartpay', supports3ds: true, disableToggle3ds: false})
+      expect(req.account).to.deep.equal({ id: '1', payment_provider: 'smartpay', supports3ds: true, disableToggle3ds: false })
       done()
     }
     getGatewayAccount(req, res, next)
   })
   it('should extend the account data with supports3ds set to true if the account type is stripe', done => {
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
     const getGatewayAccount = setupGetGatewayAccount('1', 'stripe')
     next = function () {
-      expect(req.account).to.deep.equal({id: '1', payment_provider: 'stripe', supports3ds: true, disableToggle3ds: true})
+      expect(req.account).to.deep.equal({ id: '1', payment_provider: 'stripe', supports3ds: true, disableToggle3ds: true })
       done()
     }
     getGatewayAccount(req, res, next)
   })
   it('should call direct debit connector if the token is a direct debit token', done => {
-    lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['DIRECT_DEBIT:1sadasd']})
+    lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['DIRECT_DEBIT:1sadasd'] })
     const getGatewayAccount = setupGetGatewayAccount('DIRECT_DEBIT:1sadasd', 'sandbox')
     next = function () {
       expect(directDebitConnectorGetAccountMock.called).to.equal(true)
@@ -151,7 +131,7 @@ describe('middleware: getGatewayAccount', () => {
   describe('middleware: getGatewayAccount - disableToggle3ds flag by payment provider', () => {
     ['worldpay', 'smartpay', 'epdq'].forEach(function (value) {
       it('should extend the account data with disableToggle3ds set to false if the account type is ' + value, done => {
-        lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+        lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
         const getGatewayAccount = setupGetGatewayAccount('1', value)
         next = function () {
           expect(req.account).to.deep.equal({
@@ -166,10 +146,10 @@ describe('middleware: getGatewayAccount', () => {
       })
     })
     it('should extend the account data with disableToggle3ds set to true if the account type is stripe', done => {
-      lodash.set(req, 'user.serviceRoles[0]', {gatewayAccountIds: ['1', '2', '3']})
+      lodash.set(req, 'user.serviceRoles[0]', { gatewayAccountIds: ['1', '2', '3'] })
       const getGatewayAccount = setupGetGatewayAccount('1', 'stripe')
       next = function () {
-        expect(req.account).to.deep.equal({id: '1', payment_provider: 'stripe', supports3ds: true, disableToggle3ds: true})
+        expect(req.account).to.deep.equal({ id: '1', payment_provider: 'stripe', supports3ds: true, disableToggle3ds: true })
         done()
       }
       getGatewayAccount(req, res, next)
