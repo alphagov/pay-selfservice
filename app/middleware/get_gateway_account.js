@@ -12,10 +12,6 @@ const Connector = require('../services/clients/connector_client.js').ConnectorCl
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client.js')
 
-// constants
-const EPDQ_3DS_ENABLED = process.env.EPDQ_3DS_ENABLED
-const SMARTPAY_3DS_ENABLED = process.env.SMARTPAY_3DS_ENABLED || 'false'
-
 // Constants
 const clsXrayConfig = require('../../config/xray-cls')
 
@@ -44,16 +40,8 @@ module.exports = function (req, res, next) {
     return connectorClient.getAccount(params)
       .then(data => {
         subsegment.close()
-        let SUPPORTS_3DS = ['worldpay', 'stripe']
-        // env var values are treated as text so the comparison is done for text
-        if (EPDQ_3DS_ENABLED === 'true') {
-          SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['epdq'])
-        }
-        if (SMARTPAY_3DS_ENABLED === 'true') {
-          SUPPORTS_3DS = _.concat(SUPPORTS_3DS, ['smartpay'])
-        }
         req.account = _.extend({}, data, {
-          supports3ds: SUPPORTS_3DS.includes(_.get(data, 'payment_provider')),
+          supports3ds: ['worldpay', 'stripe', 'epdq', 'smartpay'].includes(_.get(data, 'payment_provider')),
           disableToggle3ds: _.get(data, 'payment_provider') === 'stripe'
         })
         next()
