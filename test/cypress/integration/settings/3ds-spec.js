@@ -7,37 +7,79 @@ describe('3DS settings page', () => {
   const gatewayAccountId = 42
   const serviceName = 'Purchase a positron projection permit'
 
+  function setup3dsStubs (opts = {}) {
+    let stubs = []
+
+    const user = {
+      name: 'getUserSuccess',
+      opts: {
+        external_id: userExternalId,
+        service_roles: [{
+          service: {
+            gateway_account_ids: [gatewayAccountId],
+            name: serviceName
+          }
+        }]
+      }
+    }
+
+    if (opts.readonly) {
+      user.opts.service_roles[0].role = {
+        permissions: [
+          {
+            name: 'toggle-3ds:read',
+            description: 'View3dsOnly'
+          }
+        ]
+      }
+    }
+
+    const gatewayAccount = {
+      name: 'getGatewayAccountSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId
+      }
+    }
+
+    if (opts.gateway) {
+      gatewayAccount.opts.payment_provider = opts.gateway
+    }
+
+    if (opts.requires3ds) {
+      gatewayAccount.opts.requires3ds = opts.requires3ds
+    }
+
+    const card = {
+      name: 'getAcceptedCardTypesSuccess',
+      opts: {
+        account_id: gatewayAccountId,
+        updated: false
+      }
+    }
+
+    if (opts.maestro) {
+      card.opts.maestro = opts.maestro
+    }
+
+    const patchUpdate = {
+      name: 'patchUpdate3DS',
+      opts: {
+        toggle_3ds: true
+      }
+    }
+
+    stubs.push(user, gatewayAccount, card, patchUpdate)
+
+    cy.task('setupStubs', stubs)
+  }
+
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
   describe('When using an unsupported PSP', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                gateway_account_ids: [gatewayAccountId],
-                name: serviceName
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        },
-        {
-          name: 'getAcceptedCardTypesSuccess',
-          opts: {
-            account_id: gatewayAccountId,
-            updated: false
-          }
-        }
-      ])
+      setup3dsStubs()
     })
 
     it('should show explainer and no radios', () => {
@@ -53,42 +95,10 @@ describe('3DS settings page', () => {
   describe('When using Worldpay', () => {
     describe('with insufficient permissions', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          {
-            name: 'getUserSuccess',
-            opts: {
-              external_id: userExternalId,
-              service_roles: [{
-                service: {
-                  gateway_account_ids: [gatewayAccountId],
-                  name: serviceName
-                },
-                role: {
-                  permissions: [
-                    {
-                      name: 'toggle-3ds:read',
-                      description: 'View3dsOnly'
-                    }
-                  ]
-                }
-              }]
-            }
-          },
-          {
-            name: 'getGatewayAccountSuccess',
-            opts: {
-              gateway_account_id: gatewayAccountId,
-              payment_provider: 'worldpay'
-            }
-          },
-          {
-            name: 'getAcceptedCardTypesSuccess',
-            opts: {
-              account_id: gatewayAccountId,
-              updated: false
-            }
-          }
-        ])
+        setup3dsStubs({
+          readonly: true,
+          gateway: 'worldpay'
+        })
       })
 
       it('should show info box and inputs should be disabled ', () => {
@@ -104,34 +114,9 @@ describe('3DS settings page', () => {
 
     describe('with 3DS switched off', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          {
-            name: 'getUserSuccess',
-            opts: {
-              external_id: userExternalId,
-              service_roles: [{
-                service: {
-                  gateway_account_ids: [gatewayAccountId],
-                  name: serviceName
-                }
-              }]
-            }
-          },
-          {
-            name: 'getGatewayAccountSuccess',
-            opts: {
-              gateway_account_id: gatewayAccountId,
-              payment_provider: 'worldpay'
-            }
-          },
-          {
-            name: 'getAcceptedCardTypesSuccess',
-            opts: {
-              account_id: gatewayAccountId,
-              updated: false
-            }
-          }
-        ])
+        setup3dsStubs({
+          gateway: 'worldpay'
+        })
       })
 
       it('should show WorldPay specific merchant code stuff and radios', () => {
@@ -147,35 +132,10 @@ describe('3DS settings page', () => {
 
     describe('with 3DS switched on', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          {
-            name: 'getUserSuccess',
-            opts: {
-              external_id: userExternalId,
-              service_roles: [{
-                service: {
-                  gateway_account_ids: [gatewayAccountId],
-                  name: serviceName
-                }
-              }]
-            }
-          },
-          {
-            name: 'getGatewayAccountSuccess',
-            opts: {
-              gateway_account_id: gatewayAccountId,
-              payment_provider: 'worldpay',
-              requires3ds: true
-            }
-          },
-          {
-            name: 'getAcceptedCardTypesSuccess',
-            opts: {
-              account_id: gatewayAccountId,
-              updated: false
-            }
-          }
-        ])
+        setup3dsStubs({
+          gateway: 'worldpay',
+          requires3ds: true
+        })
       })
 
       it('should show WorldPay specific merchant code stuff and radios', () => {
@@ -191,36 +151,11 @@ describe('3DS settings page', () => {
 
     describe('with 3DS switched on with Maestro enabled too', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          {
-            name: 'getUserSuccess',
-            opts: {
-              external_id: userExternalId,
-              service_roles: [{
-                service: {
-                  gateway_account_ids: [gatewayAccountId],
-                  name: serviceName
-                }
-              }]
-            }
-          },
-          {
-            name: 'getGatewayAccountSuccess',
-            opts: {
-              gateway_account_id: gatewayAccountId,
-              payment_provider: 'worldpay',
-              requires3ds: true
-            }
-          },
-          {
-            name: 'getAcceptedCardTypesSuccess',
-            opts: {
-              account_id: gatewayAccountId,
-              maestro: true,
-              updated: false
-            }
-          }
-        ])
+        setup3dsStubs({
+          gateway: 'worldpay',
+          requires3ds: true,
+          maestro: true
+        })
       })
 
       it('should show WorldPay specific merchant code stuff and disabled radios', () => {
@@ -241,40 +176,9 @@ describe('3DS settings page', () => {
 
     describe('should change when clicked', () => {
       beforeEach(() => {
-        cy.task('setupStubs', [
-          {
-            name: 'getUserSuccess',
-            opts: {
-              external_id: userExternalId,
-              service_roles: [{
-                service: {
-                  gateway_account_ids: [gatewayAccountId],
-                  name: serviceName
-                }
-              }]
-            }
-          },
-          {
-            name: 'getGatewayAccountSuccess',
-            opts: {
-              gateway_account_id: gatewayAccountId,
-              payment_provider: 'worldpay'
-            }
-          },
-          {
-            name: 'getAcceptedCardTypesSuccess',
-            opts: {
-              account_id: gatewayAccountId,
-              updated: false
-            }
-          },
-          {
-            name: 'patchUpdate3DS',
-            opts: {
-              toggle_3ds: true
-            }
-          }
-        ])
+        setup3dsStubs({
+          gateway: 'worldpay'
+        })
       })
 
       it('should show success message and radios should update', () => {
@@ -290,41 +194,10 @@ describe('3DS settings page', () => {
 
   describe('should update when form submitted', () => {
     beforeEach(() => {
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                gateway_account_ids: [gatewayAccountId],
-                name: serviceName
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            payment_provider: 'worldpay',
-            requires3ds: true
-          }
-        },
-        {
-          name: 'getAcceptedCardTypesSuccess',
-          opts: {
-            account_id: gatewayAccountId,
-            updated: false
-          }
-        },
-        {
-          name: 'patchUpdate3DS',
-          opts: {
-            toggle_3ds: true
-          }
-        }
-      ])
+      setup3dsStubs({
+        gateway: 'worldpay',
+        requires3ds: true
+      })
     })
 
     it('should show success message and radios should update', () => {
