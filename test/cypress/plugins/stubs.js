@@ -598,7 +598,7 @@ module.exports = {
     ]
   },
   getAcceptedCardTypesSuccess: opts => {
-    const validAcceptedCardTypesResponse = cardFixtures.validAcceptedCardTypesResponse().getPlain()
+    const validAcceptedCardTypesResponse = cardFixtures.validAcceptedCardTypesResponse(opts).getPlain()
     const validUpdatedAcceptedCardTypesResponse = cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
     return [
       {
@@ -863,6 +863,32 @@ module.exports = {
               'Content-Type': 'application/json'
             },
             body: response
+          }
+        }]
+      }
+    ]
+  },
+  patchUpdate3DS: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PATCH',
+            path: `/v1/api/frontend/accounts/${opts.gateway_account_id}/3ds-toggle`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: {
+              toggle_3ds: opts.enable
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         }]
       }

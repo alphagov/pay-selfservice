@@ -40,6 +40,9 @@ function validGatewayAccount (opts) {
   if (opts.toggle_3ds) {
     gatewayAccount.toggle_3ds = opts.toggle_3ds
   }
+  if (opts.requires3ds) {
+    gatewayAccount.requires3ds = opts.requires3ds
+  }
 
   return gatewayAccount
 }
