@@ -401,28 +401,6 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Retrieves the accepted card Types for the given account
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function upon retrieving accepted cards successfully
-   */
-  getAcceptedCardsForAccount: function (params, successCallback) {
-    let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
-
-    logger.debug('Calling connector to get accepted card types for account -', {
-      service: 'connector',
-      method: 'GET',
-      url: url
-    })
-
-    oldBaseClient.get(url, params, this.responseHandler(successCallback))
-    return this
-  },
-
-  /**
    * This will replace the callback version soon
    * Retrieves the accepted card Types for the given account
    * @param gatewayAccountId (required)
