@@ -26,6 +26,6 @@ module.exports = async (req, res) => {
 
     return response(req, res, 'toggle-3ds/index', pageData)
   } catch (error) {
-    return renderErrorView(req, res, error.message.message[0], error.errorCode)
+    return renderErrorView(req, res, false, error.errorCode)
   }
 }
