@@ -52,11 +52,8 @@ module.exports = {
   },
   digitalWallet: {
     summary: '/digital-wallet',
-    confirmApplePay: '/digital-wallet/apple-pay',
-    googlePayMerchantId: '/digital-wallet/google-pay-merchant-id',
-    confirmGooglePay: '/digital-wallet/google-pay',
-    disableApplePay: '/digital-wallet/apple-pay/off',
-    disableGooglePay: '/digital-wallet/google-pay/off'
+    applePay: '/digital-wallet/apple-pay',
+    googlePay: '/digital-wallet/google-pay'
   },
   emailNotifications: {
     index: '/email-notifications',

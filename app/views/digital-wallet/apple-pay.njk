@@ -1,0 +1,69 @@
+{% extends "../layout.njk" %}
+{% from "components/button/macro.njk" import govukButton %}
+{% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+   Apple Pay - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    <h1 class="govuk-heading-l">
+      Apple Pay
+    </h1>
+
+    {% if isDigitalWalletSupported %}
+      <h2 class="govuk-heading-s">
+        If you turn on Apple Pay:
+      </h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>corporate card fees cannot be applied to payments made with Apple Pay.</li>
+      </ul>
+
+      <form method="post" action="{{routes.digitalWallet.enableApplePay}}">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+        {{
+          govukRadios({
+            name: 'apple-pay',
+            fieldset: {
+              legend: {
+                text: 'Apple Pay:',
+                classes: 'govuk-!-font-weight-bold'
+              }
+            },
+            items: [
+              {
+                text: 'On',
+                value: 'on',
+                checked: true if currentGatewayAccount.allow_apple_pay else false
+              },
+              {
+                text: 'Off',
+                value: 'off',
+                checked: true if not currentGatewayAccount.allow_apple_pay else false
+              }
+            ]
+          })
+        }}
+
+        {{
+          govukButton({
+            text: "Yes, turn on Apple Pay"
+          })
+        }}
+      </form>
+      <p class="govuk-body">
+        <a href="{{routes.digitalWallet.summary}}" class="govuk-link govuk-link--no-visited-state">
+          No, cancel
+        </a>
+      </p>
+      {% else %}
+        {% include('./_digital_wallet_not_supported_message.njk') %}
+      {% endif %}
+  </div>
+{% endblock %}
