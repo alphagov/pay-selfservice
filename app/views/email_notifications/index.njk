@@ -1,6 +1,7 @@
 {% extends "../layout.njk" %}
 {% from "components/table/macro.njk" import govukTable %}
 {% from "components/button/macro.njk" import govukButton %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
 
 {% macro changeLink(name) %}
     <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16" id="email-notifications-toggle-{{name}}" href="{{routes.emailNotifications[name]}}">{% if permissions.email_notification_toggle_update %}Change{% else %}View{% endif %}</a>
@@ -29,92 +30,19 @@
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  <h1 class="govuk-heading-l">
-    Email notifications
-  </h1>
-
-  <p class="govuk-body">
-    GOV.UK Pay can send notifications to users. {% if false %}who enter an email address.{% endif %}
-  </p>
-
-  {% set emailRequired %}
-    {% if emailCollectionMode === 'OPTIONAL' %}
-      Users can choose to enter an email address
-    {% elif emailCollectionMode === 'OFF' %}
-      Users do not have the option to enter an email address
-    {% else %}
-      Users must enter an email address
-    {% endif %}
-  {% endset %}
-
-  {% set paymentConfirmationEmailHTML %}
-    {% if emailEnabled %}
-      {% if (emailCollectionMode === 'OPTIONAL') or (emailCollectionMode === 'OFF') %}
-        {{ tableCellText('Payment confirmation emails are on', true) }}
-      {% else %}
-        {{ tableCellText('Payment confirmation emails are on', false) }}
-      {% endif %}
-    {% else %}
-      Payment confirmation emails are off
-    {% endif %}
-  {% endset %}
-
-  {% set paymentRefundEmailHTML %}
-    {% if refundEmailEnabled %}
-      {% if (emailCollectionMode === 'OPTIONAL') or (emailCollectionMode === 'OFF') %}
-        {{ tableCellText('Refund emails are on', true) }}
-      {% else %}
-        {{ tableCellText('Refund emails are on', false) }}
-      {% endif %}
-    {% else %}
-      Refund emails are off
-    {% endif %}
-  {% endset %}
+  {{
+    govukBackLink({
+      text: 'Back to settings',
+      href: routes.settings.index
+    })
+  }}
 
   {% if permissions.email_notification_template_read %}
-    {{
-      govukTable({
-        caption: "Settings",
-        captionClasses: "govuk-heading-m govuk-!-margin-top-6",
-        attributes: {
-          id: "email-nofifications-toggle-summary"
-        },
-        rows: [
-          [
-            {
-              text: emailRequired
-            },
-            {
-              html: changeLink('collection'),
-              classes: "govuk-text-align-right"
-            }
-          ],
-          [
-            {
-              html: paymentConfirmationEmailHTML
-            },
-            {
-              html: changeLink('confirmation'),
-              classes: "govuk-text-align-right"
-            }
-          ],
-          [
-            {
-              html: paymentRefundEmailHTML
-            },
-            {
-              html: changeLink('refund'),
-              classes: "govuk-text-align-right"
-            }
-          ]
-        ]
-      })
-    }}
-  {% endif %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Email templates</h1>
 
-  {% if permissions.email_notification_template_read %}
-
-    <h1 class="govuk-heading-l">Email templates</h1>
+    <p class="govuk-body-l">
+      GOV.UK Pay can send notifications to users{% if emailCollectionMode !== 'MANDATORY' %} who enter an email address{% endif %}.
+    </p>
 
     <div class="govuk-tabs">
       <ul class="govuk-tabs__list">

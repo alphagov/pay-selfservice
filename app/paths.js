@@ -171,5 +171,8 @@ module.exports = {
     vatNumber: '/vat-number-company-number/vat-number',
     companyNumber: '/vat-number-company-number/company-number',
     checkYourAnswers: '/vat-number-company-number/check-your-answers'
+  },
+  settings: {
+    index: '/settings'
   }
 }

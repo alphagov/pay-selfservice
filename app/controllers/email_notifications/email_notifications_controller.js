@@ -11,7 +11,7 @@ const paths = require('../../paths.js')
 const CORRELATION_HEADER = require('../../utils/correlation_header.js').CORRELATION_HEADER
 
 // Constants
-const indexPath = paths.emailNotifications.index
+const indexPath = paths.settings.index
 
 const showEmail = function (req, res, resource, locals) {
   const template = 'email_notifications/' + resource

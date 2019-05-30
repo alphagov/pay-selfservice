@@ -80,13 +80,14 @@ const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-n
 const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/vat-number-company-number/company-number')
 const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setup/vat-number-company-number/check-your-answers')
 const paymentTypesController = require('./controllers/payment-types')
+const settingsController = require('./controllers/settings')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet, settings
 } = paths
 
 // Exports
@@ -208,6 +209,8 @@ module.exports.bind = function (app) {
 
   app.use(authenticatedPaths, xraySegmentCls, enforceUserAuthenticated, validateAndRefreshCsrf, cookieMessage) // Enforce authentication on all get requests
   app.use(authenticatedPaths.filter(item => !lodash.values(serviceSwitcher).includes(item)), xraySegmentCls, hasServices) // Require services everywhere but the switcher page
+
+  app.get(settings.index, xraySegmentCls, permission('transactions-details:read'), getAccount, getEmailNotification, settingsController.index)
 
   //  TRANSACTIONS
   app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)

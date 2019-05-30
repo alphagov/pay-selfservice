@@ -3,6 +3,7 @@
 {% from "components/button/macro.njk" import govukButton %}
 {% from "components/details/macro.njk" import govukDetails %}
 {% from "components/inset-text/macro.njk" import govukInsetText %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
 
 {% block pageTitle %}
   Billing address - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
@@ -14,6 +15,13 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{
+      govukBackLink({
+        text: 'Back to settings',
+        href: routes.settings.index
+      })
+    }}
+
     {% if not permissions.toggle_billing_address_update %}
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}
@@ -82,7 +90,7 @@
         })
       }}
       <p class="govuk-body">
-        <a href="{{routes.dashboard.index}}" class="govuk-link govuk-link--no-visited-state">
+        <a href="{{routes.settings.index}}" class="govuk-link govuk-link--no-visited-state">
           Cancel
         </a>
       </p>
