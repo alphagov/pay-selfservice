@@ -57,7 +57,7 @@ const merchantDetailsController = require('./controllers/edit_merchant_details')
 const inviteUserController = require('./controllers/invite_user_controller')
 const registerController = require('./controllers/register_user_controller')
 const serviceRolesUpdateController = require('./controllers/service_roles_update_controller')
-const toggle3dsController = require('./controllers/toggle_3ds_controller')
+const toggle3dsController = require('./controllers/toggle-3ds')
 const selfCreateServiceController = require('./controllers/register_service_controller')
 const createServiceController = require('./controllers/create_service_controller')
 const inviteValidationController = require('./controllers/invite_validation_controller')
@@ -288,10 +288,8 @@ module.exports.bind = function (app) {
   app.post(teamMembers.invite, xraySegmentCls, permission('users-service:create'), inviteUserController.invite)
 
   // 3D SECURE TOGGLE
-  app.get(t3ds.index, xraySegmentCls, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3dsController.index)
-  app.post(t3ds.onConfirm, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.onConfirm)
-  app.post(t3ds.on, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.on)
-  app.post(t3ds.off, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.off)
+  app.get(t3ds.index, xraySegmentCls, permission('toggle-3ds:read'), getAccount, paymentMethodIsCard, toggle3dsController.get)
+  app.post(t3ds.index, xraySegmentCls, permission('toggle-3ds:update'), getAccount, paymentMethodIsCard, toggle3dsController.post)
 
   // BILLING ADDRESS TOGGLE
   app.get(billingAddress.index, xraySegmentCls, permission('toggle-billing-address:read'), getAccount, paymentMethodIsCard, toggleBillingAddressController.getIndex)

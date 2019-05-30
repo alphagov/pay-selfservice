@@ -401,28 +401,6 @@ ConnectorClient.prototype = {
   },
 
   /**
-   * Retrieves the accepted card Types for the given account
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            correlationId (optional)
-   * @param successCallback
-   *          Callback function upon retrieving accepted cards successfully
-   */
-  getAcceptedCardsForAccount: function (params, successCallback) {
-    let url = _accountAcceptedCardTypesUrlFor(params.gatewayAccountId, this.connectorUrl)
-
-    logger.debug('Calling connector to get accepted card types for account -', {
-      service: 'connector',
-      method: 'GET',
-      url: url
-    })
-
-    oldBaseClient.get(url, params, this.responseHandler(successCallback))
-    return this
-  },
-
-  /**
    * This will replace the callback version soon
    * Retrieves the accepted card Types for the given account
    * @param gatewayAccountId (required)
@@ -717,14 +695,29 @@ ConnectorClient.prototype = {
   },
 
   /**
-   *
+   * Update whether 3DS is on/off
    * @param {Object} params
-   * @param {Function} successCallback
+   * @returns {Promise<Object>}
    */
-  update3dsEnabled: function (params, successCallback) {
-    let url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
-    oldBaseClient.patch(url, params, this.responseHandler(successCallback))
-    return this
+  update3dsEnabled: function (params) {
+    return new Promise((resolve, reject) => {
+      const url = _getToggle3dsUrlFor(params.gatewayAccountId, this.connectorUrl)
+      const startTime = new Date()
+      const context = {
+        description: 'Update whether 3DS is on or off',
+        method: 'PATCH',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId: params.correlationId
+      }
+      requestLogger.logRequestStart(context)
+
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+      oldBaseClient.patch(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**

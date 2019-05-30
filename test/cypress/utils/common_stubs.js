@@ -54,7 +54,8 @@ module.exports.getGatewayAccountStub = (gatewayAccountId, type = 'test', payment
     opts: {
       gateway_account_id: gatewayAccountId,
       type: type,
-      payment_provider: paymentProvider
+      payment_provider: paymentProvider,
+      requires3ds: true
     }
   }
 }

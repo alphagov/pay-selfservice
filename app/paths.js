@@ -109,10 +109,7 @@ module.exports = {
     serviceNaming: '/service/set-name'
   },
   toggle3ds: {
-    index: '/3ds',
-    onConfirm: '/3ds/confirm',
-    on: '/3ds/on',
-    off: '/3ds/off'
+    index: '/3ds'
   },
   toggleBillingAddress: {
     index: '/billing-address'

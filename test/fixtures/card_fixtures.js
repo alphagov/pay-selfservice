@@ -82,7 +82,7 @@ module.exports = {
       }
     }
   },
-  validAcceptedCardTypesResponse: () => {
+  validAcceptedCardTypesResponse: opts => {
     let data = {
       card_types: [{
         id: 'a1200c73-204d-45f5-8fca-e4ee5ed1b1a7',
@@ -115,6 +115,16 @@ module.exports = {
         type: 'CREDIT',
         requires3ds: false
       }]
+    }
+
+    if (opts.maestro) {
+      data.card_types.push({
+        id: '778e32ef-5314-4a42-897d-d06986bc9465',
+        brand: 'maestro',
+        label: 'Maestro',
+        type: 'DEBIT',
+        requires3ds: true
+      })
     }
 
     return {
