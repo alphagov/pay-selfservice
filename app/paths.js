@@ -51,7 +51,6 @@ module.exports = {
     index: '/payment-types'
   },
   digitalWallet: {
-    summary: '/digital-wallet',
     applePay: '/digital-wallet/apple-pay',
     googlePay: '/digital-wallet/google-pay'
   },

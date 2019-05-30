@@ -2,7 +2,6 @@ describe('Apple Pay', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
   const serviceName = 'My Awesome Service'
-  const paymentProvider = 'worldpay'
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('session', 'gateway_account')
@@ -36,9 +35,8 @@ describe('Apple Pay', () => {
 
     it('should show it is disabled', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/digital-wallet')
-      cy.title().should('eq', `Manage digital wallet - ${serviceName} ${paymentProvider} test - GOV.UK Pay`)
-      cy.get('td').contains('Apple Pay').siblings().find('a').contains('Change').click()
+      cy.visit('/settings')
+      cy.get('a').contains('Change Apple Pay settings').click()
       cy.get('input[type="radio"]').should('have.length', 2)
       cy.get('input[value="on"]').should('not.be.checked')
       cy.get('input[value="off"]').should('be.checked')

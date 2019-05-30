@@ -245,7 +245,6 @@ module.exports.bind = function (app) {
   app.post(pt.index, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, paymentTypesController.postIndex)
 
   // DIGITAL WALLET
-  app.get(digitalWallet.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, digitalWalletController.getSummary)
   app.get(digitalWallet.applePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getApplePay)
   app.post(digitalWallet.applePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postApplePay)
   app.get(digitalWallet.googlePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getGooglePay)
