@@ -1,9 +1,7 @@
 'use strict'
 
 exports.getSummary = require('./get-summary-controller')
-exports.getEnableApplePay = require('./get-enable-apple-pay-controller')
-exports.postEnableApplePay = require('./post-enable-apple-pay-controller')
-exports.getEnableGooglePay = require('./get-enable-google-pay-controller')
-exports.postEnableGooglePay = require('./post-enable-google-pay-controller')
-exports.postDisableApplePay = require('./post-disable-apple-pay-controller')
-exports.postDisableGooglePay = require('./post-disable-google-pay-controller')
+exports.getApplePay = require('./get-apple-pay-controller')
+exports.postApplePay = require('./post-apple-pay-controller')
+exports.getGooglePay = require('./get-google-pay-controller')
+exports.postGooglePay = require('./post-google-pay-controller')

@@ -243,12 +243,10 @@ module.exports.bind = function (app) {
 
   // DIGITAL WALLET
   app.get(digitalWallet.summary, xraySegmentCls, permission('payment-types:read'), getAccount, paymentMethodIsCard, digitalWalletController.getSummary)
-  app.get(digitalWallet.confirmApplePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getEnableApplePay)
-  app.post(digitalWallet.confirmApplePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postEnableApplePay)
-  app.get(digitalWallet.confirmGooglePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getEnableGooglePay)
-  app.post(digitalWallet.confirmGooglePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postEnableGooglePay)
-  app.post(digitalWallet.disableApplePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postDisableApplePay)
-  app.post(digitalWallet.disableGooglePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postDisableGooglePay)
+  app.get(digitalWallet.applePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getApplePay)
+  app.post(digitalWallet.applePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postApplePay)
+  app.get(digitalWallet.googlePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.getGooglePay)
+  app.post(digitalWallet.googlePay, xraySegmentCls, permission('payment-types:update'), getAccount, paymentMethodIsCard, digitalWalletController.postGooglePay)
 
   // EMAIL
   app.get(en.index, xraySegmentCls, permission('email-notification-template:read'), getAccount, getEmailNotification, paymentMethodIsCard, emailNotificationsController.index)

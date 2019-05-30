@@ -2,46 +2,81 @@ describe('Apple Pay', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const gatewayAccountId = 42
   const serviceName = 'My Awesome Service'
+  const paymentProvider = 'worldpay'
 
   beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-    cy.task('setupStubs', [
-      {
-        name: 'getUserSuccess',
-        opts: {
-          external_id: userExternalId,
-          service_roles: [{
-            service: {
-              gateway_account_ids: [gatewayAccountId],
-              name: serviceName
-            }
-          }]
-        }
-      },
-      {
-        name: 'getGatewayAccountSuccessRepeatNTimes',
-        opts: [{
-          gateway_account_id: gatewayAccountId,
-          payment_provider: 'worldpay'
-        }, {
-          gateway_account_id: gatewayAccountId,
-          payment_provider: 'worldpay',
-          allow_apple_pay: true
-        }]
-      }
-    ])
+    Cypress.Cookies.preserveOnce('session', 'gateway_account')
   })
 
-  describe('Enable Apple Pay', () => {
-    it('should enable apple pay', () => {
+  describe('is disabled', () => {
+    beforeEach(() => {
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                gateway_account_ids: [gatewayAccountId],
+                name: serviceName
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            payment_provider: 'worldpay',
+            allow_apple_pay: false
+          }
+        }
+      ])
+    })
+
+    it('should show it is disabled', () => {
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       cy.visit('/digital-wallet')
-      cy.title().should('eq', `Manage digital wallet - ${serviceName} worldpay test - GOV.UK Pay`)
-      cy.get('td').contains('Apple Pay').siblings().find('a').contains('Enable').click()
-      cy.get('button').contains('turn on Apple Pay').click()
+      cy.title().should('eq', `Manage digital wallet - ${serviceName} ${paymentProvider} test - GOV.UK Pay`)
+      cy.get('td').contains('Apple Pay').siblings().find('a').contains('Change').click()
+      cy.get('input[type="radio"]').should('have.length', 2)
+      cy.get('input[value="on"]').should('not.be.checked')
+      cy.get('input[value="off"]').should('be.checked')
+    })
+  })
+
+  describe('but allow us to enable', () => {
+    beforeEach(() => {
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                gateway_account_ids: [gatewayAccountId],
+                name: serviceName
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            payment_provider: 'worldpay',
+            allow_apple_pay: true
+          }
+        }
+      ])
+    })
+
+    it('should allow us to enable', () => {
+      cy.get('input[value="on"]').click()
+      cy.get('input[value="on"]').should('be.checked')
+      cy.get('.govuk-button').contains('turn on Apple Pay').click()
       cy.get('.notification').should('contain', 'Apple Pay successfully enabled.')
-      cy.get('td').contains('Apple Pay').siblings().first().should('contain', 'Yes')
-      cy.get('td').contains('Apple Pay').siblings().get('button').should('contain', 'Disable')
+      cy.get('input[value="on"]').should('be.checked')
     })
   })
 })
