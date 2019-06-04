@@ -9,7 +9,6 @@ if (process.env.DISABLE_APPMETRICS !== 'true') {
 // NPM dependencies
 const express = require('express')
 const nunjucks = require('nunjucks')
-const httpsAgent = require('https').globalAgent
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
