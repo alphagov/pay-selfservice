@@ -74,9 +74,8 @@ function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
-    './node_modules/govuk-frontend/',
-    './govuk_modules/govuk_template/views/layouts',
-    './app/views'
+    'node_modules/govuk-frontend/',
+    'app/views'
   ], {
     express: app, // the express app that nunjucks should install to
     autoescape: true, // controls if output with dangerous characters are escaped automatically
@@ -103,10 +102,8 @@ function initialiseTemplateEngine (app) {
 }
 
 function initialisePublic (app) {
-  app.use('./public', express.static('./public'))
-  app.use('./public', express.static('./govuk_modules/govuk_frontend_toolkit'))
-  app.use('./public', express.static('./govuk_modules/govuk_template/assets'))
-  app.use('/', express.static('./node_modules/govuk-frontend/'))
+  app.use('/public', express.static('public'))
+  app.use('/', express.static('node_modules/govuk-frontend'))
 }
 
 function initialiseRoutes (app) {
