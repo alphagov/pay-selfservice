@@ -29,6 +29,7 @@ class DirectDebitGatewayAccount {
     this.description = gatewayAccountData.description
     this.analyticsId = gatewayAccountData.analytics_id
     this.externalId = gatewayAccountData.gateway_account_external_id
+    this.isConnected = gatewayAccountData.is_connected
     this.paymentMethod = 'direct debit'
 
     // compatibility with other parts of selfservice - recording as tech debt in jira
