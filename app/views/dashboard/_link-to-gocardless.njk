@@ -1,27 +1,30 @@
 {% from "components/button/macro.njk" import govukButton %}
 
-<p class="govuk-body govuk-!-margin-bottom-0">
+<p class="govuk-body">
 You must connect to GoCardless, the direct debit provider GOV.UK Pay has procured, before you can take payments. You will be able to:
+</p>
 
-create a new account
+<ul class="govuk-list govuk-list--bullet">
+    <li>create a new account</li>
+    <li>connect an existing account</li>
+</ul>
 
-connect an existing account
+<p class="govuk-heading-m ">Before you start</p>
 
-Before you start
+<p class="govuk-body">It takes around 5 minutes. You will need to provide:</p>
 
-It takes around 5 minutes. You will need to provide:
+<ul class="govuk-list govuk-list--bullet">
+    <li>bank account details</li>
+    <li>support contact details</li>
+</ul>
 
-bank account details
-
-support contact details
-
+<p class="govuk-body">
 You will be sent to GoCardless's website to complete this step and then redirected back to Pay when you are finished.
 </p>
 
     {{
       govukButton({
         text: "Connect to GoCardless",
-        href: "/link-account",
-        classes: "generate-key"
+        href: "/link-account"
       })
     }}
