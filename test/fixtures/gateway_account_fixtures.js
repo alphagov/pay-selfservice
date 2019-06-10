@@ -168,7 +168,8 @@ module.exports = {
       service_name: opts.service_name || '8c0045d0664743c68e25489781e05b1d',
       payment_provider: opts.payment_provider || 'sandbox',
       type: opts.type || 'test',
-      analytics_id: opts.analytics_id || 'd82dae5bcb024828bb686574a932b5a5'
+      analytics_id: opts.analytics_id || 'd82dae5bcb024828bb686574a932b5a5',
+      is_connected: opts.is_connected || false
     }
 
     return {

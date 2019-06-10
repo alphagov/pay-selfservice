@@ -5,12 +5,18 @@ Dashboard - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l govuk-!-margin-top-6 first-steps__title">Dashboard</h1>
-  </div>
-
-  {% if paymentMethod === 'card' %}
-    {% include "./_activity.njk" %}
+  {% if account.paymentMethod === 'direct debit' and account.paymentProvider === 'gocardless' and account.isConnected === false %}
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l govuk-!-margin-top-6 first-steps__title">Connect to GoCardless</h1>
+      {% include "./_link-to-gocardless.njk" %}
+    </div>
+  {% else %}
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l govuk-!-margin-top-6 first-steps__title">Dashboard</h1>
+    </div>
+    {% if paymentMethod === 'card' %}
+      {% include "./_activity.njk" %}
+    {% endif %}
+    {% include "./_links.njk" %}
   {% endif %}
-  {% include "./_links.njk" %}
 {% endblock %}

@@ -87,9 +87,8 @@ const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
 
 const displayGoLiveLink = (service, account, user) => {
   return account.type === 'test' &&
-    (account.paymentMethod === 'direct debit' ||
-      (!goLiveLinkNotDisplayedStages.includes(service.currentGoLiveStage) &&
-        user.hasPermission(service.externalId, 'go-live-stage:read')))
+    (!goLiveLinkNotDisplayedStages.includes(service.currentGoLiveStage) &&
+      user.hasPermission(service.externalId, 'go-live-stage:read'))
 }
 
 module.exports = (req, res) => {
@@ -111,7 +110,8 @@ module.exports = (req, res) => {
     linksToDisplay,
     goLiveNotStarted: req.service.currentGoLiveStage === NOT_STARTED,
     goLiveStarted: goLiveStartedStages.includes(req.service.currentGoLiveStage),
-    goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage)
+    goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
+    account: req.account
   }
 
   try {
