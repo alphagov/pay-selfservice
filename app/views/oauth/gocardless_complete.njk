@@ -1,0 +1,23 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+GoCardless successfully connected - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+
+  <p class="govuk-body"></p>
+  
+  <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-panel govuk-panel--confirmation">
+      <h2 class="govuk-panel__title">Succesfully connected to GoCardless</h2>
+    </div>
+  <div>
+
+  <p class="govuk-body">
+    You can now take direct debit payments.
+  </p>
+
+  <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="/">Go to the dashboard</a>.
+
+{% endblock %}

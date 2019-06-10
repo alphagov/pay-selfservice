@@ -4,7 +4,7 @@ const getHandler = require('../../../../app/middleware/partnerapp/handle_gocardl
 const baseClient = require('../../../../app/services/clients/base_client/base_client')
 const directDebitClient = require('../../../../app/services/clients/direct_debit_connector_client')
 
-const {expect} = require('chai')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
 let req, res, stubbedBaseClientPost, stubbedGetGatewayAccount
