@@ -87,8 +87,8 @@ const getLinksToDisplay = function getLinksToDisplay (service, account, user) {
 
 const displayGoLiveLink = (service, account, user) => {
   return account.type === 'test' &&
-    ((!goLiveLinkNotDisplayedStages.includes(service.currentGoLiveStage) &&
-      user.hasPermission(service.externalId, 'go-live-stage:read')))
+    (!goLiveLinkNotDisplayedStages.includes(service.currentGoLiveStage) &&
+      user.hasPermission(service.externalId, 'go-live-stage:read'))
 }
 
 module.exports = (req, res) => {
