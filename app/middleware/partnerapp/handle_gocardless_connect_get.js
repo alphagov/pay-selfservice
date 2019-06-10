@@ -1,5 +1,7 @@
 'use strict'
 
+// Custom dependencies
+const response = require('../../utils/response').response
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
 
 const logger = require('winston')
@@ -18,7 +20,7 @@ exports.index = (req, res) => {
     res.status(200)
     res.end()
   } else {
-    handleBadRequest(res, 'Received a BadRequest at GoCardless OAuth endpoint', {query: req.query})
+    handleBadRequest(res, 'Received a BadRequest at GoCardless OAuth endpoint', { query: req.query })
   }
 }
 
@@ -37,10 +39,8 @@ function validateGetRequest (req, res) {
 
 function processPayload (req, res, getPayload) {
   return directDebitConnectorClient.partnerApp.exchangeCode(getPayload)
-    .then(response => {
-      // todo: show a message to the user
-      res.status(200)
-      res.end()
+    .then(result => {
+      response(req, res, 'oauth/gocardless_complete')
     })
     .catch(err => handleBadRequest(res, 'Failed to get the token from Direct Debit Connector', err))
 }

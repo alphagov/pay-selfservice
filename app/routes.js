@@ -175,7 +175,7 @@ module.exports.bind = function (app) {
   app.post(selfCreateService.serviceNaming, xraySegmentCls, cookieMessage, enforceUserAuthenticated, validateAndRefreshCsrf, hasServices, getAccount, selfCreateServiceController.submitYourServiceName)
 
   // GOCARDLESS PARTNER APP
-  app.get(partnerApp.oauthComplete, xraySegmentCls, cookieMessage, goCardlessOAuthGet.index)
+  app.get(partnerApp.oauthComplete, xraySegmentCls, cookieMessage, resolveService, getAccount, goCardlessOAuthGet.index)
 
   // ----------------------
   // AUTHENTICATED ROUTES
