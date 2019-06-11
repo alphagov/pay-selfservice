@@ -16,28 +16,8 @@
 
   <h1 class="govuk-heading-l page-title">Manage payment types</h1>
 
-  <p class="govuk-body">Choose which credit and debit cards you want to accept.
-    {% if isDigitalWalletSupported %} You can also let users pay using a digital wallet, like Apple Pay or Google Pay.{% endif %}
-  </p>
+  <p class="govuk-body">Choose which credit and debit cards you want to accept.</p>
 
-  {% if isDigitalWalletSupported %}
-  <div class="govuk-tabs govuk-!-margin-top-9">
-    <ul class="govuk-tabs__list">
-      <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab {% if not walletsTab %}
-govuk-tabs__tab--selected{% endif %}" href="{{routes.paymentTypes.index}}">
-          Card types
-        </a>
-      </li>
-      <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab {% if walletsTab %}
-govuk-tabs__tab--selected{% endif %}" href="{{routes.digitalWallet.summary}}">
-          Digital wallet
-        </a>
-      </li>
-    </ul>
-  </div>
-  {% endif %}
   <div id="payment-types">
     {% block page_content %}
     {% endblock %}

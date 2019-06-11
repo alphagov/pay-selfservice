@@ -51,7 +51,6 @@ module.exports = {
     index: '/payment-types'
   },
   digitalWallet: {
-    summary: '/digital-wallet',
     applePay: '/digital-wallet/apple-pay',
     googlePay: '/digital-wallet/google-pay'
   },
@@ -171,5 +170,8 @@ module.exports = {
     vatNumber: '/vat-number-company-number/vat-number',
     companyNumber: '/vat-number-company-number/company-number',
     checkYourAnswers: '/vat-number-company-number/check-your-answers'
+  },
+  settings: {
+    index: '/settings'
   }
 }

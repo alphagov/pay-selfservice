@@ -13,7 +13,12 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {{ govukBackLink({ text: "Back", href: routes.emailNotifications.index }) }}
+  {{
+    govukBackLink({
+      text: 'Back to settings',
+      href: routes.settings.index
+    })
+  }}
 </div>
 <div class="govuk-grid-column-two-thirds">
   {% if permissions.email_notification_toggle_update %}
@@ -37,7 +42,7 @@
           legend: {
             text: 'Do you want to ask users for an email address on the card payment page?',
             isPageHeading: true,
-            classes: 'govuk-fieldset__legend--m'
+            classes: 'govuk-fieldset__legend--l govuk-!-margin-top-6'
           }
         },
         items: [
@@ -79,7 +84,7 @@
       }}
     {% endif %}
     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.settings.index}}">
         {{ 'Go back' if isReadyOnly else 'Cancel' }}
       </a>
     </p>

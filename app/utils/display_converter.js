@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const url = require('url')
 const getHeldPermissions = require('./get_held_permissions')
-const {serviceNavigationItems, adminNavigationItems} = require('./navBuilder')
+const { serviceNavigationItems, adminNavigationItems } = require('./navBuilder')
 
 const hideServiceHeaderTemplates = [
   'services/index',

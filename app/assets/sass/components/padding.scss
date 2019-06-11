@@ -1,0 +1,5 @@
+.pay-\!-padding-top-2-small {
+  @include govuk-media-query($until: tablet) {
+    padding-top: govuk-spacing(2);
+  }
+}

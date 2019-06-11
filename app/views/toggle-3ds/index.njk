@@ -3,6 +3,7 @@
 {% from "components/inset-text/macro.njk" import govukInsetText %}
 {% from "components/warning-text/macro.njk" import govukWarningText %}
 {% from "components/radios/macro.njk" import govukRadios %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
 
 {% block pageTitle %}
   3D Secure - {{ currentService.name }} - GOV.UK Pay
@@ -14,6 +15,13 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
+    {{
+      govukBackLink({
+        text: 'Back to settings',
+        href: routes.settings.index
+      })
+    }}
+
     {% if not permissions.toggle_3ds_update %}
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}

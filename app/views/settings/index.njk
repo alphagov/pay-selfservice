@@ -1,0 +1,212 @@
+{% extends "../layout.njk" %}
+{% from "components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block pageTitle %}
+  Settings - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    <h1 class="govuk-heading-l">Settings</h1>
+
+    {% if isDigitalWalletSupported %}
+    <h1 class="govuk-heading-m govuk-!-margin-top-8">Digital wallet</h1>
+    <p class="govuk-body">Let users pay with Apple Pay and Google Pay.</p>
+
+    {{
+      govukSummaryList({
+        classes: 'pay-!-border-top pay-!-padding-top-2-small',
+        rows: [
+          {
+            key: {
+              text: 'Apple Pay',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: "On" if currentGatewayAccount.allow_apple_pay else "Off",
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.digitalWallet.applePay,
+                  classes: 'govuk-link--no-visited-state',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'Apple Pay settings'
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: 'Google Pay',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: "On" if currentGatewayAccount.allow_google_pay else "Off",
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.digitalWallet.googlePay,
+                  classes: 'govuk-link--no-visited-state',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'Google Pay settings'
+                }
+              ]
+            }
+          }
+        ]
+      })
+    }}
+    {% endif %}
+
+    {% if supports3ds %}
+    <h1 class="govuk-heading-m">3D Secure</h1>
+    <p class="govuk-body">3D Secure (3DS) adds an extra layer of authentication to user payments.</p>
+
+    {{
+      govukSummaryList({
+        classes: 'pay-!-border-top pay-!-padding-top-2-small',
+        rows: [
+          {
+            key: {
+              text: '3D Secure',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: 'On' if requires3ds else 'Off',
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.toggle3ds.index,
+                  classes: 'govuk-link--no-visited-state',
+                  text: 'Change' if permissions.toggle_3ds_update else 'View',
+                  visuallyHiddenText: '3D Secure settings'
+                }
+              ]
+            }
+          }
+        ]
+      })
+    }}
+    {% endif %}
+
+    <h1 class="govuk-heading-m govuk-!-margin-top-8">Billing address</h1>
+    <p class="govuk-body">Payment service providers (PSPs) use the billing address to carry out fraud&nbsp;checks.</p>
+
+    {{
+      govukSummaryList({
+        classes: 'pay-!-border-top pay-!-padding-top-2-small',
+        rows: [
+          {
+            key: {
+              text: 'Collect billing address',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: 'On' if collectBillingAddress else 'Off',
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.toggleBillingAddress.index,
+                  classes: 'govuk-link--no-visited-state',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'collect billing address settings'
+                }
+              ]
+            }
+          }
+        ]
+      })
+    }}
+
+    <h1 class="govuk-heading-m govuk-!-margin-top-8">Email notifications</h1>
+    <p class="govuk-body">GOV.UK Pay can send notifications to users.</p>
+
+    {{
+      govukSummaryList({
+        classes: 'pay-!-border-top pay-!-padding-top-2-small',
+        rows: [
+          {
+            key: {
+              text: 'Enter an email address',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: emailCollectionMode | title,
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.emailNotifications.collection,
+                  classes: 'govuk-link--no-visited-state email-notifications-toggle-collection',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'enter an email address settings'
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: 'Payment confirmation emails',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: 'On' if confirmationEmailEnabled else 'Off',
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.emailNotifications.confirmation,
+                  classes: 'govuk-link--no-visited-state email-notifications-toggle-confirmation',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'payment confirmation emails settings'
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: 'Refund emails',
+              classes: 'govuk-!-width-one-half'
+            },
+            value: {
+              text: 'On' if refundEmailEnabled else 'Off',
+              classes: 'govuk-!-width-one-quarter'
+            },
+            actions: {
+              classes: 'govuk-!-width-one-quarter',
+              items: [
+                {
+                  href: routes.emailNotifications.refund,
+                  classes: 'govuk-link--no-visited-state email-notifications-toggle-refund',
+                  text: 'Change' if permissions.toggle_billing_address_update else 'View',
+                  visuallyHiddenText: 'refund emails settings'
+                }
+              ]
+            }
+          }
+        ]
+      })
+    }}
+    <p class="govuk-body"><a class="govuk-link" href="{{routes.emailNotifications.index}}">See templates and add a custom paragraph.</a></p>
+  </div>
+{% endblock %}

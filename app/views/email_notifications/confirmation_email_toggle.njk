@@ -14,7 +14,12 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {{ govukBackLink({ text: "Back", href: routes.emailNotifications.index }) }}
+  {{
+    govukBackLink({
+      text: 'Back to settings',
+      href: routes.settings.index
+    })
+  }}
 </div>
 <div class="govuk-grid-column-two-thirds">
   {% if permissions.email_notification_toggle_update %}
@@ -31,7 +36,7 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="govuk-form-group">
       <fieldset class="govuk-fieldset" aria-describedby="email-confirmation-enabled-hint">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-top-6">
           <h1 class="govuk-fieldset__heading">
             Do you want to send payment confirmation emails?
           </h1>
@@ -82,7 +87,7 @@
       }}
     {% endif %}
     <p class="govuk-body">
-      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{routes.settings.index}}">
         {{ 'Go back' if isReadyOnly else 'Cancel' }}
       </a>
     </p>
