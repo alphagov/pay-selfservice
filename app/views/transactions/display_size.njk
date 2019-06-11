@@ -16,12 +16,7 @@
         <input type="hidden" name="pageSize" value="{{pageSizeLink.value}}"/>
         <input type="hidden" name="fromTime" value="{{pageSizeLink.filters.fromTime}}">
         <input type="hidden" name="toTime" value="{{pageSizeLink.filters.toTime}}">
-        {{
-          govukButton({
-            classes: "govuk-button--as-link displaySize govuk-!-font-size-19",
-            text: pageSizeLink.name
-          })
-        }}
+        <button class="govuk-button--as-link displaySize govuk-!-font-size-19">{{pageSizeLink.name}}</button>
       </form>
     {% endif %}
     {% endfor %}
