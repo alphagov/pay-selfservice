@@ -1,13 +1,13 @@
+.govuk-main-wrapper--with-phase-banner {
+  padding-top: 5px;
+}
+
 .govuk-header__content {
   text-align: right;
 }
 
 .govuk-phase-banner {
   padding: 0;
-
-  @include govuk-media-query(tablet) {
-    margin-top: - govuk-spacing(5);
-  }
 }
 
 .service-info--name {
