@@ -48,6 +48,7 @@ describe('Dashboard', () => {
 
       cy.visit(dashboardUrl)
       cy.get('h1').should('contain', 'Dashboard')
+      cy.get('a[href="https://manage.gocardless.com/sign-in"').should('exist')
     })
 
     it('should display Dashboard for direct debit sandbox gateway account', function () {
