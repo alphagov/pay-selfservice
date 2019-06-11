@@ -1,15 +1,11 @@
-// Node.js core dependencies
-const path = require('path')
-
 // Please leave here even though it looks unused - this enables Node.js metrics to be pushed to Hosted Graphite
 if (process.env.DISABLE_APPMETRICS !== 'true') {
-  require('./app/utils/metrics.js').metrics()
+  require('./app/utils/metrics').metrics()
 }
 
 // NPM dependencies
 const express = require('express')
 const nunjucks = require('nunjucks')
-const httpsAgent = require('https').globalAgent
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -17,16 +13,16 @@ const logger = require('winston')
 const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
-const staticify = require('staticify')(path.join(__dirname, 'public'))
+const staticify = require('staticify')('./public')
 
 // Custom dependencies
-const router = require(path.join(__dirname, '/app/routes'))
-const cookieUtil = require(path.join(__dirname, '/app/utils/cookie'))
-const noCache = require(path.join(__dirname, '/app/utils/no_cache'))
-const auth = require(path.join(__dirname, '/app/services/auth_service'))
-const middlwareUtils = require(path.join(__dirname, '/app/utils/middleware'))
-const errorLogger = require(path.join(__dirname, '/app/middleware/error_logger'))
-const errorHandler = require(path.join(__dirname, '/app/middleware/express_unhandled_error_handler'))
+const router = require('./app/routes')
+const cookieUtil = require('./app/utils/cookie')
+const noCache = require('./app/utils/no_cache')
+const auth = require('./app/services/auth_service')
+const middlwareUtils = require('./app/utils/middleware')
+const errorLogger = require('./app/middleware/error_logger')
+const errorHandler = require('./app/middleware/express_unhandled_error_handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 
 // Global constants
@@ -53,7 +49,7 @@ function initialiseGlobalMiddleware (app) {
     app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware(
       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'))
   }
-  app.use(favicon(path.join(__dirname, 'node_modules/govuk-frontend/assets/', 'images', 'favicon.ico')))
+  app.use(favicon('node_modules/govuk-frontend/assets/images/favicon.ico'))
   app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
@@ -78,9 +74,8 @@ function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
-    path.join(__dirname, 'node_modules/govuk-frontend/'),
-    path.join(__dirname, '/govuk_modules/govuk_template/views/layouts'),
-    path.join(__dirname, '/app/views')
+    'node_modules/govuk-frontend/',
+    'app/views'
   ], {
     express: app, // the express app that nunjucks should install to
     autoescape: true, // controls if output with dangerous characters are escaped automatically
@@ -107,10 +102,8 @@ function initialiseTemplateEngine (app) {
 }
 
 function initialisePublic (app) {
-  app.use('/public', express.static(path.join(__dirname, '/public')))
-  app.use('/public', express.static(path.join(__dirname, '/govuk_modules/govuk_frontend_toolkit')))
-  app.use('/public', express.static(path.join(__dirname, '/govuk_modules/govuk_template/assets')))
-  app.use('/', express.static(path.join(__dirname, '/node_modules/govuk-frontend/')))
+  app.use('/public', express.static('public'))
+  app.use('/', express.static('node_modules/govuk-frontend'))
 }
 
 function initialiseRoutes (app) {
