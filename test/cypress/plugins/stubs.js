@@ -893,5 +893,25 @@ module.exports = {
         }]
       }
     ]
+  },
+  redirectToGoCardlessConnectFailure: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/oauth/authorize`,
+            headers: {
+              'Accept': 'text/html'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 500
+          }
+        }]
+      }
+    ]
   }
 }
