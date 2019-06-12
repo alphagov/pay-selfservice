@@ -57,16 +57,21 @@ describe('Settings', () => {
 
     describe('Settings default page', () => {
       it(`should have the page title 'Settings - ${serviceName} - GOV.UK Pay'`, () => {
-        cy.title().should('eq', `Settings - ${serviceName} - GOV.UK Pay`)
+        cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Enter an email address')
+        cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On (mandatory)')
+        cy.get('.govuk-summary-list__actions a').eq(1).contains('Change enter an email address settings')
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Payment confirmation emails')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+        cy.get('.govuk-summary-list__actions a').eq(2).contains('Change payment confirmation emails settings')
+        cy.get('.govuk-summary-list__key').eq(3).should('contain', 'Refund emails')
+        cy.get('.govuk-summary-list__value').eq(3).should('contain', 'On')
+        cy.get('.govuk-summary-list__actions a').eq(3).contains('Change refund emails settings')
       })
     })
 
     describe('Email notifications home page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        const emailNotificationsUrl = `/email-notifications`
-
-        // Default notifications page and confirmation email tab contents
-        cy.visit(emailNotificationsUrl)
+        cy.get('#templates-link').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
         cy.get('#confirmation-email-template').should('contain', 'Confirmation email template')
 
@@ -79,12 +84,10 @@ describe('Settings', () => {
 
     describe('Email collection mode page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        const emailNotificationsUrl = `/settings`
-        cy.visit(emailNotificationsUrl)
-
         // Access the collection mode page
-        cy.get('.email-notifications-toggle-collection').should('contain', 'Change')
-        cy.get('.email-notifications-toggle-collection').click()
+        cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Enter an email address')
+        cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On (mandatory)')
+        cy.get('.email-notifications-toggle-collection').contains('Change enter an email address settings').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
         cy.url().should('include', '/email-settings-collection')
 
@@ -104,12 +107,10 @@ describe('Settings', () => {
 
     describe('Confirmation email toggle page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        const emailNotificationsUrl = `/settings`
-        cy.visit(emailNotificationsUrl)
-
         // Access the confirmation toggle page
-        cy.get('.email-notifications-toggle-confirmation').should('contain', 'Change')
-        cy.get('.email-notifications-toggle-confirmation').click()
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Payment confirmation emails')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+        cy.get('.email-notifications-toggle-confirmation').contains('Change payment confirmation emails settings').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
 
         cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to send payment confirmation emails?')
@@ -127,12 +128,10 @@ describe('Settings', () => {
 
     describe('Refund email toggle page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        const emailNotificationsUrl = `/settings`
-        cy.visit(emailNotificationsUrl)
-
         // Access the refund toggle page
-        cy.get('.email-notifications-toggle-refund').should('contain', 'Change')
-        cy.get('.email-notifications-toggle-refund').click()
+        cy.get('.govuk-summary-list__key').eq(3).should('contain', 'Refund emails')
+        cy.get('.govuk-summary-list__value').eq(3).should('contain', 'On')
+        cy.get('.email-notifications-toggle-refund').contains('Change refund emails settings').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
 
         cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to send refund emails?')
@@ -214,10 +213,8 @@ describe('Settings', () => {
 
     describe('Email notifications home page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        const emailNotificationsUrl = `/email-notifications`
-
         // Default notifications page and confirmation email tab contents
-        cy.visit(emailNotificationsUrl)
+        cy.get('#templates-link').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
         cy.get('#confirmation-email-template').should('contain', 'Confirmation email template')
 
@@ -230,12 +227,10 @@ describe('Settings', () => {
 
     describe('Email collection mode page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        const emailNotificationsUrl = `/settings`
-        cy.visit(emailNotificationsUrl)
-
         // Access the collection mode page
-        cy.get('.email-notifications-toggle-collection').should('contain', 'View')
-        cy.get('.email-notifications-toggle-collection').click()
+        cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Enter an email address')
+        cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On (mandatory)')
+        cy.get('.email-notifications-toggle-collection').contains('View enter an email address settings').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
         cy.url().should('include', '/email-settings-collection')
 
@@ -251,11 +246,10 @@ describe('Settings', () => {
 
     describe('Confirmation email toggle page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        cy.visit(settingsUrl)
-
         // Access the confirmation toggle page
-        cy.get('.email-notifications-toggle-confirmation').should('contain', 'View')
-        cy.get('.email-notifications-toggle-confirmation').click()
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', 'Payment confirmation emails')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+        cy.get('.email-notifications-toggle-confirmation').contains('View payment confirmation emails settings').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
 
         cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to send payment confirmation emails?')
@@ -270,11 +264,10 @@ describe('Settings', () => {
 
     describe('Refund email toggle page', () => {
       it(`should have the page title 'Email notifications - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-        cy.visit(settingsUrl)
-
         // Access the refund toggle page
-        cy.get('.email-notifications-toggle-refund').should('contain', 'View')
-        cy.get('.email-notifications-toggle-refund').click()
+        cy.get('.govuk-summary-list__key').eq(3).should('contain', 'Refund emails')
+        cy.get('.govuk-summary-list__value').eq(3).should('contain', 'On')
+        cy.get('.email-notifications-toggle-refund').contains('View refund emails settings').click()
         cy.title().should('eq', `Email notifications - ${serviceName} sandbox test - GOV.UK Pay`)
 
         cy.get('.govuk-fieldset__heading').first().should('contain', 'Do you want to send refund emails?')
