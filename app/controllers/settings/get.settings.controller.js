@@ -13,6 +13,7 @@ const humaniseEmailMode = mode => {
 module.exports = (req, res) => {
   const pageData = {
     supports3ds: req.account.supports3ds,
+    requires3ds: req.account.requires3ds,
     collectBillingAddress: req.service.collectBillingAddress,
     emailCollectionMode: humaniseEmailMode(req.account.emailCollectionMode),
     confirmationEmailEnabled: req.account.emailEnabled,

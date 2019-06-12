@@ -27,6 +27,10 @@ describe('3DS settings page', () => {
       user.opts.service_roles[0].role = {
         permissions: [
           {
+            name: 'transactions-details:read',
+            description: 'ViewTransactionsOnly'
+          },
+          {
             name: 'toggle-3ds:read',
             description: 'View3dsOnly'
           }
@@ -82,8 +86,10 @@ describe('3DS settings page', () => {
       setup3dsStubs()
     })
 
-    it('should show explainer and no radios', () => {
+    it('should not show on settings index and should show explainer and no radios', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.visit('/settings')
+      cy.get('.govuk-summary-list__key').first().should('not.contain', '3D Secure')
       cy.visit('/3ds')
       cy.title().should('eq', `3D Secure - ${serviceName} - GOV.UK Pay`)
       cy.get('#threeds-not-supported').should('be.visible')
@@ -103,7 +109,10 @@ describe('3DS settings page', () => {
 
       it('should show info box and inputs should be disabled ', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/3ds')
+        cy.visit('/settings')
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off')
+        cy.get('a').contains('View 3D Secure settings').click()
         cy.get('.pay-info-warning-box').should('be.visible')
         cy.get('.govuk-inset-text').should('have.length', 1)
         cy.get('input[value="on"]').should('be.disabled')
@@ -121,7 +130,10 @@ describe('3DS settings page', () => {
 
       it('should show WorldPay specific merchant code stuff and radios', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/3ds')
+        cy.visit('/settings')
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off')
+        cy.get('a').contains('Change 3D Secure settings').click()
         cy.get('#threeds-not-supported').should('not.be.visible')
         cy.get('.govuk-inset-text').should('have.length', 1)
         cy.get('input[value="on"]').should('have.length', 1)
@@ -140,7 +152,10 @@ describe('3DS settings page', () => {
 
       it('should show WorldPay specific merchant code stuff and radios', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/3ds')
+        cy.visit('/settings')
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+        cy.get('a').contains('Change 3D Secure settings').click()
         cy.get('#threeds-not-supported').should('not.be.visible')
         cy.get('.govuk-inset-text').should('have.length', 1)
         cy.get('input[value="on"]').should('have.length', 1)
@@ -160,7 +175,10 @@ describe('3DS settings page', () => {
 
       it('should show WorldPay specific merchant code stuff and disabled radios', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/3ds')
+        cy.visit('/settings')
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
+        cy.get('a').contains('Change 3D Secure settings').click()
         cy.get('#threeds-not-supported').should('not.be.visible')
         cy.get('.govuk-inset-text').should('have.length', 1)
         cy.get('input[value="on"]').should('have.length', 1)
@@ -183,7 +201,10 @@ describe('3DS settings page', () => {
 
       it('should show success message and radios should update', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.visit('/3ds')
+        cy.visit('/settings')
+        cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
+        cy.get('.govuk-summary-list__value').eq(2).should('contain', 'Off')
+        cy.get('a').contains('Change 3D Secure settings').click()
         cy.get('input[value="on"]').should('not.be.checked')
         cy.get('input[value="off"]').should('be.checked')
         cy.get('input[value="on"]').click()
@@ -205,6 +226,9 @@ describe('3DS settings page', () => {
       cy.get('input[value="on"]').should('be.checked')
       cy.get('input[value="off"]').should('not.be.checked')
       cy.get('.flash-container').should('contain', '3D secure settings have been updated')
+      cy.get('.govuk-back-link').click()
+      cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
+      cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
     })
   })
 
@@ -236,7 +260,10 @@ describe('3DS settings page', () => {
 
     it('should show Stripe specific disabled message and radios', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-      cy.visit('/3ds')
+      cy.visit('/settings')
+      cy.get('.govuk-summary-list__key').first().should('contain', '3D Secure')
+      cy.get('.govuk-summary-list__value').first().should('contain', 'On')
+      cy.get('a').contains('Change 3D Secure settings').click()
       cy.get('#threeds-not-supported').should('not.be.visible')
       cy.get('.govuk-inset-text').should('have.length', 0)
       cy.get('input[value="on"]').should('have.length', 1)
