@@ -14,7 +14,6 @@ class DirectDebitGatewayAccount {
    * Create an instance of Service
    * @param {Object} gatewayAccountData - raw 'gateway account' object from server
    * @param {string} gatewayAccountData.gateway_account_id - The external ID of the gateway account
-   * @param {string} gatewayAccountData.service_name - The name of the gateway account
    * @param {string} gatewayAccountData.type - The type of the gateway account
    * @param {string} gatewayAccountData.payment_provider - The payment provider of the gateway account
    * @param {string} gatewayAccountData.description - The description of the gateway account
@@ -23,7 +22,6 @@ class DirectDebitGatewayAccount {
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
-    this.serviceName = gatewayAccountData.service_name
     this.paymentProvider = gatewayAccountData.payment_provider.toLowerCase()
     this.type = gatewayAccountData.type.toLowerCase()
     this.description = gatewayAccountData.description
@@ -34,7 +32,6 @@ class DirectDebitGatewayAccount {
 
     // compatibility with other parts of selfservice - recording as tech debt in jira
     this.payment_provider = gatewayAccountData.payment_provider
-    this.service_name = gatewayAccountData.service_name
   }
   /**
    * @method toJson
@@ -45,7 +42,6 @@ class DirectDebitGatewayAccount {
       id: this.id,
       external_id: this.externalId,
       payment_provider: this.paymentProvider,
-      service_name: this.serviceName,
       type: this.type,
       payment_method: this.paymentMethod
     }

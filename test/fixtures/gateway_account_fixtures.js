@@ -165,7 +165,6 @@ module.exports = {
     const data = {
       gateway_account_id: opts.gateway_account_id || 73,
       gateway_account_external_id: opts.gateway_account_external_id || 'DIRECT_DEBIT:' + 'a9c797ab271448bdba21359e15672076',
-      service_name: opts.service_name || '8c0045d0664743c68e25489781e05b1d',
       payment_provider: opts.payment_provider || 'sandbox',
       type: opts.type || 'test',
       analytics_id: opts.analytics_id || 'd82dae5bcb024828bb686574a932b5a5',

@@ -11,7 +11,7 @@ const serviceSwitchController = require('../../../app/controllers/my-services')
 const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const chaiAsPromised = require('chai-as-promised')
-const {expect} = require('chai')
+const { expect } = require('chai')
 chai.use(chaiAsPromised)
 
 describe('service switch controller: list of accounts', function () {
@@ -36,7 +36,6 @@ describe('service switch controller: list of accounts', function () {
     directDebitConnectorMock.get(DIRECT_DEBIT_ACCOUNTS_PATH + `?externalAccountIds=${directDebitGatewayAccountIds.join(',')}`)
       .reply(200, { accounts: directDebitGatewayAccountIds.map(iter => gatewayAccountFixtures.validDirectDebitGatewayAccountResponse({
         gateway_account_id: iter,
-        service_name: `account ${iter}`,
         type: _.sample(['test', 'live'])
       }).getPlain()) })
 
@@ -53,7 +52,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions: [{name: 'blah-blah:blah'}]
+              permissions: [{ name: 'blah-blah:blah' }]
             }
           },
           {
@@ -64,7 +63,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions: [{name: 'blah-blah:blah'}]
+              permissions: [{ name: 'blah-blah:blah' }]
             }
           },
           {
@@ -75,7 +74,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions: [{name: 'blah-blah:blah'}]
+              permissions: [{ name: 'blah-blah:blah' }]
             }
           },
           {
@@ -86,7 +85,7 @@ describe('service switch controller: list of accounts', function () {
             },
             role: {
               name: 'admin',
-              permissions: [{name: 'blah-blah:blah'}]
+              permissions: [{ name: 'blah-blah:blah' }]
             }
           }]
       }).getAsObject(),
@@ -103,14 +102,14 @@ describe('service switch controller: list of accounts', function () {
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-1')).to.have.lengthOf(2).and.to.include('account 2', 'account 5')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-2')).to.have.lengthOf(3).and.to.include('account 3', 'account 6', 'account 7')
         expect(cardGatewayAccountNamesOf(renderData, 'service-external-id-3')).to.have.lengthOf(2).and.to.include('account 4', 'account 9')
-        expect(directDebitGatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('account DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'account DIRECT_DEBIT:ksdfhjhfd;sfksd34')
+        expect(directDebitGatewayAccountNamesOf(renderData, 'service-external-id-4')).to.have.lengthOf(2).and.to.include('DIRECT_DEBIT:6bugfqvub0isp3rqfknck5vq24', 'DIRECT_DEBIT:ksdfhjhfd;sfksd34')
 
         done()
       }
     }
 
     const cardGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.cardAccounts.map(g => g.service_name)
-    const directDebitGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.directdebitAccounts.map(g => g.service_name)
+    const directDebitGatewayAccountNamesOf = (renderData, serviceExternalId) => renderData.services.filter(s => s.external_id === serviceExternalId)[0].gateway_accounts.directdebitAccounts.map(g => g.id)
 
     serviceSwitchController.getIndex(req, res)
   })
@@ -230,7 +229,7 @@ describe('service switch controller: display added to the new service msg', func
             },
             role: {
               name: 'admin',
-              permissions: [{name: 'blah-blah:blah'}]
+              permissions: [{ name: 'blah-blah:blah' }]
             }
           },
           {
@@ -241,7 +240,7 @@ describe('service switch controller: display added to the new service msg', func
             },
             role: {
               name: 'admin',
-              permissions: [{name: 'blah-blah:blah'}]
+              permissions: [{ name: 'blah-blah:blah' }]
             }
           }]
       }).getAsObject(),
