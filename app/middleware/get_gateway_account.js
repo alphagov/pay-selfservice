@@ -11,6 +11,7 @@ const auth = require('../services/auth_service.js')
 const Connector = require('../services/clients/connector_client.js').ConnectorClient
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
 const directDebitConnectorClient = require('../services/clients/direct_debit_connector_client.js')
+const directDebitConnectorClient2 = require('../services/clients/direct_debit_connector_client2')()
 
 // Constants
 const clsXrayConfig = require('../../config/xray-cls')
@@ -22,7 +23,7 @@ module.exports = function (req, res, next) {
     correlationId: req.correlationId
   }
   if (directDebitConnectorClient.isADirectDebitAccount(accountId)) {
-    return directDebitConnectorClient.gatewayAccount.get(params)
+    return directDebitConnectorClient2.getGatewayAccountByExternalId(params)
       .then(gatewayAccount => {
         req.account = gatewayAccount
         next()

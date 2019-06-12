@@ -39,7 +39,7 @@ const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvide
       type: 'test'
     }))
   })
-  const directDebitConnectorMock = {
+  const directDebitConnectorMock2 = {
     gatewayAccount: {
       get: directDebitConnectorGetAccountMock
     }
@@ -48,7 +48,7 @@ const setupGetGatewayAccount = function (currentGatewayAccountID, paymentProvide
   return proxyquire(path.join(__dirname, '../../../app/middleware/get_gateway_account'), {
     '../services/auth_service.js': authServiceMock,
     '../services/clients/connector_client.js': connectorMock,
-    '../services/clients/direct_debit_connector_client.js': directDebitConnectorMock,
+    '../services/clients/direct_debit_connector_client2.js': directDebitConnectorMock2,
     'aws-xray-sdk': {
       captureAsyncFunc: function (name, callback) {
         callback(new AWSXRay.Segment('stub-subsegment'))

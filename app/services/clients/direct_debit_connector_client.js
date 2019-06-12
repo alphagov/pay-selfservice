@@ -14,8 +14,7 @@ const SERVICE_NAME = 'directdebit-connector'
 module.exports = {
   isADirectDebitAccount,
   gatewayAccount: {
-    create: createGatewayAccount,
-    get: getGatewayAccountByExternalId
+    create: createGatewayAccount
   },
   gatewayAccounts: {
     get: getGatewayAccountsByExternalIds
@@ -43,17 +42,6 @@ function createGatewayAccount (options) {
     },
     correlationId: options.correlationId,
     description: 'create a direct debit gateway account',
-    service: SERVICE_NAME
-  }).then(ga => new GatewayAccount(ga))
-}
-
-function getGatewayAccountByExternalId (params) {
-  return baseClient.get({
-    baseUrl,
-    url: `/accounts/${params.gatewayAccountId}`,
-    correlationId: params.correlationId,
-    json: true,
-    description: `find a gateway account by external id`,
     service: SERVICE_NAME
   }).then(ga => new GatewayAccount(ga))
 }
