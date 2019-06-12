@@ -11,6 +11,10 @@ const humaniseEmailMode = mode => {
 }
 
 module.exports = (req, res) => {
+  if (req.account.paymentMethod === 'direct debit') {
+    return res.redirect('/api-keys')
+  }
+
   const pageData = {
     supports3ds: req.account.supports3ds,
     requires3ds: req.account.requires3ds,

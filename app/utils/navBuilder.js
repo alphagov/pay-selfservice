@@ -53,7 +53,7 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       name: 'Settings',
       url: paths.settings.index,
       current: pathLookup(originalUrl, paths.settings.index),
-      permissions: true
+      permissions: type === 'card'
     },
     {
       id: 'navigation-menu-api-keys',
