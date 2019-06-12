@@ -1,14 +1,18 @@
 'use strict'
-const errorView = require('../utils/response.js').renderErrorView
-const Email = require('../models/email.js')
+const { renderErrorView } = require('../utils/response')
+const Email = require('../models/email')
 const _ = require('lodash')
-const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const { CORRELATION_HEADER } = require('../utils/correlation_header')
 
 module.exports = function (req, res, next) {
-  return Email(req.headers[CORRELATION_HEADER]).get(req.account.gateway_account_id)
-    .then(emailData => {
-      req.account = _.merge(req.account, emailData)
-      next()
-    })
-    .catch(() => errorView(req, res))
+  if (req.account.paymentMethod !== 'direct debit') {
+    return Email(req.headers[CORRELATION_HEADER]).get(req.account.gateway_account_id)
+      .then(emailData => {
+        req.account = _.merge(req.account, emailData)
+        next()
+      })
+      .catch(() => renderErrorView(req, res))
+  } else {
+    next()
+  }
 }
