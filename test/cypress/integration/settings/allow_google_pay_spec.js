@@ -36,14 +36,51 @@ describe('Google Pay', () => {
     it('should show it is disabled', () => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
       cy.visit('/settings')
+      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
       cy.get('a').contains('Change Google Pay settings').click()
       cy.get('input[type="radio"]').should('have.length', 2)
       cy.get('input[value="on"]').should('not.be.checked')
       cy.get('input[value="off"]').should('be.checked')
+      cy.get('.govuk-back-link').click()
+      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
     })
   })
 
-  describe('but allow us to enable', () => {
+  describe('but allow us to enable when supported', () => {
+    beforeEach(() => {
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                gateway_account_ids: [gatewayAccountId],
+                name: serviceName
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            payment_provider: 'worldpay',
+            allow_google_pay: false
+          }
+        }
+      ])
+    })
+
+    it('should allow us to enable', () => {
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.visit('/settings')
+      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
+      cy.get('a').contains('Change Google Pay settings').click()
+    })
+  })
+
+  describe('Show enabled after turning on', () => {
     beforeEach(() => {
       cy.task('setupStubs', [
         {
@@ -76,6 +113,8 @@ describe('Google Pay', () => {
       cy.get('.govuk-button').contains('turn on Google Pay').click()
       cy.get('.notification').should('contain', 'Google Pay successfully enabled.')
       cy.get('input[value="on"]').should('be.checked')
+      cy.get('.govuk-back-link').click()
+      cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On')
     })
   })
 })
