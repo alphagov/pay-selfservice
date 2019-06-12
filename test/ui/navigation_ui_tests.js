@@ -162,8 +162,8 @@ describe('navigation menu', function () {
 
     const body = render('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Settings')
-    body.should.containSelector('.settings-navigation li:nth-child(3)').withExactText('Link GoCardless Merchant Account')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('API keys')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
     body.should.not.contain('Account credentials')
     body.should.not.contain('3D Secure')
     body.should.not.contain('Card types')
@@ -209,7 +209,7 @@ describe('navigation menu', function () {
 
     const body = render('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Link GoCardless Merchant Account')
+    body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Link GoCardless Merchant Account')
   })
 
   it('should not render Link GoCardless Merchant Account naviagtion link when user does not have connected-gocardless-account:update', function () {

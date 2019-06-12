@@ -34,7 +34,13 @@ describe('retrieve email notification template', function () {
 
   it('should call the error view if connector call fails', function (done) {
     const retrieveEmailNotification = require(path.join(__dirname, '/../../../app/middleware/get_email_notification.js'))
-    const req = {account: {gateway_account_id: 1}, headers: {}}
+    const req = {
+      account: {
+        gateway_account_id: 1,
+        paymentMethod: 'card'
+      },
+      headers: {}
+    }
     retrieveEmailNotification(req, response, next)
     setTimeout(function () {
       expect(next.notCalled).to.be.true // eslint-disable-line
@@ -56,12 +62,19 @@ describe('retrieve email notification template', function () {
     const retrieveEmailNotification = proxyquire(path.join(__dirname, '/../../../app/middleware/get_email_notification.js'), {
       '../models/email.js': emailStub
     })
-    const req = {account: {gateway_account_id: 1}, headers: {}}
+    const req = {
+      account: {
+        gateway_account_id: 1,
+        paymentMethod: 'card'
+      },
+      headers: {}
+    }
     retrieveEmailNotification(req, response, next).should.be.fulfilled.then(function () {
       expect(req.account).to.deep.equal({
         customEmailText: 'hello',
         'gateway_account_id': 1,
-        'emailEnabled': true
+        'emailEnabled': true,
+        paymentMethod: 'card'
       })
       expect(next.called).to.be.true // eslint-disable-line
     }).should.notify(done)
