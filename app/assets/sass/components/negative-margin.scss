@@ -1,3 +1,14 @@
-.govuk-\!-negative-margin-h-3 {
+.pay-\!-negative-margin-h-3 {
   margin: 0 (- govuk-spacing(3));
+}
+
+.pay-\!-negative-margin-t-2 {
+  margin-top: - govuk-spacing(2);
+}
+
+// ns stands for 'not small' so means from tablet up
+.pay-\!-negative-margin-t-5-ns {
+  @include govuk-media-query($from: tablet) {
+    margin-top: - govuk-spacing(5);
+  }
 }
