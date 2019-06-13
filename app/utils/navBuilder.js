@@ -25,7 +25,7 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
   navigationItems.push({
     id: 'navigation-menu-settings',
     name: 'Settings',
-    url: paths.settings.index,
+    url: type === 'card' ? paths.settings.index : paths.apiKeys.index,
     current: pathLookup(originalUrl, [
       paths.credentials,
       paths.notificationCredentials,
@@ -53,7 +53,7 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       name: 'Settings',
       url: paths.settings.index,
       current: pathLookup(originalUrl, paths.settings.index),
-      permissions: true
+      permissions: type === 'card'
     },
     {
       id: 'navigation-menu-api-keys',
