@@ -75,13 +75,6 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       url: paths.paymentTypes.index,
       current: pathLookup(originalUrl, paths.paymentTypes.index) || pathLookup(originalUrl, paths.digitalWallet.summary),
       permissions: permissions.payment_types_read && type === 'card'
-    },
-    {
-      id: 'navigation-menu-link-gocardless-app',
-      name: 'Link GoCardless Merchant Account',
-      url: paths.partnerApp.linkAccount,
-      current: pathLookup(originalUrl, paths.partnerApp.linkAccount),
-      permissions: permissions.connected_gocardless_account_update && type === 'direct debit'
     }
   ]
 }
