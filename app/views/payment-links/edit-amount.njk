@@ -43,6 +43,7 @@
             autofocus
             data-non-numeric
             type="text"
+            inputmode="numeric"
             id="payment-amount"
             value="{{ product.price | penceToPounds if product.price else '' }}"
             data-trim
