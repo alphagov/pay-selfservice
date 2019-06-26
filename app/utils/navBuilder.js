@@ -21,6 +21,13 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
       current: pathLookup(originalUrl, paths.transactions.index),
       permissions: permissions.transactions_read
     })
+    navigationItems.push({
+      id: 'navigation-menu-payment-links',
+      name: 'Payment links',
+      url: paths.paymentLinks.start,
+      current: pathLookup(originalUrl, paths.paymentLinks.start),
+      permissions: permissions.tokens_create
+    })
   }
   navigationItems.push({
     id: 'navigation-menu-settings',

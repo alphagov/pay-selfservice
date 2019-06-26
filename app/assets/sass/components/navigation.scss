@@ -15,12 +15,13 @@
 }
 
 .service-info {
-  float: left;
+  @include govuk-media-query(tablet) {
+    float: left;
+  }
 }
 
 .service-navigation {
   margin: 0;
-  float: left;
 
   @include govuk-media-query(tablet) {
     margin: 0;
