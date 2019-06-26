@@ -20,7 +20,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
       {% if pageData.paymentLinkDescription %}
         {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
       {% else %}
-        <span class="govuk-text-grey">None given</span>
+        <span class="pay-text-grey">None given</span>
       {% endif %}
     </span>
   {% endset %}
@@ -30,12 +30,12 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
       {% if pageData.paymentReferenceType === 'custom' %}
         {{ pageData.paymentReferenceLabel }}
         {% if pageData.paymentReferenceHint %}
-          <span class="govuk-!-display-block govuk-text-grey">
+          <span class="govuk-!-display-block pay-text-grey">
             {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
           </span>
         {% endif %}
       {% else %}
-        <span class="govuk-text-grey">Created by GOV.UK Pay</span>
+        <span class="pay-text-grey">Created by GOV.UK Pay</span>
       {% endif %}
     </span>
   {% endset %}
@@ -45,7 +45,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
     {% if pageData.paymentLinkAmount %}
       £{{ pageData.paymentLinkAmount | penceToPounds }}
     {% else %}
-      <span class="govuk-text-grey">User can choose</span>
+      <span class="pay-text-grey">User can choose</span>
     {% endif %}
     </span>
   {% endset %}

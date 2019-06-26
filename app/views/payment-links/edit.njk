@@ -18,7 +18,7 @@
     {% if product.description %}
       {{ product.description | striptags(true) | escape | nl2br }}
     {% else %}
-      <span class="govuk-text-grey">None given</span>
+      <span class="pay-text-grey">None given</span>
     {% endif %}
   {% endset %}
 
@@ -26,12 +26,12 @@
     {% if product.referenceEnabled === true %}
       {{ product.referenceLabel }}
       {% if product.referenceHint %}
-        <span class="govuk-!-display-block govuk-text-grey">
+        <span class="govuk-!-display-block pay-text-grey">
           {{ product.referenceHint | striptags(true) | escape | nl2br }}
         </span>
       {% endif %}
     {% else %}
-      <span class="govuk-text-grey">Created by GOV.UK Pay</span>
+      <span class="pay-text-grey">Created by GOV.UK Pay</span>
     {% endif %}
   {% endset %}
 
@@ -39,7 +39,7 @@
     {% if product.price %}
       {{ product.price | penceToPoundsWithCurrency }}
     {% else %}
-      <span class="govuk-text-grey">User can choose</span>
+      <span class="pay-text-grey">User can choose</span>
     {% endif %}
   {% endset %}
 

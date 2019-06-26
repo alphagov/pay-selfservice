@@ -1,8 +1,8 @@
-.govuk-text-align-right {
+.pay-text-align-right {
   text-align: right;
 }
 
-.govuk-text-align-right-l {
+.pay-text-align-right-l {
   @include govuk-media-query(tablet) {
     text-align: right;
   }
