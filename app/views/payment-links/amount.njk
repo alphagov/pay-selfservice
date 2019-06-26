@@ -44,6 +44,7 @@
             autofocus
             data-non-numeric
             type="text"
+            inputmode="numeric"
             id="payment-amount"
             value="{{ paymentLinkAmount | penceToPounds if paymentLinkAmount else '' }}"
             data-trim
