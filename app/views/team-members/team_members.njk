@@ -33,7 +33,7 @@ Team members - GOV.UK Pay
   <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
     <div class="admin-list" id="team-members-admin-list">
       <h3 id="admin-role-header" class="govuk-heading-m">
-        Administrators <span class="govuk-!-font-weight-regular govuk-text-grey">({{team_members["admin"].length}})</span>
+        Administrators <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["admin"].length}})</span>
       </h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
@@ -60,7 +60,7 @@ Team members - GOV.UK Pay
     {% if team_members["view-and-refund"].length %}
     <div class="admin-list" id="team-members-view-and-refund-list">
       <h3 id="view-and-refund-role-header" class="govuk-heading-m">
-        View and refund <span class="govuk-!-font-weight-regular govuk-text-grey">({{team_members["view-and-refund"].length}})</span>
+        View and refund <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-and-refund"].length}})</span>
       </h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
@@ -88,7 +88,7 @@ Team members - GOV.UK Pay
     {% if team_members["view-only"].length %}
     <div class="admin-list" id="team-members-view-only-list">
       <h3 id="view-only-role-header" class="govuk-heading-m">
-        View only <span class="govuk-!-font-weight-regular govuk-text-grey">({{team_members["view-only"].length}})</span>
+        View only <span class="govuk-!-font-weight-regular pay-text-grey">({{team_members["view-only"].length}})</span>
       </h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
@@ -117,11 +117,11 @@ Team members - GOV.UK Pay
   {% if number_invited_members > 0 %}
   <div class="govuk-grid-column-two-thirds admin-list-group govuk-!-margin-top-6">
     <h2 id="invited-team-members-heading" class="govuk-heading-m">
-      Invited <span class="govuk-!-font-weight-regular govuk-text-grey">({{number_invited_members}})</span>
+      Invited <span class="govuk-!-font-weight-regular pay-text-grey">({{number_invited_members}})</span>
     </h2>
     {% if invited_team_members["admin"].length %}
     <div class="admin-list" id="invited-team-members-admin-list">
-      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators <span class="govuk-!-font-weight-regular govuk-text-grey">({{invited_team_members["admin"].length}})</span></h3>
+      <h3 id="invited-team-members-admin-role-header" class="govuk-heading-s">Administrators <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["admin"].length}})</span></h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
           {% for admin in invited_team_members["admin"] %}
@@ -140,7 +140,7 @@ Team members - GOV.UK Pay
     {% if invited_team_members["view-and-refund"].length %}
     <div class="admin-list" id="invited-team-members-view-and-refund-list">
       <h3 id="invited-team-members-view-and-refund-role-header" class="govuk-heading-s">
-        View and refund <span class="govuk-!-font-weight-regular govuk-text-grey">({{invited_team_members["view-and-refund"].length}})</span>
+        View and refund <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-and-refund"].length}})</span>
       </h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
@@ -160,7 +160,7 @@ Team members - GOV.UK Pay
     {% if invited_team_members["view-only"].length %}
     <div class="admin-list" id="invited-team-members-view-only-list">
       <h3 id="invited-team-members-view-only-role-header" class="govuk-heading-s">
-        View only <span class="govuk-!-font-weight-regular govuk-text-grey">({{invited_team_members["view-only"].length}})</span>
+        View only <span class="govuk-!-font-weight-regular pay-text-grey">({{invited_team_members["view-only"].length}})</span>
       </h3>
       <table class="govuk-table pay-!-border-top">
         <tbody class="govuk-table__body">
