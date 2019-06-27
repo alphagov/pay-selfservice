@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
-{% from "components/input/macro.njk" import govukInput %}
-{% from "components/textarea/macro.njk" import govukTextarea %}
-{% from "components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block pageTitle %}
   Edit your payment link details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay

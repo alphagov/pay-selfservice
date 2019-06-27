@@ -1,6 +1,6 @@
 {% extends "../layout.njk" %}
-{% from "components/radios/macro.njk" import govukRadios %}
-{% from "components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block pageTitle %}
   Email notifications - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay

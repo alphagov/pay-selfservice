@@ -1,8 +1,8 @@
 {% extends "../layout.njk" %}
-{% from "components/input/macro.njk" import govukInput %}
-{% from "components/character-count/macro.njk" import govukCharacterCount %}
-{% from "components/radios/macro.njk" import govukRadios %}
-{% from "components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block pageTitle %}
   Edit your payment link reference - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay

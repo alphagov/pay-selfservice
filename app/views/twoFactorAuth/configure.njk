@@ -1,8 +1,8 @@
 {% extends "../layout.njk" %}
-{% from "components/back-link/macro.njk" import govukBackLink %}
-{% from "components/button/macro.njk" import govukButton %}
-{% from "components/input/macro.njk" import govukInput %}
-{% from "components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% if method === 'APP' %}
   {% set title = 'Set up an authenticator app' %}
