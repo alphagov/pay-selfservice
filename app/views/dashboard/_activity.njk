@@ -81,14 +81,18 @@
         <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | penceToPoundsWithCurrency }}</dd>
       </dl>
     </a>
-    <details class="govuk-details dashboard-total-explainer">
-      <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">How these numbers are calculated</span>
-        </summary>
-      <div class="govuk-details__text">
-        <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ fromDateTime | datetime('full') }} to {{ toDateTime | datetime('full') }}</p>
-      </div>
-    </details>
+
+    {% set detailsHTML %}
+      <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ fromDateTime | datetime('full') }} to {{ toDateTime | datetime('full') }}</p>
+    {% endset %}
+
+    {{
+      govukDetails({
+        summaryText: "How these numbers are calculated",
+        classes: "dashboard-total-explainer",
+        html: detailsHTML
+      })
+    }}
   </article>
 {% else %}
   <article class="dashboard-total-group govuk-grid-column-one-half">
