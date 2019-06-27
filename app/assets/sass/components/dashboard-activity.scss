@@ -24,6 +24,12 @@
       &:focus {
         outline: 3px solid $govuk-focus-colour;
         outline-offset: 0;
+
+        .dashboard-total-group__values {
+          border-color: $govuk-text-colour;
+          border-width: 2px;
+          box-shadow: inset 0 0 0 2px;
+        }
       }
     }
 
@@ -33,7 +39,7 @@
       margin: 0;
       padding: govuk-spacing(3);
       padding-left: govuk-spacing(5);
-      border: 1px solid $govuk-border-colour;
+      border: 2px solid $govuk-border-colour;
       border-left: 0;
       background-color: govuk-colour("light-grey");
       flex-direction: row;
