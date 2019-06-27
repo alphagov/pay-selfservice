@@ -1,7 +1,6 @@
 .environment-tag {
   @include govuk-font($size: 14, $weight: bold);
-  line-height: 1.25!important;
-  padding: 3px govuk-spacing(1) 1px;
+  padding: govuk-spacing(1) govuk-spacing(1) 3px;
   margin: 0 0 0 govuk-spacing(2);
   position: relative;
   top: -2px;
