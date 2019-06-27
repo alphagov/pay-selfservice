@@ -3,7 +3,7 @@
 {% from "components/button/macro.njk" import govukButton %}
 
 <div class="transactions-filter govuk-grid-row">
-  <form class="govuk-clearfix" method="get" action="{{search_path}}">
+  <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate>
     <div class="govuk-grid-column-one-quarter inputs-less-margin">
       {{
         govukInput({
