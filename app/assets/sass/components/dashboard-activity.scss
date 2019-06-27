@@ -17,7 +17,7 @@
 
       &:hover {
         .dashboard-total-group__values {
-          background-color: govuk-colour("grey-3");
+          background-color: govuk-colour("light-grey");
         }
       }
 
@@ -35,7 +35,7 @@
       padding-left: govuk-spacing(5);
       border: 1px solid $govuk-border-colour;
       border-left: 0;
-      background-color: govuk-colour("grey-4");
+      background-color: govuk-colour("light-grey");
       flex-direction: row;
       justify-content: space-between;
       align-items: baseline;
