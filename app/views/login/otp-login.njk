@@ -27,7 +27,7 @@
   {% if authenticatorMethod === 'APP' %}
   <h1 class="govuk-heading-l page-title">Use your authenticator app</h1>
   {% endif %}
-  <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form">
+  <form action="{{routes.user.otpLogIn}}" method="post" class="form submit-two-fa" id="otp-login-form" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     {% if authenticatorMethod === 'SMS' %}
     <p class="govuk-body">We have sent you a text message with a security code</p>

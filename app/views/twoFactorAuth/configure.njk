@@ -46,7 +46,7 @@
     })
   }}
 {% endif %}
-  <form method="post" action="{{routes.user.twoFactorAuth.configure}}" data-validate>
+  <form method="post" action="{{routes.user.twoFactorAuth.configure}}" novalidate data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {% set codeError = false %}
