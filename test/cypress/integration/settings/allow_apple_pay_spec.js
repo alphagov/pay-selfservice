@@ -109,7 +109,7 @@ describe('Apple Pay', () => {
     it('should allow us to enable', () => {
       cy.get('input[value="on"]').click()
       cy.get('input[value="on"]').should('be.checked')
-      cy.get('.govuk-button').contains('turn on Apple Pay').click()
+      cy.get('.govuk-button').contains('Save changes').click()
       cy.get('.notification').should('contain', 'Apple Pay successfully enabled.')
       cy.get('input[value="on"]').should('be.checked')
       cy.get('.govuk-back-link').click()
