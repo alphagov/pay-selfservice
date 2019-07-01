@@ -46,7 +46,9 @@
       display: inline-block;
       color: $govuk-link-colour;
       text-decoration: none;
-      padding: govuk-spacing(2) 0;
+      @include govuk-media-query(tablet) {
+        padding: govuk-spacing(2) 0;
+      }
     }
 
     a:focus {
