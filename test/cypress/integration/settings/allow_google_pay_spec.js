@@ -110,7 +110,7 @@ describe('Google Pay', () => {
       cy.get('input[value="on"]').click()
       cy.get('input[value="on"]').should('be.checked')
       cy.get('#merchantId').type('111111111111111')
-      cy.get('.govuk-button').contains('turn on Google Pay').click()
+      cy.get('.govuk-button').contains('Save changes').click()
       cy.get('.notification').should('contain', 'Google Pay successfully enabled.')
       cy.get('input[value="on"]').should('be.checked')
       cy.get('.govuk-back-link').click()
