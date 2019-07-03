@@ -1,13 +1,10 @@
 'use strict'
 
-const getHandler = require('../../../../app/middleware/partnerapp/handle_gocardless_connect_get')
-const baseClient = require('../../../../app/services/clients/base_client/base_client')
-const directDebitClient = require('../../../../app/services/clients/direct_debit_connector_client')
-
 const { expect } = require('chai')
 const sinon = require('sinon')
+const proxyquire = require('proxyquire')
 
-let req, res, stubbedBaseClientPost, stubbedGetGatewayAccount
+let req, res, exchangeCodeStub
 
 describe('When GoCardless Connect middleware receives a GET request', function () {
   beforeEach(function () {
@@ -24,21 +21,12 @@ describe('When GoCardless Connect middleware receives a GET request', function (
     res = {
       end: () => {
         expect(true).to.equal(true)
-      }
+      },
+      setHeader: sinon.stub(),
+      render: sinon.stub()
     }
 
-    stubbedBaseClientPost = baseClient.post = sinon.stub()
-    stubbedBaseClientPost.resolves({})
-
-    stubbedGetGatewayAccount = directDebitClient.gatewayAccount.get = sinon.stub()
-    stubbedGetGatewayAccount.resolves({
-      type: 'test'
-    })
-  })
-
-  afterEach(() => {
-    stubbedBaseClientPost.reset()
-    stubbedGetGatewayAccount.reset()
+    exchangeCodeStub = sinon.stub().resolves()
   })
 
   describe('with all required parameters', () => {
@@ -46,7 +34,8 @@ describe('When GoCardless Connect middleware receives a GET request', function (
       res.status = (code) => {
         expect(code).to.equal(200)
       }
-      getHandler.index(req, res)
+      const controller = getControllerWithMocks()
+      controller.index(req, res)
     })
   })
 
@@ -62,7 +51,8 @@ describe('When GoCardless Connect middleware receives a GET request', function (
       res.status = (code) => {
         expect(code).to.equal(400)
       }
-      getHandler.index(req, res)
+      const controller = getControllerWithMocks()
+      controller.index(req, res)
     })
   })
 
@@ -77,7 +67,18 @@ describe('When GoCardless Connect middleware receives a GET request', function (
       res.status = (code) => {
         expect(code).to.equal(400)
       }
-      getHandler.index(req, res)
+      const controller = getControllerWithMocks()
+      controller.index(req, res)
     })
   })
+
+  function getControllerWithMocks () {
+    return proxyquire('../../../../app/controllers/partnerapp/handle_gocardless_connect_get', {
+      '../../services/clients/direct_debit_connector_client': {
+        partnerApp: {
+          exchangeCode: exchangeCodeStub
+        }
+      }
+    })
+  }
 })

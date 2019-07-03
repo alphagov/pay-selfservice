@@ -1,7 +1,6 @@
 'use strict'
 
 // NPM Dependencies
-const logger = require('winston')
 const request = require('request')
 const wrapper = require('./wrapper')
 
