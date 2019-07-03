@@ -33,14 +33,15 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: type === 'card' ? paths.settings.index : paths.apiKeys.index,
-    current: pathLookup(originalUrl, [
+    current: originalUrl !== '/' ? pathLookup(originalUrl.replace(/([a-z])\/$/g, '$1'), [
+      paths.settings.index,
       paths.credentials,
       paths.notificationCredentials,
       paths.toggle3ds,
       paths.apiKeys,
       paths.emailNotifications,
       paths.paymentTypes
-    ]),
+    ]) : false,
     permissions: _.some([
       permissions.tokens_read,
       permissions.gateway_credentials_read,
