@@ -11,19 +11,22 @@ My profile - GOV.UK Pay
   </h1>
 </div>
 <div class="govuk-grid-column-two-thirds">
-  <table class="govuk-table govuk-!-font-size-16">
+  <table class="govuk-table">
     <caption class="govuk-visually-hidden">Details for {{username}}</caption>
     <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row">Email:</th>
+        <th class="govuk-table__header" scope="row">Email</th>
         <td class="govuk-table__cell" colspan="2" id="email">{{email}}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row">Mobile number:</th>
-        <td class="govuk-table__cell" colspan="2" id="telephone-number">{{telephone_number}}</td>
+        <th class="govuk-table__header" scope="row">Mobile number</th>
+        <td class="govuk-table__cell" id="telephone-number">{{telephone_number}}</td>
+        <td class="govuk-table__cell pay-text-align-right">
+          <a class="govuk-link" href="{{routes.user.phoneNumber}}">Change</a>
+        </td>
       </tr>
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row">Sign-in method:</th>
+        <th class="govuk-table__header" scope="row">Sign-in method</th>
         <td class="govuk-table__cell" id="two-factor-auth">
           {% if two_factor_auth === 'APP' %}
             Authenticator app
@@ -32,8 +35,8 @@ My profile - GOV.UK Pay
             Text message
           {% endif %}
         </td>
-        <td class="govuk-table__cell">
-          <a href="{{two_factor_auth_link}}">Change</a>
+        <td class="govuk-table__cell pay-text-align-right">
+          <a class="govuk-link" href="{{two_factor_auth_link}}">Change</a>
         </td>
       </tr>
     </tbody>
