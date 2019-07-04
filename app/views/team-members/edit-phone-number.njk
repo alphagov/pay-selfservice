@@ -1,0 +1,38 @@
+{% extends "../layout.njk" %}
+{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "components/input/macro.njk" import govukInput %}
+{% from "components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  Edit phone number - My profile - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full">
+    {{ govukBackLink({ text: "My profile", href: routes.user.profile }) }}
+</div>
+<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+  <h1 class="govuk-heading-l">Change your phone number</h1>
+  <p class="govuk-body">Your phone number is used to send a text message code when you login to help verify your identity.</p>
+
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{
+      govukInput({
+        name: "phone",
+        type: "tel",
+        value: telephoneNumber,
+        classes: "govuk-!-width-one-half",
+        label: {
+          text: "Phone number"
+        }
+      })
+    }}
+    {{
+      govukButton({
+        text: "Save changes"
+      })
+    }}
+  </form>
+</div>
+{% endblock %}

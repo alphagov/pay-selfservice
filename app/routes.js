@@ -81,6 +81,7 @@ const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/v
 const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setup/vat-number-company-number/check-your-answers')
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
+const userPhoneNumberController = require('./controllers/user/phone-number')
 
 // Assignments
 const {
@@ -483,6 +484,11 @@ module.exports.bind = function (app) {
     getStripeAccount,
     checkVatNumberCompanyNumberNotSubmitted,
     stripeSetupCheckYourAnswersController.post
+  )
+
+  app.get(user.phoneNumber,
+    xraySegmentCls,
+    userPhoneNumberController.get
   )
 
   app.all('*', (req, res) => {
