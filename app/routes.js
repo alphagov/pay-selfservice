@@ -491,6 +491,11 @@ module.exports.bind = function (app) {
     userPhoneNumberController.get
   )
 
+  app.post(user.phoneNumber,
+    xraySegmentCls,
+    userPhoneNumberController.post
+  )
+
   app.all('*', (req, res) => {
     res.status(404)
     res.render('404')

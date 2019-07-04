@@ -760,6 +760,31 @@ module.exports = function (clientOptions = {}) {
     )
   }
 
+  /**
+     *
+     * @param externalId
+     * @param newPhoneNumber
+     * @returns {Promise}
+     */
+  const updatePhoneNumberForUser = (externalId, newPhoneNumber) => {
+    return baseClient.patch(
+      {
+        baseUrl,
+        url: `${userResource}/${externalId}`,
+        json: true,
+        body: {
+          op: 'replace',
+          path: 'telephone_number',
+          value: newPhoneNumber
+        },
+        correlationId: correlationId,
+        description: 'update a phone number for a user',
+        service: SERVICE_NAME,
+        baseClientErrorHandler: 'old'
+      }
+    )
+  }
+
   return {
     // User-related Methods
     getForgottenPassword,
@@ -776,6 +801,7 @@ module.exports = function (clientOptions = {}) {
     deleteUser,
     provisionNewOtpKey,
     configureNewOtpKey,
+    updatePhoneNumberForUser,
 
     // UserServiceRole-related Methods
     updateServiceRole,
