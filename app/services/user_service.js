@@ -222,12 +222,7 @@ module.exports = {
    * @returns {Promise}
    */
   updatePhoneNumber: (externalId, newPhoneNumber) => {
-    return new Promise((resolve, reject) => {
-      getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
-        .then(
-          () => resolve(),
-          error => reject(new Error(`There has been a problem updating the phone number: ${error}`))
-        )
-    })
+    return getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
+      .catch(error => new Error(`There has been a problem updating the phone number: ${error}`))
   }
 }
