@@ -28,6 +28,7 @@ module.exports = {
       configure: '/my-profile/two-factor-auth/configure',
       resend: '/my-profile/two-factor-auth/resend'
     },
+    phoneNumber: '/my-profile/phone-number',
     otpLogIn: '/otp-login',
     otpSendAgain: '/otp-send-again',
     logOut: '/logout',

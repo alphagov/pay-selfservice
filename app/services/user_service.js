@@ -23,7 +23,7 @@ module.exports = {
         reject(new Error('Failed to authenticate'))
       })
     }
-    return getAdminUsersClient({correlationId: correlationId}).authenticateUser(username, submittedPassword)
+    return getAdminUsersClient({ correlationId: correlationId }).authenticateUser(username, submittedPassword)
   },
 
   /**
@@ -39,7 +39,7 @@ module.exports = {
       })
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).authenticateSecondFactor(externalId, code)
+    return getAdminUsersClient({ correlationId: correlationId }).authenticateSecondFactor(externalId, code)
   },
 
   /**
@@ -48,7 +48,7 @@ module.exports = {
    * @returns {Promise<User>}
    */
   findByExternalId: (externalId, correlationId, subSegment) => {
-    return getAdminUsersClient({correlationId: correlationId}).getUserByExternalId(externalId, subSegment)
+    return getAdminUsersClient({ correlationId: correlationId }).getUserByExternalId(externalId, subSegment)
   },
 
   /**
@@ -57,7 +57,7 @@ module.exports = {
    * @returns {Promise<User>}
    */
   findMultipleByExternalIds: function (externalIds, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getUsersByExternalIds(externalIds)
+    return getAdminUsersClient({ correlationId: correlationId }).getUsersByExternalIds(externalIds)
   },
 
   /**
@@ -86,7 +86,7 @@ module.exports = {
    * @returns {Promise}
    */
   sendPasswordResetToken: function (username, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).createForgottenPassword(username)
+    return getAdminUsersClient({ correlationId: correlationId }).createForgottenPassword(username)
   },
 
   /**
@@ -103,7 +103,7 @@ module.exports = {
    * @returns {Promise}
    */
   logOut: function (user, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).incrementSessionVersionForUser(user.externalId)
+    return getAdminUsersClient({ correlationId: correlationId }).incrementSessionVersionForUser(user.externalId)
   },
 
   /**
@@ -112,7 +112,7 @@ module.exports = {
    * @returns {Promise}
    */
   getServiceUsers: function (externalServiceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getServiceUsers(externalServiceId)
+    return getAdminUsersClient({ correlationId: correlationId }).getServiceUsers(externalServiceId)
   },
 
   /**
@@ -144,7 +144,7 @@ module.exports = {
    * @returns {Promise.<User>}
    */
   updateServiceRole: function (externalId, roleName, externalServiceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).updateServiceRole(externalId, externalServiceId, roleName)
+    return getAdminUsersClient({ correlationId: correlationId }).updateServiceRole(externalId, externalServiceId, roleName)
   },
 
   /**
@@ -156,7 +156,7 @@ module.exports = {
    * @returns {Promise.<User>}
    */
   assignServiceRole: function (externalId, externalServiceId, roleName, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).assignServiceRole(externalId, externalServiceId, roleName)
+    return getAdminUsersClient({ correlationId: correlationId }).assignServiceRole(externalId, externalServiceId, roleName)
   },
 
   /**
@@ -167,7 +167,7 @@ module.exports = {
    * @param correlationId
    */
   inviteUser: function (invitee, senderId, externalServiceId, roleName, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).inviteUser(invitee, senderId, externalServiceId, roleName)
+    return getAdminUsersClient({ correlationId: correlationId }).inviteUser(invitee, senderId, externalServiceId, roleName)
   },
 
   /**
@@ -175,7 +175,7 @@ module.exports = {
    * @param correlationId
    */
   getInvitedUsersList: function (externalServiceId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getInvitedUsersList(externalServiceId)
+    return getAdminUsersClient({ correlationId: correlationId }).getInvitedUsersList(externalServiceId)
   },
 
   /**
@@ -186,7 +186,7 @@ module.exports = {
    * @param correlationId
    */
   delete: function (externalServiceId, removerExternalId, userExternalId, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).deleteUser(externalServiceId, removerExternalId, userExternalId)
+    return getAdminUsersClient({ correlationId: correlationId }).deleteUser(externalServiceId, removerExternalId, userExternalId)
   },
 
   /**
@@ -196,10 +196,10 @@ module.exports = {
    */
   provisionNewOtpKey: function (externalId, correlationId) {
     if (!externalId) {
-      return Promise.reject('No externalId specified')
+      return Promise.reject(new Error('No externalId specified'))
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).provisionNewOtpKey(externalId)
+    return getAdminUsersClient({ correlationId: correlationId }).provisionNewOtpKey(externalId)
   },
 
   /**
@@ -211,10 +211,18 @@ module.exports = {
    */
   configureNewOtpKey: function (externalId, code, secondFactor, correlationId) {
     if (!externalId) {
-      Promise.reject('No externalId specified')
+      Promise.reject(new Error('No externalId specified'))
     }
 
-    return getAdminUsersClient({correlationId: correlationId}).configureNewOtpKey(externalId, code, secondFactor)
-  }
+    return getAdminUsersClient({ correlationId: correlationId }).configureNewOtpKey(externalId, code, secondFactor)
+  },
 
+  /**
+   * @param newPhoneNumber
+   * @returns {Promise}
+   */
+  updatePhoneNumber: (externalId, newPhoneNumber) => {
+    return getAdminUsersClient().updatePhoneNumberForUser(externalId, newPhoneNumber)
+      .catch(error => new Error(`There has been a problem updating the phone number: ${error}`))
+  }
 }
