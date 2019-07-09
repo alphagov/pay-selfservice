@@ -9,14 +9,19 @@ const pactBase = require(path.join(__dirname, '/pact_base'))
 const pactRegister = pactBase()
 
 const buildChargeEventWithDefaults = (opts = {}) => {
-  return {
+  const chargeEvent = {
     type: opts.type || 'PAYMENT',
-    submitted_by: opts.submitted_by || null,
     state: buildChargeEventStateWithDefaults(opts.state),
     amount: opts.amount || 100,
-    updated: opts.updated || '018-05-01T13:27:00.063Z',
-    refund_reference: opts.refund_reference || null
+    updated: opts.updated || '018-05-01T13:27:00.063Z'
   }
+  if (opts.refund_reference) {
+    chargeEvent.refunds_reference = opts.refund_reference
+  }
+  if (opts.submitted_by) {
+    chargeEvent.submitted_by = opts.submitted_by
+  }
+  return chargeEvent
 }
 
 const buildChargeEventStateWithDefaults = (opts = {}) => {
