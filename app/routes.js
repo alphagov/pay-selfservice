@@ -27,8 +27,6 @@ const correlationIdMiddleware = require('./middleware/correlation_id')
 const getRequestContext = require('./middleware/get_request_context').middleware
 const restrictToSandbox = require('./middleware/restrict_to_sandbox')
 const xraySegmentCls = require('./middleware/x_ray')
-const goCardlessRedirect = require('./middleware/partnerapp/handle_redirect_to_gocardless_connect')
-const goCardlessOAuthGet = require('./middleware/partnerapp/handle_gocardless_connect_get')
 const cookieMessage = require('./middleware/cookie_message')
 const restrictToLiveStripeAccount = require('./middleware/stripe-setup/restrict-to-live-stripe-account')
 const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
@@ -82,6 +80,8 @@ const stripeSetupCheckYourAnswersController = require('./controllers/stripe-setu
 const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
+const goCardlessRedirect = require('./controllers/partnerapp/handle_redirect_to_gocardless_connect')
+const goCardlessOAuthGet = require('./controllers/partnerapp/handle_gocardless_connect_get')
 
 // Assignments
 const {

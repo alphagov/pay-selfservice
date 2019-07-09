@@ -1,8 +1,9 @@
 'use strict'
 
 // Custom dependencies
-const response = require('../../utils/response').response
+const { response, renderErrorView } = require('../../utils/response')
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
+const { GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT } = require('../../models/error-identifier')
 
 const logger = require('winston')
 
@@ -13,14 +14,12 @@ exports.index = (req, res) => {
       processPayload(req, res, getPayload)
     }
   } else if (req.query.error) {
-    logger.info('An error occurred while linking GoCardless account through OAuth', {
+    handleBadRequest(req, res, 'An error occurred while linking GoCardless account through OAuth', {
       error: req.query.error,
       errorMessage: req.query.error_description
     })
-    res.status(200)
-    res.end()
   } else {
-    handleBadRequest(res, 'Received a BadRequest at GoCardless OAuth endpoint', { query: req.query })
+    handleBadRequest(req, res, 'Received a BadRequest at GoCardless OAuth endpoint', { query: req.query })
   }
 }
 
@@ -28,7 +27,7 @@ function validateGetRequest (req, res) {
   const stateToken = req.query.state
   const gocardlessCode = req.query.code
   if (!stateToken || !gocardlessCode) {
-    handleBadRequest(res, 'Bad request to /oauth/complete')
+    handleBadRequest(req, res, 'Bad request to /oauth/complete')
   } else {
     return {
       code: gocardlessCode,
@@ -42,11 +41,17 @@ function processPayload (req, res, getPayload) {
     .then(result => {
       response(req, res, 'oauth/gocardless_complete')
     })
-    .catch(err => handleBadRequest(res, 'Failed to get the token from Direct Debit Connector', err))
+    .catch(err => {
+      console.log(err)
+      if (err.errorIdentifier === GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT) {
+        renderErrorView(req, res, 'This Go Cardless account is already connected. Please try again with a different account.')
+      } else {
+        handleBadRequest(req, res, 'Failed to get the token from Direct Debit Connector', err)
+      }
+    })
 }
 
-function handleBadRequest (res, msg, err) {
+function handleBadRequest (req, res, msg, err) {
   logger.error(`${msg} ${JSON.stringify(err)}`)
-  res.status(400)
-  res.end()
+  renderErrorView(req, res, false, 400)
 }

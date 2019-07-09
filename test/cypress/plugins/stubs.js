@@ -12,6 +12,7 @@ const serviceFixtures = require('../../fixtures/service_fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
 const stripeAccountSetupFixtures = require('../../fixtures/stripe_account_setup_fixtures')
 const productFixtures = require('../../fixtures/product_fixtures')
+const goCardlessConnectFixtures = require('../../fixtures/go_cardless_connect_fixtures')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -909,6 +910,30 @@ module.exports = {
         responses: [{
           is: {
             statusCode: 500
+          }
+        }]
+      }
+    ]
+  },
+  exchangeGoCardlessAccessCodeAccountAlreadyConnected: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: '/v1/api/gocardless/partnerapp/tokens',
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 400,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: goCardlessConnectFixtures.exchangeAccessTokenAccountAlreadyConnectedResponse()
           }
         }]
       }
