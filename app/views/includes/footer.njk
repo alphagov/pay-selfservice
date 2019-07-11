@@ -1,7 +1,9 @@
 <footer class="govuk-footer" role="contentinfo">
   <div class="govuk-width-container">
-    {% if not hideFeedbackBanner %}
-      {% include "includes/feedback-banner.njk" %}
+    {% if loggedIn %}
+      {% if not hideFeedbackBanner %}
+        {% include "includes/feedback-banner.njk" %}
+      {% endif %}
     {% endif %}
 
     {% include "includes/footer-categories.njk" %}
