@@ -1,5 +1,4 @@
 {% extends "../layout.njk" %}
-{% from "components/back-link/macro.njk" import govukBackLink %}
 {% from "components/radios/macro.njk" import govukRadios %}
 {% from "components/button/macro.njk" import govukButton %}
 {% from "components/warning-text/macro.njk" import govukWarningText %}
@@ -13,14 +12,6 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
-  {{
-    govukBackLink({
-      text: 'Back to settings',
-      href: routes.settings.index
-    })
-  }}
-</div>
 <div class="govuk-grid-column-two-thirds">
   {% if permissions.email_notification_toggle_update %}
     {% set isReadyOnly = false %}
@@ -36,7 +27,7 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <div class="govuk-form-group">
       <fieldset class="govuk-fieldset" aria-describedby="email-confirmation-enabled-hint">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-top-6">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 class="govuk-fieldset__heading">
           Do you want to send refund emails?
           </h1>

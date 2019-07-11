@@ -11,7 +11,7 @@ Create an API key - {{currentService.name}} {{currentGatewayAccount.full_type}} 
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+<div class="govuk-grid-column-two-thirds">
   {% if not token %}
   <h1 class="govuk-heading-l page-title">Create an API key</h1>
     <form class="form" method="post" action="{{routes.apiKeys.create}}">

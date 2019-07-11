@@ -2,7 +2,6 @@
 {% from "components/button/macro.njk" import govukButton %}
 {% from "components/radios/macro.njk" import govukRadios %}
 {% from "components/button/macro.njk" import govukButton %}
-{% from "components/back-link/macro.njk" import govukBackLink %}
 
 {% block pageTitle %}
    Apple Pay - GOV.UK Pay
@@ -14,13 +13,6 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
-    {{
-      govukBackLink({
-        text: 'Back to settings',
-        href: routes.settings.index
-      })
-    }}
-
     <h1 class="govuk-heading-l">
       Apple Pay
     </h1>

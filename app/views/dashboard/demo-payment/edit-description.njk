@@ -7,10 +7,17 @@
   Edit payment description for demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "Back to make a demo payment",
+      href: routes.prototyping.demoPayment.index
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-  <div class="govuk-grid-column-full">
-    {{ govukBackLink({ text: "Back to make a demo payment", href: routes.prototyping.demoPayment.index }) }}
-  </div>
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Edit payment description</h1>
     <form method="post" action="{{routes.prototyping.demoPayment.index}}" data-validate="true">

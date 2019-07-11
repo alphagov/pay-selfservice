@@ -5,19 +5,21 @@
   Transaction details {{reference}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {% set backLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+  {{
+    govukBackLink({
+      text: 'Transactions list',
+      href: backLink | safe,
+      attributes: {
+        id: 'arrowed'
+      }
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-  <div class="govuk-grid-column-full">
-    {% set backLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
-    {{
-      govukBackLink({
-        text: 'Transactions list',
-        href: backLink | safe,
-        attributes: {
-          id: 'arrowed'
-        }
-      })
-    }}
-  </div>
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Transaction detail</h1>
     {% include "./_details.njk" %}

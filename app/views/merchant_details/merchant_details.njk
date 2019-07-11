@@ -5,12 +5,19 @@
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "My services",
+      href: routes.serviceSwitcher.index
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-<div class="govuk-grid-column-full">
-  {{ govukBackLink({ text: "My services", href: routes.serviceSwitcher.index }) }}
-</div>
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l govuk-!-margin-top-6">Organisation details</h1>
+  <h1 class="govuk-heading-l">Organisation details</h1>
   <p class="govuk-body" id="merchant-details-info">
     {% if has_card_and_dd_gateway_account %}
       Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the payer. This information is displayed in emails and on payment pages.

@@ -15,18 +15,11 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {{
-      govukBackLink({
-        text: 'Back to settings',
-        href: routes.settings.index
-      })
-    }}
-
     {% if not permissions.toggle_billing_address_update %}
       {% include "../includes/settings-read-only.njk" %}
     {% endif %}
 
-    <h1 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">Billing address</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Billing address</h1>
     <p class="govuk-body-l">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
 
     {% if collectBillingAddress %}

@@ -8,9 +8,17 @@
   Test with your users - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "Back to dashboard",
+      href: routes.dashboard.index })
+    }}
+{% endblock %}
+
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {{ govukBackLink({ text: "Back to dashboard", href: routes.dashboard.index }) }}
   <h1 class="govuk-heading-l">Test with your users</h1>
   <p class="govuk-body">Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.</p>
 
