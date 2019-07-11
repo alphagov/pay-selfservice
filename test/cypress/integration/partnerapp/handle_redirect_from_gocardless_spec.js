@@ -34,7 +34,7 @@ describe('Get request to complete Go Cardless linking', () => {
     it('should display an error page', () => {
       cy.visit('/oauth/complete?state=blah&code=blahblah', { failOnStatusCode: false })
       cy.get('h1').should('contain', 'An error occurred:')
-      cy.get('#errorMsg').should('contain', 'This Go Cardless account is already connected. Please try again with a different account.')
+      cy.get('#errorMsg').should('contain', 'This GoCardless account is already connected to a GOV.UK Pay account. You’ll need to use a different account.')
     })
   })
 })
