@@ -226,7 +226,7 @@ describe('3DS settings page', () => {
       cy.get('input[value="on"]').should('be.checked')
       cy.get('input[value="off"]').should('not.be.checked')
       cy.get('.flash-container').should('contain', '3D secure settings have been updated')
-      cy.get('.govuk-back-link').click()
+      cy.get('#navigation-menu-settings').click()
       cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
       cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
     })
