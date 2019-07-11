@@ -19,15 +19,13 @@
   {% include "includes/header.njk" %}
 {% endblock %}
 
-{% if not hideServiceHeader %}
-  {% set mainClasses = "govuk-main-wrapper--with-phase-banner" %}
-{% endif %}
-
-{% block content %}
+{% block beforeContent %}
   {% if not hideServiceHeader %}
     {% include "includes/phase_banner.njk" %}
   {% endif %}
+{% endblock %}
 
+{% block content %}
   <div class="govuk-grid-row">
     {% block side_navigation %}{% endblock %}
       {% include "includes/flash.njk" %}
