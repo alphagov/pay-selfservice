@@ -9,10 +9,17 @@
   Organisation details - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "My services",
+      href: routes.serviceSwitcher.index
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-<div class="govuk-grid-column-full">
-  {{ govukBackLink({ text: "My services", href: routes.serviceSwitcher.index }) }}
-</div>
 <div class="govuk-grid-column-two-thirds">
   {% if errors %}
   <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="error-summary">
@@ -46,7 +53,7 @@
     </div>
   </div>
   {% endif %}
-  <h1 class="govuk-heading-l page-title govuk-!-margin-top-6">Organisation details</h1>
+  <h1 class="govuk-heading-l page-title">Organisation details</h1>
   {% if has_card_and_dd_gateway_account %}
     <p class="govuk-body" id="merchant-details-info">Payment card schemes and Direct Debit require the details of the organisation taking payment to be shown to the
       payer. This information is displayed in emails and on payment pages.</p>

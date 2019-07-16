@@ -8,12 +8,21 @@
 Invite a new team member - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "See all team members",
+      href: teamMemberIndexLink
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {{ govukBackLink({ text: "See all team members", href: teamMemberIndexLink }) }}
     <div>
       <h1 class="govuk-heading-l underline">
-        <span class="govuk-caption-l govuk-!-margin-top-6">Team members</span>
+        <span class="govuk-caption-l">Team members</span>
         Invite a team member</h1>
     </div>
   </div>

@@ -7,11 +7,18 @@
   Edit phone number - My profile - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "My profile",
+      href: routes.user.profile
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-<div class="govuk-grid-column-full">
-    {{ govukBackLink({ text: "My profile", href: routes.user.profile }) }}
-</div>
-<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+<div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Change your phone number</h1>
   <p class="govuk-body">Your phone number is used to send a text message code when you sign in to help verify your identity.</p>
 

@@ -6,8 +6,8 @@
   Team members details — GOV.UK Pay
 {% endblock %}
 
-{% block mainContent %}
-<div class="govuk-grid-column-full">
+{% block beforeContent %}
+  {{ super() }}
   {{
     govukBackLink({
     text: "See all team members",
@@ -15,9 +15,11 @@
     classes: "link-back"
     })
   }}
-</div>
+{% endblock %}
+
+{% block mainContent %}
 <div class="govuk-grid-column-two-thirds admin-list">
-  <span class="govuk-caption-l  govuk-!-margin-top-6">Team members</span>
+  <span class="govuk-caption-l">Team members</span>
   <h1 id="details-for" class="govuk-heading-l ">
     Details for {{username}}
   </h1>

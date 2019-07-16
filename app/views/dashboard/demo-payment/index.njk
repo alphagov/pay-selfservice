@@ -7,10 +7,17 @@
 Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "Back to dashboard",
+      href: routes.dashboard.index
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-  <div class="govuk-grid-column-full">
-    {{ govukBackLink({ text: "Back to dashboard", href: routes.dashboard.index }) }}
-  </div>
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Make a demo payment</h1>
     <p class="govuk-body">Try the payment experience as a user. Then view the completed payment as an administrator on GOV.UK Pay.</p>

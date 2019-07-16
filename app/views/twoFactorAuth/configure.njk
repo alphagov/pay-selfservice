@@ -14,10 +14,17 @@
   {{ title }} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "My profile",
+      href: routes.user.profile
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
-<div class="govuk-grid-column-full">
-    {{ govukBackLink({ text: "My profile", href: routes.user.profile }) }}
-</div>
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l page-title">
     {{ title }}

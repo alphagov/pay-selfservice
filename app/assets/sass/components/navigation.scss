@@ -1,13 +1,9 @@
-.govuk-main-wrapper--with-phase-banner {
-  padding-top: 5px;
-}
-
 .govuk-header__content {
   text-align: right;
 }
 
 .pay-top-navigation {
-  padding: 0;
+  padding: govuk-spacing(1) 0 0;
 }
 
 .service-info--name {

@@ -1,7 +1,6 @@
 {% extends "../layout.njk" %}
 {% from "components/table/macro.njk" import govukTable %}
 {% from "components/button/macro.njk" import govukButton %}
-{% from "components/back-link/macro.njk" import govukBackLink %}
 
 {% macro changeLink(name) %}
     <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16" id="email-notifications-toggle-{{name}}" href="{{routes.emailNotifications[name]}}">{% if permissions.email_notification_toggle_update %}Change{% else %}View{% endif %}</a>
@@ -25,20 +24,13 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+<div class="govuk-grid-column-two-thirds">
   {% if not permissions.email_notification_toggle_update %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
-  {{
-    govukBackLink({
-      text: 'Back to settings',
-      href: routes.settings.index
-    })
-  }}
-
   {% if permissions.email_notification_template_read %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-6">Email templates</h1>
+    <h1 class="govuk-heading-l">Email templates</h1>
 
     <p class="govuk-body-l">
       GOV.UK Pay can send notifications to users{% if emailCollectionMode !== 'MANDATORY' %} who enter an email address{% endif %}.

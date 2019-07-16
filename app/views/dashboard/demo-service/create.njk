@@ -7,9 +7,18 @@
   Create a prototype link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "Back to prototype links",
+      href: routes.prototyping.demoService.links
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  {{ govukBackLink({ text: "Back to prototype links", href: routes.prototyping.demoService.links }) }}
   <h1 class="govuk-heading-l">Create a prototype link</h1>
   <form method="post" action="{{routes.prototyping.demoService.confirm}}" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
