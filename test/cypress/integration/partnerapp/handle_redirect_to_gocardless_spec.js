@@ -24,7 +24,7 @@ describe('Connect to Go Cardless', () => {
       cy.get('a[href="/link-account"').click()
       cy.visit('/link-account')
       cy.get('.notification').should('have.class', 'generic-error')
-      cy.get('h2').should('contain', 'There is a problem, please retry again')
+      cy.get('h2').should('contain', 'There is a problem, please try again')
       cy.get('h1').should('contain', 'Connect to GoCardless')
       cy.get('a[href="/link-account"').should('exist')
     })

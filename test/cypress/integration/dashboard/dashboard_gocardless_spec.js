@@ -47,7 +47,7 @@ describe('Dashboard', () => {
       setupDirectDebitGatewayAccount(true)
 
       cy.visit(dashboardUrl)
-      cy.get('h1').should('contain', 'Dashboard')
+      cy.get('h1').should('contain', 'Connected to GoCardless')
       cy.get('a[href="https://manage.gocardless.com/sign-in"').should('exist')
     })
 

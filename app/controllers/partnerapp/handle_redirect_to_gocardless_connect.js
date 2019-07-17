@@ -15,12 +15,12 @@ exports.index = (req, res) => {
       })
       .catch(err => {
         logger.info(`'There was an error getting a state token from Direct Debit Connector' ${JSON.stringify(err)}`)
-        req.flash('genericError', '<h2>There is a problem, please retry again</h2>')
+        req.flash('genericError', '<h2>There is a problem, please try again</h2>')
         res.redirect('/')
       })
   } else {
-    res.status(400)
-    res.end()
+    res.status(404)
+    res.render('404')
   }
 }
 

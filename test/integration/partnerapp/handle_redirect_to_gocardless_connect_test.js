@@ -55,7 +55,7 @@ describe('GET /link/account - GoCardless Connect partner app', function () {
   it('does not allow access if authenticated and NOT DIRECT_DEBIT account', done => {
     request(app)
       .get(paths.partnerApp.linkAccount)
-      .expect(400)
+      .expect(404)
       .end(done)
   })
 })

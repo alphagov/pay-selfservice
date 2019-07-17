@@ -18,7 +18,7 @@ describe('Get request to complete Go Cardless linking', () => {
 
     it('should show success message', () => {
       cy.visit('/oauth/complete?state=blah&code=blahblah')
-      cy.get('.govuk-panel--confirmation > h2').should('contain', 'Successfully connected to GoCardless')
+      cy.get('.govuk-panel--confirmation > h1').should('contain', 'You’ve successfully connected to GoCardless')
     })
   })
 
