@@ -1,4 +1,5 @@
 {% extends "../layout.njk" %}
+{% from "components/panel/macro.njk" import govukPanel %}
 
 {% block pageTitle %}
 GoCardless successfully connected - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -6,18 +7,38 @@ GoCardless successfully connected - {{currentService.name}} {{currentGatewayAcco
 
 {% block mainContent %}
 
-  <p class="govuk-body"></p>
-  
-  <div class="govuk-grid-column-two-thirds">
-    <div class="govuk-panel govuk-panel--confirmation">
-      <h2 class="govuk-panel__title">Successfully connected to GoCardless</h2>
-    </div>
-  <div>
+<div class="govuk-grid-column-two-thirds">
+  {{ govukPanel({
+    titleText: "You’ve successfully connected to GoCardless",
+    classes: "govuk-!-margin-bottom-6"
+  }) }}
 
   <p class="govuk-body">
-    You can now take direct debit payments.
+    Before you can take Direct Debit payments, you need to complete your account details.
   </p>
 
-  <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="/">Go to the dashboard</a>.
+  <p class="govuk-body">
+    Once completed, you’ll be ready to accept Direct Debit payments.
+  </p>
+
+  <p class="govuk-body">
+    Go to the GoCardless website to:
+  </p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>provide your account details, for example your organisation’s details and contact names</li>
+    <li>provide your bank details - so we know where to send payment</li>
+    <li>verify who you are - provide personal details to help confirm your identity</li>
+  </ul>
+
+  <p class="govuk-body">
+    API integration is handled by GOV.UK Pay, so don’t ‘Create an access token’ or use the ‘Developers’ section on the GoCardless website.
+  </p>
+
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="/">Go to the dashboard</a>.
+  </p>
+
+</div>
 
 {% endblock %}
