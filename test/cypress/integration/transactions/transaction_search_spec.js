@@ -133,7 +133,7 @@ describe('Transactions', () => {
               reference: 'ref123',
               from_date: '2018-05-03T00:00:00.000Z',
               to_date: '2018-05-04T00:00:01.000Z',
-              payment_states: 'created,started,submitted,success'
+              payment_states: 'created,started,submitted,capturable,success'
             },
             transactions: filteredByMultipleFieldsTransactions
           }

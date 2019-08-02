@@ -324,7 +324,7 @@ describe('The /transactions endpoint', function () {
     }
 
     connectorMockResponds(200, connectorData, {
-      payment_states: 'created,started,submitted,timedout',
+      payment_states: 'created,started,submitted,capturable,timedout',
       refund_states: 'submitted'
     })
     request(app)
@@ -344,7 +344,7 @@ describe('The /transactions endpoint', function () {
           expect(['In progress', 'Timed out', 'Refund submitted']).to.include(state.text)
         })
 
-        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=timedout&refund_states=submitted')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=capturable&payment_states=timedout&refund_states=submitted')
       })
       .end(done)
   })
@@ -482,7 +482,6 @@ describe('The /transactions endpoint', function () {
   })
 })
 
-
 describe('The /transactions endpoint filtering', () => {
   afterEach(function () {
     nock.cleanAll()
@@ -538,7 +537,7 @@ describe('The /transactions endpoint filtering', () => {
       'results': []
     }
 
-    connectorMockResponds(200, connectorData, { payment_states: 'created,started,submitted' })
+    connectorMockResponds(200, connectorData, { payment_states: 'created,started,submitted,capturable' })
 
     request(app)
       .get(paths.transactions.index)
@@ -560,7 +559,7 @@ describe('The /transactions endpoint filtering', () => {
           'Refund error',
           'Refund success'
         ])
-        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted')
+        res.body.downloadTransactionLink.should.eql('/transactions/download?payment_states=created&payment_states=started&payment_states=submitted&payment_states=capturable')
       })
       .end(done)
   })
