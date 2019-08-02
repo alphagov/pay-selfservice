@@ -14,7 +14,9 @@
   ga('set', 'displayFeaturesTask', null);
   ga('set', 'transport', 'beacon');
 
-  ga('send', 'pageview');
+  var filtered_page_path = document.location.pathname + document.location.search.replace(/&email=[\w%.-]*/, '');
+  ga('set', 'page', filtered_page_path);
+  
 </script>
 <!-- End Google Analytics -->
 {% endif %}
