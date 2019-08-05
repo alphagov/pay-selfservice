@@ -15,6 +15,10 @@ const PAYMENT_STATE_DESCRIPTIONS = {
     displayName: 'In progress',
     eventDisplayName: 'Submitted'
   },
+  'capturable': {
+    displayName: 'In progress',
+    eventDisplayName: 'Capturable'
+  },
   'success': {
     displayName: 'Success'
   },
@@ -86,7 +90,7 @@ function uniqueDisplayStates (stateDescriptions) {
 
 function displayNameForConnectorState (connectorState, type) {
   if (connectorState.status === 'failed') {
-    return {displayName: ERROR_CODE_TO_DISPLAY_STATE[connectorState.code]}
+    return { displayName: ERROR_CODE_TO_DISPLAY_STATE[connectorState.code] }
   }
   return getDisplayNameFromConnectorState(connectorState, type)
 }
@@ -102,7 +106,7 @@ function getDisplayNameFromConnectorState (connectorState, type = 'payment') {
       return REFUND_STATE_DESCRIPTIONS[stateToConvert.toLowerCase()]
     }
   }
-  return {displayName: '', eventDisplayName: ''}
+  return { displayName: '', eventDisplayName: '' }
 }
 
 function toConnectorStates (displayStates) {
