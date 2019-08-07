@@ -57,6 +57,7 @@ See [About Cypress tests in selfservice](./test/cypress/cypress_testing.md) for 
 | HTTPS_PROXY                 |   |      | HTTPS proxy url |
 | NO_PROXY                    |   |      | host:port(s) that need to be by passed by the proxy. Supports comma separated list |
 | NODE_WORKER_COUNT           |   | 1 | The number of worker threads started by node cluster when run in production mode |
+| FEATURE_USE_LEDGER_PAYMENTS |   | false/undefined | Use the Ledger service as the source of payment data in favour of card connector |
 
 
 ### Secure Cookie
