@@ -12,7 +12,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const Ledger = require('../services/clients/ledger_client')
 
 const { FEATURE_USE_LEDGER_PAYMENTS } = process.env
-const useLedgerTransactions = FEATURE_USE_LEDGER_PAYMENTS !== 'true'
+const useLedgerTransactions = FEATURE_USE_LEDGER_PAYMENTS === 'true'
 
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
@@ -63,7 +63,7 @@ module.exports = function (correlationId) {
 
       return transactionView.buildPaymentView(charge, transactionEvents, users)
     } catch (error) {
-      throw 'CLIENT_UNAVAILBLE' // eslint-disable-line no-throw-literal
+      throw getStatusCodeForError(error)
     }
   }
 
@@ -110,11 +110,17 @@ module.exports = function (correlationId) {
     })
   }
 
-  function findWithEventsError (err, response, reject) {
+  function getStatusCodeForError (err, response) {
+    let status = 'CLIENT_UNAVAILABLE'
     const code = (response || {}).statusCode || (err || {}).errorCode
-    if (code === 404) return reject('NOT_FOUND')
-    if (code > 200) return reject('GET_FAILED')
-    reject('CLIENT_UNAVAILABLE')
+    if (code > 200) status = 'GET_FAILED'
+    if (code === 404) status = 'NOT_FOUND'
+    return status
+  }
+
+  function findWithEventsError (err, response, reject) {
+    const statusCode = getStatusCodeForError(err, response)
+    reject(statusCode)
   }
 
   return {

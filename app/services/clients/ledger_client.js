@@ -32,7 +32,7 @@ const events = function events (transactionId, gatewayAccountId, options = {}) {
       return Object.assign({
         type: event.resource_type.toLowerCase(),
         updated: event.timestamp,
-        ...event(event.data.refunded_by) && { submitted_by: event.data.refunded_by }
+        ...(event.data.refunded_by) && { submitted_by: event.data.refunded_by }
       }, event)
     })
     return transactionEvents
