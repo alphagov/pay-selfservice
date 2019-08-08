@@ -38,7 +38,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       })
 
       cy.get('#company-number-form').within(() => {
-        cy.get('#company-number-declaration-1').check()
+        cy.get('#company-number-declaration').check()
         cy.get('#company-number').type('01234567')
         cy.get('button').click()
       })
@@ -87,7 +87,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       })
 
       cy.get('#company-number-form').within(() => {
-        cy.get('#company-number-declaration-1').check()
+        cy.get('#company-number-declaration').check()
         cy.get('#company-number').type('01234567')
         cy.get('button').click()
       })
@@ -119,7 +119,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       })
 
       cy.get('#company-number-form').within(() => {
-        cy.get('#company-number-declaration-1').check()
+        cy.get('#company-number-declaration').check()
         cy.get('#company-number').type('01234567')
         cy.get('button').click()
       })
@@ -131,7 +131,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       cy.visit('/vat-number-company-number/company-number')
 
       cy.get('#company-number-form').should('exist')
-      cy.get('#company-number-declaration-1').should('have.attr', 'checked')
+      cy.get('#company-number-declaration').should('have.attr', 'checked')
       cy.get('#company-number').should('be.visible')
       cy.get('#company-number').should('have.attr', 'value', '01234567')
     })
@@ -239,7 +239,7 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
       })
 
       cy.get('#company-number-form').within(() => {
-        cy.get('#company-number-declaration-1').check()
+        cy.get('#company-number-declaration').check()
         cy.get('#company-number').type('01234567')
         cy.get('button').click()
       })

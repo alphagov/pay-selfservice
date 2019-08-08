@@ -46,6 +46,6 @@ describe('The toggle Billing Address page', function () {
 
     const body = renderTemplate('billing-address/index', templateData)
 
-    body.should.containSelector('#billing-address-toggle-1').withAttribute('checked')
+    body.should.containSelector('#billing-address-toggle').withAttribute('checked')
   })
 })
