@@ -1,4 +1,3 @@
-# alpine:3.8
 FROM alpine@sha256:ea47a59a33f41270c02c8c7764e581787cf5b734ab10d27e876e62369a864459
 
 ### Needed to run appmetrics and pact-mock-service
@@ -9,7 +8,7 @@ RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/
 
 RUN ["apk", "--no-cache", "upgrade"]
 
-RUN ["apk", "add", "--no-cache", "nodejs", "npm"]
+RUN ["apk", "add", "--no-cache", "nodejs", "npm", "tini"]
 
 ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json
@@ -23,4 +22,6 @@ ADD . /app
 ENV LD_LIBRARY_PATH /app/node_modules/appmetrics
 RUN ["ln", "-s", "/tmp/node_modules", "/app/node_modules"]
 
-CMD npm start
+ENTRYPOINT ["tini", "--"]
+
+CMD ["npm", "start"]
