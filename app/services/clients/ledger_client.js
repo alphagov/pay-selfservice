@@ -1,7 +1,11 @@
 'use strict'
 
 const baseClient = require('./base_client/base_client')
-const { legacyConnectorTransactionParity, legacyConnectorEventsParity } = require('./utils/ledger_legacy_connector_parity')
+const {
+  legacyConnectorTransactionParity,
+  legacyConnectorEventsParity,
+  legacyConnectorTransactionsParity
+} = require('./utils/ledger_legacy_connector_parity')
 
 const defaultOptions = {
   baseUrl: process.env.LEDGER_URL,
@@ -33,7 +37,8 @@ const transactions = function transactions (gatewayAccountId, filters = {}, opti
   const configuration = Object.assign({
     url: '/v1/transaction',
     qs: { account_id: gatewayAccountId },
-    description: 'List transactions for a given gateway account ID'
+    description: 'List transactions for a given gateway account ID',
+    transform: legacyConnectorTransactionsParity
   }, defaultOptions, options)
   return baseClient.get(configuration)
 }

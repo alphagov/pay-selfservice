@@ -1,6 +1,7 @@
 const assert = require('assert')
 const {
   legacyConnectorTransactionParity,
+  legacyConnectorTransactionsParity,
   legacyConnectorEventsParity
 } = require('../../../../app/services/clients/utils/ledger_legacy_connector_parity')
 
@@ -59,6 +60,19 @@ describe('Ledger service client legacy parity utilities', () => {
       const { events } = legacyConnectorEventsParity(ledgerTransactionEventsFixture)
       const result = events[0]
       assert.strictEqual(result.type, 'payment')
+    })
+  })
+
+  describe('Transactions parity', () => {
+    it('Applies transaction parity to the result set of a search response', () => {
+      const ledgerTransactionsSearchFixture = {
+        results: [{
+          transaction_id: 'some-charge-id'
+        }]
+      }
+      const transactions = legacyConnectorTransactionsParity(ledgerTransactionsSearchFixture)
+
+      assert.strictEqual(transactions.results[0].charge_id, 'some-charge-id')
     })
   })
 })
