@@ -9,11 +9,15 @@ const userService = require('../services/user_service')
 const transactionView = require('../utils/transaction_view.js')
 const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const Ledger = require('../services/clients/ledger_client')
+
+const { FEATURE_USE_LEDGER_PAYMENTS } = process.env
+const useLedgerTransactions = FEATURE_USE_LEDGER_PAYMENTS === 'true'
 
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
 
-  function findWithEvents (accountId, chargeId) {
+  function connectorFindWithEvents (accountId, chargeId) {
     return new Promise(function (resolve, reject) {
       const params = {
         gatewayAccountId: accountId,
@@ -41,6 +45,26 @@ module.exports = function (correlationId) {
         findWithEventsError(err, response, reject)
       })
     })
+  }
+
+  async function ledgerFindWithEvents (accountId, chargeId) {
+    try {
+      const charge = await Ledger.transaction(chargeId, accountId)
+      const transactionEvents = await Ledger.events(chargeId, accountId)
+
+      const userIds = lodash
+        .chain(transactionEvents.events)
+        .filter(event => event.data && event.data.refunded_by)
+        .map(event => event.data.refunded_by)
+        .uniq()
+        .value()
+
+      const users = await userService.findMultipleByExternalIds(userIds)
+
+      return transactionView.buildPaymentView(charge, transactionEvents, users)
+    } catch (error) {
+      throw getStatusCodeForError(error)
+    }
   }
 
   function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
@@ -86,15 +110,21 @@ module.exports = function (correlationId) {
     })
   }
 
-  function findWithEventsError (err, response, reject) {
+  function getStatusCodeForError (err, response) {
+    let status = 'CLIENT_UNAVAILABLE'
     const code = (response || {}).statusCode || (err || {}).errorCode
-    if (code === 404) return reject('NOT_FOUND')
-    if (code > 200) return reject('GET_FAILED')
-    reject('CLIENT_UNAVAILABLE')
+    if (code > 200) status = 'GET_FAILED'
+    if (code === 404) status = 'NOT_FOUND'
+    return status
+  }
+
+  function findWithEventsError (err, response, reject) {
+    const statusCode = getStatusCodeForError(err, response)
+    reject(statusCode)
   }
 
   return {
-    findWithEvents: findWithEvents,
+    findWithEvents: useLedgerTransactions ? ledgerFindWithEvents : connectorFindWithEvents,
     refund: refund
   }
 }
