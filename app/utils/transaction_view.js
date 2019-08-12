@@ -88,6 +88,7 @@ module.exports = {
 
   buildPaymentView: function (chargeData, eventsData, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
+    chargeData.refund_summary = chargeData.refund_summary || {}
 
     if (['fee', 'net_amount'].every(key => key in chargeData)) {
       chargeData.fee = asGBP(chargeData.fee)
@@ -121,7 +122,7 @@ module.exports = {
     chargeData.card_details.first_digits_card_number = formatFirstSixDigitsCardNumber(chargeData.card_details.first_digits_card_number)
     chargeData.refundable = chargeData.refund_summary.status === 'available' || chargeData.refund_summary.status === 'error'
     chargeData.refundable_amount = (chargeData.refund_summary.amount_available / 100).toFixed(2)
-    chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted)
+    chargeData.refunded_amount = asGBP(chargeData.refund_summary.amount_submitted || 0)
     chargeData.refunded = chargeData.refund_summary.amount_submitted !== 0
     chargeData.refundable_amount_display = asGBP(chargeData.refund_summary.amount_available)
 
