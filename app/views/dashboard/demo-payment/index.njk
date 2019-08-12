@@ -34,7 +34,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" id="payment-description">{{ paymentDescription | striptags(true) | escape | nl2br }}</td>
-          <td class="govuk-table__cell govuk-text-align-right">{{ editButton('editDescription') }}</td>
+          <td class="govuk-table__cell pay-text-align-right">{{ editButton('editDescription') }}</td>
         </tr>
       </tbody>
     </table>
@@ -44,7 +44,7 @@ Make a demo payment - {{currentService.name}} {{currentGatewayAccount.full_type}
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <td class="govuk-table__cell govuk-table__cell--number" id="payment-amount">{{ paymentAmount | penceToPoundsWithCurrency }}</td>
-          <td class="govuk-table__cell govuk-text-align-right">{{ editButton('editAmount') }}</td>
+          <td class="govuk-table__cell pay-text-align-right">{{ editButton('editAmount') }}</td>
         </tr>
       </tbody>
     </table>
