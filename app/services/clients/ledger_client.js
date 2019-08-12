@@ -29,7 +29,7 @@ const events = function events (transactionId, gatewayAccountId, options = {}) {
   return baseClient.get(configuration)
 }
 
-const transactions = function transactions (gatewayAccountId, options = {}) {
+const transactions = function transactions (gatewayAccountId, filters = {}, options = {}) {
   const configuration = Object.assign({
     url: '/v1/transaction',
     qs: { account_id: gatewayAccountId },
