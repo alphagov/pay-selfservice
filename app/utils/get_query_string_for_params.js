@@ -1,10 +1,11 @@
 'use strict'
 
 const querystring = require('querystring')
+const _ = require('lodash')
 const dates = require('./dates.js')
 
-function getQueryStringForParams (params = {}) {
-  const queryStrings = {
+function getQueryStringForParams (params = {}, removeEmptyParams = false, flattenCardBrandsParam = false) {
+  let queryStrings = {
     reference: params.reference,
     email: params.email,
     cardholder_name: params.cardholderName,
@@ -21,6 +22,13 @@ function getQueryStringForParams (params = {}) {
   }
   if (params.refund_states) {
     queryStrings.refund_states = params.refund_states instanceof Array ? params.refund_states.join(',') : params.refund_states
+  }
+  if (flattenCardBrandsParam) {
+    queryStrings.card_brands = params.brand instanceof Array ? params.brand.join(',') : params.brand
+  }
+
+  if (removeEmptyParams) {
+    queryStrings = _.pickBy(queryStrings, _.identity)
   }
 
   return querystring.stringify(queryStrings)
