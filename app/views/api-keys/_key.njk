@@ -1,5 +1,5 @@
-{% from "components/input/macro.njk" import govukInput %}
-{% from "components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 <div id="{{token.token_link}}" class="key-list-item">
   {% if token.description %}
@@ -51,9 +51,15 @@
           If revoked it will no longer enable integration with the platform.
         </p>
         <div class="button-group">
-          <button id="revoke-token-{{token.token_link}}" class="govuk-button govuk-button--warning js-revoke-token" type="submit">
-            Yes, revoke this API key
-          </button>
+          {{
+            govukButton({
+              text: "Yes, revoke this API key",
+              classes: "govuk-button--warning js-revoke-token",
+              attributes: {
+                id: "revoke-token" + token.token_link
+              }
+            })
+          }}
           <a class="govuk-link govuk-link--no-visited-state
 govuk-link--no-visited-state target-to-show--cancel" href="#main">Cancel</a>
         </div>

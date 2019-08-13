@@ -57,7 +57,7 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(200)
     })
     it('should have correct checkbox checked', () => {
-      expect($('#billing-address-toggle-1:checked').length).to.equal(1)
+      expect($('#billing-address-toggle:checked').length).to.equal(1)
       expect($('#billing-address-toggle-2:checked').length).to.equal(0)
     })
   })
@@ -79,7 +79,7 @@ describe('Toggle billing address collection controller', () => {
       expect(response.statusCode).to.equal(200)
     })
     it('should have correct checkbox checked', () => {
-      expect($('#billing-address-toggle-1:checked').length).to.equal(0)
+      expect($('#billing-address-toggle:checked').length).to.equal(0)
       expect($('#billing-address-toggle-2:checked').length).to.equal(1)
     })
   })

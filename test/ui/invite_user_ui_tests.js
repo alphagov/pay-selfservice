@@ -13,16 +13,16 @@ describe('Invite a team member view', function () {
     let templateData = {
       teamMemberIndexLink: teamMemberIndexLink,
       teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
-      admin: {id: 2},
-      viewAndRefund: {id: 3},
-      view: {id: 4}
+      admin: { id: 2 },
+      viewAndRefund: { id: 3 },
+      view: { id: 4 }
     }
 
     let body = renderTemplate('team-members/team_member_invite', templateData)
 
     body.should.containSelector('.govuk-back-link').withAttribute('href', teamMemberIndexLink)
     body.should.containSelector('form#invite-member-form').withAttribute('action', teamMemberInviteSubmitLink)
-    body.should.containSelector('#role-input-1')
+    body.should.containSelector('#role-input')
       .withAttribute('type', 'radio')
       .withAttribute('value', '2')
       .withNoAttribute('checked')

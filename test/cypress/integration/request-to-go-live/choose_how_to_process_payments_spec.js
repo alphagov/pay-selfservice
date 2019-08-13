@@ -60,13 +60,13 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('h1').should('contain', 'How will you process payments?')
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
-      cy.get('#choose-how-to-process-payments-mode-1').should('exist')
+      cy.get('#choose-how-to-process-payments-mode').should('exist')
       cy.get('#choose-how-to-process-payments-mode-2').should('exist')
 
       cy.get('#conditional-choose-how-to-process-payments-mode-2').should('exist')
       cy.get('#conditional-choose-how-to-process-payments-mode-2').should('not.be.visible')
 
-      cy.get('#choose-how-to-process-payments-mode-1').click()
+      cy.get('#choose-how-to-process-payments-mode').click()
 
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('contain', 'Continue')
@@ -107,7 +107,7 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('h1').should('contain', 'How will you process payments?')
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
-      cy.get('#choose-how-to-process-payments-mode-1').should('exist')
+      cy.get('#choose-how-to-process-payments-mode').should('exist')
       cy.get('#choose-how-to-process-payments-mode-2').should('exist')
 
       cy.get('#conditional-choose-how-to-process-payments-mode-2').should('exist')
@@ -116,8 +116,8 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('#choose-how-to-process-payments-mode-2').click()
       cy.get('#conditional-choose-how-to-process-payments-mode-2').should('be.visible')
 
-      cy.get('#choose-how-to-process-payments-mode-other-1').should('exist')
-      cy.get('#conditional-choose-how-to-process-payments-mode-2 label[for=choose-how-to-process-payments-mode-other-1]').should('contain', 'Worldpay')
+      cy.get('#choose-how-to-process-payments-mode-other').should('exist')
+      cy.get('#conditional-choose-how-to-process-payments-mode-2 label[for=choose-how-to-process-payments-mode-other]').should('contain', 'Worldpay')
 
       cy.get('#choose-how-to-process-payments-mode-other-2').should('exist')
       cy.get('#conditional-choose-how-to-process-payments-mode-2 label[for=choose-how-to-process-payments-mode-other-2]').should('contain', 'Smartpay')
@@ -196,7 +196,7 @@ describe('Request to go live: choose how to process payments', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
-      cy.get('#choose-how-to-process-payments-mode-1').click()
+      cy.get('#choose-how-to-process-payments-mode').click()
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
 
       cy.get('h1').should('contain', 'An error occurred:')

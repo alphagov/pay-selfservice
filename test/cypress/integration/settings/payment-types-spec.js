@@ -51,7 +51,7 @@ describe('Payment types', () => {
       cy.title().should('eq', `Manage payment types - ${serviceName} - GOV.UK Pay`)
     })
     it('should show accepted debit cards', () => {
-      cy.get('#debit-1').should('be.checked')
+      cy.get('#debit').should('be.checked')
       cy.get('#debit-2').should('be.checked')
     })
     it('should not accepted maestro and should be disabled with hint', () => {
@@ -60,7 +60,7 @@ describe('Payment types', () => {
       cy.get('#debit-3-item-hint').should('be.visible')
     })
     it('should show accepted credit cards and hint about Amex', () => {
-      cy.get('#credit-1').should('be.checked')
+      cy.get('#credit').should('be.checked')
       cy.get('#credit-2').should('be.checked')
       cy.get('#credit-3').should('be.checked')
       cy.get('#credit-3-item-hint').should('be.visible')
@@ -149,9 +149,9 @@ describe('Payment types', () => {
     })
 
     it('should show error if user tries to disable all card types', () => {
-      cy.get('#debit-1').click()
+      cy.get('#debit').click()
       cy.get('#debit-2').click()
-      cy.get('#credit-1').click()
+      cy.get('#credit').click()
       cy.get('#credit-2').click()
       cy.get('#credit-3').click()
       cy.get('#credit-4').click()

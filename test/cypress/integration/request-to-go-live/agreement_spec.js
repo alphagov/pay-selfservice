@@ -117,13 +117,13 @@ describe('Request to go live: agreement', () => {
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-agreement-form').should('exist')
 
-      cy.get('#agreement-1').should('exist')
-      cy.get('#agreement-1').should('not.be.checked')
+      cy.get('#agreement').should('exist')
+      cy.get('#agreement').should('not.be.checked')
 
       cy.get('#request-to-go-live-agreement-form > button').should('exist')
       cy.get('#request-to-go-live-agreement-form > button').should('contain', 'Continue')
 
-      cy.get('#agreement-1').check()
+      cy.get('#agreement').check()
       cy.get('#request-to-go-live-agreement-form > button').click()
 
       cy.location().should((location) => {
@@ -170,13 +170,13 @@ describe('Request to go live: agreement', () => {
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-agreement-form').should('exist')
 
-      cy.get('#agreement-1').should('exist')
-      cy.get('#agreement-1').should('not.be.checked')
+      cy.get('#agreement').should('exist')
+      cy.get('#agreement').should('not.be.checked')
 
       cy.get('#request-to-go-live-agreement-form > button').should('exist')
       cy.get('#request-to-go-live-agreement-form > button').should('contain', 'Continue')
 
-      cy.get('#agreement-1').check()
+      cy.get('#agreement').check()
       cy.get('#request-to-go-live-agreement-form > button').click()
 
       cy.location().should((location) => {
@@ -196,7 +196,7 @@ describe('Request to go live: agreement', () => {
       const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 
-      cy.get('#agreement-1').click()
+      cy.get('#agreement').click()
       cy.get('#request-to-go-live-agreement-form > button').click()
 
       cy.get('h1').should('contain', 'An error occurred:')

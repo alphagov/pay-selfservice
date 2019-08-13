@@ -1,5 +1,5 @@
 {% extends "../layout.njk" %}
-{% from "components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block pageTitle %}
   Transaction details {{reference}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
