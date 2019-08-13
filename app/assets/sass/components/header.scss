@@ -1,9 +1,5 @@
 .govuk-header__container {
   &--test {
-    border-color:  govuk-colour("blue");
-  }
-
-  &--test {
-    border-color:  govuk-colour("yellow");
+    border-color:  govuk-colour("mid-grey");
   }
 }

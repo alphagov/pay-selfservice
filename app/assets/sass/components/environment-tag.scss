@@ -4,12 +4,5 @@
   margin: 0 0 0 govuk-spacing(2);
   position: relative;
   top: -2px;
-
-  &-test {
-    background-color: govuk-colour("yellow");
-  }
-
-  &-live {
-    background-color: govuk-colour("light-grey");
-  }
+  background-color: govuk-colour("light-grey");
 }
