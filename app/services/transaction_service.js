@@ -45,13 +45,22 @@ const searchLedger = async function searchLedger (accountId, filters) {
   }
 }
 
+const searchAllLedger = async function searchAllLedger (accountId, filters) {
+  try {
+    const transactions = await Ledger.allTransactionPages(accountId, filters)
+    return transactions
+  } catch (error) {
+    throw new Error('GET_FAILED')
+  }
+}
+
 /**
  * @param accountId
  * @param filters
  * @param correlationId
  * @returns {*}
  */
-exports.searchAll = (accountId, filters, correlationId) => {
+const searchAllConnector = (accountId, filters, correlationId) => {
   return new Promise(function (resolve, reject) {
     const params = filters
     params.gatewayAccountId = accountId
@@ -75,3 +84,4 @@ function clientUnavailable (error, reject, correlationId) {
 }
 
 exports.search = useLedgerTransactions ? searchLedger : searchConnector
+exports.searchAll = useLedgerTransactions ? searchAllLedger : searchAllConnector

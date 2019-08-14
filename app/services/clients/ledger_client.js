@@ -1,5 +1,6 @@
 'use strict'
 
+const url = require('url')
 const baseClient = require('./base_client/base_client')
 const {
   legacyConnectorTransactionParity,
@@ -34,10 +35,10 @@ const events = function events (transactionId, gatewayAccountId, options = {}) {
   return baseClient.get(configuration)
 }
 
-const transactions = function transactions (gatewayAccountId, filters = {}, options = {}) {
-  const url = `/v1/transaction?account_id=${gatewayAccountId}&${getQueryStringForParams(filters, true, true)}`
+const transactions = function transactions (gatewayAccountId, filters = {}, urlOverride, options = {}) {
+  const path = `/v1/transaction?account_id=${gatewayAccountId}&${getQueryStringForParams(filters, true, true)}`
   const configuration = Object.assign({
-    url,
+    url: urlOverride ? url.parse(urlOverride).path : path,
     description: 'List transactions for a given gateway account ID',
     transform: legacyConnectorTransactionsParity
   }, defaultOptions, options)
@@ -45,8 +46,24 @@ const transactions = function transactions (gatewayAccountId, filters = {}, opti
   return baseClient.get(configuration)
 }
 
+const allTransactionPages = async function allTransactionPages (gatewayAccountId, filters = {}, options = {}) {
+  let results = []
+  const pageOptions = { hasMorePages: true }
+
+  while (pageOptions.hasMorePages) {
+    const nextPage = await transactions(gatewayAccountId, { pageSize: 500, ...filters }, pageOptions.url, options)
+    const nextUrl = nextPage._links && nextPage._links.next_page
+    pageOptions.url = nextUrl && nextUrl.href
+    pageOptions.hasMorePages = nextUrl !== undefined
+
+    results = results.concat(nextPage.results)
+  }
+  return { results }
+}
+
 module.exports = {
   transaction,
   transactions,
+  allTransactionPages,
   events
 }
