@@ -4,8 +4,12 @@
 const logger = require('winston')
 
 // Local Dependencies
-const {ConnectorClient} = require('../services/clients/connector_client.js')
+const { ConnectorClient } = require('../services/clients/connector_client.js')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
+const Ledger = require('../services/clients/ledger_client')
+
+const { FEATURE_USE_LEDGER_PAYMENTS } = process.env
+const useLedgerTransactions = FEATURE_USE_LEDGER_PAYMENTS === 'true'
 
 /**
  * @param accountId
@@ -13,7 +17,7 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
  * @param correlationId
  * @returns {*}
  */
-exports.search = (accountId, filters, correlationId) => {
+const searchConnector = (accountId, filters, correlationId) => {
   return new Promise(function (resolve, reject) {
     const params = filters
     params.gatewayAccountId = accountId
@@ -32,6 +36,15 @@ exports.search = (accountId, filters, correlationId) => {
   })
 }
 
+const searchLedger = async function searchLedger (accountId, filters) {
+  try {
+    const transactions = await Ledger.transactions(accountId, filters)
+    return transactions
+  } catch (error) {
+    throw new Error('GET_FAILED')
+  }
+}
+
 /**
  * @param accountId
  * @param filters
@@ -44,7 +57,7 @@ exports.searchAll = (accountId, filters, correlationId) => {
     params.gatewayAccountId = accountId
     params.correlationId = correlationId
 
-    connectorClient.getAllTransactions(params, results => resolve({results}))
+    connectorClient.getAllTransactions(params, results => resolve({ results }))
       .on('connectorError', (err, connectorResponse) => {
         if (connectorResponse) return reject(new Error('GET_FAILED'))
         clientUnavailable(err, reject, correlationId)
@@ -60,3 +73,5 @@ function clientUnavailable (error, reject, correlationId) {
   })
   reject(new Error('CLIENT_UNAVAILABLE'), error)
 }
+
+exports.search = useLedgerTransactions ? searchLedger : searchConnector

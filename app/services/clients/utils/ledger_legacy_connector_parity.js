@@ -17,4 +17,11 @@ const legacyConnectorTransactionParity = (transaction) => {
   return transaction
 }
 
-module.exports = { legacyConnectorEventsParity, legacyConnectorTransactionParity }
+const legacyConnectorTransactionsParity = (searchTransactionsResult) => {
+  const { results } = searchTransactionsResult
+  const transactions = results.map(legacyConnectorTransactionParity)
+  searchTransactionsResult.results = transactions
+  return searchTransactionsResult
+}
+
+module.exports = { legacyConnectorEventsParity, legacyConnectorTransactionParity, legacyConnectorTransactionsParity }
