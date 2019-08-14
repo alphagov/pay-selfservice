@@ -34,7 +34,7 @@
         <span id="email-confirmation-enabled-hint" class="govuk-hint">
           Users will receive an email confirming their payment from GOV.UK Pay
         </span>
-        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+        <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="email-confirmation-yes-input" name="email-confirmation-enabled" type="radio" value="true" {{'checked' if confirmationEnabled === true else ''}} {{'disabled' if isReadyOnly === true else ''}} data-aria-controls="conditional-email-confirmation-yes-input">
             <label class="govuk-label govuk-radios__label" for="email-confirmation-yes-input">
