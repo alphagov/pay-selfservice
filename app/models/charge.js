@@ -2,9 +2,9 @@
 
 // NPM dependencies
 const { createLogger, format } = require('winston')
-const { combine, timestamp, json } = format
+const { timestamp, json } = format
 const logger = createLogger({
-  format: combine(
+  format: format.combine(
     timestamp(),
     json()
   )
