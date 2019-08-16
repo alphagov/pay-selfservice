@@ -2,10 +2,11 @@
 
 // NPM dependencies
 const { createLogger, format } = require('winston')
+const { combine, timestamp, json } = format
 const logger = createLogger({
-  format: format.combine(
-    format.timestamp(),
-    format.json()
+  format: combine(
+    timestamp(),
+    json()
   )
 })
 const { AMOUNT } = require('@govuk-pay/pay-js-commons').loggingKeys
