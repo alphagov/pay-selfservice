@@ -1,13 +1,16 @@
 'use strict'
 
 // NPM Dependencies
-const { createLogger, format } = require('winston')
+const { createLogger, format, transports } = require('winston')
 const { timestamp, json } = format
 const logger = createLogger({
   format: format.combine(
     timestamp(),
     json()
-  )
+  ),
+  transports: [
+    new transports.Console()
+  ]
 })
 const json2csv = require('json2csv')
 const lodash = require('lodash')

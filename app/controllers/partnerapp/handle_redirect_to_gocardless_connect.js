@@ -4,13 +4,16 @@ const gocardlessClient = require('../../services/clients/gocardless_connect_clie
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
 const REDIRECT_URI = process.env.SELFSERVICE_URL + '/oauth/complete'
 
-const { createLogger, format } = require('winston')
+const { createLogger, format, transports } = require('winston')
 const { timestamp, json } = format
 const logger = createLogger({
   format: format.combine(
     timestamp(),
     json()
-  )
+  ),
+  transports: [
+    new transports.Console()
+  ]
 })
 
 exports.index = (req, res) => {

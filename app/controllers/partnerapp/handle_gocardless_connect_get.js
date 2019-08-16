@@ -5,13 +5,16 @@ const { response, renderErrorView } = require('../../utils/response')
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
 const { GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT } = require('../../models/error-identifier')
 
-const { createLogger, format } = require('winston')
+const { createLogger, format, transports } = require('winston')
 const { timestamp, json } = format
 const logger = createLogger({
   format: format.combine(
     timestamp(),
     json()
-  )
+  ),
+  transports: [
+    new transports.Console()
+  ]
 })
 
 exports.index = (req, res) => {

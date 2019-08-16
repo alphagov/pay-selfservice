@@ -4,13 +4,16 @@
 const lodash = require('lodash')
 const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
-const { createLogger, format } = require('winston')
+const { createLogger, format, transports } = require('winston')
 const { timestamp, json } = format
 const logger = createLogger({
   format: format.combine(
     timestamp(),
     json()
-  )
+  ),
+  transports: [
+    new transports.Console()
+  ]
 })
 
 // Local dependencies

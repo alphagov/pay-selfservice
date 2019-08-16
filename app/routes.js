@@ -3,13 +3,16 @@
 // NPM Dependencies
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
-const { createLogger, format } = require('winston')
+const { createLogger, format, transports } = require('winston')
 const { timestamp, json } = format
 const logger = createLogger({
   format: format.combine(
     timestamp(),
     json()
-  )
+  ),
+  transports: [
+    new transports.Console()
+  ]
 })
 const { getNamespace, createNamespace } = require('continuation-local-storage')
 
