@@ -1,8 +1,15 @@
 'use strict'
 
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 
-const {response} = require('../../utils/response.js')
+const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const authService = require('../../services/auth_service.js')

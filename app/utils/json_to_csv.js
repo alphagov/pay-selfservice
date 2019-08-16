@@ -1,7 +1,14 @@
 'use strict'
 
 // NPM Dependencies
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 const json2csv = require('json2csv')
 const lodash = require('lodash')
 const changeCase = require('change-case')

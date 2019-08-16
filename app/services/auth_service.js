@@ -1,7 +1,14 @@
 'use strict'
 
 // NPM Dependencies
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
@@ -97,13 +104,13 @@ function redirectLoggedInUser (req, res, next) {
 function localStrategyAuth (req, username, password, done) {
   return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
-    .catch(() => done(null, false, {message: 'Invalid email or password'}))
+    .catch(() => done(null, false, { message: 'Invalid email or password' }))
 }
 
 function localStrategy2Fa (req, done) {
   return userService.authenticateSecondFactor(req.user.externalId, req.body.code)
     .then((user) => done(null, user))
-    .catch(() => done(null, false, {message: 'Invalid security code'}))
+    .catch(() => done(null, false, { message: 'Invalid security code' }))
 }
 
 function localDirectStrategy (req, done) {
@@ -165,7 +172,7 @@ function hasValidSession (req) {
 function initialise (app) {
   app.use(passport.initialize())
   app.use(passport.session())
-  passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth))
+  passport.use('local', new LocalStrategy({ usernameField: 'username', passReqToCallback: true }, localStrategyAuth))
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
   passport.use('localDirect', new CustomStrategy(localDirectStrategy))
   passport.serializeUser(serializeUser)

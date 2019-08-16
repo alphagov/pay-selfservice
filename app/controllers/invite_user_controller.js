@@ -1,5 +1,12 @@
 const lodash = require('lodash')
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 const response = require('../utils/response.js')
 const userService = require('../services/user_service.js')
 const paths = require('../paths.js')
@@ -45,9 +52,9 @@ module.exports = {
     let data = {
       teamMemberIndexLink: teamMemberIndexLink,
       teamMemberInviteSubmitLink: teamMemberInviteSubmitLink,
-      admin: {id: roles['admin'].extId},
-      viewAndRefund: {id: roles['view-and-refund'].extId},
-      view: {id: roles['view-only'].extId},
+      admin: { id: roles['admin'].extId },
+      viewAndRefund: { id: roles['view-and-refund'].extId },
+      view: { id: roles['view-only'].extId },
       invitee
     }
 
@@ -70,7 +77,7 @@ module.exports = {
 
     if (!emailValidator(invitee)) {
       req.flash('genericError', `Invalid email address`)
-      lodash.set(req, 'session.pageData', {invitee})
+      lodash.set(req, 'session.pageData', { invitee })
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
     } else if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)

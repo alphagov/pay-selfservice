@@ -1,11 +1,18 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 const _ = require('lodash')
 
 // Custom dependencies
-const {setSessionVersion} = require('../../services/auth_service')
+const { setSessionVersion } = require('../../services/auth_service')
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 
 module.exports = (req, res) => {

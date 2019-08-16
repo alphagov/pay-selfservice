@@ -1,7 +1,14 @@
 'use strict'
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 
-const {CORRELATION_HEADER} = require('../../config')
+const { CORRELATION_HEADER } = require('../../config')
 
 module.exports = (function () {
   'use strict'

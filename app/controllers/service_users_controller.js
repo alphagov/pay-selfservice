@@ -1,5 +1,12 @@
 const _ = require('lodash')
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 const response = require('../utils/response.js')
 const userService = require('../services/user_service.js')
 const paths = require('../paths.js')

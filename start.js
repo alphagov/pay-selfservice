@@ -3,7 +3,14 @@
 
   var path = require('path')
   var fs = require('fs')
-  var logger = require('winston')
+  const { createLogger, format } = require('winston')
+  const { timestamp, json } = format
+  const logger = createLogger({
+    format: format.combine(
+      timestamp(),
+      json()
+    )
+  })
   var throng = require('throng')
   var server = require('./server')
   var environment = require('./app/services/environment')

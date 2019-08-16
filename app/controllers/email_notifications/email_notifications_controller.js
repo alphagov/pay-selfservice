@@ -2,7 +2,14 @@
 
 // NPM dependencies
 const _ = require('lodash')
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 
 // Local dependencies
 const response = require('../../utils/response.js').response

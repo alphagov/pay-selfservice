@@ -2,7 +2,14 @@
 
 // NPM Dependencies
 const csrf = require('csrf')
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 
 // Local Dependencies
 const errorView = require('../utils/response.js').renderErrorView

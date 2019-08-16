@@ -1,7 +1,14 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 
 // Local dependencies
 const paths = require('../../paths')

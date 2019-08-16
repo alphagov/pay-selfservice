@@ -1,7 +1,14 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const { timestamp, json } = format
+const logger = createLogger({
+  format: format.combine(
+    timestamp(),
+    json()
+  )
+})
 
 // Local dependencies
 const getAdminUsersClient = require('./clients/adminusers_client')
@@ -9,7 +16,7 @@ const ConnectorClient = require('../services/clients/connector_client').Connecto
 const connectorClient = () => new ConnectorClient(process.env.CONNECTOR_URL)
 
 const completeServiceInvite = (inviteCode, gatewayAccountIds, correlationId) => {
-  return getAdminUsersClient({correlationId}).completeInvite(inviteCode, gatewayAccountIds)
+  return getAdminUsersClient({ correlationId }).completeInvite(inviteCode, gatewayAccountIds)
 }
 
 const createGatewayAccount = function (correlationId) {
@@ -27,7 +34,7 @@ module.exports = {
    * @param correlationId
    */
   submitRegistration: function (email, phoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId}).submitServiceRegistration(email, phoneNumber, password)
+    return getAdminUsersClient({ correlationId }).submitServiceRegistration(email, phoneNumber, password)
   },
 
   /**
@@ -38,7 +45,7 @@ module.exports = {
    * @param correlationId
    */
   submitServiceInviteOtpCode: (code, otpCode, correlationId) => {
-    return getAdminUsersClient({correlationId}).verifyOtpForServiceInvite(code, otpCode)
+    return getAdminUsersClient({ correlationId }).verifyOtpForServiceInvite(code, otpCode)
   },
 
   /**
@@ -70,7 +77,7 @@ module.exports = {
    * @returns {*|Constructor}
    */
   generateServiceInviteOtpCode: function (inviteCode, correlationId) {
-    return getAdminUsersClient({correlationId}).generateInviteOtpCode(inviteCode)
+    return getAdminUsersClient({ correlationId }).generateInviteOtpCode(inviteCode)
   },
 
   /**
@@ -81,6 +88,6 @@ module.exports = {
    * @param correlationId
    */
   resendOtpCode: function (code, phoneNumber, correlationId) {
-    return getAdminUsersClient({correlationId}).resendOtpCode(code, phoneNumber)
+    return getAdminUsersClient({ correlationId }).resendOtpCode(code, phoneNumber)
   }
 }
