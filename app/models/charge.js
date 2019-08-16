@@ -1,7 +1,14 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
+const { createLogger, format } = require('winston')
+const logger = createLogger({
+  format: format.combine(
+    format.timestamp(),
+    format.json()
+  )
+})
+const { AMOUNT } = require('@govuk-pay/pay-js-commons').loggingKeys
 const lodash = require('lodash')
 
 // Local dependencies
@@ -75,12 +82,13 @@ module.exports = function (correlationId) {
         user_external_id: userExternalId
       }
 
-      logger.log('info', 'Submitting a refund for a charge', {
-        'chargeId': chargeId,
-        'amount': amount,
-        'refundAmountAvailable': refundAmountAvailable,
-        'userExternalId': userExternalId
-      })
+      const obj = {}
+      obj[AMOUNT] = amount
+      obj['chargeId'] = chargeId
+      obj['refundAmountAvailable'] = refundAmountAvailable
+      obj['userExternalId'] = userExternalId
+
+      logger.log('info', 'Submitting a refund for a charge', obj)
 
       const params = {
         gatewayAccountId: accountId,
