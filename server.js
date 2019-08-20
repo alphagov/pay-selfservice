@@ -132,7 +132,7 @@ function initialiseErrorHandling (app) {
 function listen () {
   const app = initialise()
   app.listen(port)
-  logger.log('Listening on port ' + port)
+  logger.info('Listening on port ' + port)
 }
 
 /**
