@@ -31,7 +31,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'GET',
@@ -64,7 +64,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'GET',
@@ -102,7 +102,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'POST',
@@ -139,7 +139,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'PUT',
@@ -176,7 +176,7 @@ module.exports = {
       let startTime = new Date()
       let context = {
         url: url,
-        defer: {resolve: resolve, reject: reject},
+        defer: { resolve: resolve, reject: reject },
         startTime: startTime,
         correlationId: params.correlationId,
         method: 'DELETE',

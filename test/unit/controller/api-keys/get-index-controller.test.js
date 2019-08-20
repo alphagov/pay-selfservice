@@ -84,7 +84,7 @@ describe('API keys index', () => {
         .reply(200, {
           payment_provider: 'sandbox'
         })
-      mockGetActiveAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, {tokens: [TOKEN_1]})
+      mockGetActiveAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, { tokens: [TOKEN_1] })
 
       supertest(app)
         .get(paths.apiKeys.index)

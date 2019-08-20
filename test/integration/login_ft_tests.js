@@ -6,7 +6,7 @@ const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.js'))
 const assert = require('assert')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 const USER_RESOURCE = '/v1/api/users'
 
@@ -38,7 +38,7 @@ describe('User clicks on Logout', function () {
 
   it('should redirect to login page when session.version is undefined', function (done) {
     const gatewayAccountId = 12314
-    const getMockSession = mockSession.getMockSession({sessionVersion: 2, services: ['1'], gateway_account_ids: [gatewayAccountId]})
+    const getMockSession = mockSession.getMockSession({ sessionVersion: 2, services: ['1'], gateway_account_ids: [gatewayAccountId] })
     delete getMockSession.version
 
     let app = mockSession.createAppWithSession(getApp(), getMockSession)
@@ -55,7 +55,7 @@ describe('User clicks on Logout', function () {
 
   it('should update the session version on successful login of a user', done => {
     const gatewayAccountId = 12314
-    const getMockSession = mockSession.getMockSession({sessionVersion: 2, services: ['1'], gateway_account_ids: [gatewayAccountId]})
+    const getMockSession = mockSession.getMockSession({ sessionVersion: 2, services: ['1'], gateway_account_ids: [gatewayAccountId] })
     delete getMockSession.version
 
     let app = mockSession.createAppWithSession(getApp(), getMockSession)

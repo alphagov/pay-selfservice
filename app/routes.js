@@ -3,23 +3,13 @@
 // NPM Dependencies
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 const { getNamespace, createNamespace } = require('continuation-local-storage')
 
 // Local Dependencies
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate_route')
 const paths = require('./paths.js')
+const logger = require('./utils/logger')
 
 // Middleware
 const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, redirectLoggedInUser } = require('./services/auth_service')

@@ -19,7 +19,7 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 const INVITE_PATH = '/v1/api/invites'
 

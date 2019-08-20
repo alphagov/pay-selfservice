@@ -20,7 +20,7 @@ const formattedPathFor = require('../../app/utils/replace_params_in_path')
 describe('invite user controller', function () {
   const userInSession = session.getUser({})
   const EXTERNAL_SERVICE_ID = userInSession.serviceRoles[0].service.externalId
-  userInSession.serviceRoles[0].role.permissions.push({name: 'users-service:create'})
+  userInSession.serviceRoles[0].role.permissions.push({ name: 'users-service:create' })
   const INVITE_RESOURCE = `/v1/api/invites/user`
 
   describe('invite user index view', function () {
@@ -121,8 +121,8 @@ describe('invite user controller', function () {
       const externalServiceId = 'some-external-service-id'
       let req = _.merge(baseReq, {
         correlationId: 'blah',
-        user: {externalId: 'some-ext-id', serviceIds: ['1']},
-        body: {'invitee-email': invalidEmail, 'role-input': '200'},
+        user: { externalId: 'some-ext-id', serviceIds: ['1'] },
+        body: { 'invitee-email': invalidEmail, 'role-input': '200' },
         service: {
           externalId: externalServiceId
         }

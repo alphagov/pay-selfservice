@@ -14,7 +14,7 @@ const inviteFixtures = require('../../../../fixtures/invite_fixtures')
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
 
 // Global setup

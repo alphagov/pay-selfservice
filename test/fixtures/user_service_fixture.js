@@ -2,7 +2,6 @@
 
 // NPM dependencies
 const path = require('path')
-const _ = require('lodash')
 
 // Custom dependencies
 const userFixtures = require(path.join(__dirname, '/user_fixtures'))

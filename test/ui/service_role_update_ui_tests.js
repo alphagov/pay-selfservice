@@ -5,9 +5,9 @@ describe('The service role update view', function () {
   it('should render service role update view', function () {
     let templateData = {
       email: 'oscar.smith@example.com',
-      admin: {id: 2, checked: ''},
-      viewAndRefund: {id: 3, checked: ''},
-      view: {id: 4, checked: 'checked'},
+      admin: { id: 2, checked: '' },
+      viewAndRefund: { id: 3, checked: '' },
+      view: { id: 4, checked: 'checked' },
       editPermissionsLink: 'some-link'
     }
 

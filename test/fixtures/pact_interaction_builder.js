@@ -60,11 +60,11 @@ class PactInteractionBuilder {
       withRequest: {
         method: this.method,
         path: this.url,
-        headers: {'Accept': 'application/json'}
+        headers: { 'Accept': 'application/json' }
       },
       willRespondWith: {
         status: this.statusCode,
-        headers: {'Content-Type': 'application/json'}
+        headers: { 'Content-Type': 'application/json' }
       }
     }
 

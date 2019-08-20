@@ -11,7 +11,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - session', function () {
   let provider = Pact({

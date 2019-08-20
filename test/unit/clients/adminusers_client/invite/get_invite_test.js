@@ -14,7 +14,7 @@ const expect = chai.expect
 
 const INVITES_PATH = '/v1/api/invites'
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - get a validated invite', function () {
   let provider = Pact({

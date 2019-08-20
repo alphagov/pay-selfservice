@@ -13,7 +13,7 @@ module.exports = {
   validInviteRequest: (opts = {}) => {
     const invitee = 'random@example.com'
     const senderId = '94b3d61ebb624a6aa6598b96b307ec8c'
-    const role = {name: 'admin'}
+    const role = { name: 'admin' }
 
     const data = {
       service_external_id: opts.externalServiceId || '2f1920ea261946bface3c89ddb0a9033',
@@ -61,7 +61,7 @@ module.exports = {
 
   invalidInviteRequest: (opts = {}) => {
     const senderId = 'e6bbf9a1633044d7aa7700b51d6de373'
-    const role = {name: 'admin'}
+    const role = { name: 'admin' }
 
     const data = {
       service_external_id: opts.externalServiceId,

@@ -2,19 +2,9 @@
 
 // NPM Dependencies
 const csrf = require('csrf')
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 
 // Local Dependencies
+const logger = require('../utils/logger')
 const errorView = require('../utils/response.js').renderErrorView
 const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
 

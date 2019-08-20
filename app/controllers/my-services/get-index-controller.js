@@ -4,7 +4,7 @@
 const _ = require('lodash')
 
 // local dependencies
-const {response} = require('../../utils/response')
+const { response } = require('../../utils/response')
 const serviceService = require('../../services/service_service')
 const getHeldPermissions = require('../../utils/get_held_permissions')
 

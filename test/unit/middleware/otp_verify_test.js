@@ -16,8 +16,6 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 describe('otp_verify middleware', function () {
-  let winstonDebugSpy = sinon.spy()
-  let winstonWarnSpy = sinon.spy()
   let renderErrorViewSpy = sinon.spy()
   let submitServiceInviteOtpCodeSpy = sinon.spy()
   let reqFlashSpy = sinon.spy()
@@ -46,10 +44,6 @@ describe('otp_verify middleware', function () {
     }
 
     proxyquireObject = {
-      'winston': {
-        debug: winstonDebugSpy,
-        warn: winstonWarnSpy
-      },
       '../utils/response': {
         renderErrorView: renderErrorViewSpy
       },
@@ -61,8 +55,6 @@ describe('otp_verify middleware', function () {
   })
 
   afterEach(() => {
-    winstonDebugSpy = sinon.spy()
-    winstonWarnSpy = sinon.spy()
     renderErrorViewSpy = sinon.spy()
     submitServiceInviteOtpCodeSpy = sinon.spy()
     reqFlashSpy = sinon.spy()
@@ -82,7 +74,6 @@ describe('otp_verify middleware', function () {
     const next = sinon.spy()
 
     otpVerify.verifyOtpForServiceInvite(req, res, next).should.be.fulfilled.then(result => {
-      expect(winstonDebugSpy.calledWith(`[requestId=${req.correlationId}] invalid user input - otp code`)).to.equal(true)
       expect(reqFlashSpy.calledWith('genericError', 'Invalid verification code')).to.equal(true)
       expect(resRedirectSpy.calledWith(303, paths.selfCreateService.otpVerify)).to.equal(true)
       expect(next.called).to.be.false // eslint-disable-line
@@ -91,15 +82,12 @@ describe('otp_verify middleware', function () {
 
   it('should handle 401 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return Promise.reject({
-        errorCode: 401
-      })
+      return Promise.reject({ errorCode: 401 }) // eslint-disable-line
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()
 
     otpVerify.verifyOtpForServiceInvite(req, res, next).should.be.fulfilled.then(result => {
-      expect(winstonDebugSpy.calledWith(`[requestId=${req.correlationId}] invalid user input - otp code`)).to.equal(true)
       expect(reqFlashSpy.calledWith('genericError', 'Invalid verification code')).to.equal(true)
       expect(resRedirectSpy.calledWith(303, paths.selfCreateService.otpVerify)).to.equal(true)
       expect(next.called).to.be.false // eslint-disable-line
@@ -108,9 +96,7 @@ describe('otp_verify middleware', function () {
 
   it('should handle 404 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return Promise.reject({
-        errorCode: 404
-      })
+      return Promise.reject({ errorCode: 404 }) // eslint-disable-line
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()
@@ -123,9 +109,7 @@ describe('otp_verify middleware', function () {
 
   it('should handle 410 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return Promise.reject({
-        errorCode: 410
-      })
+      return Promise.reject({ errorCode: 410 }) // eslint-disable-line
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()
@@ -138,9 +122,7 @@ describe('otp_verify middleware', function () {
 
   it('should handle 500 server error', function (done) {
     proxyquireObject['../services/service_registration_service'].submitServiceInviteOtpCode = function (code, otpCode, correlationId) {
-      return Promise.reject({
-        errorCode: 500
-      })
+      return Promise.reject({ errorCode: 500 }) // eslint-disable-line
     }
     otpVerify = proxyquire('../../../app/middleware/otp_verify', proxyquireObject)
     const next = sinon.spy()

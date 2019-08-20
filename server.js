@@ -9,23 +9,13 @@ const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')('./public')
 
 // Custom dependencies
+const logger = require('./app/utils/logger')
 const router = require('./app/routes')
 const cookieUtil = require('./app/utils/cookie')
 const noCache = require('./app/utils/no_cache')

@@ -1,8 +1,8 @@
 'use strict'
 
-const {expect} = require('chai')
+const { expect } = require('chai')
 const sinon = require('sinon')
-const {middleware, getRequestContext} = require('../../../app/middleware/get_request_context')
+const { middleware, getRequestContext } = require('../../../app/middleware/get_request_context')
 let res, req, next
 
 describe('get-request-context', () => {

@@ -2,7 +2,7 @@
 
 // NPM Dependencies
 // const request = require('request')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const requestLogger = {}
@@ -26,9 +26,9 @@ describe('wrapper: request scenarios', () => {
       return function (options, callback) {
         setTimeout(() => {
           // Emit a response that our test is checking for
-          self.emit('response', {statusCode: 200})
+          self.emit('response', { statusCode: 200 })
           // And execute the callback
-          callback(null, {statusCode: 200, request: options, body: 'success'}, 'success')
+          callback(null, { statusCode: 200, request: options, body: 'success' }, 'success')
         }, 100)
         return self
       }
@@ -80,9 +80,9 @@ describe('wrapper: request scenarios', () => {
       return function (options, callback) {
         setTimeout(() => {
           // Emit a response that our test is checking for
-          self.emit('response', {statusCode: 404})
+          self.emit('response', { statusCode: 404 })
           // And execute the callback
-          callback(null, {statusCode: 404, request: options, body: 'not found'}, 'not found')
+          callback(null, { statusCode: 404, request: options, body: 'not found' }, 'not found')
         }, 100)
         return self
       }

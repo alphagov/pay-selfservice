@@ -28,7 +28,7 @@ describe('get account', function () {
             gateway_account_ids: ['1', '2', '5']
           },
           role: {
-            permissions: [{name: 'transactions:read'}]
+            permissions: [{ name: 'transactions:read' }]
           }
         }
       ]
@@ -76,7 +76,7 @@ describe('get account', function () {
             gateway_account_ids: ['DIRECT_DEBIT:1owehhserwr', '5']
           },
           role: {
-            permissions: [{name: 'transactions:read'}]
+            permissions: [{ name: 'transactions:read' }]
           }
         }
       ]

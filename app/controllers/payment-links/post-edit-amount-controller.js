@@ -6,7 +6,7 @@ const lodash = require('lodash')
 // Local dependencies
 const paths = require('../../paths')
 const formattedPathFor = require('../../utils/replace_params_in_path')
-const {sanitisePoundsAndPenceInput} = require('../../utils/currency_formatter')
+const { sanitisePoundsAndPenceInput } = require('../../utils/currency_formatter')
 
 module.exports = (req, res) => {
   const paymentAmountType = req.body['amount-type-group']

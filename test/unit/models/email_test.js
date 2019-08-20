@@ -90,7 +90,7 @@ describe('email notification', function () {
         class StubConnectorEmailFunctions extends EventEmitter {
           updateConfirmationEmail () {
             setTimeout(() => {
-              this.emit('connectorError', {thisIs: 'anErrorObject'})
+              this.emit('connectorError', { thisIs: 'anErrorObject' })
             }, 100)
             return this
           }
@@ -117,7 +117,7 @@ describe('email notification', function () {
         class StubConnectorEmailFunctions extends EventEmitter {
           updateConfirmationEmail () {
             setTimeout(() => {
-              this.emit('connectorError', {thisIs: 'anErrorObject'}, {thisIs: 'aConnectorResponse'})
+              this.emit('connectorError', { thisIs: 'anErrorObject' }, { thisIs: 'aConnectorResponse' })
             }, 100)
             return this
           }
@@ -168,7 +168,7 @@ describe('email notification', function () {
           class StubConnectorEmailFunctions extends EventEmitter {
             updateConfirmationEmailEnabled () {
               setTimeout(() => {
-                this.emit('connectorError', {thisIs: 'anErrorObject'})
+                this.emit('connectorError', { thisIs: 'anErrorObject' })
               }, 100)
               return this
             }
@@ -195,7 +195,7 @@ describe('email notification', function () {
           class StubConnectorEmailFunctions extends EventEmitter {
             updateConfirmationEmailEnabled () {
               setTimeout(() => {
-                this.emit('connectorError', {thisIs: 'anErrorObject'}, {thisIs: 'aConnectorResponse'})
+                this.emit('connectorError', { thisIs: 'anErrorObject' }, { thisIs: 'aConnectorResponse' })
               }, 100)
               return this
             }

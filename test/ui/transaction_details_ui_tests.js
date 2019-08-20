@@ -134,7 +134,7 @@ describe('The transaction details view', () => {
       'events': [
         {
           'chargeId': 1,
-          'state:': {'status': 'success', 'finished': true},
+          'state:': { 'status': 'success', 'finished': true },
           'state_friendly': 'Payment succeeded',
           'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
@@ -143,7 +143,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'submitted', 'finished': false},
+          'state:': { 'status': 'submitted', 'finished': false },
           'state_friendly': 'User submitted payment details for payment',
           'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
@@ -152,7 +152,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'started', 'finished': false},
+          'state:': { 'status': 'started', 'finished': false },
           'state_friendly': 'User started payment of AMOUNT',
           'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
@@ -161,7 +161,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'created', 'finished': false},
+          'state:': { 'status': 'created', 'finished': false },
           'state_friendly': 'Service created payment',
           'amount_friendly': '£10.00',
           'updated': '2015-12-24 13:21:05',
@@ -242,7 +242,7 @@ describe('The transaction details view', () => {
           'type': 'REFUND',
           'chargeId': 1,
           'refund_reference': 'refund001',
-          'state:': {'status': 'submitted', 'finished': false},
+          'state:': { 'status': 'submitted', 'finished': false },
           'state_friendly': 'Refund submitted',
           'submitted_by_friendly': 'bob@example.com',
           'updated': '2015-12-24 13:21:05',
@@ -251,7 +251,7 @@ describe('The transaction details view', () => {
         },
         {
           'chargeId': 1,
-          'state:': {'status': 'success', 'finished': true},
+          'state:': { 'status': 'success', 'finished': true },
           'state_friendly': 'Payment succeeded',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -260,7 +260,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'submitted', 'finished': false},
+          'state:': { 'status': 'submitted', 'finished': false },
           'state_friendly': 'User submitted payment details for payment',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -269,7 +269,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'started', 'finished': false},
+          'state:': { 'status': 'started', 'finished': false },
           'state_friendly': 'User started payment of AMOUNT',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -278,7 +278,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'created', 'finished': false},
+          'state:': { 'status': 'created', 'finished': false },
           'state_friendly': 'Service created payment',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -354,7 +354,7 @@ describe('The transaction details view', () => {
       'events': [
         {
           'chargeId': 1,
-          'state:': {'status': 'success', 'finished': true},
+          'state:': { 'status': 'success', 'finished': true },
           'state_friendly': 'Payment succeeded',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -363,7 +363,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'submitted', 'finished': false},
+          'state:': { 'status': 'submitted', 'finished': false },
           'state_friendly': 'User submitted payment details for payment',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -372,7 +372,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'started', 'finished': false},
+          'state:': { 'status': 'started', 'finished': false },
           'state_friendly': 'User started payment of AMOUNT',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -381,7 +381,7 @@ describe('The transaction details view', () => {
 
         {
           'chargeId': 1,
-          'state:': {'status': 'created', 'finished': false},
+          'state:': { 'status': 'created', 'finished': false },
           'state_friendly': 'Service created payment',
           'updated': '2015-12-24 13:21:05',
           'amount_friendly': '£10.00',
@@ -442,7 +442,7 @@ describe('The transaction details view', () => {
       'events': [
         {
           'chargeId': 1,
-          'state:': {'status': 'success', 'finished': true},
+          'state:': { 'status': 'success', 'finished': true },
           'state_friendly': 'Payment succeeded',
           'updated': '2015-12-24 13:21:05',
           'updated_friendly': '24 January 2015 13:21:05'

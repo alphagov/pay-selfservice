@@ -2,7 +2,7 @@
 
 // NPM modules
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 // Local modules
 const resolveService = require('../../../app/middleware/resolve_service')
@@ -28,7 +28,7 @@ describe('resolve service middleware', () => {
   })
 
   it('from externalServiceId in path param then remove it', () => {
-    const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
+    const req = { user: user, params: { externalServiceId: user.serviceRoles[0].service.externalId } }
 
     resolveService(req, res, nextSpy)
 
@@ -38,7 +38,7 @@ describe('resolve service middleware', () => {
   })
 
   it('from externalServiceId in path param but show unauthorised view if it does not belong to this user', () => {
-    const req = {user: user, params: {externalServiceId: 'someoneElsesID'}}
+    const req = { user: user, params: { externalServiceId: 'someoneElsesID' } }
 
     resolveService(req, res, nextSpy)
 
@@ -79,7 +79,7 @@ describe('resolve service middleware', () => {
   })
 
   it('when user is not authorised to view any services show unauthorised page', () => {
-    const req = {user: user, params: {}}
+    const req = { user: user, params: {} }
     user.serviceRoles = {} // remove all services from test user
 
     resolveService(req, res, nextSpy)
@@ -95,13 +95,13 @@ describe('resolve types of gateway within a service', () => {
   let res, nextSpy
 
   beforeEach(() => {
-    res = {render: sinon.spy()}
+    res = { render: sinon.spy() }
     nextSpy = sinon.spy()
   })
 
   it('service.hasDirectDebitGatewayAccount is true and service.hasCardGatewayAccount is false when we have Direct Debit gateway accounts only', () => {
     const user = buildUserWithGatewayAccountIds(['DIRECT_DEBIT:randomidhere'])
-    const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
+    const req = { user: user, params: { externalServiceId: user.serviceRoles[0].service.externalId } }
 
     resolveService(req, res, nextSpy)
 
@@ -113,7 +113,7 @@ describe('resolve types of gateway within a service', () => {
 
   it('service.hasCardGatewayAccount is true and service.hasDirectDebitGatewayAccount is false when we have Card gateway accounts only', () => {
     const user = buildUserWithGatewayAccountIds(['7127217'])
-    const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
+    const req = { user: user, params: { externalServiceId: user.serviceRoles[0].service.externalId } }
 
     resolveService(req, res, nextSpy)
 
@@ -125,7 +125,7 @@ describe('resolve types of gateway within a service', () => {
 
   it('service.hasCardAndDirectDebitGatewayAccount is true when we have Direct Debit and Card gateway accounts', () => {
     const user = buildUserWithGatewayAccountIds(['7127217', 'DIRECT_DEBIT:randomidhere'])
-    const req = {user: user, params: {externalServiceId: user.serviceRoles[0].service.externalId}}
+    const req = { user: user, params: { externalServiceId: user.serviceRoles[0].service.externalId } }
 
     resolveService(req, res, nextSpy)
 

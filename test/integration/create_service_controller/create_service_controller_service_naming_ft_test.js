@@ -35,7 +35,7 @@ describe('create service - service naming', function () {
     const serviceExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     const validServiceNameRequest = selfRegisterFixtures.validServiceNameRequest()
     const request = validServiceNameRequest.getPlain()
-    const session = mockSession.getUser({default_service_id: serviceExternalId})
+    const session = mockSession.getUser({ default_service_id: serviceExternalId })
     const service = session.serviceRoles[0].service
     const gatewayAccountId = service.gatewayAccountIds[0]
     const gatewayAccount = {
@@ -45,7 +45,7 @@ describe('create service - service naming', function () {
     }
 
     connectorMock.get(`${ACCOUNT_RESOURCE}/${gatewayAccountId}`).reply(200, gatewayAccount)
-    adminusersMock.patch(`${SERVICE_RESOURCE}/${serviceExternalId}`).reply(200, Object.assign({}, service, {name: request.service_name}))
+    adminusersMock.patch(`${SERVICE_RESOURCE}/${serviceExternalId}`).reply(200, Object.assign({}, service, { name: request.service_name }))
     connectorMock.patch(`${ACCOUNT_RESOURCE}/${gatewayAccountId}`).reply(200)
 
     app = mockSession.getAppWithLoggedInUser(getApp(), session)

@@ -11,7 +11,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const INVITE_RESOURCE = '/v1/api/invites'
 var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - submit verification details', function () {
   let provider = Pact({

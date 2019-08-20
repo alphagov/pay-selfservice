@@ -18,7 +18,7 @@ function errorResponse (req, res, msg, status) {
     msg = 'Please try again or contact support team.'
   }
   let data = { 'message': msg }
-  logger.error(`[${correlationId}] ${status} An error has occurred. Rendering error view -`, {errorMessage: msg})
+  logger.error(`[${correlationId}] ${status} An error has occurred. Rendering error view -`, { errorMessage: msg })
   res.setHeader('Content-Type', 'text/html')
   if (status) {
     res.status(status)

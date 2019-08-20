@@ -3,9 +3,9 @@
 // Local Dependencies
 const Charge = require('../../models/charge.js')
 const auth = require('../../services/auth_service.js')
-const {response} = require('../../utils/response.js')
-const {renderErrorView} = require('../../utils/response.js')
-const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
+const { response } = require('../../utils/response.js')
+const { renderErrorView } = require('../../utils/response.js')
+const { CORRELATION_HEADER } = require('../../utils/correlation_header.js')
 
 const defaultMsg = 'Error processing transaction view'
 const notFound = 'Charge not found'

@@ -1,22 +1,12 @@
 'use strict'
 
 // NPM dependencies
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 const { AMOUNT } = require('@govuk-pay/pay-js-commons').loggingKeys
 const lodash = require('lodash')
 
 // Local dependencies
 const userService = require('../services/user_service')
+const logger = require('../utils/logger')
 const transactionView = require('../utils/transaction_view.js')
 const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)

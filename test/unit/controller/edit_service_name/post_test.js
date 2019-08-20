@@ -2,7 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const Service = require('../../../../app/models/Service.class')
 const random = require('../../../../app/utils/random')
 const mockResponses = {}
@@ -20,7 +20,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       req = {
         correlationId: random.randomUuid(),
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
+        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': 'A brand spanking new English service name',
           'service-name-cy': 'A brand spanking new Welsh service name'
@@ -49,7 +49,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.renderErrorView = sinon.spy()
       req = {
         correlationId: random.randomUuid(),
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
+        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': 'A brand spanking new English service name',
           'service-name-cy': 'A brand spanking new Welsh service name'
@@ -79,7 +79,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       req = {
         correlationId: random.randomUuid(),
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
+        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         body: {
           'service-name': '',
           'service-name-cy': ''
@@ -104,7 +104,7 @@ describe('Controller: editServiceName, Method: get', () => {
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.editServiceName.current_name).to.have.property('en').to.equal(req.body['service-name'])
       expect(req.session.pageData.editServiceName.current_name).to.have.property('cy').to.equal(req.body['service-name-cy'])
-      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({service_name: 'This field cannot be blank'})
+      expect(req.session.pageData.editServiceName).to.have.property('errors').to.deep.equal({ service_name: 'This field cannot be blank' })
     })
   })
 })

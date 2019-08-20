@@ -46,7 +46,7 @@ describe('response converter', function () {
 
     responseConverter.successCodes().forEach((code, index) => {
       let converter = responseConverter.createCallbackToPromiseConverter(context)
-      let successResponse = {statusCode: code}
+      let successResponse = { statusCode: code }
 
       converter(noError, successResponse, body)
 
@@ -60,10 +60,10 @@ describe('response converter', function () {
 
   it('should reject if response returned with a non success code', function (done) {
     let converter = responseConverter.createCallbackToPromiseConverter(context)
-    let errorResponse = {statusCode: 401}
+    let errorResponse = { statusCode: 401 }
     converter(noError, errorResponse, body)
 
-    sinon.assert.calledWith(spyReject, {errorCode: errorResponse.statusCode, message: undefined})
+    sinon.assert.calledWith(spyReject, { errorCode: errorResponse.statusCode, message: undefined })
 
     done()
   })
@@ -74,7 +74,7 @@ describe('response converter', function () {
     let error = 'error'
     converter(error, response, body)
 
-    sinon.assert.calledWith(spyReject, {error: error})
+    sinon.assert.calledWith(spyReject, { error: error })
 
     done()
   })

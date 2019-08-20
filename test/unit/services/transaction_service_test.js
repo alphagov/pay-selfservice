@@ -5,7 +5,7 @@ const EventEmitter = require('events')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const {expect} = chai
+const { expect } = chai
 chai.use(chaiAsPromised)
 
 describe('transaction service', () => {
@@ -14,7 +14,7 @@ describe('transaction service', () => {
       // Create a class that inherits from EventEmitter so we can replicate the .on('xxxx') functionality the code expects
       class STransactions extends EventEmitter {
         searchTransactions (params, callback) {
-          callback(null, {statusCode: 200})
+          callback(null, { statusCode: 200 })
           return this
         }
       }
@@ -67,7 +67,7 @@ describe('transaction service', () => {
       // Create a class that inherits from EventEmitter so we can replicate the .on('xxxx') functionality the code expects
       class STransactions extends EventEmitter {
         searchTransactions (params, callback) {
-          callback(null, {statusCode: 201})
+          callback(null, { statusCode: 201 })
           return this
         }
       }
@@ -93,7 +93,7 @@ describe('transaction service', () => {
     describe('when connector returns correctly', () => {
       class GaTransactions extends EventEmitter {
         getAllTransactions (params, callback) {
-          callback(null, {statusCode: 200})
+          callback(null, { statusCode: 200 })
           return this
         }
       }
@@ -109,7 +109,7 @@ describe('transaction service', () => {
         })
 
       it('should return into the correct promise when it uses the legacy \'state\' method of querying states', () => {
-        return expect(transactionService.searchAll(123, {pageSize: 100, page: 1, state: 'success'}, 'some-unique-id'))
+        return expect(transactionService.searchAll(123, { pageSize: 100, page: 1, state: 'success' }, 'some-unique-id'))
           .to.eventually.be.fulfilled
       })
 
@@ -134,7 +134,7 @@ describe('transaction service', () => {
       })
 
       it('should return into the correct promise', () => {
-        return expect(transactionService.searchAll(123, {pageSize: 100, page: 1}, 'some-unique-id'))
+        return expect(transactionService.searchAll(123, { pageSize: 100, page: 1 }, 'some-unique-id'))
           .to.eventually.be.fulfilled
       })
     })
@@ -160,7 +160,7 @@ describe('transaction service', () => {
         })
 
       it('should return client unavailable', () => {
-        return expect(transactionService.searchAll(123, {pageSize: 1, page: 100}, 'some-unique-id'))
+        return expect(transactionService.searchAll(123, { pageSize: 1, page: 100 }, 'some-unique-id'))
           .to.be.rejectedWith(Error, 'CLIENT_UNAVAILABLE')
       }
       )
@@ -170,7 +170,7 @@ describe('transaction service', () => {
       class GaTransactions extends EventEmitter {
         getAllTransactions (params, callback) {
           setTimeout(() => {
-            this.emit('connectorError', null, {iam: 'an-object'})
+            this.emit('connectorError', null, { iam: 'an-object' })
           }, 100)
           return this
         }
@@ -187,7 +187,7 @@ describe('transaction service', () => {
         })
 
       it('should return GET_FAILED', () => {
-        return expect(transactionService.searchAll(123, {pageSize: 100, page: 1}, 'some-unique-id'))
+        return expect(transactionService.searchAll(123, { pageSize: 100, page: 1 }, 'some-unique-id'))
           .to.be.rejectedWith(Error, 'GET_FAILED')
       })
     })

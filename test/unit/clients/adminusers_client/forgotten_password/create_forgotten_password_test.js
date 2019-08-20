@@ -6,7 +6,7 @@ var getAdminUsersClient = require('../../../../../app/services/clients/adminuser
 var userFixtures = require('../../../../fixtures/user_fixtures')
 var PactInteractionBuilder = require('../../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 let port = Math.floor(Math.random() * 48127) + 1024
-let adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+let adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 chai.use(chaiAsPromised)
 const expect = chai.expect
 const FORGOTTEN_PASSWORD_PATH = '/v1/api/forgotten-passwords'
@@ -51,7 +51,7 @@ describe('adminusers client - create forgotten password', function () {
   })
 
   describe('bad request', () => {
-    let request = {username: ''}
+    let request = { username: '' }
 
     let badForgottenPasswordResponse = userFixtures.badForgottenPasswordResponse()
 

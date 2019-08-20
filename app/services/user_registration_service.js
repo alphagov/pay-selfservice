@@ -14,7 +14,7 @@ module.exports = {
    * @returns {*|Constructor}
    */
   submitRegistration: function (code, telephoneNumber, password, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).generateInviteOtpCode(code, telephoneNumber, password)
+    return getAdminUsersClient({ correlationId: correlationId }).generateInviteOtpCode(code, telephoneNumber, password)
   },
 
   /**
@@ -25,15 +25,15 @@ module.exports = {
    * @param correlationId
    */
   verifyOtpAndCreateUser: function (code, verifyCode, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).verifyOtpAndCreateUser(code, verifyCode)
+    return getAdminUsersClient({ correlationId: correlationId }).verifyOtpAndCreateUser(code, verifyCode)
   },
 
   resendOtpCode: function (code, phoneNumber, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).resendOtpCode(code, phoneNumber)
+    return getAdminUsersClient({ correlationId: correlationId }).resendOtpCode(code, phoneNumber)
   },
 
   completeInvite: function (code, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).completeInvite(code)
+    return getAdminUsersClient({ correlationId: correlationId }).completeInvite(code)
   }
 
 }

@@ -19,7 +19,7 @@ describe('charge model', function () {
         class StubConnectorChargeFunctions extends EventEmitter {
           getCharge () {
             setTimeout(() => {
-              this.emit('connectorError', {thisIs: 'anErrorObject'})
+              this.emit('connectorError', { thisIs: 'anErrorObject' })
             }, 100)
             return this
           }
@@ -49,7 +49,7 @@ describe('charge model', function () {
         class StubConnectorChargeFunctions extends EventEmitter {
           getCharge () {
             setTimeout(() => {
-              this.emit('connectorError', {thisIs: 'anErrorObject'}, {statusCode: 201})
+              this.emit('connectorError', { thisIs: 'anErrorObject' }, { statusCode: 201 })
             }, 100)
             return this
           }
@@ -139,7 +139,7 @@ describe('charge model', function () {
         let Charge = proxyquire(path.join(__dirname, '/../../../app/models/charge.js'), {
           '../services/clients/connector_client.js': connectorClientStub,
           '../services/user_service': userServiceStub,
-          '../utils/transaction_view.js': {buildPaymentView}
+          '../utils/transaction_view.js': { buildPaymentView }
         })
 
         const chargeModel = Charge('correlation-id')
@@ -147,8 +147,8 @@ describe('charge model', function () {
           expect(buildPaymentView.called).to.equal(true)
           expect(buildPaymentView.args.length).to.equal(1)
           expect(buildPaymentView.args[0].length).to.equal(3)
-          expect(buildPaymentView.args[0][0]).to.deep.equal({foo: 'bar'})
-          expect(buildPaymentView.args[0][1]).to.deep.equal({events: [{submitted_by: user.external_id}]})
+          expect(buildPaymentView.args[0][0]).to.deep.equal({ foo: 'bar' })
+          expect(buildPaymentView.args[0][1]).to.deep.equal({ events: [{ submitted_by: user.external_id }] })
           expect(buildPaymentView.args[0][2]).to.deep.equal([new User(user)])
         })
       })

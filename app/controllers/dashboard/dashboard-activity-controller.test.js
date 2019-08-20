@@ -2,17 +2,17 @@
 
 // NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const moment = require('moment-timezone')
 
 // Local dependencies
-const {getApp} = require('../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test/test_helpers/mock_session')
+const { getApp } = require('../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test/test_helpers/mock_session')
 const paths = require('../../../app/paths')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway_account_fixtures')
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const DASHBOARD_RESPONSE = {
   successful_payments: {
@@ -42,7 +42,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -114,7 +114,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -164,7 +164,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -214,7 +214,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -264,7 +264,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -317,7 +317,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -369,7 +369,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()
@@ -416,7 +416,7 @@ describe('dashboard-activity-controller', () => {
       before('Arrange', () => {
         const session = getMockSession(getUser({
           gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-          permissions: [{name: 'transactions:read'}]
+          permissions: [{ name: 'transactions:read' }]
         }))
 
         mockConnectorGetGatewayAccount()

@@ -1,17 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
+const logger = require('../utils/logger')
 
 module.exports = function (err, req, res, next) {
   let errorPayload = {
@@ -32,7 +22,7 @@ module.exports = function (err, req, res, next) {
   }
 
   // log the exception
-  logger.error(`[requestId=${req.correlationId}] Internal server error -`, errorPayload)
+  logger.error({ message: `Internal server error`, requestId: req.correlationId })
   // re-throw it
   next(err)
 }

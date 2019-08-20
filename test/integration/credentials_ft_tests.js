@@ -9,7 +9,7 @@ const nock = require('nock')
 const csrf = require('csrf')
 const paths = require(path.join(__dirname, '/../../app/paths.js'))
 const mockSession = require('../test_helpers/mock_session.js')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const ACCOUNT_ID = '182364'
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + ACCOUNT_ID
 const CONNECTOR_ACCOUNT_CREDENTIALS_PATH = CONNECTOR_ACCOUNT_PATH + '/credentials'
@@ -17,7 +17,7 @@ const CONNECTOR_ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts/' + AC
 
 const requestId = 'some-unique-id'
 const defaultCorrelationHeader = {
-  reqheaders: {'x-request-id': requestId}
+  reqheaders: { 'x-request-id': requestId }
 }
 
 const connectorMock = nock(process.env.CONNECTOR_URL, defaultCorrelationHeader)
@@ -34,7 +34,7 @@ describe('Credentials endpoints', () => {
     beforeEach(function (done) {
       const permissions = 'gateway-credentials:read'
       const user = mockSession.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
@@ -62,13 +62,13 @@ describe('Credentials endpoints', () => {
         .reply(200, {
           'payment_provider': 'sandbox',
           'gateway_account_id': '1',
-          'credentials': {'username': 'a-username'}
+          'credentials': { 'username': 'a-username' }
         })
 
       buildGetRequest(paths.credentials.index, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.credentials).to.deep.equal({'username': 'a-username'})
+          expect(response.body.currentGatewayAccount.credentials).to.deep.equal({ 'username': 'a-username' })
         })
         .end(done)
     })
@@ -78,7 +78,7 @@ describe('Credentials endpoints', () => {
         .reply(200, {
           'payment_provider': 'sandbox',
           'gateway_account_id': '1',
-          'credentials': {username: 'a-username', merchant_id: 'a-merchant-id'}
+          'credentials': { username: 'a-username', merchant_id: 'a-merchant-id' }
         })
 
       buildGetRequest(paths.credentials.index, app)
@@ -96,7 +96,7 @@ describe('Credentials endpoints', () => {
         })
 
       buildGetRequest(paths.credentials.index, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
 
@@ -107,7 +107,7 @@ describe('Credentials endpoints', () => {
         })
 
       buildGetRequest(paths.credentials.index, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
 
@@ -115,7 +115,7 @@ describe('Credentials endpoints', () => {
       // No connectorMock defined on purpose to mock a network failure
 
       buildGetRequest(paths.credentials.index, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
   })
@@ -129,7 +129,7 @@ describe('Credentials endpoints', () => {
     beforeEach(function (done) {
       const permissions = 'gateway-credentials:update'
       const user = mockSession.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
@@ -173,13 +173,13 @@ describe('Credentials endpoints', () => {
         .reply(200, {
           'payment_provider': 'sandbox',
           'gateway_account_id': '1',
-          'credentials': {'username': 'a-username'}
+          'credentials': { 'username': 'a-username' }
         })
 
       buildGetRequest(paths.credentials.edit, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.credentials).to.deep.equal({'username': 'a-username'})
+          expect(response.body.currentGatewayAccount.credentials).to.deep.equal({ 'username': 'a-username' })
         })
         .end(done)
     })
@@ -189,7 +189,7 @@ describe('Credentials endpoints', () => {
         .reply(200, {
           'payment_provider': 'sandbox',
           'gateway_account_id': '1',
-          'credentials': {username: 'a-username'}
+          'credentials': { username: 'a-username' }
         })
 
       buildGetRequest(paths.credentials.edit, app)
@@ -207,7 +207,7 @@ describe('Credentials endpoints', () => {
         })
 
       buildGetRequest(paths.credentials.edit, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
 
@@ -218,7 +218,7 @@ describe('Credentials endpoints', () => {
         })
 
       buildGetRequest(paths.credentials.edit, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
 
@@ -226,7 +226,7 @@ describe('Credentials endpoints', () => {
       // No connectorMock defined on purpose to mock a network failure
 
       buildGetRequest(paths.credentials.edit, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
   })
@@ -240,7 +240,7 @@ describe('Credentials endpoints', () => {
     beforeEach(function (done) {
       const permissions = 'gateway-credentials:update'
       const user = mockSession.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
@@ -284,13 +284,13 @@ describe('Credentials endpoints', () => {
         .reply(200, {
           'payment_provider': 'sandbox',
           'gateway_account_id': '1',
-          'credentials': {'username': 'a-username'}
+          'credentials': { 'username': 'a-username' }
         })
 
       buildGetRequest(paths.notificationCredentials.edit, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.credentials).to.be.deep.equal({'username': 'a-username'})
+          expect(response.body.currentGatewayAccount.credentials).to.be.deep.equal({ 'username': 'a-username' })
         })
         .end(done)
     })
@@ -300,7 +300,7 @@ describe('Credentials endpoints', () => {
         .reply(200, {
           'payment_provider': 'sandbox',
           'gateway_account_id': '1',
-          'credentials': {username: 'a-username', merchant_id: 'a-merchant-id'}
+          'credentials': { username: 'a-username', merchant_id: 'a-merchant-id' }
         })
 
       buildGetRequest(paths.notificationCredentials.edit, app)
@@ -318,7 +318,7 @@ describe('Credentials endpoints', () => {
         })
 
       buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
 
@@ -329,7 +329,7 @@ describe('Credentials endpoints', () => {
         })
 
       buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
 
@@ -337,7 +337,7 @@ describe('Credentials endpoints', () => {
       // No connectorMock defined on purpose to mock a network failure
 
       buildGetRequest(paths.notificationCredentials.edit, app)
-        .expect(500, {'message': 'There is a problem with the payments platform'})
+        .expect(500, { 'message': 'There is a problem with the payments platform' })
         .end(done)
     })
   })
@@ -351,7 +351,7 @@ describe('Credentials endpoints', () => {
     beforeEach(function (done) {
       const permissions = 'gateway-credentials:read'
       const user = mockSession.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
@@ -367,13 +367,13 @@ describe('Credentials endpoints', () => {
             'username': 'a-username',
             'merchant_id': 'a-merchant-id'
           },
-          'notification_credentials': {username: 'a-notification-username'}
+          'notification_credentials': { username: 'a-notification-username' }
         })
 
       buildGetRequest(paths.notificationCredentials.index, app)
         .expect(200)
         .expect(response => {
-          expect(response.body.currentGatewayAccount.notification_credentials).to.deep.equal({username: 'a-notification-username'})
+          expect(response.body.currentGatewayAccount.notification_credentials).to.deep.equal({ username: 'a-notification-username' })
         })
         .end(done)
     })
@@ -388,7 +388,7 @@ describe('Credentials endpoints', () => {
     beforeEach(function (done) {
       const permissions = 'gateway-credentials:update'
       const user = mockSession.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }]
       })
       app = mockSession.getAppWithLoggedInUser(getApp(), user)
 
@@ -404,7 +404,7 @@ describe('Credentials endpoints', () => {
         }
       }).reply(200, {})
 
-      const sendData = {'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id'}
+      const sendData = { 'username': 'a-username', 'password': 'a-password', 'merchantId': 'a-merchant-id' }
       const expectedLocation = paths.credentials.index
       const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
@@ -449,7 +449,7 @@ describe('Credentials endpoints', () => {
       })
         .reply(200, {})
 
-      const sendData = {'username': 'a-username', 'password': 'a-password'}
+      const sendData = { 'username': 'a-username', 'password': 'a-password' }
       const expectedLocation = paths.credentials.index
       const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
@@ -467,8 +467,8 @@ describe('Credentials endpoints', () => {
           'message': 'Error message'
         })
 
-      const sendData = {'username': 'a-username', 'password': 'a-password'}
-      const expectedData = {'message': 'There is a problem with the payments platform'}
+      const sendData = { 'username': 'a-username', 'password': 'a-password' }
+      const expectedData = { 'message': 'There is a problem with the payments platform' }
       const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(500, expectedData)
@@ -478,8 +478,8 @@ describe('Credentials endpoints', () => {
     it('should display an error if the connection to connector fails', function (done) {
       // No connectorMock defined on purpose to mock a network failure
 
-      const sendData = {'username': 'a-username', 'password': 'a-password'}
-      const expectedData = {'message': 'There is a problem with the payments platform'}
+      const sendData = { 'username': 'a-username', 'password': 'a-password' }
+      const expectedData = { 'message': 'There is a problem with the payments platform' }
       const path = paths.credentials.index
       buildFormPostRequest(path, sendData, true, app)
         .expect(500, expectedData)
@@ -492,10 +492,10 @@ describe('Credentials endpoints', () => {
         'password': 'a-password'
       }).reply(200, {})
 
-      const sendData = {'username': 'a-username', 'password': 'a-password'}
+      const sendData = { 'username': 'a-username', 'password': 'a-password' }
       const path = paths.credentials.index
       buildFormPostRequest(path, sendData, false, app)
-        .expect(400, {message: 'There is a problem with the payments platform'})
+        .expect(400, { message: 'There is a problem with the payments platform' })
         .end(done)
     })
   })
@@ -510,7 +510,7 @@ describe('Credentials endpoints', () => {
     beforeEach(function (done) {
       const permissions = 'gateway-credentials:update'
       const user = mockSession.getUser({
-        gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}]
+        gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }]
       })
       session = mockSession.getMockSession(user)
       app = mockSession.createAppWithSession(getApp(), session)
@@ -525,7 +525,7 @@ describe('Credentials endpoints', () => {
       })
         .reply(200, {})
 
-      const sendData = {'username': 'a-notification-username', 'password': 'a-notification-password'}
+      const sendData = { 'username': 'a-notification-username', 'password': 'a-notification-password' }
       const expectedLocation = paths.credentials.index
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
@@ -535,7 +535,7 @@ describe('Credentials endpoints', () => {
     })
 
     it('should should flash a relevant error if no password is sent', function (done) {
-      const sendData = {'password': 'a-notification-password'}
+      const sendData = { 'password': 'a-notification-password' }
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
@@ -548,7 +548,7 @@ describe('Credentials endpoints', () => {
         })
     })
     it('should should flash a relevant error if no password is sent', function (done) {
-      const sendData = {'username': 'a-notification-username'}
+      const sendData = { 'username': 'a-notification-username' }
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {
@@ -562,7 +562,7 @@ describe('Credentials endpoints', () => {
     })
 
     it('should should flash a relevant error if too short a password is sent', function (done) {
-      const sendData = {'username': 'a-notification-username', 'password': '123456789'}
+      const sendData = { 'username': 'a-notification-username', 'password': '123456789' }
       const path = paths.notificationCredentials.update
       buildFormPostRequest(path, sendData, true, app)
         .end((err, res) => {

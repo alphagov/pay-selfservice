@@ -4,7 +4,7 @@
 const lodash = require('lodash')
 
 // Local dependencies
-const {renderErrorView} = require('../utils/response')
+const { renderErrorView } = require('../utils/response')
 
 module.exports = (req, res, next) => {
   const provider = lodash.get(req, 'account.payment_provider', '')

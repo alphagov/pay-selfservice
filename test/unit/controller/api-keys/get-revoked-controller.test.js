@@ -86,7 +86,7 @@ describe('Revoked API keys index', () => {
         .reply(200, {
           payment_provider: 'sandbox'
         })
-      mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, {tokens: [TOKEN_1]})
+      mockGetRevokedAPIKeys(GATEWAY_ACCOUNT_ID).reply(200, { tokens: [TOKEN_1] })
 
       supertest(app)
         .get(paths.apiKeys.revoked)

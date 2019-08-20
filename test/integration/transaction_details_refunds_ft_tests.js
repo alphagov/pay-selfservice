@@ -22,7 +22,7 @@ describe('The transaction view - refund scenarios', function () {
   beforeEach(function (done) {
     let permissions = 'refunds:create'
     var user = session.getUser({
-      gateway_account_ids: [ACCOUNT_ID], permissions: [{name: permissions}], external_id: USER_EXTERNAL_ID
+      gateway_account_ids: [ACCOUNT_ID], permissions: [{ name: permissions }], external_id: USER_EXTERNAL_ID
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -51,7 +51,7 @@ describe('The transaction view - refund scenarios', function () {
     }
 
     request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeWithRefund}))
+      .post(paths.generateRoute(paths.transactions.refund, { chargeId: chargeWithRefund }))
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send(viewFormData)
       .expect(302)
@@ -80,7 +80,7 @@ describe('The transaction view - refund scenarios', function () {
     }
 
     request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeWithRefund}))
+      .post(paths.generateRoute(paths.transactions.refund, { chargeId: chargeWithRefund }))
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send(viewFormData)
       .expect(302)
@@ -98,7 +98,7 @@ describe('The transaction view - refund scenarios', function () {
     }
 
     request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+      .post(paths.generateRoute(paths.transactions.refund, { chargeId: chargeId }))
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)
@@ -131,7 +131,7 @@ describe('The transaction view - refund scenarios', function () {
     }
 
     request(app)
-      .post(paths.generateRoute(paths.transactions.refund, {chargeId: chargeId}))
+      .post(paths.generateRoute(paths.transactions.refund, { chargeId: chargeId }))
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Accept', 'application/json')
       .send(viewFormData)

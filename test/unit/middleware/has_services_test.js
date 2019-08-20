@@ -3,7 +3,7 @@
 const path = require('path')
 const sinon = require('sinon')
 const chai = require('chai')
-const {expect} = chai
+const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
 const paths = require('../../../app/paths')
 const hasServices = require(path.join(__dirname, '/../../../app/middleware/has_services.js'))
@@ -28,7 +28,7 @@ describe('user has services middleware', function () {
       external_id: 'external-id'
     }).getAsObject()
 
-    const req = {user: user, headers: {}}
+    const req = { user: user, headers: {} }
 
     hasServices(req, res, next)
 
@@ -38,7 +38,7 @@ describe('user has services middleware', function () {
   })
 
   it('should redirect to service switcher if the user has no services', function (done) {
-    const req = {user: {services: []}, headers: {}}
+    const req = { user: { services: [] }, headers: {} }
 
     hasServices(req, res, next)
 

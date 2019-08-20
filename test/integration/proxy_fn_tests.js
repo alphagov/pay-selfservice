@@ -31,7 +31,7 @@ describe('request.js client', function () {
     portfinder.getPort(function (err, aPort) {
       if (err) { throw err }
       proxiedServer = http.createServer(function (req, res) {
-        res.writeHead(200, {'Content-Type': 'application/json'})
+        res.writeHead(200, { 'Content-Type': 'application/json' })
         res.write('{"message":"server-response"}')
         res.end()
       }).listen(aPort, function () {
@@ -39,7 +39,7 @@ describe('request.js client', function () {
         portfinder.getPort(function (err, aPort) {
           if (err) { throw err }
           nonProxiedServer = http.createServer(function (req, res) {
-            res.writeHead(200, {'Content-Type': 'application/json'})
+            res.writeHead(200, { 'Content-Type': 'application/json' })
             res.write('{"message":"non-proxied-server-response"}')
             res.end()
           }).listen(aPort, function () {
@@ -47,7 +47,7 @@ describe('request.js client', function () {
             portfinder.getPort(function (err, aPort) {
               if (err) { throw err }
               proxyServer = httpProxy
-                .createProxyServer({target: {host: 'localhost', port: proxiedServer.address().port}})
+                .createProxyServer({ target: { host: 'localhost', port: proxiedServer.address().port } })
                 .listen(aPort)
               proxyUrl = 'http://localhost:' + aPort
 
@@ -83,23 +83,23 @@ describe('request.js client', function () {
   })
 
   it('should proxy requests when HTTP_PROXY enabled', function (done) {
-    var client = request.defaults({json: true})
+    var client = request.defaults({ json: true })
 
     client(proxiedServerUrl, function (error, response, body) {
       if (error) { done(error) }
-      assert.equal(response.headers['x-proxy-header'], 'touched by proxy')
-      assert.equal(body.message, 'server-response')
+      assert.strictEqual(response.headers['x-proxy-header'], 'touched by proxy')
+      assert.strictEqual(body.message, 'server-response')
       done()
     })
   })
 
   it('should not proxy requests for NO_PROXY hosts', function (done) {
-    var client = request.defaults({json: true})
+    var client = request.defaults({ json: true })
 
     client(nonProxiedServerUrl, function (error, response, body) {
       if (error) { done(error) }
-      assert.notEqual(response.headers['x-proxy-header'], 'touched by proxy')
-      assert.equal(body.message, 'non-proxied-server-response')
+      assert.notStrictEqual(response.headers['x-proxy-header'], 'touched by proxy')
+      assert.strictEqual(body.message, 'non-proxied-server-response')
       done()
     })
   })

@@ -19,7 +19,7 @@ const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.
 const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
 const mockRes = require('../fixtures/response')
 
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
@@ -62,7 +62,7 @@ describe('The logged in endpoint', function () {
   })
 
   it('should redirect to otp login if no otp', function (done) {
-    const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({gateway_account_ids: [ACCOUNT_ID]}))
+    const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({ gateway_account_ids: [ACCOUNT_ID] }))
     request(app)
       .get('/')
       .expect(302)
@@ -97,8 +97,8 @@ describe('The postlogin endpoint', function () {
     const session = mockSession.getMockSession(user)
     const expectedUrl = paths.user.otpLogIn
     const req = {
-      session: _.merge(session, {currentGatewayAccountId: '13'}),
-      headers: {'x-request-id': 'some-unique-id'},
+      session: _.merge(session, { currentGatewayAccountId: '13' }),
+      headers: { 'x-request-id': 'some-unique-id' },
       user: user
     }
     const res = mockRes.getStubbedRes()
@@ -170,7 +170,7 @@ describe('The afterOtpLogin endpoint', function () {
     const session = mockSession.getMockSession(user)
     const req = {
       session: session,
-      headers: {'x-request-id': 'some-unique-id'},
+      headers: { 'x-request-id': 'some-unique-id' },
       user: user
     }
     const lastUrl = session.last_url
@@ -186,7 +186,7 @@ describe('The afterOtpLogin endpoint', function () {
     user.sessionVersion = 1
     const req = {
       session: mockSession.getMockSession(user),
-      headers: {'x-request-id': 'some-unique-id'},
+      headers: { 'x-request-id': 'some-unique-id' },
       user: user
     }
     const res = mockRes.getStubbedRes()
@@ -212,7 +212,7 @@ describe('login get endpoint', function () {
 
     res.locals = { 'flash': {} }
     testController(loginController.loginGet, req, res)
-    expect(res.locals.flash === {username: 'You must enter a username', password: 'You must enter a password'})
+    expect(res.locals.flash === { username: 'You must enter a username', password: 'You must enter a password' })
     done()
   })
 
@@ -225,7 +225,7 @@ describe('login get endpoint', function () {
 
     res.locals = { 'flash': {} }
     testController(loginController.loginGet, req, res)
-    expect(res.locals.flash === {username: 'You must enter a username'})
+    expect(res.locals.flash === { username: 'You must enter a username' })
     done()
   })
 })
@@ -255,7 +255,7 @@ describe('login post endpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
-      .expect(400, {message: 'There is a problem with the payments platform'})
+      .expect(400, { message: 'There is a problem with the payments platform' })
       .end(done)
   })
 })
@@ -272,8 +272,8 @@ describe('otp login post endpoint', function () {
       .post(paths.user.otpLogIn)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
-      .send({code: notp.totp.gen('12345')})
-      .expect(400, {message: 'There is a problem with the payments platform'})
+      .send({ code: notp.totp.gen('12345') })
+      .expect(400, { message: 'There is a problem with the payments platform' })
       .end(done)
   })
 })
@@ -291,7 +291,7 @@ describe('otp send again post endpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
-      .expect(400, {message: 'There is a problem with the payments platform'})
+      .expect(400, { message: 'There is a problem with the payments platform' })
       .end(done)
   })
 })
@@ -348,7 +348,7 @@ describe('direct login after user registration', function () {
 
 function testController (controller, req, res) {
   _.assign(req, {
-    headers: {'x-request-id': 'some-unique-id'},
+    headers: { 'x-request-id': 'some-unique-id' },
     flash: sinon.stub()
   })
   controller(req, res)

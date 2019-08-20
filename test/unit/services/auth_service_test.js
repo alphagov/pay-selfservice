@@ -7,7 +7,7 @@ const AWSXRay = require('aws-xray-sdk')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const _ = require('lodash')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 // Local Dependencies
 const auth = require('../../../app/services/auth_service.js')
@@ -18,7 +18,7 @@ const mockSession = require('../../test_helpers/mock_session.js')
 const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3'
 const mockUser = opts => mockSession.getUser(opts)
 const mockByPass = next => next()
-const response = {status: () => {}, render: () => {}, redirect: () => {}}
+const response = { status: () => {}, render: () => {}, redirect: () => {} }
 const validRequest = () => {
   return {
     session: {
@@ -56,7 +56,7 @@ describe('auth service', function () {
 
   describe('serialize user', function () {
     it('should call done function with externalId', function (done) {
-      const user = {externalId: EXTERNAL_ID_IN_SESSION}
+      const user = { externalId: EXTERNAL_ID_IN_SESSION }
       const doneSpy = sinon.spy(done)
 
       auth.serializeUser(user, doneSpy)
@@ -69,7 +69,7 @@ describe('auth service', function () {
     it('should find user by external id', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth_service.js'),
-          {'./user_service.js': userMock,
+          { './user_service.js': userMock,
             'aws-xray-sdk': {
               captureAsyncFunc: function (name, callback) {
                 callback(new AWSXRay.Segment('stub-subsegment'))
@@ -92,17 +92,17 @@ describe('auth service', function () {
       const userServiceMock = {
         findByExternalId: (externalId) => {
           return new Promise(function (resolve, reject) {
-            expect(externalId).to.be.equal(EXTERNAL_ID_IN_SESSION)
+            expect(externalId).to.be.strictEqual(EXTERNAL_ID_IN_SESSION)
             resolve(user)
           })
         }
       }
 
-      authService(userServiceMock).deserializeUser({headers: {'x-request-id': 'foo'}}, EXTERNAL_ID_IN_SESSION, function (err, returnedUser) {
-        expect(err).to.be.null
-        expect(returnedUser).to.deep.equal(user)
-        done()
+      authService(userServiceMock).deserializeUser({ headers: { 'x-request-id': 'foo' } }, EXTERNAL_ID_IN_SESSION, function (err, returnedUser) {
+        expect(err).to.be.null // eslint-disable-line
+        expect(returnedUser).to.deep.strictEqual(user)
       })
+      done()
     })
   })
 
@@ -125,20 +125,20 @@ describe('auth service', function () {
 
   describe('ensureNotDisabled', function () {
     it('should call lockout user when user has a truthy disabled property', function (done) {
-      const user = mockSession.getUser({disabled: true})
+      const user = mockSession.getUser({ disabled: true })
       const nextSpy = sinon.spy()
 
-      auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy)
+      auth.lockOutDisabledUsers({ user: user, headers: {} }, response, nextSpy)
       assert(nextSpy.notCalled)
       assert(response.redirect.calledWithExactly('/noaccess'))
       done()
     })
 
     it('should just call next when user has a falsey disabled property', function (done) {
-      const user = mockSession.getUser({disabled: false})
+      const user = mockSession.getUser({ disabled: false })
       const nextSpy = sinon.spy()
 
-      auth.lockOutDisabledUsers({user: user, headers: {}}, response, nextSpy)
+      auth.lockOutDisabledUsers({ user: user, headers: {} }, response, nextSpy)
       assert(nextSpy.called)
       assert(response.render.notCalled)
       done()
@@ -165,21 +165,21 @@ describe('auth service', function () {
     it('should return user when authenticates successfully', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth_service.js'),
-          {'./user_service.js': userMock})
+          { './user_service.js': userMock })
       }
       const req = {
-        headers: {'x-request-id': 'corrId'}
+        headers: { 'x-request-id': 'corrId' }
       }
-      const user = {username: 'user@example.com'}
+      const user = { username: 'user@example.com' }
       const password = 'correctPassword'
       const doneSpy = sinon.spy(() => {
       })
       const userServiceMock = {
         authenticate: (username, password, correlationId) => {
           return new Promise(function (resolve, reject) {
-            expect(username).to.be.equal(user.username)
-            expect(password).to.be.equal('correctPassword')
-            expect(correlationId).to.be.equal('corrId')
+            expect(username).to.be.strictEqual(user.username)
+            expect(password).to.be.strictEqual('correctPassword')
+            expect(correlationId).to.be.strictEqual('corrId')
             resolve(user)
           })
         }
@@ -188,17 +188,17 @@ describe('auth service', function () {
       authService(userServiceMock).localStrategyAuth(req, user.username, password, doneSpy)
         .then(() => {
           assert(doneSpy.calledWithExactly(null, user))
-          done()
         })
+      done()
     })
 
     it('should return error message when authentication fails', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth_service.js'),
-          {'./user_service.js': userMock})
+          { './user_service.js': userMock })
       }
       const req = {
-        headers: {'x-request-id': 'corrId'}
+        headers: { 'x-request-id': 'corrId' }
       }
       const username = 'user@example.com'
       const password = 'imagineThisIsInvalid'
@@ -207,9 +207,9 @@ describe('auth service', function () {
       const userServiceMock = {
         authenticate: (username, password, correlationId) => {
           return new Promise(function (resolve, reject) {
-            expect(username).to.be.equal('user@example.com')
-            expect(password).to.be.equal('imagineThisIsInvalid')
-            expect(correlationId).to.be.equal('corrId')
+            expect(username).to.be.strictEqual('user@example.com')
+            expect(password).to.be.strictEqual('imagineThisIsInvalid')
+            expect(correlationId).to.be.strictEqual('corrId')
             reject(new Error())
           })
         }
@@ -217,7 +217,7 @@ describe('auth service', function () {
 
       authService(userServiceMock).localStrategyAuth(req, username, password, doneSpy)
         .then(() => {
-          assert(doneSpy.calledWithExactly(null, false, {message: 'Invalid email or password'}))
+          assert(doneSpy.calledWithExactly(null, false, { message: 'Invalid email or password' }))
           done()
         })
     })
@@ -227,16 +227,16 @@ describe('auth service', function () {
     it('should successfully mark a user as second factor authenticated', function (done) {
       const authService = (userMock) => {
         return proxyquire(path.join(__dirname, '/../../../app/services/auth_service.js'),
-          {'./user_service.js': userMock})
+          { './user_service.js': userMock })
       }
-      const user = {username: 'user@example.com', sessionVersion: 1}
+      const user = { username: 'user@example.com', sessionVersion: 1 }
       const doneSpy = sinon.spy()
       const registerInviteCookie = {
         userExternalId: '874riuwhf',
         destroy: sinon.spy()
       }
       const req = {
-        headers: {'x-request-id': 'corrId'},
+        headers: { 'x-request-id': 'corrId' },
         register_invite: registerInviteCookie,
         user: user,
         session: {}
@@ -269,8 +269,8 @@ describe('auth service', function () {
         }
       }
       const test = auth.getCurrentGatewayAccountId(req)
-      assert.equal(test, 1)
-      assert.equal(req.gateway_account.currentGatewayAccountId, 1)
+      assert.strictEqual(test, '1')
+      assert.strictEqual(req.gateway_account.currentGatewayAccountId, '1')
       done()
     })
 
@@ -282,8 +282,8 @@ describe('auth service', function () {
         }
       }
       const test = auth.getCurrentGatewayAccountId(req)
-      assert.equal(test, 1)
-      assert.equal(req.gateway_account.currentGatewayAccountId, 1)
+      assert.strictEqual(test, '1')
+      assert.strictEqual(req.gateway_account.currentGatewayAccountId, '1')
       done()
     })
 
@@ -297,8 +297,8 @@ describe('auth service', function () {
         }
       }
       const test = auth.getCurrentGatewayAccountId(req)
-      assert.equal(test, 1)
-      assert.equal(req.gateway_account.currentGatewayAccountId, 1)
+      assert.strictEqual(test, '1')
+      assert.strictEqual(req.gateway_account.currentGatewayAccountId, '1')
       done()
     })
 
@@ -329,21 +329,21 @@ describe('auth service', function () {
         }
       }
       const test = auth.getCurrentGatewayAccountId(req)
-      assert.equal(test, 3)
-      assert.equal(req.gateway_account.currentGatewayAccountId, 3)
+      assert.strictEqual(test, '3')
+      assert.strictEqual(req.gateway_account.currentGatewayAccountId, '3')
       done()
     })
 
     it('should not return gateway_account_id', function (done) {
-      const test1 = auth.getCurrentGatewayAccountId({session: {passport: {user: {}}}})
-      const test2 = auth.getCurrentGatewayAccountId({session: {passport: {}}})
-      const test3 = auth.getCurrentGatewayAccountId({session: {}})
+      const test1 = auth.getCurrentGatewayAccountId({ session: { passport: { user: {} } } })
+      const test2 = auth.getCurrentGatewayAccountId({ session: { passport: {} } })
+      const test3 = auth.getCurrentGatewayAccountId({ session: {} })
       const test4 = auth.getCurrentGatewayAccountId({})
 
-      assert.equal(test1, null)
-      assert.equal(test2, null)
-      assert.equal(test3, null)
-      assert.equal(test4, null)
+      assert.strictEqual(test1, null)
+      assert.strictEqual(test2, null)
+      assert.strictEqual(test3, null)
+      assert.strictEqual(test4, null)
       done()
     })
   })

@@ -11,7 +11,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const RESET_PASSWORD_PATH = '/v1/api/reset-password'
 var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - update password', function () {
   let provider = Pact({

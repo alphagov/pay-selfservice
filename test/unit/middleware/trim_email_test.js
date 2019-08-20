@@ -1,5 +1,5 @@
 var path = require('path')
-var req = {body: {username: ' iggy@foo.com '}}
+var req = { body: { username: ' iggy@foo.com ' } }
 var trimEmail = require(path.join(__dirname, '/../../../app/middleware/trim_username.js'))
 var assert = require('assert')
 

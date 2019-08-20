@@ -1,17 +1,6 @@
 'use strict'
 
 // NPM Dependencies
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
@@ -28,6 +17,7 @@ const getNamespace = require('continuation-local-storage').getNamespace
 require('correlation-id')
 
 // Local Dependencies
+const logger = require('../utils/logger')
 const sessionValidator = require('./session_validator.js')
 const paths = require('../paths.js')
 const userService = require('./user_service.js')

@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const logger = require('winston')
+const logger = require('../../utils/logger')
 
 // Local dependencies
 const { response } = require('../../utils/response')

@@ -1,22 +1,12 @@
 'use strict'
 
 // NPM Dependencies
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 const json2csv = require('json2csv')
 const lodash = require('lodash')
 const changeCase = require('change-case')
 
 // Local dependencies
+const logger = require('./logger')
 const dates = require('./dates')
 const states = require('./states')
 const { penceToPounds } = require('./currency_formatter')

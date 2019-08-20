@@ -3,7 +3,7 @@
 // NPM dependencies
 const lodash = require('lodash')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 // Local dependencies
 const restrictToSandbox = require('../../../app/middleware/restrict_to_sandbox')

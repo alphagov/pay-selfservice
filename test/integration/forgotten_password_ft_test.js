@@ -63,14 +63,14 @@ describe('forgotten_password_controller', function () {
     let res = resFixtures.getStubbedRes()
     let token = req.params.id
 
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({code: token})
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
 
     forgottenPasswordController.newPasswordGet(req, res).should.be.fulfilled
       .then(() => {
-        expect(res.render.calledWith('forgotten_password/new_password', {id: token})).to.equal(true)
+        expect(res.render.calledWith('forgotten_password/new_password', { id: token })).to.equal(true)
       }).should.notify(done)
   })
 
@@ -94,8 +94,8 @@ describe('forgotten_password_controller', function () {
     let res = resFixtures.getStubbedRes()
     let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token})
-    let userResponse = userFixtures.validUserResponse({external_id: userExternalId})
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    let userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
       .reply(200, userResponse.getPlain())
@@ -125,8 +125,8 @@ describe('forgotten_password_controller', function () {
     let res = resFixtures.getStubbedRes()
     let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token})
-    let userResponse = userFixtures.validUserResponse({external_id: userExternalId})
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
+    let userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -158,9 +158,9 @@ describe('forgotten_password_controller', function () {
     let username = req.body.username
     let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     req.body.password = 'short'
-    let userResponse = userFixtures.validUserResponse({username: username, external_id: userExternalId})
+    let userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
     let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token})
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -182,9 +182,9 @@ describe('forgotten_password_controller', function () {
     let username = req.body.username
     let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
     req.body.password = 'common password'
-    let userResponse = userFixtures.validUserResponse({username: username, external_id: userExternalId})
+    let userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
     let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token})
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())
@@ -204,9 +204,9 @@ describe('forgotten_password_controller', function () {
     let res = resFixtures.getStubbedRes()
     let username = req.body.username
     let userExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    let userResponse = userFixtures.validUserResponse({username: username, external_id: userExternalId})
+    let userResponse = userFixtures.validUserResponse({ username: username, external_id: userExternalId })
     let token = req.params.id
-    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({userExternalId: userExternalId, code: token})
+    let forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId: userExternalId, code: token })
 
     adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
       .reply(200, forgottenPasswordResponse.getPlain())

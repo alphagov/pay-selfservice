@@ -1,6 +1,6 @@
 'use strict'
 const cheerio = require('cheerio')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 const renderTemplate = require('../test_helpers/html_assertions.js').render
 
@@ -61,7 +61,7 @@ describe('The transaction list view', function () {
           'created': '2016-01-11 01:01:01'
         }
       ],
-      'filters': {'reference': 'ref1', 'state': 'Testing2', 'brand': 'Visa', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01'},
+      'filters': { 'reference': 'ref1', 'state': 'Testing2', 'brand': 'Visa', 'fromDate': '2015-01-11 01:01:01', 'toDate': '2015-01-11 01:01:01' },
       'hasResults': true,
       'downloadTransactionLink':
                 '/transactions/download?reference=ref1&state=payment-testing2&from_date=2%2F0%2F2015%2001%3A01%3A01&&to_date=2%2F0%2F2015%2001%3A01%3A01',

@@ -5,17 +5,7 @@ const _ = require('lodash')
 const url = require('url')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
+const logger = require('../../utils/logger')
 const querystring = require('querystring')
 
 // Local dependencies

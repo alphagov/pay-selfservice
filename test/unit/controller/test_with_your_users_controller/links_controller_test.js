@@ -2,13 +2,13 @@
 
 const supertest = require('supertest')
 const nock = require('nock')
-const {getApp} = require('../../../../server')
+const { getApp } = require('../../../../server')
 const mockSession = require('../../../test_helpers/mock_session')
 const userCreator = require('../../../test_helpers/user_creator')
 const paths = require('../../../../app/paths')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
-const {PRODUCTS_URL, CONNECTOR_URL} = process.env
+const { PRODUCTS_URL, CONNECTOR_URL } = process.env
 
 const GATEWAY_ACCOUNT_ID = '182364'
 const PAYMENT_1 = {
@@ -64,7 +64,7 @@ describe('Show the prototype links', () => {
   let app
   before(function () {
     const user = mockSession.getUser({
-      gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{name: 'transactions:read'}]
+      gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'transactions:read' }]
     })
     app = mockSession.getAppWithLoggedInUser(getApp(), user)
     userCreator.mockUserResponse(user.toJson())

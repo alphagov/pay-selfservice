@@ -2,7 +2,7 @@
 
 const sinon = require('sinon')
 const chai = require('chai')
-const {expect} = chai
+const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
 const paymentMethodIsCard = require('../../../app/middleware/payment-method-card.js')
 
@@ -22,7 +22,7 @@ describe('user has payment-method-card middleware', () => {
   })
 
   it('should call next when user is within card payment service', done => {
-    const req = {account: {paymentMethod: 'card'}}
+    const req = { account: { paymentMethod: 'card' } }
 
     paymentMethodIsCard(req, res, next)
 
@@ -32,7 +32,7 @@ describe('user has payment-method-card middleware', () => {
   })
 
   it('should redirect to error page if the user is using direct debit', done => {
-    const req = {account: {paymentMethod: 'direct debit'}}
+    const req = { account: { paymentMethod: 'direct debit' } }
 
     paymentMethodIsCard(req, res, next)
 

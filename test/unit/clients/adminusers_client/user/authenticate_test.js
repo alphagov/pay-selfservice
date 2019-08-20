@@ -12,7 +12,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - authenticate', function () {
   let provider = Pact({
@@ -29,7 +29,7 @@ describe('adminusers client - authenticate', function () {
   after(() => provider.finalize())
 
   describe('authenticate user API - success', () => {
-    let request = userFixtures.validAuthenticateRequest({username: 'existing-user'})
+    let request = userFixtures.validAuthenticateRequest({ username: 'existing-user' })
     let validUserResponse = userFixtures.validUserResponse()
 
     before((done) => {
@@ -64,7 +64,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API - unauthorized', () => {
-    let request = userFixtures.validAuthenticateRequest({username: 'nonexisting'})
+    let request = userFixtures.validAuthenticateRequest({ username: 'nonexisting' })
 
     let unauthorizedResponse = userFixtures.unauthorizedUserResponse()
 
@@ -94,7 +94,7 @@ describe('adminusers client - authenticate', function () {
   })
 
   describe('authenticate user API - bad request', () => {
-    let request = {username: '', password: ''}
+    let request = { username: '', password: '' }
 
     let badAuthenticateResponse = userFixtures.badAuthenticateResponse()
 

@@ -1,19 +1,9 @@
 'use strict'
 
 // NPM Dependencies
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
 
 // Local Dependencies
+const logger = require('../utils/logger')
 const { ConnectorClient } = require('../services/clients/connector_client.js')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const Ledger = require('../services/clients/ledger_client')

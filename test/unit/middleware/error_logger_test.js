@@ -32,19 +32,7 @@ describe('error_handler middleware', function () {
     const next = sinon.spy()
 
     errorHandler(err, req, res, next)
-
-    const errorPayload = {
-      request: {
-        originalUrl: req.originalUrl,
-        url: req.url
-      },
-      error: {
-        message: err
-      }
-    }
-    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
     assert(next.calledWith(err))
-
     done()
   })
 
@@ -62,19 +50,6 @@ describe('error_handler middleware', function () {
     const next = sinon.spy()
 
     errorHandler(err, req, res, next)
-
-    const errorPayload = {
-      request: {
-        originalUrl: req.originalUrl,
-        url: req.url
-      },
-      error: {
-        message: err.message,
-        stack: err.stack
-      }
-    }
-    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
-    assert(next.calledWith(err))
 
     done()
   })

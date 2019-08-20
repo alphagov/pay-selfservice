@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const {expect} = require('chai')
+const { expect } = require('chai')
 const {
   penceToPounds,
   poundsToPence,

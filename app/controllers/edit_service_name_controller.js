@@ -8,7 +8,7 @@ const responses = require('../utils/response')
 const paths = require('../paths')
 const formatPath = require('../utils/replace_params_in_path')
 const serviceService = require('../services/service_service')
-const {validateServiceName} = require('../utils/service_name_validation')
+const { validateServiceName } = require('../utils/service_name_validation')
 
 exports.get = (req, res) => {
   let pageData = lodash.get(req, 'session.pageData.editServiceName')

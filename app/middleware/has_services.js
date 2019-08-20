@@ -1,14 +1,4 @@
-const { createLogger, format, transports } = require('winston')
-const { timestamp, json } = format
-const logger = createLogger({
-  format: format.combine(
-    timestamp(),
-    json()
-  ),
-  transports: [
-    new transports.Console()
-  ]
-})
+const logger = require('../utils/logger')
 const _ = require('lodash')
 const paths = require('../paths')
 

@@ -13,12 +13,12 @@ describe('Healthcheck controller', function () {
       json: jsonStub
     }
     let req = {
-      headers: {accept: ''}
+      headers: { accept: '' }
     }
 
     healthCheckController.healthcheck(req, res)
     expect(setHeaderStub.calledWith('Content-Type', 'application/json')).to.be.equal(true)
-    expect(jsonStub.calledWith({'ping': {'healthy': true}})).to.be.equal(true)
+    expect(jsonStub.calledWith({ 'ping': { 'healthy': true } })).to.be.equal(true)
     done()
   })
 })

@@ -5,7 +5,7 @@ var getApp = require(path.join(__dirname, '/../../server.js')).getApp
 
 describe('The /healthcheck endpoint returned json', function () {
   it('should return 200', function (done) {
-    var expectedResponse = {'ping': {'healthy': true}}
+    var expectedResponse = { 'ping': { 'healthy': true } }
     request(getApp())
       .get('/healthcheck')
       .set('Accept', 'application/json')

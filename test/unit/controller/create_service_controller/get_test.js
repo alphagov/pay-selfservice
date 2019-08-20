@@ -2,7 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const mockResponses = {}
 const createServiceCtrl = proxyquire('../../../../app/controllers/create_service_controller', {
   '../utils/response': mockResponses

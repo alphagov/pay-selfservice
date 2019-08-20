@@ -2,7 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const Service = require('../../../../app/models/Service.class')
 const random = require('../../../../app/utils/random')
 const mockResponses = {}
@@ -17,7 +17,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service', service_name: {en: 'Example En Service', cy: 'Example Cy Service'}})
+        service: new Service({ external_id: random.randomUuid(), name: 'Example Service', service_name: { en: 'Example En Service', cy: 'Example Cy Service' } })
       }
       editServiceNameCtrl.get(req, res)
     })
@@ -51,7 +51,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
-        service: new Service({external_id: random.randomUuid(), name: 'System Generated', serviceName: {en: 'System Generated', cy: ''}})
+        service: new Service({ external_id: random.randomUuid(), name: 'System Generated', serviceName: { en: 'System Generated', cy: '' } })
 
       }
       editServiceNameCtrl.get(req, res)
@@ -71,7 +71,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
-        service: new Service({external_id: random.randomUuid(), name: 'Example Service'}),
+        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
         session: {
           pageData: {
             editServiceName: {

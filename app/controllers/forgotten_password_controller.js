@@ -41,7 +41,7 @@ module.exports = {
     const id = req.params.id
     const render = (user) => {
       if (!user) return errorView(req, res)
-      res.render('forgotten_password/new_password', {id: id})
+      res.render('forgotten_password/new_password', { id: id })
     }
 
     return userService.findByResetToken(id).then(render, () => {

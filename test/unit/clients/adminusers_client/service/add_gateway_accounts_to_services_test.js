@@ -14,7 +14,7 @@ const serviceFixtures = require('../../../../fixtures/service_fixtures')
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
 const serviceExternalId = 'cp5wa'
 let result, request
@@ -65,7 +65,7 @@ describe('admin users client - add gateway accounts to service', () => {
 
       return expect(result)
         .to.be.fulfilled
-        .and.to.eventually.include({externalId: serviceExternalId})
+        .and.to.eventually.include({ externalId: serviceExternalId })
         .and.to.have.property('gatewayAccountIds').to.include(...gatewayAccountIdsAfter)
     })
   })

@@ -18,7 +18,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const SERVICES_PATH = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 const existingServiceExternalId = 'cp5wa'
 

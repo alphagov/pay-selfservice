@@ -2,10 +2,10 @@
 
 // NPM Dependencies
 const correlator = require('correlation-id')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 // Local Dependencies
-const {CORRELATION_HEADER} = require('../../../app/utils/correlation_header')
+const { CORRELATION_HEADER } = require('../../../app/utils/correlation_header')
 const correlationMiddleware = require('../../../app/middleware/correlation_id')
 let req
 

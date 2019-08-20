@@ -30,10 +30,10 @@ const DISPLAY_DATE = dates.utcToDisplay(CONNECTOR_DATE)
 
 const ALL_CARD_TYPES = {
   'card_types': [
-    {'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT'},
-    {'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT'},
-    {'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT'},
-    {'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT'}]
+    { 'id': '1', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'CREDIT' },
+    { 'id': '2', 'brand': 'mastercard', 'label': 'Mastercard', 'type': 'DEBIT' },
+    { 'id': '3', 'brand': 'discover', 'label': 'Discover', 'type': 'CREDIT' },
+    { 'id': '4', 'brand': 'maestro', 'label': 'Maestro', 'type': 'DEBIT' }]
 }
 
 function connectorMockResponds (data, searchParameters) {
@@ -59,7 +59,7 @@ describe('The search transactions endpoint', function () {
   beforeEach(function (done) {
     let permissions = 'transactions:read'
     let user = session.getUser({
-      gateway_account_ids: [gatewayAccountId], permissions: [{name: permissions}]
+      gateway_account_ids: [gatewayAccountId], permissions: [{ name: permissions }]
     })
     app = session.getAppWithLoggedInUser(getApp(), user)
 
@@ -99,11 +99,11 @@ describe('The search transactions endpoint', function () {
           'card_brand': 'Visa',
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
         }
       ]
     }
-    let searchParameters = {'reference': 'ref'}
+    let searchParameters = { 'reference': 'ref' }
     connectorMockResponds(connectorData, searchParameters)
 
     let expectedData = {
@@ -123,7 +123,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
 
         },
         {
@@ -141,7 +141,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
 
         }
       ]
@@ -175,7 +175,7 @@ describe('The search transactions endpoint', function () {
         }
       ]
     }
-    let data = {'reference': 'ref1'}
+    let data = { 'reference': 'ref1' }
     connectorMockResponds(connectorData, data)
 
     let expectedData = {
@@ -195,7 +195,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         }
       ]
     }
@@ -244,11 +244,11 @@ describe('The search transactions endpoint', function () {
           },
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
         }
       ]
     }
-    let searchParameters = {'cardholder_name': 'coffee'}
+    let searchParameters = { 'cardholder_name': 'coffee' }
     connectorMockResponds(connectorData, searchParameters)
 
     let expectedData = {
@@ -271,7 +271,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
 
         },
         {
@@ -292,7 +292,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
 
         }
       ]
@@ -344,12 +344,12 @@ describe('The search transactions endpoint', function () {
           },
           'updated': CONNECTOR_DATE,
           'created_date': CONNECTOR_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
         }
       ]
     }
 
-    let searchParameters = {'last_digits_card_number': '2468'}
+    let searchParameters = { 'last_digits_card_number': '2468' }
     connectorMockResponds(connectorData, searchParameters)
 
     let expectedData = {
@@ -373,7 +373,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
 
         },
         {
@@ -395,7 +395,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 101})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 101 })
 
         }
       ]
@@ -428,7 +428,7 @@ describe('The search transactions endpoint', function () {
         }
       ]
     }
-    let data = {'email': 'alice'}
+    let data = { 'email': 'alice' }
     connectorMockResponds(connectorData, data)
 
     let expectedData = {
@@ -448,7 +448,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
 
         }
       ]
@@ -482,7 +482,7 @@ describe('The search transactions endpoint', function () {
         }
       ]
     }
-    let data = {'email': 'alice.111@mail.fake'}
+    let data = { 'email': 'alice.111@mail.fake' }
     connectorMockResponds(connectorData, data)
 
     let expectedData = {
@@ -502,7 +502,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         }
       ]
     }
@@ -535,7 +535,7 @@ describe('The search transactions endpoint', function () {
         }
       ]
     }
-    let data = {'brand': 'visa'}
+    let data = { 'brand': 'visa' }
     connectorMockResponds(connectorData, data)
 
     let expectedData = {
@@ -555,7 +555,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         }
       ]
     }
@@ -608,7 +608,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': DISPLAY_DATE,
           'created': DISPLAY_DATE,
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         }
       ]
     }
@@ -675,7 +675,7 @@ describe('The search transactions endpoint', function () {
           'gateway_account_id': '452345',
           'updated': '11 Jan 2016 — 01:01:01',
           'created': '11 Jan 2016 — 01:01:01',
-          'link': paths.generateRoute(paths.transactions.detail, {chargeId: 100})
+          'link': paths.generateRoute(paths.transactions.detail, { chargeId: 100 })
         }
       ]
     }
@@ -693,7 +693,7 @@ describe('The search transactions endpoint', function () {
       'results': []
     }
 
-    let data = {'reference': 'test'}
+    let data = { 'reference': 'test' }
     connectorMockResponds(connectorData, data)
 
     let expectedData = {

@@ -96,7 +96,7 @@ describe('service users resource', () => {
         name: 'System Generated',
         external_id: externalServiceId
       },
-      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
+      role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
     }]
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
@@ -138,7 +138,7 @@ describe('service users resource', () => {
         name: 'System Generated',
         external_id: externalServiceId
       },
-      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
+      role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
     }]
 
     const user = session.getUser({
@@ -181,7 +181,7 @@ describe('service users resource', () => {
           name: 'System Generated',
           external_id: externalServiceId
         },
-        role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:read'}]}
+        role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:read' }] }
       }]
     })
 
@@ -194,7 +194,7 @@ describe('service users resource', () => {
           name: 'System Generated',
           external_id: externalServiceId
         },
-        role: {name: 'view-only', description: 'View only'}
+        role: { name: 'view-only', description: 'View only' }
       }]
     }
     const getUserResponse = userFixtures.validUserResponse(userToView)
@@ -280,7 +280,7 @@ describe('service users resource', () => {
 
   it('should redirect to my profile when trying to access my user through team members path', done => {
     const userInSession = session.getUser({
-      permissions: [{name: 'users-service:read'}]
+      permissions: [{ name: 'users-service:read' }]
     })
     const externalServiceId = userInSession.serviceRoles[0].service.externalId
     EXTERNAL_ID_LOGGED_IN = userInSession.externalId
@@ -307,7 +307,7 @@ describe('service users resource', () => {
           name: 'System Generated',
           external_id: externalServiceId1
         },
-        role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:read'}]}
+        role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:read' }] }
       }]
     })
     const getUserResponse = userFixtures.validUserResponse({
@@ -343,7 +343,7 @@ describe('service users resource', () => {
 
   it('remove a team member successfully should redirect user to team member', done => {
     const userInSession = session.getUser({
-      permissions: [{name: 'users-service:delete'}]
+      permissions: [{ name: 'users-service:delete' }]
     })
     const externalServiceId = userInSession.serviceRoles[0].service.externalId
     EXTERNAL_ID_LOGGED_IN = userInSession.externalId
@@ -351,7 +351,7 @@ describe('service users resource', () => {
     const userToDelete = {
       external_id: EXTERNAL_ID_OTHER_USER,
       username: USERNAME_OTHER_USER,
-      role: {name: 'view-only'}
+      role: { name: 'view-only' }
     }
 
     const getUserResponse = userFixtures.validUserResponse(userToDelete)
@@ -366,7 +366,7 @@ describe('service users resource', () => {
 
     supertest(app)
       .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
-      .send({csrfToken: csrf().create('123')})
+      .send({ csrfToken: csrf().create('123') })
       .expect(302)
       .expect('Location', formattedPathFor(paths.teamMembers.index, externalServiceId))
       .end(done)
@@ -374,7 +374,7 @@ describe('service users resource', () => {
 
   it('when remove a team member fails when user does not exist should redirect user to error view with link to view team members', done => {
     const userInSession = session.getUser({
-      permissions: [{name: 'users-service:delete'}]
+      permissions: [{ name: 'users-service:delete' }]
     })
 
     const externalServiceId = userInSession.serviceRoles[0].service.externalId
@@ -388,7 +388,7 @@ describe('service users resource', () => {
     supertest(app)
       .post(formattedPathFor(paths.teamMembers.delete, externalServiceId, EXTERNAL_ID_OTHER_USER))
       .set('Accept', 'application/json')
-      .send({csrfToken: csrf().create('123')})
+      .send({ csrfToken: csrf().create('123') })
       .expect(200)
       .expect(res => {
         expect(res.body.error.title).to.equal('This person has already been removed')
@@ -407,7 +407,7 @@ describe('service users resource', () => {
         name: 'System Generated',
         external_id: externalServiceId
       },
-      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
+      role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
     }]
     const user = session.getUser({
       external_id: EXTERNAL_ID_LOGGED_IN,
@@ -434,7 +434,7 @@ describe('service users resource', () => {
       user_exist: false,
       attempt_counter: 0
     }]
-    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{service_roles: serviceRoles}])
+    const serviceUsersRes = userServiceFixtures.validServiceUsersResponse([{ service_roles: serviceRoles }])
     const getInvitesRes = serviceFixtures.validListInvitesForServiceResponse(invites)
 
     adminusersMock.get(`${SERVICE_RESOURCE}/${externalServiceId}/users`)

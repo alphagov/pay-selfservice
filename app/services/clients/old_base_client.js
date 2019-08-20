@@ -6,7 +6,6 @@ const https = require('https')
 const http = require('http')
 const urlParse = require('url').parse
 const _ = require('lodash')
-const logger = require('winston')
 const request = require('requestretry')
 const getNamespace = require('continuation-local-storage').getNamespace
 const AWSXRay = require('aws-xray-sdk')
@@ -79,7 +78,7 @@ const _request = function request (methodName, url, args, callback, subSegment) 
     uri: url,
     method: methodName,
     agent: agent,
-    headers: getHeaders(args, {clsSegment: clsSegment, subSegment: subSegment})
+    headers: getHeaders(args, { clsSegment: clsSegment, subSegment: subSegment })
   }
   if (args.qs) {
     requestOptions.qs = args.qs

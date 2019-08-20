@@ -10,6 +10,6 @@ module.exports = {
    * @param correlationId
    */
   getValidatedInvite: function (code, correlationId) {
-    return getAdminUsersClient({correlationId: correlationId}).getValidatedInvite(code)
+    return getAdminUsersClient({ correlationId: correlationId }).getValidatedInvite(code)
   }
 }
