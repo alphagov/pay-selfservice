@@ -55,7 +55,8 @@ const buildTransactionDetails = (opts = {}) => {
     email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
     payment_provider: opts.payment_provider || 'sandbox',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
-    delayed_capture: opts.delayed_capture || false
+    delayed_capture: opts.delayed_capture || false,
+    transaction_type: 'PAYMENT'
   }
 
   if (opts.includeCardDetails) {

@@ -19,8 +19,8 @@ const port = 8006
 // Global setup
 chai.use(chaiAsPromised)
 
-const existingGatewayAccountId = '42'
-const defaultTransactionId = 'abc123'
+const existingGatewayAccountId = '123456'
+const defaultTransactionId = 'ch_123abc456xyz'
 const defaultTransactionState = `a transaction with fee and net_amount exists`
 
 describe('ledger client', function () {
