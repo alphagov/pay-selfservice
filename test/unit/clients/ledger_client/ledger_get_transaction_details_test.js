@@ -10,6 +10,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger_client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger_transaction_fixtures')
+const legacyConnectorParityTransformer = require('../../../../app/services/clients/utils/ledger_legacy_connector_parity')
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -19,8 +20,8 @@ const port = 8006
 // Global setup
 chai.use(chaiAsPromised)
 
-const existingGatewayAccountId = '42'
-const defaultTransactionId = 'abc123'
+const existingGatewayAccountId = '123456'
+const defaultTransactionId = 'ch_123abc456xyz'
 const defaultTransactionState = `a transaction with fee and net_amount exists`
 
 describe('ledger client', function () {
@@ -67,7 +68,7 @@ describe('ledger client', function () {
     afterEach(() => provider.verify())
 
     it('should get transaction details successfully', function () {
-      const getCreatedTransactionDetails = validCreatedTransactionDetailsResponse.getPlain()
+      const getCreatedTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validCreatedTransactionDetailsResponse.getPlain())
       return ledgerClient.transaction(params.transaction_id, params.account_id, { transaction_type: 'PAYMENT' })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getCreatedTransactionDetails)

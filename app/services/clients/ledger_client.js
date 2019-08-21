@@ -31,7 +31,10 @@ const transaction = function transaction (id, gatewayAccountId, options = {}) {
 const events = function events (transactionId, gatewayAccountId, options = {}) {
   const configuration = Object.assign({
     url: `/v1/transaction/${transactionId}/event`,
-    qs: { gateway_account_id: gatewayAccountId },
+    qs: {
+      account_id: gatewayAccountId,
+      ...options.transaction_type && { transaction_type: options.transaction_type }
+    },
     description: 'List events for a given transaction',
     transform: legacyConnectorEventsParity
   }, defaultOptions, options)
