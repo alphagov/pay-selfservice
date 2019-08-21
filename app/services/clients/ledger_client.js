@@ -18,10 +18,7 @@ const defaultOptions = {
 const transaction = function transaction (id, gatewayAccountId, options = {}) {
   const configuration = Object.assign({
     url: `/v1/transaction/${id}`,
-    qs: {
-      account_id: gatewayAccountId,
-      ...options.transaction_type && { transaction_type: options.transaction_type }
-    },
+    qs: { account_id: gatewayAccountId },
     description: 'Get individual transaction details',
     transform: legacyConnectorTransactionParity
   }, defaultOptions, options)
