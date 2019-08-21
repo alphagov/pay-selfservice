@@ -20,31 +20,37 @@ chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = '123456'
 const defaultTransactionId = 'ch_123abc456xyz'
-const defaultTransactionState = `a transaction with fee and net_amount exists`
+const defaultTransactionState = 'a transaction has CREATED and AUTHORISATION_REJECTED payment events'
 
 describe('ledger client', function () {
   before(() => pactTestProvider.setup())
   after(() => pactTestProvider.finalize())
 
-  describe('get transaction details', () => {
+  describe('get transaction events details', () => {
     const params = {
       account_id: existingGatewayAccountId,
       transaction_id: defaultTransactionId
     }
-    const validCreatedTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
+    const validTransactionEventsResponse = transactionDetailsFixtures.validTransactionEventsResponse({
       transaction_id: params.transaction_id,
-      amount: 100,
-      fee: 5,
-      net_amount: 95,
-      refund_summary_available: 100
+      payment_states: [
+        {
+          status: 'created',
+          timestamp: '2019-08-06T10:34:43.487123Z'
+        },
+        {
+          status: 'failed',
+          timestamp: '2019-08-06T10:34:48.123456Z',
+          event_type: 'AUTHORISATION_REJECTED'
+        }
+      ]
     })
     before(() => {
-      const pactified = validCreatedTransactionDetailsResponse.getPactified()
+      const pactified = validTransactionEventsResponse.getPactified()
       return pactTestProvider.addInteraction(
-        new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}`)
-          .withQuery('account_id', params.account_id)
-          .withQuery('transaction_type', 'PAYMENT')
-          .withUponReceiving('a valid created transaction details request')
+        new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}/event`)
+          .withQuery('gateway_account_id', params.account_id)
+          .withUponReceiving('a valid transaction events details request')
           .withState(defaultTransactionState)
           .withMethod('GET')
           .withStatusCode(200)
@@ -55,11 +61,11 @@ describe('ledger client', function () {
 
     afterEach(() => pactTestProvider.verify())
 
-    it('should get transaction details successfully', function () {
-      const getCreatedTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validCreatedTransactionDetailsResponse.getPlain())
-      return ledgerClient.transaction(params.transaction_id, params.account_id, { transaction_type: 'PAYMENT' })
+    it('should get transaction events successfully', function () {
+      const getTransactionEventsDetails = legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse.getPlain())
+      return ledgerClient.events(params.transaction_id, params.account_id)
         .then((ledgerResponse) => {
-          expect(ledgerResponse).to.deep.equal(getCreatedTransactionDetails)
+          expect(ledgerResponse).to.deep.equal(getTransactionEventsDetails)
         })
     })
   })
