@@ -19,8 +19,8 @@ const port = 8006
 // Global setup
 chai.use(chaiAsPromised)
 
-const existingGatewayAccountId = '42'
-const defaultTransactionId = 'abc123'
+const existingGatewayAccountId = '123456'
+const defaultTransactionId = 'ch_123abc456xyz'
 const defaultTransactionState = `a transaction with fee and net_amount exists`
 
 describe('ledger client', function () {
@@ -67,7 +67,14 @@ describe('ledger client', function () {
     afterEach(() => provider.verify())
 
     it('should get transaction details successfully', function () {
-      const getCreatedTransactionDetails = validCreatedTransactionDetailsResponse.getPlain()
+      const getCreatedTransactionDetails = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
+        transaction_id: params.transaction_id,
+        charge_id: params.transaction_id,
+        amount: 100,
+        fee: 5,
+        net_amount: 95,
+        refund_summary_available: 100
+      }).getPlain()
       return ledgerClient.transaction(params.transaction_id, params.account_id, { transaction_type: 'PAYMENT' })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getCreatedTransactionDetails)

@@ -49,13 +49,19 @@ const buildTransactionDetails = (opts = {}) => {
     state: buildChargeEventStateWithDefaults(opts.state),
     description: opts.description || 'ref1',
     reference: opts.reference || 'ref188888',
-    transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
-    charge_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
-    gateway_transaction_id: opts.gateway_transaction_id || '4cddd970-cce9-4bf1-b087-f13db1e199bd',
+    transaction_id: opts.transaction_id,
     email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
     payment_provider: opts.payment_provider || 'sandbox',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
-    delayed_capture: opts.delayed_capture || false
+    delayed_capture: opts.delayed_capture || false,
+    transaction_type: 'PAYMENT'
+  }
+
+  if (opts.charge_id) {
+    data.charge_id = opts.charge_id
+  }
+  if (opts.gateway_transaction_id) {
+    data.gateway_transaction_id = opts.gateway_transaction_id
   }
 
   if (opts.includeCardDetails) {
