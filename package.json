@@ -98,7 +98,7 @@
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "qrcode": "1.4.1",
-    "qs": "^6.7.0",
+    "qs": "^6.8.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "requestretry": "^4.0.0",
