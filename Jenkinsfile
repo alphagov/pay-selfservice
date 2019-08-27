@@ -60,6 +60,7 @@ pipeline {
           runPactProviderTests("pay-connector", "${env.PACT_TAG}")
           runPactProviderTests("pay-products", "${env.PACT_TAG}")
           runPactProviderTests("pay-direct-debit-connector", "${env.PACT_TAG}")
+          runPactProviderTests("pay-ledger", "${env.PACT_TAG}")
         }
       }
       post {
