@@ -51,20 +51,13 @@ See [About Cypress tests in selfservice](./test/cypress/cypress_testing.md) for 
 | SESSION_ENCRYPTION_KEY      | X |      | Key to be used by the cookie encryption algorithm. Should be a large unguessable string ([More Info](https://www.npmjs.com/package/client-sessions)).  |
 | PUBLIC_AUTH_URL             | X |      | The publicauth endpoint to use when API Tokens. |
 | PUBLIC_AUTH_URL             | X |      | The endpoint to connector base URL. |
-| SECURE_COOKIE_OFF           |   | false/undefined | To switch off generating secure cookies. Set this to `true` only if you are running self service in a `non HTTPS` environment. |
+| DISABLE_INTERNAL_HTTPS      |   | false/undefined | To switch off generating secure cookies. Set this to `true` only if you are running self service in a `non HTTPS` environment. |
 | HTTP_PROXY_ENABLED          |   | false/undefined | To enable proxying outbound traffic of HTTP(S) requests. If set to `true` make sure to set the following 3 variables |
 | HTTP_PROXY                  |   |      | HTTP proxy url |
 | HTTPS_PROXY                 |   |      | HTTPS proxy url |
 | NO_PROXY                    |   |      | host:port(s) that need to be by passed by the proxy. Supports comma separated list |
 | NODE_WORKER_COUNT           |   | 1 | The number of worker threads started by node cluster when run in production mode |
 | FEATURE_USE_LEDGER_PAYMENTS |   | false/undefined | Use the Ledger service as the source of payment data in favour of card connector |
-
-
-### Secure Cookie
-Set this to 'true' only if you are running self service in a non HTTPS environment.
-```
-SECURE_COOKIE_OFF=true
-```
 
 ## Architecture Decision Records
 
