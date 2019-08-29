@@ -77,6 +77,9 @@ function validateField (form, field) {
       case 'phone':
         result = checks.isPhoneNumber(field.value)
         break
+      case 'url':
+        result = checks.isURL(field.value)
+        break
       case 'https':
         result = checks.isHttps(field.value)
         break

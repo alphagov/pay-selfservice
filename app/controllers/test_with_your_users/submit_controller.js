@@ -27,7 +27,9 @@ module.exports = (req, res) => {
     req.flash('genericError', `<h2>Use valid characters only</h2> ${isCurrency(paymentAmountInPence)}`)
   } else if (isAboveMaxAmount(penceToPounds(paymentAmountInPence))) {
     req.flash('genericError', `<h2>Enter a valid amount</h2> ${isAboveMaxAmount(penceToPounds(paymentAmountInPence))}`)
-  } else if (!confirmationPage || isHttps(confirmationPage)) {
+  } else if (process.env.ALLOW_HTTP_CONFIRMATION_PAGES === 'true' && (!confirmationPage || isURL(confirmationPage))) {
+    req.flash('genericError', `<h2>Enter a valid URL</h2>${isURL(confirmationPage)}`)
+  } else if (process.env.ALLOW_HTTP_CONFIRMATION_PAGES !== 'true' && (!confirmationPage || isHttps(confirmationPage))) {
     req.flash('genericError', `<h2>Enter a valid secure URL</h2>${isHttps(confirmationPage)}`)
   }
 

@@ -15,6 +15,7 @@ const validationErrors = {
   currency: 'Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”',
   phoneNumber: 'Must be a 11 digit phone number',
   validEmail: 'Please use a valid email address',
+  isURL: 'Please use a valid URL',
   isHttps: 'URL must begin with https://',
   isAboveMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: 'Choose a Password of 10 characters or longer',
@@ -59,6 +60,14 @@ exports.isPhoneNumber = function (value) {
     return validationErrors.phoneNumber
   } else {
     return false
+  }
+}
+
+exports.isURL = function (value) {
+  try {
+    return new url.URL(value) ? validationErrors.isURL : false
+  } catch(err) {
+    return validationErrors.isURL
   }
 }
 
