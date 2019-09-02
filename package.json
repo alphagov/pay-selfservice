@@ -82,7 +82,7 @@
     "correlation-id": "^3.1.0",
     "csrf": "3.1.x",
     "express": "4.17.x",
-    "google-libphonenumber": "^3.2.3",
+    "google-libphonenumber": "^3.2.4",
     "govuk-frontend": "^3.0.0",
     "http-proxy": "1.17.x",
     "https-proxy-agent": "^2.2.2",
