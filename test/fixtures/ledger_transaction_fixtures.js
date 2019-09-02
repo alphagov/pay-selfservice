@@ -97,6 +97,12 @@ const buildTransactionDetails = (opts = {}) => {
     }
   }
 
+  if (opts.cardholder_name) {
+    data.card_details = {
+      cardholder_name: opts.cardholder_name
+    }
+  }
+
   if (opts.includeSearchResultCardDetails) {
     data.card_details = {
       last_digits_card_number: opts.last_digits_card_number || '0002',
@@ -111,7 +117,7 @@ const buildTransactionDetails = (opts = {}) => {
       status: opts.refund_summary_status || 'unavailable',
       user_external_id: opts.user_external_id || null,
       amount_available: opts.refund_summary_available || 20000,
-      amount_refunded: opts.amount_refunded || 0
+      amount_submitted: opts.amount_submitted || 0
     }
   }
 

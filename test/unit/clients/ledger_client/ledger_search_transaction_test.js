@@ -33,6 +33,20 @@ describe('ledger client', function () {
       gateway_account_id: existingGatewayAccountId,
       transactions: [
         {
+          amount: 2000,
+          state: {
+            status: 'success',
+            finished: true
+          },
+          transaction_id: '222222',
+          created_date: '2018-09-22T10:14:15.067Z',
+          refund_summary_status: 'available',
+          refund_summary_available: 1850,
+          amount_submitted: 150,
+          type: 'payment',
+          card_brand: 'visa'
+        },
+        {
           amount: 1000,
           state: {
             status: 'started',
@@ -42,25 +56,7 @@ describe('ledger client', function () {
           created_date: '2018-09-21T10:14:16.067Z',
           refund_summary_status: 'available',
           refund_summary_available: 1000,
-          capture_submit_time: '2018-09-21T10:14:18.067Z',
-          captured_date: '2018-09-21T10:14:25.067Z',
           type: 'payment'
-        },
-        {
-          amount: 2000,
-          state: {
-            status: 'success',
-            finished: true
-          },
-          transaction_id: '222222',
-          created_date: '2018-09-22T10:14:16.067Z',
-          refund_summary_status: 'available',
-          refund_summary_available: 1850,
-          amount_refunded: 150,
-          capture_submit_time: '2018-09-22T10:14:18.067Z',
-          captured_date: '2018-09-22T10:14:25.067Z',
-          type: 'payment',
-          card_brand: 'visa'
         },
         {
           amount: 150,
@@ -68,7 +64,7 @@ describe('ledger client', function () {
             status: 'success',
             finished: true
           },
-          created_date: '2018-09-25T10:14:16.067Z',
+          created_date: '2018-09-26T10:14:16.067Z',
           parent_transaction_id: '222222',
           type: 'refund'
         }
