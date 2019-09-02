@@ -288,7 +288,7 @@ describe('connector client', function () {
       provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTIONS_RESOURCE}/${params.gatewayAccountId}/charges`)
           .withUponReceiving('a valid transactions request filtered by payment states, a date range and a partial reference')
-          .withState(`Account ${params.gatewayAccountId} exists in the database and has 1 available transaction with a payment state of success, a reference matching the partial search ${params.reference} and falls between the date range ${fromDateTime} amd ${toDateTime}`)
+          .withState(`Account ${params.gatewayAccountId} exists in the database and has 1 available transaction with a payment state of success, a reference matching the search ${params.reference} and falls between the date range ${fromDateTime} amd ${toDateTime}`)
           .withMethod('GET')
           .withQuery('reference', params.reference)
           .withQuery('cardholder_name', '')
