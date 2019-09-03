@@ -35,7 +35,7 @@ describe('Dashboard', () => {
   describe('Dashboard', () => {
     const dashboardUrl = `/`
 
-    it(`should display Connect to GoCardless if direct debit gateway account is not connected to GoCardless`, () => {
+    it.skip(`should display Connect to GoCardless if direct debit gateway account is not connected to GoCardless`, () => {
       setupDirectDebitGatewayAccount(false)
 
       cy.visit(dashboardUrl)
@@ -43,7 +43,7 @@ describe('Dashboard', () => {
       cy.get('a[href="/link-account"').should('exist')
     })
 
-    it('should display Dashboard if direct debit gateway account is connected to GoCardless', function () {
+    it.skip('should display Dashboard if direct debit gateway account is connected to GoCardless', function () {
       setupDirectDebitGatewayAccount(true)
 
       cy.visit(dashboardUrl)
@@ -51,7 +51,7 @@ describe('Dashboard', () => {
       cy.get('a[href="https://manage.gocardless.com/sign-in"').should('exist')
     })
 
-    it('should display Dashboard for direct debit sandbox gateway account', function () {
+    it.skip('should display Dashboard for direct debit sandbox gateway account', function () {
       setupDirectDebitGatewayAccount(false, 'sandbox')
 
       cy.visit(dashboardUrl)
