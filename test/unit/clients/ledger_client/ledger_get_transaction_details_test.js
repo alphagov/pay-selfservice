@@ -1,19 +1,21 @@
 'use strict'
 
 // NPM dependencies
+const Pact = require('pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 // Custom dependencies
+const path = require('path')
 const PactInteractionBuilder = require('../../../fixtures/pact_interaction_builder').PactInteractionBuilder
 const ledgerClient = require('../../../../app/services/clients/ledger_client')
 const transactionDetailsFixtures = require('../../../fixtures/ledger_transaction_fixtures')
 const legacyConnectorParityTransformer = require('../../../../app/services/clients/utils/ledger_legacy_connector_parity')
-const pactTestProvider = require('./ledger_pact_test_provider')
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
 const expect = chai.expect
+const port = 8006
 
 // Global setup
 chai.use(chaiAsPromised)
@@ -23,8 +25,18 @@ const defaultTransactionId = 'ch_123abc456xyz'
 const defaultTransactionState = `a transaction with fee and net_amount exists`
 
 describe('ledger client', function () {
-  before(() => pactTestProvider.setup())
-  after(() => pactTestProvider.finalize())
+  const provider = Pact({
+    consumer: 'selfservice',
+    provider: 'ledger',
+    port: port,
+    log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    dir: path.resolve(process.cwd(), 'pacts'),
+    spec: 2,
+    pactfileWriteMode: 'merge'
+  })
+
+  before(() => provider.setup())
+  after(() => provider.finalize())
 
   describe('get transaction details', () => {
     const params = {
@@ -40,7 +52,7 @@ describe('ledger client', function () {
     })
     before(() => {
       const pactified = validCreatedTransactionDetailsResponse.getPactified()
-      return pactTestProvider.addInteraction(
+      return provider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}`)
           .withQuery('account_id', params.account_id)
           .withQuery('transaction_type', 'PAYMENT')
@@ -53,7 +65,7 @@ describe('ledger client', function () {
       )
     })
 
-    afterEach(() => pactTestProvider.verify())
+    afterEach(() => provider.verify())
 
     it('should get transaction details successfully', function () {
       const getCreatedTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validCreatedTransactionDetailsResponse.getPlain())
