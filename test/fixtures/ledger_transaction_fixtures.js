@@ -87,13 +87,7 @@ const buildTransactionDetails = (opts = {}) => {
         city: opts.billing_address_city || 'London',
         country: opts.billing_address_country || 'GB'
       },
-      card_brand: opts.card_brand || 'Visa'
-    }
-  }
-
-  if (opts.card_brand) {
-    data.card_details = {
-      card_brand: opts.card_brand
+      card_brand: opts.card_brand || 'visa'
     }
   }
 
@@ -264,6 +258,7 @@ module.exports = {
     opts.transactions.forEach(transaction => {
       transaction.gateway_account_id = opts.gateway_account_id
       if (transaction.type === 'payment') {
+        transaction.includeCardDetails = true
         transaction.includeRefundSummary = true
         transaction.includeSettlementSummary = true
         results.push(buildTransactionDetails(transaction))

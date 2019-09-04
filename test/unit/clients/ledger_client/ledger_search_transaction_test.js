@@ -19,7 +19,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised)
 
 const existingGatewayAccountId = '123456'
-const defaultTransactionState = `two payments and a refund transactions exist for selfservice search`
+const defaultTransactionState = `refund transactions exists for a gateway account`
 
 describe('ledger client', function () {
   before(() => pactTestProvider.setup())
@@ -35,13 +35,14 @@ describe('ledger client', function () {
         {
           amount: 1000,
           state: {
-            status: 'started',
-            finished: false
+            status: 'success',
+            finished: true
           },
           transaction_id: '111111',
           created_date: '2018-09-21T10:14:16.067Z',
           refund_summary_status: 'available',
-          refund_summary_available: 1000,
+          refund_summary_available: 950,
+          amount_refunded: 50,
           capture_submit_time: '2018-09-21T10:14:18.067Z',
           captured_date: '2018-09-21T10:14:25.067Z',
           type: 'payment'
@@ -55,15 +56,24 @@ describe('ledger client', function () {
           transaction_id: '222222',
           created_date: '2018-09-22T10:14:16.067Z',
           refund_summary_status: 'available',
-          refund_summary_available: 1850,
-          amount_refunded: 150,
+          refund_summary_available: 1900,
+          amount_refunded: 100,
           capture_submit_time: '2018-09-22T10:14:18.067Z',
           captured_date: '2018-09-22T10:14:25.067Z',
-          type: 'payment',
-          card_brand: 'visa'
+          type: 'payment'
         },
         {
-          amount: 150,
+          amount: 50,
+          state: {
+            status: 'success',
+            finished: true
+          },
+          created_date: '2018-09-23T10:14:16.067Z',
+          parent_transaction_id: '111111',
+          type: 'refund'
+        },
+        {
+          amount: 100,
           state: {
             status: 'success',
             finished: true
