@@ -2,6 +2,10 @@ version: 1
 
 update_configs:
   - package_manager: "javascript"
+    default_labels:
+      - "dependencies"
+      - "govuk-pay"
+      - "javascript"
     directory: "/"
     update_schedule: "weekly"
     allowed_updates:
@@ -14,3 +18,7 @@ update_configs:
   - package_manager: "docker"
     directory: "/"
     update_schedule: "weekly"
+    default_labels:
+      - "dependencies"
+      - "govuk-pay"
+      - "javascript"
