@@ -14,9 +14,15 @@
   ga('set', 'displayFeaturesTask', null);
   ga('set', 'transport', 'beacon');
 
+  ga('create', 'UA-145652997-1', 'auto', 'govuk_shared', {'allowLinker': true});
+  ga('govuk_shared.require', 'linker');
+  ga('govuk_shared.linker.set', 'anonymizeIp', true);
+  ga('govuk_shared.linker:autoLink', ['www.gov.uk']);
+
   var filtered_page_path = document.location.pathname + document.location.search.replace(/&email=[\w%.-]*/, '');
   ga('set', 'page', filtered_page_path);
   ga('send', 'pageview');
+  ga('govuk_shared.send', 'pageview');
 
 </script>
 <!-- End Google Analytics -->
