@@ -46,7 +46,7 @@ describe('Login view', function () {
       const templateData = {
         authenticatorMethod: 'SMS',
         flash: {
-          error: 'Invalid security code'
+          error: 'The security code you’ve used is incorrect or has expired.'
         }
       }
 
@@ -54,7 +54,7 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Check your phone')
 
-      body.should.containSelector('.govuk-error-message').withExactText('Error: Invalid security code')
+      body.should.containSelector('.govuk-error-message').withExactText('Error: The security code you’ve used is incorrect or has expired.')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
 

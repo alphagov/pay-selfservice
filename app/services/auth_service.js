@@ -103,7 +103,7 @@ function localStrategyAuth (req, username, password, done) {
 function localStrategy2Fa (req, done) {
   return userService.authenticateSecondFactor(req.user.externalId, req.body.code)
     .then((user) => done(null, user))
-    .catch(() => done(null, false, {message: 'Invalid security code'}))
+    .catch(() => done(null, false, {message: 'The security code you’ve used is incorrect or has expired.'}))
 }
 
 function localDirectStrategy (req, done) {
