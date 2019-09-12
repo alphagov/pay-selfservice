@@ -140,6 +140,19 @@ const buildTransactionDetails = (opts = {}) => {
   return data
 }
 
+const buildRefundDetails = (opts = {}) => {
+  return {
+    gateway_account_id: opts.gateway_account_id || '1',
+    amount: opts.amount || 10,
+    state: buildChargeEventStateWithDefaults(opts),
+    reference: opts.reference || 'aaba9756-15af-4ab0-b2c2-8696bc47655e',
+    created_date: opts.created_date || '2019-08-20T14:39:49.536Z',
+    transaction_type: 'REFUND',
+    transaction_id: opts.transaction_id || '1b5kia0u28ll2ic4obv26r5e4h',
+    parent_transaction_id: opts.parent_transaction_id || 'puuhl0gu7egigin7oh9c75p4m1'
+  }
+}
+
 module.exports = {
   validTransactionSummaryResponse: () => {
     let data = {
@@ -245,6 +258,30 @@ module.exports = {
     const data = {
       transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
       events: (opts.payment_states) ? buildPaymentEvents(opts) : []
+    }
+
+    return {
+      getPactified: () => pactRegister.pactify(data),
+      getPlain: () => data
+    }
+  },
+  validTransactionSearchResponse: (opts = {}) => {
+    let results = []
+    opts.transactions.forEach(transaction => {
+      transaction.gateway_account_id = opts.gateway_account_id
+      if (transaction.type === 'payment') {
+        transaction.includeRefundSummary = true
+        transaction.includeSettlementSummary = true
+        results.push(buildTransactionDetails(transaction))
+      } else if (transaction.type === 'refund') {
+        results.push(buildRefundDetails(transaction))
+      }
+    })
+    const data = {
+      total: opts.transactions.length,
+      count: opts.transactions.length,
+      page: opts.page || 1,
+      results: results
     }
 
     return {
