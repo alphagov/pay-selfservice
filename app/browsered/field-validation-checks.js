@@ -1,7 +1,5 @@
 'use strict'
 
-const url = require('url');
-
 // Local dependencies
 const emailValidator = require('../utils/email_tools.js')
 
@@ -63,10 +61,10 @@ exports.isPhoneNumber = function (value) {
 }
 
 exports.isHttps = function (value) {
-  try {
-    return new url.URL(value).protocol !== 'https:' ? validationErrors.isHttps : false
-  } catch(err) {
+  if (value.substr(0, 8) !== 'https://') {
     return validationErrors.isHttps
+  } else {
+    return false
   }
 }
 
