@@ -26,7 +26,7 @@ const buildChargeEventWithDefaults = (opts = {}) => {
 
 const buildChargeEventStateWithDefaults = (opts = {}) => {
   let state
-  if (opts.status === 'failed') {
+  if (opts.status === 'declined') {
     state = {
       status: opts.status,
       finished: true,
@@ -41,6 +41,20 @@ const buildChargeEventStateWithDefaults = (opts = {}) => {
   }
 
   return state
+}
+
+const buildPaymentEvents = (opts = {}) => {
+  let events = []
+  if (opts.payment_states) {
+    opts.payment_states.forEach(paymentState => {
+      events.push({
+        state: buildChargeEventStateWithDefaults(paymentState),
+        resource_type: 'PAYMENT',
+        data: {}
+      })
+    })
+  }
+  return events
 }
 
 const buildTransactionDetails = (opts = {}) => {
@@ -77,6 +91,18 @@ const buildTransactionDetails = (opts = {}) => {
     }
   }
 
+  if (opts.card_brand) {
+    data.card_details = {
+      card_brand: opts.card_brand
+    }
+  }
+
+  if (opts.cardholder_name) {
+    data.card_details = {
+      cardholder_name: opts.cardholder_name
+    }
+  }
+
   if (opts.includeSearchResultCardDetails) {
     data.card_details = {
       last_digits_card_number: opts.last_digits_card_number || '0002',
@@ -91,7 +117,7 @@ const buildTransactionDetails = (opts = {}) => {
       status: opts.refund_summary_status || 'unavailable',
       user_external_id: opts.user_external_id || null,
       amount_available: opts.refund_summary_available || 20000,
-      amount_submitted: opts.refund_summary_submitted || 0
+      amount_submitted: opts.amount_submitted || 0
     }
   }
 
@@ -189,12 +215,8 @@ module.exports = {
     }
 
     return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
+      getPactified: () => pactRegister.pactify(data),
+      getPlain: () => data
     }
   },
   validTransactionRefundRequest: (opts = {}) => {
@@ -205,12 +227,8 @@ module.exports = {
     }
 
     return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
+      getPactified: () => pactRegister.pactify(data),
+      getPlain: () => data
     }
   },
   invalidTransactionRefundResponse: (opts = {}) => {
@@ -219,12 +237,19 @@ module.exports = {
     }
 
     return {
-      getPactified: () => {
-        return pactRegister.pactify(data)
-      },
-      getPlain: () => {
-        return data
-      }
+      getPactified: () => pactRegister.pactify(data),
+      getPlain: () => data
+    }
+  },
+  validTransactionEventsResponse: (opts = {}) => {
+    const data = {
+      transaction_id: opts.transaction_id || 'ht439nfg2l1e303k0dmifrn4fc',
+      events: (opts.payment_states) ? buildPaymentEvents(opts) : []
+    }
+
+    return {
+      getPactified: () => pactRegister.pactify(data),
+      getPlain: () => data
     }
   }
 }
