@@ -7,7 +7,4 @@ then
   set +a  
 fi
 
-export CERTS_PATH=$WORKSPACE/pay-scripts/services/ssl/certs
-export PGSSLROOTCERT=$CERTS_PATH/selfservice.db.pymnt.localdomain.crt
-
 eval "$@"
