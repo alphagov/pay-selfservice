@@ -105,7 +105,7 @@
     "rfc822-validate": "^1.0.0",
     "serve-favicon": "2.5.0",
     "slugify": "^1.3.5",
-    "staticify": "3.3.3",
+    "staticify": "3.3.4",
     "stripe": "^7.8.0",
     "throng": "4.0.x",
     "uk-postcode": "0.1.x",
