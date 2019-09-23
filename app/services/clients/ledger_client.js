@@ -39,7 +39,7 @@ const events = function events (transactionId, gatewayAccountId, options = {}) {
 }
 
 const transactions = function transactions (gatewayAccountId, filters = {}, urlOverride, options = {}) {
-  const path = `/v1/transaction?account_id=${gatewayAccountId}&${getQueryStringForParams(filters, true, true)}`
+  const path = `/v1/transaction?with_parent_transaction=true&account_id=${gatewayAccountId}&${getQueryStringForParams(filters, true, true)}`
   const configuration = Object.assign({
     url: urlOverride ? url.parse(urlOverride).path : path,
     description: 'List transactions for a given gateway account ID',

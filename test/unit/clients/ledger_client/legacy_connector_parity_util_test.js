@@ -19,6 +19,43 @@ describe('Ledger service client legacy parity utilities', () => {
       assert.strictEqual(result.charge_id, 'some-transaction-id')
       assert.strictEqual(result.refund_summary.amount_submitted, 1000)
     })
+
+    it('Correctly maps ledger values on refund parent transaction to current connector names', () => {
+      const ledgerTransactionFixture = {
+        transaction_id: 'some-transaction-id',
+        transaction_type: 'REFUND',
+        refund_summary: {
+          amount_refunded: 1000
+        },
+        parent_transaction: {
+          transaction_id: 'charge-id',
+          gateway_transaction_id: 'payment-gateway-transaction-id',
+          reference: 'payment-reference',
+          description: 'payment-descriptiom',
+          email: 'test-email@example.org',
+          card_details: {
+            cardholder_name: 'test-name',
+            card_brand: 'visa',
+            last_digits_card_number: '5556',
+            first_digits_card_number: '400005',
+            expiry_date: '11/21'
+          }
+        }
+      }
+
+      const result = legacyConnectorTransactionParity(ledgerTransactionFixture)
+      assert.strictEqual(result.charge_id, 'charge-id')
+      assert.strictEqual(result.gateway_transaction_id, 'payment-gateway-transaction-id')
+      assert.strictEqual(result.reference, 'payment-reference')
+      assert.strictEqual(result.description, 'payment-descriptiom')
+      assert.strictEqual(result.email, 'test-email@example.org')
+      assert.strictEqual(result.card_details.cardholder_name, 'test-name')
+      assert.strictEqual(result.card_details.card_brand, 'visa')
+      assert.strictEqual(result.card_details.last_digits_card_number, '5556')
+      assert.strictEqual(result.card_details.first_digits_card_number, '400005')
+      assert.strictEqual(result.card_details.expiry_date, '11/21')
+      assert.strictEqual(result.refund_summary.amount_submitted, 1000)
+    })
   })
 
   describe('Event parity', () => {
@@ -68,11 +105,21 @@ describe('Ledger service client legacy parity utilities', () => {
       const ledgerTransactionsSearchFixture = {
         results: [{
           transaction_id: 'some-charge-id'
+        },
+        {
+          transaction_id: 'some-transaction-id',
+          transaction_type: 'REFUND',
+          parent_transaction: {
+            transaction_id: 'charge-id',
+            reference: 'payment-reference'
+          }
         }]
       }
       const transactions = legacyConnectorTransactionsParity(ledgerTransactionsSearchFixture)
 
       assert.strictEqual(transactions.results[0].charge_id, 'some-charge-id')
+      assert.strictEqual(transactions.results[1].charge_id, 'charge-id')
+      assert.strictEqual(transactions.results[1].reference, 'payment-reference')
     })
   })
 })
