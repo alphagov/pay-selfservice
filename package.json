@@ -84,7 +84,7 @@
     "express": "4.17.x",
     "google-libphonenumber": "^3.2.5",
     "govuk-frontend": "^3.0.0",
-    "http-proxy": "1.17.x",
+    "http-proxy": "1.18.x",
     "https-proxy-agent": "^2.2.2",
     "joi": "^14.3.1",
     "json2csv": "4.5.x",
