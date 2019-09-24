@@ -13,7 +13,21 @@ const legacyConnectorTransactionParity = (transaction) => {
   if (transaction.refund_summary && transaction.refund_summary.amount_refunded) {
     transaction.refund_summary.amount_submitted = transaction.refund_summary.amount_refunded
   }
+
   transaction.charge_id = transaction.transaction_id
+
+  if (transaction.transaction_type && transaction.transaction_type.toLowerCase() === 'refund') {
+    if (transaction.parent_transaction !== undefined && transaction.parent_transaction !== null) {
+      let charge = transaction.parent_transaction
+      transaction.charge_id = charge.transaction_id
+      transaction.gateway_transaction_id = charge.gateway_transaction_id
+      transaction.reference = charge.reference
+      transaction.description = charge.description
+      transaction.email = charge.email
+      transaction.card_details = charge.card_details
+    }
+  }
+
   return transaction
 }
 

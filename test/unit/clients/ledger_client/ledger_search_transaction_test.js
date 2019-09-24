@@ -75,6 +75,7 @@ describe('ledger client', function () {
       return pactTestProvider.addInteraction(
         new PactInteractionBuilder(`${TRANSACTION_RESOURCE}`)
           .withQuery('account_id', params.account_id)
+          .withQuery('with_parent_transaction', 'true')
           .withQuery('page', '1')
           .withQuery('display_size', '100')
           .withUponReceiving('a valid search transaction details request')
