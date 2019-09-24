@@ -78,7 +78,7 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
         {
           label: 'Amount',
           value: row => {
-            return (row.transaction_type === 'refund') ? penceToPounds(parseInt(row.amount) * -1) : penceToPounds(parseInt(row.amount))
+            return (row.transaction_type && row.transaction_type.toLowerCase() === 'refund') ? penceToPounds(parseInt(row.amount) * -1) : penceToPounds(parseInt(row.amount))
           }
         },
         ...getSanitisableFields([
@@ -124,7 +124,7 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
           label: 'Total Amount',
           value: row => {
             const amountInPence = row.total_amount ? row.total_amount : row.amount
-            return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
+            return (row.transaction_type && row.transaction_type.toLowerCase() === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
           }
         },
         {
@@ -139,7 +139,7 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
             label: 'Net',
             value: row => {
               const amountInPence = row.net_amount || row.total_amount || row.amount
-              return (row.transaction_type === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
+              return (row.transaction_type && row.transaction_type.toLowerCase() === 'refund') ? penceToPounds(parseInt(amountInPence) * -1) : penceToPounds(parseInt(amountInPence))
             }
           }
         ] : [],

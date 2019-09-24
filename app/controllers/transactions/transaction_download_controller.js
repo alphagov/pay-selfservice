@@ -25,7 +25,7 @@ module.exports = (req, res) => {
   transactionService.searchAll(accountId, filters, correlationId)
     .then(json => {
       let refundTransactionUserIds = json.results
-        .filter(res => res.transaction_type === 'refund')
+        .filter(res => res.transaction_type && res.transaction_type.toLowerCase() === 'refund')
         .map(res => res.refund_summary.user_external_id)
         .filter(userId => userId) // we call filter because we want to filter out all "falsy" values
       refundTransactionUserIds = lodash.uniq(refundTransactionUserIds)
@@ -42,7 +42,7 @@ module.exports = (req, res) => {
             }, {})
             const results = json.results
               .map(res => {
-                if (res.transaction_type === 'refund') {
+                if (res.transaction_type && res.transaction_type.toLowerCase() === 'refund') {
                   res.refund_summary.user_username = userUsernameMap[res.refund_summary.user_external_id]
                 }
                 return res

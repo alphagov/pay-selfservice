@@ -24,6 +24,7 @@ describe('Ledger service client legacy parity utilities', () => {
       const ledgerTransactionFixture = {
         transaction_id: 'some-transaction-id',
         transaction_type: 'REFUND',
+        refunded_by: 'f579410614654249987ad939f5ef53a1',
         refund_summary: {
           amount_refunded: 1000
         },
@@ -45,6 +46,7 @@ describe('Ledger service client legacy parity utilities', () => {
 
       const result = legacyConnectorTransactionParity(ledgerTransactionFixture)
       assert.strictEqual(result.charge_id, 'charge-id')
+      assert.strictEqual(result.refund_summary.user_external_id, 'f579410614654249987ad939f5ef53a1')
       assert.strictEqual(result.gateway_transaction_id, 'payment-gateway-transaction-id')
       assert.strictEqual(result.reference, 'payment-reference')
       assert.strictEqual(result.description, 'payment-descriptiom')
@@ -109,6 +111,7 @@ describe('Ledger service client legacy parity utilities', () => {
         {
           transaction_id: 'some-transaction-id',
           transaction_type: 'REFUND',
+          refunded_by: 'f579410614654249987ad939f5ef53a1',
           parent_transaction: {
             transaction_id: 'charge-id',
             reference: 'payment-reference'
@@ -119,6 +122,7 @@ describe('Ledger service client legacy parity utilities', () => {
 
       assert.strictEqual(transactions.results[0].charge_id, 'some-charge-id')
       assert.strictEqual(transactions.results[1].charge_id, 'charge-id')
+      assert.strictEqual(transactions.results[1].refund_summary.user_external_id, 'f579410614654249987ad939f5ef53a1')
       assert.strictEqual(transactions.results[1].reference, 'payment-reference')
     })
   })

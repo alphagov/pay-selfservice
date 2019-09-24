@@ -14,6 +14,13 @@ const legacyConnectorTransactionParity = (transaction) => {
     transaction.refund_summary.amount_submitted = transaction.refund_summary.amount_refunded
   }
 
+  if (transaction.refunded_by) {
+    if (transaction.refund_summary === undefined) {
+      transaction.refund_summary = {}
+    }
+    transaction.refund_summary.user_external_id = transaction.refunded_by
+  }
+
   transaction.charge_id = transaction.transaction_id
 
   if (transaction.transaction_type && transaction.transaction_type.toLowerCase() === 'refund') {
