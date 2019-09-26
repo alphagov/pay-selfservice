@@ -41,11 +41,13 @@ module.exports = (req, res) => {
               return map
             }, {})
             const results = json.results
-              .map(res => {
-                if (res.transaction_type && res.transaction_type.toLowerCase() === 'refund') {
-                  res.refund_summary.user_username = userUsernameMap[res.refund_summary.user_external_id]
+              .map(transactionRow => {
+                if (transactionRow.transaction_type && transactionRow.transaction_type.toLowerCase() === 'refund') {
+                  if (transactionRow.refund_summary.user_external_id) {
+                    transactionRow.refund_summary.user_username = userUsernameMap[transactionRow.refund_summary.user_external_id]
+                  }
                 }
-                return res
+                return transactionRow
               })
             return jsonToCsv(results, isStripeAccount)
           })

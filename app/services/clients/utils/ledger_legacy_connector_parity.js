@@ -14,10 +14,11 @@ const legacyConnectorTransactionParity = (transaction) => {
     transaction.refund_summary.amount_submitted = transaction.refund_summary.amount_refunded
   }
 
+  if (transaction.refund_summary === undefined) {
+    transaction.refund_summary = {}
+  }
+
   if (transaction.refunded_by) {
-    if (transaction.refund_summary === undefined) {
-      transaction.refund_summary = {}
-    }
     transaction.refund_summary.user_external_id = transaction.refunded_by
   }
 
