@@ -89,6 +89,7 @@ Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_typ
           text: detailsHint
         },
         attributes: {
+          "data-validate": "isNaxsiSafe",
           "autofocus": change !== "payment-link-description",
           "rows": "5",
           "lang": lang

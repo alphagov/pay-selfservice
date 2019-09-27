@@ -17,7 +17,7 @@ const validationErrors = {
   isAboveMaxAmount: `Choose an amount under £${MAX_AMOUNT.toLocaleString()}`,
   isPasswordLessThanTenChars: 'Choose a Password of 10 characters or longer',
   isGreaterThanMaxLengthChars: 'The text is too long',
-  invalidCharacters: `You cannot use any of the following characters < > ; : \` ( ) " ' = | , ~ [ ]`,
+  invalidCharacters: `You cannot use any of the following characters < > ; |`,
   invalidBankAccountNumber: 'Enter a valid account number',
   invalidSortCode: 'Enter a valid sort code',
   invalidVatNumber: 'Enter a valid VAT number',
@@ -83,7 +83,7 @@ exports.isFieldGreaterThanMaxLengthChars = (value, maxLength) => {
 exports.isPasswordLessThanTenChars = value => !value || value.length < 10 ? validationErrors.isPasswordLessThanTenChars : false
 
 exports.isNaxsiSafe = function (value) {
-  if (/[<>;:`()"'=|,~[\]]+/g.test(value)) {
+  if (/[<>;|]+/g.test(value)) {
     return validationErrors.invalidCharacters
   } else {
     return false
