@@ -65,7 +65,7 @@ describe('The create payment link flow', () => {
 
             cy.get('div#payment-link-title-confirmation').should('not.exist')
 
-            cy.get('button[type=submit]').should('exist')
+            cy.get('button').should('exist')
           })
 
         cy.get('#payment-link-example').should('exist').within(() => {
@@ -88,7 +88,7 @@ describe('The create payment link flow', () => {
 
       it('Should continue to the reference page', () => {
         cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
-          cy.get('button[type=submit]').click()
+          cy.get('button').click()
         })
 
         cy.location().should((location) => {
@@ -117,7 +117,7 @@ describe('The create payment link flow', () => {
             cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
               .should('contain', 'Tell users what the')
 
-            cy.get('button[type=submit]').should('exist')
+            cy.get('button').should('exist')
           })
 
         cy.get('#payment-link-example').should('exist').within(() => {
@@ -131,7 +131,7 @@ describe('The create payment link flow', () => {
           .within(() => {
             cy.get('input#reference-label').type(referenceName)
             cy.get('textarea#reference-hint-text').type(referenceHint)
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -147,7 +147,7 @@ describe('The create payment link flow', () => {
             cy.get('input[type=radio]#amount-type-fixed').should('exist')
             cy.get('input[type=radio]#amount-type-variable').should('exist')
             cy.get('input#payment-amount').should('exist')
-            cy.get('button[type=submit]').should('exist')
+            cy.get('button').should('exist')
           })
 
         cy.get('#payment-link-example').should('exist').within(() => {
@@ -161,7 +161,7 @@ describe('The create payment link flow', () => {
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').click()
             cy.get('input#payment-amount').type(amount)
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -194,7 +194,7 @@ describe('The create payment link flow', () => {
           cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', '/create-payment-link/amount')
         })
 
-        cy.get('button[type=submit]').should('exist').should('contain', 'Create payment link')
+        cy.get('button').should('exist').should('contain', 'Create payment link')
       })
 
       it('should redirect to information page when "Change" clicked', () => {
@@ -255,7 +255,7 @@ describe('The create payment link flow', () => {
             cy.get('textarea#payment-link-description').parent('.govuk-form-group').get('span')
               .should('contain', 'Give your users more information in Welsh')
 
-            cy.get('button[type=submit]').should('exist')
+            cy.get('button').should('exist')
           })
 
         cy.get('#payment-link-example').should('not.exist')
@@ -275,7 +275,7 @@ describe('The create payment link flow', () => {
 
       it('Should continue to the reference page', () => {
         cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
-          cy.get('button[type=submit]').click()
+          cy.get('button').click()
         })
 
         cy.location().should((location) => {
@@ -303,7 +303,7 @@ describe('The create payment link flow', () => {
             cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
               .should('contain', 'Explain in Welsh')
 
-            cy.get('button[type=submit]').should('exist')
+            cy.get('button').should('exist')
           })
 
         cy.get('#payment-link-example').should('not.exist')
@@ -314,7 +314,7 @@ describe('The create payment link flow', () => {
           .within(() => {
             cy.get('input#reference-label').type(referenceName)
             cy.get('textarea#reference-hint-text').type(referenceHint)
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -330,7 +330,7 @@ describe('The create payment link flow', () => {
             cy.get('input[type=radio]#amount-type-fixed').should('exist')
             cy.get('input[type=radio]#amount-type-variable').should('exist')
             cy.get('input#payment-amount').should('exist')
-            cy.get('button[type=submit]').should('exist')
+            cy.get('button').should('exist')
           })
 
         cy.get('#payment-link-example').should('not.exist')
@@ -341,7 +341,7 @@ describe('The create payment link flow', () => {
           .within(() => {
             cy.get('input[type=radio]#amount-type-fixed').click()
             cy.get('input#payment-amount').type(amount)
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -352,7 +352,7 @@ describe('The create payment link flow', () => {
 
     describe('Review page', () => {
       it('should have Welsh-specific instructions', () => {
-        cy.get('button[type=submit]').should('exist').should('contain', 'Create Welsh payment link')
+        cy.get('button').should('exist').should('contain', 'Create Welsh payment link')
       })
 
       it('should redirect to information page when "Change" clicked', () => {
@@ -375,7 +375,7 @@ describe('The create payment link flow', () => {
 
       it('should redirect to the review page when "Continue" is clicked', () => {
         cy.get('form[method=post][action="/create-payment-link/information"]').within(() => {
-          cy.get('button[type=submit]').click()
+          cy.get('button').click()
         })
 
         cy.location().should((location) => {
@@ -384,7 +384,7 @@ describe('The create payment link flow', () => {
       })
 
       it('should have Welsh-specific instructions', () => {
-        cy.get('button[type=submit]').should('exist').should('contain', 'Create Welsh payment link')
+        cy.get('button').should('exist').should('contain', 'Create Welsh payment link')
       })
     })
 
