@@ -62,7 +62,7 @@ describe('The organisation address page', () => {
         .within(() => {
           // create errors for all fields except country by leaving them blank or inputting invalid values
           cy.get('#address-line2').type(longText, { delay: 0 })
-          cy.get('button').click()
+          cy.get('button[type=submit]').click()
         })
 
       cy.get('.govuk-error-summary').find('a').should('have.length', 4)
@@ -103,7 +103,7 @@ describe('The organisation address page', () => {
           cy.get('#address-country').select(countryIe)
           cy.get('#address-postcode').type(validPostcodeIe)
           cy.get('#telephone-number').type(invalidTelephoneNumber)
-          cy.get('button').click()
+          cy.get('button[type=submit]').click()
         })
 
       cy.get('.govuk-error-summary').find('a').should('have.length', 1)
@@ -135,7 +135,7 @@ describe('The organisation address page', () => {
           cy.get('#address-country').select(countryGb)
           cy.get('#address-postcode').type(invalidPostcode)
           cy.get('#telephone-number').type(validTelephoneNumber)
-          cy.get('button').click()
+          cy.get('button[type=submit]').click()
         })
 
       cy.get('.govuk-error-summary').find('a').should('have.length', 1)
@@ -176,7 +176,7 @@ describe('The organisation address page', () => {
           cy.get('#address-country').select(countryGb)
           cy.get('#address-postcode').type(validPostcodeGb)
           cy.get('#telephone-number').type(validTelephoneNumber)
-          cy.get('button').click()
+          cy.get('button[type=submit]').click()
         })
 
       cy.location().should((location) => {
