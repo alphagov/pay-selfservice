@@ -33,13 +33,13 @@ describe('Stripe setup: VAT number page', () => {
         cy.get('#vat-number-form').should('exist')
           .within(() => {
             cy.get('input#vat-number[name="vat-number"]').should('exist')
-            cy.get('button[type=submit]').should('exist')
-            cy.get('button[type=submit]').should('contain', 'Continue')
+            cy.get('button').should('exist')
+            cy.get('button').should('contain', 'Continue')
           })
       })
 
       it('should display an error when VAT number input is blank', () => {
-        cy.get('#vat-number-form > button[type=submit]').click()
+        cy.get('#vat-number-form > button').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'VAT number')
@@ -52,7 +52,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should display an error when VAT number is invalid', () => {
         cy.get('input#vat-number[name="vat-number"]').type('(╯°□°)╯︵ ┻━┻')
 
-        cy.get('#vat-number-form > button[type=submit]').click()
+        cy.get('#vat-number-form > button').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'VAT number')
@@ -65,7 +65,7 @@ describe('Stripe setup: VAT number page', () => {
       it('should redirect to /company-number page when inputs are valid', () => {
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
-        cy.get('#vat-number-form > button[type=submit]').click()
+        cy.get('#vat-number-form > button').click()
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq('/vat-number-company-number/company-number')
@@ -108,7 +108,7 @@ describe('Stripe setup: VAT number page', () => {
 
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
 
-        cy.get('#vat-number-form > button[type=submit]').click()
+        cy.get('#vat-number-form > button').click()
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
