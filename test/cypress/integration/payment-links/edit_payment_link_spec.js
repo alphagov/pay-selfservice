@@ -76,7 +76,7 @@ describe('Editing a payment link', () => {
         cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/amount/${productId}`)
       })
 
-      cy.get('button[type=submit]').should('exist').should('contain', 'Save changes')
+      cy.get('button').should('exist').should('contain', 'Save changes')
     })
 
     it('should navigate to edit information page', () => {
@@ -106,7 +106,7 @@ describe('Editing a payment link', () => {
 
           cy.get('div#payment-link-title-confirmation').should('not.exist')
 
-          cy.get('button[type=submit]').should('exist')
+          cy.get('button').should('exist')
         })
 
       cy.get('#payment-link-example').should('exist').within(() => {
@@ -122,7 +122,7 @@ describe('Editing a payment link', () => {
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
-        cy.get('button[type=submit]').click()
+        cy.get('button').click()
       })
 
       cy.location().should((location) => {
@@ -156,7 +156,7 @@ describe('Editing a payment link', () => {
           cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
             .should('contain', 'Tell users what the payment reference looks like and where they can find it.')
 
-          cy.get('button[type=submit]').should('exist')
+          cy.get('button').should('exist')
         })
 
       cy.get('#payment-link-example').should('exist').within(() => {
@@ -172,7 +172,7 @@ describe('Editing a payment link', () => {
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
-        cy.get('button[type=submit]').click()
+        cy.get('button').click()
       })
 
       cy.location().should((location) => {
@@ -194,7 +194,7 @@ describe('Editing a payment link', () => {
           cy.get('input[type=radio]#amount-type-fixed').should('exist')
           cy.get('input[type=radio]#amount-type-variable').should('exist')
           cy.get('input#payment-amount').should('exist')
-          cy.get('button[type=submit]').should('exist')
+          cy.get('button').should('exist')
         })
 
       cy.get('#payment-link-example').should('exist').within(() => {
@@ -212,7 +212,7 @@ describe('Editing a payment link', () => {
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/amount/${productId}"]`).within(() => {
-        cy.get('button[type=submit]').click()
+        cy.get('button').click()
       })
 
       cy.location().should((location) => {
@@ -274,7 +274,7 @@ describe('Editing a payment link', () => {
 
           cy.get('div#payment-link-title-confirmation').should('not.exist')
 
-          cy.get('button[type=submit]').should('exist')
+          cy.get('button').should('exist')
         })
 
       cy.get('#payment-link-example').should('not.exist')
@@ -282,7 +282,7 @@ describe('Editing a payment link', () => {
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/information/${productId}"]`).within(() => {
-        cy.get('button[type=submit]').click()
+        cy.get('button').click()
       })
 
       cy.location().should((location) => {
@@ -316,13 +316,13 @@ describe('Editing a payment link', () => {
           cy.get('textarea#reference-hint-text').parent('.govuk-form-group').get('span')
             .should('contain', 'Explain in Welsh what the payment reference looks like and where to find it.')
 
-          cy.get('button[type=submit]').should('exist')
+          cy.get('button').should('exist')
         })
     })
 
     it('should navigate to edit details page when "Save changes" clicked', () => {
       cy.get(`form[method=post][action="/create-payment-link/manage/edit/reference/${productId}"]`).within(() => {
-        cy.get('button[type=submit]').click()
+        cy.get('button').click()
       })
 
       cy.location().should((location) => {

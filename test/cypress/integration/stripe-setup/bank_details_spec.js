@@ -79,13 +79,13 @@ describe('Stripe setup: bank details page', () => {
           .within(() => {
             cy.get('input#account-number').should('exist')
             cy.get('input#sort-code').should('exist')
-            cy.get('button[type=submit]').should('exist')
-            cy.get('button[type=submit]').should('contain', 'Continue')
+            cy.get('button').should('exist')
+            cy.get('button').should('contain', 'Continue')
           })
       })
 
       it('should display an error when all fields are blank', () => {
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Account number')
@@ -104,7 +104,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#account-number[name="account-number"]').type('abc')
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
 
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Account number')
@@ -118,7 +118,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type('abc')
 
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Sort code')
@@ -132,7 +132,7 @@ describe('Stripe setup: bank details page', () => {
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
 
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
 
         cy.get('#account-number-value').should('contain', accountNumber)
         cy.get('#sort-code-value').should('contain', displaySortCode)
@@ -172,7 +172,7 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
 
         cy.get('h1').should('contain', 'Dashboard')
         cy.location().should((location) => {
@@ -195,10 +195,10 @@ describe('Stripe setup: bank details page', () => {
         // Bank details page
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
 
         // Check your answers page
-        cy.get('#bank-details-check-submit-form > button[type=submit]').click()
+        cy.get('#bank-details-check-submit-form > button').click()
 
         // Dashboard page
         cy.get('h1').should('contain', 'Dashboard')
@@ -268,7 +268,7 @@ describe('Stripe setup: bank details page', () => {
 
         cy.get('input#account-number[name="account-number"]').type(accountNumber)
         cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-        cy.get('#bank-details-form > button[type=submit]').click()
+        cy.get('#bank-details-form > button').click()
       })
 
       it('should go to check your answers page when inputs are valid', () => {

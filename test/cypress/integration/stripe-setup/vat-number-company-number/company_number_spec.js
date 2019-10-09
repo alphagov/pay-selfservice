@@ -26,7 +26,7 @@ describe('Stripe setup: company number page', () => {
 
         cy.visit('/vat-number-company-number/vat-number')
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
-        cy.get('#vat-number-form > button[type=submit]').click()
+        cy.get('#vat-number-form > button').click()
       })
 
       it('should display page correctly', () => {
@@ -40,13 +40,13 @@ describe('Stripe setup: company number page', () => {
             cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
-            cy.get('button[type=submit]').should('exist')
-            cy.get('button[type=submit]').should('contain', 'Continue')
+            cy.get('button').should('exist')
+            cy.get('button').should('contain', 'Continue')
           })
       })
 
       it('should display an error when no options are selected', () => {
-        cy.get('#company-number-form > button[type=submit]').click()
+        cy.get('#company-number-form > button').click()
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'Company registration number')
@@ -61,7 +61,7 @@ describe('Stripe setup: company number page', () => {
             cy.get('input#company-number-declaration[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type('        ')
 
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
@@ -78,7 +78,7 @@ describe('Stripe setup: company number page', () => {
             cy.get('input#company-number-declaration[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type('(╯°□°)╯︵ ┻━┻')
 
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.get('h2').should('contain', 'There was a problem with the details you gave for:')
@@ -95,7 +95,7 @@ describe('Stripe setup: company number page', () => {
             cy.get('input#company-number-declaration[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').type('01234567')
 
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -107,7 +107,7 @@ describe('Stripe setup: company number page', () => {
         cy.get('#company-number-form').should('exist')
           .within(() => {
             cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -122,7 +122,7 @@ describe('Stripe setup: company number page', () => {
             cy.get('input#company-number[name="company-number"]').type('(╯°□°)╯︵ ┻━┻')
             cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
 
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.location().should((location) => {
@@ -167,14 +167,14 @@ describe('Stripe setup: company number page', () => {
 
         cy.visit('/vat-number-company-number/vat-number')
         cy.get('input#vat-number[name="vat-number"]').type('GB999 9999 73')
-        cy.get('#vat-number-form > button[type=submit]').click()
+        cy.get('#vat-number-form > button').click()
 
         cy.get('#company-number-form').should('exist')
           .within(() => {
             cy.get('input#company-number-declaration-2[name="company-number-declaration"]').check()
             cy.get('input#company-number[name="company-number"]').should('not.be.visible')
 
-            cy.get('button[type=submit]').click()
+            cy.get('button').click()
           })
 
         cy.get('h1').should('contain', 'Dashboard')
