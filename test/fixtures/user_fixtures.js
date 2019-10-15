@@ -433,6 +433,27 @@ module.exports = {
     }
   },
 
+  validUsersResponse: (opts = {}) => {
+    const users = []
+    opts.users.forEach(user => {
+      users.push(buildUserWithDefaults(user))
+    })
+
+    return {
+      getPactified: () => {
+        return pactUsers.pactify(users)
+      },
+      getAsObject: () => {
+        const usersObject = []
+        users.forEach(user => usersObject.push(new User(user)))
+        return new User(usersObject)
+      },
+      getPlain: () => {
+        return users
+      }
+    }
+  },
+
   invalidPasswordAuthenticateResponse: () => {
     const response = {
       errors: ['invalid username and/or password']

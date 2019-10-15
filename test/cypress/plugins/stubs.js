@@ -7,6 +7,7 @@ const lodash = require('lodash')
 const userFixtures = require('../../fixtures/user_fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway_account_fixtures')
 const transactionDetailsFixtures = require('../../fixtures/transaction_fixtures')
+const ledgerTransactionFixtures = require('../../fixtures/ledger_transaction_fixtures')
 const cardFixtures = require('../../fixtures/card_fixtures')
 const serviceFixtures = require('../../fixtures/service_fixtures')
 const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
@@ -25,11 +26,34 @@ module.exports = {
     return [
       {
         predicates: [{
-          equals: {
+          deepEquals: {
             method: 'GET',
-            path: '/v1/api/users/' + aValidUserResponse.external_id,
+            path: '/v1/api/users/' + aValidUserResponse.external_id
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
             headers: {
-              'Accept': 'application/json'
+              'Content-Type': 'application/json'
+            },
+            body: aValidUserResponse
+          }
+        }]
+      }
+    ]
+  },
+  getUsersSuccess: (opts = {}) => {
+    const aValidUserResponse = userFixtures.validUsersResponse(opts).getPlain()
+    const query = opts.userIds ? opts.userIds.join() : ''
+    return [
+      {
+        predicates: [{
+          deepEquals: {
+            method: 'GET',
+            path: '/v1/api/users',
+            query: {
+              ids: query
             }
           }
         }],
@@ -535,30 +559,66 @@ module.exports = {
       }
     ]
   },
-  getTransactionsSuccess: (opts = {}) => {
-    const validGetTransactionsResponse = transactionDetailsFixtures.validTransactionsResponse(opts).getPlain()
-    lodash.defaults(opts.filters, {
-      reference: '',
-      cardholder_name: '',
-      last_digits_card_number: '',
-      email: '',
-      card_brand: '',
-      from_date: '',
-      to_date: '',
-      page: '1',
-      display_size: '100'
-    })
-
+  getLedgerTransactionSuccess: (opts = {}) => {
+    const validTransaction = ledgerTransactionFixtures.validTransactionDetailsResponse(opts).getPlain()
     return [
       {
         predicates: [{
           equals: {
             method: 'GET',
-            path: `/v2/api/accounts/${opts.gateway_account_id}/charges`,
+            path: `/v1/transaction/${opts.transaction_id}`
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
             headers: {
-              'Accept': 'application/json'
+              'Content-Type': 'application/json'
             },
-            query: opts.filters
+            body: validTransaction
+          }
+        }]
+      }
+    ]
+  },
+  getLedgerEventsSuccess: (opts = {}) => {
+    const validEvents = ledgerTransactionFixtures.validTransactionEventsResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/transaction/${opts.transaction_id}/event`
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: validEvents
+          }
+        }]
+      }
+    ]
+  },
+  getLedgerTransactionsSuccess: (opts = {}) => {
+    const validGetTransactionsResponse = ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
+    const query = lodash.defaults(opts.filters, {
+      account_id: opts.gateway_account_id,
+      with_parent_transaction: true,
+      page: 1,
+      display_size: 100
+    })
+
+    return [
+      {
+        predicates: [{
+          deepEquals: {
+            method: 'GET',
+            path: '/v1/transaction',
+            query
           }
         }],
         responses: [{
