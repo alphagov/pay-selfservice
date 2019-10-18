@@ -3,10 +3,10 @@
 // NPM Dependencies
 const lodash = require('lodash')
 const AWSXRay = require('aws-xray-sdk')
-const logger = require('winston')
 const { getNamespace, createNamespace } = require('continuation-local-storage')
 
 // Local Dependencies
+const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate_route')
 const paths = require('./paths.js')

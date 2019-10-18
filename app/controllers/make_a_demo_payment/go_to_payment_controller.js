@@ -3,9 +3,8 @@
 // NPM dependencies
 const lodash = require('lodash')
 
-const logger = require('winston')
-
 // Local dependencies
+const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const productTypes = require('../../utils/product_types')
@@ -14,7 +13,7 @@ const auth = require('../../services/auth_service.js')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
-  const {paymentAmount, paymentDescription} = lodash.get(req, 'session.pageData.makeADemoPayment', {})
+  const { paymentAmount, paymentDescription } = lodash.get(req, 'session.pageData.makeADemoPayment', {})
 
   if (!paymentAmount || !paymentDescription) {
     return res.redirect(paths.prototyping.demoPayment.index)

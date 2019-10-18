@@ -1,9 +1,6 @@
 'use strict'
 
-// NPM dependencies
-const logger = require('winston')
-
-// Custom dependencies
+const logger = require('../utils/logger')(__filename)
 const { renderErrorView } = require('../utils/response')
 const { shouldProceedWithRegistration } = require('../utils/registration_validations')
 

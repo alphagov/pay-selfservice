@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const zendesk = require('node-zendesk')
-const logger = require('winston')
-
+const logger = require('../../utils/logger')(__filename)
 const zendeskConfig = require('../../../config/zendesk')
 
 const zendeskClient = zendesk.createClient({

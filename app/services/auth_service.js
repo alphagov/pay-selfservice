@@ -1,7 +1,6 @@
 'use strict'
 
 // NPM Dependencies
-const logger = require('winston')
 const lodash = require('lodash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
@@ -18,6 +17,7 @@ const getNamespace = require('continuation-local-storage').getNamespace
 require('correlation-id')
 
 // Local Dependencies
+const logger = require('../utils/logger')(__filename)
 const sessionValidator = require('./session_validator.js')
 const paths = require('../paths.js')
 const userService = require('./user_service.js')
@@ -97,13 +97,13 @@ function redirectLoggedInUser (req, res, next) {
 function localStrategyAuth (req, username, password, done) {
   return userService.authenticate(username, password, req.headers[CORRELATION_HEADER] || '')
     .then((user) => done(null, user))
-    .catch(() => done(null, false, {message: 'Invalid email or password'}))
+    .catch(() => done(null, false, { message: 'Invalid email or password' }))
 }
 
 function localStrategy2Fa (req, done) {
   return userService.authenticateSecondFactor(req.user.externalId, req.body.code)
     .then((user) => done(null, user))
-    .catch(() => done(null, false, {message: 'The security code you’ve used is incorrect or has expired.'}))
+    .catch(() => done(null, false, { message: 'The security code you’ve used is incorrect or has expired.' }))
 }
 
 function localDirectStrategy (req, done) {
@@ -165,7 +165,7 @@ function hasValidSession (req) {
 function initialise (app) {
   app.use(passport.initialize())
   app.use(passport.session())
-  passport.use('local', new LocalStrategy({usernameField: 'username', passReqToCallback: true}, localStrategyAuth))
+  passport.use('local', new LocalStrategy({ usernameField: 'username', passReqToCallback: true }, localStrategyAuth))
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
   passport.use('localDirect', new CustomStrategy(localDirectStrategy))
   passport.serializeUser(serializeUser)

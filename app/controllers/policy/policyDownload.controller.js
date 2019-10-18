@@ -1,6 +1,6 @@
 'use strict'
 
-const logger = require('winston')
+const logger = require('../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../utils/response')
 
 const supportedPolicyDocuments = require('./supportedPolicyDocuments')

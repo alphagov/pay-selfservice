@@ -2,9 +2,9 @@
 
 // NPM dependencies
 const _ = require('lodash')
-const logger = require('winston')
 
 // Local dependencies
+const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response.js').response
 const Email = require('../../models/email.js')
 const paths = require('../../paths.js')

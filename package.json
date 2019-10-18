@@ -65,7 +65,7 @@
     ]
   },
   "dependencies": {
-    "@govuk-pay/pay-js-commons": "^2.13.1",
+    "@govuk-pay/pay-js-commons": "^2.14.1",
     "accessible-autocomplete": "^2.0.1",
     "appmetrics": "4.x",
     "appmetrics-statsd": "3.0.x",
@@ -110,7 +110,7 @@
     "throng": "4.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
-    "winston": "2.4.x",
+    "winston": "3.2.1",
     "snyk": "^1.234.2"
   },
   "devDependencies": {

@@ -1,11 +1,10 @@
 'use strict'
 
 // Custom dependencies
+const logger = require('../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../utils/response')
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
 const { GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT } = require('../../models/error-identifier')
-
-const logger = require('winston')
 
 exports.index = (req, res) => {
   if (req.query.state) {

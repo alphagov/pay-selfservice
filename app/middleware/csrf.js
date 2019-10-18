@@ -2,9 +2,9 @@
 
 // NPM Dependencies
 const csrf = require('csrf')
-const logger = require('winston')
 
 // Local Dependencies
+const logger = require('../utils/logger')(__filename)
 const errorView = require('../utils/response.js').renderErrorView
 const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
 

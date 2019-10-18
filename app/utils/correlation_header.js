@@ -1,7 +1,7 @@
 'use strict'
-const logger = require('winston')
 
-const {CORRELATION_HEADER} = require('../../config')
+const logger = require('./logger')(__filename)
+const { CORRELATION_HEADER } = require('../../config')
 
 module.exports = (function () {
   'use strict'

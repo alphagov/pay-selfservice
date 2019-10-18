@@ -1,7 +1,6 @@
 'use strict'
 
-// NPM dependencies
-const logger = require('winston')
+const logger = require('../utils/logger')(__filename)
 
 module.exports = function (err, req, res, next) {
   let errorPayload = {

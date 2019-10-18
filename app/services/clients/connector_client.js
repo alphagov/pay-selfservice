@@ -5,10 +5,10 @@ const _ = require('lodash')
 const url = require('url')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-const logger = require('winston')
 const querystring = require('querystring')
 
 // Local dependencies
+const logger = require('../../utils/logger')(__filename)
 const oldBaseClient = require('./old_base_client')
 const baseClient = require('./base_client/base_client')
 const requestLogger = require('../../utils/request_logger')

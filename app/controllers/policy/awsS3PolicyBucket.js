@@ -1,7 +1,7 @@
 'use strict'
 
 const AWS = require('aws-sdk')
-const logger = require('winston')
+const logger = require('../../utils/logger')(__filename)
 
 // AWS S3 SDK is configured based on the production environment of the service
 const s3 = new AWS.S3()

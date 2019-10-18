@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const logger = require('winston')
 
+const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 
 const validAccountId = (accountId, user) => {

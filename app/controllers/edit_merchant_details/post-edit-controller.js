@@ -1,8 +1,8 @@
 'use strict'
 
 const lodash = require('lodash')
-const logger = require('winston')
 
+const logger = require('../../utils/logger')(__filename)
 const { renderErrorView } = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service_service')

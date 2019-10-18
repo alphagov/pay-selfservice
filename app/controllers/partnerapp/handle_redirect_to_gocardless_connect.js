@@ -1,10 +1,9 @@
 'use strict'
 
+const logger = require('../../utils/logger')(__filename)
 const gocardlessClient = require('../../services/clients/gocardless_connect_client')
 const directDebitConnectorClient = require('../../services/clients/direct_debit_connector_client')
 const REDIRECT_URI = process.env.SELFSERVICE_URL + '/oauth/complete'
-
-const logger = require('winston')
 
 exports.index = (req, res) => {
   const gatewayAccountId = req.account.externalId

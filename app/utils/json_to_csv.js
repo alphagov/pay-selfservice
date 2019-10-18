@@ -1,12 +1,12 @@
 'use strict'
 
 // NPM Dependencies
-const logger = require('winston')
 const json2csv = require('json2csv')
 const lodash = require('lodash')
 const changeCase = require('change-case')
 
 // Local dependencies
+const logger = require('./logger')(__filename)
 const dates = require('./dates')
 const states = require('./states')
 const { penceToPounds } = require('./currency_formatter')

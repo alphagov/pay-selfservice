@@ -1,7 +1,6 @@
 'use strict'
 
-const logger = require('winston')
-
+const logger = require('../utils/logger')(__filename)
 const { renderErrorView } = require('../utils/response')
 
 const UNHANDLED_ERROR_MESSAGE = 'There is a problem with the payments platform. Please contact the support team.'
