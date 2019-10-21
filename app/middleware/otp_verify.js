@@ -1,10 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const logger = require('winston')
-
-// Custom dependencies
 const paths = require('../paths')
+const logger = require('../utils/logger')(__filename)
 const errorResponse = require('../utils/response').renderErrorView
 const registrationService = require('../services/service_registration_service')
 const { validateOtp } = require('../utils/registration_validations')

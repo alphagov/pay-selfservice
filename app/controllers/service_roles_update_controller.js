@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const logger = require('winston')
 const paths = require('../paths')
+const logger = require('../utils/logger')(__filename)
 const responses = require('../utils/response')
 
 let rolesModule = require('../utils/roles')

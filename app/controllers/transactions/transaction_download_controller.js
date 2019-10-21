@@ -1,10 +1,10 @@
 'use strict'
 
 // NPM Dependencies
-const logger = require('winston')
 const lodash = require('lodash')
 
 // Local Dependencies
+const logger = require('../../utils/logger')(__filename)
 const transactionService = require('../../services/transaction_service')
 const jsonToCsv = require('../../utils/json_to_csv')
 const auth = require('../../services/auth_service')

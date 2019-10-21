@@ -2,9 +2,9 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const logger = require('winston')
 
 // Local dependencies
+const logger = require('../../../../utils/logger')(__filename)
 const { renderErrorView } = require('../../../../utils/response')
 const { updateCompany } = require('../../../../services/clients/stripe/stripe_client')
 const { ConnectorClient } = require('../../../../services/clients/connector_client')

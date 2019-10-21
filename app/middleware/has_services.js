@@ -1,5 +1,5 @@
-const logger = require('winston')
 const _ = require('lodash')
+const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 
 module.exports = (req, res, next) => {

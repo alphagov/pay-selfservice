@@ -1,9 +1,6 @@
 'use strict'
 
-// NPM dependencies
-const logger = require('winston')
-
-// Custom dependencies
+const logger = require('../utils/logger')(__filename)
 const response = require('../utils/response')
 const errorResponse = response.renderErrorView
 const successResponse = response.response

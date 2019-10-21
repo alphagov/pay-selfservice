@@ -2,9 +2,9 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const logger = require('winston')
 
 // Local dependencies
+const logger = require('../../../utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('../../../models/go-live-stage')
 const { requestToGoLive } = require('../../../paths')

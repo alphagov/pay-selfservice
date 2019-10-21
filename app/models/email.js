@@ -1,9 +1,6 @@
 'use strict'
 
-// NPM dependencies
-const logger = require('winston')
-
-// Local dependencies
+const logger = require('../utils/logger')(__filename)
 const ConnectorClient = require('../services/clients/connector_client.js').ConnectorClient
 
 // Constants
@@ -47,7 +44,7 @@ module.exports = function (correlationId) {
   const updateConfirmationTemplate = function (accountID, emailText) {
     return new Promise(function (resolve, reject) {
       const startTime = new Date()
-      const patch = {'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText}
+      const patch = { 'op': 'replace', 'path': '/payment_confirmed/template_body', 'value': emailText }
       connectorClient().updateConfirmationEmail({
         payload: patch,
         correlationId: correlationId,
@@ -68,7 +65,7 @@ module.exports = function (correlationId) {
   const setEmailCollectionMode = function (accountID, collectionMode) {
     return new Promise(function (resolve, reject) {
       const startTime = new Date()
-      const patch = {'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode}
+      const patch = { 'op': 'replace', 'path': 'email_collection_mode', 'value': collectionMode }
       connectorClient().updateEmailCollectionMode({
         payload: patch,
         correlationId: correlationId,
@@ -87,7 +84,7 @@ module.exports = function (correlationId) {
   const setConfirmationEnabled = function (accountID, enabled) {
     return new Promise(function (resolve, reject) {
       const startTime = new Date()
-      const patch = {'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled}
+      const patch = { 'op': 'replace', 'path': '/payment_confirmed/enabled', 'value': enabled }
       connectorClient().updateConfirmationEmailEnabled({
         payload: patch,
         correlationId: correlationId,
@@ -106,7 +103,7 @@ module.exports = function (correlationId) {
   const setRefundEmailEnabled = function (accountID, enabled) {
     return new Promise(function (resolve, reject) {
       const startTime = new Date()
-      const patch = {'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled}
+      const patch = { 'op': 'replace', 'path': '/refund_issued/enabled', 'value': enabled }
       connectorClient().updateRefundEmailEnabled({
         payload: patch,
         correlationId: correlationId,

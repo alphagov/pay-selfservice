@@ -2,11 +2,11 @@
 
 // NPM dependencies
 const lodash = require('lodash')
-const logger = require('winston')
 const qrcode = require('qrcode')
 
 // Local dependencies
-const {response} = require('../../utils/response.js')
+const logger = require('../../utils/logger')(__filename)
+const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 
 module.exports = (req, res) => {

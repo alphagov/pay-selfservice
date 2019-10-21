@@ -1,11 +1,11 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
 const _ = require('lodash')
 
 // Custom dependencies
-const {setSessionVersion} = require('../../services/auth_service')
+const logger = require('../../utils/logger')(__filename)
+const { setSessionVersion } = require('../../services/auth_service')
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 
 module.exports = (req, res) => {

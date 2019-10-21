@@ -3,9 +3,8 @@
 // NPM dependencies
 const lodash = require('lodash')
 
-const logger = require('winston')
-
 // Local dependencies
+const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const productTypes = require('../../utils/product_types')

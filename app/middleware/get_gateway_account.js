@@ -2,11 +2,11 @@
 
 // npm dependencies
 const _ = require('lodash')
-const winston = require('winston')
 const AWSXRay = require('aws-xray-sdk')
 const getNamespace = require('continuation-local-storage').getNamespace
 
 // local dependencies
+const logger = require('../utils/logger')(__filename)
 const auth = require('../services/auth_service.js')
 const Connector = require('../services/clients/connector_client.js').ConnectorClient
 const connectorClient = new Connector(process.env.CONNECTOR_URL)
@@ -28,7 +28,7 @@ module.exports = function (req, res, next) {
         next()
       })
       .catch(err => {
-        winston.error(`${req.correlationId} - Error when attempting to retrieve direct debit gateway account: ${err}`)
+        logger.error(`${req.correlationId} - Error when attempting to retrieve direct debit gateway account: ${err}`)
         next()
       })
   }
@@ -48,7 +48,7 @@ module.exports = function (req, res, next) {
       })
       .catch(err => {
         subsegment.close(err)
-        winston.error(`${req.correlationId} - Error when attempting to retrieve card gateway account: ${err}`)
+        logger.error(`${req.correlationId} - Error when attempting to retrieve card gateway account: ${err}`)
         next()
       })
   }, clsSegment)

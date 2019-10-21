@@ -1,17 +1,17 @@
 const EDIT_CREDENTIALS_MODE = 'editCredentials'
 const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
-var logger = require('winston')
 var _ = require('lodash')
+const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
 var response = require('../utils/response.js').response
 var errorView = require('../utils/response.js').renderErrorView
 var ConnectorClient = require('../services/clients/connector_client').ConnectorClient
 var auth = require('../services/auth_service.js')
 var router = require('../routes.js')
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
 var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
-const {isPasswordLessThanTenChars} = require('../browsered/field-validation-checks')
+const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
 
 var connectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
@@ -94,7 +94,7 @@ module.exports = {
   updateNotificationCredentials: function (req, res) {
     const accountId = auth.getCurrentGatewayAccountId((req))
     const connectorUrl = CONNECTOR_URL + '/v1/api/accounts/{accountId}/notification-credentials'
-    const {username, password} = _.get(req, 'body')
+    const { username, password } = _.get(req, 'body')
 
     if (!username) {
       req.flash('genericError', `<h2>Please enter a valid username</h2>`)
@@ -105,7 +105,7 @@ module.exports = {
     }
 
     if (_.get(req, 'session.flash.genericError.length')) {
-      _.set(req, 'session.pageData.editNotificationCredentials', {username, password})
+      _.set(req, 'session.pageData.editNotificationCredentials', { username, password })
       return res.redirect(paths.notificationCredentials.edit)
     }
 
@@ -120,7 +120,7 @@ module.exports = {
     var correlationId = req.headers[CORRELATION_HEADER] || ''
 
     connectorClient().postAccountNotificationCredentials({
-      payload: {username, password},
+      payload: { username, password },
       correlationId: correlationId,
       gatewayAccountId: accountId
     }, function (connectorData, connectorResponse) {

@@ -9,7 +9,6 @@ const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const logger = require('winston')
 const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
@@ -24,6 +23,7 @@ const middlwareUtils = require('./app/utils/middleware')
 const errorLogger = require('./app/middleware/error_logger')
 const errorHandler = require('./app/middleware/express_unhandled_error_handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
+const logger = require('./app/utils/logger')(__filename)
 
 // Global constants
 const port = (process.env.PORT || 3000)
@@ -132,7 +132,7 @@ function initialiseErrorHandling (app) {
 function listen () {
   const app = initialise()
   app.listen(port)
-  logger.log('Listening on port ' + port)
+  logger.info('Listening on port ' + port)
 }
 
 /**

@@ -1,13 +1,13 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
 const _ = require('lodash')
 const moment = require('moment-timezone')
 const AWSXRay = require('aws-xray-sdk')
 const getNamespace = require('continuation-local-storage').getNamespace
 
 // Custom dependencies
+const logger = require('../../utils/logger')(__filename)
 const response = require('../../utils/response').response
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 const ConnectorClient = require('../../services/clients/connector_client').ConnectorClient

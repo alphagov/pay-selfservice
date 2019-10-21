@@ -1,9 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const logger = require('winston')
-
 // Custom dependencies
+const logger = require('../../utils/logger')(__filename)
 const userService = require('../../services/user_service')
 const errorView = require('../../utils/response').renderErrorView
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER

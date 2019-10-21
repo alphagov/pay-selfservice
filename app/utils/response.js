@@ -1,6 +1,5 @@
-let logger = require('winston')
 const _ = require('lodash')
-
+const logger = require('./logger')(__filename)
 let displayConverter = require('./display_converter')
 
 const ERROR_MESSAGE = 'There is a problem with the payments platform'
@@ -18,7 +17,7 @@ function errorResponse (req, res, msg, status) {
     msg = 'Please try again or contact support team.'
   }
   let data = { 'message': msg }
-  logger.error(`[${correlationId}] ${status} An error has occurred. Rendering error view -`, {errorMessage: msg})
+  logger.error(`[${correlationId}] ${status} An error has occurred. Rendering error view -`, { errorMessage: msg })
   res.setHeader('Content-Type', 'text/html')
   if (status) {
     res.status(status)

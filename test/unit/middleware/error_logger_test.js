@@ -9,14 +9,16 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
 describe('error_handler middleware', function () {
-  let winstonErrorSpy
+  let loggerErrorSpy
   let errorHandler
 
   beforeEach(() => {
-    winstonErrorSpy = sinon.spy()
+    loggerErrorSpy = sinon.spy()
     errorHandler = proxyquire(path.join(__dirname, '/../../../app/middleware/error_logger'), {
-      'winston': {
-        error: winstonErrorSpy
+      '../utils/logger': () => {
+        return {
+          error: loggerErrorSpy
+        }
       }
     })
   })
@@ -42,7 +44,7 @@ describe('error_handler middleware', function () {
         message: err
       }
     }
-    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
+    assert(loggerErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
     assert(next.calledWith(err))
 
     done()
@@ -73,7 +75,7 @@ describe('error_handler middleware', function () {
         stack: err.stack
       }
     }
-    assert(winstonErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
+    assert(loggerErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
     assert(next.calledWith(err))
 
     done()

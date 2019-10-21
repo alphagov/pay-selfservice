@@ -1,10 +1,10 @@
 'use strict'
 
 // NPM dependencies
-const logger = require('winston')
 const lodash = require('lodash')
 
 // Local dependencies
+const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const userService = require('../../services/user_service.js')
 

@@ -4,10 +4,10 @@
 const lodash = require('lodash')
 const moment = require('moment-timezone')
 const ukPostcode = require('uk-postcode')
-const logger = require('winston')
 
 // Local dependencies
 const paths = require('../../../paths')
+const logger = require('../../../utils/logger')(__filename)
 const { response, renderErrorView } = require('../../../utils/response')
 const {
   validateMandatoryField, validateOptionalField, validatePostcode, validateDateOfBirth

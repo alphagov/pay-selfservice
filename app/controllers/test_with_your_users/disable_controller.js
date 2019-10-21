@@ -1,8 +1,6 @@
 'use strict'
 
-const logger = require('winston')
-
-// Local dependencies
+const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const auth = require('../../services/auth_service.js')
