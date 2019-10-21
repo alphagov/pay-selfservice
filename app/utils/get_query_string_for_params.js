@@ -25,6 +25,7 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
   }
   if (flattenCardBrandsParam) {
     queryStrings.card_brands = params.brand instanceof Array ? params.brand.join(',') : params.brand
+    delete queryStrings.card_brand
   }
 
   if (removeEmptyParams) {
