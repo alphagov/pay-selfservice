@@ -37,23 +37,23 @@ const defaultTransactionEvents = [{
   data: {}
 }]
 
-function defaultTransactionDetails (opts = {}) {
+function defaultTransactionDetails () {
   return {
-    amount: opts.amount || defaultAmount,
-    state: opts.state || { finished: true, status: 'success' },
-    description: opts.description || 'ref1',
-    reference: opts.reference || 'ref188888',
-    transaction_id: opts.transaction_id || transactionId,
-    email: opts.email || 'gds-payments-team-smoke@digital.cabinet-office.gov.uk',
-    payment_provider: opts.payment_provider || 'sandbox',
-    created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
-    delayed_capture: opts.delayed_capture || false,
+    amount: defaultAmount,
+    state: { finished: true, status: 'success' },
+    description: 'description',
+    reference: 'ref188888',
+    transaction_id: transactionId,
+    email: 'j.doe@example.org',
+    payment_provider: 'sandbox',
+    created_date: '2018-05-01T13:27:00.057Z',
+    delayed_capture: false,
     transaction_type: 'PAYMENT',
     account_id: gatewayAccountId,
-    refund_summary_status: opts.refund_summary_status || 'available',
+    refund_summary_status: 'available',
     refund_summary_available: defaultAmount,
     refund_summary_submitted: 0,
-    gateway_transaction_id: opts.gateway_transaction_id || 'a-gateway-transaction-id',
+    gateway_transaction_id: 'a-gateway-transaction-id',
     cardholder_name: 'J Doe',
     card_brand: 'Visa',
     last_digits_card_number: '0002',
@@ -277,7 +277,8 @@ describe('Transaction details page', () => {
     })
 
     it('should allow a refund to be re-attempted in the event of a failed refund', () => {
-      const aFailedRefundTransaction = defaultTransactionDetails({ refund_summary_status: 'error' })
+      const aFailedRefundTransaction = defaultTransactionDetails()
+      aFailedRefundTransaction.refund_summary_status = 'error'
       cy.task('setupStubs', getStubs(aFailedRefundTransaction))
 
       cy.visit(`${transactionsUrl}/${aFailedRefundTransaction.transaction_id}`)
@@ -365,7 +366,8 @@ describe('Transaction details page', () => {
   })
 
   it('should show fee breakdown for stripe tranaction with associated fees', () => {
-    const transactionDetails = defaultTransactionDetails({ payment_provider: 'stripe' })
+    const transactionDetails = defaultTransactionDetails()
+    transactionDetails.payment_provider = 'stripe'
     transactionDetails.fee = 100
     transactionDetails.net_amount = defaultAmount - 100
     cy.task('setupStubs', getStubs(transactionDetails))
