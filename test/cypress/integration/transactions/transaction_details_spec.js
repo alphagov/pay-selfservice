@@ -108,10 +108,11 @@ describe('Transaction details page', () => {
     ]
   }
 
+  beforeEach(() => {
+    cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+  })
+
   describe('page content', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-    })
     it('should display transaction details correctly when delayed capture is OFF', () => {
       const transactionDetails = defaultTransactionDetails()
       cy.task('setupStubs', getStubs(transactionDetails))

@@ -154,12 +154,12 @@ describe('Transactions', () => {
   ]
 
   describe('Default sandbox gatway transactions', () => {
+    beforeEach(() => {
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+      cy.task('setupStubs', setupStubs)
+      cy.visit(transactionsUrl)
+    })
     describe('Transactions List', () => {
-      beforeEach(() => {
-        cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-        cy.task('setupStubs', setupStubs)
-        cy.visit(transactionsUrl)
-      })
       it(`should have the page title 'Transactions - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
         cy.title().should('eq', `Transactions - ${serviceName} sandbox test - GOV.UK Pay`)
       })
