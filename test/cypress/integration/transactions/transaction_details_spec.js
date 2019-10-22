@@ -236,141 +236,141 @@ describe('Transaction details page', () => {
       cy.get('#amount').should('have.text',
         `${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.total_amount)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.corporate_card_surcharge)})`)
     })
+  })
 
-    describe('refunds', () => {
-      it('should fail when an invalid refund amount is specified', () => {
-        const transactionDetails = defaultTransactionDetails()
-        const refundAmount = transactionDetails.amount + 1
-        const stubs = lodash.concat(getStubs(transactionDetails), [
-          {
-            name: 'postRefundAmountNotAvailable',
-            opts: {
-              gateway_account_id: gatewayAccountId,
-              charge_id: transactionDetails.transaction_id,
-              amount: refundAmount,
-              refund_amount_available: transactionDetails.amount,
-              user_external_id: userExternalId
-            }
+  describe('refunds', () => {
+    it('should fail when an invalid refund amount is specified', () => {
+      const transactionDetails = defaultTransactionDetails()
+      const refundAmount = transactionDetails.amount + 1
+      const stubs = lodash.concat(getStubs(transactionDetails), [
+        {
+          name: 'postRefundAmountNotAvailable',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            charge_id: transactionDetails.transaction_id,
+            amount: refundAmount,
+            refund_amount_available: transactionDetails.amount,
+            user_external_id: userExternalId
           }
-        ])
-        cy.task('setupStubs', stubs)
+        }
+      ])
+      cy.task('setupStubs', stubs)
 
-        cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-        // Click the refund button
-        cy.get('.target-to-show--toggle').click()
-
-        // Select partial refund
-        cy.get('#partial').click()
-
-        // Select partial refund
-        cy.get('#refund-amount').type('10.01')
-
-        // Click the refund submit button
-        cy.get('#refund-button').click()
-
-        // Ensure the flash container is showing
-        cy.get('.flash-container').should('be.visible')
-
-        cy.get('.flash-container').find('.error-summary').should('contain', 'The amount you tried to refund is greater than the transaction total')
-      })
-
-      it('should allow a refund to be re-attempted in the event of a failed refund', () => {
-        const aFailedRefundTransaction = defaultTransactionDetails({ refund_summary_status: 'error' })
-        cy.task('setupStubs', getStubs(aFailedRefundTransaction))
-
-        cy.visit(`${transactionsUrl}/${aFailedRefundTransaction.transaction_id}`)
-
-        // Ensure the refund button is available
-        cy.get('.target-to-show--toggle').should('be.visible')
-        cy.get('.target-to-show--toggle').should('be.enabled')
-
-        // Click the refund button
-        cy.get('.target-to-show--toggle').click()
-
-        // Select partial refund
-        cy.get('#partial').click()
-
-        // Select partial refund
-        cy.get('#refund-amount').type(aFailedRefundTransaction.amount / 100)
-
-        // Click the refund submit button
-        cy.get('#refund-button').click()
-      })
-
-      it('should display full refund amount with corporate card surcharge when there is a corporate card surcharge', () => {
-        const aCorporateCardSurchargeTransaction = defaultTransactionDetails()
-        aCorporateCardSurchargeTransaction.corporate_card_surcharge = 250
-        aCorporateCardSurchargeTransaction.total_amount = 1250
-        cy.task('setupStubs', getStubs(aCorporateCardSurchargeTransaction))
-
-        cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeTransaction.transaction_id}`)
-
-        // Click the refund button
-        cy.get('.target-to-show--toggle').click()
-
-        // Assert refund message
-        cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.refund_summary_available)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.corporate_card_surcharge)})`)
-      })
-
-      it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
-        const transactionDetails = defaultTransactionDetails()
-        cy.task('setupStubs', getStubs(transactionDetails))
-        cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-        // Click the refund button
-        cy.get('.target-to-show--toggle').click()
-
-        // Assert refund message
-        cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(transactionDetails.refund_summary_available)}`)
-      })
-    })
-
-    it('should display Wallet Type where available', () => {
-      const transactionDetails = defaultTransactionDetails()
-      transactionDetails.wallet_type = 'APPLE_PAY'
-      cy.task('setupStubs', getStubs(transactionDetails))
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-      cy.get('th').contains('Wallet type').siblings().first().should('contain', 'Apple Pay')
+
+      // Click the refund button
+      cy.get('.target-to-show--toggle').click()
+
+      // Select partial refund
+      cy.get('#partial').click()
+
+      // Select partial refund
+      cy.get('#refund-amount').type('10.01')
+
+      // Click the refund submit button
+      cy.get('#refund-button').click()
+
+      // Ensure the flash container is showing
+      cy.get('.flash-container').should('be.visible')
+
+      cy.get('.flash-container').find('.error-summary').should('contain', 'The amount you tried to refund is greater than the transaction total')
     })
 
-    it('should not display Wallet Type when not included in charge', () => {
+    it('should allow a refund to be re-attempted in the event of a failed refund', () => {
+      const aFailedRefundTransaction = defaultTransactionDetails({ refund_summary_status: 'error' })
+      cy.task('setupStubs', getStubs(aFailedRefundTransaction))
+
+      cy.visit(`${transactionsUrl}/${aFailedRefundTransaction.transaction_id}`)
+
+      // Ensure the refund button is available
+      cy.get('.target-to-show--toggle').should('be.visible')
+      cy.get('.target-to-show--toggle').should('be.enabled')
+
+      // Click the refund button
+      cy.get('.target-to-show--toggle').click()
+
+      // Select partial refund
+      cy.get('#partial').click()
+
+      // Select partial refund
+      cy.get('#refund-amount').type(aFailedRefundTransaction.amount / 100)
+
+      // Click the refund submit button
+      cy.get('#refund-button').click()
+    })
+
+    it('should display full refund amount with corporate card surcharge when there is a corporate card surcharge', () => {
+      const aCorporateCardSurchargeTransaction = defaultTransactionDetails()
+      aCorporateCardSurchargeTransaction.corporate_card_surcharge = 250
+      aCorporateCardSurchargeTransaction.total_amount = 1250
+      cy.task('setupStubs', getStubs(aCorporateCardSurchargeTransaction))
+
+      cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeTransaction.transaction_id}`)
+
+      // Click the refund button
+      cy.get('.target-to-show--toggle').click()
+
+      // Assert refund message
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.refund_summary_available)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.corporate_card_surcharge)})`)
+    })
+
+    it('should display full refund amount without corporate card surcharge when there is no corporate card surcharge', () => {
       const transactionDetails = defaultTransactionDetails()
       cy.task('setupStubs', getStubs(transactionDetails))
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-      cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
-    })
 
-    it('should display metadata when available', () => {
-      const transactionDetails = defaultTransactionDetails()
-      transactionDetails.metadata = {
-        key1: 123,
-        key2: true,
-        key3: 'some string'
-      }
-      cy.task('setupStubs', getStubs(transactionDetails))
-      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-      cy.get('h2').should('contain', 'Metadata')
-      cy.get('th').contains('key1').siblings().first().should('contain', '123')
-      cy.get('th').contains('key2').siblings().first().should('contain', 'true')
-      cy.get('th').contains('key3').siblings().first().should('contain', 'some string')
-    })
+      // Click the refund button
+      cy.get('.target-to-show--toggle').click()
 
-    it('should not display metadata when unavailable', () => {
-      const transactionDetails = defaultTransactionDetails()
-      cy.task('setupStubs', getStubs(transactionDetails))
-      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-      cy.get('h2').should('not.contain', 'Metadata')
+      // Assert refund message
+      cy.get('.govuk-radios__hint').first().should('contain', `Refund the full amount of ${convertPenceToPoundsFormatted(transactionDetails.refund_summary_available)}`)
     })
+  })
 
-    it('should show fee breakdown for stripe tranaction with associated fees', () => {
-      const transactionDetails = defaultTransactionDetails({ payment_provider: 'stripe' })
-      transactionDetails.fee = 100
-      transactionDetails.net_amount = defaultAmount - 100
-      cy.task('setupStubs', getStubs(transactionDetails))
-      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-      cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.fee))
-      cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.amount - transactionDetails.fee))
-    })
+  it('should display Wallet Type where available', () => {
+    const transactionDetails = defaultTransactionDetails()
+    transactionDetails.wallet_type = 'APPLE_PAY'
+    cy.task('setupStubs', getStubs(transactionDetails))
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+    cy.get('th').contains('Wallet type').siblings().first().should('contain', 'Apple Pay')
+  })
+
+  it('should not display Wallet Type when not included in charge', () => {
+    const transactionDetails = defaultTransactionDetails()
+    cy.task('setupStubs', getStubs(transactionDetails))
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+    cy.get('.transaction-details tbody').should('not.contain', 'Wallet Type')
+  })
+
+  it('should display metadata when available', () => {
+    const transactionDetails = defaultTransactionDetails()
+    transactionDetails.metadata = {
+      key1: 123,
+      key2: true,
+      key3: 'some string'
+    }
+    cy.task('setupStubs', getStubs(transactionDetails))
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+    cy.get('h2').should('contain', 'Metadata')
+    cy.get('th').contains('key1').siblings().first().should('contain', '123')
+    cy.get('th').contains('key2').siblings().first().should('contain', 'true')
+    cy.get('th').contains('key3').siblings().first().should('contain', 'some string')
+  })
+
+  it('should not display metadata when unavailable', () => {
+    const transactionDetails = defaultTransactionDetails()
+    cy.task('setupStubs', getStubs(transactionDetails))
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+    cy.get('h2').should('not.contain', 'Metadata')
+  })
+
+  it('should show fee breakdown for stripe tranaction with associated fees', () => {
+    const transactionDetails = defaultTransactionDetails({ payment_provider: 'stripe' })
+    transactionDetails.fee = 100
+    transactionDetails.net_amount = defaultAmount - 100
+    cy.task('setupStubs', getStubs(transactionDetails))
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+    cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.fee))
+    cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.amount - transactionDetails.fee))
   })
 })
