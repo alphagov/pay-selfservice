@@ -111,7 +111,7 @@
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
     "winston": "3.2.1",
-    "snyk": "1.234.2"
+    "snyk": "1.236.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",
