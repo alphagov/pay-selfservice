@@ -11,138 +11,154 @@ describe('Transactions', () => {
   const unfilteredTransactions = [
     {
       reference: 'unfiltered1',
-      amount: 1000
+      amount: 1000,
+      type: 'payment'
     },
     {
       reference: 'unfiltered2',
-      amount: 2000
+      amount: 2000,
+      type: 'payment'
     },
     {
       reference: 'unfiltered3',
       amount: 3000,
       corporate_card_surcharge: 250,
-      total_amount: 3250
+      total_amount: 3250,
+      type: 'payment'
     }
   ]
 
   const filteredByFromDateTransactions = [
     {
-      reference: 'filtered-by-from-date1'
+      reference: 'filtered-by-from-date1',
+      amount: 1000,
+      type: 'payment'
     },
     {
-      reference: 'filtered-by-from-date2'
+      reference: 'filtered-by-from-date2',
+      amount: 1500,
+      type: 'payment'
     }
   ]
 
   const filteredByToDateTransactions = [
     {
-      reference: 'filtered-by-to-date'
+      reference: 'filtered-by-to-date',
+      amount: 1500,
+      type: 'payment'
     }
   ]
 
   const filteredByPartialEmailAndCardBrandTransactions = [
     {
-      reference: 'filtered-by-brand-and-email'
+      reference: 'filtered-by-brand-and-email',
+      amount: 1500,
+      type: 'payment',
+      card_brand: [
+        'visa',
+        'master-card'
+      ]
     }
   ]
 
   const filteredByMultipleFieldsTransactions = [
     {
-      reference: 'filtered-by-multiple-fields'
+      reference: 'filtered-by-multiple-fields',
+      amount: 1500,
+      type: 'payment'
     }
   ]
 
   const transactionsWithAssociatedFees = [
-    { reference: 'first-transaction-with-fee', amount: 3000, fee: 300, net_amount: 2700 },
-    { reference: 'second-transaction-with-fee', amount: 5000, fee: 500, net_amount: 4500 }
+    { reference: 'first-transaction-with-fee', amount: 3000, fee: 300, net_amount: 2700, type: 'payment', payment_provider: 'stripe' },
+    { reference: 'second-transaction-with-fee', amount: 5000, fee: 500, net_amount: 4500, type: 'payment', payment_provider: 'stripe' }
+  ]
+
+  const setupStubs = [
+    {
+      name: 'getUserSuccess',
+      opts: {
+        external_id: userExternalId,
+        service_roles: [{
+          service: {
+            name: serviceName,
+            gateway_account_ids: [gatewayAccountId]
+          }
+        }]
+      }
+    },
+    {
+      name: 'getGatewayAccountSuccess',
+      opts: { gateway_account_id: gatewayAccountId }
+    },
+    {
+      name: 'getCardTypesSuccess'
+    },
+    // unfiltered transactions stub
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {},
+        transactions: unfilteredTransactions
+      }
+    },
+    // transactions filtered by from date stub
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          from_date: '2018-05-03T00:00:00.000Z'
+        },
+        transactions: filteredByFromDateTransactions
+      }
+    },
+    // transactions filtered by to date stub
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          to_date: '2018-05-03T00:00:01.000Z'
+        },
+        transactions: filteredByToDateTransactions
+      }
+    },
+    // transactions filtered by partial email and multiple card brands stub
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          email: 'gds4',
+          card_brands: 'visa,master-card'
+        },
+        transactions: filteredByPartialEmailAndCardBrandTransactions
+      }
+    },
+    // transactions filtered by multiple fields stub
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          reference: 'ref123',
+          from_date: '2018-05-03T00:00:00.000Z',
+          to_date: '2018-05-04T00:00:01.000Z',
+          payment_states: 'created,started,submitted,capturable,success'
+        },
+        transactions: filteredByMultipleFieldsTransactions
+      }
+    }
   ]
 
   describe('Default sandbox gatway transactions', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId, gatewayAccountId)
-
-      cy.task('setupStubs', [
-        {
-          name: 'getUserSuccess',
-          opts: {
-            external_id: userExternalId,
-            service_roles: [{
-              service: {
-                name: serviceName,
-                gateway_account_ids: [gatewayAccountId]
-              }
-            }]
-          }
-        },
-        {
-          name: 'getGatewayAccountSuccess',
-          opts: { gateway_account_id: gatewayAccountId }
-        },
-        {
-          name: 'getCardTypesSuccess'
-        },
-        // unfiltered transactions stub
-        {
-          name: 'getTransactionsSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            filters: {},
-            transactions: unfilteredTransactions
-          }
-        },
-        // transactions filtered by from date stub
-        {
-          name: 'getTransactionsSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            filters: {
-              from_date: '2018-05-03T00:00:00.000Z'
-            },
-            transactions: filteredByFromDateTransactions
-          }
-        },
-        // transactions filtered by to date stub
-        {
-          name: 'getTransactionsSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            filters: {
-              to_date: '2018-05-03T00:00:01.000Z'
-            },
-            transactions: filteredByToDateTransactions
-          }
-        },
-        // transactions filtered by partial email and multiple card brands stub
-        {
-          name: 'getTransactionsSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            filters: {
-              email: 'gds4',
-              card_brand: ['visa', 'master-card']
-            },
-            transactions: filteredByPartialEmailAndCardBrandTransactions
-          }
-        },
-        // transactions filtered by multiple fields stub
-        {
-          name: 'getTransactionsSuccess',
-          opts: {
-            gateway_account_id: gatewayAccountId,
-            filters: {
-              reference: 'ref123',
-              from_date: '2018-05-03T00:00:00.000Z',
-              to_date: '2018-05-04T00:00:01.000Z',
-              payment_states: 'created,started,submitted,capturable,success'
-            },
-            transactions: filteredByMultipleFieldsTransactions
-          }
-        }
-      ])
-
+      cy.task('setupStubs', setupStubs)
       cy.visit(transactionsUrl)
     })
-
     describe('Transactions List', () => {
       it(`should have the page title 'Transactions - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
         cy.title().should('eq', `Transactions - ${serviceName} sandbox test - GOV.UK Pay`)
@@ -291,7 +307,7 @@ describe('Transactions', () => {
           name: 'getCardTypesSuccess'
         },
         {
-          name: 'getTransactionsSuccess',
+          name: 'getLedgerTransactionsSuccess',
           opts: {
             gateway_account_id: feesAccountId,
             filters: {},

@@ -48,8 +48,11 @@ const buildPaymentEvents = (opts = {}) => {
   if (opts.payment_states) {
     opts.payment_states.forEach(paymentState => {
       events.push({
+        amount: paymentState.amount || '',
         state: buildChargeEventStateWithDefaults(paymentState),
         resource_type: 'PAYMENT',
+        event_type: paymentState.event_type,
+        timestamp: paymentState.timestamp,
         data: {}
       })
     })
@@ -136,7 +139,6 @@ const buildTransactionDetails = (opts = {}) => {
   if (opts.net_amount) data.net_amount = opts.net_amount
   if (opts.wallet_type) data.wallet_type = opts.wallet_type
   if (opts.metadata) data.metadata = opts.metadata
-
   return data
 }
 
@@ -283,7 +285,6 @@ module.exports = {
       page: opts.page || 1,
       results: results
     }
-
     return {
       getPactified: () => pactRegister.pactify(data),
       getPlain: () => data
