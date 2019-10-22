@@ -37,12 +37,14 @@ describe('ledger client', function () {
         {
           status: 'created',
           timestamp: '2019-08-06T10:34:43.487123Z',
-          event_type: 'PAYMENT_CREATED'
+          event_type: 'PAYMENT_CREATED',
+          amount: 21170
         },
         {
           status: 'declined',
           timestamp: '2019-08-06T10:34:48.123456Z',
-          event_type: 'AUTHORISATION_REJECTED'
+          event_type: 'AUTHORISATION_REJECTED',
+          amount: 21170
         }
       ]
     })
