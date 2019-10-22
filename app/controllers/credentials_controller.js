@@ -1,19 +1,19 @@
 const EDIT_CREDENTIALS_MODE = 'editCredentials'
 const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
-var _ = require('lodash')
+const _ = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
-var response = require('../utils/response.js').response
-var errorView = require('../utils/response.js').renderErrorView
-var ConnectorClient = require('../services/clients/connector_client').ConnectorClient
-var auth = require('../services/auth_service.js')
-var router = require('../routes.js')
+const { response } = require('../utils/response')
+const { renderErrorView } = require('../utils/response')
+const { ConnectorClient } = require('../services/clients/connector_client')
+const auth = require('../services/auth_service')
+const router = require('../routes')
 const { CONNECTOR_URL } = process.env
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const { CORRELATION_HEADER } = require('../utils/correlation_header')
 const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
 
-var connectorClient = () => new ConnectorClient(CONNECTOR_URL)
+const connectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
@@ -48,7 +48,7 @@ function loadIndex (req, res, viewMode) {
       showSuccessView(viewMode, req, res)
     }
   } else {
-    errorView(req, res)
+    renderErrorView(req, res)
   }
 }
 
@@ -146,7 +146,7 @@ module.exports = {
         })
       }
 
-      errorView(req, res)
+      renderErrorView(req, res)
     })
   },
 
@@ -195,7 +195,7 @@ module.exports = {
           error: err
         })
       }
-      errorView(req, res)
+      renderErrorView(req, res)
     })
   }
 }
