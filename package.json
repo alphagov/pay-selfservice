@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "@govuk-pay/pay-js-commons": "2.14.1",
+    "@sentry/node": "5.7.1",
     "accessible-autocomplete": "2.0.1",
     "appmetrics": "4.x",
     "appmetrics-statsd": "3.0.x",
@@ -105,13 +106,13 @@
     "rfc822-validate": "1.0.0",
     "serve-favicon": "2.5.0",
     "slugify": "1.3.5",
+    "snyk": "1.234.2",
     "staticify": "3.3.4",
     "stripe": "7.10.0",
     "throng": "4.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
-    "winston": "3.2.1",
-    "snyk": "1.234.2"
+    "winston": "3.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",
