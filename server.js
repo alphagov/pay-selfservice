@@ -24,6 +24,7 @@ const errorLogger = require('./app/middleware/error_logger')
 const errorHandler = require('./app/middleware/express_unhandled_error_handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
+const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 
 // Global constants
 const port = (process.env.PORT || 3000)
@@ -149,6 +150,7 @@ function initialise () {
     logger.warn('DISABLE_INTERNAL_HTTPS is set.')
   }
 
+  app.use(Sentry.Handlers.requestHandler())
   initialisePublic(app)
   initialiseCookies(app)
   initialiseAuth(app)
@@ -157,6 +159,7 @@ function initialise () {
   initialiseErrorLogging(app)
   initialiseRoutes(app) // This contains the 404 overrider and so should be last
   warnIfAnalyticsNotSet()
+  app.use(Sentry.Handlers.errorHandler())
   initialiseErrorHandling(app)
 
   return app
