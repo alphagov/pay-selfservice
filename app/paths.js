@@ -10,6 +10,9 @@ module.exports = {
     detail: '/transactions/:chargeId',
     refund: '/transactions/:chargeId/refund'
   },
+  yourPsp: {
+    index: '/your-psp'
+  },
   credentials: {
     index: '/credentials',
     edit: '/credentials/edit',

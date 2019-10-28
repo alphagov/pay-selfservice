@@ -19,16 +19,10 @@ function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
 
   switch (viewMode) {
-    case EDIT_CREDENTIALS_MODE:
-      responsePayload.editMode = true
-      responsePayload.editNotificationCredentialsMode = false
-      break
     case EDIT_NOTIFICATION_CREDENTIALS_MODE:
-      responsePayload.editMode = false
       responsePayload.editNotificationCredentialsMode = true
       break
     default:
-      responsePayload.editMode = false
       responsePayload.editNotificationCredentialsMode = false
   }
   const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
@@ -36,6 +30,8 @@ function showSuccessView (viewMode, req, res) {
     responsePayload.lastNotificationsData = invalidCreds
     delete req.session.pageData.editNotificationCredentials
   }
+  responsePayload.change = _.get(req, 'query.change', {})
+
   response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
 }
 
@@ -126,7 +122,7 @@ module.exports = {
     }, function (connectorData, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
-      res.redirect(303, router.paths.credentials.index)
+      res.redirect(303, router.paths.yourPsp.index)
     }).on('connectorError', function (err, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
@@ -175,7 +171,7 @@ module.exports = {
     }, function (connectorData, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
-      res.redirect(303, router.paths.credentials.index)
+      res.redirect(303, router.paths.yourPsp.index)
     }).on('connectorError', function (err, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)

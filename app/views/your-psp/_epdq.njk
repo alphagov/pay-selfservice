@@ -1,0 +1,91 @@
+{{
+  govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "PSP ID"
+        },
+        value: {
+          text: currentGatewayAccount.credentials.merchant_id if isConfigured else "Not configured"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=merchantId",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "Username"
+        },
+        value: {
+          text: currentGatewayAccount.credentials.username if isConfigured else "Not configured"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=username",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "Password"
+        },
+        value: {
+          text: '●●●●●●●●' if isConfigured else "Not configured"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=password",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "SHA-IN passphrase"
+        },
+        value: {
+          text: '●●●●●●●●' if isConfigured else "Not configured"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=password",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "SHA-OUT passphrase"
+        },
+        value: {
+          text: '●●●●●●●●' if isConfigured else "Not configured"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=password",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      }
+    ]
+  })
+}}
