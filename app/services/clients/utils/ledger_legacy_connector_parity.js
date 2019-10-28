@@ -39,6 +39,19 @@ const legacyConnectorTransactionParity = (transaction) => {
   return transaction
 }
 
+const legacyConnectorTransactionSummaryParity = (transactionSummaryResult) => {
+  return {
+    successful_payments: {
+      count: transactionSummaryResult.payments.count,
+      total_in_pence: transactionSummaryResult.payments.gross_amount
+    },
+    refunded_payments: {
+      count: transactionSummaryResult.refunds.count,
+      total_in_pence: transactionSummaryResult.refunds.gross_amount
+    }
+  }
+}
+
 const legacyConnectorTransactionsParity = (searchTransactionsResult) => {
   const { results } = searchTransactionsResult
   const transactions = results.map(legacyConnectorTransactionParity)
@@ -46,4 +59,4 @@ const legacyConnectorTransactionsParity = (searchTransactionsResult) => {
   return searchTransactionsResult
 }
 
-module.exports = { legacyConnectorEventsParity, legacyConnectorTransactionParity, legacyConnectorTransactionsParity }
+module.exports = { legacyConnectorEventsParity, legacyConnectorTransactionParity, legacyConnectorTransactionsParity, legacyConnectorTransactionSummaryParity }
