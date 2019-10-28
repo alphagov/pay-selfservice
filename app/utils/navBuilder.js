@@ -35,7 +35,7 @@ const serviceNavigationItems = (originalUrl, permissions, type) => {
     url: type === 'card' ? paths.settings.index : paths.apiKeys.index,
     current: originalUrl !== '/' ? pathLookup(originalUrl.replace(/([a-z])\/$/g, '$1'), [
       paths.settings.index,
-      paths.credentials,
+      paths.yourPsp,
       paths.notificationCredentials,
       paths.toggle3ds,
       paths.apiKeys,
@@ -71,11 +71,11 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
       permissions: permissions.tokens_update
     },
     {
-      id: 'navigation-menu-gateway-credentials',
-      name: 'Account credentials',
-      url: paths.credentials.index,
-      current: pathLookup(originalUrl, paths.credentials.index),
-      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe')
+      id: 'navigation-menu-your-psp',
+      name: 'Your PSP',
+      url: paths.yourPsp.index,
+      current: pathLookup(originalUrl, paths.yourPsp.index),
+      permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')
     },
     {
       id: 'navigation-menu-payment-types',
