@@ -6,14 +6,18 @@
           text: "PSP ID"
         },
         value: {
-          text: currentGatewayAccount.credentials.merchant_id if isConfigured else "Not configured"
+          text: currentGatewayAccount.credentials.merchant_id if isConfigured else "Not configured",
+          classes: "value-merchant-id"
         },
         actions: {
           items: [
             {
               href: routes.credentials.edit + "?change=merchantId",
               text: "Change",
-              visuallyHiddenText: "account credentials"
+              visuallyHiddenText: "account credentials",
+              attributes: {
+                id: "credentials-change-link"
+              }
             }
           ]
         }
@@ -23,7 +27,8 @@
           text: "Username"
         },
         value: {
-          text: currentGatewayAccount.credentials.username if isConfigured else "Not configured"
+          text: currentGatewayAccount.credentials.username if isConfigured else "Not configured",
+          classes: "value-username"
         },
         actions: {
           items: [
@@ -40,7 +45,8 @@
           text: "Password"
         },
         value: {
-          text: '●●●●●●●●' if isConfigured else "Not configured"
+          text: '●●●●●●●●' if isConfigured else "Not configured",
+          classes: "value-password"
         },
         actions: {
           items: [
@@ -57,7 +63,8 @@
           text: "SHA-IN passphrase"
         },
         value: {
-          text: '●●●●●●●●' if isConfigured else "Not configured"
+          text: '●●●●●●●●' if isConfigured else "Not configured",
+          classes: "value-sha-in"
         },
         actions: {
           items: [
@@ -74,7 +81,8 @@
           text: "SHA-OUT passphrase"
         },
         value: {
-          text: '●●●●●●●●' if isConfigured else "Not configured"
+          text: '●●●●●●●●' if isConfigured else "Not configured",
+          classes: "value-sha-out"
         },
         actions: {
           items: [
