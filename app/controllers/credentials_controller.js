@@ -1,34 +1,28 @@
 const EDIT_CREDENTIALS_MODE = 'editCredentials'
 const EDIT_NOTIFICATION_CREDENTIALS_MODE = 'editNotificationCredentials'
 
-var _ = require('lodash')
+const _ = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
-var response = require('../utils/response.js').response
-var errorView = require('../utils/response.js').renderErrorView
-var ConnectorClient = require('../services/clients/connector_client').ConnectorClient
-var auth = require('../services/auth_service.js')
-var router = require('../routes.js')
+const { response } = require('../utils/response')
+const { renderErrorView } = require('../utils/response')
+const { ConnectorClient } = require('../services/clients/connector_client')
+const auth = require('../services/auth_service')
+const router = require('../routes')
 const { CONNECTOR_URL } = process.env
-var CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
+const { CORRELATION_HEADER } = require('../utils/correlation_header')
 const { isPasswordLessThanTenChars } = require('../browsered/field-validation-checks')
 
-var connectorClient = () => new ConnectorClient(CONNECTOR_URL)
+const connectorClient = () => new ConnectorClient(CONNECTOR_URL)
 
 function showSuccessView (viewMode, req, res) {
   let responsePayload = {}
 
   switch (viewMode) {
-    case EDIT_CREDENTIALS_MODE:
-      responsePayload.editMode = true
-      responsePayload.editNotificationCredentialsMode = false
-      break
     case EDIT_NOTIFICATION_CREDENTIALS_MODE:
-      responsePayload.editMode = false
       responsePayload.editNotificationCredentialsMode = true
       break
     default:
-      responsePayload.editMode = false
       responsePayload.editNotificationCredentialsMode = false
   }
   const invalidCreds = _.get(req, 'session.pageData.editNotificationCredentials')
@@ -36,6 +30,8 @@ function showSuccessView (viewMode, req, res) {
     responsePayload.lastNotificationsData = invalidCreds
     delete req.session.pageData.editNotificationCredentials
   }
+  responsePayload.change = _.get(req, 'query.change', {})
+
   response(req, res, 'credentials/' + req.account.payment_provider, responsePayload)
 }
 
@@ -48,7 +44,7 @@ function loadIndex (req, res, viewMode) {
       showSuccessView(viewMode, req, res)
     }
   } else {
-    errorView(req, res)
+    renderErrorView(req, res)
   }
 }
 
@@ -126,7 +122,7 @@ module.exports = {
     }, function (connectorData, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
-      res.redirect(303, router.paths.credentials.index)
+      res.redirect(303, router.paths.yourPsp.index)
     }).on('connectorError', function (err, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
@@ -146,7 +142,7 @@ module.exports = {
         })
       }
 
-      errorView(req, res)
+      renderErrorView(req, res)
     })
   },
 
@@ -175,7 +171,7 @@ module.exports = {
     }, function (connectorData, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
-      res.redirect(303, router.paths.credentials.index)
+      res.redirect(303, router.paths.yourPsp.index)
     }).on('connectorError', function (err, connectorResponse) {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
@@ -195,7 +191,7 @@ module.exports = {
           error: err
         })
       }
-      errorView(req, res)
+      renderErrorView(req, res)
     })
   }
 }

@@ -1,0 +1,30 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block pageTitle %}
+  Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP)</h1>
+
+  <p class="govuk-body">Before you can take payments you must enter the credentials from your PSP so that the accounts can be linked.</p>
+
+  <h2 class="govuk-heading-m">Account credentials</h2>
+
+  {% if currentGatewayAccount.payment_provider === "worldpay" %}
+    {% include "./_worldpay.njk" %}
+  {% endif %}
+  {% if currentGatewayAccount.payment_provider === "smartpay" %}
+    {% include "./_smartpay.njk" %}
+  {% endif %}
+  {% if currentGatewayAccount.payment_provider === "epdq" %}
+    {% include "./_epdq.njk" %}
+  {% endif %}
+</div>
+{% endblock %}

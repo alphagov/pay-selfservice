@@ -1,0 +1,119 @@
+{{
+  govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Merchant ID"
+        },
+        value: {
+          text: currentGatewayAccount.credentials.merchant_id if isConfigured else "Not configured",
+          classes: "value-merchant-id"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=merchantId",
+              text: "Change",
+              visuallyHiddenText: "account credentials",
+              attributes: {
+                id: "credentials-change-link"
+              }
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "Username"
+        },
+        value: {
+          text: currentGatewayAccount.credentials.username if isConfigured else "Not configured",
+          classes: "value-username"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=username",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "Password"
+        },
+        value: {
+          text: '●●●●●●●●' if isConfigured else "Not configured",
+          classes: "value-password"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.credentials.edit + "?change=password",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      }
+    ]
+  })
+}}
+
+{% if not currentGatewayAccount.notificationCredentials.userName %}
+  <div class="govuk-error-summary govuk-!-margin-top-9" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+      <h1 class="govuk-error-summary__title" id="error-summary-heading-example-1">
+          You must set SmartPay notification credentials
+      </h1>
+      <p class="govuk-body">
+          You need to set these credentials here and in your Smartpay account. If
+          you do not set these credentials GOV.UK Pay will not be able to process your payments.
+          Read more <a class="govuk-link" href="https://www.barclaycard.co.uk/business/files/SmartPay_Notifications_Guide.pdf">here</a>.
+      </p>
+  </div>
+{% endif %}
+<h4 class="govuk-heading-s govuk-!-margin-top-6" id="view-notification-title">Your SmartPay Notification Credentials</h4>
+{{
+  govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Username"
+        },
+        value: {
+          text: currentGatewayAccount.notificationCredentials.userName if isConfigured else "Not configured",
+          classes: "value-notification-username"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.notificationCredentials.edit + "?change=username",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "Password"
+        },
+        value: {
+          text: '●●●●●●●●' if currentGatewayAccount.notificationCredentials.userName else "Not configured",
+          classes: "value-notification-password"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.notificationCredentials.edit + "?change=password",
+              text: "Change",
+              visuallyHiddenText: "account credentials"
+            }
+          ]
+        }
+      }
+    ]
+  })
+}}

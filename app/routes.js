@@ -82,13 +82,14 @@ const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
 const goCardlessRedirect = require('./controllers/partnerapp/handle_redirect_to_gocardless_connect')
 const goCardlessOAuthGet = require('./controllers/partnerapp/handle_gocardless_connect_get')
+const yourPspController = require('./controllers/your-psp')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet, settings
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet, settings, yourPsp
 } = paths
 
 // Exports
@@ -220,6 +221,9 @@ module.exports.bind = function (app) {
   app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
   app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController)
   app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
+
+  // YOUR PSP
+  app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
 
   // CREDENTIALS
   app.get(credentials.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, credentialsController.index)
