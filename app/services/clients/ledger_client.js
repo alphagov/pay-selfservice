@@ -65,8 +65,8 @@ const allTransactionPages = async function allTransactionPages (gatewayAccountId
   return { results }
 }
 
-const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, options = {}) {
-  const path = `/v1/report/transactions-summary?account_id=${gatewayAccountId}&from_date=${fromDate}`
+const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {
+  const path = `/v1/report/transactions-summary?account_id=${gatewayAccountId}&from_date=${fromDate}&to_date=${toDate}`
   const configuration = Object.assign({
     url: path,
     description: 'Transaction summary for a given gateway account ID',

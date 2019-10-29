@@ -156,18 +156,6 @@ const buildRefundDetails = (opts = {}) => {
 }
 
 module.exports = {
-  validTransactionSummaryResponse: () => {
-    let data = {
-      successful_payments: { count: 1, total_in_pence: 2 },
-      refunded_payments: { count: 3, total_in_pence: 4 },
-      net_income: { total_in_pence: 5 }
-    }
-
-    return {
-      getPactified: () => pactRegister.pactify(data),
-      getPlain: () => data
-    }
-  },
   validTransactionsResponse: (opts = {}) => {
     opts.includeSearchResultCardDetails = true
     const results = lodash.flatMap(opts.transactions, buildTransactionDetails(opts))
@@ -299,7 +287,8 @@ module.exports = {
       refunds: {
         count: opts.refundCount || 2,
         gross_amount: opts.refundTotal || 2300
-      }
+      },
+      net_income: opts.paymentTotal && opts.refundTotal ? (opts.paymentTotal - opts.refundTotal) : (12000 - 2300)
     }
     return {
       getPactified: () => pactRegister.pactify(data),
