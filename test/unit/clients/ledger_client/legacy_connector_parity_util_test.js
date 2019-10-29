@@ -2,7 +2,8 @@ const assert = require('assert')
 const {
   legacyConnectorTransactionParity,
   legacyConnectorTransactionsParity,
-  legacyConnectorEventsParity
+  legacyConnectorEventsParity,
+  legacyConnectorTransactionSummaryParity
 } = require('../../../../app/services/clients/utils/ledger_legacy_connector_parity')
 
 describe('Ledger service client legacy parity utilities', () => {
@@ -124,6 +125,26 @@ describe('Ledger service client legacy parity utilities', () => {
       assert.strictEqual(transactions.results[1].charge_id, 'charge-id')
       assert.strictEqual(transactions.results[1].refund_summary.user_external_id, 'f579410614654249987ad939f5ef53a1')
       assert.strictEqual(transactions.results[1].reference, 'payment-reference')
+    })
+  })
+
+  describe('Transaction Summary parity', () => {
+    it('Applies transaction summary to the result set of a transaction summary response', () => {
+      const ledgerTransactionSummaryFixture = {
+        payments: {
+          count: 10,
+          gross_amount: 12001
+        },
+        refunds: {
+          count: 2,
+          gross_amount: 2302
+        }
+      }
+      const summary = legacyConnectorTransactionSummaryParity(ledgerTransactionSummaryFixture)
+      assert.strictEqual(summary.successful_payments.count, 10)
+      assert.strictEqual(summary.successful_payments.total_in_pence, 12001)
+      assert.strictEqual(summary.refunded_payments.count, 2)
+      assert.strictEqual(summary.refunded_payments.total_in_pence, 2302)
     })
   })
 })

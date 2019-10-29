@@ -5,7 +5,8 @@ const baseClient = require('./base_client/base_client')
 const {
   legacyConnectorTransactionParity,
   legacyConnectorEventsParity,
-  legacyConnectorTransactionsParity
+  legacyConnectorTransactionsParity,
+  legacyConnectorTransactionSummaryParity
 } = require('./utils/ledger_legacy_connector_parity')
 const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 
@@ -64,9 +65,21 @@ const allTransactionPages = async function allTransactionPages (gatewayAccountId
   return { results }
 }
 
+const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, options = {}) {
+  const path = `/v1/report/transactions-summary?account_id=${gatewayAccountId}&from_date=${fromDate}`
+  const configuration = Object.assign({
+    url: path,
+    description: 'Transaction summary for a given gateway account ID',
+    transform: legacyConnectorTransactionSummaryParity
+  }, defaultOptions, options)
+
+  return baseClient.get(configuration)
+}
+
 module.exports = {
   transaction,
   transactions,
   allTransactionPages,
-  events
+  events,
+  transactionSummary
 }

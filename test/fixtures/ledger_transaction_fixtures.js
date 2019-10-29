@@ -289,5 +289,21 @@ module.exports = {
       getPactified: () => pactRegister.pactify(data),
       getPlain: () => data
     }
+  },
+  validTransactionSummaryDetails: (opts = {}) => {
+    const data = {
+      payments: {
+        count: opts.paymentCount || 10,
+        gross_amount: opts.paymentTotal || 12000
+      },
+      refunds: {
+        count: opts.refundCount || 2,
+        gross_amount: opts.refundTotal || 2300
+      }
+    }
+    return {
+      getPactified: () => pactRegister.pactify(data),
+      getPlain: () => data
+    }
   }
 }
