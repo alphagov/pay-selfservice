@@ -48,7 +48,8 @@ const legacyConnectorTransactionSummaryParity = (transactionSummaryResult) => {
     refunded_payments: {
       count: transactionSummaryResult.refunds.count,
       total_in_pence: transactionSummaryResult.refunds.gross_amount
-    }
+    },
+    net_income: transactionSummaryResult.net_income
   }
 }
 
