@@ -143,7 +143,10 @@ module.exports = function jsonToCSV (data, supportsGatewayFees = false) {
             }
           }
         ] : [],
-        ...getMetadataFields(data)
+        ...getMetadataFields(data),
+        ...getSanitisableFields([
+          { label: 'Card Type', value: 'card_details.card_type' }
+        ])
       ]
 
       return resolve(json2csv.parse(

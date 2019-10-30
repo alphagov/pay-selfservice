@@ -25,6 +25,7 @@
         "postcode": "SE1 3UZ"
       },
       "card_brand": "Visa",
+      "card_type": "credit",
       "cardholder_name": "TEST01",
       "expiry_date": "12\/19",
       "last_digits_card_number": "4242"

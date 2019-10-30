@@ -23,7 +23,8 @@
         "card_brand": "Visa",
         "cardholder_name": "TEST01",
         "expiry_date": "12/19",
-        "last_digits_card_number": "4242"
+        "last_digits_card_number": "4242",
+        "card_type": "credit"
       }
     },
     {
@@ -51,7 +52,8 @@
         "card_brand": "Mastercard",
         "cardholder_name": "TEST02",
         "expiry_date": "12/19",
-        "last_digits_card_number": "4241"
+        "last_digits_card_number": "4241",
+        "card_type": "debit"
       }
     },
     {
@@ -77,7 +79,8 @@
         "card_brand": "Visa",
         "cardholder_name": "TEST01",
         "expiry_date": "12/19",
-        "last_digits_card_number": "4242"
+        "last_digits_card_number": "4242",
+        "card_type": null
       }
     },
     {
