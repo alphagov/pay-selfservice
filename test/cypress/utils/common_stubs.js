@@ -70,3 +70,10 @@ module.exports.getDirectDebitGatewayAccountStub = (gatewayAccountId, type = 'tes
     }
   }
 }
+
+module.exports.getDashboardStatisticsStub = () => {
+  return {
+    name: 'getDashboardStatisticsStub',
+    opts: {}
+  }
+}

@@ -65,11 +65,16 @@ const allTransactionPages = async function allTransactionPages (gatewayAccountId
   return { results }
 }
 
-const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {
-  const path = `/v1/report/transactions-summary?account_id=${gatewayAccountId}&from_date=${fromDate}&to_date=${toDate}`
+const transactionSummary = function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {
+  const path = '/v1/report/transactions-summary'
   const configuration = Object.assign({
     url: path,
-    description: 'Transaction summary for a given gateway account ID',
+    qs: {
+      account_id: gatewayAccountId,
+      from_date: fromDate,
+      to_date: toDate
+    },
+    description: 'Transaction summary statistics for a given gateway account ID',
     transform: legacyConnectorTransactionSummaryParity
   }, defaultOptions, options)
 

@@ -4,7 +4,8 @@
 const commonStubs = require('../../../utils/common_stubs')
 const {
   stubGetGatewayAccountStripeSetupSuccess,
-  stubStripeAccountGet
+  stubStripeAccountGet,
+  stubDashboardStatisticsGet
 } = require('./support')
 
 describe('Stripe setup: "VAT number / company number" index page', () => {
@@ -94,7 +95,8 @@ describe('Stripe setup: "VAT number / company number" index page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(gatewayAccountId, true),
-          stubStripeAccountGet(gatewayAccountId, 'acct_123example123')
+          stubStripeAccountGet(gatewayAccountId, 'acct_123example123'),
+          stubDashboardStatisticsGet()
         ])
 
         cy.visit('/vat-number-company-number')

@@ -14,6 +14,7 @@ const goLiveRequestFixtures = require('../../fixtures/go_live_requests_fixture')
 const stripeAccountSetupFixtures = require('../../fixtures/stripe_account_setup_fixtures')
 const productFixtures = require('../../fixtures/product_fixtures')
 const goCardlessConnectFixtures = require('../../fixtures/go_cardless_connect_fixtures')
+const ledgerFixture = require('../../fixtures/ledger_transaction_fixtures')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -994,6 +995,31 @@ module.exports = {
               'Content-Type': 'application/json'
             },
             body: goCardlessConnectFixtures.exchangeAccessTokenAccountAlreadyConnectedResponse()
+          }
+        }]
+      }
+    ]
+  },
+  getDashboardStatisticsStub: (opts = {}) => {
+    const body = ledgerFixture.validTransactionSummaryDetails(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: '/v1/report/transactions-summary',
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: body
           }
         }]
       }

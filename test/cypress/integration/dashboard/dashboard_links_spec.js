@@ -15,7 +15,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a live sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox')
+        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -37,7 +38,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 2 links for a live non-sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'worldpay')
+        commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'worldpay'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -53,7 +55,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 4 links for a test sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId], 'an-id', 'NOT_STARTED'),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'sandbox')
+        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'sandbox'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -75,7 +78,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a test non-sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay')
+        commonStubs.getGatewayAccountStub(gatewayAccountId, 'test', 'worldpay'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -102,7 +106,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a live sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'live', 'sandbox')
+        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'live', 'sandbox'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -121,7 +126,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 2 links for a live non-sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'live', 'go-cardless')
+        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'live', 'go-cardless'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -137,7 +143,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 4 links for a test sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId], 'an-id', 'NOT_STARTED'),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'sandbox')
+        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'sandbox'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')
@@ -159,7 +166,8 @@ describe('the links are displayed correctly on the dashboard', () => {
     it('should display 3 links for a test non-sandbox account', () => {
       cy.task('setupStubs', [
         commonStubs.getUserStub(userExternalId, [gatewayAccountId], 'an-id', 'NOT_STARTED'),
-        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'go-cardless')
+        commonStubs.getDirectDebitGatewayAccountStub(gatewayAccountId, 'test', 'go-cardless'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/')

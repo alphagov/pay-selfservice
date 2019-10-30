@@ -22,6 +22,10 @@ describe('Dashboard', () => {
       {
         name: 'getGatewayAccountSuccess',
         opts: { gateway_account_id: gatewayAccountId }
+      },
+      {
+        name: 'getDashboardStatisticsStub',
+        opts: {}
       }
     ])
   })
@@ -31,7 +35,7 @@ describe('Dashboard', () => {
     const to = encodeURIComponent('2018-05-15T00:00:00+01:00')
 
     it(`should have the page title 'Dashboard - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
-      const dashboardUrl = `/?period=custom&fromDateTime=${from}&toDateTime=${to}`
+      const dashboardUrl = `/?period=today&fromDateTime=${from}&toDateTime=${to}`
       cy.visit(dashboardUrl)
       cy.title().should('eq', `Dashboard - ${serviceName} sandbox test - GOV.UK Pay`)
     })
