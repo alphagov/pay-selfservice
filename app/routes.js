@@ -207,6 +207,7 @@ module.exports.bind = function (app) {
     ...lodash.values(stripeSetup),
     ...lodash.values(digitalWallet),
     ...lodash.values(settings),
+    ...lodash.values(yourPsp),
     user.profile,
     paths.feedback
   ] // Extract all the authenticated paths as a single array
