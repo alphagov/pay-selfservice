@@ -25,6 +25,7 @@ const errorHandler = require('./app/middleware/express_unhandled_error_handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
+const formatPSPname = require('./app/utils/format-PSP-name')
 
 // Global constants
 const port = (process.env.PORT || 3000)
@@ -100,6 +101,7 @@ function initialiseTemplateEngine (app) {
     let filter = nunjucksFilters[name]
     nunjucksEnvironment.addFilter(name, filter)
   }
+  nunjucksEnvironment.addFilter('formatPSPname', formatPSPname)
 }
 
 function initialisePublic (app) {

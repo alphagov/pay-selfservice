@@ -2,6 +2,7 @@ const _ = require('lodash')
 const url = require('url')
 const getHeldPermissions = require('./get_held_permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./navBuilder')
+const formatPSPname = require('./format-PSP-name')
 
 const hideServiceHeaderTemplates = [
   'services/index',
@@ -73,7 +74,7 @@ const addGatewayAccountProviderDisplayNames = data => {
 const getAccount = account => {
   if (account) {
     account.full_type = account.type === 'test'
-      ? [account.payment_provider, account.type].join(' ')
+      ? [formatPSPname(account.payment_provider), account.type].join(' ')
       : account.type
   }
   return account

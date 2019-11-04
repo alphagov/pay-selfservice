@@ -120,7 +120,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       // Ensure page details match up
       // Reference number
@@ -173,7 +173,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${aDelayedCaptureTransaction.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aDelayedCaptureTransaction.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${aDelayedCaptureTransaction.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       // Ensure page details match up
       // Reference number
@@ -229,7 +229,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeTransaction.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeTransaction.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeTransaction.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       // Ensure page details match up
       // Amount
