@@ -71,7 +71,7 @@ describe('get account', function () {
           type: 'test',
           payment_provider: 'sandbox',
           supports3ds: false,
-          full_type: 'sandbox test'
+          full_type: 'Sandbox test'
         })
       })
       .end(done)
@@ -111,7 +111,7 @@ describe('get account', function () {
         expect(data.body.currentGatewayAccount).to.deep.equal({
           type: 'test',
           payment_provider: 'sandbox',
-          full_type: 'sandbox test',
+          full_type: 'Sandbox test',
           paymentProvider: 'sandbox',
           paymentMethod: 'direct debit'
         })

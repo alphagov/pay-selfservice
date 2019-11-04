@@ -4,7 +4,7 @@
     <h4 class="service-info--name govuk-heading-s">
       {{currentService.name}}
       {% if currentGatewayAccount %}
-        <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{% if currentGatewayAccount.full_type === 'sandbox test' or currentGatewayAccount.full_type === 'SANDBOX test' %}Test{% else %}{{currentGatewayAccount.full_type | capitalize}}{% endif %}</strong>
+        <strong class="environment-tag environment-tag-{{currentGatewayAccount.type}}">{% if currentGatewayAccount.full_type === 'Sandbox test' %}Test{% else %}{{currentGatewayAccount.full_type}}{% endif %}</strong>
       {% endif %}
     </h4>
   </div>
