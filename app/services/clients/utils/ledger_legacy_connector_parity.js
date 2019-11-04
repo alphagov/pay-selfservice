@@ -40,6 +40,9 @@ const legacyConnectorTransactionParity = (transaction) => {
 }
 
 const legacyConnectorTransactionSummaryParity = (transactionSummaryResult) => {
+  if (typeof transactionSummaryResult === 'undefined') {
+    return {}
+  }
   return {
     successful_payments: {
       count: transactionSummaryResult.payments.count,
@@ -49,7 +52,9 @@ const legacyConnectorTransactionSummaryParity = (transactionSummaryResult) => {
       count: transactionSummaryResult.refunds.count,
       total_in_pence: transactionSummaryResult.refunds.gross_amount
     },
-    net_income: transactionSummaryResult.net_income
+    net_income: {
+      total_in_pence: transactionSummaryResult.net_income
+    }
   }
 }
 

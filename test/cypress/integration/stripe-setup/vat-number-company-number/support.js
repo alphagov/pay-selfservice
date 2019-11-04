@@ -35,5 +35,11 @@ module.exports = {
       }
     }
     return stripeVatNumberCompanyNumberFlagStub
+  },
+  stubDashboardStatisticsGet: function stubDashboardStatisticsGet () {
+    return {
+      name: 'getDashboardStatisticsStub',
+      opts: {}
+    }
   }
 }

@@ -19,7 +19,8 @@ const mockSession = require(path.join(__dirname, '/../test_helpers/mock_session.
 const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
 const mockRes = require('../fixtures/response')
 
-const {CONNECTOR_URL} = process.env
+const { CONNECTOR_URL } = process.env
+const { LEDGER_URL } = process.env
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
@@ -38,10 +39,20 @@ describe('The logged in endpoint', function () {
     nock(CONNECTOR_URL)
       .get(`/v1/frontend/accounts/${ACCOUNT_ID}`)
       .reply(200, gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: ACCOUNT_ID }))
-    nock(CONNECTOR_URL)
-      .get(`/v1/api/accounts/${ACCOUNT_ID}/transactions-summary`)
+    nock(LEDGER_URL)
+      .get('/v1/report/transactions-summary')
       .query(() => true)
-      .reply(200, {})
+      .reply(200, {
+        payments: {
+          count: 0,
+          gross_amount: 0
+        },
+        refunds: {
+          count: 0,
+          gross_amount: 0
+        },
+        net_income: 0
+      })
 
     request(app)
       .get('/')
@@ -62,7 +73,7 @@ describe('The logged in endpoint', function () {
   })
 
   it('should redirect to otp login if no otp', function (done) {
-    const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({gateway_account_ids: [ACCOUNT_ID]}))
+    const app = mockSession.getAppWithSessionWithoutSecondFactor(getApp(), mockSession.getUser({ gateway_account_ids: [ACCOUNT_ID] }))
     request(app)
       .get('/')
       .expect(302)
@@ -97,8 +108,8 @@ describe('The postlogin endpoint', function () {
     const session = mockSession.getMockSession(user)
     const expectedUrl = paths.user.otpLogIn
     const req = {
-      session: _.merge(session, {currentGatewayAccountId: '13'}),
-      headers: {'x-request-id': 'some-unique-id'},
+      session: _.merge(session, { currentGatewayAccountId: '13' }),
+      headers: { 'x-request-id': 'some-unique-id' },
       user: user
     }
     const res = mockRes.getStubbedRes()
@@ -170,7 +181,7 @@ describe('The afterOtpLogin endpoint', function () {
     const session = mockSession.getMockSession(user)
     const req = {
       session: session,
-      headers: {'x-request-id': 'some-unique-id'},
+      headers: { 'x-request-id': 'some-unique-id' },
       user: user
     }
     const lastUrl = session.last_url
@@ -186,7 +197,7 @@ describe('The afterOtpLogin endpoint', function () {
     user.sessionVersion = 1
     const req = {
       session: mockSession.getMockSession(user),
-      headers: {'x-request-id': 'some-unique-id'},
+      headers: { 'x-request-id': 'some-unique-id' },
       user: user
     }
     const res = mockRes.getStubbedRes()
@@ -212,7 +223,7 @@ describe('login get endpoint', function () {
 
     res.locals = { 'flash': {} }
     testController(loginController.loginGet, req, res)
-    expect(res.locals.flash === {username: 'You must enter a username', password: 'You must enter a password'})
+    expect(res.locals.flash === { username: 'You must enter a username', password: 'You must enter a password' })
     done()
   })
 
@@ -225,7 +236,7 @@ describe('login get endpoint', function () {
 
     res.locals = { 'flash': {} }
     testController(loginController.loginGet, req, res)
-    expect(res.locals.flash === {username: 'You must enter a username'})
+    expect(res.locals.flash === { username: 'You must enter a username' })
     done()
   })
 })
@@ -255,7 +266,7 @@ describe('login post endpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
-      .expect(400, {message: 'There is a problem with the payments platform'})
+      .expect(400, { message: 'There is a problem with the payments platform' })
       .end(done)
   })
 })
@@ -272,8 +283,8 @@ describe('otp login post endpoint', function () {
       .post(paths.user.otpLogIn)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
-      .send({code: notp.totp.gen('12345')})
-      .expect(400, {message: 'There is a problem with the payments platform'})
+      .send({ code: notp.totp.gen('12345') })
+      .expect(400, { message: 'There is a problem with the payments platform' })
       .end(done)
   })
 })
@@ -291,7 +302,7 @@ describe('otp send again post endpoint', function () {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
-      .expect(400, {message: 'There is a problem with the payments platform'})
+      .expect(400, { message: 'There is a problem with the payments platform' })
       .end(done)
   })
 })
@@ -317,14 +328,25 @@ describe('direct login after user registration', function () {
       .reply(200, userResponse)
 
     let connectorMock = nock(process.env.CONNECTOR_URL)
+    const ledgerMock = nock(process.env.LEDGER_URL)
 
     connectorMock.get(`${CONNECTOR_ACCOUNT_PATH}/${gatewayAccountId}`)
       .reply(200, { foo: 'bar', gateway_account_id: gatewayAccountId })
 
-    connectorMock
-      .get(`/v1/api/accounts/${gatewayAccountId}/transactions-summary`)
+    ledgerMock
+      .get('/v1/report/transactions-summary')
       .query(() => true)
-      .reply(200, {})
+      .reply(200, {
+        payments: {
+          count: 0,
+          gross_amount: 0
+        },
+        refunds: {
+          count: 0,
+          gross_amount: 0
+        },
+        net_income: 0
+      })
 
     let destroyStub = sinon.stub()
     let gatewayAccountData = {
@@ -348,7 +370,7 @@ describe('direct login after user registration', function () {
 
 function testController (controller, req, res) {
   _.assign(req, {
-    headers: {'x-request-id': 'some-unique-id'},
+    headers: { 'x-request-id': 'some-unique-id' },
     flash: sinon.stub()
   })
   controller(req, res)

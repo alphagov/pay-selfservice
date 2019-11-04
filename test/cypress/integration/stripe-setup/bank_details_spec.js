@@ -147,7 +147,8 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubGetGatewayAccountStripeSetupSuccess(true),
-          stubStripeAccountGet('acct_123example123')
+          stubStripeAccountGet('acct_123example123'),
+          commonStubs.getDashboardStatisticsStub()
         ])
 
         cy.visit('/bank-details')
@@ -165,7 +166,8 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubStripeSetupGetForMultipleCalls(false, true),
-          stubStripeAccountGet('acct_123example123')
+          stubStripeAccountGet('acct_123example123'),
+          commonStubs.getDashboardStatisticsStub()
         ])
 
         cy.visit('/bank-details')
@@ -187,7 +189,8 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
           stubStripeSetupGetForMultipleCalls(false, false, true),
-          stubStripeAccountGet('acct_123example123')
+          stubStripeAccountGet('acct_123example123'),
+          commonStubs.getDashboardStatisticsStub()
         ])
 
         cy.visit('/bank-details')

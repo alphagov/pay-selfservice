@@ -419,7 +419,8 @@ describe('Stripe setup: responsible person page', () => {
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
         stubStripeSetupGet(true),
-        stubStripeAccountGet('acct_123example123')
+        stubStripeAccountGet('acct_123example123'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/responsible-person')
@@ -440,7 +441,8 @@ describe('Stripe setup: responsible person page', () => {
         commonStubs.getUserStub(userExternalId, [gatewayAccountId]),
         commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe'),
         stubStripeSetupGetForMultipleCalls(false, false, true),
-        stubStripeAccountGet('acct_123example123')
+        stubStripeAccountGet('acct_123example123'),
+        commonStubs.getDashboardStatisticsStub()
       ])
 
       cy.visit('/responsible-person')

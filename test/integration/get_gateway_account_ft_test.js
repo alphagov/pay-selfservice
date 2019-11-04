@@ -28,7 +28,7 @@ describe('get account', function () {
             gateway_account_ids: ['1', '2', '5']
           },
           role: {
-            permissions: [{name: 'transactions:read'}]
+            permissions: [{ name: 'transactions:read' }]
           }
         }
       ]
@@ -38,17 +38,27 @@ describe('get account', function () {
     session.currentGatewayAccountId = '2'
     app = session.getAppWithSessionAndGatewayAccountCookies(getApp(), mockSession)
     const connectorMock = nock(process.env.CONNECTOR_URL)
-
+    const ledgerMock = nock(process.env.LEDGER_URL)
     connectorMock.get('/v1/frontend/accounts/1').times(2).reply(200, {
       bob: 'bob',
       type: 'test',
       payment_provider: 'sandbox'
     })
 
-    connectorMock
-      .get(`/v1/api/accounts/1/transactions-summary`)
+    ledgerMock
+      .get('/v1/report/transactions-summary')
       .query(() => true)
-      .reply(200, {})
+      .reply(200, {
+        payments: {
+          count: 0,
+          gross_amount: 0
+        },
+        refunds: {
+          count: 0,
+          gross_amount: 0
+        },
+        net_income: 0
+      })
 
     supertest(app)
       .get('/')
@@ -76,7 +86,7 @@ describe('get account', function () {
             gateway_account_ids: ['DIRECT_DEBIT:1owehhserwr', '5']
           },
           role: {
-            permissions: [{name: 'transactions:read'}]
+            permissions: [{ name: 'transactions:read' }]
           }
         }
       ]
