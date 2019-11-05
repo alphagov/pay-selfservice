@@ -1,5 +1,3 @@
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 <form id="refundForm" action="/transactions/{{charge_id}}/refund" method="post" class="target-to-show {% if flash.genericError %}active{% endif %}">
   <input id="full-amount" type="hidden" name="full-amount" value="{{ refundable_amount }}" >

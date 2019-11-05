@@ -1,6 +1,3 @@
-{% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
-
 <div id="{{token.token_link}}" class="key-list-item">
   {% if token.description %}
     <h3 id="description-{{token.token_link}}" class="govuk-heading-s govuk-!-margin-bottom-1 js-edit-description js-old-description">{{token.description}}</h3>

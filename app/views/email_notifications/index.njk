@@ -1,5 +1,4 @@
 {% extends "../layout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% macro changeLink(name) %}
     <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16" id="email-notifications-toggle-{{name}}" href="{{routes.emailNotifications[name]}}">{% if permissions.email_notification_toggle_update %}Change{% else %}View{% endif %}</a>
