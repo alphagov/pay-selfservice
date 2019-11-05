@@ -34,7 +34,7 @@ describe('Dashboard', () => {
     const from = encodeURIComponent('2018-05-14T00:00:00+01:00')
     const to = encodeURIComponent('2018-05-15T00:00:00+01:00')
 
-    it(`should have the page title 'Dashboard - ${serviceName} sandbox test - GOV.UK Pay'`, () => {
+    it(`should have the page title 'Dashboard - ${serviceName} Sandbox test - GOV.UK Pay'`, () => {
       const dashboardUrl = `/?period=today&fromDateTime=${from}&toDateTime=${to}`
       cy.visit(dashboardUrl)
       cy.title().should('eq', `Dashboard - ${serviceName} Sandbox test - GOV.UK Pay`)
