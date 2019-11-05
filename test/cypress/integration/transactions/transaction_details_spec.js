@@ -37,7 +37,7 @@ const defaultTransactionEvents = [{
   data: {}
 }]
 
-function defaultTransactionDetails () {
+function defaultTransactionDetails (events, opts = {}) {
   return {
     amount: defaultAmount,
     state: { finished: true, status: 'success' },
@@ -50,9 +50,9 @@ function defaultTransactionDetails () {
     delayed_capture: false,
     transaction_type: 'PAYMENT',
     account_id: gatewayAccountId,
-    refund_summary_status: 'available',
-    refund_summary_available: defaultAmount,
-    refund_summary_submitted: 0,
+    refund_summary_status: opts.refund_summary_status || 'available',
+    refund_summary_available: opts.refund_amount_available || defaultAmount,
+    refund_summary_submitted: opts.refund_summary_submitted || 0,
     gateway_transaction_id: 'a-gateway-transaction-id',
     cardholder_name: 'J Doe',
     card_brand: 'Visa',
@@ -60,7 +60,8 @@ function defaultTransactionDetails () {
     expiry_date: '08/23',
     includeRefundSummary: true,
     includeSearchResultCardDetails: true,
-    events: defaultTransactionEvents
+    includeAddress: opts.includeAddress || true,
+    events: events || defaultTransactionEvents
   }
 }
 
@@ -235,6 +236,282 @@ describe('Transaction details page', () => {
       // Amount
       cy.get('#amount').should('have.text',
         `${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.total_amount)} (including a card fee of ${convertPenceToPoundsFormatted(aCorporateCardSurchargeTransaction.corporate_card_surcharge)})`)
+    })
+
+    it('should show a transaction when no card details are present ', function () {
+      const events = [{
+        event_type: 'PAYMENT_CREATED',
+        status: 'created',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:21:05'
+      }]
+      const opts = {
+        includeAddress: false
+      }
+
+      const transactionDetails = defaultTransactionDetails(events, opts)
+      cy.task('setupStubs', getStubs(transactionDetails))
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+
+      // Ensure page details match up
+      // Reference number
+      cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
+        transactionDetails.reference)
+      // Status
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain',
+        capitalise(transactionDetails.state.status))
+      // Amount
+      cy.get('.transaction-details tbody').find('tr').eq(3).find('td').first().should('have.text',
+        convertPenceToPoundsFormatted(transactionDetails.amount))
+      // Refunded amount
+      cy.get('.transaction-details tbody').find('tr').eq(4).find('td').first().should('have.text',
+        convertPenceToPoundsFormatted(transactionDetails.refund_summary_submitted))
+      // Date created
+      cy.get('.transaction-details tbody').find('tr').eq(5).find('td').first().should('contain',
+        formatDate(new Date(transactionDetails.events[0].timestamp)))
+      // Provider
+      cy.get('.transaction-details tbody').find('tr').eq(6).find('td').first().should('have.text',
+        capitalise(transactionDetails.payment_provider))
+      // Provider ID
+      cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('have.text',
+        transactionDetails.gateway_transaction_id)
+      // GOVUK Payment ID
+      cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
+        transactionDetails.transaction_id)
+      // Payment method
+      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
+        transactionDetails.card_brand)
+      // Name on card
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
+        transactionDetails.cardholder_name)
+      // // Card number
+      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
+        `**** **** **** ${transactionDetails.last_digits_card_number}`)
+      // Card expiry date
+      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
+        transactionDetails.expiry_date)
+      // Email
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
+        transactionDetails.email)
+      cy.get('#delayed-capture').should('not.exist')
+    })
+  })
+
+  describe('the transaction history endpoint', () => {
+    it('should show a list of transaction history for success', function () {
+      const events = [{
+        event_type: 'PAYMENT_CREATED',
+        status: 'created',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:21:05'
+      }, {
+        event_type: 'PAYMENT_STARTED',
+        status: 'started',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:23:12'
+      }, {
+        event_type: 'AUTHORISATION_SUCCEEDED',
+        status: 'submitted',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 12:05:43'
+      }, {
+        event_type: 'USER_APPROVED_FOR_CAPTURE',
+        status: 'success',
+        finished: true,
+        amount: '20000',
+        timestamp: '2018-12-24 12:05:43'
+      }]
+      const transactionDetails = defaultTransactionDetails(events)
+      cy.task('setupStubs', getStubs(transactionDetails))
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[3].status))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
+        convertPenceToPoundsFormatted(events[3].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(2).should('contain',
+        formatDate(new Date(events[3].timestamp)))
+      cy.get('.transaction-events tbody').find('tr').eq(1).find('td').eq(0).should('contain',
+        capitalise(events[2].status))
+      cy.get('.transaction-events tbody').find('tr').eq(1).find('td').eq(1).should('contain',
+        convertPenceToPoundsFormatted(events[2].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(1).find('td').eq(2).should('contain',
+        formatDate(new Date(events[2].timestamp)))
+      cy.get('.transaction-events tbody').find('tr').eq(2).find('td').eq(0).should('contain',
+        capitalise(events[1].status))
+      cy.get('.transaction-events tbody').find('tr').eq(2).find('td').eq(1).should('contain',
+        convertPenceToPoundsFormatted(events[1].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(2).find('td').eq(2).should('contain',
+        formatDate(new Date(events[1].timestamp)))
+      cy.get('.transaction-events tbody').find('tr').eq(3).find('td').eq(0).should('contain',
+        capitalise(events[0].status))
+      cy.get('.transaction-events tbody').find('tr').eq(3).find('td').eq(1).should('contain',
+        convertPenceToPoundsFormatted(events[0].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(3).find('td').eq(2).should('contain',
+        formatDate(new Date(events[0].timestamp)))
+    })
+
+    it('should show a list of transaction history for cancelled by service', function () {
+      const events = [{
+        event_type: 'PAYMENT_CREATED',
+        status: 'created',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:21:05'
+      }, {
+        event_type: 'PAYMENT_STARTED',
+        status: 'started',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:23:12'
+      }, {
+        event_type: 'CANCEL_BY_EXTERNAL_SERVICE_SUBMITTED',
+        status: 'cancelled',
+        finished: true,
+        message: 'Payment was cancelled by the service',
+        code: 'P0040',
+        amount: '20000',
+        timestamp: '2018-12-24 12:05:43'
+      }]
+      const transactionDetails = defaultTransactionDetails(events)
+      cy.task('setupStubs', getStubs(transactionDetails))
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[2].status))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
+        convertPenceToPoundsFormatted(events[2].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(2).should('contain',
+        formatDate(new Date(events[2].timestamp)))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[2].message))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[2].code))
+    })
+
+    it('should show a list of transaction history for cancelled by user', function () {
+      const events = [{
+        event_type: 'PAYMENT_CREATED',
+        status: 'created',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:21:05'
+      }, {
+        event_type: 'PAYMENT_STARTED',
+        status: 'started',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:23:12'
+      }, {
+        event_type: 'CANCEL_BY_USER_SUBMITTED',
+        status: 'cancelled',
+        finished: true,
+        message: 'Payment was cancelled by the user',
+        code: 'P0040',
+        amount: '20000',
+        timestamp: '2018-12-24 12:05:43'
+      }]
+      const opts = {
+        refund_summary_status: 'available',
+        refund_summary_available: 0,
+        refund_summary_submitted: defaultAmount
+      }
+      const transactionDetails = defaultTransactionDetails(events, opts)
+      cy.task('setupStubs', getStubs(transactionDetails))
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[2].status))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
+        convertPenceToPoundsFormatted(events[2].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(2).should('contain',
+        formatDate(new Date(events[2].timestamp)))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[2].message))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[2].code))
+    })
+
+    it('should show refunded event', function () {
+      const events = [{
+        event_type: 'PAYMENT_CREATED',
+        status: 'created',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:21:05'
+      }, {
+        event_type: 'PAYMENT_STARTED',
+        status: 'started',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 13:23:12'
+      }, {
+        event_type: 'AUTHORISATION_SUCCEEDED',
+        status: 'submitted',
+        finished: false,
+        amount: '20000',
+        timestamp: '2018-12-24 12:05:43'
+      }, {
+        event_type: 'USER_APPROVED_FOR_CAPTURE',
+        status: 'success',
+        finished: true,
+        amount: '20000',
+        timestamp: '2018-12-24 12:05:43'
+      }, {
+        event_type: 'REFUND_CREATED_BY_SERVICE',
+        resource_type: 'REFUND',
+        status: 'submitted',
+        finished: false,
+        amount: '10000',
+        timestamp: '2018-12-28 13:23:12'
+      }, {
+        event_type: 'REFUND_SUCCEEDED',
+        resource_type: 'REFUND',
+        status: 'success',
+        finished: true,
+        amount: '10000',
+        timestamp: '2018-12-28 13:24:12'
+      }]
+      const transactionDetails = defaultTransactionDetails(events)
+      cy.task('setupStubs', getStubs(transactionDetails))
+
+      cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+      // Ensure page title is correct
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
+        capitalise(events[5].resource_type.toLowerCase()) + ' ' + events[5].status)
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
+        '–' + convertPenceToPoundsFormatted(events[5].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(2).should('contain',
+        formatDate(new Date(events[5].timestamp)))
+      cy.get('.transaction-events tbody').find('tr').eq(1).find('td').eq(0).should('contain',
+        capitalise(events[4].resource_type.toLowerCase()) + ' ' + events[4].status)
+      cy.get('.transaction-events tbody').find('tr').eq(1).find('td').eq(1).should('contain',
+        '–' + convertPenceToPoundsFormatted(events[4].amount))
+      cy.get('.transaction-events tbody').find('tr').eq(1).find('td').eq(2).should('contain',
+        formatDate(new Date(events[4].timestamp)))
     })
   })
 
