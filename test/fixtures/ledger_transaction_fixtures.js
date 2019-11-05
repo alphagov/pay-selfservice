@@ -38,8 +38,13 @@ const buildChargeEventStateWithDefaults = (opts = {}) => {
       status: opts.status || 'started',
       finished: opts.finished || false
     }
+    if (opts.code) {
+      state.code = opts.code
+    }
+    if (opts.message) {
+      state.message = opts.message
+    }
   }
-
   return state
 }
 
@@ -50,10 +55,10 @@ const buildPaymentEvents = (opts = {}) => {
       events.push({
         amount: paymentState.amount || '',
         state: buildChargeEventStateWithDefaults(paymentState),
-        resource_type: 'PAYMENT',
+        resource_type: paymentState.resource_type || 'PAYMENT',
         event_type: paymentState.event_type,
         timestamp: paymentState.timestamp,
-        data: {}
+        data: paymentState.data || {}
       })
     })
   }
@@ -71,7 +76,7 @@ const buildTransactionDetails = (opts = {}) => {
     payment_provider: opts.payment_provider || 'sandbox',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
     delayed_capture: opts.delayed_capture || false,
-    transaction_type: 'PAYMENT'
+    transaction_type: opts.transaction_type || 'PAYMENT'
   }
 
   if (opts.gateway_transaction_id) {
@@ -83,14 +88,17 @@ const buildTransactionDetails = (opts = {}) => {
       last_digits_card_number: opts.last_digits_card_number || '0002',
       cardholder_name: opts.cardholder_name || 'Test User',
       expiry_date: opts.expiry_date || '08/23',
-      billing_address: {
-        line1: opts.billing_address_line1 || 'address line 1',
-        line2: opts.billing_address_line2 || 'address line 2',
-        postcode: opts.billing_address_postcode || 'AB1A 1AB',
-        city: opts.billing_address_city || 'London',
-        country: opts.billing_address_country || 'GB'
-      },
       card_brand: opts.card_brand || 'Visa'
+    }
+  }
+
+  if (opts.includeAddress) {
+    data.card_details.billing_address = {
+      line1: opts.billing_address_line1 || 'address line 1',
+      line2: opts.billing_address_line2 || 'address line 2',
+      postcode: opts.billing_address_postcode || 'AB1A 1AB',
+      city: opts.billing_address_city || 'London',
+      country: opts.billing_address_country || 'GB'
     }
   }
 
@@ -176,6 +184,7 @@ module.exports = {
     opts.includeCardDetails = true
     opts.includeRefundSummary = true
     opts.includeSettlementSummary = true
+    opts.includeAddress = opts.includeAddress || true
     const data = buildTransactionDetails(opts)
 
     return {
