@@ -14,3 +14,9 @@ describe('When a payment provider name is passed to the function', () => {
     expect(formatPSPname('epdq')).to.equal('ePDQ')
   })
 })
+
+describe('When undefined is passed to the function', () => {
+  it('it should return empty', () => {
+    expect(formatPSPname()).to.equal()
+  })
+})
