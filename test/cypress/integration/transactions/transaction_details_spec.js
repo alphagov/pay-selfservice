@@ -256,7 +256,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       // Ensure page details match up
       // Reference number
@@ -335,7 +335,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[3].status))
@@ -391,7 +391,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[2].status))
@@ -438,7 +438,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[2].status))
@@ -498,7 +498,7 @@ describe('Transaction details page', () => {
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} sandbox test - GOV.UK Pay`)
+      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[5].resource_type.toLowerCase()) + ' ' + events[5].status)
