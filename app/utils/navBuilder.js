@@ -3,6 +3,7 @@
 const _ = require('lodash')
 const paths = require('./../paths')
 const pathLookup = require('./pathLookup')
+const formatPSPname = require('./format-PSP-name')
 
 const serviceNavigationItems = (originalUrl, permissions, type) => {
   const navigationItems = []
@@ -72,7 +73,7 @@ const adminNavigationItems = (originalUrl, permissions, type, paymentProvider) =
     },
     {
       id: 'navigation-menu-your-psp',
-      name: 'Your PSP',
+      name: `Your PSP - ${formatPSPname(paymentProvider)}`,
       url: paths.yourPsp.index,
       current: pathLookup(originalUrl, paths.yourPsp.index),
       permissions: permissions.gateway_credentials_update && type === 'card' && (paymentProvider !== 'stripe') && (paymentProvider !== 'sandbox')

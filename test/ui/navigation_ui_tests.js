@@ -72,7 +72,7 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox')
     }
 
     const body = render('api-keys/index', templateData)
@@ -98,7 +98,7 @@ describe('navigation menu', function () {
 
     const body = render('api-keys/index', templateData)
 
-    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Your PSP')
+    body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('Your PSP - Worldpay')
   })
 
   it('should not render Accounts credentials navigation link when user have gateway credentials read permission' +
@@ -155,7 +155,7 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'sandbox')
     }
 
     const body = render('api-keys/index', templateData)
@@ -206,14 +206,14 @@ describe('navigation menu', function () {
     const templateData = {
       permissions: testPermissions,
       showSettingsNav: true,
-      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card')
+      adminNavigationItems: adminNavigationItems('/api-keys', testPermissions, 'card', 'worldpay')
     }
 
     const body = render('api-keys/index', templateData)
 
     body.should.containSelector('.settings-navigation li:nth-child(1)').withExactText('Settings')
     body.should.containSelector('.settings-navigation li:nth-child(2)').withExactText('API keys')
-    body.should.containSelector('.settings-navigation li:nth-child(3)').withExactText('Your PSP')
+    body.should.containSelector('.settings-navigation li:nth-child(3)').withExactText('Your PSP - Worldpay')
     body.should.containSelector('.settings-navigation li:nth-child(4)').withExactText('Card types')
   })
 })

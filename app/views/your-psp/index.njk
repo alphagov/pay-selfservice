@@ -11,11 +11,7 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP)</h1>
-
-  <p class="govuk-body">Before you can take payments you must enter the credentials from your PSP so that the accounts can be linked.</p>
-
-  <h2 class="govuk-heading-m">Account credentials</h2>
+  <h1 class="govuk-heading-l page-title">Your payment service provider (PSP) - {{ currentGatewayAccount.payment_provider | formatPSPname }}</h1>
 
   {% if currentGatewayAccount.payment_provider === "worldpay" %}
     {% include "./_worldpay.njk" %}

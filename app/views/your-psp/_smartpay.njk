@@ -1,9 +1,15 @@
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+  <p class="govuk-body">Before you can start taking payments, you need to link your Smartpay account to GOV.UK Pay.</p>
+
+  <p class="govuk-body">Go to your Smartpay account to get the details you need to enter here, or <a class="govuk-link" href="https://docs.payments.service.gov.uk/switching_to_live/set_up_a_live_smartpay_account/#authentication">read more in our documentation</a>.</p>
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-9">Account credentials</h2>
 {{
   govukSummaryList({
     rows: [
       {
         key: {
-          text: "Merchant ID"
+          text: "Merchant code"
         },
         value: {
           text: currentGatewayAccount.credentials.merchant_id if isConfigured else "Not configured",
@@ -63,18 +69,18 @@
 }}
 
 {% if not currentGatewayAccount.notificationCredentials.userName %}
-  <div class="govuk-error-summary govuk-!-margin-top-9" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-      <h1 class="govuk-error-summary__title" id="error-summary-heading-example-1">
-          You must set SmartPay notification credentials
-      </h1>
-      <p class="govuk-body">
-          You need to set these credentials here and in your Smartpay account. If
-          you do not set these credentials GOV.UK Pay will not be able to process your payments.
-          Read more <a class="govuk-link" href="https://www.barclaycard.co.uk/business/files/SmartPay_Notifications_Guide.pdf">here</a>.
-      </p>
-  </div>
+{% set warningHTML %}
+  You must set your notification credentials here and in your Smartpay account. If you don’t do this, we can’t take payments. Find out more in <a class="govuk-link" href="https://docs.payments.service.gov.uk/switching_to_live/set_up_a_live_smartpay_account/#set-up-notification-credentials">our documentation</a>.
+{% endset %}
+{{
+  govukWarningText({
+    html: warningHTML,
+    iconFallbackText: "Warning",
+    classes: "govuk-!-margin-top-9"
+  })
+}}
 {% endif %}
-<h4 class="govuk-heading-s govuk-!-margin-top-6" id="view-notification-title">Your SmartPay Notification Credentials</h4>
+<h2 class="govuk-heading-m" id="view-notification-title">Your Smartpay notification credentials</h2>
 {{
   govukSummaryList({
     rows: [
