@@ -69,9 +69,53 @@ describe('Transactions', () => {
     }
   ]
 
+  const filteredByLastDigitsCardNumberTransactions = [
+    {
+      reference: 'filtered-by-last-digits-card-number',
+      amount: 1500,
+      type: 'payment',
+      last_digits_card_number: '42424'
+    }
+  ]
+
+  const filteredByCardHolderNameTransactions = [
+    {
+      reference: 'filtered-by-cardholder-name',
+      amount: 1500,
+      type: 'payment',
+      cardholder_name: 'J. Doe'
+    }
+  ]
+
+  const filteredByReferenceTransactions = [
+    {
+      reference: 'filtered-by-partial-reference1',
+      amount: 1500,
+      type: 'payment'
+    }, {
+      reference: 'filtered-by-partial-reference2',
+      amount: 1500,
+      type: 'payment'
+    }
+  ]
+
   const transactionsWithAssociatedFees = [
-    { reference: 'first-transaction-with-fee', amount: 3000, fee: 300, net_amount: 2700, type: 'payment', payment_provider: 'stripe' },
-    { reference: 'second-transaction-with-fee', amount: 5000, fee: 500, net_amount: 4500, type: 'payment', payment_provider: 'stripe' }
+    {
+      reference: 'first-transaction-with-fee',
+      amount: 3000,
+      fee: 300,
+      net_amount: 2700,
+      type: 'payment',
+      payment_provider: 'stripe'
+    },
+    {
+      reference: 'second-transaction-with-fee',
+      amount: 5000,
+      fee: 500,
+      net_amount: 4500,
+      type: 'payment',
+      payment_provider: 'stripe'
+    }
   ]
 
   const setupStubs = [
@@ -149,6 +193,39 @@ describe('Transactions', () => {
           payment_states: 'created,started,submitted,capturable,success'
         },
         transactions: filteredByMultipleFieldsTransactions
+      }
+    },
+    // transactions filtered by last digit card numbers
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          last_digits_card_number: '4242'
+        },
+        transactions: filteredByLastDigitsCardNumberTransactions
+      }
+    },
+    // transactions filtered by cardholder name
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          cardholder_name: 'doe'
+        },
+        transactions: filteredByCardHolderNameTransactions
+      }
+    },
+    // transactions filtered by reference
+    {
+      name: 'getLedgerTransactionsSuccess',
+      opts: {
+        gateway_account_id: gatewayAccountId,
+        filters: {
+          reference: 'filtered-by-reference'
+        },
+        transactions: filteredByReferenceTransactions
       }
     }
   ]
@@ -248,6 +325,7 @@ describe('Transactions', () => {
 
           // Ensure the expected transactions are shown
           cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByPartialEmailAndCardBrandTransactions[0].reference)
+          cy.get('#download-transactions-link').should('have.attr', 'href', '/transactions/download?email=gds4&brand=visa&brand=master-card')
         })
 
         it('should have the right number of transactions when filtering by multiple payment states, a start and end date and a partial reference', () => {
@@ -266,6 +344,33 @@ describe('Transactions', () => {
           // Ensure the expected transactions are shown
           cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByMultipleFieldsTransactions[0].reference)
         })
+
+        it('should should have the right number of transactions when filtering by last digit card numbers', function () {
+          cy.get('#lastDigitsCardNumber').type('4242')
+          cy.get('#filter').click()
+          // Ensure the right number of transactions is displayed
+          cy.get('#transactions-list tbody').find('tr').should('have.length', filteredByLastDigitsCardNumberTransactions.length)
+          // Ensure the expected transactions are shown
+          cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByLastDigitsCardNumberTransactions[0].reference)
+        })
+
+        it('should should have the right number of transactions when filtering by cardholder name', function () {
+          cy.get('#cardholderName').type('doe')
+          cy.get('#filter').click()
+          // Ensure the right number of transactions is displayed
+          cy.get('#transactions-list tbody').find('tr').should('have.length', filteredByCardHolderNameTransactions.length)
+          // Ensure the expected transactions are shown
+          cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByCardHolderNameTransactions[0].reference)
+        })
+
+        it('should should have the right number of transactions when filtering by full reference', function () {
+          cy.get('#reference').type('filtered-by-reference')
+          cy.get('#filter').click()
+          // Ensure the right number of transactions is displayed
+          cy.get('#transactions-list tbody').find('tr').should('have.length', filteredByReferenceTransactions.length)
+          // Ensure the expected transactions are shown
+          cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', filteredByReferenceTransactions[0].reference)
+        })
       })
 
       describe('Transactions are displayed correctly in the list', () => {
@@ -279,8 +384,159 @@ describe('Transactions', () => {
 
           // Ensure the card fee is displayed correctly
           cy.get('#transactions-list tbody').find('tr').eq(2).find('td').eq(1).should('contain', convertPenceToPoundsFormatted(unfilteredTransactions[2].total_amount)).and('contain', '(with card fee)')
+          cy.get('#download-transactions-link').should('have.attr', 'href', '/transactions/download')
         })
       })
+    })
+  })
+  describe('Transaction list - should filter by refund state', () => {
+    beforeEach(() => {
+      const transactionWithRefund = unfilteredTransactions
+      transactionWithRefund.push({
+        reference: 'unfiltered4',
+        amount: 2000,
+        type: 'refund',
+        status: 'submitted',
+        finished: true
+      })
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                name: serviceName,
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        },
+        {
+          name: 'getCardTypesSuccess'
+        },
+        {
+          name: 'getLedgerTransactionsSuccess',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            filters: {},
+            transactions: transactionWithRefund
+          }
+        },
+        {
+          name: 'getLedgerTransactionsSuccess',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            filters: {
+              refund_states: 'submitted'
+            },
+            transactions: [{
+              reference: 'unfiltered4',
+              amount: 2000,
+              type: 'refund',
+              status: 'submitted',
+              finished: true
+            }]
+          }
+        }
+      ])
+      cy.visit(transactionsUrl)
+    })
+    it('should allow filtering by refund states', function () {
+      cy.get('#state').click()
+      cy.get(`#state .govuk-checkboxes__input[value='Refund submitted']`).click()
+      cy.get('#filter').click()
+      // Ensure the right number of transactions is displayed
+      cy.get('#transactions-list tbody').find('tr').should('have.length', 1)
+      cy.get('#download-transactions-link').should('have.attr', 'href', '/transactions/download?refund_states=submitted')
+    })
+  })
+  describe('Transaction list - no result', () => {
+    beforeEach(() => {
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                name: serviceName,
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        },
+        {
+          name: 'getCardTypesSuccess'
+        },
+        {
+          name: 'getLedgerTransactionsSuccess',
+          opts: {
+            gateway_account_id: gatewayAccountId,
+            filters: {},
+            transactions: []
+          }
+        }
+      ])
+      cy.visit(transactionsUrl)
+    })
+    it('should display no transactions', function () {
+      cy.get('#transactions-list tbody').should('not.exist')
+    })
+  })
+  describe('Transaction list - no csv download link when total > 10k', () => {
+    beforeEach(() => {
+      cy.setEncryptedCookies(userExternalId, gatewayAccountId)
+
+      cy.task('setupStubs', [
+        {
+          name: 'getUserSuccess',
+          opts: {
+            external_id: userExternalId,
+            service_roles: [{
+              service: {
+                name: serviceName,
+                gateway_account_ids: [gatewayAccountId]
+              }
+            }]
+          }
+        },
+        {
+          name: 'getGatewayAccountSuccess',
+          opts: { gateway_account_id: gatewayAccountId }
+        },
+        {
+          name: 'getCardTypesSuccess'
+        },
+        {
+          name: 'getLedgerTransactionsSuccess',
+          opts: {
+            page: 101,
+            transaction_length: 10001,
+            transaction_count: 3,
+            gateway_account_id: gatewayAccountId,
+            filters: {},
+            transactions: unfilteredTransactions
+          }
+        }
+      ])
+      cy.visit(transactionsUrl)
+    })
+    it('should not display csv download link', function () {
+      cy.get('#download-transactions-link').should('not.exist')
+      cy.get('.govuk-body').should('contain', 'You cannot download CSV over 10,000 transactions. Please refine your search')
     })
   })
   describe('Stripe gateway transactions with expected fees', () => {

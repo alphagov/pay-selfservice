@@ -277,8 +277,8 @@ module.exports = {
       }
     })
     const data = {
-      total: opts.transactions.length,
-      count: opts.transactions.length,
+      total: opts.transaction_length || opts.transactions.length,
+      count: opts.transaction_count || opts.transactions.length,
       page: opts.page || 1,
       results: results
     }
