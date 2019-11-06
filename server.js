@@ -9,7 +9,6 @@ const nunjucks = require('nunjucks')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const loggingMiddleware = require('morgan')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')('./public')
@@ -24,6 +23,7 @@ const errorLogger = require('./app/middleware/error_logger')
 const errorHandler = require('./app/middleware/express_unhandled_error_handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const logger = require('./app/utils/logger')(__filename)
+const loggingMiddleware = require('./app/middleware/logging_middleware')
 const Sentry = require('./app/utils/sentry.js').initialiseSentry()
 const formatPSPname = require('./app/utils/format-PSP-name')
 
@@ -48,8 +48,7 @@ function initialiseGlobalMiddleware (app) {
     }
   }
   if (process.env.DISABLE_REQUEST_LOGGING !== 'true') {
-    app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware(
-      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" - total time :response-time ms'))
+    app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware())
   }
   app.use(favicon('node_modules/govuk-frontend/govuk/assets/images/favicon.ico'))
   app.use(staticify.middleware)
