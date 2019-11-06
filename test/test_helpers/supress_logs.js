@@ -1,4 +1,4 @@
 'use strict'
 
-const winston = require('winston')
-winston.remove(winston.transports.Console)
+const logger = require('../../app/utils/logger')(__filename)
+logger.transports.forEach(t => (t.silent = true))

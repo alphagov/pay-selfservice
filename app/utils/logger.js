@@ -7,7 +7,7 @@ const logger = createLogger({
   format: format.combine(
     splat(),
     prettyPrint(),
-    govUkPayLoggingFormat({ container: 'selfservice' }),
+    govUkPayLoggingFormat({ container: 'selfservice', environment: process.env.ENVIRONMENT }),
     json()
   ),
   transports: [
