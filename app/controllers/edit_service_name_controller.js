@@ -8,7 +8,7 @@ const responses = require('../utils/response')
 const paths = require('../paths')
 const formatPath = require('../utils/replace_params_in_path')
 const serviceService = require('../services/service_service')
-const {validateServiceName} = require('../utils/service_name_validation')
+const { validateServiceName } = require('../utils/service_name_validation')
 
 exports.get = (req, res) => {
   let pageData = lodash.get(req, 'session.pageData.editServiceName')
@@ -30,7 +30,7 @@ exports.post = (req, res) => {
   const correlationId = lodash.get(req, 'correlationId')
   const serviceExternalId = lodash.get(req, 'service.externalId')
   const serviceName = lodash.get(req, 'body.service-name')
-  const hasServiceNameCy = lodash.get(req, 'body.welsh-service-name-bool')
+  const hasServiceNameCy = lodash.get(req, 'body.welsh-service-name-bool', true)
   const serviceNameCy = hasServiceNameCy ? lodash.get(req, 'body.service-name-cy') : ''
   const validationErrors = validateServiceName(serviceName, 'service_name', true)
   const validationErrorsCy = validateServiceName(serviceNameCy, 'service_name_cy', false)
