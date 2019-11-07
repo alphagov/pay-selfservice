@@ -15,7 +15,7 @@ module.exports = {
   },
 
   logRequestFailure: (context, response) => {
-    logger.error(`[${context.correlationId}] Calling ${context.service} to ${context.description} failed -`, {
+    logger.info(`[${context.correlationId}] Calling ${context.service} to ${context.description} failed -`, {
       service: context.service,
       method: context.method,
       url: context.url,
