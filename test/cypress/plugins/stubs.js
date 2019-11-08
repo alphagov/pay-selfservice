@@ -609,8 +609,8 @@ module.exports = {
     const query = lodash.defaults(opts.filters, {
       account_id: opts.gateway_account_id,
       with_parent_transaction: true,
-      page: 1,
-      display_size: 100
+      page: opts.page || 1,
+      display_size: opts.display_size || 100
     })
 
     return [

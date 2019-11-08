@@ -282,6 +282,9 @@ module.exports = {
       page: opts.page || 1,
       results: results
     }
+    if (opts.links) {
+      data._links = opts.links
+    }
     return {
       getPactified: () => pactRegister.pactify(data),
       getPlain: () => data

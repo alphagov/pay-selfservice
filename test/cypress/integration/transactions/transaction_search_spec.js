@@ -523,7 +523,7 @@ describe('Transactions', () => {
         {
           name: 'getLedgerTransactionsSuccess',
           opts: {
-            page: 101,
+            page: 1,
             transaction_length: 10001,
             transaction_count: 3,
             gateway_account_id: gatewayAccountId,
