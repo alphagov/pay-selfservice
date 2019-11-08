@@ -22,18 +22,19 @@ process.env.SESSION_ENCRYPTION_KEY = 'naskjwefvwei72rjkwfmjwfi72rfkjwefmjwefiuwe
 const gatewayAccountId = '651342'
 let app
 
-const CHARGES_API_PATH = '/v2/api/accounts/' + gatewayAccountId + '/charges'
+const LEDGER_TRANSACTION_PATH = '/v1/transaction?with_parent_transaction=true&account_id=' + gatewayAccountId
+const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
+const ledgerMock = nock(process.env.LEDGER_URL)
 
 const CSV_COLUMN_NAMES = '"Reference","Description","Email","Amount","Card Brand","Cardholder Name","Card Expiry Date","Card Number","State","Finished","Error Code","Error Message","Provider ID","GOV.UK Payment ID","Issued By","Date Created","Time Created","Corporate Card Surcharge","Total Amount","Wallet Type"'
 const CSV_COLUMN_NAMES_WITH_CARD_TYPE = CSV_COLUMN_NAMES + ',"Card Type"'
 
-function connectorMockResponds (code, data, searchParameters) {
+function ledgerMockResponds (code, data, searchParameters) {
   searchParameters.pageSize = searchParameters.pageSize || 500
-  const queryStr = '?' + getQueryStringForParams(searchParameters)
-
-  return connectorMock.get(CHARGES_API_PATH + queryStr)
+  const queryStr = '&' + getQueryStringForParams(searchParameters, true, true)
+  return ledgerMock.get(LEDGER_TRANSACTION_PATH + queryStr)
     .reply(code, data)
 }
 
@@ -58,6 +59,12 @@ describe('Transaction download endpoints', function () {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     userCreator.mockUserResponse(user.toJson(), done)
+    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+      .reply(200, {
+        'payment_provider': 'sandbox',
+        'gateway_account_id': gatewayAccountId,
+        'credentials': { 'username': 'a-username' }
+      })
   })
 
   describe('The /transactions/download endpoint', () => {
@@ -67,17 +74,18 @@ describe('Transaction download endpoints', function () {
       const mockJson = {
         results: results,
         _links: {
-          next_page: { href: 'http://localhost:8000/bar' }
+          next_page: { href: 'http://localhost:8006/bar' }
         }
       }
       adminusersMock.get('/v1/api/users').reply(200, [])
 
-      const secondPageMock = nock('http://localhost:8000')
+      const secondPageMock = nock('http://localhost:8006')
       const secondResults = _.cloneDeep(results)
       secondResults[0].amount = 12000
       secondResults[0].corporate_card_surcharge = 250
       secondResults[0].total_amount = 12250
       secondResults[1].amount = 123
+      secondResults[1].total_amount = 123
       secondResults[1].wallet_type = 'GOOGLE_PAY'
 
       secondPageMock.get('/bar')
@@ -85,7 +93,7 @@ describe('Transaction download endpoints', function () {
           results: secondResults
         })
 
-      connectorMockResponds(200, mockJson, {})
+      ledgerMockResponds(200, mockJson, {})
 
       downloadTransactionList()
         .expect(200)
@@ -119,11 +127,11 @@ describe('Transaction download endpoints', function () {
       const mockJson = {
         results: results,
         _links: {
-          next_page: { href: 'http://localhost:8000/bar' }
+          next_page: { href: 'http://localhost:8006/bar' }
         }
       }
 
-      const secondPageMock = nock('http://localhost:8000')
+      const secondPageMock = nock('http://localhost:8006')
 
       secondPageMock.get('/bar')
         .reply(200, {
@@ -131,7 +139,7 @@ describe('Transaction download endpoints', function () {
         })
       adminusersMock.get('/v1/api/users').reply(200, [])
 
-      connectorMockResponds(200, mockJson, {})
+      ledgerMockResponds(200, mockJson, {})
 
       downloadTransactionList()
         .expect(200)
@@ -142,7 +150,7 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES_WITH_CARD_TYPE)
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","",""')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","credit"')
           done()
         })
     })
@@ -153,10 +161,10 @@ describe('Transaction download endpoints', function () {
       const mockJson = {
         results: results,
         _links: {
-          next_page: { href: 'http://localhost:8000/bar' }
+          next_page: { href: 'http://localhost:8006/bar' }
         }
       }
-      const secondPageMock = nock('http://localhost:8000')
+      const secondPageMock = nock('http://localhost:8006')
 
       secondPageMock.get('/bar')
         .reply(200, {
@@ -172,7 +180,7 @@ describe('Transaction download endpoints', function () {
         username: 'second_user_name'
       }).getPlain()
 
-      connectorMockResponds(200, mockJson, { refund_states: 'success' })
+      ledgerMockResponds(200, mockJson, { refund_states: 'success' })
       adminusersMock.get('/v1/api/users')
         .query({ ids: '1stUserId,2ndUserId' })
         .reply(200, [user2, user])
@@ -187,9 +195,9 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES_WITH_CARD_TYPE)
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","first_user_name","12 May 2016","17:37:29","0.00","-123.45","",""')
-          expect(arrayOfLines[2]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge2","","12 May 2016","17:37:29","0.00","-123.45","",""')
-          expect(arrayOfLines[3]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge3","second_user_name","12 May 2016","17:37:29","0.00","-123.45","",""')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge1","first_user_name","12 May 2016","17:37:29","0.00","-123.45","","credit"')
+          expect(arrayOfLines[2]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge2","","12 May 2016","17:37:29","0.00","-123.45","","credit"')
+          expect(arrayOfLines[3]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","-123.45","\'@Visa","TEST01","12/19","4242","Refund success",false,"","","transaction-1","charge3","second_user_name","12 May 2016","17:37:29","0.00","-123.45","","credit"')
           done()
         })
     })
@@ -200,17 +208,17 @@ describe('Transaction download endpoints', function () {
       const mockJson = {
         results: results,
         _links: {
-          next_page: { href: 'http://localhost:8000/bar' }
+          next_page: { href: 'http://localhost:8006/bar' }
         }
       }
 
-      const secondPageMock = nock('http://localhost:8000')
+      const secondPageMock = nock('http://localhost:8006')
 
       secondPageMock.get('/bar')
         .reply(200, {
           results: results
         })
-      connectorMockResponds(200, mockJson, { payment_states: 'success' })
+      ledgerMockResponds(200, mockJson, { payment_states: 'success' })
       adminusersMock.get('/v1/api/users').reply(200, [])
 
       request(app)
@@ -224,7 +232,7 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES_WITH_CARD_TYPE)
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","",""')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","credit"')
           done()
         })
     })
@@ -239,13 +247,13 @@ describe('Transaction download endpoints', function () {
         }
       }
 
-      const secondPageMock = nock('http://localhost:8001')
+      const secondPageMock = nock('http://localhost:8006')
 
       secondPageMock.get('/bar')
         .reply(200, {
           results: results
         })
-      connectorMockResponds(200, mockJson, { payment_states: 'success' })
+      ledgerMockResponds(200, mockJson, { payment_states: 'success' })
       adminusersMock.get('/v1/api/users').reply(200, [])
 
       request(app)
@@ -259,14 +267,14 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES_WITH_CARD_TYPE)
-          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","",""')
+          expect(arrayOfLines[1]).to.equal('"\'+red","\'=calc+z!A0","\'-alice.111@mail.fake","123.45","\'@Visa","TEST01","12/19","4242","Success",false,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","credit"')
           done()
         })
     })
 
     it('should show error message on a bad request', done => {
       const errorMessage = 'Unable to download list of transactions.'
-      connectorMockResponds(400, { 'message': errorMessage }, {})
+      ledgerMockResponds(400, { 'message': errorMessage }, {})
 
       downloadTransactionList()
         .expect(500, { 'message': 'Internal server error' })
@@ -274,7 +282,7 @@ describe('Transaction download endpoints', function () {
     })
 
     it('should show a generic error message on a connector service error.', done => {
-      connectorMockResponds(500, { 'message': 'some error from connector' }, {})
+      ledgerMockResponds(500, { 'message': 'some error from connector' }, {})
 
       downloadTransactionList()
         .expect(500, { 'message': 'Internal server error' })

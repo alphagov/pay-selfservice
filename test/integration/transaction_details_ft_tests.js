@@ -14,7 +14,7 @@ let app
 
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
-const LEDGER_TRANSACTION_PATH = '/v1/transaction/{chargeId}?account_id=' + gatewayAccountId
+const LEDGER_TRANSACTION_PATH = '/v1/transaction/{transactionId}?account_id=' + gatewayAccountId
 const ledgerMock = nock(process.env.LEDGER_URL)
 
 function whenGetTransactionHistory (transactionId, baseApp) {
@@ -24,7 +24,7 @@ function whenGetTransactionHistory (transactionId, baseApp) {
 }
 
 function ledgerTransactionPathFor (transactionId) {
-  return LEDGER_TRANSACTION_PATH.replace('{chargeId}', transactionId)
+  return LEDGER_TRANSACTION_PATH.replace('{transactionId}', transactionId)
 }
 
 describe('The transaction view scenarios', function () {
@@ -57,9 +57,8 @@ describe('The transaction view scenarios', function () {
       ledgerMock.get(ledgerTransactionPathFor(nonExistentTransactionId))
         .reply(404, ledgerError)
 
-      // TODO fix error message once test.env is switched to use ledger
       whenGetTransactionHistory(nonExistentTransactionId, app)
-        .expect(500, { 'message': 'Error processing transaction view' })
+        .expect(500, { 'message': 'Charge not found' })
         .end(done)
     })
 

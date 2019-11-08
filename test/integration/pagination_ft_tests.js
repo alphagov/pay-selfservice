@@ -14,7 +14,6 @@ let app
 const gatewayAccountId = '452345'
 
 const CONNECTOR_ALL_CARD_TYPES_API_PATH = '/v1/api/card-types'
-
 const connectorMock = nock(process.env.CONNECTOR_URL)
 
 const ALL_CARD_TYPES = {
@@ -34,7 +33,6 @@ function searchTransactions (data) {
     .send()
 }
 
-// TODO switch to ledger when we switch test env
 describe('Pagination', function () {
   afterEach(function () {
     nock.cleanAll()
