@@ -19,7 +19,7 @@ describe('Transactions list pagination', () => {
     }
   }
 
-  function getTransactions (length) {
+  function generateTransactions (length) {
     const transactions = []
     for (let i = 0; i < length; i++) {
       transactions.push({
@@ -78,7 +78,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 600,
           page: 1,
           display_size: 100,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -119,7 +119,7 @@ describe('Transactions list pagination', () => {
           transaction_count: 5,
           page: '',
           display_size: 5,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -159,7 +159,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 30,
           display_size: 5,
           page: 3,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -211,7 +211,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 30,
           display_size: 2,
           page: 3,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -263,7 +263,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 600,
           display_size: 100,
           page: 1,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -288,7 +288,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 400,
           display_size: 100,
           page: 1,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -314,7 +314,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 50,
           display_size: 100,
           page: 1,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {
@@ -336,7 +336,7 @@ describe('Transactions list pagination', () => {
           transaction_length: 150,
           display_size: 500,
           page: 1,
-          transactions: getTransactions(2),
+          transactions: generateTransactions(2),
           filters: {},
           links: {
             self: {

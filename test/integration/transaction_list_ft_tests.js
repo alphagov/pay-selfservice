@@ -16,7 +16,7 @@ const getQueryStringForParams = require('../../app/utils/get_query_string_for_pa
 
 // Setup
 const gatewayAccountId = '651342'
-const connectorSearchParameters = {}
+const ledgerSearchParameters = {}
 const CONNECTOR_ACCOUNT_PATH = '/v1/frontend/accounts/' + gatewayAccountId
 const LEDGER_TRANSACTION_PATH = '/v1/transaction?account_id=' + gatewayAccountId
 const requestId = 'unique-request-id'
@@ -68,15 +68,15 @@ describe('The /transactions endpoint', function () {
 
   it('should show error message on a bad request while retrieving the list of transactions', function (done) {
     const errorMessage = 'Unable to retrieve list of transactions.'
-    ledgerMockResponds(400, { 'message': errorMessage }, connectorSearchParameters)
+    ledgerMockResponds(400, { 'message': errorMessage }, ledgerSearchParameters)
 
     getTransactionList()
       .expect(500, { 'message': errorMessage })
       .end(done)
   })
 
-  it('should show a generic error message on a connector service error while retrieving the list of transactions', function (done) {
-    ledgerMockResponds(500, { 'message': 'some error from connector' }, connectorSearchParameters)
+  it('should show a generic error message on a ledger service error while retrieving the list of transactions', function (done) {
+    ledgerMockResponds(500, { 'message': 'some error from connector' }, ledgerSearchParameters)
 
     getTransactionList()
       .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
@@ -84,7 +84,7 @@ describe('The /transactions endpoint', function () {
   })
 
   it('should show internal error message if any error happens while retrieving the list of transactions', function (done) {
-    // No connectorMock defined on purpose to mock a network failure
+    // No ledgerMock defined on purpose to mock a network failure
 
     getTransactionList()
       .expect(500, { 'message': 'Unable to retrieve list of transactions.' })
