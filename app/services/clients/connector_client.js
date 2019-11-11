@@ -51,12 +51,12 @@ function _createResponseHandler (self) {
     return function (error, response, body) {
       if (error || !isInArray(response.statusCode, [200, 202])) {
         if (error) {
-          logger.error('Calling connector error -', {
+          logger.error('Calling connector error', {
             service: 'connector',
             error: JSON.stringify(error)
           })
         } else {
-          logger.error('Calling connector response failed -', {
+          logger.info('Calling connector response failed', {
             service: 'connector',
             status: response.statusCode
           })
@@ -247,7 +247,7 @@ ConnectorClient.prototype = {
    */
   getChargeEvents: function (params, successCallback) {
     let url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + '/events'
-    logger.debug('Calling connector to get events -', {
+    logger.debug('Calling connector to get events', {
       service: 'connector',
       method: 'GET',
       url: url,
@@ -371,7 +371,7 @@ ConnectorClient.prototype = {
   patchAccountCredentials: function (params, successCallback) {
     let url = _accountCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    logger.debug('Calling connector to get account -', {
+    logger.debug('Calling connector to get account', {
       service: 'connector',
       method: 'PATCH',
       url: url
@@ -390,7 +390,7 @@ ConnectorClient.prototype = {
   postAccountNotificationCredentials: function (params, successCallback) {
     let url = _accountNotificationCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
 
-    logger.debug('Calling connector to get account -', {
+    logger.debug('Calling connector to get account', {
       service: 'connector',
       method: 'POST',
       url: url
@@ -474,7 +474,7 @@ ConnectorClient.prototype = {
     }
 
     let url = _cardTypesUrlFor(this.connectorUrl)
-    logger.debug('Calling connector to get all card types -', {
+    logger.debug('Calling connector to get all card types', {
       service: 'connector',
       method: 'GET',
       url: url
@@ -635,7 +635,7 @@ ConnectorClient.prototype = {
    */
   postChargeRefund: function (params, successCallback) {
     let url = _chargeRefundsUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
-    logger.debug('Calling connector to post a refund for payment -', {
+    logger.debug('Calling connector to post a refund for payment', {
       service: 'connector',
       method: 'POST',
       url: url,
