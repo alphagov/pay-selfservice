@@ -43,7 +43,7 @@ function processPayload (req, res, getPayload) {
     .catch(err => {
       console.log(err)
       if (err.errorIdentifier === GO_CARDLESS_ACCOUNT_ALREADY_LINKED_TO_ANOTHER_ACCOUNT) {
-        renderErrorView(req, res, 'This GoCardless account is already connected to a GOV.UK Pay account. You’ll need to use a different account.')
+        renderErrorView(req, res, 'This GoCardless account is already connected to a GOV.UK Pay account. You’ll need to use a different account.', 400)
       } else {
         handleBadRequest(req, res, 'Failed to get the token from Direct Debit Connector', err)
       }

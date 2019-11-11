@@ -1,10 +1,8 @@
 const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
-const response = require('../utils/response.js')
+const { renderErrorView, response } = require('../utils/response.js')
 const userService = require('../services/user_service.js')
 const paths = require('../paths.js')
-const successResponse = response.response
-const errorResponse = response.renderErrorView
 const rolesModule = require('../utils/roles')
 const emailValidator = require('../utils/email_tools.js')
 
@@ -51,7 +49,7 @@ module.exports = {
       invitee
     }
 
-    return successResponse(req, res, 'team-members/team_member_invite', data)
+    return response(req, res, 'team-members/team_member_invite', data)
   },
 
   /**
@@ -74,7 +72,7 @@ module.exports = {
       res.redirect(303, formattedPathFor(paths.teamMembers.invite, externalServiceId))
     } else if (!role) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${roleId}`)
-      errorResponse(req, res, messages.inviteError, 200)
+      renderErrorView(req, res, messages.inviteError, 200)
     } else {
       userService.inviteUser(invitee, senderId, externalServiceId, role.name, correlationId)
         .then(() => {
@@ -85,11 +83,11 @@ module.exports = {
         .catch(err => {
           switch (err.errorCode) {
             case 412:
-              successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
+              response(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
               break
             default:
               logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))
-              errorResponse(req, res, messages.inviteError, 200)
+              renderErrorView(req, res, messages.inviteError, 200)
           }
         })
     }

@@ -4,11 +4,11 @@
 const lodash = require('lodash')
 
 // Local Dependencies
-const responses = require('../utils/response')
+const { renderErrorView, response } = require('../utils/response')
 const paths = require('../paths')
 const serviceService = require('../services/service_service')
 const userService = require('../services/user_service')
-const {validateServiceName} = require('../utils/service_name_validation')
+const { validateServiceName } = require('../utils/service_name_validation')
 
 exports.get = (req, res) => {
   let pageData = lodash.get(req, 'session.pageData.createServiceName')
@@ -24,7 +24,7 @@ exports.get = (req, res) => {
   pageData.submit_link = paths.serviceSwitcher.create
   pageData.my_services = paths.serviceSwitcher.index
 
-  return responses.response(req, res, 'services/add_service', pageData)
+  return response(req, res, 'services/add_service', pageData)
 }
 
 exports.post = (req, res) => {
@@ -36,7 +36,7 @@ exports.post = (req, res) => {
   const validationErrorsCy = validateServiceName(serviceNameCy, 'service_name_cy', false)
   if (Object.keys(validationErrors).length || Object.keys(validationErrorsCy).length) {
     lodash.set(req, 'session.pageData.createServiceName', {
-      errors: {...validationErrors, ...validationErrorsCy},
+      errors: { ...validationErrors, ...validationErrorsCy },
       current_name: serviceName,
       current_name_cy: serviceNameCy
     })
@@ -48,7 +48,7 @@ exports.post = (req, res) => {
         res.redirect(paths.serviceSwitcher.index)
       })
       .catch(err => {
-        responses.renderErrorView(req, res, err)
+        renderErrorView(req, res, err)
       })
   }
 }

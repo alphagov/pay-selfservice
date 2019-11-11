@@ -1,9 +1,7 @@
 'use strict'
 
 const logger = require('../utils/logger')(__filename)
-const response = require('../utils/response')
-const errorResponse = response.renderErrorView
-const successResponse = response.response
+const { renderErrorView, response } = require('../utils/response')
 const registrationService = require('../services/user_registration_service')
 const paths = require('../paths')
 const loginController = require('./login')
@@ -27,7 +25,7 @@ const withValidatedRegistrationCookie = (req, res, next) => {
     .then(next)
     .catch(err => {
       logger.warn(`[requestId=${correlationId}] unable to validate required cookie for registration - ${err.message}`)
-      errorResponse(req, res, messages.missingCookie, 404)
+      renderErrorView(req, res, messages.missingCookie, 404)
     })
 }
 
@@ -36,13 +34,13 @@ const handleError = (req, res, err) => {
 
   switch (err.errorCode) {
     case 404:
-      errorResponse(req, res, messages.missingCookie, 404)
+      renderErrorView(req, res, messages.missingCookie, 404)
       break
     case 410:
-      errorResponse(req, res, messages.linkExpired, 410)
+      renderErrorView(req, res, messages.linkExpired, 410)
       break
     default:
-      errorResponse(req, res, messages.missingCookie, 500)
+      renderErrorView(req, res, messages.missingCookie, 500)
   }
 }
 
@@ -61,7 +59,7 @@ module.exports = {
       if (req.register_invite.telephone_number) {
         data.telephone_number = req.register_invite.telephone_number
       }
-      successResponse(req, res, 'user_registration/register', data)
+      response(req, res, 'user_registration/register', data)
     }
 
     return withValidatedRegistrationCookie(req, res, renderRegistrationPage)
@@ -130,7 +128,7 @@ module.exports = {
     }
 
     const displayVerifyCodePage = () => {
-      successResponse(req, res, 'user_registration/verify_otp', data)
+      response(req, res, 'user_registration/verify_otp', data)
     }
 
     return withValidatedRegistrationCookie(req, res, displayVerifyCodePage)
@@ -190,7 +188,7 @@ module.exports = {
       const data = {
         telephone_number: telephoneNumber
       }
-      successResponse(req, res, 'user_registration/re_verify_phone', data)
+      response(req, res, 'user_registration/re_verify_phone', data)
     }
 
     return withValidatedRegistrationCookie(req, res, displayReVerifyCodePage)

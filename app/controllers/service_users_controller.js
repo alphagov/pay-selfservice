@@ -1,11 +1,9 @@
 const _ = require('lodash')
 
 const logger = require('../utils/logger')(__filename)
-const response = require('../utils/response.js')
+const { renderErrorView, response } = require('../utils/response.js')
 const userService = require('../services/user_service.js')
 const paths = require('../paths.js')
-const successResponse = response.response
-const errorResponse = response.renderErrorView
 const roles = require('../utils/roles').roles
 
 const formattedPathFor = require('../utils/replace_params_in_path')
@@ -69,7 +67,7 @@ module.exports = {
       const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
       const inviteTeamMemberLink = formattedPathFor(paths.teamMembers.invite, externalServiceId)
 
-      successResponse(req, res, 'team-members/team_members', {
+      response(req, res, 'team-members/team_members', {
         team_members: teamMembers,
         number_active_members: numberActiveMembers,
         inviteTeamMemberLink: inviteTeamMemberLink,
@@ -90,7 +88,7 @@ module.exports = {
       .then(onSuccess)
       .catch((err) => {
         logger.error(`[requestId=${req.correlationId}] error retrieving users for service ${externalServiceId}. [${err}]`)
-        errorResponse(req, res, 'Unable to retrieve the services users')
+        renderErrorView(req, res, 'Unable to retrieve the services users')
       })
   },
 
@@ -114,7 +112,7 @@ module.exports = {
       const teamMemberIndexLink = formattedPathFor(paths.teamMembers.index, externalServiceId)
 
       if (roleInList && hasSameService) {
-        successResponse(req, res, 'team-members/team_member_details', {
+        response(req, res, 'team-members/team_member_details', {
           username: user.username,
           email: user.email,
           role: roleInList.description,
@@ -123,13 +121,13 @@ module.exports = {
           removeTeamMemberLink: removeTeamMemberLink
         })
       } else {
-        errorResponse(req, res, 'You do not have the rights to access this service.')
+        renderErrorView(req, res, 'You do not have the rights to access this service.', 403)
       }
     }
 
     return userService.findByExternalId(externalUserId)
       .then(onSuccess)
-      .catch(() => errorResponse(req, res, 'Unable to retrieve user'))
+      .catch(() => renderErrorView(req, res, 'Unable to retrieve user'))
   },
 
   /**
@@ -144,7 +142,7 @@ module.exports = {
     const correlationId = req.correlationId
 
     if (userToRemoveExternalId === removerExternalId) {
-      errorResponse(req, res, 'Not allowed to delete a user itself')
+      renderErrorView(req, res, 'Not allowed to delete a user itself', 403)
       return
     }
 
@@ -165,7 +163,7 @@ module.exports = {
         },
         enable_link: true
       }
-      successResponse(req, res, 'error_logged_in', messageUserHasBeenDeleted)
+      response(req, res, 'error_logged_in', messageUserHasBeenDeleted)
     }
 
     return userService.findByExternalId(userToRemoveExternalId, correlationId)
@@ -181,7 +179,7 @@ module.exports = {
    */
   profile: (req, res) => {
     const onSuccess = (user) => {
-      successResponse(req, res, 'team-members/team_member_profile', {
+      response(req, res, 'team-members/team_member_profile', {
         username: user.username,
         email: user.email,
         telephone_number: user.telephoneNumber,
@@ -192,6 +190,6 @@ module.exports = {
 
     return userService.findByExternalId(req.user.externalId)
       .then(onSuccess)
-      .catch(() => errorResponse(req, res, 'Unable to retrieve user'))
+      .catch(() => renderErrorView(req, res, 'Unable to retrieve user'))
   }
 }

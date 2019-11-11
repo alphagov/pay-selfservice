@@ -9,7 +9,7 @@ const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const auth = require('../../services/auth_service.js')
-const errorView = require('../../utils/response.js').renderErrorView
+const { renderErrorView } = require('../../utils/response.js')
 const formattedPathFor = require('../../utils/replace_params_in_path')
 const supportedLanguage = require('../../models/supported-language')
 
@@ -29,6 +29,6 @@ module.exports = (req, res) => {
     })
     .catch((err) => {
       logger.error(`[requestId=${req.correlationId}] Get ADHOC product by gateway account id failed - ${err.message}`)
-      errorView(req, res, 'Internal server error')
+      renderErrorView(req, res, 'Internal server error')
     })
 }

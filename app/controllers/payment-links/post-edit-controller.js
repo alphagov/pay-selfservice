@@ -8,7 +8,7 @@ const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products_client.js')
 const auth = require('../../services/auth_service.js')
-const errorView = require('../../utils/response.js').renderErrorView
+const { renderErrorView } = require('../../utils/response.js')
 
 module.exports = (req, res) => {
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
@@ -23,6 +23,6 @@ module.exports = (req, res) => {
     .catch((err) => {
       console.log(err)
       logger.error(`[requestId=${req.correlationId}] update of payment link failed - ${err.message}`)
-      errorView(req, res, 'Internal server error')
+      renderErrorView(req, res, 'Internal server error')
     })
 }
