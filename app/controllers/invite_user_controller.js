@@ -83,13 +83,12 @@ module.exports = {
           res.redirect(303, formattedPathFor(paths.teamMembers.index, externalServiceId))
         })
         .catch(err => {
-          logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))
-
           switch (err.errorCode) {
             case 412:
               successResponse(req, res, 'error_logged_in', messages.emailConflict(invitee, externalServiceId))
               break
             default:
+              logger.error(`[requestId=${req.correlationId}]  Unable to send invitation to user - ` + JSON.stringify(err))
               errorResponse(req, res, messages.inviteError, 200)
           }
         })
