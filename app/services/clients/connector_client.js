@@ -172,7 +172,7 @@ ConnectorClient.prototype = {
     let url = params.url || searchUrl(this.connectorUrl, params)
     let responseHandler = this.responseHandler(successCallback)
 
-    logger.debug('Calling connector to search account transactions -', {
+    logger.debug('Calling connector to search account transactions', {
       service: 'connector',
       method: 'GET',
       url: url
@@ -225,7 +225,7 @@ ConnectorClient.prototype = {
    */
   getCharge: function (params, successCallback) {
     let url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
-    logger.debug('Calling connector to get charge -', {
+    logger.debug('Calling connector to get charge', {
       service: 'connector',
       method: 'GET',
       url: url,

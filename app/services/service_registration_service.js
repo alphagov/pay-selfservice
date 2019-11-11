@@ -53,7 +53,7 @@ module.exports = {
           resolve(completeServiceInviteResponse)
         })
         .catch(error => {
-          logger.error(`[requestId=${correlationId}] Create populated service orchestration error -`, error)
+          logger.error(`[requestId=${correlationId}] Create populated service orchestration error`, error)
           reject(error)
         })
     })

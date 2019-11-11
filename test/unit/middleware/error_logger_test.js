@@ -44,7 +44,7 @@ describe('error_handler middleware', function () {
         message: err
       }
     }
-    assert(loggerErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
+    assert(loggerErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error`, errorPayload))
     assert(next.calledWith(err))
 
     done()
@@ -75,7 +75,7 @@ describe('error_handler middleware', function () {
         stack: err.stack
       }
     }
-    assert(loggerErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error -`, errorPayload))
+    assert(loggerErrorSpy.calledWith(`[requestId=${req.correlationId}] Internal server error`, errorPayload))
     assert(next.calledWith(err))
 
     done()

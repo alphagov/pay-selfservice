@@ -72,7 +72,7 @@ const searchAllConnector = (accountId, filters, correlationId) => {
 }
 
 function clientUnavailable (error, reject, correlationId) {
-  logger.error(`[${correlationId}] Calling connector to search transactions for an account threw exception -`, {
+  logger.error(`[${correlationId}] Calling connector to search transactions for an account threw exception`, {
     service: 'connector',
     method: 'GET',
     error: error
