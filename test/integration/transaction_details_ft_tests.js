@@ -58,7 +58,7 @@ describe('The transaction view scenarios', function () {
         .reply(404, ledgerError)
 
       whenGetTransactionHistory(nonExistentTransactionId, app)
-        .expect(500, { 'message': 'Charge not found' })
+        .expect(404, { 'message': 'Charge not found' })
         .end(done)
     })
 

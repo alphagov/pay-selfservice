@@ -121,7 +121,7 @@ module.exports = {
           removeTeamMemberLink: removeTeamMemberLink
         })
       } else {
-        renderErrorView(req, res, 'You do not have the rights to access this service.')
+        renderErrorView(req, res, 'You do not have the rights to access this service.', 403)
       }
     }
 
@@ -142,7 +142,7 @@ module.exports = {
     const correlationId = req.correlationId
 
     if (userToRemoveExternalId === removerExternalId) {
-      renderErrorView(req, res, 'Not allowed to delete a user itself')
+      renderErrorView(req, res, 'Not allowed to delete a user itself', 403)
       return
     }
 

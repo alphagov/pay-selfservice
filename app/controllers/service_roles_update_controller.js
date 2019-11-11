@@ -60,7 +60,7 @@ module.exports = {
     }
 
     if (req.user.externalId === externalUserId) {
-      renderErrorView(req, res, 'Not allowed to update self permission')
+      renderErrorView(req, res, 'Not allowed to update self permission', 403)
       return
     }
 
@@ -96,7 +96,7 @@ module.exports = {
     }
 
     if (req.user.externalId === externalUserId) {
-      renderErrorView(req, res, 'Not allowed to update self permission')
+      renderErrorView(req, res, 'Not allowed to update self permission', 403)
       return
     }
 

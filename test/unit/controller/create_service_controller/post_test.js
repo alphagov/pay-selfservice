@@ -2,26 +2,30 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const random = require('../../../../app/utils/random')
 const mockResponses = {}
 const mockServiceService = {}
 const mockUserService = {}
-const addServiceCtrl = proxyquire('../../../../app/controllers/create_service_controller', {
-  '../utils/response': mockResponses,
-  '../services/service_service': mockServiceService,
-  '../services/user_service': mockUserService
-})
 let req, res
+
+const getController = function (mockResponses, mockServiceService, mockUserService) {
+  return proxyquire('../../../../app/controllers/create_service_controller', {
+    '../utils/response': mockResponses,
+    '../services/service_service': mockServiceService,
+    '../services/user_service': mockUserService
+  })
+}
 
 describe('Controller: createService, Method: post', () => {
   describe('when the service name is not empty', () => {
     before(done => {
-      mockServiceService.createService = sinon.stub().resolves({external_id: 'r378y387y8weriyi'})
+      mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
+      const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
-        user: {externalId: '38475y38q4758ow4'},
+        user: { externalId: '38475y38q4758ow4' },
         correlationId: random.randomUuid(),
         body: {
           'service-name': 'A brand spanking new service name',
@@ -49,6 +53,7 @@ describe('Controller: createService, Method: post', () => {
     before(done => {
       mockServiceService.createService = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
+      const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         correlationId: random.randomUuid(),
         body: {
@@ -76,11 +81,12 @@ describe('Controller: createService, Method: post', () => {
 
   describe('when the service name is not empty, and the create service succeeds, but the assign service role call fails', () => {
     before(done => {
-      mockServiceService.createService = sinon.stub().resolves({external_id: 'r378y387y8weriyi'})
+      mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
+      const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
-        user: {externalId: '38475y38q4758ow4'},
+        user: { externalId: '38475y38q4758ow4' },
         correlationId: random.randomUuid(),
         body: {
           'service-name': 'A brand spanking new service name',
@@ -107,12 +113,13 @@ describe('Controller: createService, Method: post', () => {
 
   describe('when the service name is empty', () => {
     before(done => {
-      mockServiceService.createService = sinon.stub().resolves({external_id: 'r378y387y8weriyi'})
+      mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
+      const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         correlationId: random.randomUuid(),
-        user: {externalId: '38475y38q4758ow4'},
+        user: { externalId: '38475y38q4758ow4' },
         body: {
           'service-name': ''
         }
@@ -135,7 +142,7 @@ describe('Controller: createService, Method: post', () => {
 
     it(`should set prexisting pageData that includes the 'current_name' and errors`, () => {
       expect(req.session.pageData.createServiceName).to.have.property('current_name').to.equal(req.body['service-name'])
-      expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({service_name: 'This field cannot be blank'})
+      expect(req.session.pageData.createServiceName).to.have.property('errors').to.deep.equal({ service_name: 'This field cannot be blank' })
     })
   })
 
@@ -144,6 +151,7 @@ describe('Controller: createService, Method: post', () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
+      const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
         correlationId: random.randomUuid(),
@@ -174,6 +182,7 @@ describe('Controller: createService, Method: post', () => {
       mockServiceService.createService = sinon.stub().resolves({ external_id: 'r378y387y8weriyi' })
       mockUserService.assignServiceRole = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
+      const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
         correlationId: random.randomUuid(),

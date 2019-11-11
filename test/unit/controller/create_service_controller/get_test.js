@@ -2,17 +2,21 @@
 
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const mockResponses = {}
-const createServiceCtrl = proxyquire('../../../../app/controllers/create_service_controller', {
-  '../utils/response': mockResponses
-})
 let req, res
+
+const getController = function (mockResponses) {
+  return proxyquire('../../../../app/controllers/create_service_controller', {
+    '../utils/response': mockResponses
+  })
+}
 
 describe('Controller: createService, Method: get', () => {
   describe('when there is no pre-existing pageData', () => {
     before(() => {
       mockResponses.response = sinon.spy()
+      const createServiceCtrl = getController(mockResponses)
       res = {}
       req = {}
       createServiceCtrl.get(req, res)
@@ -49,6 +53,7 @@ describe('Controller: createService, Method: get', () => {
   describe('when there is pre-existing pageData', () => {
     before(() => {
       mockResponses.response = sinon.spy()
+      const createServiceCtrl = getController(mockResponses)
       res = {}
       req = {
         session: {

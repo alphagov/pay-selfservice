@@ -18,6 +18,6 @@ module.exports = (req, res) => {
         logger.error(err)
       })
   } else {
-    renderErrorView(req, res, 'You do not use text messages to sign in')
+    renderErrorView(req, res, 'You do not use text messages to sign in', 400)
   }
 }

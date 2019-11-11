@@ -37,7 +37,7 @@ describe('user permissions update controller', function () {
         name: 'System Generated',
         external_id: EXTERNAL_SERVICE_ID
       },
-      role: {name: 'admin', description: 'Administrator', permissions: [{name: 'users-service:create'}]}
+      role: { name: 'admin', description: 'Administrator', permissions: [{ name: 'users-service:create' }] }
     }]
   })
 
@@ -50,7 +50,7 @@ describe('user permissions update controller', function () {
         name: 'System Generated',
         external_id: EXTERNAL_SERVICE_ID
       },
-      role: {name: 'view-only', description: 'View only', permissions: []}
+      role: { name: 'view-only', description: 'View only', permissions: [] }
     }]
   }
 
@@ -128,7 +128,7 @@ describe('user permissions update controller', function () {
       supertest(app)
         .get(formattedPathFor(paths.teamMembers.permissions, EXTERNAL_SERVICE_ID, userInSession.externalId))
         .set('Accept', 'application/json')
-        .expect(500)
+        .expect(403)
         .expect((res) => {
           expect(res.body.message).to.equal('Not allowed to update self permission')
         })
@@ -143,7 +143,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain())
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, {'role_name': 'admin'})
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'admin' })
         .reply(200, getUserResponse.getPlain())
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -168,7 +168,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain())
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, {'role_name': 'view-only'})
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'view-only' })
         .reply(200, getUserResponse.getPlain())
 
       app = session.getAppWithLoggedInUser(getApp(), userInSession)
@@ -199,7 +199,7 @@ describe('user permissions update controller', function () {
           'role-input': roles['admin'].extId,
           csrfToken: csrf().create('123')
         })
-        .expect(500)
+        .expect(403)
         .expect((res) => {
           expect(res.body.message).to.equal('Not allowed to update self permission')
         })
@@ -281,7 +281,7 @@ describe('user permissions update controller', function () {
       adminusersMock.get(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}`)
         .reply(200, getUserResponse.getPlain())
 
-      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, {'role_name': 'admin'})
+      adminusersMock.put(`${USER_RESOURCE}/${EXTERNAL_ID_TO_VIEW}/services/${EXTERNAL_SERVICE_ID}`, { 'role_name': 'admin' })
         .reply(409)
 
       supertest(app)
