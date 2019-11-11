@@ -21,16 +21,14 @@ module.exports = (req, res) => {
       return res.redirect(paths.user.profile)
     })
     .catch((err) => {
-      let errorMessageLog, errorMessageUser
-      if (err.errorCode === 401) {
-        errorMessageLog = `Activating new OTP key failed, bad code`
-        errorMessageUser = `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid security code</a></li></ul>`
+      let errorMessage
+      if (err.errorCode === 401 || err.errorCode === 400) {
+        errorMessage = `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid security code</a></li></ul>`
       } else {
-        errorMessageLog = `Activating new OTP key failed, server error`
-        errorMessageUser = `<h2>Internal server error, please try again</h2>`
+        errorMessage = `<h2>Internal server error, please try again</h2>`
+        logger.error(`[requestId=${req.correlationId}] Activating new OTP key failed, server error`)
       }
-      logger.error(`[requestId=${req.correlationId}] ${errorMessageLog}`)
-      req.flash('genericError', errorMessageUser)
+      req.flash('genericError', errorMessage)
       return res.redirect(paths.user.twoFactorAuth.configure)
     })
 }
