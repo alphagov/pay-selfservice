@@ -15,8 +15,6 @@ const API_RESOURCE = '/v1/api'
 const port = Math.floor(Math.random() * 48127) + 1024
 let response, result, gatewayAccountId
 
-const randomPrice = () => Math.round(Math.random() * 10000) + 1
-
 function getProductsClient (baseUrl = `http://localhost:${port}`, productsApiKey = 'ABC1234567890DEF') {
   return proxyquire('../../../../../app/services/clients/products_client', {
     '../../../config': {
@@ -44,9 +42,9 @@ describe('products client - find products associated with a particular gateway a
       const productsClient = getProductsClient()
       gatewayAccountId = 42
       response = [
-        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: randomPrice() }),
-        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: randomPrice() }),
-        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: randomPrice() })
+        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: 1000 }),
+        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: 2000 }),
+        productFixtures.validCreateProductResponse({ gateway_account_id: gatewayAccountId, price: 3000 })
       ]
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withUponReceiving('a valid get product by gateway account id request')
