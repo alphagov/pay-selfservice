@@ -1,7 +1,6 @@
 const _ = require('lodash')
 const paths = require('../paths')
 const logger = require('../utils/logger')(__filename)
-const responses = require('../utils/response')
 
 let rolesModule = require('../utils/roles')
 const roles = rolesModule.roles
@@ -9,8 +8,7 @@ let getRole = rolesModule.getRoleByExtId
 
 let userService = require('../services/user_service.js')
 
-let successResponse = responses.response
-let errorResponse = responses.renderErrorView
+const { renderErrorView, response } = require('../utils/response')
 
 let hasSameService = (admin, user, externalServiceId) => {
   return admin.hasService(externalServiceId) && user.hasService(externalServiceId)
@@ -18,7 +16,7 @@ let hasSameService = (admin, user, externalServiceId) => {
 
 let serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId, correlationId) => {
   logger.error(`[requestId=${correlationId}] service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`)
-  errorResponse(req, res, 'Unable to update permissions for this user')
+  renderErrorView(req, res, 'Unable to update permissions for this user')
 }
 
 const formattedPathFor = require('../utils/replace_params_in_path')
@@ -62,7 +60,7 @@ module.exports = {
     }
 
     if (req.user.externalId === externalUserId) {
-      errorResponse(req, res, 'Not allowed to update self permission')
+      renderErrorView(req, res, 'Not allowed to update self permission')
       return
     }
 
@@ -71,12 +69,12 @@ module.exports = {
         if (!hasSameService(req.user, user, serviceExternalId)) {
           serviceIdMismatchView(req, res, req.user.externalId, serviceExternalId, user.externalId, correlationId)
         } else {
-          successResponse(req, res, 'team-members/team_member_permissions', viewData(user))
+          response(req, res, 'team-members/team_member_permissions', viewData(user))
         }
       })
       .catch(err => {
         logger.error(`[requestId=${correlationId}] error displaying user permission view [${err}]`)
-        errorResponse(req, res, 'Unable to locate the user')
+        renderErrorView(req, res, 'Unable to locate the user')
       })
   },
 
@@ -98,13 +96,13 @@ module.exports = {
     }
 
     if (req.user.externalId === externalUserId) {
-      errorResponse(req, res, 'Not allowed to update self permission')
+      renderErrorView(req, res, 'Not allowed to update self permission')
       return
     }
 
     if (!targetRole) {
       logger.error(`[requestId=${correlationId}] cannot identify role from user input ${targetRoleExtId}. possible hack`)
-      errorResponse(req, res, 'Unable to update user permission')
+      renderErrorView(req, res, 'Unable to update user permission')
       return
     }
 
@@ -120,14 +118,14 @@ module.exports = {
               .then(onSuccess)
               .catch(err => {
                 logger.error(`[requestId=${correlationId}] error updating user service role [${err}]`)
-                errorResponse(req, res, 'Unable to update user permission')
+                renderErrorView(req, res, 'Unable to update user permission')
               })
           }
         }
       })
       .catch(err => {
         logger.error(`[requestId=${correlationId}] error locating user when updating user service role [${err}]`)
-        errorResponse(req, res, 'Unable to locate the user')
+        renderErrorView(req, res, 'Unable to locate the user')
       })
   }
 }

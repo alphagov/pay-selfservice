@@ -1,5 +1,5 @@
 'use strict'
-const errorView = require('../utils/response.js').renderErrorView
+const { renderErrorView } = require('../utils/response.js')
 const Email = require('../models/email.js')
 const _ = require('lodash')
 const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
@@ -10,5 +10,5 @@ module.exports = function (req, res, next) {
       req.account = _.merge(req.account, emailData)
       next()
     })
-    .catch(() => errorView(req, res))
+    .catch(() => renderErrorView(req, res))
 }

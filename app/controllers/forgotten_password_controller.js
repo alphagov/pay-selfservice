@@ -3,7 +3,7 @@
 // Local dependencies
 const emailValidator = require('../utils/email_tools.js')
 const paths = require('../paths.js')
-const errorView = require('../utils/response.js').renderErrorView
+const { renderErrorView } = require('../utils/response.js')
 const userService = require('../services/user_service.js')
 
 module.exports = {
@@ -40,8 +40,8 @@ module.exports = {
   newPasswordGet: (req, res) => {
     const id = req.params.id
     const render = (user) => {
-      if (!user) return errorView(req, res)
-      res.render('forgotten_password/new_password', {id: id})
+      if (!user) return renderErrorView(req, res)
+      res.render('forgotten_password/new_password', { id: id })
     }
 
     return userService.findByResetToken(id).then(render, () => {
@@ -58,7 +58,7 @@ module.exports = {
         return userService.findByExternalId(forgottenPassword.user_external_id, req.correlationId)
       })
       .then(function (user) {
-        if (!user) return errorView(req, res)
+        if (!user) return renderErrorView(req, res)
         reqUser = user
         return userService.updatePassword(req.params.id, req.body.password)
       })

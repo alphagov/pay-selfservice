@@ -5,7 +5,7 @@ const csrf = require('csrf')
 
 // Local Dependencies
 const logger = require('../utils/logger')(__filename)
-const errorView = require('../utils/response.js').renderErrorView
+const { renderErrorView } = require('../utils/response.js')
 const CORRELATION_HEADER = require('../utils/correlation_header.js').CORRELATION_HEADER
 
 // Assignments and Variables
@@ -22,17 +22,17 @@ function validateAndRefreshCsrf (req, res, next) {
   let session = req.session
   if (!session) {
     logger.warn('Session is not defined')
-    return errorView(req, res, errorMsg, 400)
+    return renderErrorView(req, res, errorMsg, 400)
   }
 
   if (!session.csrfSecret) {
     logger.warn('CSRF secret is not defined for session')
-    return errorView(req, res, errorMsg, 400)
+    return renderErrorView(req, res, errorMsg, 400)
   }
 
   if (req.method !== 'GET' && !isValidCsrf(req)) {
     logger.warn('CSRF secret provided is invalid')
-    return errorView(req, res, errorMsg, 400)
+    return renderErrorView(req, res, errorMsg, 400)
   }
 
   res.locals.csrf = csrf().create(session.csrfSecret)

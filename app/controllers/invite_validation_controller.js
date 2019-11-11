@@ -2,8 +2,7 @@
 
 // Custom dependencies
 const logger = require('../utils/logger')(__filename)
-const response = require('../utils/response')
-const errorResponse = response.renderErrorView
+const { renderErrorView } = require('../utils/response')
 const validateInviteService = require('../services/validate_invite_service')
 const serviceRegistrationService = require('../services/service_registration_service')
 const paths = require('../paths')
@@ -21,13 +20,13 @@ const handleError = (req, res, err) => {
 
   switch (err.errorCode) {
     case 404:
-      errorResponse(req, res, messages.missingCookie, 404)
+      renderErrorView(req, res, messages.missingCookie, 404)
       break
     case 410:
-      errorResponse(req, res, messages.linkExpired, 410)
+      renderErrorView(req, res, messages.linkExpired, 410)
       break
     default:
-      errorResponse(req, res, messages.internalError, 500)
+      renderErrorView(req, res, messages.internalError, 500)
   }
 }
 

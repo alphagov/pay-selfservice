@@ -6,8 +6,7 @@ const _ = require('lodash')
 // Custom dependencies
 const logger = require('../utils/logger')(__filename)
 const paths = require('../paths')
-const response = require('../utils/response')
-const errorResponse = response.renderErrorView
+const { renderErrorView } = require('../utils/response')
 const serviceService = require('../services/service_service')
 const registrationService = require('../services/service_registration_service')
 const loginController = require('../controllers/login')
@@ -56,7 +55,7 @@ module.exports = {
         })
         res.redirect(303, paths.selfCreateService.confirm)
       } else {
-        errorResponse(req, res, 'Unable to process registration at this time', err.errorCode)
+        renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode)
       }
     }
 
@@ -136,9 +135,9 @@ module.exports = {
       .catch(err => {
         if (err.errorCode === 409) {
           const error = (err.message && err.message.errors) ? err.message.errors : 'Unable to process registration at this time'
-          errorResponse(req, res, error, err.errorCode)
+          renderErrorView(req, res, error, err.errorCode)
         } else {
-          errorResponse(req, res, 'Unable to process registration at this time', err.errorCode || 500)
+          renderErrorView(req, res, 'Unable to process registration at this time', err.errorCode || 500)
         }
       })
   },
@@ -185,9 +184,9 @@ module.exports = {
         .catch(err => {
           logger.warn(`[requestId=${req.correlationId}] Invalid invite code attempted ${req.code}, error = ${err.errorCode}`)
           if (err.errorCode === 404) {
-            errorResponse(req, res, 'Unable to process registration at this time', 404)
+            renderErrorView(req, res, 'Unable to process registration at this time', 404)
           } else {
-            errorResponse(req, res, 'Unable to process registration at this time', 500)
+            renderErrorView(req, res, 'Unable to process registration at this time', 500)
           }
         })
     }
@@ -243,7 +242,7 @@ module.exports = {
         })
         .catch(err => {
           logger.debug(`[requestId=${correlationId}] invalid user input - service name`)
-          response.renderErrorView(req, res, err)
+          renderErrorView(req, res, err)
         })
     }
   }

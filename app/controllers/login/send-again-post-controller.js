@@ -4,7 +4,7 @@
 const logger = require('../../utils/logger')(__filename)
 const userService = require('../../services/user_service')
 const paths = require('../../paths')
-const errorView = require('../../utils/response').renderErrorView
+const { renderErrorView } = require('../../utils/response')
 const CORRELATION_HEADER = require('../../utils/correlation_header').CORRELATION_HEADER
 
 module.exports = (req, res) => {
@@ -14,10 +14,10 @@ module.exports = (req, res) => {
       res.redirect(paths.user.otpLogIn)
     })
       .catch(err => {
-        errorView(req, res)
+        renderErrorView(req, res)
         logger.error(err)
       })
   } else {
-    errorView(req, res, 'You do not use text messages to sign in')
+    renderErrorView(req, res, 'You do not use text messages to sign in')
   }
 }
