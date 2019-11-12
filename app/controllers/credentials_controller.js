@@ -105,7 +105,7 @@ module.exports = {
       return res.redirect(paths.notificationCredentials.edit)
     }
 
-    logger.info('Calling connector to update provider notification credentials -', {
+    logger.info('Calling connector to update provider notification credentials', {
       service: 'connector',
       method: 'POST',
       url: '/frontend/accounts/{id}/notification-credentials'
@@ -127,14 +127,14 @@ module.exports = {
       var duration = new Date() - startTime
       logger.info(`[${correlationId}] - POST to ${url} ended - elapsed time: ${duration} ms`)
       if (connectorResponse && connectorResponse.statusCode) {
-        logger.error(`[${correlationId}] Calling connector to update provider notification credentials failed -`, {
+        logger.error(`[${correlationId}] Calling connector to update provider notification credentials failed`, {
           service: 'connector',
           method: 'POST',
           url: connectorUrl,
           status: connectorResponse.statusCode
         })
       } else {
-        logger.error(`[${correlationId}] Calling connector to update provider notification credentials threw exception  -`, {
+        logger.error(`[${correlationId}] Calling connector to update provider notification credentials threw exception`, {
           service: 'connector',
           method: 'POST',
           url: connectorUrl,
@@ -147,7 +147,7 @@ module.exports = {
   },
 
   update: function (req, res) {
-    logger.debug('Calling connector to update provider credentials -', {
+    logger.debug('Calling connector to update provider credentials', {
       service: 'connector',
       method: 'PATCH',
       url: '/frontend/accounts/{id}/credentials'
@@ -155,7 +155,7 @@ module.exports = {
     var accountId = auth.getCurrentGatewayAccountId(req)
     var connectorUrl = CONNECTOR_URL + '/v1/frontend/accounts/{accountId}/credentials'
 
-    logger.info('Calling connector to update provider credentials -', {
+    logger.info('Calling connector to update provider credentials', {
       service: 'connector',
       method: 'PATCH',
       url: '/frontend/accounts/{id}/credentials'
@@ -177,14 +177,14 @@ module.exports = {
       logger.info(`[${correlationId}] - PATCH to ${url} ended - elapsed time: ${duration} ms`)
 
       if (connectorResponse && connectorResponse.statusCode) {
-        logger.error(`[${correlationId}] Calling connector to update provider credentials failed. Redirecting back to credentials view -`, {
+        logger.error(`[${correlationId}] Calling connector to update provider credentials failed. Redirecting back to credentials view`, {
           service: 'connector',
           method: 'PATCH',
           url: connectorUrl,
           status: connectorResponse.statusCode
         })
       } else {
-        logger.error(`[${correlationId}] Calling connector to update provider credentials threw exception  -`, {
+        logger.error(`[${correlationId}] Calling connector to update provider credentials threw exception`, {
           service: 'connector',
           method: 'PATCH',
           url: connectorUrl,

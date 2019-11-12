@@ -138,7 +138,7 @@ module.exports = (req, res) => {
         .catch((error, ledgerResponse) => {
           subsegment.close(error)
           const status = _.get(ledgerResponse, 'statusCode', 404)
-          logger.error(`[${correlationId}] Calling ledger to get transactions summary failed -`, {
+          logger.error(`[${correlationId}] Calling ledger to get transactions summary failed`, {
             service: 'ledger',
             method: 'GET',
             status,
@@ -151,7 +151,7 @@ module.exports = (req, res) => {
         })
     }, clsSegment)
   } catch (err) {
-    logger.error(`[${correlationId}] ${err.message} -`, {
+    logger.error(`[${correlationId}] ${err.message}`, {
       service: 'frontend',
       method: 'GET',
       error: err,

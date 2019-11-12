@@ -121,8 +121,8 @@ module.exports = function (correlationId) {
 
   const clientFailure = function (error, reject, methodType, correlationId, isPatchEndpoint) {
     const errMsg = isPatchEndpoint
-      ? `[${correlationId}] Calling connector to update email notifications for an account threw exception -`
-      : `[${correlationId}] Calling connector to get/patch account data threw exception -`
+      ? `[${correlationId}] Calling connector to update email notifications for an account threw exception`
+      : `[${correlationId}] Calling connector to get/patch account data threw exception`
     logger.error(errMsg, {
       service: 'connector',
       method: methodType,
