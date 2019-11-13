@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
   const accountId = req.account.gateway_account_id
 
   try {
-    const params = {
+    const flexParams = {
       correlationId: correlationId,
       gatewayAccountId: accountId,
       payload: {
@@ -22,7 +22,20 @@ module.exports = async (req, res) => {
       }
     }
 
-    await connector.post3dsFlexAccountCredentials(params)
+    // if someone is adding the flex creds, we should make sure 3DS is enabled too and if not enable it
+    if (!req.account.requires3ds) {
+      const threeDsParams = {
+        gatewayAccountId: accountId,
+        payload: {
+          toggle_3ds: true
+        },
+        correlationId: correlationId
+      }
+
+      await connector.update3dsEnabled(threeDsParams)
+    }
+
+    await connector.post3dsFlexAccountCredentials(flexParams)
     req.flash('generic', 'Your Worldpay 3DS Flex settings have been updated')
     return res.redirect(paths.yourPsp.index)
   } catch (error) {

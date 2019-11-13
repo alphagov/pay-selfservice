@@ -41,6 +41,13 @@
           })
         }}
       {% endif %}
+      {% if currentGatewayAccount.payment_provider === "worldpay" and currentGatewayAccount.worldpay_3ds_flex %}
+        {{
+          govukWarningText({
+            text: 'If you turn off 3DS in Settings, Worldpay’s 3DS Flex will not work.'
+          })
+        }}
+      {% endif %}
       {% set disabled = true if disabled3ds or hasCardTypeRequiring3dsEnabled else false %}
       {% if not permissions.toggle_3ds_update %}
         {% set disabled = true %}
