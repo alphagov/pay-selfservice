@@ -1,0 +1,68 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-9">3DS Flex credentials</h2>
+
+<p class="govuk-body">Worldpay’s 3DS Flex improves how 3DS works and will also enable 3DS2 when required. There’s an additional fee to Worldpay to use 3DS Flex. <a class="govuk-link" href="https://www.worldpay.com/en-gb/products/3ds-flex">Find out more about 3DS Flex</a>.</a>
+
+<p class="govuk-body">If you have set up 3DS Flex on your Worldpay account, you need to enter the following details. You’ll find these details in your <a class="govuk-link" href="https://secure.worldpay.com/sso/public/auth/login.html">Worldpay account</a>.</a>
+
+{{  govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Organisational unit ID"
+        },
+        value: {
+          text: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id if isFlexConfigured else "Not configured",
+          classes: "value-organisational-unit-id"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.yourPsp.flex + "?change=organisationalUnitId",
+              text: "Change",
+              visuallyHiddenText: "3DS flex credentials",
+              attributes: {
+                id: "credentials-change-link"
+              }
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "Issuer"
+        },
+        value: {
+          text: currentGatewayAccount.worldpay_3ds_flex.issuer if isFlexConfigured else "Not configured",
+          classes: "value-issuer"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.yourPsp.flex + "?change=issuer",
+              text: "Change",
+              visuallyHiddenText: "3DS flex credentials"
+            }
+          ]
+        }
+      },
+      {
+        key: {
+          text: "JWT MAC key"
+        },
+        value: {
+          text: '●●●●●●●●' if isFlexConfigured else "Not configured",
+          classes: "value-jwt-mac-key"
+        },
+        actions: {
+          items: [
+            {
+              href: routes.yourPsp.flex + "?change=password",
+              text: "Change",
+              visuallyHiddenText: "3DS flex credentials"
+            }
+          ]
+        }
+      }
+    ]
+  })
+}}
