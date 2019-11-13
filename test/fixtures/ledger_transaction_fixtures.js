@@ -151,7 +151,7 @@ const buildTransactionDetails = (opts = {}) => {
 }
 
 const buildRefundDetails = (opts = {}) => {
-  return {
+  const result = {
     gateway_account_id: opts.gateway_account_id || '1',
     amount: opts.amount || 10,
     state: buildChargeEventStateWithDefaults(opts),
@@ -161,6 +161,27 @@ const buildRefundDetails = (opts = {}) => {
     transaction_id: opts.transaction_id || '1b5kia0u28ll2ic4obv26r5e4h',
     parent_transaction_id: opts.parent_transaction_id || 'puuhl0gu7egigin7oh9c75p4m1'
   }
+
+  if (opts.includeParentTransaction) {
+    const parentTransactionOpts = {
+      gateway_account_id: opts.gateway_account_id || '1',
+      transaction_id: opts.parent_transaction_id,
+      includeCardDetails: true,
+      includeAddress: true,
+      includeRefundSummary: true,
+      includeSettlementSummary: true,
+      status: 'success',
+      finished: true,
+      refund_summary_status: 'full',
+      amount_available: 0,
+      amount_submitted: opts.amount,
+      amount_refunded: opts.amount,
+      capture_submit_time: opts.capture_submit_time || null,
+      captured_date: opts.captured_date || null
+    }
+    result.parent_transaction = buildTransactionDetails(parentTransactionOpts)
+  }
+  return result
 }
 
 module.exports = {
