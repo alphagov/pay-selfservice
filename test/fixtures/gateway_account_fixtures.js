@@ -43,6 +43,17 @@ function validGatewayAccount (opts) {
   if (opts.requires3ds) {
     gatewayAccount.requires3ds = opts.requires3ds
   }
+  if (opts.credentials) {
+    gatewayAccount.credentials = opts.credentials
+  }
+
+  if (opts.notificationCredentials) {
+    gatewayAccount.notificationCredentials = opts.notificationCredentials
+  }
+
+  if (opts.worldpay_3ds_flex) {
+    gatewayAccount.worldpay_3ds_flex = opts.worldpay_3ds_flex
+  }
 
   return gatewayAccount
 }
