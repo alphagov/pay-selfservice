@@ -12,7 +12,7 @@
           text: "PSP ID"
         },
         value: {
-          text: currentGatewayAccount.credentials.merchant_id if isConfigured else "Not configured",
+          text: currentGatewayAccount.credentials.merchant_id if isAccountCredentialsConfigured else "Not configured",
           classes: "value-merchant-id"
         },
         actions: {
@@ -33,7 +33,7 @@
           text: "Username"
         },
         value: {
-          text: currentGatewayAccount.credentials.username if isConfigured else "Not configured",
+          text: currentGatewayAccount.credentials.username if isAccountCredentialsConfigured else "Not configured",
           classes: "value-username"
         },
         actions: {
@@ -51,7 +51,7 @@
           text: "Password"
         },
         value: {
-          text: '●●●●●●●●' if isConfigured else "Not configured",
+          text: '●●●●●●●●' if isAccountCredentialsConfigured else "Not configured",
           classes: "value-password"
         },
         actions: {
@@ -69,7 +69,7 @@
           text: "SHA-IN passphrase"
         },
         value: {
-          text: '●●●●●●●●' if isConfigured else "Not configured",
+          text: '●●●●●●●●' if isAccountCredentialsConfigured else "Not configured",
           classes: "value-sha-in"
         },
         actions: {
@@ -87,7 +87,7 @@
           text: "SHA-OUT passphrase"
         },
         value: {
-          text: '●●●●●●●●' if isConfigured else "Not configured",
+          text: '●●●●●●●●' if isAccountCredentialsConfigured else "Not configured",
           classes: "value-sha-out"
         },
         actions: {

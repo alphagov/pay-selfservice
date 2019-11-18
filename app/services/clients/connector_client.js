@@ -36,6 +36,7 @@ const ACCEPTED_CARD_TYPES_FRONTEND_PATH = ACCOUNT_FRONTEND_PATH + '/card-types'
 const ACCOUNT_NOTIFICATION_CREDENTIALS_PATH = '/v1/api/accounts' + '/{accountId}' + '/notification-credentials'
 const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
+const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
 const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
 const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
 
@@ -132,6 +133,11 @@ function _chargeRefundsUrlFor (gatewayAccountId, chargeId, url) {
 /** @private */
 var _getNotificationEmailUrlFor = function (accountID, url) {
   return url + EMAIL_NOTIFICATION__PATH.replace('{accountId}', accountID)
+}
+
+/** @private */
+var _get3dsFlexCredentialsUrlFor = function (accountID, url) {
+  return url + FLEX_CREDENTIALS_PATH.replace('{accountId}', accountID)
 }
 
 /** @private */
@@ -398,6 +404,34 @@ ConnectorClient.prototype = {
 
     oldBaseClient.post(url, params, this.responseHandler(successCallback))
     return this
+  },
+
+  /**
+ *
+ * @param {Object} params
+ * @param {Function} successCallback
+ * @returns {Promise}
+ */
+  post3dsFlexAccountCredentials: function (params) {
+    return new Promise((resolve, reject) => {
+      const url = _get3dsFlexCredentialsUrlFor(params.gatewayAccountId, this.connectorUrl)
+      const startTime = new Date()
+      const context = {
+        description: 'Update 3DS Flex credentials',
+        method: 'POST',
+        service: 'connector',
+        url: url,
+        defer: { resolve: resolve, reject: reject },
+        startTime: startTime,
+        correlationId: params.correlationId,
+        body: params.payload
+      }
+      requestLogger.logRequestStart(context)
+
+      const callbackToPromiseConverter = createCallbackToPromiseConverter(context)
+      oldBaseClient.post(url, params, callbackToPromiseConverter)
+        .on('error', callbackToPromiseConverter)
+    })
   },
 
   /**

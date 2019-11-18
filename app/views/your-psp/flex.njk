@@ -1,0 +1,128 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Your PSP - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "includes/side_navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Your WorldPay 3DS Flex credentials</h1>
+    <form method="post" action="{{routes.yourPsp.flex}}" data-validate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
+
+      {% if change === 'organisationalUnitId' %}
+        {{ govukInput({
+            label: {
+              text: "Organisational Unit ID"
+            },
+            id: "organisational-unit-id",
+            name: "organisational-unit-id",
+            classes: "govuk-input--width-20",
+            type: "text",
+            attributes: {
+              "data-validate": "required",
+              "autofocus": "autofocus"
+            },
+            value: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id
+          })
+        }}
+      {% else %}
+        {{ govukInput({
+            label: {
+              text: "Organisational Unit ID"
+            },
+            id: "organisational-unit-id",
+            name: "organisational-unit-id",
+            classes: "govuk-input--width-20",
+            type: "text",
+            attributes: {
+              "data-validate": "required"
+            },
+            value: currentGatewayAccount.worldpay_3ds_flex.organisational_unit_id
+          })
+        }}
+      {% endif %}
+
+      {% if change === 'issuer' %}
+        {{ govukInput({
+            label: {
+              text: "Issuer"
+            },
+            id: "issuer",
+            name: "issuer",
+            classes: "govuk-input--width-20",
+            type: "text",
+            attributes: {
+              "data-validate": "required",
+              "autofocus": "autofocus"
+            },
+            value: currentGatewayAccount.worldpay_3ds_flex.issuer
+          })
+        }}
+      {% else %}
+        {{ govukInput({
+            label: {
+              text: "Issuer"
+            },
+            id: "issuer",
+            name: "issuer",
+            classes: "govuk-input--width-20",
+            type: "text",
+            attributes: {
+              "data-validate": "required"
+            },
+            value: currentGatewayAccount.worldpay_3ds_flex.issuer
+          })
+        }}
+      {% endif %}
+
+      {% if change === 'password' %}
+        {{ govukInput({
+            label: {
+              text: "JWT MAC key"
+            },
+            id: "jwt-mac-key",
+            name: "jwt-mac-key",
+            classes: "govuk-input--width-20",
+            type: "password",
+            attributes: {
+              "data-validate": "required",
+              "autofocus": "autofocus"
+            }
+          })
+        }}
+        {% else %}
+        {{ govukInput({
+            label: {
+              text: "JWT MAC key"
+            },
+            id: "jwt-mac-key",
+            name: "jwt-mac-key",
+            classes: "govuk-input--width-20",
+            type: "password",
+            attributes: {
+              "data-validate": "required"
+            }
+          })
+        }}
+      {% endif %}
+
+      {{
+        govukButton({
+          text: "Save credentials",
+          attributes: {
+            id: "submitFlexCredentials"
+          }
+        })
+      }}
+    </form>
+
+    <p class="govuk-body">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.yourPsp.index }}">Cancel</a>
+    </p>
+</div>
+{% endblock %}

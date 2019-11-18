@@ -4,7 +4,8 @@
 const { response } = require('../../utils/response')
 
 module.exports = (req, res) => {
-  const isConfigured = Object.keys(req.account.credentials).length !== 0
+  const isAccountCredentialsConfigured = req.account.credentials && req.account.credentials.merchant_id !== undefined
+  const isFlexConfigured = req.account.worldpay_3ds_flex && req.account.worldpay_3ds_flex.organisational_unit_id !== undefined
 
-  return response(req, res, 'your-psp/index', { isConfigured })
+  return response(req, res, 'your-psp/index', { isAccountCredentialsConfigured, isFlexConfigured })
 }

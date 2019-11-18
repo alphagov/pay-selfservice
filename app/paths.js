@@ -11,7 +11,8 @@ module.exports = {
     refund: '/transactions/:chargeId/refund'
   },
   yourPsp: {
-    index: '/your-psp'
+    index: '/your-psp',
+    flex: '/your-psp/flex'
   },
   credentials: {
     index: '/credentials',

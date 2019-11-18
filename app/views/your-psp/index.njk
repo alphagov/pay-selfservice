@@ -14,6 +14,7 @@
 
   {% if currentGatewayAccount.payment_provider === "worldpay" %}
     {% include "./_worldpay.njk" %}
+    {% include "./_worldpay-flex.njk" %}
   {% endif %}
   {% if currentGatewayAccount.payment_provider === "smartpay" %}
     {% include "./_smartpay.njk" %}

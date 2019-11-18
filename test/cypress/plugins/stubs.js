@@ -1024,5 +1024,35 @@ module.exports = {
         }]
       }
     ]
+  },
+  patchUpdateCredentials: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PATCH',
+            path: `/v1/api/frontend/accounts/${opts.gateway_account_id}/credentials`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: {
+              credentials: {
+                merchant_id: opts.merchantId,
+                username: opts.username,
+                password: opts.password
+              }
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        }]
+      }
+    ]
   }
 }
