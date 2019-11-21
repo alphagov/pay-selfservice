@@ -128,7 +128,7 @@ describe('3DS settings page', () => {
         })
       })
 
-      it('should show WorldPay specific merchant code stuff and radios', () => {
+      it('should show Worldpay specific merchant code stuff and radios', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
         cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
@@ -150,7 +150,7 @@ describe('3DS settings page', () => {
         })
       })
 
-      it('should show WorldPay specific merchant code stuff and radios', () => {
+      it('should show Worldpay specific merchant code stuff and radios', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
         cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
@@ -173,7 +173,7 @@ describe('3DS settings page', () => {
         })
       })
 
-      it('should show WorldPay specific merchant code stuff and disabled radios', () => {
+      it('should show Worldpay specific merchant code stuff and disabled radios', () => {
         cy.setEncryptedCookies(userExternalId, gatewayAccountId)
         cy.visit('/settings')
         cy.get('.govuk-summary-list__key').eq(2).should('contain', '3D Secure')
