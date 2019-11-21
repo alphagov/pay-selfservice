@@ -11,41 +11,8 @@ const ConnectorClient = require('../services/clients/connector_client.js').Conne
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const Ledger = require('../services/clients/ledger_client')
 
-const { FEATURE_USE_LEDGER_PAYMENTS } = process.env
-const useLedgerTransactions = FEATURE_USE_LEDGER_PAYMENTS === 'true'
-
 module.exports = function (correlationId) {
   correlationId = correlationId || ''
-
-  function connectorFindWithEvents (accountId, chargeId) {
-    return new Promise(function (resolve, reject) {
-      const params = {
-        gatewayAccountId: accountId,
-        chargeId: chargeId,
-        correlationId: correlationId
-      }
-      connector.getCharge(params, function (chargeData) {
-        connector.getChargeEvents(params, function (eventsData) {
-          let userIds = eventsData.events.filter(event => event.submitted_by)
-            .map(event => event.submitted_by)
-          userIds = lodash.uniq(userIds)
-          if (userIds.length <= 0) {
-            resolve(transactionView.buildPaymentView(chargeData, eventsData, []))
-          } else {
-            userService.findMultipleByExternalIds(userIds, correlationId)
-              .then(users => {
-                resolve(transactionView.buildPaymentView(chargeData, eventsData, users))
-              })
-              .catch(err => findWithEventsError(err, undefined, reject))
-          }
-        }).on('connectorError', (err, response) => {
-          findWithEventsError(err, response, reject)
-        })
-      }).on('connectorError', (err, response) => {
-        findWithEventsError(err, response, reject)
-      })
-    })
-  }
 
   async function ledgerFindWithEvents (accountId, chargeId) {
     try {
@@ -118,13 +85,8 @@ module.exports = function (correlationId) {
     return status
   }
 
-  function findWithEventsError (err, response, reject) {
-    const statusCode = getStatusCodeForError(err, response)
-    reject(statusCode)
-  }
-
   return {
-    findWithEvents: useLedgerTransactions ? ledgerFindWithEvents : connectorFindWithEvents,
+    findWithEvents: ledgerFindWithEvents,
     refund: refund
   }
 }

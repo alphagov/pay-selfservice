@@ -1,11 +1,8 @@
 'use strict'
 
 // NPM dependencies
-const _ = require('lodash')
-const url = require('url')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-const querystring = require('querystring')
 
 // Local dependencies
 const logger = require('../../utils/logger')(__filename)
@@ -13,7 +10,6 @@ const oldBaseClient = require('./old_base_client')
 const baseClient = require('./base_client/base_client')
 const requestLogger = require('../../utils/request_logger')
 const createCallbackToPromiseConverter = require('../../utils/response_converter').createCallbackToPromiseConverter
-const getQueryStringForParams = require('../../utils/get_query_string_for_params')
 const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
 const StripeAccount = require('../../models/StripeAccount.class')
 
@@ -22,7 +18,6 @@ const SERVICE_NAME = 'connector'
 const ACCOUNTS_API_PATH = '/v1/api/accounts'
 const ACCOUNT_API_PATH = ACCOUNTS_API_PATH + '/{accountId}'
 const CHARGES_API_PATH = ACCOUNT_API_PATH + '/charges'
-const V2_CHARGES_API_PATH = '/v2/api/accounts/{accountId}/charges'
 const CHARGE_API_PATH = CHARGES_API_PATH + '/{chargeId}'
 const CHARGE_REFUNDS_API_PATH = CHARGE_API_PATH + '/refunds'
 const CARD_TYPES_API_PATH = '/v1/api/card-types'
@@ -38,7 +33,6 @@ const ACCOUNT_CREDENTIALS_PATH = ACCOUNT_FRONTEND_PATH + '/credentials'
 const EMAIL_NOTIFICATION__PATH = '/v1/api/accounts/{accountId}/email-notification'
 const FLEX_CREDENTIALS_PATH = '/v1/api/accounts/{accountId}/3ds-flex-credentials'
 const TOGGLE_3DS_PATH = ACCOUNTS_FRONTEND_PATH + '/{accountId}/3ds-toggle'
-const TRANSACTIONS_SUMMARY = ACCOUNTS_API_PATH + '/{accountId}/transactions-summary'
 
 const responseBodyToStripeAccountSetupTransformer = body => new StripeAccountSetup(body)
 const responseBodyToStripeAccountTransformer = body => new StripeAccount(body)
@@ -121,11 +115,6 @@ function _serviceNameUrlFor (gatewayAccountId, url) {
 }
 
 /** @private */
-function _chargeUrlFor (gatewayAccountId, chargeId, url) {
-  return url + CHARGE_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
-}
-
-/** @private */
 function _chargeRefundsUrlFor (gatewayAccountId, chargeId, url) {
   return url + CHARGE_REFUNDS_API_PATH.replace('{accountId}', gatewayAccountId).replace('{chargeId}', chargeId)
 }
@@ -145,15 +134,6 @@ var _getToggle3dsUrlFor = function (accountID, url) {
   return url + TOGGLE_3DS_PATH.replace('{accountId}', accountID)
 }
 
-/** @private */
-var _getTransactionSummaryUrlFor = function (accountID, period, url) {
-  return url + TRANSACTIONS_SUMMARY.replace('{accountId}', accountID) + '?' + period
-}
-
-function searchUrl (baseUrl, params) {
-  return baseUrl + V2_CHARGES_API_PATH.replace('{accountId}', params.gatewayAccountId) + '?' + getQueryStringForParams(params)
-}
-
 /**
  * Connects to connector
  * @param {string} connectorUrl connector url
@@ -166,103 +146,6 @@ function ConnectorClient (connectorUrl) {
 }
 
 ConnectorClient.prototype = {
-  /**
-   *
-   * @param params
-   * @param successCallback
-   * @returns {ConnectorClient}
-   */
-  searchTransactions (params, successCallback) {
-    let startTime = new Date()
-    // allow url to be overridden to allow recursion using next url
-    let url = params.url || searchUrl(this.connectorUrl, params)
-    let responseHandler = this.responseHandler(successCallback)
-
-    logger.debug('Calling connector to search account transactions', {
-      service: 'connector',
-      method: 'GET',
-      url: url
-    })
-
-    oldBaseClient.get(url, { correlationId: params.correlationId }, function (error, response, body) {
-      logger.info(`[${params.correlationId}] - GET to %s ended - elapsed time: %s ms`, url, new Date() - startTime)
-      responseHandler(error, response, body)
-    })
-
-    return this
-  },
-
-  /**
-   *
-   * @param params
-   * @param successCallback
-   * @returns {ConnectorClient}
-   */
-  getAllTransactions (params, successCallback) {
-    var results = []
-    var connectorClient = this
-    params.pageSize = params.pageSize || 500
-    var recursiveRetrieve = function (recursiveParams) {
-      connectorClient.searchTransactions(recursiveParams, function (data) {
-        var next = _.get(data, '_links.next_page')
-        results = results.concat(data.results)
-        if (next === undefined) return successCallback(results)
-
-        recursiveParams.url = url.resolve(connectorClient.connectorUrl, next.href)
-        recursiveRetrieve(recursiveParams)
-      })
-    }
-
-    recursiveRetrieve(params)
-
-    return this
-  },
-
-  /**
-   * Retrieves a Charge from connector for a given charge Id that belongs to a gateway account Id
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            chargeId (required)
-   *            correlationId (optional)
-   * @param successCallback the callback to perform upon `200 OK` from connector along with connector charge object.
-   *
-   * @returns {ConnectorClient}
-   */
-  getCharge: function (params, successCallback) {
-    let url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl)
-    logger.debug('Calling connector to get charge', {
-      service: 'connector',
-      method: 'GET',
-      url: url,
-      chargeId: params.chargeId
-    })
-    oldBaseClient.get(url, { correlationId: params.correlationId }, this.responseHandler(successCallback))
-    return this
-  },
-
-  /**
-   * Retrieves transaction history for a given charge Id that belongs to a gateway account Id.
-   * @param params
-   *          An object with the following elements;
-   *            gatewayAccountId (required)
-   *            chargeId (required)
-   *            correlationId (optional)
-   * @param successCallback the callback to perform upon `200 OK` from connector along with history result set.
-   * @returns {ConnectorClient}
-   */
-  getChargeEvents: function (params, successCallback) {
-    let url = _chargeUrlFor(params.gatewayAccountId, params.chargeId, this.connectorUrl) + '/events'
-    logger.debug('Calling connector to get events', {
-      service: 'connector',
-      method: 'GET',
-      url: url,
-      chargeId: params.chargeId
-    })
-    oldBaseClient.get(url, params, this.responseHandler(successCallback))
-    return this
-  },
-
   /**
    * Retrieves the given gateway account
    * @param params
@@ -752,23 +635,6 @@ ConnectorClient.prototype = {
       oldBaseClient.patch(url, params, callbackToPromiseConverter)
         .on('error', callbackToPromiseConverter)
     })
-  },
-
-  /**
-   *
-   * @param {Object} params
-   * @param {Function} successCallback
-   */
-  getTransactionSummary: function (params, successCallback, subsegment) {
-    const queryStrings = {
-      from_date: params.fromDateTime,
-      to_date: params.toDateTime
-    }
-    const period = querystring.stringify(queryStrings)
-    let url = _getTransactionSummaryUrlFor(params.gatewayAccountId, period, this.connectorUrl)
-    oldBaseClient.get(url, params, this.responseHandler(successCallback), subsegment)
-
-    return this
   },
 
   getStripeAccountSetup: function (gatewayAccountId, correlationId) {
