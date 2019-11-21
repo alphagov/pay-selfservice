@@ -11,7 +11,7 @@ describe('The credentials view in edit mode', function () {
   it('should display credentials view for a worldpay account', function () {
     const templateData = {
       currentGatewayAccount: {
-        'payment_provider': 'Worldpay',
+        'payment_provider': 'worldpay',
         'credentials': {
           'username': 'a-username',
           'merchant_id': 'a-merchant-id'
@@ -25,7 +25,7 @@ describe('The credentials view in edit mode', function () {
 
     const body = renderTemplate('credentials/worldpay', templateData)
 
-    body.should.containSelector('#view-title').withExactText('Your Worldpay Credentials')
+    body.should.containSelector('#view-title').withExactText('Your Worldpay credentials')
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -50,7 +50,7 @@ describe('The credentials view in edit mode', function () {
   it('should display credentials view for a smartpay account', function () {
     const templateData = {
       currentGatewayAccount: {
-        'payment_provider': 'SmartPay',
+        'payment_provider': 'smartpay',
         'credentials': {
           'username': 'a-username',
           'merchant_id': 'a-merchant-id'
@@ -64,7 +64,7 @@ describe('The credentials view in edit mode', function () {
 
     const body = renderTemplate('credentials/smartpay', templateData)
 
-    body.should.containSelector('#view-title').withExactText('Your SmartPay Credentials')
+    body.should.containSelector('#view-title').withExactText('Your Smartpay credentials')
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')
@@ -89,7 +89,7 @@ describe('The credentials view in edit mode', function () {
   it('should display credentials view for a ePDQ account', function () {
     const templateData = {
       currentGatewayAccount: {
-        'payment_provider': 'ePDQ',
+        'payment_provider': 'epdq',
         'credentials': {
           'username': 'a-username',
           'merchant_id': 'a-psp-id'
@@ -103,7 +103,7 @@ describe('The credentials view in edit mode', function () {
 
     let body = renderTemplate('credentials/epdq', templateData)
 
-    body.should.containSelector('#view-title').withExactText('Your ePDQ Credentials')
+    body.should.containSelector('#view-title').withExactText('Your ePDQ credentials')
 
     body.should.containSelector('form#credentials-form')
       .withAttribute('method', 'post')

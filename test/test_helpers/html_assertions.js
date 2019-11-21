@@ -8,6 +8,7 @@ const nunjucks = require('nunjucks')
 // Local dependencies
 const router = require('../../app/routes.js')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
+const formatPSPname = require('../../app/utils/format-PSP-name')
 
 const environment = nunjucks.configure([
   './node_modules/govuk-frontend/',
@@ -23,6 +24,7 @@ for (let name in nunjucksFilters) {
   let filter = nunjucksFilters[name]
   environment.addFilter(name, filter)
 }
+environment.addFilter('formatPSPname', formatPSPname)
 
 const render = (templateName, templateData) => {
   templateData.routes = router.paths
@@ -150,12 +152,12 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('containInputField', function (idAndName, type) {
-    this.containSelector('input#' + idAndName).withAttributes({name: idAndName, type: type})
+    this.containSelector('input#' + idAndName).withAttributes({ name: idAndName, type: type })
     utils.flag(this, 'inputId', idAndName)
   })
 
   chai.Assertion.addMethod('containTextarea', function (idAndName) {
-    this.containSelector('textarea#' + idAndName).withAttributes({name: idAndName})
+    this.containSelector('textarea#' + idAndName).withAttributes({ name: idAndName })
     utils.flag(this, 'inputId', idAndName)
   })
 
