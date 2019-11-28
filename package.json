@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">8.12.0"
+    "node": ">12.13.1"
   },
   "standard": {
     "globals": [
@@ -68,7 +68,7 @@
     "@govuk-pay/pay-js-commons": "2.17.0",
     "@sentry/node": "5.9.0",
     "accessible-autocomplete": "2.0.1",
-    "appmetrics": "4.x",
+    "appmetrics": "5.0.5",
     "appmetrics-statsd": "3.0.x",
     "aws-sdk": "2.578.0",
     "aws-xray-sdk": "2.5.0",
@@ -125,7 +125,7 @@
     "chai-string": "1.5.0",
     "cheerio": "1.0.0-rc.3",
     "chokidar-cli": "latest",
-    "cypress": "3.1.5",
+    "cypress": "^3.7.0",
     "dotenv": "8.0.0",
     "envfile": "3.0.0",
     "errorhandler": "1.5.0",
@@ -144,7 +144,7 @@
     "husky": "2.3.0",
     "lint-staged": "8.2.0",
     "mocha": "6.1.4",
-    "mountebank": "2.0.0",
+    "mountebank": "^2.1.2",
     "nock": "10.0.6",
     "node-sass": "4.11.0",
     "nodemon": "1.19.1",

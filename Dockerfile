@@ -8,7 +8,7 @@ RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/
 
 RUN ["apk", "--no-cache", "upgrade"]
 
-RUN ["apk", "add", "--no-cache", "nodejs", "npm", "tini"]
+RUN ["apk", "add", "--no-cache", "nodejs", "npm", "tini", "make", "g++", "python", "git"]
 
 ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json

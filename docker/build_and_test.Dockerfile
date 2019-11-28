@@ -4,6 +4,8 @@ RUN apk update &&\
     apk upgrade &&\
     apk add --update bash ruby
 
+RUN ["apk", "add", "--no-cache", "nodejs", "npm", "bash", "make", "g++", "python", "git"]
+
 # add package.json before source for node_module cache layer
 ADD package.json /tmp/package.json
 ADD package-lock.json /tmp/package-lock.json
