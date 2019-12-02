@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">8.12.0"
+    "node": "12.13.1"
   },
   "standard": {
     "globals": [
@@ -68,8 +68,8 @@
     "@govuk-pay/pay-js-commons": "2.17.0",
     "@sentry/node": "5.9.0",
     "accessible-autocomplete": "2.0.1",
-    "appmetrics": "4.x",
-    "appmetrics-statsd": "3.0.x",
+    "appmetrics": "5.0.5",
+    "appmetrics-statsd": "3.0.0",
     "aws-sdk": "2.578.0",
     "aws-xray-sdk": "2.5.0",
     "body-parser": "1.19.0",
@@ -146,7 +146,7 @@
     "mocha": "6.1.4",
     "mountebank": "2.0.0",
     "nock": "10.0.6",
-    "node-sass": "4.11.0",
+    "node-sass": "4.13.0",
     "nodemon": "1.19.1",
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
