@@ -120,9 +120,6 @@ describe('Transaction details page', () => {
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
-
       // Ensure page details match up
       // Reference number
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
