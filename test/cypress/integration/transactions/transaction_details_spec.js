@@ -120,9 +120,6 @@ describe('Transaction details page', () => {
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
-
       // Ensure page details match up
       // Reference number
       cy.get('.transaction-details tbody').find('tr').first().find('td').first().should('have.text',
@@ -172,9 +169,6 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(aDelayedCaptureTransaction))
 
       cy.visit(`${transactionsUrl}/${aDelayedCaptureTransaction.transaction_id}`)
-
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aDelayedCaptureTransaction.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       // Ensure page details match up
       // Reference number
@@ -229,9 +223,6 @@ describe('Transaction details page', () => {
 
       cy.visit(`${transactionsUrl}/${aCorporateCardSurchargeTransaction.transaction_id}`)
 
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${aCorporateCardSurchargeTransaction.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
-
       // Ensure page details match up
       // Amount
       cy.get('#amount').should('have.text',
@@ -254,9 +245,6 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(transactionDetails))
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       // Ensure page details match up
       // Reference number
@@ -334,9 +322,6 @@ describe('Transaction details page', () => {
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
-
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[3].status))
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
@@ -390,9 +375,6 @@ describe('Transaction details page', () => {
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
-
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[2].status))
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(1).should('contain',
@@ -436,9 +418,6 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(transactionDetails))
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[2].status))
@@ -496,9 +475,6 @@ describe('Transaction details page', () => {
       cy.task('setupStubs', getStubs(transactionDetails))
 
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
-
-      // Ensure page title is correct
-      cy.title().should('eq', `Transaction details ${transactionDetails.reference} - ${serviceName} Sandbox test - GOV.UK Pay`)
 
       cy.get('.transaction-events tbody').find('tr').eq(0).find('td').eq(0).should('contain',
         capitalise(events[5].resource_type.toLowerCase()) + ' ' + events[5].status)
