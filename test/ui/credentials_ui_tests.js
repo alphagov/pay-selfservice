@@ -74,7 +74,7 @@ describe('The credentials view in edit mode', function () {
 
     body.should.containInputField('merchantId', 'text')
       .withAttribute('value', 'a-merchant-id')
-      .withLabel('Merchant ID')
+      .withLabel('Merchant account code')
 
     body.should.containInputField('username', 'text')
       .withAttribute('value', 'a-username')
