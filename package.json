@@ -68,7 +68,7 @@
     "@govuk-pay/pay-js-commons": "2.18.1",
     "@sentry/node": "5.10.2",
     "accessible-autocomplete": "2.0.1",
-    "appmetrics": "5.0.5",
+    "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
     "aws-sdk": "2.585.0",
     "aws-xray-sdk": "2.5.0",
