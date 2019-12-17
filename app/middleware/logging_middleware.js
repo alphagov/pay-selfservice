@@ -1,9 +1,10 @@
 const morgan = require('morgan')
-const { requestLogFormat } = require('@govuk-pay/pay-js-commons').logging
-const logger = require('../../app/utils/logger')(__filename)
+const logger = require('../utils/logger')(__filename)
+const { CORRELATION_HEADER } = require('../utils/correlation_header')
+const { format } = require('@govuk-pay/pay-js-commons').logging.requestLogFormat(CORRELATION_HEADER)
 
 module.exports = function () {
-  return morgan(requestLogFormat, {
+  return morgan(format, {
     stream: {
       write: message => {
         logger.info('Request received', JSON.parse(message))
