@@ -136,6 +136,46 @@ module.exports = {
       }
     ]
   },
+  getGatewayAccountSuccessRepeat: (opts = {}) => {
+    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
+    const aDifferentValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[1]).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: '/v1/frontend/accounts/' + opts[0].gateway_account_id,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidGetGatewayAccountResponse
+          },
+          _behaviors: {
+            repeat: opts[0].repeat
+          }
+        }, {
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aDifferentValidGetGatewayAccountResponse
+          },
+          _behaviors: {
+            repeat: opts[1].repeat
+          }
+        }]
+      }
+    ]
+  },
   getGatewayAccountStripeSetupSuccess: (opts = {}) => {
     const aValidGetGatewayAccountStripeSetupResponse = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts).getPlain()
     return [
@@ -1041,6 +1081,34 @@ module.exports = {
                 username: opts.username,
                 password: opts.password
               }
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        }]
+      }
+    ]
+  },
+  patchUpdateFlexCredentials: (opts = {}) => {
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: `/v1/api/accounts/${opts.gateway_account_id}/3ds-flex-credentials`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: {
+              organisational_unit_id: opts.unitId,
+              issuer: opts.issuer,
+              jwt_mac_key: opts.jwtKey
             }
           }
         }],
