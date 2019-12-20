@@ -10,15 +10,16 @@ module.exports = async (req, res) => {
   const connector = new ConnectorClient(process.env.CONNECTOR_URL)
   const correlationId = req.headers[correlationHeader] || ''
   const accountId = req.account.gateway_account_id
+  const removeCredentials = req.body['remove-credentials'] === 'true'
 
   try {
     const flexParams = {
       correlationId: correlationId,
       gatewayAccountId: accountId,
       payload: {
-        organisational_unit_id: req.body['organisational-unit-id'],
-        issuer: req.body.issuer,
-        jwt_mac_key: req.body['jwt-mac-key']
+        organisational_unit_id: removeCredentials ? '' : req.body['organisational-unit-id'],
+        issuer: removeCredentials ? '' : req.body.issuer,
+        jwt_mac_key: removeCredentials ? '' : req.body['jwt-mac-key']
       }
     }
 
@@ -36,7 +37,9 @@ module.exports = async (req, res) => {
     }
 
     await connector.post3dsFlexAccountCredentials(flexParams)
-    req.flash('generic', 'Your Worldpay 3DS Flex settings have been updated')
+    req.flash('generic', removeCredentials
+      ? 'Credentials deleted. 3DS Flex has been removed from your account. Your payments will now use 3DS only.'
+      : 'Your Worldpay 3DS Flex settings have been updated')
     return res.redirect(paths.yourPsp.index)
   } catch (error) {
     return renderErrorView(req, res, false, error.errorCode)

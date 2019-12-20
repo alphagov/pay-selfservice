@@ -19,6 +19,11 @@ describe('Your PSP settings page', () => {
     issuer: 'jonheslop',
     jwt_mac_key: 'anti-matter'
   }
+  const testRemoveFlexCredentials = {
+    organisational_unit_id: '',
+    issuer: '',
+    jwt_mac_key: ''
+  }
 
   function setupYourPspStubs (opts = {}) {
     let stubs = []
@@ -82,12 +87,68 @@ describe('Your PSP settings page', () => {
       }
     }
 
-    const patchUpdate = {
+    const patchUpdateCredentials = {
       name: 'patchUpdateCredentials',
       opts: { gateway_account_id: gatewayAccountId, ...testCredentials }
     }
 
-    stubs.push(user, gatewayAccount, card, patchUpdate)
+    stubs.push(user, gatewayAccount, card, patchUpdateCredentials)
+
+    cy.task('setupStubs', stubs)
+  }
+
+  function setupRemoveFlexCredsStubs (opts = {}) {
+    let stubs = []
+
+    const user = {
+      name: 'getUserSuccess',
+      opts: {
+        external_id: userExternalId,
+        service_roles: [{
+          service: {
+            gateway_account_ids: [gatewayAccountId],
+            name: serviceName
+          }
+        }]
+      }
+    }
+
+    const gatewayAccount = {
+      name: 'getGatewayAccountSuccessRepeat',
+      opts: [{
+        gateway_account_id: gatewayAccountId,
+        worldpay_3ds_flex: opts.worldpay_3ds_flex,
+        payment_provider: opts.gateway,
+        credentials: opts.credentials,
+        repeat: 2
+      },
+      {
+        gateway_account_id: gatewayAccountId,
+        payment_provider: opts.gateway,
+        worldpay_3ds_flex: opts.worldpay_3ds_flex_remove,
+        credentials: opts.credentials
+      }]
+    }
+
+    const card = {
+      name: 'getAcceptedCardTypesSuccess',
+      opts: {
+        account_id: gatewayAccountId,
+        updated: false
+      }
+    }
+
+    const patchUpdateCredentials = {
+      name: 'patchUpdateCredentials',
+      opts: { gateway_account_id: gatewayAccountId, ...testCredentials }
+    }
+
+    const patchUpdateFlexCredentials = {
+      name: 'patchUpdateFlexCredentials',
+      opts: { gateway_account_id: gatewayAccountId, ...testFlexCredentials }
+    }
+
+    stubs.push(user, gatewayAccount, card, patchUpdateCredentials, patchUpdateFlexCredentials)
 
     cy.task('setupStubs', stubs)
   }
@@ -138,7 +199,7 @@ describe('Your PSP settings page', () => {
       cy.get('.govuk-button').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
       cy.get('#password').type(testCredentials.password)
-      cy.get('.govuk-button').click()
+      cy.get('#submitCredentials').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/your-psp`)
       })
@@ -146,12 +207,13 @@ describe('Your PSP settings page', () => {
 
     it('should allow flex credentials to be configured and all values must be set', () => {
       cy.get('#flex-credentials-change-link').click()
+      cy.get('#removeFlexCredentials').should('not.exist')
       cy.get('#organisational-unit-id').type(testFlexCredentials.organisational_unit_id)
       cy.get('#issuer').type(testFlexCredentials.issuer)
       cy.get('.govuk-button').click()
       cy.get('.govuk-error-summary').should('have.length', 1)
       cy.get('#jwt-mac-key').type(testFlexCredentials.jwt_mac_key)
-      cy.get('.govuk-button').click()
+      cy.get('#submitFlexCredentials').click()
       cy.location().should((location) => {
         expect(location.pathname).to.eq(`/your-psp`)
       })
@@ -160,10 +222,11 @@ describe('Your PSP settings page', () => {
 
   describe('When using a Worldpay account with existing credentials', () => {
     beforeEach(() => {
-      setupYourPspStubs({
+      setupRemoveFlexCredsStubs({
         gateway: 'worldpay',
         credentials: testCredentials,
-        worldpay_3ds_flex: testFlexCredentials
+        worldpay_3ds_flex: testFlexCredentials,
+        worldpay_3ds_flex_remove: testRemoveFlexCredentials
       })
     })
 
@@ -176,6 +239,19 @@ describe('Your PSP settings page', () => {
       cy.get('.value-organisational-unit-id').should('contain', testFlexCredentials.organisational_unit_id)
       cy.get('.value-issuer').should('contain', testFlexCredentials.issuer)
       cy.get('.value-jwt-mac-key').should('contain', '●●●●●●●●')
+    })
+
+    it('should allow removing flex credentials', function () {
+      cy.get('#flex-credentials-change-link').click()
+      cy.get('#removeFlexCredentials').should('be.visible')
+      cy.get('#removeFlexCredentials').click()
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/your-psp`)
+      })
+      cy.get('.generic-flash').should('contain', 'Credentials deleted. 3DS Flex has been removed from your account. Your payments will now use 3DS only.')
+      cy.get('.value-organisational-unit-id').should('contain', 'Not configured')
+      cy.get('.value-issuer').should('contain', 'Not configured')
+      cy.get('.value-jwt-mac-key').should('contain', 'Not configured')
     })
   })
 
