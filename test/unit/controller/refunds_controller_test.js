@@ -2,7 +2,7 @@
 
 // NPM dependencies
 const sinon = require('sinon')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 
 // Custom dependencies
@@ -18,7 +18,8 @@ describe('Refund scenario:', function () {
       'x-request-id': '1234'
     }
     req.user = {
-      externalId: '92734386'
+      externalId: '92734386',
+      email: 'test@example.com'
     }
     req.service = {
       gatewayAccountIds: ['123', '456']
@@ -47,6 +48,7 @@ describe('Refund scenario:', function () {
     }
     nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
       'user_external_id': req.user.externalId,
+      'user_email': req.user.email,
       'amount': 500000,
       'refund_amount_available': 5000
     })
@@ -64,6 +66,7 @@ describe('Refund scenario:', function () {
     }
     nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
       'user_external_id': req.user.externalId,
+      'user_email': req.user.email,
       'amount': 600000,
       'refund_amount_available': 5000
     })
@@ -81,6 +84,7 @@ describe('Refund scenario:', function () {
     }
     nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
       'user_external_id': req.user.externalId,
+      'user_email': req.user.email,
       'amount': 1,
       'refund_amount_available': 5000
     })
@@ -98,6 +102,7 @@ describe('Refund scenario:', function () {
     }
     nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
       'user_external_id': req.user.externalId,
+      'user_email': req.user.email,
       'amount': 1,
       'refund_amount_available': 5000
     })
@@ -115,6 +120,7 @@ describe('Refund scenario:', function () {
     }
     nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
       'user_external_id': req.user.externalId,
+      'user_email': req.user.email,
       'amount': 1,
       'refund_amount_available': 5000
     })
@@ -132,6 +138,7 @@ describe('Refund scenario:', function () {
     }
     nock(process.env.CONNECTOR_URL).post('/v1/api/accounts/' + '123' + '/charges/' + '123456' + '/refunds', {
       'user_external_id': req.user.externalId,
+      'user_email': req.user.email,
       'amount': 1,
       'refund_amount_available': 5000
     })

@@ -4,7 +4,7 @@
 const Charge = require('../../models/charge.js')
 const auth = require('../../services/auth_service.js')
 const router = require('../../routes.js')
-const {CORRELATION_HEADER} = require('../../utils/correlation_header.js')
+const { CORRELATION_HEADER } = require('../../utils/correlation_header.js')
 
 const reasonMessages = {
   'refund_complete': '<h2>Refund successful</h2> It may take up to 6 days to process.',
@@ -19,10 +19,11 @@ const reasonMessages = {
 module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
   const userExternalId = req.user.externalId
+  const userEmail = req.user.email
   const charge = Charge(correlationId)
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
-  const show = router.generateRoute(router.paths.transactions.detail, {chargeId})
+  const show = router.generateRoute(router.paths.transactions.detail, { chargeId })
 
   const refundAmount = req.body['refund-type'] === 'full' ? req.body['full-amount'] : req.body['refund-amount']
   const refundAmountAvailableInPence = parseInt(req.body['refund-amount-available-in-pence'])
@@ -36,7 +37,7 @@ module.exports = (req, res) => {
   let refundAmountForConnector = parseInt(refundMatch[1]) * 100
   if (refundMatch[2]) refundAmountForConnector += parseInt(refundMatch[2])
 
-  return charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId)
+  return charge.refund(accountId, chargeId, refundAmountForConnector, refundAmountAvailableInPence, userExternalId, userEmail)
     .then(
       () => {
         req.flash('generic', reasonMessages['refund_complete'])

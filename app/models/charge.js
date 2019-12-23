@@ -34,12 +34,13 @@ module.exports = function (correlationId) {
     }
   }
 
-  function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId) {
+  function refund (accountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail) {
     return new Promise(function (resolve, reject) {
       const payload = {
         amount: amount,
         refund_amount_available: refundAmountAvailable,
-        user_external_id: userExternalId
+        user_external_id: userExternalId,
+        user_email: userEmail
       }
 
       logger.log('info', 'Submitting a refund for a charge', {
