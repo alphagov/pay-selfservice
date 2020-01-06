@@ -46,9 +46,11 @@ describe('Error handler', function () {
       {
         '../services/validate_invite_service': {
           getValidatedInvite: () => {
+            /* eslint-disable prefer-promise-reject-errors */
             return new Promise(function (resolve, reject) {
               reject({errorCode: errorCode})
             })
+            /* eslint-enable prefer-promise-reject-errors */
           }
         }
       })

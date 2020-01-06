@@ -10,7 +10,7 @@ describe('correlation header', function () {
       },
       'some-unique-id')
 
-    assert.deepEqual(argsWithCorrelationHeader,
+    assert.deepStrictEqual(argsWithCorrelationHeader,
       {
         parameters: {foo: 'bar'},
         headers: {
@@ -27,7 +27,7 @@ describe('correlation header', function () {
       },
       'some-unique-id')
 
-    assert.deepEqual(argsWithCorrelationHeader,
+    assert.deepStrictEqual(argsWithCorrelationHeader,
       {
         parameters: {foo: 'bar'},
         headers: {'x-request-id': 'some-unique-id'}
@@ -37,7 +37,7 @@ describe('correlation header', function () {
   it('add correlation id header if args does not exist', function () {
     var argsWithCorrelationHeader = withCorrelationHeader(null, 'some-unique-id')
 
-    assert.deepEqual(argsWithCorrelationHeader,
+    assert.deepStrictEqual(argsWithCorrelationHeader,
       {
         headers: {'x-request-id': 'some-unique-id'}
       })

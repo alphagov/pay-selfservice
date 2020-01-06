@@ -2,7 +2,6 @@
 
 // Local dependencies
 const {response} = require('../../utils/response.js')
-const paths = require('../../paths')
 
 const PAGE_PARAMS = {
   productsTab: false
