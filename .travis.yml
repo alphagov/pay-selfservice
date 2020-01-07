@@ -19,6 +19,9 @@ cache:
 install:
   - npm ci
 
+before_script:
+- mkdir ./public
+
 jobs:
   include:
     - stage: "Tests"
