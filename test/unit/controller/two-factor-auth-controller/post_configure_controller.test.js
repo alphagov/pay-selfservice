@@ -3,18 +3,18 @@
 // NPM dependencies
 const supertest = require('supertest')
 const csrf = require('csrf')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const nock = require('nock')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {ADMINUSERS_URL} = process.env
+const { ADMINUSERS_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'transactions:read'}]
+  permissions: [{ name: 'transactions:read' }]
 })
 
 describe('Two factor authenticator configure page POST', () => {
@@ -91,7 +91,7 @@ describe('Two factor authenticator configure page POST', () => {
 
     it('should show an error message', () => {
       expect(session.flash.genericError).to.have.property('length').to.equal(1)
-      expect(session.flash.genericError[0]).to.equal('<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid security code</a></li></ul>')
+      expect(session.flash.genericError[0]).to.equal('<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid verification code</a></li></ul>')
     })
   })
 })
