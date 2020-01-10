@@ -23,7 +23,7 @@ module.exports = (req, res) => {
     .catch((err) => {
       let errorMessage
       if (err.errorCode === 401 || err.errorCode === 400) {
-        errorMessage = `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid security code</a></li></ul>`
+        errorMessage = `<h2>There was a problem with the details you gave for:</h2><ul class="error-summary-list"><li><a href="#code">Please enter a valid verification code</a></li></ul>`
       } else {
         errorMessage = `<h2>Internal server error, please try again</h2>`
         logger.error(`[requestId=${req.correlationId}] Activating new OTP key failed, server error`)

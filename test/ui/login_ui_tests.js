@@ -46,7 +46,7 @@ describe('Login view', function () {
       const templateData = {
         authenticatorMethod: 'SMS',
         flash: {
-          error: 'The security code you’ve used is incorrect or has expired.'
+          error: 'The verification code you’ve used is incorrect or has expired.'
         }
       }
 
@@ -54,7 +54,7 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Check your phone')
 
-      body.should.containSelector('.govuk-error-message').withExactText('Error: The security code you’ve used is incorrect or has expired.')
+      body.should.containSelector('.govuk-error-message').withExactText('Error: The verification code you’ve used is incorrect or has expired.')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
 
@@ -107,7 +107,7 @@ describe('Login view', function () {
       const templateData = {
         authenticatorMethod: 'APP',
         flash: {
-          error: 'Invalid security code'
+          error: 'Invalid verification code'
         }
       }
 
@@ -115,7 +115,7 @@ describe('Login view', function () {
 
       body.should.containSelector('h1').withExactText('Use your authenticator app')
 
-      body.should.containSelector('.govuk-error-message').withExactText('Error: Invalid security code')
+      body.should.containSelector('.govuk-error-message').withExactText('Error: Invalid verification code')
 
       body.should.containSelector('form#otp-login-form').withAttribute('action', paths.user.otpLogIn)
 

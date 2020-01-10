@@ -55,18 +55,18 @@
     {% set codeError = false %}
     {% if flash.genericError %}
       {% set codeError = {
-        text: "Please enter a valid security code"
+        text: "Please enter a valid verification code"
       } %}
     {% endif %}
 
     {% set codeHint = "Enter the code shown in your app to complete the setup" %}
     {% if method === 'SMS' %}
-      {% set codeHint = "We have sent you a text message with a security code" %}
+      {% set codeHint = "We have sent you a text message with a verification code" %}
     {% endif %}
 
     {{ govukInput({
         label: {
-          text: "Security code"
+          text: "Verification code"
         },
         hint: {
           text: codeHint
