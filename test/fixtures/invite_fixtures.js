@@ -8,12 +8,31 @@ const pactBase = require('./pact_base')
 // Global setup
 const pactInvites = pactBase()
 
+function buildInviteWithDefaults (opts) {
+  const data = _.defaults(opts, {
+    type: 'user',
+    email: 'foo@example.com',
+    role: 'admin',
+    disabled: false,
+    attempt_counter: 0,
+    _links: [],
+    user_exist: false,
+    expired: false
+  })
+
+  if (opts.telephone_number) {
+    data.telephone_number = opts.telephone_number
+  }
+
+  return data
+}
+
 module.exports = {
 
   validInviteRequest: (opts = {}) => {
     const invitee = 'random@example.com'
     const senderId = '94b3d61ebb624a6aa6598b96b307ec8c'
-    const role = {name: 'admin'}
+    const role = { name: 'admin' }
 
     const data = {
       service_external_id: opts.externalServiceId || '2f1920ea261946bface3c89ddb0a9033',
@@ -33,21 +52,20 @@ module.exports = {
   },
 
   validInviteResponse: (opts = {}) => {
-    const invitee = 'random@example.com'
-    const type = 'user'
-    const disabled = opts.disabled === true
-    const userExist = opts.user_exist === true
+    const data = buildInviteWithDefaults(opts)
 
-    const data = {
-      email: opts.email || invitee,
-      type: opts.type || type,
-      disabled,
-      user_exist: userExist
+    return {
+      getPactified: () => {
+        return pactInvites.pactify(data)
+      },
+      getPlain: () => {
+        return _.clone(data)
+      }
     }
+  },
 
-    if (opts.telephone_number) {
-      data.telephone_number = opts.telephone_number
-    }
+  validListInvitesResponse: (opts = []) => {
+    const data = opts.map(buildInviteWithDefaults)
 
     return {
       getPactified: () => {
@@ -61,7 +79,7 @@ module.exports = {
 
   invalidInviteRequest: (opts = {}) => {
     const senderId = 'e6bbf9a1633044d7aa7700b51d6de373'
-    const role = {name: 'admin'}
+    const role = { name: 'admin' }
 
     const data = {
       service_external_id: opts.externalServiceId,
@@ -190,23 +208,7 @@ module.exports = {
   },
 
   validInviteCompleteResponse: (opts = {}) => {
-    opts = opts || {}
-    opts.invite = opts.invite || {}
-
-    const inviteInvitee = 'random@example.com'
-    const inviteType = 'user'
-    const inviteDisabled = opts.invite.disabled === true
-    const inviteUserExist = opts.invite.user_exist === true
-    const invite = {
-      code: opts.invite.code || '7dfe7ef7775a4ea6bf34fd56dcf3327f',
-      email: opts.invite.email || inviteInvitee,
-      type: opts.invite.type || inviteType,
-      disabled: inviteDisabled,
-      user_exist: inviteUserExist
-    }
-    if (opts.invite.telephone_number) {
-      invite.invite.telephone_number = opts.invite.telephone_number
-    }
+    const invite = buildInviteWithDefaults(opts.invite)
 
     const data = {
       invite,
