@@ -12,6 +12,10 @@ const serviceFixtures = require('./service_fixtures')
 // Constants
 const defaultPermissions = [
   {
+    name: 'users-service:read',
+    description: 'Viewusersinservice'
+  },
+  {
     name: 'users-service:create',
     description: 'Createuserinthisservice'
   },
@@ -433,11 +437,8 @@ module.exports = {
     }
   },
 
-  validUsersResponse: (opts = {}) => {
-    const users = []
-    opts.users.forEach(user => {
-      users.push(buildUserWithDefaults(user))
-    })
+  validUsersResponse: (opts = []) => {
+    const users = opts.map(buildUserWithDefaults)
 
     return {
       getPactified: () => {

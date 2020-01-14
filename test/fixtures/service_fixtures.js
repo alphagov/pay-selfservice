@@ -49,9 +49,8 @@ module.exports = {
       }
     }
   },
-  validCreateServiceRequest: (opts) => {
-    opts = opts || {}
 
+  validCreateServiceRequest: (opts = {}) => {
     const data = {}
     if (opts.name) {
       data.service_name = { en: opts.name }
@@ -127,9 +126,7 @@ module.exports = {
     }
   },
 
-  validCollectBillingAddressToggleRequest: (opts) => {
-    opts = opts || {}
-
+  validCollectBillingAddressToggleRequest: (opts = {}) => {
     const data = {
       op: 'replace',
       path: 'collect_billing_address',
@@ -182,9 +179,7 @@ module.exports = {
     }
   },
 
-  validUpdateServiceRequest: (opts) => {
-    opts = opts || {}
-
+  validUpdateServiceRequest: (opts = {}) => {
     const data = {
       op: 'replace',
       path: opts.path,

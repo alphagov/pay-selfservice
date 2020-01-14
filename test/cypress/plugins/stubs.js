@@ -15,6 +15,7 @@ const stripeAccountSetupFixtures = require('../../fixtures/stripe_account_setup_
 const productFixtures = require('../../fixtures/product_fixtures')
 const goCardlessConnectFixtures = require('../../fixtures/go_cardless_connect_fixtures')
 const ledgerFixture = require('../../fixtures/ledger_transaction_fixtures')
+const inviteFixtures = require('../../fixtures/invite_fixtures')
 
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
@@ -45,7 +46,7 @@ module.exports = {
     ]
   },
   getUsersSuccess: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validUsersResponse(opts).getPlain()
+    const aValidUserResponse = userFixtures.validUsersResponse(opts.users).getPlain()
     const query = opts.userIds ? opts.userIds.join() : ''
     return [
       {
@@ -108,6 +109,53 @@ module.exports = {
           }
         }
         ]
+      }
+    ]
+  },
+  getServiceUsersSuccess: (opts = {}) => {
+    const aValidServiceUsersResponse = userFixtures.validUsersResponse(opts.users).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: `/v1/api/services/${opts.serviceExternalId}/users`
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidServiceUsersResponse
+          }
+        }]
+      }
+    ]
+  },
+  getInvitedUsersSuccess: (opts = {}) => {
+    const aValidListInvitesResponse = inviteFixtures.validListInvitesResponse(opts.invites).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'GET',
+            path: '/v1/api/invites',
+            query: {
+              serviceId: opts.serviceExternalId
+            }
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: aValidListInvitesResponse
+          }
+        }]
       }
     ]
   },
@@ -1118,6 +1166,33 @@ module.exports = {
             headers: {
               'Content-Type': 'application/json'
             }
+          }
+        }]
+      }
+    ]
+  },
+  postUpdateServiceRoleSuccess: (opts = {}) => {
+    const request = userFixtures.validUpdateServiceRoleRequest(opts.role).getPlain()
+    const response = userFixtures.validUserResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'PUT',
+            path: `/v1/api/users/${opts.external_id}/services/${opts.serviceExternalId}`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: request
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: response
           }
         }]
       }
