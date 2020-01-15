@@ -37,7 +37,7 @@ describe('Payment types', () => {
           }
         },
         {
-          name: 'postAcceptedCardsForAccountSuccess',
+          name: 'getAcceptedCardsForAccountSuccess',
           opts: {
             account_id: gatewayAccountId
           }
@@ -101,7 +101,7 @@ describe('Payment types', () => {
           }
         },
         {
-          name: 'postAcceptedCardsForAccountSuccess',
+          name: 'getAcceptedCardsForAccountSuccess',
           opts: {
             account_id: gatewayAccountId
           }

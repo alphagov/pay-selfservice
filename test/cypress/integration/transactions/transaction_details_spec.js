@@ -68,6 +68,7 @@ function defaultTransactionDetails (events, opts = {}) {
 describe('Transaction details page', () => {
   const transactionsUrl = `/transactions`
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+  const userEmail = 'a-user@example.com'
 
   const getStubs = (transactionDetails) => {
     return [
@@ -75,6 +76,7 @@ describe('Transaction details page', () => {
         name: 'getUserSuccess',
         opts: {
           external_id: userExternalId,
+          email: userEmail,
           service_roles: [{
             service: {
               name: serviceName,
@@ -503,7 +505,8 @@ describe('Transaction details page', () => {
             charge_id: transactionDetails.transaction_id,
             amount: refundAmount,
             refund_amount_available: transactionDetails.amount,
-            user_external_id: userExternalId
+            user_external_id: userExternalId,
+            user_email: userEmail
           }
         }
       ])
