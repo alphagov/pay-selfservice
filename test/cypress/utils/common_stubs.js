@@ -60,6 +60,13 @@ module.exports.getGatewayAccountStub = (gatewayAccountId, type = 'test', payment
   }
 }
 
+module.exports.getGatewayAccountsStub = (gatewayAccountId) => {
+  return {
+    name: 'getGatewayAccountsSuccess',
+    opts: { gateway_account_id: gatewayAccountId }
+  }
+}
+
 module.exports.getDirectDebitGatewayAccountStub = (gatewayAccountId, type = 'test', paymentProvider = 'sandbox') => {
   return {
     name: 'getDirectDebitGatewayAccountSuccess',

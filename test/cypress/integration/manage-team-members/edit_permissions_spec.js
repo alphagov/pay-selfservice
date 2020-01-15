@@ -42,7 +42,7 @@ describe('Edit service user permissions', () => {
         }
       },
       {
-        name: 'postUpdateServiceRoleSuccess',
+        name: 'putUpdateServiceRoleSuccess',
         opts: {
           role: 'view-and-refund',
           external_id: EDITING_USER_ID,

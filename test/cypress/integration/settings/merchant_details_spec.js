@@ -18,7 +18,7 @@ describe('Dashboard', () => {
         }
       },
       {
-        name: 'getGatewayAccountQueryParamsSuccess',
+        name: 'getGatewayAccountsSuccess',
         opts: { gateway_account_id: gatewayAccountId }
       }
     ])

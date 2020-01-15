@@ -52,8 +52,8 @@ module.exports = {
 
   validCreateServiceRequest: (opts = {}) => {
     const data = {}
-    if (opts.name) {
-      data.service_name = { en: opts.name }
+    if (opts.service_name) {
+      data.service_name = buildServiceNameWithDefaults(opts.service_name)
     }
     if (opts.gateway_account_ids) {
       data.gateway_account_ids = opts.gateway_account_ids
