@@ -22,7 +22,7 @@ chai.use(chaiAsPromised)
 
 describe('connector client - get multiple gateway accounts', function () {
   let provider = Pact({
-    consumer: 'selfservice-to-be',
+    consumer: 'selfservice',
     provider: 'connector',
     port: port,
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
@@ -46,7 +46,7 @@ describe('connector client - get multiple gateway accounts', function () {
       provider.addInteraction(
         new PactInteractionBuilder(ACCOUNTS_RESOURCE)
           .withUponReceiving('a valid get gateway accounts request')
-          .withState(`Gateway accounts with ids 111, 222 exist in the database`)
+          .withState('gateway accounts with ids 111, 222 exist in the database')
           .withMethod('GET')
           .withQuery('accountIds', '111,222')
           .withResponseBody(validGetGatewayAccountsResponse.getPactified())
