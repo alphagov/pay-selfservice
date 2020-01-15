@@ -386,10 +386,10 @@ module.exports = {
     return pactUsers.withPactified(request)
   },
 
-  validAssignServiceRoleRequest: (serviceExternalId, role) => {
+  validAssignServiceRoleRequest: (opts = {}) => {
     const request = {
-      service_external_id: serviceExternalId || '9en17v',
-      role_name: role || 'admin'
+      service_external_id: opts.service_external_id || '9en17v',
+      role_name: opts.role_name || 'admin'
     }
 
     return pactUsers.withPactified(request)

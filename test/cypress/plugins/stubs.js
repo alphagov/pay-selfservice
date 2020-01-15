@@ -303,8 +303,8 @@ module.exports = {
       }
     ]
   },
-  getGatewayAccountQueryParamsSuccess: (opts = {}) => {
-    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+  getGatewayAccountsSuccess: (opts = {}) => {
+    const aValidGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] }).getPlain()
     return [
       {
         predicates: [{
@@ -323,7 +323,7 @@ module.exports = {
             headers: {
               'Content-Type': 'application/json'
             },
-            body: aValidGetGatewayAccountResponse
+            body: aValidGetGatewayAccountsResponse
           }
         }]
       }
@@ -1171,7 +1171,7 @@ module.exports = {
       }
     ]
   },
-  postUpdateServiceRoleSuccess: (opts = {}) => {
+  putUpdateServiceRoleSuccess: (opts = {}) => {
     const request = userFixtures.validUpdateServiceRoleRequest(opts.role).getPlain()
     const response = userFixtures.validUserResponse(opts).getPlain()
     return [
@@ -1180,6 +1180,87 @@ module.exports = {
           equals: {
             method: 'PUT',
             path: `/v1/api/users/${opts.external_id}/services/${opts.serviceExternalId}`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: request
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: response
+          }
+        }]
+      }
+    ]
+  },
+  postAssignServiceRoleSuccess: (opts = {}) => {
+    const request = userFixtures.validAssignServiceRoleRequest(opts).getPlain()
+    const response = userFixtures.validUserResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: `/v1/api/users/${opts.external_id}/services`,
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: request
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: response
+          }
+        }]
+      }
+    ]
+  },
+  postCreateGatewayAccountSuccess: (opts = {}) => {
+    const request = gatewayAccountFixtures.validCreateGatewayAccountRequest(opts).getPlain()
+    const response = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: '/v1/api/accounts',
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: request
+          }
+        }],
+        responses: [{
+          is: {
+            statusCode: 200,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: response
+          }
+        }]
+      }
+    ]
+  },
+  postCreateServiceSuccess: (opts = {}) => {
+    const request = serviceFixtures.validCreateServiceRequest(opts).getPlain()
+    const response = serviceFixtures.validServiceResponse(opts).getPlain()
+    return [
+      {
+        predicates: [{
+          equals: {
+            method: 'POST',
+            path: '/v1/api/services',
             headers: {
               'Accept': 'application/json'
             },

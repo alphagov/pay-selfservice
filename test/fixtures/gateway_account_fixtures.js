@@ -158,7 +158,7 @@ module.exports = {
     }
   },
   validGatewayAccountsResponse: (opts = {}) => {
-    const accounts = _.flatMap(opts.accounts, validGatewayAccount)
+    const accounts = opts.accounts.map(validGatewayAccount)
     let data = {
       accounts: accounts
     }
@@ -195,8 +195,11 @@ module.exports = {
     const data = {
       payment_provider: opts.payment_provider || 'sandbox',
       service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
-      analytics_id: opts.analytics_id || 'PAY-GA-123',
       type: opts.type || 'test'
+    }
+
+    if (opts.analytics_id) {
+      data.analytics_id = opts.analytics_id
     }
 
     return {
