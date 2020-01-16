@@ -37,7 +37,7 @@ function getCreateServiceStub (englishName, welshName) {
   return {
     name: 'postCreateServiceSuccess',
     opts: {
-      gateway_account_id: 2,
+      gateway_account_ids: [newGatewayAccountId],
       service_name: serviceName,
       external_id: newServiceId
     }

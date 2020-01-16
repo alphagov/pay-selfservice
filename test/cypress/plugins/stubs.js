@@ -17,6 +17,36 @@ const goCardlessConnectFixtures = require('../../fixtures/go_cardless_connect_fi
 const ledgerFixture = require('../../fixtures/ledger_transaction_fixtures')
 const inviteFixtures = require('../../fixtures/invite_fixtures')
 
+const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode, additionalParams = {}) {
+  const request = {
+    method,
+    path
+  }
+  if (additionalParams.request) {
+    request.body = additionalParams.request
+  }
+  if (additionalParams.query) {
+    request.query = additionalParams.query
+  }
+
+  const response = {
+    statusCode: responseCode,
+    headers: additionalParams.responseHeaders || { 'Content-Type': 'application/json' }
+  }
+  if (additionalParams.response) {
+    response.body = additionalParams.response
+  }
+
+  return [{
+    predicates: [{
+      deepEquals: request
+    }],
+    responses: [{
+      is: response
+    }]
+  }]
+}
+
 /**
  * Stub definitions added here should always use fixture builders to generate request and response bodys.
  * The fixture builders used should be validated by also being used in the pact tests for the API endpoint, and they
@@ -24,52 +54,19 @@ const inviteFixtures = require('../../fixtures/invite_fixtures')
  */
 module.exports = {
   getUserSuccess: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validUserResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          deepEquals: {
-            method: 'GET',
-            path: '/v1/api/users/' + aValidUserResponse.external_id
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidUserResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/users/' + opts.external_id
+    return simpleStubBuilder('GET', path, 200, {
+      response: userFixtures.validUserResponse(opts).getPlain()
+    })
   },
   getUsersSuccess: (opts = {}) => {
-    const aValidUserResponse = userFixtures.validUsersResponse(opts.users).getPlain()
-    const query = opts.userIds ? opts.userIds.join() : ''
-    return [
-      {
-        predicates: [{
-          deepEquals: {
-            method: 'GET',
-            path: '/v1/api/users',
-            query: {
-              ids: query
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidUserResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/users'
+    return simpleStubBuilder('GET', path, 200, {
+      query: {
+        ids: opts.userIds ? opts.userIds.join() : ''
+      },
+      response: userFixtures.validUsersResponse(opts.users).getPlain()
+    })
   },
   getUserSuccessRepeatFirstResponseNTimes: (opts = {}) => {
     const aValidUserResponse = userFixtures.validUserResponse(opts[0]).getPlain()
@@ -113,76 +110,25 @@ module.exports = {
     ]
   },
   getServiceUsersSuccess: (opts = {}) => {
-    const aValidServiceUsersResponse = userFixtures.validUsersResponse(opts.users).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/services/${opts.serviceExternalId}/users`
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidServiceUsersResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.serviceExternalId}/users`
+    return simpleStubBuilder('GET', path, 200, {
+      response: userFixtures.validUsersResponse(opts.users).getPlain()
+    })
   },
   getInvitedUsersSuccess: (opts = {}) => {
-    const aValidListInvitesResponse = inviteFixtures.validListInvitesResponse(opts.invites).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/api/invites',
-            query: {
-              serviceId: opts.serviceExternalId
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidListInvitesResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/invites'
+    return simpleStubBuilder('GET', path, 200, {
+      query: {
+        serviceId: opts.serviceExternalId
+      },
+      response: inviteFixtures.validListInvitesResponse(opts.invites).getPlain()
+    })
   },
   getGatewayAccountSuccess: (opts = {}) => {
-    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/frontend/accounts/' + opts.gateway_account_id,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidGetGatewayAccountResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/frontend/accounts/' + opts.gateway_account_id
+    return simpleStubBuilder('GET', path, 200, {
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+    })
   },
   getGatewayAccountSuccessRepeat: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
@@ -225,29 +171,10 @@ module.exports = {
     ]
   },
   getGatewayAccountStripeSetupSuccess: (opts = {}) => {
-    const aValidGetGatewayAccountStripeSetupResponse = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidGetGatewayAccountStripeSetupResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/stripe-setup`
+    return simpleStubBuilder('GET', path, 200, {
+      response: stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(opts).getPlain()
+    })
   },
   getGatewayAccountStripeSetupFlagChanged: (opts = {}) => {
     const responses = []
@@ -279,55 +206,19 @@ module.exports = {
     ]
   },
   getStripeAccountSuccess: (opts = {}) => {
-    const aValidGetStripeAccountResponse = stripeAccountSetupFixtures.buildGetStripeAccountResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/stripe-account`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidGetStripeAccountResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/stripe-account`
+    return simpleStubBuilder('GET', path, 200, {
+      response: stripeAccountSetupFixtures.buildGetStripeAccountResponse(opts).getPlain()
+    })
   },
   getGatewayAccountsSuccess: (opts = {}) => {
-    const aValidGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] }).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/frontend/accounts',
-            query: { accountIds: opts.gateway_account_id.toString() },
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidGetGatewayAccountsResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/frontend/accounts'
+    return simpleStubBuilder('GET', path, 200, {
+      query: {
+        accountIds: opts.gateway_account_id.toString()
+      },
+      response: gatewayAccountFixtures.validGatewayAccountsResponse({ accounts: [opts] }).getPlain()
+    })
   },
   getGatewayAccountSuccessRepeatNTimes: (opts = {}) => {
     const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse(opts[0]).getPlain()
@@ -370,913 +261,249 @@ module.exports = {
     ]
   },
   getDirectDebitGatewayAccountSuccess: (opts = {}) => {
-    const aValidGetGatewayAccountResponse = gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/api/accounts/' + opts.gateway_account_id,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidGetGatewayAccountResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/accounts/' + opts.gateway_account_id
+    return simpleStubBuilder('GET', path, 200, {
+      response: gatewayAccountFixtures.validDirectDebitGatewayAccountResponse(opts).getPlain()
+    })
   },
   getAccountAuthSuccess: (opts = {}) => {
-    const getServiceAuthResponse = gatewayAccountFixtures.validGatewayAccountTokensResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/frontend/auth/' + opts.gateway_account_id,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: getServiceAuthResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/frontend/auth/' + opts.gateway_account_id
+    return simpleStubBuilder('GET', path, 200, {
+      response: gatewayAccountFixtures.validGatewayAccountTokensResponse(opts).getPlain()
+    })
   },
   patchAccountEmailCollectionModeSuccess: (opts = {}) => {
-    const validGatewayAccountEmailCollectionModeRequest = gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest(opts.collectionMode).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: '/v1/api/accounts/' + opts.gateway_account_id,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: validGatewayAccountEmailCollectionModeRequest
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/accounts/' + opts.gateway_account_id
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: gatewayAccountFixtures.validGatewayAccountEmailCollectionModeRequest(opts.collectionMode).getPlain()
+    })
   },
   patchConfirmationEmailToggleSuccess: (opts = {}) => {
-    const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts.enabled).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/email-notification`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: validGatewayAccountEmailConfirmationToggleRequest
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/email-notification`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(opts.enabled).getPlain()
+    })
   },
   patchRefundEmailToggleSuccess: (opts = {}) => {
-    const validGatewayAccountEmailRefundToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/email-notification`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: validGatewayAccountEmailRefundToggleRequest
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/email-notification`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(opts.enabled).getPlain()
+    })
   },
   postUserAuthenticateSuccess: (opts = {}) => {
-    const aValidAuthenticateRequest = userFixtures.validAuthenticateRequest(opts).getPlain()
-    const aValidAuthenticateResponse = userFixtures.validUserResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: '/v1/api/users/authenticate',
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: aValidAuthenticateRequest
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: aValidAuthenticateResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/users/authenticate'
+    return simpleStubBuilder('POST', path, 200, {
+      request: userFixtures.validAuthenticateRequest(opts).getPlain(),
+      response: userFixtures.validUserResponse(opts).getPlain()
+    })
   },
   postUserAuthenticateInvalidPassword: (opts = {}) => {
-    const aValidAuthenticateRequest = userFixtures.validAuthenticateRequest(opts).getPlain()
-    const invalidPasswordResponse = userFixtures.invalidPasswordAuthenticateResponse().getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: '/v1/api/users/authenticate',
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: aValidAuthenticateRequest
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 401,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: invalidPasswordResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/users/authenticate'
+    return simpleStubBuilder('POST', path, 401, {
+      request: userFixtures.validAuthenticateRequest(opts).getPlain(),
+      response: userFixtures.invalidPasswordAuthenticateResponse().getPlain()
+    })
   },
   postSecondFactorSuccess: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: `/v1/api/users/${opts.external_id}/second-factor`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/users/${opts.external_id}/second-factor`
+    return simpleStubBuilder('POST', path, 200)
   },
   getChargeSuccess: (opts = {}) => {
-    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validTransactionDetailsResponse(opts.chargeDetails).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.chargeDetails.charge_id}`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validGetTransactionDetailsResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.chargeDetails.charge_id}`
+    return simpleStubBuilder('GET', path, 200, {
+      response: transactionDetailsFixtures.validTransactionDetailsResponse(opts.chargeDetails).getPlain()
+    })
   },
   getChargeEventsSuccess: (opts = {}) => {
-    const validGetTransactionDetailsResponse = transactionDetailsFixtures.validChargeEventsResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/events`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validGetTransactionDetailsResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/events`
+    return simpleStubBuilder('GET', path, 200, {
+      response: transactionDetailsFixtures.validChargeEventsResponse(opts).getPlain()
+    })
   },
   postRefundAmountNotAvailable: (opts = {}) => {
-    const invalidTransactionRefundRequest = transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain()
-    const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse({ reason: 'amount_not_available' }).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: invalidTransactionRefundRequest
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 400,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: invalidTransactionRefundResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}/refunds`
+    return simpleStubBuilder('POST', path, 400, {
+      request: transactionDetailsFixtures.validTransactionRefundRequest(opts).getPlain(),
+      response: transactionDetailsFixtures.invalidTransactionRefundResponse({ reason: 'amount_not_available' }).getPlain()
+    })
   },
   getLedgerTransactionSuccess: (opts = {}) => {
-    const validTransaction = ledgerTransactionFixtures.validTransactionDetailsResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/transaction/${opts.transaction_id}`
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validTransaction
-          }
-        }]
-      }
-    ]
+    const path = `/v1/transaction/${opts.transaction_id}`
+    return simpleStubBuilder('GET', path, 200, {
+      response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts).getPlain()
+    })
   },
   getLedgerEventsSuccess: (opts = {}) => {
-    const validEvents = ledgerTransactionFixtures.validTransactionEventsResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/transaction/${opts.transaction_id}/event`
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validEvents
-          }
-        }]
-      }
-    ]
+    const path = `/v1/transaction/${opts.transaction_id}/event`
+    return simpleStubBuilder('GET', path, 200, {
+      response: ledgerTransactionFixtures.validTransactionEventsResponse(opts).getPlain()
+    })
   },
   getLedgerTransactionsSuccess: (opts = {}) => {
-    const validGetTransactionsResponse = ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
-    const query = lodash.defaults(opts.filters, {
-      account_id: opts.gateway_account_id,
-      with_parent_transaction: true,
-      page: opts.page || 1,
-      display_size: opts.display_size || 100
+    const path = '/v1/transaction'
+    return simpleStubBuilder('GET', path, 200, {
+      query: lodash.defaults(opts.filters, {
+        account_id: opts.gateway_account_id,
+        with_parent_transaction: true,
+        page: opts.page || 1,
+        display_size: opts.display_size || 100
+      }),
+      response: ledgerTransactionFixtures.validTransactionSearchResponse(opts).getPlain()
     })
-
-    return [
-      {
-        predicates: [{
-          deepEquals: {
-            method: 'GET',
-            path: '/v1/transaction',
-            query
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validGetTransactionsResponse
-          }
-        }]
-      }
-    ]
   },
   getCardTypesSuccess: () => {
-    const validCardTypesResponse = cardFixtures.validCardTypesResponse().getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/api/card-types',
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validCardTypesResponse
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/card-types'
+    return simpleStubBuilder('GET', path, 200, {
+      response: cardFixtures.validCardTypesResponse().getPlain()
+    })
   },
   getAcceptedCardTypesSuccess: opts => {
-    const validAcceptedCardTypesResponse = cardFixtures.validAcceptedCardTypesResponse(opts).getPlain()
-    const validUpdatedAcceptedCardTypesResponse = cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/frontend/accounts/${opts.account_id}/card-types`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: opts.updated ? validUpdatedAcceptedCardTypesResponse : validAcceptedCardTypesResponse
-          }
-        }]
-      }
-    ]
+    const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
+    const response = opts.updated
+      ? cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
+      : cardFixtures.validAcceptedCardTypesResponse(opts).getPlain()
+    return simpleStubBuilder('GET', path, 200, { response: response })
   },
-  postAcceptedCardsForAccountSuccess: opts => {
-    const validUpdatedAcceptedCardTypesResponse = cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/frontend/accounts/${opts.account_id}/card-types`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: validUpdatedAcceptedCardTypesResponse
-          }
-        }]
-      }
-    ]
+  getAcceptedCardsForAccountSuccess: opts => {
+    const path = `/v1/frontend/accounts/${opts.account_id}/card-types`
+    return simpleStubBuilder('GET', path, 200, {
+      response: cardFixtures.validUpdatedAcceptedCardTypesResponse().getPlain()
+    })
   },
   patchUpdateServiceGoLiveStageSuccess: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/services/${opts.external_id}`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.current_go_live_stage).getPlain()
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            body: serviceFixtures.validServiceResponse(opts).getPlain(),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.external_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: serviceFixtures.validUpdateRequestToGoLiveRequest(opts.current_go_live_stage).getPlain(),
+      response: serviceFixtures.validServiceResponse(opts).getPlain()
+    })
   },
   patchUpdateMerchantDetailsSuccess: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/services/${opts.external_id}`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details).getPlain()
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            body: serviceFixtures.validServiceResponse(opts).getPlain(),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.external_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: serviceFixtures.validUpdateMerchantDetailsRequest(opts.merchant_details).getPlain(),
+      response: serviceFixtures.validServiceResponse(opts).getPlain()
+    })
   },
   patchUpdateServiceSuccessCatchAll: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/services/${opts.external_id}`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            body: serviceFixtures.validServiceResponse(opts).getPlain(),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.external_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      response: serviceFixtures.validServiceResponse(opts).getPlain()
+    })
   },
   patchGoLiveStageFailure: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/services/${opts.external_id}`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: serviceFixtures.validUpdateServiceRequest(opts).getPlain()
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 404,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.external_id}`
+    return simpleStubBuilder('PATCH', path, 404, {
+      request: serviceFixtures.validUpdateServiceRequest(opts).getPlain()
+    })
   },
   postGovUkPayAgreement: (opts) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: `/v1/api/services/${opts.external_id}/govuk-pay-agreement`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts).getPlain()
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 201,
-            body: goLiveRequestFixtures.validPostGovUkPayAgreementResponse(opts).getPlain(),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.external_id}/govuk-pay-agreement`
+    return simpleStubBuilder('POST', path, 201, {
+      request: goLiveRequestFixtures.validPostGovUkPayAgreementRequest(opts).getPlain(),
+      response: goLiveRequestFixtures.validPostGovUkPayAgreementResponse(opts).getPlain()
+    })
   },
   postStripeAgreementIpAddress: (opts) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: `/v1/api/services/${opts.external_id}/stripe-agreement`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: goLiveRequestFixtures.validPostStripeAgreementRequest(opts).getPlain()
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 201,
-            headers: {}
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/services/${opts.external_id}/stripe-agreement`
+    return simpleStubBuilder('POST', path, 201, {
+      request: goLiveRequestFixtures.validPostStripeAgreementRequest(opts).getPlain(),
+      responseHeaders: {}
+    })
   },
   getProductsByGatewayAccountIdSuccess: (opts) => {
-    const response = opts.products.map(product =>
-      productFixtures.validCreateProductResponse(product).getPlain())
-
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/gateway-account/${opts.gateway_account_id}/products`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: response
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products`
+    return simpleStubBuilder('GET', path, 200, {
+      response: opts.products.map(product =>
+        productFixtures.validCreateProductResponse(product).getPlain())
+    })
   },
   getProductsByGatewayAccountIdFailure: (opts) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/gateway-account/${opts.gateway_account_id}/products`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 500,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products`
+    return simpleStubBuilder('GET', path, 500)
   },
   getProductByExternalIdSuccess: (opts) => {
-    const response = productFixtures.validCreateProductResponse(opts.product).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`,
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: response
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`
+    return simpleStubBuilder('GET', path, 200, {
+      response: productFixtures.validCreateProductResponse(opts.product).getPlain()
+    })
   },
   patchUpdate3DS: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/frontend/accounts/${opts.gateway_account_id}/3ds-toggle`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: {
-              toggle_3ds: opts.enable
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
+    const path = `/v1/api/frontend/accounts/${opts.gateway_account_id}/3ds-toggle`
+    // TODO: this should use a fixture to construct the request body
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: {
+        toggle_3ds: opts.enable
       }
-    ]
+    })
   },
   redirectToGoCardlessConnectFailure: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: `/oauth/authorize`,
-            headers: {
-              'Accept': 'text/html'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 500
-          }
-        }]
-      }
-    ]
+    const path = '/oauth/authorize'
+    return simpleStubBuilder('GET', path, 500, {
+      responseHeaders: {}
+    })
   },
   exchangeGoCardlessAccessCodeAccountAlreadyConnected: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: '/v1/api/gocardless/partnerapp/tokens',
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 400,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: goCardlessConnectFixtures.exchangeAccessTokenAccountAlreadyConnectedResponse()
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/gocardless/partnerapp/tokens'
+    return simpleStubBuilder('POST', path, 400, {
+      response: goCardlessConnectFixtures.exchangeAccessTokenAccountAlreadyConnectedResponse()
+    })
   },
   getDashboardStatisticsStub: (opts = {}) => {
-    const body = ledgerFixture.validTransactionSummaryDetails(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'GET',
-            path: '/v1/report/transactions-summary',
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: body
-          }
-        }]
-      }
-    ]
+    const path = '/v1/report/transactions-summary'
+    return simpleStubBuilder('GET', path, 200, {
+      response: ledgerFixture.validTransactionSummaryDetails(opts).getPlain()
+    })
   },
   patchUpdateCredentials: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PATCH',
-            path: `/v1/api/frontend/accounts/${opts.gateway_account_id}/credentials`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: {
-              credentials: {
-                merchant_id: opts.merchantId,
-                username: opts.username,
-                password: opts.password
-              }
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
+    const path = `/v1/api/frontend/accounts/${opts.gateway_account_id}/credentials`
+    // TODO: this should use a fixture to construct the request body
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: {
+        credentials: {
+          merchant_id: opts.merchantId,
+          username: opts.username,
+          password: opts.password
+        }
       }
-    ]
+    })
   },
   patchUpdateFlexCredentials: (opts = {}) => {
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: `/v1/api/accounts/${opts.gateway_account_id}/3ds-flex-credentials`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: {
-              organisational_unit_id: opts.unitId,
-              issuer: opts.issuer,
-              jwt_mac_key: opts.jwtKey
-            }
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        }]
+    const path = `/v1/api/accounts/${opts.gateway_account_id}/3ds-flex-credentials`
+    // TODO: this should use a fixture to construct the request body
+    return simpleStubBuilder('POST', path, 200, {
+      request: {
+        organisational_unit_id: opts.unitId,
+        issuer: opts.issuer,
+        jwt_mac_key: opts.jwtKey
       }
-    ]
+    })
   },
   putUpdateServiceRoleSuccess: (opts = {}) => {
-    const request = userFixtures.validUpdateServiceRoleRequest(opts.role).getPlain()
-    const response = userFixtures.validUserResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'PUT',
-            path: `/v1/api/users/${opts.external_id}/services/${opts.serviceExternalId}`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: request
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: response
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/users/${opts.external_id}/services/${opts.serviceExternalId}`
+    return simpleStubBuilder('PUT', path, 200, {
+      request: userFixtures.validUpdateServiceRoleRequest(opts.role).getPlain(),
+      response: userFixtures.validUserResponse(opts).getPlain()
+    })
   },
   postAssignServiceRoleSuccess: (opts = {}) => {
-    const request = userFixtures.validAssignServiceRoleRequest(opts).getPlain()
-    const response = userFixtures.validUserResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: `/v1/api/users/${opts.external_id}/services`,
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: request
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: response
-          }
-        }]
-      }
-    ]
+    const path = `/v1/api/users/${opts.external_id}/services`
+    return simpleStubBuilder('POST', path, 200, {
+      request: userFixtures.validAssignServiceRoleRequest(opts).getPlain(),
+      response: userFixtures.validUserResponse(opts).getPlain()
+    })
   },
   postCreateGatewayAccountSuccess: (opts = {}) => {
-    const request = gatewayAccountFixtures.validCreateGatewayAccountRequest(opts).getPlain()
-    const response = gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: '/v1/api/accounts',
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: request
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: response
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/accounts'
+    return simpleStubBuilder('POST', path, 200, {
+      request: gatewayAccountFixtures.validCreateGatewayAccountRequest(opts).getPlain(),
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+    })
   },
   postCreateServiceSuccess: (opts = {}) => {
-    const request = serviceFixtures.validCreateServiceRequest(opts).getPlain()
-    const response = serviceFixtures.validServiceResponse(opts).getPlain()
-    return [
-      {
-        predicates: [{
-          equals: {
-            method: 'POST',
-            path: '/v1/api/services',
-            headers: {
-              'Accept': 'application/json'
-            },
-            body: request
-          }
-        }],
-        responses: [{
-          is: {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: response
-          }
-        }]
-      }
-    ]
+    const path = '/v1/api/services'
+    return simpleStubBuilder('POST', path, 200, {
+      request: serviceFixtures.validCreateServiceRequest(opts).getPlain(),
+      response: serviceFixtures.validServiceResponse(opts).getPlain()
+    })
   }
 }
