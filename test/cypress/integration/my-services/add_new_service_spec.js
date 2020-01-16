@@ -14,7 +14,8 @@ const createGatewayAccountStub = {
     service_name: newServiceName,
     payment_provider: 'sandbox',
     type: 'test',
-    gateway_account_id: newGatewayAccountId
+    gateway_account_id: newGatewayAccountId,
+    verifyCalledTimes: 1
   }
 }
 const assignUserRoleStub = {
@@ -22,7 +23,8 @@ const assignUserRoleStub = {
   opts: {
     external_id: authenticatedUserId,
     service_external_id: newServiceId,
-    role_name: 'admin'
+    role_name: 'admin',
+    verifyCalledTimes: 1
   }
 }
 
@@ -39,9 +41,18 @@ function getCreateServiceStub (englishName, welshName) {
     opts: {
       gateway_account_ids: [newGatewayAccountId],
       service_name: serviceName,
-      external_id: newServiceId
+      external_id: newServiceId,
+      verifyCalledTimes: 1
     }
   }
+}
+
+function setupStubs (stubs = []) {
+  cy.task('setupStubs', [
+    ...stubs,
+    getUserStub(authenticatedUserId, ['1']),
+    getGatewayAccountsStub(1)
+  ])
 }
 
 describe('Add a new service', () => {
@@ -52,24 +63,16 @@ describe('Add a new service', () => {
   })
 
   describe('Add a new service without a Welsh name', () => {
-    beforeEach(() => {
-      cy.task('setupStubs', [
-        getUserStub(authenticatedUserId, ['1']),
-        getGatewayAccountsStub(1),
-        createGatewayAccountStub,
-        assignUserRoleStub,
-        getCreateServiceStub(newServiceName)
-      ])
-    })
-
     it('should display the my services page', () => {
       cy.setEncryptedCookies(authenticatedUserId, 1)
+      setupStubs()
 
       cy.visit('/my-services')
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
     })
 
     it('should navigate to the add new service form', () => {
+      setupStubs()
       cy.get('a').contains('Add a new service').click()
 
       cy.title().should('eq', 'Add a new service - GOV.UK Pay')
@@ -77,6 +80,11 @@ describe('Add a new service', () => {
     })
 
     it('should add a service', () => {
+      setupStubs([
+        createGatewayAccountStub,
+        assignUserRoleStub,
+        getCreateServiceStub(newServiceName)
+      ])
       cy.get('input#service-name').type(newServiceName)
       cy.get('button').contains('Add service').click()
 
@@ -85,24 +93,16 @@ describe('Add a new service', () => {
   })
 
   describe('Add a new service with a Welsh name', () => {
-    beforeEach(() => {
-      cy.task('setupStubs', [
-        getUserStub(authenticatedUserId, ['1']),
-        getGatewayAccountsStub(1),
-        createGatewayAccountStub,
-        assignUserRoleStub,
-        getCreateServiceStub(newServiceName, newServiceWelshName)
-      ])
-    })
-
     it('should display the my services page', () => {
       cy.setEncryptedCookies(authenticatedUserId, 1)
+      setupStubs()
 
       cy.visit('/my-services')
       cy.title().should('eq', 'Choose service - GOV.UK Pay')
     })
 
     it('should navigate to the add new service form', () => {
+      setupStubs()
       cy.get('a').contains('Add a new service').click()
 
       cy.title().should('eq', 'Add a new service - GOV.UK Pay')
@@ -110,12 +110,18 @@ describe('Add a new service', () => {
     })
 
     it('should display Welsh name input', () => {
+      setupStubs()
       cy.get('#checkbox-service-name-cy').click()
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'true')
       cy.get('input#service-name-cy').should('exist')
     })
 
     it('should add a service', () => {
+      setupStubs([
+        createGatewayAccountStub,
+        assignUserRoleStub,
+        getCreateServiceStub(newServiceName, newServiceWelshName)
+      ])
       cy.get('input#service-name').type(newServiceName)
       cy.get('input#service-name-cy').type(newServiceWelshName)
       cy.get('button').contains('Add service').click()

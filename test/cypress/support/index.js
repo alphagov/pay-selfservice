@@ -14,3 +14,7 @@ require('./commands')
 beforeEach(() => {
   cy.task('clearStubs')
 })
+
+afterEach(() => {
+  cy.task('verifyStubs')
+})
