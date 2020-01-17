@@ -1,0 +1,33 @@
+---
+applications:
+- name: selfservice
+  buildpacks:
+  - nodejs_buildpack
+  health-check-type: http
+  health-check-http-endpoint: '/healthcheck'
+  health-check-invocation-timeout: 5
+  memory: ((memory))
+  disk_quota: ((disk_quota))
+  command: npm start
+  env:
+    NODE_ENV: production
+    SESSION_ENCRYPTION_KEY: ((selfservice_session_encryption_key))
+    COOKIE_MAX_AGE: '10800000'
+    ANALYTICS_TRACKING_ID: ((selfservice_analytics_tracking_id))
+    ANALYTICS_TRACKING_ID_XGOV: ((selfservice_analytics_tracking_id_xgov))
+
+    SELFSERVICE_URL: https://((selfservice_url))
+    PUBLIC_AUTH_URL: ((publicauth_url))
+    CONNECTOR_URL: ((card_connector_url))
+    PRODUCTS_URL: ((products_url))
+    DIRECT_DEBIT_CONNECTOR_URL: ((direct_debit_connector_url))
+    LEDGER_URL: ((ledger_url))
+
+    PRODUCTS_FRIENDLY_BASE_URI: ((products_friendly_base_uri))
+    GOCARDLESS_TEST_OAUTH_BASE_URL: ((selfservice_gocardless_test_oauth_base_url))
+    GOCARDLESS_LIVE_OAUTH_BASE_URL: ((selfservice_gocardless_live_oauth_base_url))
+    GOCARDLESS_TEST_CLIENT_ID: ((selfservice_gocardless_test_client_id))
+    GOCARDLESS_LIVE_CLIENT_ID: ((selfservice_gocardless_live_client_id))
+    ZENDESK_URL: "https://govuk.zendesk.com/api/v2"
+  routes:
+  - route: ((selfservice_url))
