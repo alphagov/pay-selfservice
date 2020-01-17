@@ -19,11 +19,17 @@ module.exports = (req, res) => {
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
   const correlationId = req.headers[CORRELATION_HEADER]
 
+  let timestampRequestReceived, timestampProcessingStarted, timestampProcessingComplete
+  let transactionRowsSize
+  timestampRequestReceived = Date.now()
+
   // @TODO(sfount) - columns are only set on a particular gateway account - CSV versioning/ dynamic CSVs should be properly designed
   const isStripeAccount = req.account && req.account.payment_provider === 'stripe'
 
   transactionService.searchAll(accountId, filters, correlationId)
     .then(json => {
+      timestampProcessingStarted = Date.now()
+      transactionRowsSize = json.results && json.results.length
       let refundTransactionUserIds = json.results
         .filter(res => res.transaction_type && res.transaction_type.toLowerCase() === 'refund')
         .map(res => res.refund_summary.user_external_id)
@@ -54,7 +60,19 @@ module.exports = (req, res) => {
       }
     })
     .then(csv => {
+      timestampProcessingComplete = Date.now()
       logger.debug('Sending csv attachment download', { 'filename': name })
+      logger.info('Transaction CSV download', {
+        gateway_account_id: accountId,
+        from_date: filters.fromDate,
+        to_date: filters.toDate,
+        payment_states: filters.payment_states,
+        refund_states: filters.refund_stats,
+        csv_rows_length: transactionRowsSize,
+        fetch_duration: timestampProcessingStarted - timestampRequestReceived,
+        process_duration: timestampProcessingComplete - timestampProcessingStarted,
+        method: 'legacy'
+      })
       res.setHeader('Content-disposition', 'attachment; filename="' + name + '"')
       res.setHeader('Content-Type', 'text/csv')
       res.send(csv)
