@@ -390,6 +390,14 @@ module.exports = {
       response: serviceFixtures.validServiceResponse(opts).getPlain()
     })
   },
+  patchUpdateServiceNameSuccess: (opts = {}) => {
+    const path = `/v1/api/services/${opts.external_id}`
+    return simpleStubBuilder('PATCH', path, 200, {
+      request: serviceFixtures.validUpdateServiceNameRequest(opts.serviceName).getPlain(),
+      response: serviceFixtures.validServiceResponse(opts).getPlain(),
+      verifyCalledTimes: opts.verifyCalledTimes
+    })
+  },
   patchUpdateServiceSuccessCatchAll: (opts = {}) => {
     const path = `/v1/api/services/${opts.external_id}`
     return simpleStubBuilder('PATCH', path, 200, {

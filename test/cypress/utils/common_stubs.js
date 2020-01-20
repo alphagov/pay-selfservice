@@ -15,13 +15,14 @@ module.exports.getUserStub = (userExternalId, gatewayAccountIds, serviceExternal
   }
 }
 
-module.exports.getUserStubWithServiceName = (userExternalId, gatewayAccountIds, serviceName) => {
+module.exports.getUserStubWithServiceName = (userExternalId, gatewayAccountIds, serviceName, serviceExternalId = 'a-service-id') => {
   return {
     name: 'getUserSuccess',
     opts: {
       external_id: userExternalId,
       service_roles: [{
         service: {
+          external_id: serviceExternalId,
           gateway_account_ids: gatewayAccountIds,
           service_name: serviceName
         }
