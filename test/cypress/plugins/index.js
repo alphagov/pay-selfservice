@@ -62,6 +62,28 @@ module.exports = (on, config) => {
      */
     clearStubs () {
       return request.delete(mountebankImpostersUrl)
+    },
+    /**
+     * Makes a request to Mountebank to verify that stubs have been called the expected number of times
+     */
+    verifyStubs () {
+      return request({
+        method: 'GET',
+        url: `${mountebankImpostersUrl}/${config.env.MOUNTEBANK_IMPOSTERS_PORT}`,
+        json: true
+      }).then(response => {
+        response.stubs.forEach((stub) => {
+          if (stub.verifyCalledTimes) {
+            // the matches array is added to stubs only when Mountebank is run with the --debug flag
+            const timesCalled = (stub.matches && stub.matches.length) || 0
+            if (timesCalled !== stub.verifyCalledTimes) {
+              throw new Error(`Expected stub '${stub.name}' to be called ${stub.verifyCalledTimes} times, but was called ${timesCalled} times`)
+            }
+          }
+        })
+
+        return null
+      })
     }
   })
 

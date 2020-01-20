@@ -37,14 +37,20 @@ const simpleStubBuilder = function simpleStubBuilder (method, path, responseCode
     response.body = additionalParams.response
   }
 
-  return [{
+  const stub = {
+    name: `${method} ${path} ${responseCode}`,
     predicates: [{
       deepEquals: request
     }],
     responses: [{
       is: response
     }]
-  }]
+  }
+  if (additionalParams.verifyCalledTimes) {
+    stub.verifyCalledTimes = additionalParams.verifyCalledTimes
+  }
+
+  return [stub]
 }
 
 /**
@@ -489,21 +495,24 @@ module.exports = {
     const path = `/v1/api/users/${opts.external_id}/services`
     return simpleStubBuilder('POST', path, 200, {
       request: userFixtures.validAssignServiceRoleRequest(opts).getPlain(),
-      response: userFixtures.validUserResponse(opts).getPlain()
+      response: userFixtures.validUserResponse(opts).getPlain(),
+      verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   postCreateGatewayAccountSuccess: (opts = {}) => {
     const path = '/v1/api/accounts'
     return simpleStubBuilder('POST', path, 200, {
       request: gatewayAccountFixtures.validCreateGatewayAccountRequest(opts).getPlain(),
-      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain()
+      response: gatewayAccountFixtures.validGatewayAccountResponse(opts).getPlain(),
+      verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   postCreateServiceSuccess: (opts = {}) => {
     const path = '/v1/api/services'
     return simpleStubBuilder('POST', path, 200, {
       request: serviceFixtures.validCreateServiceRequest(opts).getPlain(),
-      response: serviceFixtures.validServiceResponse(opts).getPlain()
+      response: serviceFixtures.validServiceResponse(opts).getPlain(),
+      verifyCalledTimes: opts.verifyCalledTimes
     })
   }
 }

@@ -36,7 +36,7 @@
     "lint": "./node_modules/.bin/standard --fix",
     "lint-sass": "./node_modules/.bin/sass-lint -v",
     "test": "npm run snyk-protect && rm -rf ./pacts && ./node_modules/mocha/bin/mocha '!(node_modules)/**/*+(.|_)+(test|tests)'.js",
-    "cypress:server": "mb | node --inspect -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
+    "cypress:server": "mb --debug | node --inspect -r dotenv/config start.js dotenv_config_path=test/cypress/test.env",
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "snyk-protect": "snyk protect",
