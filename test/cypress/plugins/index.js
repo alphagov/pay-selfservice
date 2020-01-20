@@ -73,6 +73,8 @@ module.exports = (on, config) => {
         json: true
       }).then(response => {
         response.stubs.forEach((stub) => {
+          // NOTE: if the "verifyCalledTimes" is specified for a stub, we will attempt to verify
+          // for all `it` blocks the stub is setup for, and the counter is reset for every `it`.
           if (stub.verifyCalledTimes) {
             // the matches array is added to stubs only when Mountebank is run with the --debug flag
             const timesCalled = (stub.matches && stub.matches.length) || 0
@@ -84,6 +86,14 @@ module.exports = (on, config) => {
 
         return null
       })
+        .catch(err => {
+          if (err.statusCode === 404) {
+            // imposter probably hasn't been added in Mountebank as no stubs were setup for the current
+            // test
+            return null
+          }
+          throw err
+        })
     }
   })
 
