@@ -12,7 +12,7 @@ const { getApp } = require('../../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
 const { randomUuid } = require('../../../../app/utils/random')
-const { validCreateProductRequest, validCreateProductResponse } = require('../../../fixtures/product_fixtures')
+const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product_fixtures')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
@@ -56,7 +56,7 @@ describe('Create payment link review controller', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('en')
-      const productResponse = validCreateProductResponse(expectedProductRequest).getPlain()
+      const productResponse = validProductResponse(expectedProductRequest).getPlain()
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', expectedProductRequest).reply(201, productResponse)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
@@ -97,7 +97,7 @@ describe('Create payment link review controller', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('cy')
-      const productResponse = validCreateProductResponse(expectedProductRequest).getPlain()
+      const productResponse = validProductResponse(expectedProductRequest).getPlain()
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', expectedProductRequest).reply(201, productResponse)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
@@ -221,7 +221,7 @@ describe('Create payment link review controller', () => {
     let result, session, app
     before('Arrange', () => {
       const expectedProductRequest = buildCreateProductRequest('en')
-      const productResponse = validCreateProductResponse(expectedProductRequest).getPlain()
+      const productResponse = validProductResponse(expectedProductRequest).getPlain()
       nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST).reply(201, VALID_CREATE_TOKEN_RESPONSE)
       nock(PRODUCTS_URL).post('/v1/api/products', lodash.omit(expectedProductRequest, 'description')).reply(201, productResponse)
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)

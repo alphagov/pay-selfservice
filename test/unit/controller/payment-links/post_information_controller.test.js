@@ -2,18 +2,18 @@
 
 // NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const lodash = require('lodash')
 const nock = require('nock')
 const csrf = require('csrf')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {validCreateProductResponse} = require('../../../fixtures/product_fixtures')
+const { validProductResponse } = require('../../../fixtures/product_fixtures')
 
-const {PRODUCTS_URL} = process.env
+const { PRODUCTS_URL } = process.env
 let product
 const GATEWAY_ACCOUNT_ID = '929'
 const SERVICE_NAME = 'Pay for an offline service'
@@ -29,7 +29,7 @@ const VALID_PAYLOAD = {
 }
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'tokens:create'}]
+  permissions: [{ name: 'tokens:create' }]
 })
 
 describe('Create payment link information controller', () => {
@@ -38,7 +38,7 @@ describe('Create payment link information controller', () => {
     before('Arrange', () => {
       session = getMockSession(VALID_USER)
       app = createAppWithSession(getApp(), session)
-      product = validCreateProductResponse({
+      product = validProductResponse({
         type: 'ADHOC',
         service_name_path: SERVICE_NAME_SLUGIFIED,
         product_name_path: PAYMENT_TITLE_SLUGIFIED
@@ -49,7 +49,7 @@ describe('Create payment link information controller', () => {
       before('Arrange', () => {
         nock(PRODUCTS_URL)
           .get(`/v1/api/products`)
-          .query({'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path})
+          .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
           .reply(404, product)
       })
       before('Act', done => {
@@ -87,7 +87,7 @@ describe('Create payment link information controller', () => {
       before('Arrange', () => {
         nock(PRODUCTS_URL)
           .get(`/v1/api/products`)
-          .query({'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path})
+          .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
           .reply(200, product)
       })
       before('Act', done => {
@@ -131,7 +131,7 @@ describe('Create payment link information controller', () => {
     before('Act', done => {
       supertest(app)
         .post(paths.paymentLinks.information)
-        .send(Object.assign({}, VALID_PAYLOAD, {'payment-link-description': ''}))
+        .send(Object.assign({}, VALID_PAYLOAD, { 'payment-link-description': '' }))
         .end((err, res) => {
           result = res
           done(err)
@@ -171,7 +171,7 @@ describe('Create payment link information controller', () => {
     before('Act', done => {
       supertest(app)
         .post(paths.paymentLinks.information)
-        .send(Object.assign({}, VALID_PAYLOAD, {'payment-link-title': ''}))
+        .send(Object.assign({}, VALID_PAYLOAD, { 'payment-link-title': '' }))
         .end((err, res) => {
           result = res
           done(err)
