@@ -1,13 +1,13 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 
 // Custom dependencies
 const path = require('path')
 const port = parseInt(process.env.LEDGER_URL.match(/\d+(\.\d+)?$/g)[0], 10)
 
-const pactProvider = Pact({
+const pactProvider = new Pact({
   consumer: 'selfservice',
   provider: 'ledger',
   port: port,

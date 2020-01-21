@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -14,14 +14,14 @@ const inviteFixtures = require('../../../../fixtures/invite_fixtures')
 // Constants
 const INVITE_RESOURCE = '/v1/api/invites'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
 
 // Global setup
 chai.use(chaiAsPromised)
 
 describe('adminusers client - complete an invite', function () {
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,

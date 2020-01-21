@@ -1,7 +1,7 @@
 'use strict'
 
 // npm dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const { expect } = chai
@@ -20,7 +20,7 @@ const USER_PATH = '/v1/api/users'
 chai.use(chaiAsPromised)
 
 describe('adminusers client - get user', () => {
-  const provider = Pact({
+  const provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

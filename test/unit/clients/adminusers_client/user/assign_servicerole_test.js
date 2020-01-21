@@ -1,4 +1,4 @@
-let Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 let path = require('path')
 let chai = require('chai')
 let chaiAsPromised = require('chai-as-promised')
@@ -17,7 +17,7 @@ const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - assign service role to user', function () {
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

@@ -1,4 +1,4 @@
-var Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
 var chai = require('chai')
 var chaiAsPromised = require('chai-as-promised')
@@ -11,11 +11,11 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const INVITES_PATH = '/v1/api/invites/user'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - invite user', function () {
   let externalServiceId = '12345'
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
@@ -29,7 +29,7 @@ describe('adminusers client - invite user', function () {
   after(() => provider.finalize())
 
   describe('success', function () {
-    let validInvite = inviteFixtures.validInviteRequest({externalServiceId: externalServiceId})
+    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
 
     before((done) => {
       let pactified = validInvite.getPactified()
@@ -58,7 +58,7 @@ describe('adminusers client - invite user', function () {
 
   describe('not found', () => {
     let nonExistentServiceId = '111111'
-    let validInvite = inviteFixtures.validInviteRequest({externalServiceId: nonExistentServiceId})
+    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: nonExistentServiceId })
 
     before((done) => {
       let pactified = validInvite.getPactified()
@@ -85,7 +85,7 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('bad request', () => {
-    let invalidInvite = inviteFixtures.invalidInviteRequest({externalServiceId: externalServiceId})
+    let invalidInvite = inviteFixtures.invalidInviteRequest({ externalServiceId: externalServiceId })
     let errorResponse = inviteFixtures.invalidInviteCreateResponseWhenFieldsMissing()
 
     before((done) => {
@@ -118,7 +118,7 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('conflicting request', () => {
-    let validInvite = inviteFixtures.validInviteRequest({externalServiceId: externalServiceId})
+    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
     let errorResponse = inviteFixtures.conflictingInviteResponseWhenEmailUserAlreadyCreated(validInvite.getPlain().email).getPactified()
 
     before((done) => {
@@ -150,7 +150,7 @@ describe('adminusers client - invite user', function () {
   })
 
   describe('not permitted', () => {
-    let validInvite = inviteFixtures.validInviteRequest({externalServiceId: externalServiceId})
+    let validInvite = inviteFixtures.validInviteRequest({ externalServiceId: externalServiceId })
     let errorResponse = inviteFixtures.notPermittedInviteResponse(validInvite.getPlain().email, externalServiceId)
 
     before((done) => {

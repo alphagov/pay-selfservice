@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -25,7 +25,7 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
   const patchRequestParams = { path: 'allow_google_pay', value: true }
   const request = gatewayAccountFixtures.validGatewayAccountPatchRequest(patchRequestParams).getPlain()
 
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice',
     provider: 'connector',
     port: port,

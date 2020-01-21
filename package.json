@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "@govuk-pay/pay-js-commons": "2.20.1",
+    "@pact-foundation/pact": "9.6.0",
     "@sentry/node": "5.11.1",
     "accessible-autocomplete": "2.0.1",
     "appmetrics": "5.1.1",
@@ -151,7 +152,6 @@
     "notp": "2.0.3",
     "nunjucksify": "2.2.0",
     "nyc": "14.1.1",
-    "pact": "4.3.2",
     "portfinder": "1.0.20",
     "proxyquire": "~2.1.0",
     "sass-lint": "1.12.1",
