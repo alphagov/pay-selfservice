@@ -1,4 +1,4 @@
-var Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 var path = require('path')
 var chai = require('chai')
 var chaiAsPromised = require('chai-as-promised')
@@ -11,10 +11,10 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 const INVITE_RESOURCE = '/v1/api/invites'
 var port = Math.floor(Math.random() * 48127) + 1024
-var adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+var adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - submit verification details', function () {
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,

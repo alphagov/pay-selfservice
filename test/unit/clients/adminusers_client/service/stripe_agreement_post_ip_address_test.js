@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -21,7 +21,7 @@ const serviceExternalId = 'rtglNotStarted'
 chai.use(chaiAsPromised)
 
 describe('adminusers client - post stripe agreement - ip address', () => {
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

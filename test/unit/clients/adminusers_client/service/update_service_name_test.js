@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -17,13 +17,13 @@ chai.use(chaiAsPromised)
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
 const port = Math.floor(Math.random() * 48127) + 1024
-const adminusersClient = getAdminUsersClient({baseUrl: `http://localhost:${port}`})
+const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 const expect = chai.expect
 
 const existingServiceExternalId = 'cp5wa'
 
 describe('adminusers client - update service name', function () {
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice',
     provider: 'adminusers',
     port: port,

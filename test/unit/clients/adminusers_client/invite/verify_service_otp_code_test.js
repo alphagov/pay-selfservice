@@ -1,4 +1,4 @@
-const Pact = require('pact')
+const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -14,7 +14,7 @@ const port = Math.floor(Math.random() * 48127) + 1024
 const adminusersClient = getAdminUsersClient({ baseUrl: `http://localhost:${port}` })
 
 describe('adminusers client - validate otp code for a service', function () {
-  let provider = Pact({
+  let provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'adminusers',
     port: port,
