@@ -39,7 +39,7 @@ function formatCardsForTemplate (allCards, acceptedCards, threeDSEnabled) {
   const creditCards = allCards.filter(card => card.type === 'CREDIT')
     .map(card => {
       const formatted = formatCardInfoForNunjucks(card)
-      if (card.brand === 'american-express') {
+      if (['american-express', 'unionpay'].includes(card.brand)) {
         formatted.hint = {
           html: `You must have already enabled this with your PSP`
         }
