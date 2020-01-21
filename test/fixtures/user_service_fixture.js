@@ -1,15 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const path = require('path')
-const _ = require('lodash')
-
-// Custom dependencies
-const userFixtures = require(path.join(__dirname, '/user_fixtures'))
-const pactBase = require(path.join(__dirname, '/pact_base'))
-
-// Global setup
-const pactServices = pactBase({ array: ['service_ids'] })
+const userFixtures = require('./user_fixtures')
+const { pactifyNestedArray } = require('./pact_base')
 
 module.exports = {
 
@@ -24,7 +16,7 @@ module.exports = {
     }
     return {
       getPactified: () => {
-        return pactServices.pactifyNestedArray(data)
+        return pactifyNestedArray(data)
       },
       getPlain: () => {
         return data

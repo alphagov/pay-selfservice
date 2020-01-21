@@ -1,14 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const path = require('path')
 const _ = require('lodash')
-
-// Custom dependencies
-const pactBase = require(path.join(__dirname, '/pact_base'))
-
-// Global setup
-const pactServices = pactBase({ array: ['service_ids'] })
+const { pactify, withPactified, pactifyNestedArray, pactifySimpleArray } = require('./pact_base')
 
 const buildServiceNameWithDefaults = (opts = {}) => {
   _.defaults(opts, {
@@ -42,7 +35,7 @@ module.exports = {
     }]
     return {
       getPactified: () => {
-        return pactServices.pactifyNestedArray(data)
+        return pactifyNestedArray(data)
       },
       getPlain: () => {
         return data
@@ -61,7 +54,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -90,7 +83,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactifyNestedArray(data)
+        return pactifyNestedArray(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -106,7 +99,7 @@ module.exports = {
       errors: responseData
     }
 
-    return pactServices.withPactified(response)
+    return withPactified(response)
   },
 
   addGatewayAccountsRequest: (gatewayAccountIds = ['666']) => {
@@ -118,7 +111,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -135,7 +128,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -152,7 +145,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -171,7 +164,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -188,7 +181,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactifySimpleArray(data)
+        return pactifySimpleArray(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -236,7 +229,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(service)
+        return pactify(service)
       },
       getPlain: () => {
         return _.clone(service)

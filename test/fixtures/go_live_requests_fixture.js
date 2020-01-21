@@ -1,14 +1,8 @@
 'use strict'
 
-const path = require('path')
 const _ = require('lodash')
-
-// Custom dependencies
-const pactBase = require(path.join(__dirname, '/pact_base'))
 const utils = require('../cypress/utils/request_to_go_live_utils')
-
-// Global setup
-const pactServices = pactBase({ array: ['service_ids'] })
+const { pactify } = require('./pact_base')
 
 module.exports = {
   validPostGovUkPayAgreementRequest: opts => {
@@ -20,7 +14,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -37,7 +31,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -54,7 +48,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactServices.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)

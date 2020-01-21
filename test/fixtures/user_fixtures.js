@@ -1,13 +1,11 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
 
-// Local dependencies
 const User = require('../../app/models/User.class')
-const pactBase = require('./pact_base')
 const goLiveStage = require('../../app/models/go-live-stage')
 const serviceFixtures = require('./service_fixtures')
+const { pactify, withPactified, pactifyMatch } = require('./pact_base')
 
 // Constants
 const defaultPermissions = [
@@ -193,12 +191,6 @@ const defaultPermissions = [
   }
 ]
 
-// Setup
-const pactUsers = pactBase({
-  array: ['service_roles', '_links'],
-  length: [{ key: 'permissions', length: 1 }]
-})
-
 const buildServiceRole = (opts = {}) => {
   return {
     service: serviceFixtures.validServiceResponse(opts.service).getPlain(),
@@ -296,7 +288,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactUsers.pactify(data)
+        return pactify(data)
       },
       getAsObject: () => {
         return new User(data)
@@ -315,7 +307,7 @@ module.exports = {
     const data = opts.map(buildUserWithDefaults)
     return {
       getPactified: () => {
-        return data.map(pactUsers.pactify)
+        return data.map(data => pactify(data))
       },
       getAsObject: () => {
         return data.map(datum => new User(datum))
@@ -332,7 +324,7 @@ module.exports = {
       password: options.password || 'password'
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   unauthorizedUserResponse: () => {
@@ -340,7 +332,7 @@ module.exports = {
       errors: ['invalid username and/or password']
     }
 
-    return pactUsers.withPactified(response)
+    return withPactified(response)
   },
 
   badAuthenticateResponse: () => {
@@ -348,7 +340,7 @@ module.exports = {
       errors: ['Field [username] is required', 'Field [password] is required']
     }
 
-    return pactUsers.withPactified(response)
+    return withPactified(response)
   },
 
   validIncrementSessionVersionRequest: () => {
@@ -358,7 +350,7 @@ module.exports = {
       value: 1
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   validAuthenticateSecondFactorRequest: (code) => {
@@ -366,7 +358,7 @@ module.exports = {
       code: code || '123456'
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   validUpdatePasswordRequest: (token, newPassword) => {
@@ -375,7 +367,7 @@ module.exports = {
       new_password: newPassword || 'G0VUkPay2017Rocks'
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   validUpdateServiceRoleRequest: (role) => {
@@ -383,7 +375,7 @@ module.exports = {
       role_name: role || 'admin'
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   validAssignServiceRoleRequest: (opts = {}) => {
@@ -392,7 +384,7 @@ module.exports = {
       role_name: opts.role_name || 'admin'
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   validPasswordAuthenticateRequest: (opts = {}) => {
@@ -403,8 +395,8 @@ module.exports = {
     const passwordMatcher = opts.passwordMatcher || 'validpassword'
 
     return {
-      username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
-      password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
+      username: pactifyMatch(usernameGenerate, usernameMatcher),
+      password: pactifyMatch(passwordGenerate, passwordMatcher)
     }
   },
 
@@ -416,8 +408,8 @@ module.exports = {
     const passwordMatcher = opts.passwordMatcher || 'invalidpassword'
 
     return {
-      username: pactUsers.pactifyMatch(usernameGenerate, usernameMatcher),
-      password: pactUsers.pactifyMatch(passwordGenerate, passwordMatcher)
+      username: pactifyMatch(usernameGenerate, usernameMatcher),
+      password: pactifyMatch(passwordGenerate, passwordMatcher)
     }
   },
 
@@ -426,7 +418,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactUsers.pactify(data)
+        return pactify(data)
       },
       getAsObject: () => {
         return new User(data)
@@ -442,7 +434,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactUsers.pactify(users)
+        return pactify(users)
       },
       getAsObject: () => {
         const usersObject = []
@@ -460,7 +452,7 @@ module.exports = {
       errors: ['invalid username and/or password']
     }
 
-    return pactUsers.withPactified(response)
+    return withPactified(response)
   },
 
   validForgottenPasswordCreateRequest: (username) => {
@@ -468,7 +460,7 @@ module.exports = {
       username: username || 'username@email.com'
     }
 
-    return pactUsers.withPactified(request)
+    return withPactified(request)
   },
 
   validForgottenPasswordResponse: (payload) => {
@@ -485,7 +477,7 @@ module.exports = {
       }]
     }
 
-    return pactUsers.withPactified(response)
+    return withPactified(response)
   },
 
   badForgottenPasswordResponse: () => {
@@ -493,7 +485,7 @@ module.exports = {
       errors: ['Field [username] is required']
     }
 
-    return pactUsers.withPactified(response)
+    return withPactified(response)
   },
 
   badRequestResponseWhenFieldsMissing: (missingFields) => {
@@ -504,6 +496,6 @@ module.exports = {
       errors: responseData
     }
 
-    return pactUsers.withPactified(response)
+    return withPactified(response)
   }
 }

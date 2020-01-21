@@ -1,13 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const lodash = require('lodash')
-
-// Local dependencies
-const pactBase = require('./pact_base')
-
-// Global setup
-const pactRegister = pactBase()
+const { pactify } = require('./pact_base')
 
 module.exports = {
   buildGetStripeAccountResponse (opts = {}) {
@@ -17,7 +11,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return lodash.clone(data)

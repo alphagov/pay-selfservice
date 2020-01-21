@@ -1,14 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const path = require('path')
 const _ = require('lodash')
-
-// Custom dependencies
-const pactBase = require(path.join(__dirname, '/pact_base'))
-
-// Global setup
-const pactRegister = pactBase()
+const { pactify, withPactified } = require('./pact_base')
 
 function validPassword () {
   return 'G0VUkPay2017Rocks'
@@ -27,7 +20,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -44,7 +37,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -59,7 +52,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -74,7 +67,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -90,7 +83,7 @@ module.exports = {
       errors: responseData
     }
 
-    return pactRegister.withPactified(response)
+    return withPactified(response)
   }
 
 }

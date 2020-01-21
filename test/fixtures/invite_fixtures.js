@@ -1,12 +1,7 @@
 'use strict'
 
-// NPM dependencies
 const _ = require('lodash')
-
-const pactBase = require('./pact_base')
-
-// Global setup
-const pactInvites = pactBase()
+const { pactify, withPactified } = require('./pact_base')
 
 function buildInviteWithDefaults (opts) {
   const data = _.defaults(opts, {
@@ -43,7 +38,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -56,7 +51,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -69,7 +64,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -90,7 +85,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -103,7 +98,7 @@ module.exports = {
       errors: ['user [' + userName + '] not authorised to perform operation [invite] in service [' + serviceId + ']']
     }
 
-    return pactInvites.withPactified(response)
+    return withPactified(response)
   },
 
   validRegistrationRequest: (opts = {}) => {
@@ -114,7 +109,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -130,7 +125,7 @@ module.exports = {
       errors: responseData
     }
 
-    return pactInvites.withPactified(response)
+    return withPactified(response)
   },
 
   invalidInviteCreateResponseWhenFieldsMissing: () => {
@@ -139,7 +134,7 @@ module.exports = {
       errors: ['Field [email] is required']
     }
 
-    return pactInvites.withPactified(response)
+    return withPactified(response)
   },
 
   conflictingInviteResponseWhenEmailUserAlreadyCreated: (email) => {
@@ -149,7 +144,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.withPactified(response)
+        return withPactified(response)
       },
       getPlain: () => {
         return response
@@ -165,7 +160,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -181,7 +176,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -199,7 +194,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -218,7 +213,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -236,7 +231,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactInvites.pactify(response)
+        return pactify(response)
       },
       getPlain: () => {
         return _.clone(response)

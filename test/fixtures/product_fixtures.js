@@ -1,12 +1,10 @@
 'use strict'
-const pactBase = require('./pact_base')
 
-// Global setup
-const pactProducts = pactBase()
+const { pactify } = require('./pact_base')
 
 module.exports = {
   pactifyRandomData: (opts = {}) => {
-    pactProducts.pactify(opts)
+    pactify(opts)
   },
 
   validCreateProductRequest: (opts = {}) => {
@@ -29,7 +27,7 @@ module.exports = {
     }
     return {
       getPactified: () => {
-        return pactProducts.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -60,7 +58,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactProducts.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -107,7 +105,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactProducts.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data
@@ -122,7 +120,7 @@ module.exports = {
     }
     return {
       getPactified: () => {
-        return pactProducts.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return data

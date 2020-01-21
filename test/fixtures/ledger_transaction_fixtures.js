@@ -1,12 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const path = require('path')
 const lodash = require('lodash')
-
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact_base'))
-const pactRegister = pactBase()
+const { pactify, matchers } = require('./pact_base')
 
 const buildChargeEventWithDefaults = (opts = {}) => {
   const chargeEvent = {
@@ -197,7 +192,7 @@ module.exports = {
     }
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -209,7 +204,7 @@ module.exports = {
     const data = buildTransactionDetails(opts)
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -219,7 +214,7 @@ module.exports = {
     const data = buildTransactionDetails(opts)
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -248,7 +243,9 @@ module.exports = {
     }
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data, {
+        status: matchers.EXACT_STRING
+      }),
       getPlain: () => data
     }
   },
@@ -260,7 +257,7 @@ module.exports = {
     }
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -270,7 +267,7 @@ module.exports = {
     }
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -281,7 +278,7 @@ module.exports = {
     }
 
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -307,7 +304,7 @@ module.exports = {
       data._links = opts.links
     }
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   },
@@ -324,7 +321,7 @@ module.exports = {
       net_income: opts.paymentTotal && opts.refundTotal ? (opts.paymentTotal - opts.refundTotal) : (12000 - 2300)
     }
     return {
-      getPactified: () => pactRegister.pactify(data),
+      getPactified: () => pactify(data),
       getPlain: () => data
     }
   }

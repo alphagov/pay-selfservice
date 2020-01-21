@@ -1,12 +1,7 @@
 'use strict'
 
-// NPM dependencies
-const path = require('path')
 const _ = require('lodash')
-
-// Global setup
-const pactBase = require(path.join(__dirname, '/pact_base'))
-const pactRegister = pactBase()
+const { pactify } = require('./pact_base')
 
 function buildUpdateStripeAccountSetupFlagRequest (path, completed) {
   const data = [
@@ -19,7 +14,7 @@ function buildUpdateStripeAccountSetupFlagRequest (path, completed) {
 
   return {
     getPactified: () => {
-      return pactRegister.pactify(data)
+      return pactify(data)
     },
     getPlain: () => {
       return _.clone(data)
@@ -49,7 +44,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
@@ -64,7 +59,7 @@ module.exports = {
 
     return {
       getPactified: () => {
-        return pactRegister.pactify(data)
+        return pactify(data)
       },
       getPlain: () => {
         return _.clone(data)
