@@ -20,4 +20,15 @@ const getProductByExternalIdStub = function getProductByExternalIdStub (product,
   }
 }
 
-module.exports = { getProductsStub, getProductByExternalIdStub }
+const deleteProductStub = function deleteProductStub (product, gatewayAccountId, verifyCalledTimes) {
+  return {
+    name: 'deleteProductSuccess',
+    opts: {
+      gateway_account_id: gatewayAccountId,
+      product: product,
+      verifyCalledTimes: verifyCalledTimes
+    }
+  }
+}
+
+module.exports = { getProductsStub, getProductByExternalIdStub, deleteProductStub }

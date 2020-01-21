@@ -431,7 +431,7 @@ module.exports = {
     const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products`
     return simpleStubBuilder('GET', path, 200, {
       response: opts.products.map(product =>
-        productFixtures.validCreateProductResponse(product).getPlain())
+        productFixtures.validProductResponse(product).getPlain())
     })
   },
   getProductsByGatewayAccountIdFailure: (opts) => {
@@ -441,7 +441,13 @@ module.exports = {
   getProductByExternalIdSuccess: (opts) => {
     const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`
     return simpleStubBuilder('GET', path, 200, {
-      response: productFixtures.validCreateProductResponse(opts.product).getPlain()
+      response: productFixtures.validProductResponse(opts.product).getPlain()
+    })
+  },
+  deleteProductSuccess: (opts) => {
+    const path = `/v1/api/gateway-account/${opts.gateway_account_id}/products/${opts.product.external_id}`
+    return simpleStubBuilder('DELETE', path, 200, {
+      verifyCalledTimes: opts.verifyCalledTimes
     })
   },
   patchUpdate3DS: (opts = {}) => {

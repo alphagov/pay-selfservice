@@ -5,19 +5,19 @@ const supertest = require('supertest')
 const nock = require('nock')
 const csrf = require('csrf')
 const cheerio = require('cheerio')
-const {expect} = require('chai')
+const { expect } = require('chai')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, getUser, createAppWithSession} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, getUser, createAppWithSession } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {randomUuid} = require('../../../../app/utils/random')
-const {validCreateProductRequest, validCreateProductResponse} = require('../../../fixtures/product_fixtures')
+const { randomUuid } = require('../../../../app/utils/random')
+const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product_fixtures')
 
-const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
+const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const API_TOKEN = randomUuid()
-const VALID_USER = getUser({gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{name: 'transactions:read'}]})
+const VALID_USER = getUser({ gateway_account_ids: [GATEWAY_ACCOUNT_ID], permissions: [{ name: 'transactions:read' }] })
 const VALID_PAYLOAD = {
   'csrfToken': csrf().create('123'),
   'payment-amount': '20',
@@ -41,7 +41,7 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   type: 'PROTOTYPE'
 }).getPlain()
-const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
+const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
 describe('test with your users - submit controller', () => {
   describe('when it is called on a gateway account that is from a payment provider other than sandbox', () => {
@@ -83,7 +83,7 @@ describe('test with your users - submit controller', () => {
       before(done => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
-          .reply(201, {token: API_TOKEN})
+          .reply(201, { token: API_TOKEN })
         nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, {
           payment_provider: 'sandbox'
         })
@@ -158,7 +158,7 @@ describe('test with your users - submit controller', () => {
       before(done => {
         session = getMockSession(VALID_USER)
         nock(PUBLIC_AUTH_URL).post('', VALID_CREATE_TOKEN_REQUEST)
-          .reply(201, {token: API_TOKEN})
+          .reply(201, { token: API_TOKEN })
         nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`)
           .reply(200, {
             payment_provider: 'sandbox'
@@ -313,7 +313,7 @@ describe('test with your users - submit controller', () => {
           })
         supertest(app)
           .post(paths.prototyping.demoService.confirm)
-          .send(Object.assign({}, VALID_PAYLOAD, {'confirmation-page': 'http://example.com'}))
+          .send(Object.assign({}, VALID_PAYLOAD, { 'confirmation-page': 'http://example.com' }))
           .end((err, res) => {
             response = res
             done(err)

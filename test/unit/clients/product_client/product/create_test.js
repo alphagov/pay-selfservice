@@ -51,7 +51,7 @@ describe('products client - create a new product', () => {
         language
       })
       const requestPlain = request.getPlain()
-      response = productFixtures.validCreateProductResponse(requestPlain)
+      response = productFixtures.validProductResponse(requestPlain)
       provider.addInteraction(
         new PactInteractionBuilder(PRODUCT_RESOURCE)
           .withUponReceiving('a valid create product request')

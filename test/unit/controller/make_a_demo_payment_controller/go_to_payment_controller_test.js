@@ -2,19 +2,19 @@
 
 // NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const lodash = require('lodash')
 const nock = require('nock')
 const csrf = require('csrf')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {randomUuid} = require('../../../../app/utils/random')
-const {validCreateProductRequest, validCreateProductResponse} = require('../../../fixtures/product_fixtures')
+const { randomUuid } = require('../../../../app/utils/random')
+const { validCreateProductRequest, validProductResponse } = require('../../../fixtures/product_fixtures')
 
-const {PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL} = process.env
+const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'
 const PAYMENT_DESCRIPTION = 'Pay your window tax'
 const PAYMENT_AMOUNT = '2000'
@@ -23,7 +23,7 @@ const VALID_PAYLOAD = {
 }
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'transactions:read'}]
+  permissions: [{ name: 'transactions:read' }]
 })
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
@@ -33,7 +33,7 @@ const VALID_CREATE_TOKEN_REQUEST = {
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
   payment_provider: 'sandbox'
 }
-const VALID_CREATE_TOKEN_RESPONSE = {token: randomUuid()}
+const VALID_CREATE_TOKEN_RESPONSE = { token: randomUuid() }
 const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   name: PAYMENT_DESCRIPTION,
   payApiToken: VALID_CREATE_TOKEN_RESPONSE.token,
@@ -42,7 +42,7 @@ const VALID_CREATE_PRODUCT_REQUEST = validCreateProductRequest({
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   type: 'DEMO'
 }).getPlain()
-const VALID_CREATE_PRODUCT_RESPONSE = validCreateProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
+const VALID_CREATE_PRODUCT_RESPONSE = validProductResponse(VALID_CREATE_PRODUCT_REQUEST).getPlain()
 
 describe('make a demo payment - go to payment controller', () => {
   describe(`when both paymentDescription and paymentAmount exist in the session`, () => {

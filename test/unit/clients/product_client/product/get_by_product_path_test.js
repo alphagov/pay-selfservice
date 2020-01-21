@@ -43,7 +43,7 @@ describe('products client - find a product by it\'s product path', function () {
       productExternalId = 'existing-id'
       serviceNamePath = 'service-name-path'
       productNamePath = 'product-name-path'
-      response = productFixtures.validCreateProductResponse({
+      response = productFixtures.validProductResponse({
         external_id: productExternalId,
         price: 1000,
         name: 'A Product Name',

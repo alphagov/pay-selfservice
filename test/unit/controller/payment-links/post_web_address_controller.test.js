@@ -2,23 +2,23 @@
 
 // NPM dependencies
 const supertest = require('supertest')
-const {expect} = require('chai')
+const { expect } = require('chai')
 const lodash = require('lodash')
 const nock = require('nock')
 const csrf = require('csrf')
 
 // Local dependencies
-const {getApp} = require('../../../../server')
-const {getMockSession, createAppWithSession, getUser} = require('../../../test_helpers/mock_session')
+const { getApp } = require('../../../../server')
+const { getMockSession, createAppWithSession, getUser } = require('../../../test_helpers/mock_session')
 const paths = require('../../../../app/paths')
-const {validCreateProductResponse} = require('../../../fixtures/product_fixtures')
+const { validProductResponse } = require('../../../fixtures/product_fixtures')
 
-const {PRODUCTS_URL} = process.env
+const { PRODUCTS_URL } = process.env
 let product
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({
   gateway_account_ids: [GATEWAY_ACCOUNT_ID],
-  permissions: [{name: 'tokens:create'}]
+  permissions: [{ name: 'tokens:create' }]
 })
 const SERVICE_NAME_SLUGIFIED = 'pay-for-offline-service'
 const PAYMENT_TITLE_SLUGIFIED = 'payment-title'
@@ -39,14 +39,14 @@ describe('Create payment link web address post controller', () => {
         productNamePath: PAYMENT_TITLE_SLUGIFIED
       })
       app = createAppWithSession(getApp(), session)
-      product = validCreateProductResponse({
+      product = validProductResponse({
         type: 'ADHOC',
         service_name_path: SERVICE_NAME_SLUGIFIED,
         product_name_path: PAYMENT_TITLE_SLUGIFIED
       }).getPlain()
       nock(PRODUCTS_URL)
         .get(`/v1/api/products`)
-        .query({'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path})
+        .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
         .reply(404, product)
     })
     before('Act', done => {
@@ -84,14 +84,14 @@ describe('Create payment link web address post controller', () => {
         serviceNamePath: SERVICE_NAME_SLUGIFIED,
         productNamePath: PAYMENT_TITLE_SLUGIFIED
       })
-      product = validCreateProductResponse({
+      product = validProductResponse({
         type: 'ADHOC',
         service_name_path: SERVICE_NAME_SLUGIFIED,
         product_name_path: PAYMENT_TITLE_SLUGIFIED
       }).getPlain()
       nock(PRODUCTS_URL)
         .get(`/v1/api/products`)
-        .query({'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path})
+        .query({ 'serviceNamePath': product.service_name_path, 'productNamePath': product.product_name_path })
         .reply(200, product)
     })
     before('Act', done => {

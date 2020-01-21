@@ -42,7 +42,7 @@ describe('products client - find a product by it\'s external id', function () {
       const productsClient = getProductsClient()
       gatewayAccountId = 42
       productExternalId = 'existing-id'
-      response = productFixtures.validCreateProductResponse({
+      response = productFixtures.validProductResponse({
         external_id: productExternalId,
         gateway_account_id: 42,
         price: 1000,
