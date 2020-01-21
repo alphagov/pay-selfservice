@@ -17,13 +17,13 @@ const STRIPE_PORT = process.env.STRIPE_PORT
 if (process.env.http_proxy) {
   stripe.setHttpAgent(new ProxyAgent(process.env.http_proxy))
 }
-stripe.setApiVersion('2019-02-19')
+stripe.apiVersion = '2019-02-19'
 // only expect host and port environment variables to be set when running tests
 if (STRIPE_HOST) {
-  stripe.setHost(STRIPE_HOST)
+  stripe.host = STRIPE_HOST
 }
 if (STRIPE_PORT) {
-  stripe.setPort(STRIPE_PORT)
+  stripe.port = STRIPE_PORT
 }
 
 module.exports = {
