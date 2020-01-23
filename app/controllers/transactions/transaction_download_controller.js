@@ -13,7 +13,23 @@ const { renderErrorView } = require('../../utils/response')
 const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const userService = require('../../services/user_service')
 
-module.exports = (req, res) => {
+const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (req, res) {
+  const accountId = auth.getCurrentGatewayAccountId(req)
+  const filters = req.query
+  const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
+  const correlationId = req.headers[CORRELATION_HEADER]
+
+  transactionService.searchAllWithCsv(accountId, filters, correlationId)
+    .then(result => {
+      logger.debug('Sending csv attachment download', { 'filename': name })
+      res.setHeader('Content-disposition', 'attachment; filename="' + name + '"')
+      res.setHeader('Content-Type', 'text/csv')
+      res.send(result)
+    })
+    .catch(err => renderErrorView(req, res, err ? 'Internal server error' : 'Unable to download list of transactions.'))
+}
+
+const fetchTransactionCsvWithoutHeader = function fetchTransactionCsvWithoutHeader (req, res) {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const filters = req.query
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
@@ -79,3 +95,13 @@ module.exports = (req, res) => {
     })
     .catch(err => renderErrorView(req, res, err ? 'Internal server error' : 'Unable to download list of transactions.'))
 }
+
+const fetchTransactions = function (req, res) {
+  if (process.env.USE_LEDGER_BACKEND_CSV === 'true') {
+    return fetchTransactionCsvWithHeader(req, res)
+  } else {
+    return fetchTransactionCsvWithoutHeader(req, res)
+  }
+}
+
+module.exports = fetchTransactions

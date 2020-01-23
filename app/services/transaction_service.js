@@ -20,5 +20,15 @@ const searchAllLedger = async function searchAllLedger (accountId, filters) {
   }
 }
 
+const searchAllLedgerWithCsv = async function searchAllLedgerWithCsv (accountId, filters) {
+  try {
+    const transactions = await Ledger.allTransactionsAsCsv(accountId, filters)
+    return transactions
+  } catch (error) {
+    throw new Error('GET_FAILED')
+  }
+}
+
 exports.search = searchLedger
 exports.searchAll = searchAllLedger
+exports.searchAllWithCsv = searchAllLedgerWithCsv

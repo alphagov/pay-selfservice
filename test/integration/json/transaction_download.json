@@ -33,6 +33,7 @@
     "gateway_transaction_id": "transaction-1",
     "transaction_type": "PAYMENT",
     "transaction_id": "charge1",
+    "charge_id": "charge1",
     "metadata": {
       "key1": "some string",
       "key2": true,
@@ -73,6 +74,7 @@
     },
     "delayed_capture": false,
     "transaction_type": "PAYMENT",
-    "transaction_id": "charge2"
+    "transaction_id": "charge2",
+    "charge_id": "charge2"
   }
 ]

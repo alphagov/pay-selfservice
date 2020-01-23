@@ -50,6 +50,22 @@ const transactions = function transactions (gatewayAccountId, filters = {}, urlO
   return baseClient.get(configuration)
 }
 
+const allTransactionsAsCsv = function allTransactionsAsCsv (gatewayAccountId, filters = {}) {
+  const queryParams = getQueryStringForParams(filters, true, true, true)
+  const path = `/v1/transaction?with_parent_transaction=true&account_id=${gatewayAccountId}${queryParams === '' ? '' : '&' + queryParams}`
+  const configuration = {
+    baseUrl: process.env.LEDGER_URL,
+    service: 'ledger',
+    url: path,
+    description: 'List transactions as CSV for a given gateway account ID',
+    json: false,
+    headers: {
+      accept: 'text/csv'
+    }
+  }
+  return baseClient.get(configuration)
+}
+
 const allTransactionPages = async function allTransactionPages (gatewayAccountId, filters = {}, options = {}) {
   let results = []
   const pageOptions = { hasMorePages: true }
@@ -85,6 +101,7 @@ module.exports = {
   transaction,
   transactions,
   allTransactionPages,
+  allTransactionsAsCsv,
   events,
   transactionSummary
 }
