@@ -60,7 +60,7 @@ describe('Direct login after register', function () {
     }
 
     loginController.setupDirectLoginAfterRegister(req, res, user.externalId)
-    assert.deepEqual(req.register_invite.userExternalId, user.externalId)
+    assert.deepStrictEqual(req.register_invite.userExternalId, user.externalId)
   })
 
   it('should redirect to login', function () {

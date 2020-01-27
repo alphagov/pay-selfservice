@@ -87,8 +87,8 @@ describe('request.js client', function () {
 
     client(proxiedServerUrl, function (error, response, body) {
       if (error) { done(error) }
-      assert.equal(response.headers['x-proxy-header'], 'touched by proxy')
-      assert.equal(body.message, 'server-response')
+      assert.strictEqual(response.headers['x-proxy-header'], 'touched by proxy')
+      assert.strictEqual(body.message, 'server-response')
       done()
     })
   })
@@ -98,8 +98,8 @@ describe('request.js client', function () {
 
     client(nonProxiedServerUrl, function (error, response, body) {
       if (error) { done(error) }
-      assert.notEqual(response.headers['x-proxy-header'], 'touched by proxy')
-      assert.equal(body.message, 'non-proxied-server-response')
+      assert.notStrictEqual(response.headers['x-proxy-header'], 'touched by proxy')
+      assert.strictEqual(body.message, 'non-proxied-server-response')
       done()
     })
   })

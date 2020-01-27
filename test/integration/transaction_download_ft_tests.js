@@ -110,8 +110,8 @@ describe('Transaction download endpoints', function () {
           const csvContent = res.text
           const arrayOfLines = csvContent.split('\n')
           assert(5, arrayOfLines.length)
-          assert.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","some string",true,123,"credit"', arrayOfLines[1])
-          assert.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","","",""', arrayOfLines[2])
+          assert.strictEqual('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","some string",true,123,"credit"', arrayOfLines[1])
+          assert.strictEqual('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","","",""', arrayOfLines[2])
         })
         .end(function (err, res) {
           if (err) return done(err)
