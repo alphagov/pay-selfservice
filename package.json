@@ -66,7 +66,6 @@
   },
   "dependencies": {
     "@govuk-pay/pay-js-commons": "2.20.1",
-    "@pact-foundation/pact": "9.6.1",
     "@sentry/node": "5.11.1",
     "accessible-autocomplete": "2.0.1",
     "appmetrics": "5.1.1",
@@ -119,6 +118,7 @@
     "@babel/core": "7.4.4",
     "@babel/polyfill": "7.4.4",
     "@babel/preset-env": "7.4.5",
+    "@pact-foundation/pact": "9.6.1",
     "@pact-foundation/pact-node": "8.4.1",
     "chai": "4.2.0",
     "chai-arrays": "2.0.0",
