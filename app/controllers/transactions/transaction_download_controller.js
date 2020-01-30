@@ -19,8 +19,9 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
   const filters = req.query
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
   const correlationId = req.headers[CORRELATION_HEADER]
-  const url = transactionService.csvSearchUrl(filters, accountId)
+
   filters.feeHeaders = req.account && req.account.payment_provider === 'stripe'
+  const url = transactionService.csvSearchUrl(filters, accountId)
 
   const timestampStreamStart = Date.now()
   const data = (chunk) => { res.write(chunk) }
