@@ -2,27 +2,35 @@ const http = require('http')
 const https = require('https')
 const url = require('url')
 
+const logger = require('../../utils/logger')(__filename)
+
 class Stream {
   constructor (dataCallback, successCallback, errorCallback, headers) {
     this.dataCallback = dataCallback
     this.successCallback = successCallback
     this.errorCallback = errorCallback
-    this.headers = headers || { 'Accept': 'text/csv', 'Content-Type': 'text/csv' }
+    this.headers = headers || { 'Accept': 'text/csv', 'Content-Type': 'application/json' }
   }
 
-  request (targetUrl) {
+  request (targetUrl, correlationId) {
     const parsed = url.parse(targetUrl)
-
-    const request = this._getClient(parsed.protocol).request({
+    const options = {
       path: `${parsed.pathname}${parsed.search}`,
       host: parsed.hostname,
       port: parsed.port,
       headers: this.headers
-    }, (response) => {
+    }
+
+    const request = this._getClient(parsed.protocol).request(options, (response) => {
       response.on('data', this.dataCallback)
       response.on('end', this.successCallback)
     })
     request.on('error', this.errorCallback)
+
+    logger.info(`Stream client request to ${targetUrl}`, {
+      x_request_id: correlationId,
+      ...options
+    })
     request.end()
   }
 

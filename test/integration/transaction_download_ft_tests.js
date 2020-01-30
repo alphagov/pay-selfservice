@@ -320,7 +320,7 @@ describe('Transaction download endpoints', function () {
 
       return downloadTransactionListCSV()
         .expect(200)
-        .expect('Content-Type', 'text/csv; charset=utf-8')
+        .expect('Content-Type', 'text/csv')
         .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
         .then(function (res) {
           const csvContent = res.text
