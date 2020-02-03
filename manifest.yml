@@ -2,12 +2,15 @@
 applications:
 - name: selfservice
   buildpacks:
-  - nodejs_buildpack
+    - https://github.com/alphagov/env-map-buildpack.git#v1
+    - nodejs_buildpack
   health-check-type: http
   health-check-http-endpoint: '/healthcheck'
   health-check-invocation-timeout: 5
   memory: ((memory))
   disk_quota: ((disk_quota))
+  services:
+    - app-catalog
   command: npm start
   env:
     NODE_ENV: production
@@ -16,12 +19,13 @@ applications:
     ANALYTICS_TRACKING_ID: ((selfservice_analytics_tracking_id))
     ANALYTICS_TRACKING_ID_XGOV: ((selfservice_analytics_tracking_id_xgov))
 
-    SELFSERVICE_URL: https://((selfservice_url))
-    PUBLIC_AUTH_URL: ((publicauth_url))
-    CONNECTOR_URL: ((card_connector_url))
-    PRODUCTS_URL: ((products_url))
-    DIRECT_DEBIT_CONNECTOR_URL: ((direct_debit_connector_url))
-    LEDGER_URL: ((ledger_url))
+    # The below URLs are provisioned by the app-catalog user-provided service 
+    SELFSERVICE_URL: ""
+    PUBLIC_AUTH_URL: ""
+    CONNECTOR_URL: ""
+    PRODUCTS_URL: ""
+    DIRECT_DEBIT_CONNECTOR_URL: ""
+    LEDGER_URL: ""
 
     PRODUCTS_FRIENDLY_BASE_URI: ((products_friendly_base_uri))
     GOCARDLESS_TEST_OAUTH_BASE_URL: ((selfservice_gocardless_test_oauth_base_url))

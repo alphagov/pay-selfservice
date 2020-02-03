@@ -1,0 +1,8 @@
+env_vars:
+  SELFSERVICE_URL: '."user-provided"[0].credentials.selfservice_url'
+  PUBLIC_AUTH_URL: '."user-provided"[0].credentials.publicauth_url'
+  CONNECTOR_URL: '."user-provided"[0].credentials.card_connector_url'
+  PRODUCTS_URL: '."user-provided"[0].credentials.products_url'
+  DIRECT_DEBIT_CONNECTOR_URL: '."user-provided"[0].credentials.directdebit_connector_url'
+  LEDGER_URL: '."user-provided"[0].credentials.ledger_url'
+
