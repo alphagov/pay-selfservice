@@ -76,7 +76,8 @@ const buildTransactionDetails = (opts = {}) => {
     payment_provider: opts.payment_provider || 'sandbox',
     created_date: opts.created_date || '2018-05-01T13:27:00.057Z',
     delayed_capture: opts.delayed_capture || false,
-    transaction_type: opts.transaction_type || 'PAYMENT'
+    transaction_type: opts.transaction_type || 'PAYMENT',
+    moto: opts.moto || false
   }
 
   if (opts.gateway_transaction_id) {
