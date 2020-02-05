@@ -24,6 +24,7 @@ module.exports = (req, res) => {
     payload: {
       account_id: gatewayAccountId,
       created_by: req.user.email,
+      type: 'DEMO',
       description: `Token for Demo Payment`
     }
   })

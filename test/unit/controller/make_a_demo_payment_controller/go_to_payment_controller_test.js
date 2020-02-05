@@ -28,6 +28,7 @@ const VALID_USER = getUser({
 const VALID_CREATE_TOKEN_REQUEST = {
   account_id: GATEWAY_ACCOUNT_ID,
   created_by: VALID_USER.email,
+  type: 'DEMO',
   description: 'Token for Demo Payment'
 }
 const VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE = {
