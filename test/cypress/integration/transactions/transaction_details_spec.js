@@ -70,7 +70,7 @@ describe('Transaction details page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const userEmail = 'a-user@example.com'
 
-  const getStubs = (transactionDetails) => {
+  const getStubs = (transactionDetails, additionalGatewayAccountOpts = {}) => {
     return [
       {
         name: 'getUserSuccess',
@@ -93,7 +93,11 @@ describe('Transaction details page', () => {
       },
       {
         name: 'getGatewayAccountSuccess',
-        opts: { gateway_account_id: gatewayAccountId, payment_provider: transactionDetails.payment_provider }
+        opts: {
+          ...additionalGatewayAccountOpts,
+          gateway_account_id: gatewayAccountId,
+          payment_provider: transactionDetails.payment_provider
+        }
       },
       {
         name: 'getLedgerTransactionSuccess',
@@ -630,5 +634,36 @@ describe('Transaction details page', () => {
     cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
     cy.get('.transaction-details tbody').find('[data-cell-type="fee"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.fee))
     cy.get('.transaction-details tbody').find('[data-cell-type="net"]').first().should('have.text', convertPenceToPoundsFormatted(transactionDetails.amount - transactionDetails.fee))
+  })
+
+  it('should not display MOTO row when MOTO payments are not enabled for the gateway account', () => {
+    const transactionDetails = defaultTransactionDetails()
+    cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: false }))
+
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+    cy.get('th').contains('MOTO:').should('not.exist')
+  })
+
+  it('should display MOTO row when MOTO payments are enabled for the gateway account and the transaction is a MOTO payment', () => {
+    const transactionDetails = defaultTransactionDetails()
+    transactionDetails.moto = true
+    cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
+
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+    cy.get('th').contains('MOTO:').should('exist')
+    cy.get('#moto').should('have.text', 'Yes')
+  })
+
+  it('should display MOTO row when MOTO payments are enabled for the gateway account and the transaction is not a MOTO payment', () => {
+    const transactionDetails = defaultTransactionDetails()
+    transactionDetails.moto = false
+    cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
+
+    cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
+
+    cy.get('th').contains('MOTO:').should('exist')
+    cy.get('#moto').should('have.text', 'No')
   })
 })

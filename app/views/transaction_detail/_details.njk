@@ -131,5 +131,12 @@
     <td class="govuk-table__cell govuk-!-font-size-16" id="delayed-capture">On</td>
   </tr>
   {% endif %}
+
+  {% if currentGatewayAccount.allow_moto %}
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">MOTO:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16" id="moto">{% if moto %}Yes{% else %}No{% endif %}</td>
+  </tr>
+  {% endif %}
   </tbody>
 </table>
