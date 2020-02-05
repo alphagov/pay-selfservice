@@ -28,7 +28,8 @@ function validGatewayAccount (opts) {
         version: 1,
         enabled: true
       }
-    }
+    },
+    allow_moto: opts.allow_moto || false
   }
 
   if (opts.description) {
