@@ -33,5 +33,3 @@ applications:
     GOCARDLESS_TEST_CLIENT_ID: ((selfservice_gocardless_test_client_id))
     GOCARDLESS_LIVE_CLIENT_ID: ((selfservice_gocardless_live_client_id))
     ZENDESK_URL: "https://govuk.zendesk.com/api/v2"
-  routes:
-  - route: ((selfservice_url))
