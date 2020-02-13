@@ -7,7 +7,6 @@ const _ = require('lodash')
 const querystring = require('querystring')
 const assert = require('chai').assert
 const expect = require('chai').expect
-const jsonToCsv = require('../../app/utils/json_to_csv')
 
 // Local dependencies
 require('../test_helpers/serialize_mock')
@@ -66,15 +65,19 @@ describe('Transaction download endpoints', function () {
     app = session.getAppWithLoggedInUser(getApp(), user)
 
     userCreator.mockUserResponse(user.toJson(), done)
-    connectorMock.get(CONNECTOR_ACCOUNT_PATH)
-      .reply(200, {
-        'payment_provider': 'sandbox',
-        'gateway_account_id': gatewayAccountId,
-        'credentials': { 'username': 'a-username' }
-      })
   })
 
-  describe('The /transactions/download endpoint', () => {
+  describe('The /transactions/download endpoint with USE_LEDGER_BACKEND_CSV false', () => {
+    beforeEach(() => {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          'payment_provider': 'sandbox',
+          'gateway_account_id': gatewayAccountId,
+          'credentials': { 'username': 'a-username' },
+          'allow_moto': true
+        })
+    })
+
     it('should download a csv file comprising a list of transactions for the gateway account', done => {
       const results = require('./json/transaction_download.json')
 
@@ -303,32 +306,66 @@ describe('Transaction download endpoints', function () {
         .expect(500, { 'message': 'Internal server error' })
         .end(done)
     })
+  })
 
-    it('should request with the correct headers', async () => {
-      const results = require('./json/transaction_download.json')
-      let resultsAsCsv = await jsonToCsv(results)
-      process.env.USE_LEDGER_BACKEND_CSV = true
+  describe('The /transactions/download endpoint with USE_LEDGER_BACKEND_CSV true', () => {
+    const testCsv = '"col1","col2","col3"\n"val1",,"val3"'
 
+    const mockLedgerCsvResponse = function (url) {
       ledgerMock
         .defaultReplyHeaders({
           'Content-Type': 'text/csv'
         })
         .matchHeader('accept', 'text/csv')
         .matchHeader('content-type', 'application/json')
-        .get(LEDGER_TRANSACTION_PATH)
-        .reply(200, resultsAsCsv)
+        .get(url)
+        .reply(200, testCsv)
+    }
 
+    const assertCsvReturned = async function () {
       return downloadTransactionListCSV()
         .expect(200)
         .expect('Content-Type', 'text/csv')
         .expect('Content-disposition', /attachment; filename="GOVUK_Pay_\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d.csv"/)
         .then(function (res) {
-          const csvContent = res.text
-          const arrayOfLines = csvContent.split('\n')
-          expect(arrayOfLines[0]).to.equal(CSV_COLUMN_NAMES + ',"key1 (metadata)","key2 (metadata)","key3 (metadata)","Card Type"')
-          expect(arrayOfLines[1]).to.equal('"red","desc-red","alice.111@mail.fake","123.45","Visa","TEST01","12/19","4242","Success",true,"","","transaction-1","charge1","","12 May 2016","17:37:29","0.00","123.45","","some string",true,123,"credit"')
-          expect(arrayOfLines[2]).to.equal('"blue","desc-blue","alice.222@mail.fake","9.99","Mastercard","TEST02","12/19","4241","Cancelled",true,"P01234","Something happened","transaction-2","charge2","","12 Apr 2015","19:55:29","0.00","9.99","","","","",""')
+          expect(res.text).to.equal(testCsv)
         })
+    }
+
+    beforeEach(() => {
+      process.env.USE_LEDGER_BACKEND_CSV = true
+    })
+
+    it('should return CSV from ledger', async () => {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          'gateway_account_id': gatewayAccountId
+        })
+
+      mockLedgerCsvResponse(LEDGER_TRANSACTION_PATH)
+      return assertCsvReturned()
+    })
+
+    it('should request CSV with moto header', async () => {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          'gateway_account_id': gatewayAccountId,
+          'allow_moto': true
+        })
+
+      mockLedgerCsvResponse(LEDGER_TRANSACTION_PATH + '&moto_header=true')
+      return assertCsvReturned()
+    })
+
+    it('should request CSV with fee headers', async () => {
+      connectorMock.get(CONNECTOR_ACCOUNT_PATH)
+        .reply(200, {
+          'gateway_account_id': gatewayAccountId,
+          'payment_provider': 'stripe'
+        })
+
+      mockLedgerCsvResponse(LEDGER_TRANSACTION_PATH + '&fee_headers=true')
+      return assertCsvReturned()
     })
   })
 })

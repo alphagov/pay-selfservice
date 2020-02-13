@@ -13,7 +13,8 @@ function getQueryStringForParams (params = {}, removeEmptyParams = false, flatte
     card_brand: params.brand,
     from_date: dates.fromDateToApiFormat(params.fromDate, params.fromTime),
     to_date: dates.toDateToApiFormat(params.toDate, params.toTime),
-    ...params.feeHeaders && { fee_headers: params.feeHeaders }
+    ...params.feeHeaders && { fee_headers: params.feeHeaders },
+    ...params.motoHeader && { moto_header: params.motoHeader }
   }
 
   if (!ignorePagination) {

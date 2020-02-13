@@ -21,6 +21,7 @@ const fetchTransactionCsvWithHeader = function fetchTransactionCsvWithHeader (re
   const correlationId = req.headers[CORRELATION_HEADER]
 
   filters.feeHeaders = req.account && req.account.payment_provider === 'stripe'
+  filters.motoHeader = req.account && req.account.allow_moto
   const url = transactionService.csvSearchUrl(filters, accountId)
 
   const timestampStreamStart = Date.now()
