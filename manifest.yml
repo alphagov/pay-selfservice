@@ -11,25 +11,29 @@ applications:
   disk_quota: ((disk_quota))
   services:
     - app-catalog
+    - selfservice-secret-service
   command: npm start
   env:
     NODE_ENV: production
-    SESSION_ENCRYPTION_KEY: ((selfservice_session_encryption_key))
     COOKIE_MAX_AGE: '10800000'
-    ANALYTICS_TRACKING_ID: ((selfservice_analytics_tracking_id))
-    ANALYTICS_TRACKING_ID_XGOV: ((selfservice_analytics_tracking_id_xgov))
+    ZENDESK_URL: "https://govuk.zendesk.com/api/v2"
+    USE_LEDGER_BACKEND_CSV: "true"
 
-    # The below URLs are provisioned by the app-catalog user-provided service 
+    # The below URLs are provisioned by the app-catalog user-provided service
     SELFSERVICE_URL: ""
+    ADMINUSERS_URL: ""
     PUBLIC_AUTH_URL: ""
     CONNECTOR_URL: ""
     PRODUCTS_URL: ""
     DIRECT_DEBIT_CONNECTOR_URL: ""
     LEDGER_URL: ""
+    PRODUCTS_FRIENDLY_BASE_URI: ""
 
-    PRODUCTS_FRIENDLY_BASE_URI: ((products_friendly_base_uri))
-    GOCARDLESS_TEST_OAUTH_BASE_URL: ((selfservice_gocardless_test_oauth_base_url))
-    GOCARDLESS_LIVE_OAUTH_BASE_URL: ((selfservice_gocardless_live_oauth_base_url))
-    GOCARDLESS_TEST_CLIENT_ID: ((selfservice_gocardless_test_client_id))
-    GOCARDLESS_LIVE_CLIENT_ID: ((selfservice_gocardless_live_client_id))
-    ZENDESK_URL: "https://govuk.zendesk.com/api/v2"
+    # The below are provisioned by the selfservice-secret-service user-provided service
+    SESSION_ENCRYPTION_KEY: ""
+    ANALYTICS_TRACKING_ID: ""
+    ZENDESK_USER: ""
+    ZENDESK_API_KEY: ""
+    ANALYTICS_TRACKING_ID_XGOV: ""
+    SENTRY_DSN: ""
+    STRIPE_ACCOUNT_API_KEY: ""
