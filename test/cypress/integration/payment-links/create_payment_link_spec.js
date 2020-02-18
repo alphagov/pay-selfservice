@@ -100,6 +100,7 @@ describe('The create payment link flow', () => {
     describe('Reference page', () => {
       it('should have instructions for an English patment link when "yes" is selected', () => {
         cy.get('h1').should('contain', 'Do your users already have a payment reference?')
+        cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
 
         cy.get('form[method=post][action="/create-payment-link/reference"]').should('exist')
           .within(() => {
@@ -287,6 +288,7 @@ describe('The create payment link flow', () => {
     describe('Reference page', () => {
       it('should have Welsh-specific instructions when "yes" is selected', () => {
         cy.get('h1').should('contain', 'Do your users already have a payment reference?')
+        cy.get('#reference-type-group-hint').should('contain', `You can use numbers or words in your payment reference. For example, you can include the applicant’s name or an existing reference number.`)
 
         cy.get('form[method=post][action="/create-payment-link/reference"]').should('exist')
           .within(() => {
