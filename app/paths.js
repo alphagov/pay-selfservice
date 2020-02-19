@@ -150,7 +150,10 @@ module.exports = {
     edit: '/create-payment-link/manage/edit/:productExternalId',
     editInformation: '/create-payment-link/manage/edit/information/:productExternalId',
     editReference: '/create-payment-link/manage/edit/reference/:productExternalId',
-    editAmount: '/create-payment-link/manage/edit/amount/:productExternalId'
+    editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
+    metadata: {
+      add: '/create-payment-link/manage/edit/:productExternalId/metadata'
+    }
   },
   feedback: '/feedback',
   partnerApp: {
