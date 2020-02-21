@@ -1,7 +1,7 @@
 env_vars:
   PUBLIC_AUTH_URL:             '.[][] | select(.name == "app-catalog") | .credentials.publicauth_frontend_path_url'
   SELFSERVICE_URL:             '.[][] | select(.name == "app-catalog") | .credentials.selfservice_url'
-  CONNECTOR_URL:               '.[][] | select(.name == "app-catalog") | .credentials.connector_url'
+  CONNECTOR_URL:               '.[][] | select(.name == "app-catalog") | .credentials.card_connector_url'
   PRODUCTS_URL:                '.[][] | select(.name == "app-catalog") | .credentials.products_url'
   DIRECT_DEBIT_CONNECTOR_URL:  '.[][] | select(.name == "app-catalog") | .credentials.directdebit_connector_url'
   LEDGER_URL:                  '.[][] | select(.name == "app-catalog") | .credentials.ledger_url'
