@@ -101,7 +101,7 @@
     "passport-local": "1.0.0",
     "qrcode": "1.4.4",
     "qs": "6.9.1",
-    "request": "2.88.0",
+    "request": "2.88.2",
     "request-promise-native": "1.0.8",
     "requestretry": "4.1.0",
     "rfc822-validate": "1.0.0",
