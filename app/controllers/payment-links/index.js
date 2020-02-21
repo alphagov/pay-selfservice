@@ -24,5 +24,6 @@ exports.getEditAmount = require('./get-edit-amount-controller')
 exports.postEditAmount = require('./post-edit-amount-controller')
 
 exports.metadata = {
-  add: require('./metadata/resource-controller').addMetadataPage
+  add: require('./metadata/resource-controller').addMetadataPage,
+  post: require('./metadata/resource-controller').postMetadataPage
 }

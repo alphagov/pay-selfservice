@@ -12,6 +12,7 @@
 <section class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l">Payment link reporting column</h1>
   <form action="{{ self }}" class="form" method="post" data-validate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are not shown to the user making the payment.</p>
 
     {{
