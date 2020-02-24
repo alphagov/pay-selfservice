@@ -16,6 +16,7 @@ const { lockOutDisabledUsers, enforceUserAuthenticated, enforceUserFirstFactor, 
 const { validateAndRefreshCsrf, ensureSessionHasCsrfSecret } = require('./middleware/csrf')
 const getEmailNotification = require('./middleware/get_email_notification')
 const getAccount = require('./middleware/get_gateway_account')
+const restrictServiceExperimentalFeatures = require('./middleware/experimental_features')
 const hasServices = require('./middleware/has_services')
 const resolveService = require('./middleware/resolve_service')
 const trimUsername = require('./middleware/trim_username')
@@ -342,8 +343,8 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.editReference, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditReference)
   app.get(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.getEditAmount)
   app.post(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditAmount)
-  app.get(paymentLinks.metadata.add, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.metadata.add)
-  app.post(paymentLinks.metadata.add, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.metadata.post)
+  app.get(paymentLinks.metadata.add, xraySegmentCls, permission('tokens:create'), getAccount, restrictServiceExperimentalFeatures, paymentLinksController.metadata.add)
+  app.post(paymentLinks.metadata.add, xraySegmentCls, permission('tokens:create'), getAccount, restrictServiceExperimentalFeatures, paymentLinksController.metadata.post)
 
   // Configure 2FA
   app.get(user.twoFactorAuth.index, xraySegmentCls, twoFactorAuthController.getIndex)
