@@ -46,6 +46,9 @@ module.exports = {
       govuk_status: opts.govuk_status || 'success',
       _links: opts.links
     }
+    if (opts.metadata) {
+      data.metadata = opts.metadata
+    }
     if (!data._links) {
       data._links = [{
         href: `http://products.url/v1/api/payments/${(data.external_id)}`,
@@ -86,6 +89,7 @@ module.exports = {
     if (opts.price) data.price = opts.price
     if (opts.service_name_path) data.service_name_path = opts.service_name_path
     if (opts.product_name_path) data.product_name_path = opts.product_name_path
+    if (opts.metadata) data.metadata = opts.metadata
     if (!data._links) {
       data._links = [{
         href: `http://products.url/v1/api/products/${data.external_id}`,

@@ -40,6 +40,7 @@ class Product {
    * @param {string=} opts.type - The type of the product
    * @param {string=} opts.return_url - return url of where to redirect for any charge of this product
    * @param {string} opts.language - the language product and payment pages is displayed in
+   * @param {Object[]} opts.metadata - metadata for the product
    **/
   constructor (opts) {
     this.externalId = opts.external_id
@@ -57,7 +58,7 @@ class Product {
       this.referenceHint = opts.reference_hint
     }
     this.language = opts.language
-    this.language = opts.language
+    this.metadata = opts.metadata
     opts._links.forEach(link => lodash.set(this, `links.${link.rel}`, { method: link.method, href: link.href }))
   }
 }
