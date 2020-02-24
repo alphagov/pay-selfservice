@@ -302,23 +302,6 @@ describe('auth service', function () {
       done()
     })
 
-    it('should return first gateway_account_id if user has invalid currentGatewayAccountId cookie value', function (done) {
-      const req = {
-        gateway_account: {
-          currentGatewayAccountId: '777'
-        },
-        service: {
-          gatewayAccountIds: ['1', '2', '3']
-        }
-      }
-      const test = auth.getCurrentGatewayAccountId(req)
-
-      expect(test).to.equal('1')
-      expect(req.gateway_account.currentGatewayAccountId).to.equal('1')
-
-      done()
-    })
-
     it('should return gateway_account_id from cookie', function (done) {
       const req = {
         gateway_account: {

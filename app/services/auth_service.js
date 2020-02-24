@@ -146,9 +146,7 @@ function getCurrentGatewayAccountId (req) {
     return null
   }
   // check if we don't have Cookie value
-  // or if it's different user  / different userGatewayAccountIds
-  if ((!currentGatewayAccountId) ||
-    (currentServiceGatewayAccountIds.indexOf(currentGatewayAccountId) === -1)) {
+  if (!currentGatewayAccountId) {
     currentGatewayAccountId = currentServiceGatewayAccountIds[0]
   }
   // save currentGatewayAccountId and return it

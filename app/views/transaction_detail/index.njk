@@ -6,7 +6,7 @@
 
 {% block beforeContent %}
   {{ super() }}
-  {% set backLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+  {% set backLink %}{{returnLink}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
   {{
     govukBackLink({
       text: 'Transactions list',

@@ -2,11 +2,7 @@ const _ = require('lodash')
 
 const logger = require('../../utils/logger')(__filename)
 const paths = require('../../paths')
-
-const validAccountId = (accountId, user) => {
-  const gatewayAccountIds = _.flattenDeep(_.concat(user.serviceRoles.map(serviceRole => serviceRole.service.gatewayAccountIds)))
-  return accountId && gatewayAccountIds.indexOf(accountId) !== -1
-}
+const validAccountId = require('../../utils/valid_account_id')
 
 module.exports = (req, res) => {
   let newAccountId = _.get(req, 'body.gatewayAccountId')

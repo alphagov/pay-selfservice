@@ -34,6 +34,7 @@ const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
 const checkVatNumberCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-company-number-not-submitted')
+const switchService = require('./middleware/service_switcher')
 
 // Controllers
 const staticController = require('./controllers/static_controller')
@@ -84,13 +85,14 @@ const userPhoneNumberController = require('./controllers/user/phone-number')
 const goCardlessRedirect = require('./controllers/partnerapp/handle_redirect_to_gocardless_connect')
 const goCardlessOAuthGet = require('./controllers/partnerapp/handle_gocardless_connect_get')
 const yourPspController = require('./controllers/your-psp')
+const allTransactionsController = require('./controllers/all-service-transactions')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet, settings, yourPsp
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet, settings, yourPsp, allServiceTransactions
 } = paths
 
 // Exports
@@ -204,6 +206,7 @@ module.exports.bind = function (app) {
     ...lodash.values(partnerApp),
     ...lodash.values(billingAddress),
     ...lodash.values(requestToGoLive),
+    ...lodash.values(allServiceTransactions),
     ...lodash.values(policyPages),
     ...lodash.values(stripeSetup),
     ...lodash.values(digitalWallet),
@@ -221,8 +224,13 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
   app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)
   app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
-  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController)
+  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController.transactionsPage)
   app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
+
+  // ALL SERVICE TRANSACTIONS
+  app.get(allServiceTransactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, allTransactionsController.getIndex)
+  app.get(allServiceTransactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, allTransactionsController.downloadTransactions)
+  app.get(transactions.serviceSwitchDetail, xraySegmentCls, permission('transactions-details:read'), switchService, getAccount, paymentMethodIsCard, transactionDetailController.allServiceTransactionsPage)
 
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)

@@ -207,10 +207,10 @@
           }
         })
       }}
-    </div>
+    </div >
     <div class="govuk-grid-column-one-quarter inputs-less-margin">
       {% if hasFilters %}
-      <a href="{{routes.transactions.index}}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear Filter</a>
+      <a href="{{filterRedirect}}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear Filter</a>
       {% endif %}
     </div>
   </form>

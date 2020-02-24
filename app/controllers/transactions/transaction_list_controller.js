@@ -31,7 +31,7 @@ module.exports = (req, res) => {
     .then(transactions => {
       client
         .getAllCardTypes({ correlationId }, allCards => {
-          const model = buildPaymentList(transactions, allCards, accountId, filters.result)
+          const model = buildPaymentList(transactions, allCards, accountId, filters.result, router.paths.transactions.download)
           model.search_path = router.paths.transactions.index
           model.filtersDescription = describeFilters(filters.result)
           model.eventStates = states.allDisplayStateSelectorObjects()
@@ -53,6 +53,7 @@ module.exports = (req, res) => {
               brand.selected = filters.result.brand.includes(brand.value)
             })
           }
+          model.filterRedirect = router.paths.transactions.index
           response(req, res, 'transactions/index', model)
         })
         .on('connectorError', () => error('Unable to retrieve card types.'))

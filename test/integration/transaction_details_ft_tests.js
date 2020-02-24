@@ -72,12 +72,5 @@ describe('The transaction view scenarios', function () {
         .expect(500, { 'message': 'Error processing transaction view' })
         .end(done)
     })
-
-    it('should return a generic error if unable to communicate with ledger', function (done) {
-      let transactionId = 452345
-      whenGetTransactionHistory(transactionId, app)
-        .expect(500, { 'message': 'Error processing transaction view' })
-        .end(done)
-    })
   })
 })

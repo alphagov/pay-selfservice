@@ -8,11 +8,16 @@ module.exports = {
     index: '/transactions',
     download: '/transactions/download',
     detail: '/transactions/:chargeId',
-    refund: '/transactions/:chargeId/refund'
+    refund: '/transactions/:chargeId/refund',
+    serviceSwitchDetail: '/service/:serviceId/transactions/:chargeId'
   },
   yourPsp: {
     index: '/your-psp',
     flex: '/your-psp/flex'
+  },
+  allServiceTransactions: {
+    index: '/all_service_transactions',
+    download: '/all_service_transactions/download'
   },
   credentials: {
     index: '/credentials',
