@@ -10,6 +10,17 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
+  {% if error %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: [{
+      text: error,
+      href: "#metadata-column-header"
+    }]
+    })
+  }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Payment link reporting column</h1>
   <form action="{{ self }}" class="form" method="post" data-validate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -22,6 +33,7 @@
         label: {
             text: "Column header"
         },
+        value: metadataColumnHeader,
         hint: {
           html: "Shown in the header row of the report"
         },
@@ -38,11 +50,9 @@
         label: {
             text: "Cell value"
         },
+        value: metadataColumnValue,
         hint: {
           html: "Added to each row of the report"
-        },
-        attributes: {
-            "autofocus": true
         }
       })
     }}
