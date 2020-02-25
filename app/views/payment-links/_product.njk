@@ -1,9 +1,21 @@
 <li class="pay-!-border-bottom govuk-!-padding-bottom-3 govuk-!-padding-bottom-3">
     <h2 class="govuk-heading-s govuk-!-margin-bottom-1 payment-links-list--item__title">{{ product.name }}</h2>
+    <h3 class="govuk-visually-hidden">URL</h3>
     {% if product.links.friendly %}
         <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.friendly.href }}">{{ product.links.friendly.href }}</a>
     {% else %}
         <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
+    {% endif %}
+    {% if product.metadata %}
+        <h3 class="govuk-visually-hidden">Reporting columns</h3>
+        <dl class="reporting-columns govuk-body-s">
+           {% for key, value in product.metadata|dictsort %}
+               <div class="reporting-columns__keypair"> 
+                    <dt class="reporting-columns__key" id="metadata-key">{{key}}</dt>
+                    <dd class="reporting-columns__value" id="metadata-value">{{value}}</dd>
+                </div>
+            {% endfor %}
+        </dl>
     {% endif %}
     {% if permissions.tokens_create %}
         <div class="govuk-!-margin-top-3">

@@ -18,6 +18,22 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (name, href, language
   }
 }
 
+const buildPaymentLinkWithMetadataOpts = function buildPaymentLinkWithMetadataOpts (name, href, language, metadata) {
+  return {
+    name: name,
+    language: language,
+    type: 'ADHOC',
+    metadata: metadata,
+    links: [
+      {
+        'rel': 'friendly',
+        'method': 'GET',
+        'href': href
+      }
+    ]
+  }
+}
+
 describe('The manage payment links page', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(userExternalId, gatewayAccountId)
@@ -43,9 +59,11 @@ describe('The manage payment links page', () => {
   })
 
   describe('Only English payment links', () => {
+    const key = 'key'
+    const value = 'metavalue'
     const products = [
       buildPaymentLinkOpts('Pay for a parking permit', 'example.com/my-service/pay-for-a-parking-permit', 'en'),
-      buildPaymentLinkOpts('Pay for a firearm', 'example.com/my-service/pay-for-a-firearm', 'en')
+      buildPaymentLinkWithMetadataOpts('Pay for a firearm', 'example.com/my-service/pay-for-a-firearm', 'en', { key: value })
     ]
 
     beforeEach(() => {
@@ -73,6 +91,8 @@ describe('The manage payment links page', () => {
       cy.get('ul.payment-links-list').find('li').eq(1).within(() => {
         cy.get('h2').contains(products[1].name)
         cy.get('a').contains(products[1].links[0].href)
+        cy.get('dt').contains(key)
+        cy.get('dd').contains(value)
       })
 
       cy.contains('Welsh payment links').should('not.exist')
