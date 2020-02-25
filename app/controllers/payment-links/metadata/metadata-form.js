@@ -31,9 +31,7 @@ class MetadataForm {
     const errorMaps = {}
     for (const fieldKey in fields) {
       const field = fields[fieldKey]
-      console.log(field)
       field.validation.some((validationEntry) => {
-        console.log(validationEntry, this.values[field.id])
         const valid = validationEntry.validator(this.values[field.id])
         if (!valid) {
           errors.push({
