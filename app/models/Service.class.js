@@ -9,6 +9,7 @@ class Service {
     this.merchantDetails = serviceData.merchant_details
     this.collectBillingAddress = serviceData.collect_billing_address
     this.currentGoLiveStage = serviceData.current_go_live_stage
+    this.experimentalFeaturesEnabled = serviceData.experimental_features_enabled
   }
 
   /**
@@ -23,7 +24,8 @@ class Service {
       gateway_account_ids: this.gatewayAccountIds,
       merchant_details: this.merchantDetails,
       collect_billing_address: this.collectBillingAddress,
-      current_go_live_stage: this.currentGoLiveStage
+      current_go_live_stage: this.currentGoLiveStage,
+      experimental_features_enabled: this.experimentalFeaturesEnabled
     }
   }
 }

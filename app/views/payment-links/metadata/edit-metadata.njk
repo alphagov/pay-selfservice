@@ -1,0 +1,70 @@
+{% extends "../../layout.njk" %}
+
+{% block pageTitle %}
+  Payment link reporting columns - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block side_navigation %}
+  {% include "./../_nav.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+<section class="govuk-grid-column-two-thirds">
+  {% if error %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: [{
+      text: error,
+      href: "#metadata-column-header"
+    }]
+    })
+  }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">Payment link reporting column</h1>
+  <form action="{{ self }}" class="form" method="post" data-validate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <p class="govuk-body">Reporting columns are not shown to the user making the payment.</p>
+
+    {{
+      govukInput({
+        id: "metadata-column-header",
+        name: "metadata-column-header",
+        label: {
+            text: "Column header"
+        },
+        value: metadataColumnHeader,
+        hint: {
+          html: "Shown in the header row of the report"
+        },
+        attributes: {
+            "autofocus": true
+        }
+      })
+    }}
+
+    {{
+      govukInput({
+        id: "metadata-cell-value",
+        name: "metadata-cell-value",
+        label: {
+            text: "Cell value"
+        },
+        value: metadataColumnValue,
+        hint: {
+          html: "Added to each row of the report"
+        }
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Add reporting column",
+        classes: "button"
+      })
+    }}
+
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage }}">Cancel</a></p>
+  </form>
+</section>
+{% endblock %}

@@ -22,7 +22,8 @@ module.exports = {
     delete: deleteProduct,
     getByProductExternalId: getProductByExternalId,
     getByGatewayAccountId: getProductsByGatewayAccountId,
-    getByProductPath: getProductByPath
+    getByProductPath: getProductByPath,
+    addMetadataToProduct: addMetadataToProduct
   },
   payment: {
     create: createPayment,
@@ -94,6 +95,18 @@ function updateProduct (gatewayAccountId, productExternalId, options) {
     description: 'update an existing product',
     service: SERVICE_NAME
   }).then(product => new Product(product))
+}
+
+function addMetadataToProduct (productExternalId, key, value) {
+  const body = {}
+  body[key] = value
+  return baseClient.post({
+    baseUrl,
+    body,
+    url: `/products/${productExternalId}/metadata`,
+    description: 'add metadata to an existing product',
+    service: SERVICE_NAME
+  })
 }
 
 /**
