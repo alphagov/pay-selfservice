@@ -10,32 +10,33 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  {% if error %}
+  {% if tested.errors and tested.errors.length %}
   {{ govukErrorSummary({
     titleText: "There is a problem",
-    errorList: [{
-      text: error,
-      href: "#metadata-column-header"
-    }]
+    errorList: tested.errors
     })
   }}
   {% endif %}
 
   <h1 class="govuk-heading-l">Payment link reporting column</h1>
-  <form action="{{ self }}" class="form" method="post" data-validate>
+  <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are not shown to the user making the payment.</p>
 
+    {% set metadataKeyField = form.fields.metadataKey %}
     {{
       govukInput({
-        id: "metadata-column-header",
-        name: "metadata-column-header",
+        id: metadataKeyField.id,
+        name: metadataKeyField.name,
         label: {
             text: "Column header"
         },
-        value: metadataColumnHeader,
+        value: form.values[metadataKeyField.id],
         hint: {
           html: "Shown in the header row of the report"
+        },
+        errorMessage: tested.errorMaps[metadataKeyField.id] and {
+          text: tested.errorMaps[metadataKeyField.id]
         },
         attributes: {
             "autofocus": true
@@ -43,16 +44,20 @@
       })
     }}
 
+    {% set metadataValueField = form.fields.metadataValue %}
     {{
       govukInput({
-        id: "metadata-cell-value",
-        name: "metadata-cell-value",
+        id: metadataValueField.id,
+        name: metadataValueField.name,
         label: {
             text: "Cell value"
         },
-        value: metadataColumnValue,
+        value: form.values[metadataValueField.id],
         hint: {
           html: "Added to each row of the report"
+        },
+        errorMessage: tested.errorMaps[metadataValueField.id] and {
+          text: tested.errorMaps[metadataValueField.id]
         }
       })
     }}
