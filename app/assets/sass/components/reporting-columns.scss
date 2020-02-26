@@ -1,0 +1,21 @@
+
+.reporting-columns{
+  margin: 1rem 0;
+}
+
+.reporting-columns__keypair{
+  display: inline-block;
+  border: 2px solid $govuk-border-colour;
+  margin: 1rem 10px 0 0;
+}
+
+.reporting-columns__key{
+  background: govuk-colour("light-grey");
+  padding: 10px 5px;
+  border-bottom: 2px solid $govuk-border-colour;
+}
+
+.reporting-columns__value{
+  margin-inline-start: 0;
+  padding: 10px 5px;
+}
