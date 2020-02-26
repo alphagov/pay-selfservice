@@ -17,6 +17,19 @@ const fields = {
   }
 }
 
+const submissionErrorCodes = {
+  DUPLICATE_METADATA_KEYS: {
+    field: fields.metadataKey,
+    href: `#${fields.metadataKey.id}`,
+    text: 'Column header must be unique for this payment link'
+  }
+}
+
+const defaultFallbackError = {
+  href: '#',
+  text: 'Unknown problem with adding reporting column'
+}
+
 class MetadataForm {
   constructor (formData = {}) {
     this.values = {}
@@ -47,6 +60,19 @@ class MetadataForm {
     return {
       errors, errorMaps
     }
+  }
+
+  parseSubmissionError (error) {
+    let parsedError
+    Object.keys(submissionErrorCodes).some((key) => {
+      const code = submissionErrorCodes[key]
+      if (key === error.errorIdentifier) {
+        parsedError = code
+        return true
+      }
+      return false
+    })
+    return parsedError || defaultFallbackError
   }
 }
 
