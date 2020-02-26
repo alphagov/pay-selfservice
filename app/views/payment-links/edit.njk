@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-  Edit your payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
 
 {% block side_navigation %}
@@ -10,7 +10,7 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Edit your payment link</h1>
+  <h1 class="govuk-heading-l">Payment link</h1>
 
   {% set detailsHTML %}
     {% if product.description %}
@@ -40,6 +40,7 @@
       <span class="pay-text-grey">User can choose</span>
     {% endif %}
   {% endset %}
+
 
   {{
     govukSummaryList({
@@ -119,6 +120,46 @@
       ]
     })
   }}
+
+{% if currentService.experimentalFeaturesEnabled %}
+  <h2 class="govuk-heading-m">Reporting columns</h2>
+  <p class="govuk-body">Add extra columns to your transactions, for example cost centre code or business area.<p>
+  <p class="govuk-body">This can make it easier to match up payments with other systems.</p>
+
+  {% if product.metadata %}
+    <dl class="govuk-summary-list">
+      {% for metadataKey, metadataValue in product.metadata | dictsort %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              {{metadataKey}}
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{metadataValue}}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="{{ formattedPathFor(paths.paymentLinks.metadata.edit, product.externalId, metadataKey) }}">
+                Change<span class="govuk-visually-hidden"> ‘{{ metadataKey }}’</span>
+              </a>
+            </dd>
+          </div>
+      {% endfor %}
+    </dl>
+    {% endif %}
+
+    {% set addReportingColumnButtonText %}
+      {% if product.metadata %}
+        Add another reporting column
+      {% else %}
+        Add a reporting column
+      {% endif %}
+    {% endset %}
+
+    {{ govukButton({
+      text: addReportingColumnButtonText,
+      classes: "govuk-button--secondary",
+      href: addMetadata
+    }) }}
+  {% endif %}
 
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
