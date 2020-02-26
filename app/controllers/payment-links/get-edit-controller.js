@@ -17,7 +17,10 @@ module.exports = (req, res) => {
     self: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId),
     editInformation: formattedPathFor(paths.paymentLinks.editInformation, req.params.productExternalId),
     editReference: formattedPathFor(paths.paymentLinks.editReference, req.params.productExternalId),
-    editAmount: formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId)
+    editAmount: formattedPathFor(paths.paymentLinks.editAmount, req.params.productExternalId),
+    addMetadata: formattedPathFor(paths.paymentLinks.metadata.add, req.params.productExternalId),
+    formattedPathFor,
+    paths
   }
 
   const gatewayAccountId = auth.getCurrentGatewayAccountId(req)
