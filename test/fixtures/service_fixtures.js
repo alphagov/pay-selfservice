@@ -218,7 +218,8 @@ module.exports = {
       service_name: buildServiceNameWithDefaults(opts.service_name),
       redirect_to_service_immediately_on_terminal_state: opts.redirect_to_service_immediately_on_terminal_state,
       collect_billing_address: opts.collect_billing_address,
-      current_go_live_stage: opts.current_go_live_stage
+      current_go_live_stage: opts.current_go_live_stage,
+      experimental_features_enabled: true
     }
 
     if (opts.merchant_details) {
