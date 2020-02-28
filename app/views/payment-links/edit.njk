@@ -44,6 +44,9 @@
 
   {{
     govukSummaryList({
+      attributes: {
+        id: "payment-link-summary"
+      },
       rows: [
         {
           key: {
@@ -127,7 +130,7 @@
   <p class="govuk-body">This can make it easier to match up payments with other systems.</p>
 
   {% if product.metadata %}
-    <dl class="govuk-summary-list">
+    <dl id="reporting-columns-summary" class="govuk-summary-list">
       {% for metadataKey, metadataValue in product.metadata | dictsort %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">

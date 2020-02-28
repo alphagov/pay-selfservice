@@ -3,7 +3,7 @@ const { getProductsStub, getProductByExternalIdStub } = require('../../utils/pro
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 
-const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price, referenceEnabled, referenceLabel, referenceHint) {
+const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, language, description, price, referenceEnabled, referenceLabel, referenceHint, metadata = null) {
   return {
     external_id: externalId,
     name: name,
@@ -13,7 +13,8 @@ const buildPaymentLinkOpts = function buildPaymentLinkOpts (externalId, name, la
     type: 'ADHOC',
     reference_enabled: referenceEnabled,
     reference_label: referenceLabel,
-    reference_hint: referenceHint
+    reference_hint: referenceHint,
+    metadata: metadata
   }
 }
 
@@ -27,9 +28,10 @@ describe('Editing a payment link', () => {
     const name = 'Pay for a firearm'
     const description = 'a description'
     const referenceEnabled = true
-    const referenceLabel = 'License number'
-    const referenceHint = 'You can find this on your license card'
-    const product = buildPaymentLinkOpts(productId, name, 'en', description, 1000, referenceEnabled, referenceLabel, referenceHint)
+    const referenceLabel = 'Licence number'
+    const referenceHint = 'You can find this on your licence card'
+    const product = buildPaymentLinkOpts(productId, name, 'en', description, 1000, referenceEnabled, referenceLabel, referenceHint,
+      { 'Finance team': 'Licensing', 'cost_code': '12345', 'group': 'A' })
 
     beforeEach(() => {
       cy.task('setupStubs', [
@@ -52,31 +54,51 @@ describe('Editing a payment link', () => {
     })
 
     it('should show the details to edit', () => {
-      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').should('have.length', 4)
+      cy.get('#payment-link-summary').find('.govuk-summary-list__row').should('have.length', 4)
 
-      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
+      cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Title')
         cy.get('.govuk-summary-list__value').should('contain', name)
         cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-title`)
       })
-      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
+      cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'More details')
         cy.get('.govuk-summary-list__value').should('contain', description)
         cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/information/${productId}?field=payment-link-description`)
       })
-      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
+      cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Reference number')
         cy.get('.govuk-summary-list__value').should('contain', referenceLabel)
         cy.get('.govuk-summary-list__value').should('contain', referenceHint)
         cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/reference/${productId}?change=true`)
       })
-      cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
+      cy.get('#payment-link-summary').find('.govuk-summary-list__row').eq(3).should('exist').within(() => {
         cy.get('.govuk-summary-list__key').should('contain', 'Payment amount')
         cy.get('.govuk-summary-list__value').should('contain', '£10.00')
         cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/amount/${productId}`)
       })
-
       cy.get('button').should('exist').should('contain', 'Save changes')
+    })
+
+    it('should show reporting columns alphabetically (case-insensitive) with correctly-encoded change links', () => {
+      cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').should('have.length', 3)
+
+      cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(0).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'cost_code')
+        cy.get('.govuk-summary-list__value').should('contain', '12345')
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/cost_code`)
+      })
+      cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(1).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'Finance team')
+        cy.get('.govuk-summary-list__value').should('contain', 'Licensing')
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/Finance%20team`)
+      })
+      cy.get('#reporting-columns-summary').find('.govuk-summary-list__row').eq(2).should('exist').within(() => {
+        cy.get('.govuk-summary-list__key').should('contain', 'group')
+        cy.get('.govuk-summary-list__value').should('contain', 'A')
+        cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', `/create-payment-link/manage/edit/${productId}/metadata/group`)
+      })
+      cy.get('a.govuk-button--secondary').should('exist').should('contain', 'Add another reporting column')
     })
 
     it('should navigate to edit information page', () => {
