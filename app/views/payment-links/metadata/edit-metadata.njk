@@ -18,12 +18,14 @@
   }}
   {% endif %}
 
-  <h1 class="govuk-heading-l">Payment link reporting column</h1>
+  {% set pageHeading = ("Edit reporting column" if isEditing else "Payment link reporting column") %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
   <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are not shown to the user making the payment.</p>
 
     {% set metadataKeyField = form.fields.metadataKey %}
+    {% set metadataKeyAttributes = { "readonly": "readonly" } if isEditing else { "autofocus": "true" } %}
     {{
       govukInput({
         id: metadataKeyField.id,
@@ -38,11 +40,11 @@
         errorMessage: tested.errorMaps[metadataKeyField.id] and {
           text: tested.errorMaps[metadataKeyField.id]
         },
-        attributes: {
-            "autofocus": true
-        }
+        attributes: metadataKeyAttributes
       })
     }}
+    {# "disabled": "true" if isEditing else "" #}
+
 
     {% set metadataValueField = form.fields.metadataValue %}
     {{
@@ -64,12 +66,12 @@
 
     {{
       govukButton({
-        text: "Add reporting column",
+        text: "Update reporting column" if isEditing else "Add reporting column",
         classes: "button"
       })
     }}
 
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ routes.paymentLinks.manage }}">Cancel</a></p>
+    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelRoute }}">Cancel</a></p>
   </form>
 </section>
 {% endblock %}

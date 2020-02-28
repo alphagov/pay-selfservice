@@ -28,6 +28,7 @@ module.exports = (req, res) => {
     .then(product => {
       const productCheck = lodash.cloneDeep(product)
       const editPaymentLinkData = lodash.get(req, 'session.editPaymentLinkData', {})
+      delete editPaymentLinkData.metadata
       PAGE_PARAMS.product = lodash.merge(product, editPaymentLinkData)
       PAGE_PARAMS.changed = !lodash.isEqual(productCheck, PAGE_PARAMS.product)
       lodash.set(req, 'session.editPaymentLinkData', PAGE_PARAMS.product)

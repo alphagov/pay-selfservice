@@ -57,7 +57,7 @@ describe('Add payment link metadata', () => {
       expect(result.statusCode).to.equal(302)
       expect(session.flash).to.have.property('generic')
       expect(session.flash.generic.length).to.equal(1)
-      expect(session.flash.generic[0]).to.equal('Reporting column mykey was added')
+      expect(session.flash.generic[0]).to.equal('Updated reporting column mykey')
     })
   })
 
@@ -65,7 +65,9 @@ describe('Add payment link metadata', () => {
     let result, session, app, $
 
     before('Nock configuration', () => {
-      const expectedProductRequest = { 'mykey': 'myvalue' }
+      const expectedProductRequest = {
+        'mykey': 'myvalue'
+      }
       nock(PRODUCTS_URL).post(`/v1/api/products/${productId}/metadata`, expectedProductRequest).replyWithError('Invalid product metadata add')
       nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
       session = getMockSession(VALID_USER)

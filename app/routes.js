@@ -345,6 +345,8 @@ module.exports.bind = function (app) {
   app.post(paymentLinks.editAmount, xraySegmentCls, permission('tokens:create'), getAccount, paymentLinksController.postEditAmount)
   app.get(paymentLinks.metadata.add, xraySegmentCls, permission('tokens:create'), getAccount, restrictServiceExperimentalFeatures, paymentLinksController.metadata.add)
   app.post(paymentLinks.metadata.add, xraySegmentCls, permission('tokens:create'), getAccount, restrictServiceExperimentalFeatures, paymentLinksController.metadata.post)
+  app.get(paymentLinks.metadata.edit, xraySegmentCls, permission('tokens:create'), getAccount, restrictServiceExperimentalFeatures, paymentLinksController.metadata.editPage)
+  app.post(paymentLinks.metadata.edit, xraySegmentCls, permission('tokens:create'), getAccount, restrictServiceExperimentalFeatures, paymentLinksController.metadata.editPagePost)
 
   // Configure 2FA
   app.get(user.twoFactorAuth.index, xraySegmentCls, twoFactorAuthController.getIndex)
