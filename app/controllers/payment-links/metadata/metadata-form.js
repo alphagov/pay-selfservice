@@ -12,7 +12,7 @@ const fields = {
     name: 'metadata-cell-value',
     validation: [ {
       validator: isNotEmpty,
-      message: 'Enter a cell value'
+      message: 'Enter cell content'
     } ]
   }
 }

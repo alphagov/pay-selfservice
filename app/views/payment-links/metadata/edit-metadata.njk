@@ -22,7 +22,8 @@
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
   <form action="{{ self }}" class="form" method="post" style="display: inline">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <p class="govuk-body">Reporting columns are not shown to the user making the payment.</p>
+    <p class="govuk-body">Reporting columns are added to your CSV payment reports. They are not shown to the user making the payment.</p>
+    <p class="govuk-body">Use consistent wording and watch out for spelling errors. This will make it easier to read your payment report.</p>
 
     {% set metadataKeyField = form.fields.metadataKey %}
     {% set metadataKeyAttributes = { "readonly": "readonly" } if isEditing else { "autofocus": "true" } %}
@@ -60,11 +61,13 @@
         id: metadataValueField.id,
         name: metadataValueField.name,
         label: {
-            text: "Cell value"
+            text: "Cell content"
         },
         value: form.values[metadataValueField.id],
         hint: {
-          html: "Added to each row of the report"
+          html: "This is the code or payment type information you’d like to add. 
+          For example, if you put ‘cost centre’ as your heading, you could add ‘12345’ as the cost centre code.
+          This content will appear in all your reports for this payment link."
         },
         errorMessage: tested.errorMaps[metadataValueField.id] and {
           text: tested.errorMaps[metadataValueField.id]
