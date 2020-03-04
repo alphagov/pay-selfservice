@@ -28,6 +28,12 @@
     {% endif %}
   </p>
 
+  {% if currentService.experimentalFeaturesEnabled %}
+    <p class="govuk-body payment-links-list--header">
+      You can edit your payment links to add reporting columns, for example to add a cost centre code or other data to help your team manage transactions.
+    </p>
+  {% endif %}
+
   {% if englishPaymentLinks.length %}
   <ul class="govuk-list pay-!-border-top govuk-!-padding-top-3 govuk-!-padding-bottom-3 payment-links-list">
     {% for product in englishPaymentLinks %}

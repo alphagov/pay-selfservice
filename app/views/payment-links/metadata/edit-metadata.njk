@@ -23,7 +23,7 @@
   <form action="{{ self }}" class="form" method="post" style="display: inline">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are added to your CSV payment reports. They are not shown to the user making the payment.</p>
-    <p class="govuk-body">Use consistent wording and watch out for spelling errors. This will make it easier to read your payment report.</p>
+    <p class="govuk-body">Use consistent wording if you are adding reporting columns to more than one payment link or service. This will make it easier to read your payment report.</p>
 
     {% set metadataKeyField = form.fields.metadataKey %}
     {% set metadataKeyAttributes = { "readonly": "readonly" } if isEditing else { "autofocus": "true" } %}
@@ -65,9 +65,7 @@
         },
         value: form.values[metadataValueField.id],
         hint: {
-          html: "This is the code or payment type information you’d like to add. 
-          For example, if you put ‘cost centre’ as your heading, you could add ‘12345’ as the cost centre code.
-          This content will appear in all your reports for this payment link."
+          html: "For example, if you put ‘cost centre’ as your heading, you could add ‘12345’ as the cost centre code."
         },
         errorMessage: tested.errorMaps[metadataValueField.id] and {
           text: tested.errorMaps[metadataValueField.id]
