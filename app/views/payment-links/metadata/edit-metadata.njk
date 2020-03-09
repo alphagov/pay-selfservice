@@ -26,23 +26,33 @@
 
     {% set metadataKeyField = form.fields.metadataKey %}
     {% set metadataKeyAttributes = { "readonly": "readonly" } if isEditing else { "autofocus": "true" } %}
-    {{
-      govukInput({
-        id: metadataKeyField.id,
-        name: metadataKeyField.name,
-        label: {
-            text: "Column header"
-        },
-        value: form.values[metadataKeyField.id],
-        hint: {
-          html: "Shown in the header row of the report"
-        },
-        errorMessage: tested.errorMaps[metadataKeyField.id] and {
-          text: tested.errorMaps[metadataKeyField.id]
-        },
-        attributes: metadataKeyAttributes
-      })
-    }}
+    {% set columnHeaderHeading = "Column Header" %}
+    {% set columnHeaderHint = "Shown in the header row of the report" %}
+    {% if isEditing %}
+      <p class="govuk-body edit-reporting-column--bottom-spacing">{{columnHeaderHeading}}</p>
+      <p class="govuk-body govuk-hint edit-reporting-column--bottom-spacing">{{columnHeaderHint}}</span> 
+      <p class="govuk-body govuk-!-font-weight-bold" >{{form.values[metadataKeyField.id]}}</p>
+      <input type="hidden" id="{{metadataKeyField.id}}" name="{{metadataKeyField.name}}"
+       value="{{form.values[metadataKeyField.id]}}" />
+    {% else %}
+      {{
+        govukInput({
+          id: metadataKeyField.id,
+          name: metadataKeyField.name,
+          label: {
+              text: columnHeaderHeading 
+          },
+          value: form.values[metadataKeyField.id],
+          hint: {
+            html: columnHeaderHint 
+          },
+          errorMessage: tested.errorMaps[metadataKeyField.id] and {
+            text: tested.errorMaps[metadataKeyField.id]
+          },
+          attributes: metadataKeyAttributes
+        })
+      }}
+    {% endif %} 
     {# "disabled": "true" if isEditing else "" #}
 
 
