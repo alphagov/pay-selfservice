@@ -124,4 +124,35 @@ describe('Add payment link metadata', () => {
       expect(session.flash.generic[0]).to.equal('Updated reporting column mykey')
     })
   })
+
+  describe('successfully delete metadata given a known key', () => {
+    let result, session, app
+    const metadataKey = 'key'
+    before('Nock configuration', () => {
+      nock(PRODUCTS_URL).delete(`/v1/api/products/${productId}/metadata/${metadataKey}`).reply(200, {})
+      nock(CONNECTOR_URL).get(`/v1/frontend/accounts/${GATEWAY_ACCOUNT_ID}`).reply(200, VALID_MINIMAL_GATEWAY_ACCOUNT_RESPONSE)
+      session = getMockSession(VALID_USER)
+      app = createAppWithSession(getApp(), session)
+    })
+    before('Supertest configuration', done => {
+      const path = formattedPathFor(paths.paymentLinks.metadata.delete, productId, metadataKey)
+      supertest(app)
+        .post(path)
+        .send(VALID_PAYLOAD)
+        .end((err, res) => {
+          result = res
+          done(err)
+        })
+    })
+    after(() => {
+      nock.cleanAll()
+    })
+
+    it('should succeed with products and redirect to the detail page', () => {
+      expect(result.statusCode).to.equal(302)
+      expect(session.flash).to.have.property('generic')
+      expect(session.flash.generic.length).to.equal(1)
+      expect(session.flash.generic[0]).to.equal(`Deleted reporting column ${metadataKey}`)
+    })
+  })
 })

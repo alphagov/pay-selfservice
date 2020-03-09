@@ -81,9 +81,22 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
 const postMetadataPage = updateMetadataPage(product.addMetadataToProduct, paths.paymentLinks.metadata.add)
 const editMetadataPost = updateMetadataPage(product.updateProductMetadata, paths.paymentLinks.metadata.edit)
 
+const deleteMetadataPost = async function deleteMetadaPost (req, res, next) {
+  const { productExternalId, metadataKey } = req.params
+
+  try {
+    await product.deleteProductMetadata(productExternalId, metadataKey)
+    req.flash('generic', `Deleted reporting column ${metadataKey}`)
+    res.redirect(formattedPathFor(paths.paymentLinks.edit, productExternalId))
+  } catch (error) {
+    renderErrorView(req, res, 'Failed to delete metadata for product')
+  }
+}
+
 module.exports = {
   addMetadataPage,
   postMetadataPage,
   editMetadataPage,
-  editMetadataPost
+  editMetadataPost,
+  deleteMetadataPost
 }

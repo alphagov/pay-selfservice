@@ -20,7 +20,7 @@
 
   {% set pageHeading = ("Edit reporting column" if isEditing else "Payment link reporting column") %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
-  <form action="{{ self }}" class="form" method="post">
+  <form action="{{ self }}" class="form" method="post" style="display: inline">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are not shown to the user making the payment.</p>
 
@@ -30,7 +30,7 @@
     {% set columnHeaderHint = "Shown in the header row of the report" %}
     {% if isEditing %}
       <p class="govuk-body edit-reporting-column--bottom-spacing">{{columnHeaderHeading}}</p>
-      <p class="govuk-body govuk-hint edit-reporting-column--bottom-spacing">{{columnHeaderHint}}</span> 
+      <p class="govuk-body govuk-hint edit-reporting-column--bottom-spacing">{{columnHeaderHint}}</span>
       <p class="govuk-body govuk-!-font-weight-bold" >{{form.values[metadataKeyField.id]}}</p>
       <input type="hidden" id="{{metadataKeyField.id}}" name="{{metadataKeyField.name}}"
        value="{{form.values[metadataKeyField.id]}}" />
@@ -40,11 +40,11 @@
           id: metadataKeyField.id,
           name: metadataKeyField.name,
           label: {
-              text: columnHeaderHeading 
+              text: columnHeaderHeading
           },
           value: form.values[metadataKeyField.id],
           hint: {
-            html: columnHeaderHint 
+            html: columnHeaderHint
           },
           errorMessage: tested.errorMaps[metadataKeyField.id] and {
             text: tested.errorMaps[metadataKeyField.id]
@@ -52,9 +52,7 @@
           attributes: metadataKeyAttributes
         })
       }}
-    {% endif %} 
-    {# "disabled": "true" if isEditing else "" #}
-
+    {% endif %}
 
     {% set metadataValueField = form.fields.metadataValue %}
     {{
@@ -81,7 +79,20 @@
       })
     }}
 
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelRoute }}">Cancel</a></p>
-  </form>
+    </form>
+
+    {% if isEditing %}
+      <form method="post" action="{{ self }}/delete" style="display: inline">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+        {{
+        govukButton({
+          text: "Delete reporting column",
+          classes: "govuk-button--warning"
+        })
+        }}
+      </form>
+    {% endif %}
+
+  <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelRoute }}">Cancel</a></p>
 </section>
 {% endblock %}
