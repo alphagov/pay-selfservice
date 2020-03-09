@@ -27,5 +27,6 @@ exports.metadata = {
   add: require('./metadata/resource-controller').addMetadataPage,
   post: require('./metadata/resource-controller').postMetadataPage,
   editPage: require('./metadata/resource-controller').editMetadataPage,
-  editPagePost: require('./metadata/resource-controller').editMetadataPost
+  editPagePost: require('./metadata/resource-controller').editMetadataPost,
+  deletePagePost: require('./metadata/resource-controller').deleteMetadataPost
 }

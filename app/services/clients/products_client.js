@@ -24,7 +24,8 @@ module.exports = {
     getByGatewayAccountId: getProductsByGatewayAccountId,
     getByProductPath: getProductByPath,
     addMetadataToProduct: addMetadataToProduct,
-    updateProductMetadata: updateProductMetadata
+    updateProductMetadata: updateProductMetadata,
+    deleteProductMetadata: deleteProductMetadata
   },
   payment: {
     create: createPayment,
@@ -118,6 +119,15 @@ function updateProductMetadata (productExternalId, key, value) {
     body,
     url: `/products/${productExternalId}/metadata`,
     description: 'update existing metadata on an existing product',
+    service: SERVICE_NAME
+  })
+}
+
+function deleteProductMetadata (productExternalId, key) {
+  return baseClient.delete({
+    baseUrl,
+    url: `/products/${productExternalId}/metadata/${key}`,
+    description: 'delete metadata on an existing product',
     service: SERVICE_NAME
   })
 }
