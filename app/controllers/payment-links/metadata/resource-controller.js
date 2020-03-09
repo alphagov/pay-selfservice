@@ -1,4 +1,4 @@
-const { response } = require('../../../utils/response')
+const { response, renderErrorView } = require('../../../utils/response')
 const formattedPathFor = require('../../../utils/replace_params_in_path')
 const paths = require('../../../paths')
 const { product } = require('../../../services/clients/products_client.js')
@@ -39,7 +39,7 @@ const editMetadataPage = async function editMetadataPage (req, res) {
     }
     response(req, res, 'payment-links/metadata/edit-metadata', pageData)
   } catch (error) {
-
+    renderErrorView(req, res, 'Failed to load metadata page')
   }
 }
 
