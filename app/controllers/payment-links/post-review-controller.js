@@ -70,7 +70,11 @@ module.exports = (req, res) => {
     })
     .then(product => {
       lodash.unset(req, 'session.pageData.createPaymentLink')
-      req.flash('generic', `<h2>Your payment link is now live</h2><p>Give this link to your users to collect payments for your service.</p>`)
+      req.flash('generic', `
+        <h2>Your payment link is now live</h2>
+        <p>Give this link to your users to collect payments for your service.</p>
+        <p>Edit your payment links to make reporting easier.</p>
+      `)
       res.redirect(paths.paymentLinks.manage)
     })
     .catch((err) => {

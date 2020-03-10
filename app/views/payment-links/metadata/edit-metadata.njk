@@ -20,10 +20,16 @@
 
   {% set pageHeading = ("Edit reporting column" if isEditing else "Payment link reporting column") %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
-  <form action="{{ self }}" class="form" method="post" style="display: inline">
+  <form action="{{ self }}" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     <p class="govuk-body">Reporting columns are added to your CSV payment reports. They are not shown to the user making the payment.</p>
     <p class="govuk-body">Use consistent wording if you are adding reporting columns to more than one payment link or service. This will make it easier to read your payment report.</p>
+
+    {% if isEditing %} 
+      <p class="govuk-body">You can't edit column headers.</p>
+    {% else %}
+      <p class="govuk-body">You can't edit column headers, but you can delete them.</p>
+    {% endif %}
 
     {% set metadataKeyField = form.fields.metadataKey %}
     {% set metadataKeyAttributes = { "readonly": "readonly" } if isEditing else { "autofocus": "true" } %}
