@@ -48,7 +48,8 @@ const updateMetadataPage = function updateMetadataPage (updateMethod, path) {
   return async (req, res, next) => {
     let form, tested
     const pageContext = {
-      cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId)
+      cancelRoute: formattedPathFor(paths.paymentLinks.edit, req.params.productExternalId),
+      isEditing: path === paths.paymentLinks.metadata.edit
     }
     try {
       form = new MetadataForm(req.body)
