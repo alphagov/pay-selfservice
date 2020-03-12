@@ -500,7 +500,7 @@ describe('Stripe setup: responsible person page', () => {
         stubStripeAccountGet('acct_123example123')
       ])
 
-      cy.visit('/responsible-person')
+      cy.visit('/responsible-person', { failOnStatusCode: false })
     })
 
     it('should show a permission denied error', () => {

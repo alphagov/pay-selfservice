@@ -240,7 +240,7 @@ describe('Stripe setup: company number page', () => {
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe')
         ])
 
-        cy.visit('/vat-number-company-number/company-number')
+        cy.visit('/vat-number-company-number/company-number', { failOnStatusCode: false })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })

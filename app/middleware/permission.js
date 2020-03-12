@@ -14,7 +14,7 @@ module.exports = function (permission) {
     if (req.user.hasPermission(req.service.externalId, permission)) {
       return next()
     } else {
-      return res.render('error', {'message': 'You do not have the administrator rights to perform this operation.'})
+      return res.status(401).render('error', { 'message': 'You do not have the administrator rights to perform this operation.' })
     }
   }]
 }

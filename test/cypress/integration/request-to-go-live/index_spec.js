@@ -44,7 +44,7 @@ describe('Request to go live: index', () => {
 
     it('should show an error when the user does not have enough permissions', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
-      cy.visit(requestToGoLivePageUrl)
+      cy.visit(requestToGoLivePageUrl, { failOnStatusCode: false })
       cy.get('h1').should('contain', 'An error occurred:')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })
