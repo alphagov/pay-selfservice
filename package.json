@@ -67,7 +67,7 @@
   "dependencies": {
     "@govuk-pay/pay-js-commons": "2.26.0",
     "@pact-foundation/pact": "9.8.0",
-    "@sentry/node": "5.13.1",
+    "@sentry/node": "5.14.1",
     "accessible-autocomplete": "2.0.2",
     "appmetrics": "5.1.1",
     "appmetrics-statsd": "3.0.0",
