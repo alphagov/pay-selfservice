@@ -221,7 +221,7 @@ describe('The organisation address page', () => {
     })
 
     it('should show an error when the user does not have enough permissions', () => {
-      cy.visit(pageUrl)
+      cy.visit(pageUrl, { failOnStatusCode: false })
       cy.get('h1').should('contain', 'An error occurred:')
       cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
     })

@@ -252,7 +252,9 @@ describe('Stripe setup: bank details page', () => {
           commonStubs.getGatewayAccountStub(gatewayAccountId, 'live', 'stripe')
         ])
 
-        cy.visit('/bank-details')
+        cy.visit('/bank-details', {
+          failOnStatusCode: false
+        })
         cy.get('h1').should('contain', 'An error occurred:')
         cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
       })
