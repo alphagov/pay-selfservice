@@ -84,6 +84,10 @@ const buildTransactionDetails = (opts = {}) => {
     data.gateway_transaction_id = opts.gateway_transaction_id
   }
 
+  if (opts.gateway_account_id) {
+    data.gateway_account_id = opts.gateway_account_id
+  }
+
   if (opts.includeCardDetails) {
     data.card_details = {
       last_digits_card_number: opts.last_digits_card_number || '0002',

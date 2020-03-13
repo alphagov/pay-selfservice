@@ -14,7 +14,6 @@ module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
   const correlationId = req.headers[CORRELATION_HEADER]
-
   Charge(correlationId)
     .findWithEvents(accountId, chargeId)
     .then(data => {

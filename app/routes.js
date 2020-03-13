@@ -41,6 +41,7 @@ const transactionsDownloadController = require('./controllers/transactions/trans
 const transactionsListController = require('./controllers/transactions/transaction_list_controller')
 const transactionDetailController = require('./controllers/transactions/transaction_detail_controller')
 const transactionRefundController = require('./controllers/transactions/transaction_refund_controller')
+const transactionDetailRedirectController = require('./controllers/transactions/transaction_detail_redirect_controller')
 const credentialsController = require('./controllers/credentials_controller')
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
@@ -223,6 +224,7 @@ module.exports.bind = function (app) {
   app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
   app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController)
   app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
+  app.get(transactions.redirectDetail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailRedirectController)
 
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
