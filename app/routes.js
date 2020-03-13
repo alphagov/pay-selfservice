@@ -34,6 +34,7 @@ const getStripeAccount = require('./middleware/stripe-setup/get-stripe-account')
 const checkBankDetailsNotSubmitted = require('./middleware/stripe-setup/check-bank-details-not-submitted')
 const checkResponsiblePersonNotSubmitted = require('./middleware/stripe-setup/check-responsible-person-not-submitted')
 const checkVatNumberCompanyNumberNotSubmitted = require('./middleware/stripe-setup/check-vat-number-company-number-not-submitted')
+const switchService = require('./middleware/service-switcher')
 
 // Controllers
 const staticController = require('./controllers/static_controller')
@@ -223,7 +224,7 @@ module.exports.bind = function (app) {
   app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
   app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController)
   app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
-
+  app.get(transactions.serviceSwitchDetail, xraySegmentCls, permission('transactions-details:read'), switchService, getAccount, paymentMethodIsCard, transactionDetailController)
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
   app.get(yourPsp.flex, xraySegmentCls, permission('gateway-credentials:update'), getAccount, paymentMethodIsCard, yourPspController.getFlex)

@@ -8,7 +8,8 @@ module.exports = {
     index: '/transactions',
     download: '/transactions/download',
     detail: '/transactions/:chargeId',
-    refund: '/transactions/:chargeId/refund'
+    refund: '/transactions/:chargeId/refund',
+    serviceSwitchDetail: '/services/:serviceId/transactions/:chargeId'
   },
   yourPsp: {
     index: '/your-psp',
