@@ -7,6 +7,8 @@ env_vars:
   LEDGER_URL:                  '.[][] | select(.name == "app-catalog") | .credentials.ledger_url'
   ADMINUSERS_URL:              '.[][] | select(.name == "app-catalog") | .credentials.adminusers_url'
   PRODUCTS_FRIENDLY_BASE_URI:  '.[][] | select(.name == "app-catalog") | .credentials.products_ui_redirect_url'
+  METRICS_HOST:                '.[][] | select(.name == "app-catalog") | .credentials.carbon_relay_route'
+  METRICS_PORT:                '.[][] | select(.name == "app-catalog") | .credentials.carbon_relay_port'
   SESSION_ENCRYPTION_KEY:      '.[][] | select(.name == "selfservice-secret-service") | .credentials.card_frontend_session_encryption_key'
   ANALYTICS_TRACKING_ID:       '.[][] | select(.name == "selfservice-secret-service") | .credentials.analytics_tracking_id'
   ZENDESK_USER:                '.[][] | select(.name == "selfservice-secret-service") | .credentials.zendesk_user'
