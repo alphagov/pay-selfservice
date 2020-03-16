@@ -28,6 +28,8 @@ applications:
     DIRECT_DEBIT_CONNECTOR_URL: ""
     LEDGER_URL: ""
     PRODUCTS_FRIENDLY_BASE_URI: ""
+    METRICS_HOST: ""
+    METRICS_PORT: ""
 
     # The below are provisioned by the selfservice-secret-service user-provided service
     SESSION_ENCRYPTION_KEY: ""
