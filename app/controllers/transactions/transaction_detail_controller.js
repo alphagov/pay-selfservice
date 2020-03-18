@@ -18,6 +18,7 @@ module.exports = (req, res) => {
     .findWithEvents(accountId, chargeId)
     .then(data => {
       data.indexFilters = req.session.filters
+      data.redirectBackLink = req.session.backLink
       response(req, res, 'transaction_detail/index', data)
     })
     .catch(err => {

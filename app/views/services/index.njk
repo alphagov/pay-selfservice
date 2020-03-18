@@ -13,7 +13,7 @@
     </div>
   {% endif %}
 
-  <h1 class="govuk-heading-l govuk-grid-column-two-thirds govuk-!-margin-bottom-3 service-count">
+  <h1 class="govuk-heading-l govuk-grid-column-one-third govuk-!-margin-bottom-3 service-count">
     {% if services_singular %}
       You have {{services.length}} service
     {% else %}
@@ -21,7 +21,12 @@
     {% endif %}
   </h1>
 
-  <p class="govuk-body govuk-grid-column-one-third pay-text-align-right-l govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+  <p class="govuk-body govuk-grid-column-two-thirds pay-text-align-right-l govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+    {% if process.env.PROTOTYPE_MULTIACCOUNT_REPORTING %}
+      <a href="{{routes.allServiceTransactions.index}}" class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state create-service">
+        All Service Transactions
+      </a>
+    {% endif %}
     <a href="{{routes.serviceSwitcher.create}}" class="govuk-link govuk-link--no-visited-state create-service">
       Add a new service
     </a>

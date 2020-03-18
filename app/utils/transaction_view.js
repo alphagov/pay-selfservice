@@ -18,7 +18,7 @@ const CSV_MAX_LIMIT = process.env.CSV_MAX_LIMIT || 10000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountId, filtersResult) {
+  buildPaymentList: function (connectorData, allCards, gatewayAccountId, filtersResult, route, backPath) {
     connectorData.filters = filtersResult
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
@@ -57,10 +57,15 @@ module.exports = {
       element.email = (element.email && element.email.length > 20) ? element.email.substring(0, 20) + '…' : element.email
       element.updated = dates.utcToDisplay(element.updated)
       element.created = dates.utcToDisplay(element.created_date)
-      element.gateway_account_id = gatewayAccountId
-      element.link = router.generateRoute(router.paths.transactions.detail, {
-        chargeId: element.charge_id
-      })
+      if (!gatewayAccountId) {
+        element.link = router.generateRoute(router.paths.transactions.redirectDetail, {
+          chargeId: element.charge_id
+        })
+      } else {
+        element.link = router.generateRoute(router.paths.transactions.detail, {
+          chargeId: element.charge_id
+        })
+      }
       if (element.transaction_type && element.transaction_type.toLowerCase() === 'refund') {
         element.amount = `–${element.amount}`
       }
@@ -69,7 +74,7 @@ module.exports = {
 
     // TODO normalise fromDate and ToDate so you can just pass them through no problem
     connectorData.downloadTransactionLink = router.generateRoute(
-      router.paths.transactions.download, {
+      route, {
         reference: filtersResult.reference,
         email: filtersResult.email,
         payment_states: filtersResult.payment_states,

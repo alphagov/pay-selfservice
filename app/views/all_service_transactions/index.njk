@@ -1,0 +1,53 @@
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+All Service Transactions - {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block classesOnBodyTag %}transactions index {% endblock %}
+
+{% block pageSpecificStyle %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.standalone.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css">
+{% endblock %}
+
+{% block pageSpecificJS %}
+<script src="/public/js/components/link-follower.js"></script>
+<script src="https://unpkg.com/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepair.js/0.4.15/jquery.datepair.min.js"></script>
+<script src="/public/js/components/datetime-picker.js"></script>
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">All Service Transactions</h1>
+  {% include "transactions/filter.njk" %}
+
+  {% include "transactions/display_size.njk" %}
+
+  <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
+    {{totalFormatted}} transactions
+    {{ filtersDescription | safe }}
+  </h3>
+
+  {% if permissions.transactions_download_read %}
+    {% if (hasResults) %}
+      <p class="govuk-body">
+      {% if showCsvDownload %}
+        <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"> Download all transaction details as a CSV file </a>
+      {% else %}
+        You cannot download CSV over {{ csvMaxLimitFormatted }} transactions. Please refine your search
+      {% endif %}
+      </p>
+    {% endif %}
+  {% endif %}
+
+  {% include "transactions/paginator.njk" %}
+
+  {% include "transactions/list.njk" %}
+
+  {% include "transactions/paginator.njk" %}
+</div>
+{% endblock %}

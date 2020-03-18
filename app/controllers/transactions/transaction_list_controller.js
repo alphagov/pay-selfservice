@@ -31,7 +31,7 @@ module.exports = (req, res) => {
     .then(transactions => {
       client
         .getAllCardTypes({ correlationId }, allCards => {
-          const model = buildPaymentList(transactions, allCards, accountId, filters.result)
+          const model = buildPaymentList(transactions, allCards, accountId, filters.result, router.paths.transactions.download)
           model.search_path = router.paths.transactions.index
           model.filtersDescription = describeFilters(filters.result)
           model.eventStates = states.allDisplayStateSelectorObjects()

@@ -11,6 +11,10 @@ module.exports = {
     refund: '/transactions/:chargeId/refund',
     redirectDetail: '/redirect/transactions/:chargeId'
   },
+  allServiceTransactions: {
+    index: '/all_service_transactions',
+    download: '/all_service_transactions/download'
+  },
   yourPsp: {
     index: '/your-psp',
     flex: '/your-psp/flex'
