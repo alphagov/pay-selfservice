@@ -5,6 +5,7 @@ const logger = require('../../utils/logger')(__filename)
 const date = require('../../utils/dates')
 const transactionService = require('../../services/transaction_service')
 const Stream = require('../../services/clients/stream_client')
+const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const { renderErrorView } = require('../../utils/response')
 
@@ -17,6 +18,7 @@ module.exports = (req, res) => {
   const accountIdsUsersHasPermissionsFor = servicesRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
+    .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
     .join(',')
 
   const url = transactionService.csvSearchUrl(filters, accountIdsUsersHasPermissionsFor)

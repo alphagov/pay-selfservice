@@ -4,7 +4,7 @@
 const _ = require('lodash')
 
 // local dependencies
-const {response} = require('../../utils/response')
+const { response } = require('../../utils/response')
 const serviceService = require('../../services/service_service')
 const getHeldPermissions = require('../../utils/get_held_permissions')
 
@@ -15,7 +15,8 @@ module.exports = (req, res) => {
   const displayMyServices = servicesData => {
     const data = {
       services: servicesData,
-      services_singular: servicesData.length === 1
+      services_singular: servicesData.length === 1,
+      env: process.env
     }
     if (newServiceId) {
       servicesData.filter(serviceData => {

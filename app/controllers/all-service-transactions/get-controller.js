@@ -5,7 +5,7 @@ const _ = require('lodash')
 
 const { response, renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector_client.js')
-const serviceService = require('../../services/service_service')
+const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const transactionService = require('../../services/transaction_service')
 const { buildPaymentList } = require('../../utils/transaction_view.js')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
@@ -20,12 +20,12 @@ module.exports = async (req, res) => {
   const servicesRoles = _.get(req, 'user.serviceRoles', [])
   const filters = getFilters(req)
   try {
-    const aggregatedGatewayAccountIds = servicesRoles
+    const accountIdsUsersHasPermissionsFor = servicesRoles
       .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
       .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-    const aggregatedGatewayAccounts = await serviceService.getGatewayAccounts(aggregatedGatewayAccountIds, req.correlationId)
-    const csList = _.flatMap(aggregatedGatewayAccounts, x => x.id).join(',')
-    const searchResultOutput = await transactionService.search(csList, filters.result)
+      .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
+      .join(',')
+    const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
     delete req.session.backPath
