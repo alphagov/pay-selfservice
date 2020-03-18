@@ -29,6 +29,17 @@ const transaction = function transaction (id, gatewayAccountId, options = {}) {
   return baseClient.get(configuration)
 }
 
+const transactionWithAccountOverride = function transactionWithAccountOverride (id, options = {}) {
+  const configuration = Object.assign({
+    url: `/v1/transaction/${id}`,
+    qs: {
+      override_account_id_restriction: true
+    },
+    description: 'Get individual transaction details with no accountId restriction'
+  }, defaultOptions, options)
+  return baseClient.get(configuration)
+}
+
 const events = function events (transactionId, gatewayAccountId, options = {}) {
   const configuration = Object.assign({
     url: `/v1/transaction/${transactionId}/event`,
@@ -100,6 +111,7 @@ const transactionSummary = function transactionSummary (gatewayAccountId, fromDa
 module.exports = {
   transaction,
   transactions,
+  transactionWithAccountOverride,
   allTransactionPages,
   allTransactionsAsCsv,
   events,
