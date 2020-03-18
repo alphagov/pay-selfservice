@@ -85,13 +85,15 @@ const userPhoneNumberController = require('./controllers/user/phone-number')
 const goCardlessRedirect = require('./controllers/partnerapp/handle_redirect_to_gocardless_connect')
 const goCardlessOAuthGet = require('./controllers/partnerapp/handle_gocardless_connect_get')
 const yourPspController = require('./controllers/your-psp')
+const allTransactionsController = require('./controllers/all-service-transactions/index')
 
 // Assignments
 const {
   healthcheck, registerUser, user, dashboard, selfCreateService, transactions, credentials,
   apiKeys, serviceSwitcher, teamMembers, staticPaths, inviteValidation, editServiceName, merchantDetails,
   notificationCredentials: nc, paymentTypes: pt, emailNotifications: en, toggle3ds: t3ds, prototyping, paymentLinks,
-  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet, settings, yourPsp
+  partnerApp, toggleBillingAddress: billingAddress, requestToGoLive, policyPages, stripeSetup, digitalWallet,
+  settings, yourPsp, allServiceTransactions
 } = paths
 
 // Exports
@@ -188,6 +190,7 @@ module.exports.bind = function (app) {
 
   const authenticatedPaths = [
     ...lodash.values(transactions),
+    ...lodash.values(allServiceTransactions),
     ...lodash.values(credentials),
     ...lodash.values(nc),
     ...lodash.values(apiKeys),
@@ -225,6 +228,10 @@ module.exports.bind = function (app) {
   app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController)
   app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
   app.get(transactions.redirectDetail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailRedirectController)
+
+  // ALL SERVICE TRANSACTIONS
+  app.get(allServiceTransactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, allTransactionsController.getController)
+  app.get(allServiceTransactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, allTransactionsController.downloadTransactions)
 
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
