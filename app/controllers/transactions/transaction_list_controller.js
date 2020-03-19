@@ -53,6 +53,7 @@ module.exports = (req, res) => {
               brand.selected = filters.result.brand.includes(brand.value)
             })
           }
+          model.clearRedirect = router.paths.transactions.index
           response(req, res, 'transactions/index', model)
         })
         .on('connectorError', () => error('Unable to retrieve card types.'))
