@@ -51,6 +51,7 @@ module.exports = async (req, res) => {
       })
     }
     model.filterRedirect = router.paths.allServiceTransactions.index
+    model.clearRedirect = router.paths.allServiceTransactions.index
     return response(req, res, 'all_service_transactions/index', model)
   } catch (err) {
     renderErrorView(req, res, 'Unable to fetch transaction information')
