@@ -1,7 +1,7 @@
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
-All Service Transactions - {{currentGatewayAccount.full_type}} - GOV.UK Pay
+Transactions for all live services - GOV.UK Pay
 {% endblock %}
 
 {% block classesOnBodyTag %}transactions index {% endblock %}
@@ -22,7 +22,7 @@ All Service Transactions - {{currentGatewayAccount.full_type}} - GOV.UK Pay
 
 {% block mainContent %}
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">All Service Transactions</h1>
+  <h1 class="govuk-heading-l">Transactions for all live services</h1>
   {% include "transactions/filter.njk" %}
 
   {% include "transactions/display_size.njk" %}
