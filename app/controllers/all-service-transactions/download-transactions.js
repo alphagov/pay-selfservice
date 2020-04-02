@@ -13,30 +13,35 @@ module.exports = (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER]
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
-  const accountIdsUsersHasPermissionsFor = liveUserServicesGatewayAccounts(req.user)
-  const url = transactionService.csvSearchUrl({ ...filters, live: true }, accountIdsUsersHasPermissionsFor)
+  liveUserServicesGatewayAccounts(req.user)
+    .then((accountIdsUsersHasPermissionsFor) => {
+      const url = transactionService.csvSearchUrl(filters, accountIdsUsersHasPermissionsFor)
 
-  const timestampStreamStart = Date.now()
-  const data = (chunk) => { res.write(chunk) }
-  const complete = () => {
-    const timestampStreamEnd = Date.now()
-    logger.info('Completed file stream', {
-      gateway_account_id: accountIdsUsersHasPermissionsFor,
-      time_taken: timestampStreamEnd - timestampStreamStart,
-      from_date: filters.fromDate,
-      to_date: filters.toDate,
-      payment_states: filters.payment_states,
-      refund_states: filters.refund_stats,
-      x_request_id: correlationId,
-      method: 'future'
+      const timestampStreamStart = Date.now()
+      const data = (chunk) => { res.write(chunk) }
+      const complete = () => {
+        const timestampStreamEnd = Date.now()
+        logger.info('Completed file stream', {
+          gateway_account_id: accountIdsUsersHasPermissionsFor,
+          time_taken: timestampStreamEnd - timestampStreamStart,
+          from_date: filters.fromDate,
+          to_date: filters.toDate,
+          payment_states: filters.payment_states,
+          refund_states: filters.refund_stats,
+          x_request_id: correlationId,
+          method: 'future'
+        })
+        res.end()
+      }
+      const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')
+      const client = new Stream(data, complete, error)
+
+      res.setHeader('Content-disposition', `attachment; filename="${name}"`)
+      res.setHeader('Content-Type', 'text/csv')
+
+      client.request(url, correlationId)
     })
-    res.end()
-  }
-  const error = () => renderErrorView(req, res, 'Unable to download list of transactions.')
-  const client = new Stream(data, complete, error)
-
-  res.setHeader('Content-disposition', `attachment; filename="${name}"`)
-  res.setHeader('Content-Type', 'text/csv')
-
-  client.request(url, correlationId)
+    .catch(() => {
+      renderErrorView(req, res, 'Unable to download list of transactions.')
+    })
 }

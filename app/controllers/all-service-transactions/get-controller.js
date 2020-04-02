@@ -19,9 +19,8 @@ module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
   try {
-    const accountIdsUsersHasPermissionsFor = liveUserServicesGatewayAccounts(req.user)
-    const searchFilters = { ...filters.result, live: true }
-    const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, searchFilters)
+    const accountIdsUsersHasPermissionsFor = await liveUserServicesGatewayAccounts(req.user)
+    const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
     delete req.session.backPath

@@ -1,17 +1,25 @@
 const { expect } = require('chai')
 
-const { liveUserServicesGatewayAccounts } = require('./../../../app/utils/valid_account_id')
+const { userServicesContainsGatewayAccount } = require('./../../../app/utils/valid_account_id')
 const { validUser } = require('./../../fixtures/user_fixtures')
 
 describe('gateway account filter utiltiies', () => {
-  describe('all live gateway accounts for a given user', () => {
-    it('returns only live account ids from a valid list of user services', () => {
+  describe('gateway account exists on users service roles', () => {
+    it('returns valid for gateway account belonging to user', () => {
       const opts = {
         gateway_account_ids: ['1', '2', '3']
       }
       const user = validUser(opts).getAsObject()
-      const parsed = liveUserServicesGatewayAccounts(user)
-      expect(parsed).to.equal('1,2,3')
+      const valid = userServicesContainsGatewayAccount('2', user)
+      expect(valid).to.equal(true)
+    })
+    it('returns invalid for gateway account not belonging to user', () => {
+      const opts = {
+        gateway_account_ids: ['1', '2', '3']
+      }
+      const user = validUser(opts).getAsObject()
+      const valid = userServicesContainsGatewayAccount('4', user)
+      expect(valid).to.equal(false)
     })
   })
 })
