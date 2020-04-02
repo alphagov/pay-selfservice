@@ -1,27 +1,20 @@
 'use strict'
 
-const _ = require('lodash')
 const logger = require('../../utils/logger')(__filename)
 const date = require('../../utils/dates')
 const transactionService = require('../../services/transaction_service')
 const Stream = require('../../services/clients/stream_client')
-const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const { CORRELATION_HEADER } = require('../../utils/correlation_header')
 const { renderErrorView } = require('../../utils/response')
+const { liveUserServicesGatewayAccounts } = require('./../../utils/valid_account_id')
 
 module.exports = (req, res) => {
-  const servicesRoles = _.get(req, 'user.serviceRoles', [])
   const filters = req.query
   const correlationId = req.headers[CORRELATION_HEADER]
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
-  const accountIdsUsersHasPermissionsFor = servicesRoles
-    .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
-    .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-    .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
-    .join(',')
-
-  const url = transactionService.csvSearchUrl(filters, accountIdsUsersHasPermissionsFor)
+  const accountIdsUsersHasPermissionsFor = liveUserServicesGatewayAccounts(req.user)
+  const url = transactionService.csvSearchUrl({ ...filters, live: true }, accountIdsUsersHasPermissionsFor)
 
   const timestampStreamStart = Date.now()
   const data = (chunk) => { res.write(chunk) }

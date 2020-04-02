@@ -5,9 +5,9 @@ const _ = require('lodash')
 
 const { response, renderErrorView } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector_client.js')
-const { isADirectDebitAccount } = require('../../services/clients/direct_debit_connector_client.js')
 const transactionService = require('../../services/transaction_service')
 const { buildPaymentList } = require('../../utils/transaction_view.js')
+const { liveUserServicesGatewayAccounts } = require('./../../utils/valid_account_id')
 const { getFilters, describeFilters } = require('../../utils/filters.js')
 const router = require('../../routes.js')
 const states = require('../../utils/states')
@@ -17,15 +17,11 @@ const { CORRELATION_HEADER } = require('../../utils/correlation_header.js')
 
 module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
-  const servicesRoles = _.get(req, 'user.serviceRoles', [])
   const filters = getFilters(req)
   try {
-    const accountIdsUsersHasPermissionsFor = servicesRoles
-      .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
-      .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-      .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
-      .join(',')
-    const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
+    const accountIdsUsersHasPermissionsFor = liveUserServicesGatewayAccounts(req.user)
+    const searchFilters = { ...filters.result, live: true }
+    const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, searchFilters)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
     delete req.session.backPath
