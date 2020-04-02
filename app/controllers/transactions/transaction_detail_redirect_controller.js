@@ -1,7 +1,7 @@
 'use strict'
 
 const paths = require('../../paths')
-const validAccountId = require('../../utils/valid_account_id')
+const { userServicesContainsGatewayAccount } = require('../../utils/valid_account_id')
 const Ledger = require('../../services/clients/ledger_client')
 const { renderErrorView } = require('../../utils/response.js')
 const router = require('../../routes')
@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
   const chargeId = req.params.chargeId
   try {
     let charge = await Ledger.transactionWithAccountOverride(chargeId)
-    if (validAccountId(charge.gateway_account_id, req.user)) {
+    if (userServicesContainsGatewayAccount(charge.gateway_account_id, req.user)) {
       req.gateway_account.currentGatewayAccountId = charge.gateway_account_id
       req.session = { ...req.session, backLink: req.header('Referer') }
       charge = null
