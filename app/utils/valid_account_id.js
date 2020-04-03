@@ -10,6 +10,7 @@ const userServicesContainsGatewayAccount = function userServicesContainsGatewayA
 }
 
 const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAccounts (user) {
+  const emptyAccountsString = '[]'
   const gatewayAccountIds = user.serviceRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
@@ -18,10 +19,11 @@ const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAc
   const accounts = await client.getAccounts({ gatewayAccountIds })
     .then((result) => result.accounts)
 
-  return accounts
+  const outputString = accounts
     .filter((account) => account.type === 'live')
     .map((account) => account.gateway_account_id)
     .join(',')
+  return outputString || emptyAccountsString
 }
 
 module.exports = {
