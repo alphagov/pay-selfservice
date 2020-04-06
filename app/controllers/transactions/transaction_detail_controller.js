@@ -14,11 +14,16 @@ module.exports = (req, res) => {
   const accountId = auth.getCurrentGatewayAccountId(req)
   const chargeId = req.params.chargeId
   const correlationId = req.headers[CORRELATION_HEADER]
+
   Charge(correlationId)
     .findWithEvents(accountId, chargeId)
     .then(data => {
       data.indexFilters = req.session.filters
-      data.redirectBackLink = req.session.backLink
+      if (req.session.backLink) {
+        data.redirectBackLink = req.session.backLink
+        delete req.session.backLink
+      }
+      data.service = req.service
       response(req, res, 'transaction_detail/index', data)
     })
     .catch(err => {
