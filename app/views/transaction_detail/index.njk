@@ -1,5 +1,8 @@
 {% extends "../layout.njk" %}
 
+{% set contextIsAllServiceTransactions = redirectBackLink %}
+{% set hideServiceHeader = contextIsAllServiceTransactions %}
+
 {% block pageTitle %}
   Transaction details {{charge_id}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
 {% endblock %}
@@ -7,10 +10,11 @@
 {% block beforeContent %}
   {{ super() }}
   {% set defaultBackLink %}{{routes.transactions.index}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
-  {% set backLink = redirectBackLink if redirectBackLink else defaultBackLink %}
+  {% set backLink = redirectBackLink if contextIsAllServiceTransactions else defaultBackLink %}
+  {% set backLinkText = 'Transactions for all live services' if contextIsAllServiceTransactions else 'Transactions list' %}
   {{
     govukBackLink({
-      text: 'Transactions list',
+      text: backLinkText,
       href: backLink | safe,
       attributes: {
         id: 'arrowed'

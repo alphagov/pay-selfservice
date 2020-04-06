@@ -1,6 +1,14 @@
 {% set isStripeAccount = currentGatewayAccount.payment_provider === 'stripe' %}
 <table class="transaction-details govuk-table">
   <tbody class="govuk-table__body">
+
+  {% if contextIsAllServiceTransactions and service %}
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Service name:</th>
+    <td class="govuk-table__cell govuk-!-font-size-16" id="service_name">{{ (service.serviceName and service.serviceName.en) or service.name }}</td>
+  </tr>
+  {% endif %}
+
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Reference number:</th>
     <td class="govuk-table__cell govuk-!-font-size-16" id="reference">{{reference}}</td>
