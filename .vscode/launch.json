@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Self Service Debug",
+            "protocol": "inspector",
+            "type": "node",
+            "request": "attach",
+            "port": 9401,
+            "address": "localhost",
+            "restart": true,
+            "localRoot": "${workspaceRoot}",
+            "remoteRoot": "/app"
+        },
+    ]
+}
