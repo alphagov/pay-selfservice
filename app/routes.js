@@ -225,13 +225,13 @@ module.exports.bind = function (app) {
   //  TRANSACTIONS
   app.get(transactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, transactionsListController)
   app.get(transactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, transactionsDownloadController)
-  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailController)
+  app.get(transactions.detail, xraySegmentCls, permission('transactions-details:read'), resolveService, getAccount, paymentMethodIsCard, transactionDetailController)
   app.post(transactions.refund, xraySegmentCls, permission('refunds:create'), getAccount, paymentMethodIsCard, transactionRefundController)
-  app.get(transactions.redirectDetail, xraySegmentCls, permission('transactions-details:read'), getAccount, paymentMethodIsCard, transactionDetailRedirectController)
+  app.get(transactions.redirectDetail, xraySegmentCls, permission('transactions-details:read'), getAccount, transactionDetailRedirectController)
 
   // ALL SERVICE TRANSACTIONS
-  app.get(allServiceTransactions.index, xraySegmentCls, permission('transactions:read'), getAccount, paymentMethodIsCard, allTransactionsController.getController)
-  app.get(allServiceTransactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, paymentMethodIsCard, allTransactionsController.downloadTransactions)
+  app.get(allServiceTransactions.index, xraySegmentCls, permission('transactions:read'), getAccount, allTransactionsController.getController)
+  app.get(allServiceTransactions.download, xraySegmentCls, permission('transactions-download:read'), getAccount, allTransactionsController.downloadTransactions)
 
   // YOUR PSP
   app.get(yourPsp.index, xraySegmentCls, permission('gateway-credentials:read'), getAccount, paymentMethodIsCard, yourPspController.getIndex)
