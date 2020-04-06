@@ -20,6 +20,16 @@ Transactions for all live services - GOV.UK Pay
 <script src="/public/js/components/datetime-picker.js"></script>
 {% endblock %}
 
+{% block beforeContent %}
+  {{ super() }}
+  {{
+    govukBackLink({
+      text: "Back to My services",
+      href: routes.serviceSwitcher.index
+    })
+  }}
+{% endblock %}
+
 {% block mainContent %}
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">Transactions for all live services</h1>
