@@ -17,6 +17,11 @@ const supportedPolicyDocuments = [
     key: 'stripe-connected-account-agreement',
     title: 'Stripe Connected Account Agreement',
     template: 'policy/document-downloads/stripe_connected_account_agreement'
+  },
+  {
+    key: 'pci-dss-attestation-of-compliance',
+    title: 'Attestation of Compliance for PCI',
+    template: 'policy/document-downloads/pci_dss_attestation_of_compliance'
   }
 ]
 
