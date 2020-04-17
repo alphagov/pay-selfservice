@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
   const correlationId = req.headers[CORRELATION_HEADER] || ''
   const filters = getFilters(req)
   try {
-    const accountIdsUsersHasPermissionsFor = await liveUserServicesGatewayAccounts(req.user)
+    const gatewayResults = await liveUserServicesGatewayAccounts(req.user)
+    const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
     const searchResultOutput = await transactionService.search(accountIdsUsersHasPermissionsFor, filters.result)
     const cardTypes = await client.getAllCardTypesPromise(correlationId)
     const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, router.paths.allServiceTransactions.download, req.session.backPath)
@@ -47,6 +48,8 @@ module.exports = async (req, res) => {
     }
     model.filterRedirect = router.paths.allServiceTransactions.index
     model.clearRedirect = router.paths.allServiceTransactions.index
+    model.isStripeAccount = gatewayResults.headers.shouldGetStripeHeaders
+
     return response(req, res, 'all_service_transactions/index', model)
   } catch (err) {
     renderErrorView(req, res, 'Unable to fetch transaction information')
