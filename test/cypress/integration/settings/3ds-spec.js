@@ -222,7 +222,7 @@ describe('3DS settings page', () => {
     })
 
     it('should show success message and radios should update', () => {
-      cy.get('.govuk-button').click()
+      cy.get('#save-3ds-changes').click()
       cy.get('input[value="on"]').should('be.checked')
       cy.get('input[value="off"]').should('not.be.checked')
       cy.get('.flash-container').should('contain', '3D secure settings have been updated')

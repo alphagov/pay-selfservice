@@ -47,7 +47,7 @@ describe('Edit phone number flow', () => {
       it('should show an error if an invalid number is typed', () => {
         cy.visit('/my-profile/phone-number')
         cy.get('input[name="phone"]').clear().type('not a number')
-        cy.get('.govuk-button').click()
+        cy.get('#save-phone-number').click()
         cy.get('.error-summary').should('exist')
         cy.get('input[name="phone"]').should('have.class', 'govuk-input--error')
       })
@@ -81,7 +81,7 @@ describe('Edit phone number flow', () => {
     it('should save changes and redirect to my profile', () => {
       cy.visit('/my-profile/phone-number')
       cy.get('input[name="phone"]').clear().type(testPhoneNumberNew)
-      cy.get('.govuk-button').click()
+      cy.get('#save-phone-number').click()
       cy.get('.generic-flash').should('exist').should('contain', 'Phone number updated')
       cy.get('#telephone-number').should('contain', testPhoneNumberNew)
     })

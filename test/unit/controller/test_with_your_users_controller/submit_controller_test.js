@@ -115,7 +115,7 @@ describe('test with your users - submit controller', () => {
 
       it('should have a back link and a button that link back to the links page', () => {
         expect($('.govuk-back-link').attr('href')).to.equal(paths.prototyping.demoService.links)
-        expect($('.govuk-button').attr('href')).to.equal(paths.prototyping.demoService.links)
+        expect($('#see-prototype-links').attr('href')).to.equal(paths.prototyping.demoService.links)
       })
     })
     describe('but it is unable to create an API token', () => {

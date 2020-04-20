@@ -34,7 +34,7 @@ Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV
 
   {% if permissions.transactions_download_read %}
     {% if (hasResults) %}
-      <p class="govuk-body">
+      <p id="csv-download" class="govuk-body">
       {% if showCsvDownload %}
         <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"> Download all transaction details as a CSV file </a>
       {% else %}

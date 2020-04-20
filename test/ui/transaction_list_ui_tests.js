@@ -222,7 +222,7 @@ describe('The transaction list view', function () {
         .withTableDataAt(5, templateData.results[ix].state_friendly)
         .withTableDataAt(6, templateData.results[ix].created)
     })
-    body.should.containSelector('.govuk-body').withExactText('You cannot download CSV over 10,000 transactions. Please refine your search')
+    body.should.containSelector('p#csv-download').withExactText('You cannot download CSV over 10,000 transactions. Please refine your search')
   })
 
   it('should not render amount if no permission', function () {
