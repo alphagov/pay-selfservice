@@ -59,7 +59,13 @@
       })
     }}
 
-    {{ govukButton({ text: "Continue" }) }}
+    {{ govukButton({
+        text: "Continue",
+        attributes: {
+          id: "continue"
+        }
+      })
+    }}
   </form>
   {% if authenticatorMethod === 'SMS' %}
   <p class="govuk-body"><a class="govuk-link text-messsage-link" href="{{routes.user.otpSendAgain}}">Not received a text message?</a></p>
