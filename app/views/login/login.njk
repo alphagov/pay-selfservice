@@ -80,7 +80,13 @@ Sign in to GOV.UK Pay
       })
     }}
 
-    {{ govukButton({ text: "Continue" }) }}
+    {{ govukButton({
+        text: "Continue",
+        attributes: {
+          id: "continue"
+        }
+      })
+    }}
   </form>
   <p class="govuk-body">
     <a href="/reset-password" class="reset-password govuk-link clear">Forgot your password?</a>
