@@ -18,7 +18,12 @@ Resend verification code - GOV.UK Pay
   <form action="/otp-send-again" class="form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}" />
     <input type="hidden" name="send" value="true">
-    {{ govukButton({ text: "Resend verification code" }) }}
+    {{ govukButton({
+      text: "Resend verification code",
+      attributes: {
+        id: "continue"
+      }
+    }) }}
   </form>
 </div>
 {% endblock %}
