@@ -26,7 +26,10 @@ Confirm email notifications - {{currentService.name}} {{currentGatewayAccount.fu
     {{
       govukButton({
         text: "Confirm",
-        classes: "qa-confirm-submit"
+        classes: "qa-confirm-submit",
+        attributes: {
+          id: "qa-confirm"
+        }
       })
     }}
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>

@@ -68,7 +68,10 @@ Change email notifications template - {{currentService.name}} {{currentGatewayAc
     {{
       govukButton({
         text: "Continue",
-        classes: "qa-edit-submit"
+        classes: "qa-edit-submit",
+        attributes: {
+          id: "continue"
+        }
       })
     }}
     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" href="{{routes.emailNotifications.index}}">Cancel</a></p>

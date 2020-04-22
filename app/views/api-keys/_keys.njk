@@ -15,7 +15,10 @@
       govukButton({
         text: "Create a new API key",
         href: routes.apiKeys.create,
-        classes: "generate-key"
+        classes: "generate-key",
+        attributes: {
+          id: "create-api-key"
+        }
       })
     }}
   {% endif %}

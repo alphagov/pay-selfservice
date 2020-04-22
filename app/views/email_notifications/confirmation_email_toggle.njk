@@ -70,7 +70,10 @@
     {% if not isReadyOnly %}
       {{
         govukButton({
-          text: 'Save changes'
+          text: 'Save changes',
+          attributes: {
+            id: "save-changes"
+          }
         })
       }}
     {% endif %}
