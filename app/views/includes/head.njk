@@ -1,37 +1,13 @@
 <link href="{{ css_path }}" media="all" rel="stylesheet" />
 <meta name="Description" content="Take and process online payments from your users - GOV.UK Pay is a free and secure online payment service for government and public sector organisations." />
 
-{% if analyticsTrackingId %}
 <!-- Google Analytics -->
 <script>
-
-  {# The below code is commented out so we don't store Google Analytic cookies for ICO compliance.
-    We create a empty ga() function so not to throw a ReferenceError
-    Uncomment when we enable opt-in for cookies and remove the ga() function. #}
-
-  function ga() {
-  }
-
-  {# (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', '{{ analyticsTrackingId }}', 'auto');
-  ga('set', 'anonymizeIp', true);
-  ga('set', 'displayFeaturesTask', null);
-  ga('set', 'transport', 'beacon');
-
-  ga('create', 'UA-145652997-1', 'auto', 'govuk_shared', {'allowLinker': true});
-  ga('govuk_shared.require', 'linker');
-  ga('govuk_shared.linker.set', 'anonymizeIp', true);
-  ga('govuk_shared.linker:autoLink', ['www.gov.uk']);
-
-  var filtered_page_path = document.location.pathname + document.location.search.replace(/&email=[\w%.-]*/, '');
-  ga('set', 'page', filtered_page_path);
-  ga('send', 'pageview');
-  ga('govuk_shared.send', 'pageview'); #}
-
+  window.linkedTrackingId = 'UA-145652997-1'
+{% if analyticsTrackingId %}
+  window.analyticsTrackingId = '{{ analyticsTrackingId }}'
+{% else %}
+  window.analyticsTrackingId = ''
+{% endif %}
 </script>
 <!-- End Google Analytics -->
-{% endif %}

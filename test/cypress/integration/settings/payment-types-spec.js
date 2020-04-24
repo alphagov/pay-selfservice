@@ -112,7 +112,7 @@ describe('Payment types', () => {
     it('should update if we add Diners Club', () => {
       cy.get('#credit-4').click()
       cy.get('#credit-4').should('be.checked')
-      cy.get('.govuk-button').click()
+      cy.get('#save-card-types').click()
       cy.get('#credit-4').should('be.checked')
     })
   })
@@ -155,7 +155,7 @@ describe('Payment types', () => {
       cy.get('#credit-2').click()
       cy.get('#credit-3').click()
       cy.get('#credit-4').click()
-      cy.get('.govuk-button').click()
+      cy.get('#save-card-types').click()
       cy.get('.error-summary').should('be.visible')
     })
   })
