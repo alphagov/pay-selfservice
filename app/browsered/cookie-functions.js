@@ -10,7 +10,7 @@ const COOKIE_CATEGORIES = {
   _gat_govuk_shared: 'analytics'
 }
 
-const GOV_UK_PAY_COOKIE_POLICY = 'gov_pay_cookie_policy'
+const GOV_UK_PAY_COOKIE_POLICY = 'govuk_pay_cookie_policy'
 
 function getCookie (name) {
   var nameEQ = name + '='
@@ -97,7 +97,8 @@ function setConsentCookie (options) {
           Cookie(cookie, null)
 
           if (Cookie(cookie)) {
-            document.cookie = cookie + '=;expires=' + new Date() + ';domain=' + window.location.hostname.replace(/^www\./, '.') + ';path=/'
+            document.cookie = cookie + '=;expires=' + new Date() + ';domain=' +
+              window.location.hostname.replace(/^www\.(selfservice.){0,1}/, '.') + ';path=/'
           }
         }
       }
