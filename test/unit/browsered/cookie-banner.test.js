@@ -63,4 +63,42 @@ describe('Cookie banner', () => {
 
     expect(analyticsInit.calledOnce).to.be.false
   })
+
+  it('should not display cookie banner and initialise analytics if previously consented ', () => {
+    // set consent cookie before initialising cookie banner
+    cookieBannerObject.setCookieConsent(true)
+    analyticsTrackingId = 'test'
+
+    cookieBannerObject = cookieBanner.initCookieBanner()
+
+    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
+    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+
+    expect(analyticsInit.calledOnce).to.be.true
+  })
+
+  it('should not display cookie banner and not initialise analytics if not previously consented ', () => {
+    // set consent cookie before initialising cookie banner
+    cookieBannerObject.setCookieConsent(false)
+
+    cookieBannerObject = cookieBanner.initCookieBanner()
+
+    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":false}')
+    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+
+    expect(analyticsInit.notCalled).to.be.true
+  })
+
+  it('should not display cookie banner and not initialise analytics if previously consented but analytics ID is not configured', () => {
+    // set consent cookie before initialising cookie banner
+    cookieBannerObject.setCookieConsent(true)
+    analyticsTrackingId = ''
+
+    cookieBannerObject = cookieBanner.initCookieBanner()
+
+    expect(document.cookie).equals('; govuk_pay_cookie_policy={"analytics":true}')
+    expect(cookieBannerObject.$module.style.display).to.be.equal('none')
+
+    expect(analyticsInit.notCalled).to.be.true
+  })
 })

@@ -171,6 +171,7 @@ function setCookie (name, value, options) {
 
 module.exports = {
   setConsentCookie: setConsentCookie,
+  getConsentCookie: getConsentCookie,
   getCookie: getCookie,
   setCookie: setCookie,
   getCookieDomain: getCookieDomain,
