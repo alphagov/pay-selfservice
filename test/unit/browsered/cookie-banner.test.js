@@ -13,21 +13,21 @@ var event
 var cookieBannerObject
 var analyticsInit = sinon.stub(analytics, 'init')
 
-beforeEach(() => {
-  const body = renderTemplate('includes/cookie-message', {})
-  window = new jsdom.JSDOM(body, {
-    url: 'https://example.org/search?from_date=2020-01-01'
-  }).window
-  document = window.document
-  document.cookie = ''
-
-  analyticsTrackingId = ''
-  analyticsInit.resetHistory()
-
-  cookieBannerObject = cookieBanner.initCookieBanner()
-})
-
 describe('Cookie banner', () => {
+  beforeEach(() => {
+    const body = renderTemplate('includes/cookie-message', {})
+    window = new jsdom.JSDOM(body, {
+      url: 'https://example.org/search?from_date=2020-01-01'
+    }).window
+    document = window.document
+    document.cookie = ''
+
+    analyticsTrackingId = ''
+    analyticsInit.resetHistory()
+
+    cookieBannerObject = cookieBanner.initCookieBanner()
+  })
+
   it('should set the cookie banner display style to block on init', () => {
     expect(cookieBannerObject.$module.style.display).to.be.equal('block')
   })
