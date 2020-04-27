@@ -41,8 +41,16 @@ CookieBanner.prototype.showCookieMessage = function () {
   // Show the cookie banner if policy cookie not set
   let hasCookiesPolicy = cookieFunction.getCookie(cookieFunction.GOV_UK_PAY_COOKIE_POLICY)
 
-  if (this.$module && !hasCookiesPolicy) {
-    this.$module.style.display = 'block'
+  if (this.$module) {
+    if (!hasCookiesPolicy) {
+      this.$module.style.display = 'block'
+    } else {
+      const consentCookieObj = cookieFunction.getConsentCookie()
+      if (consentCookieObj && consentCookieObj.analytics === true) {
+        initialiseAnalytics(true)
+      }
+      this.$module.style.display = 'none'
+    }
   }
 }
 
