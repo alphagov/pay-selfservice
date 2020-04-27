@@ -84,7 +84,7 @@
     "correlation-id": "3.1.1",
     "csrf": "3.1.x",
     "express": "4.17.x",
-    "google-libphonenumber": "3.2.8",
+    "google-libphonenumber": "3.2.9",
     "govuk-frontend": "3.6.0",
     "http-proxy": "1.18.x",
     "https-proxy-agent": "5.0.0",
