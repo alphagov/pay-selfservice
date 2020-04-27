@@ -98,7 +98,7 @@ function setConsentCookie (options) {
 
           if (Cookie(cookie)) {
             document.cookie = cookie + '=;expires=' + new Date() + ';domain=' +
-              window.location.hostname.replace(/^www\.(selfservice.){0,1}/, '.') + ';path=/'
+              getCookieDomain() + ';path=/'
           }
         }
       }
@@ -106,6 +106,10 @@ function setConsentCookie (options) {
   }
 
   setCookie(GOV_UK_PAY_COOKIE_POLICY, JSON.stringify(cookieConsent), { days: 365 })
+}
+
+function getCookieDomain () {
+  return window.location.hostname.replace(/^(www.){0,1}(selfservice.){0,1}/, '.')
 }
 
 function checkConsentCookieCategory (cookieName, cookieCategory) {
@@ -161,11 +165,14 @@ function setCookie (name, value, options) {
       cookieString = cookieString + '; Secure'
     }
     document.cookie = cookieString
+    return cookieString
   }
 }
 
 module.exports = {
   setConsentCookie: setConsentCookie,
   getCookie: getCookie,
+  setCookie: setCookie,
+  getCookieDomain: getCookieDomain,
   GOV_UK_PAY_COOKIE_POLICY: GOV_UK_PAY_COOKIE_POLICY
 }
