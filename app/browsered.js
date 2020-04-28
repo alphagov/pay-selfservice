@@ -13,6 +13,7 @@ const niceURL = require('./browsered/nice-url')
 const copyText = require('./browsered/copy-text')
 const accessibleAutocomplete = require('./browsered/autocomplete')
 const checkboxRowSelection = require('./browsered/checkbox-row-selection')
+const cookieBanner = require('./browsered/cookie-banner')
 
 // GOV.UK Frontend js bundle
 const GOVUKFrontend = require('govuk-frontend')
@@ -30,3 +31,4 @@ niceURL()
 copyText()
 accessibleAutocomplete()
 checkboxRowSelection()
+cookieBanner.initCookieBanner()

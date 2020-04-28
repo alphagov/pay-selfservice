@@ -120,7 +120,6 @@ function initialiseCookies (app) {
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.sessionCookie()))
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.gatewayAccountCookie()))
   app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.registrationCookie()))
-  app.use(middlwareUtils.excludingPaths(['/healthcheck'], cookieUtil.cookieMessageCookie()))
 }
 
 function initialiseErrorLogging (app) {
