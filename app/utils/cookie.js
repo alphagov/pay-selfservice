@@ -64,24 +64,8 @@ function registrationCookie () {
   })
 }
 
-function cookieMessageCookie () {
-  checkEnv()
-  return session({
-    cookieName: 'seen_cookie_message', // cookie name dictates the key name added to the request object
-    secret: process.env.SESSION_ENCRYPTION_KEY,
-    duration: parseInt(_30_DAYS), // how long the session will stay valid in ms
-    proxy: true,
-    cookie: {
-      ephemeral: false, // when true, cookie expires when the browser closes
-      httpOnly: true, // when true, cookie is not accessible from javascript
-      secureProxy: !DISABLE_INTERNAL_HTTPS
-    }
-  })
-}
-
 module.exports = {
   sessionCookie,
   gatewayAccountCookie,
-  registrationCookie,
-  cookieMessageCookie
+  registrationCookie
 }
