@@ -35,10 +35,10 @@ describe('Cookie functions', () => {
     })
 
     it('should update existing analytics and delete analytics cookies if not consented', () => {
-      document.cookie = 'govuk_pay_cookie_policy={"analytics":true}'
-      document.cookie = '_ga=ga1'
-      document.cookie = '_gid=gid1'
-      document.cookie = '_gat_govuk_shared=shared'
+      document.cookie = 'govuk_pay_cookie_policy={"analytics":true};domain=.example.org'
+      document.cookie = '_ga=ga1;domain=.example.org'
+      document.cookie = '_gid=gid1;domain=.example.org'
+      document.cookie = '_gat_govuk_shared=shared;domain=.example.org'
       cookieFunctions.setConsentCookie({ 'analytics': false })
 
       let analyticsCookie = JSON.parse(cookieFunctions.getCookie('govuk_pay_cookie_policy'))

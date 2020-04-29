@@ -10,21 +10,17 @@ describe('Cookie banner', () => {
       cy.get('#pay-cookie-banner').should('have.css', 'display', 'block')
     })
 
-    it('should show accepted message and set analytics cookie to true if consented is accepted', () => {
+    it('should show accepted message if consented is accepted', () => {
       cy.get('button[data-accept-cookies=true]').click()
 
-      cy.getCookie('govuk_pay_cookie_policy')
-        .should('have.property', 'value', '{"analytics":true}')
       cy.get('.pay-cookie-banner__confirmation-message').contains('You’ve accepted analytics cookies')
       cy.get('.pay-cookie-banner__wrapper').should('have.css', 'display', 'none')
     })
 
-    it('should show rejected message and set analytics cookie to false if consented is rejected', () => {
+    it('should show rejected message if consented is rejected', () => {
       cy.visit('/')
       cy.get('button[data-accept-cookies=false]').click()
 
-      cy.getCookie('govuk_pay_cookie_policy')
-        .should('have.property', 'value', '{"analytics":false}')
       cy.get('.pay-cookie-banner__confirmation-message').contains('You told us not to use analytics cookies')
       cy.get('.pay-cookie-banner__wrapper').should('have.css', 'display', 'none')
     })
