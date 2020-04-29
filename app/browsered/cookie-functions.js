@@ -164,6 +164,7 @@ function setCookie (name, value, options) {
     if (document.location.protocol === 'https:') {
       cookieString = cookieString + '; Secure'
     }
+    cookieString = cookieString + '; domain=' + getCookieDomain()
     document.cookie = cookieString
     return cookieString
   }
