@@ -155,7 +155,7 @@ function setCookie (name, value, options) {
     if (typeof options === 'undefined') {
       options = {}
     }
-    var cookieString = name + '=' + value + '; path=/'
+    var cookieString = name + '=' + value + '; path=/; domain=' + getCookieDomain()
     if (options.days) {
       var date = new Date()
       date.setTime(date.getTime() + (options.days * 24 * 60 * 60 * 1000))
