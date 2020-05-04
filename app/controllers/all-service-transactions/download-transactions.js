@@ -14,7 +14,10 @@ module.exports = (req, res) => {
   const name = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
 
   liveUserServicesGatewayAccounts(req.user)
-    .then((accountIdsUsersHasPermissionsFor) => {
+    .then((gatewayResults) => {
+      const accountIdsUsersHasPermissionsFor = gatewayResults.accounts
+      filters.feeHeaders = gatewayResults.headers.shouldGetStripeHeaders
+      filters.motoHeader = gatewayResults.headers.shouldGetMotoHeaders
       const url = transactionService.csvSearchUrl(filters, accountIdsUsersHasPermissionsFor)
 
       const timestampStreamStart = Date.now()

@@ -10,15 +10,38 @@ const userServicesContainsGatewayAccount = function userServicesContainsGatewayA
 }
 
 const liveUserServicesGatewayAccounts = async function liveUserServicesGatewayAccounts (user) {
-  const emptyAccountsString = '[]'
+  const accounts = await getAccounts(user)
+
+  return {
+    headers: accountDetailHeaders(accounts),
+    accounts: accountsString(accounts)
+  }
+}
+
+const getAccounts = function getAccounts (user) {
   const gatewayAccountIds = user.serviceRoles
     .flatMap(servicesRole => servicesRole.service.gatewayAccountIds)
     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
     .filter(gatewayAccountId => !isADirectDebitAccount(gatewayAccountId))
 
-  const accounts = await client.getAccounts({ gatewayAccountIds })
+  return client.getAccounts({ gatewayAccountIds })
     .then((result) => result.accounts)
+}
 
+const accountDetailHeaders = function accountDetailHeaders (accounts) {
+  const shouldGetStripeHeaders = accounts
+    .some((account) => account.payment_provider === 'stripe')
+
+  const shouldGetMotoHeaders = accounts
+    .some((account) => account.allow_moto)
+
+  return {
+    shouldGetMotoHeaders, shouldGetStripeHeaders
+  }
+}
+
+const accountsString = function accountsString (accounts) {
+  const emptyAccountsString = '[]'
   const outputString = accounts
     .filter((account) => account.type === 'live')
     .map((account) => account.gateway_account_id)

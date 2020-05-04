@@ -54,6 +54,7 @@ module.exports = (req, res) => {
             })
           }
           model.clearRedirect = router.paths.transactions.index
+          model.isStripeAccount = req.account.payment_provider === 'stripe'
           response(req, res, 'transactions/index', model)
         })
         .on('connectorError', () => error('Unable to retrieve card types.'))
